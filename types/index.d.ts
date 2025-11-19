@@ -28,7 +28,12 @@ export type MatrixFromFunctionCallback<T extends MathScalarType> = (
 ) => T
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FactoryFunction<T> = (scope: any) => T
+export type FactoryFunction<T> = (scope: MathScope) => T
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type MathScope<TValue = any> =
+  | Record<string, TValue>
+  | MapLike<string, TValue>
 
 // FactoryFunctionMap can be nested; all nested objects will be flattened
 export interface FactoryFunctionMap {
@@ -180,11 +185,13 @@ export interface AccessorNode<TObject extends MathNode = MathNode>
   object: TObject
   index: IndexNode
   name: string
+  optionalChaining: boolean
 }
 export interface AccessorNodeCtor {
   new <TObject extends MathNode = MathNode>(
     object: TObject,
-    index: IndexNode
+    index: IndexNode,
+    optionalChaining?: boolean
   ): AccessorNode<TObject>
 }
 
@@ -517,6 +524,58 @@ export interface MathJsInstance extends MathJsFactory {
   SQRT1_2: number
   SQRT2: number
   tau: number
+
+  // Physical constants
+  atomicMass: Unit
+  avogadro: Unit
+  bohrMagneton: Unit
+  bohrRadius: Unit
+  boltzmann: Unit
+  classicalElectronRadius: Unit
+  conductanceQuantum: Unit
+  coulomb: Unit
+  deuteronMass: Unit
+  efimovFactor: Unit
+  electricConstant: Unit
+  electronMass: Unit
+  elementaryCharge: Unit
+  faraday: Unit
+  fermiCoupling: Unit
+  fineStructure: Unit
+  firstRadiation: Unit
+  gasConstant: Unit
+  gravitationConstant: Unit
+  gravity: Unit
+  hartreeEnergy: Unit
+  inverseConductanceQuantum: Unit
+  klitzing: Unit
+  loschmidt: Unit
+  magneticConstant: Unit
+  magneticFluxQuantum: Unit
+  molarMass: Unit
+  molarMassC12: Unit
+  molarPlanckConstant: Unit
+  molarVolume: Unit
+  neutronMass: Unit
+  nuclearMagneton: Unit
+  planckCharge: Unit
+  planckConstant: Unit
+  planckLength: Unit
+  planckMass: Unit
+  planckTemperature: Unit
+  planckTime: Unit
+  protonMass: Unit
+  quantumOfCirculation: Unit
+  reducedPlanckConstant: Unit
+  rydberg: Unit
+  sackurTetrode: Unit
+  secondRadiation: Unit
+  speedOfLight: Unit
+  stefanBoltzmann: Unit
+  thomsonCrossSection: Unit
+  vacuumImpedance: Unit
+  weakMixingAngle: Unit
+  wienDisplacement: Unit
 
   // Class-like constructors
   Node: NodeCtor
@@ -862,8 +921,8 @@ export interface MathJsInstance extends MathJsFactory {
    * @param unit The unit to be created
    * @returns The created unit
    */
-  unit(value: MathNumericType, unit: string): Unit
-  unit(value: MathCollection, unit: string): Unit[]
+  unit(value: MathNumericType, unit?: string): Unit
+  unit(value: MathCollection): Unit[]
 
   /*************************************************************************
    * Expression functions
@@ -891,12 +950,12 @@ export interface MathJsInstance extends MathJsFactory {
    */
   evaluate(
     expr: MathExpression | Matrix,
-    scope?: object
+    scope?: MathScope
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): any
   evaluate(
     expr: MathExpression[],
-    scope?: object
+    scope?: MathScope
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): any[]
 
@@ -1071,14 +1130,14 @@ export interface MathJsInstance extends MathJsFactory {
    * @param scope Scope to read/write variables
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  resolve(node: MathNode | string, scope?: Record<string, any>): MathNode
+  resolve(node: MathNode | string, scope?: MathScope): MathNode
   resolve(
     node: (MathNode | string)[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    scope?: Record<string, any>
+    scope?: MathScope
   ): MathNode[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  resolve(node: Matrix, scope?: Record<string, any>): Matrix
+  resolve(node: Matrix, scope?: MathScope): Matrix
 
   /**
    * Calculate the Sparse Matrix LU decomposition with full pivoting.
@@ -1088,7 +1147,7 @@ export interface MathJsInstance extends MathJsFactory {
    * decomposition.
    * @param order The Symbolic Ordering and Analysis order: 0 - Natural
    * ordering, no permutation vector q is returned 1 - Matrix must be
-   * square, symbolic ordering and analisis is performed on M = A + A' 2 -
+   * square, symbolic ordering and analysis is performed on M = A + A' 2 -
    * Symbolic ordering and analysis is performed on M = A' * A. Dense
    * columns from A' are dropped, A recreated from A'. This is appropriate
    * for LU factorization of non-symmetric matrices. 3 - Symbolic ordering
@@ -1121,6 +1180,7 @@ export interface MathJsInstance extends MathJsFactory {
    * @param x A number or matrix for which to get the absolute value
    * @returns Absolute value of x
    */
+  abs(x: Complex): number
   abs<T extends MathType>(x: T): T
 
   /**
@@ -1131,9 +1191,9 @@ export interface MathJsInstance extends MathJsFactory {
    * @returns Sum of x and y
    */
   add<T extends MathType>(x: T, y: T): T
-  add<T extends MathType>(...values: T[]): T
+  add<T extends MathType>(x: T, y: T, ...values: T[]): T
   add(x: MathType, y: MathType): MathType
-  add(...values: MathType[]): MathType
+  add(x: MathType, y: MathType, ...values: MathType[]): MathType
 
   /**
    * Calculate the cubic root of a value.
@@ -1323,7 +1383,7 @@ export interface MathJsInstance extends MathJsFactory {
    * @param args A list with numeric values or an Array or Matrix. Matrix
    * and Array input is flattened and returns a single number for the
    * whole matrix.
-   * @returns Returns the hypothenuse of the input values.
+   * @returns Returns the hypotenuse of the input values.
    */
   hypot<T extends number | BigNumber>(...args: T[]): T
   hypot<T extends number | BigNumber>(args: T[]): T
@@ -1460,9 +1520,8 @@ export interface MathJsInstance extends MathJsFactory {
   multiply<T extends MathArray>(x: T, y: T): MathScalarType
   multiply(x: Unit, y: Unit): Unit
   multiply(x: number, y: number): number
-  multiply(x: MathType, y: MathType): MathType
-  multiply<T extends MathType>(...values: T[]): T
-  multiply(...values: MathType[]): MathType
+  multiply(x: MathType, y: MathType, ...values: MathType[]): MathType
+  multiply<T extends MathType>(x: T, y: T, ...values: T[]): T
 
   /**
    * Calculate the norm of a number, vector or matrix. The second
@@ -1487,9 +1546,18 @@ export interface MathJsInstance extends MathJsFactory {
    * @return The nth root of a
    */
   nthRoot(
-    a: number | BigNumber | MathCollection | Complex,
+    a: number | BigNumber | Complex,
     root?: number | BigNumber
-  ): number | Complex | MathCollection
+  ): number | Complex
+  nthRoot(M: MathCollection, root?: number | BigNumber): MathCollection
+
+  /**
+   * Calculate all nth roots of a value.
+   * @param a  Value for which to calculate the nth roots
+   * @param n  Which roots. Default value: 2.
+   * @return   An array of Complex numbers giving the n nth roots of a
+   */
+  nthRoots(a: number | BigNumber | Complex, n?: number): Array<Complex>
 
   /**
    * Calculates the power of x to y, x ^ y. Matrix exponentiation is
@@ -1542,7 +1610,7 @@ export interface MathJsInstance extends MathJsFactory {
    * strings will be converted to a number. For complex numbers, both real
    * and complex value are inverted.
    * @param x Number to be inverted
-   * @returns Retursn the value with inverted sign
+   * @returns Returns the value with inverted sign
    */
   unaryMinus<T extends MathType>(x: T): T
 
@@ -1753,7 +1821,7 @@ export interface MathJsInstance extends MathJsFactory {
    ************************************************************************/
 
   /**
-   * Calculates: The eucledian distance between two points in 2 and 3
+   * Calculates: The Euclidean distance between two points in 2 and 3
    * dimensional spaces. Distance between point and a line in 2 and 3
    * dimensional spaces. Pairwise distance between a set of 2D or 3D
    * points NOTE: When substituting coefficients of a line(a, b and c),
@@ -1894,11 +1962,27 @@ export interface MathJsInstance extends MathJsFactory {
   cross(x: MathCollection, y: MathCollection): MathCollection
 
   /**
+   * Transpose and complex conjugate a matrix. All values of the matrix are
+   * reflected over its main diagonal and then the complex conjugate is taken.
+   * This is equivalent to complex conjugation for scalars and vectors.
+   * @param x Matrix to be ctransposed
+   */
+  ctranspose(x: MathCollection): MathCollection
+
+  /**
    * Calculate the determinant of a matrix.
    * @param x A Matrix
    * @returns the determinant of x
    */
   det(x: MathCollection): number
+
+  /**
+   * Calculate the difference between adjacent elements of a matrix or array.
+   * @param x A matrix or array
+   * @param dim The dimension to apply the difference on.
+   * @returns A matrix or array containing the differences
+   */
+  diff<T extends MathCollection>(x: T, dim?: number | BigNumber): T
 
   /**
    * Create a diagonal matrix or retrieve the diagonal of a matrix. When x
@@ -2068,8 +2152,15 @@ export interface MathJsInstance extends MathJsFactory {
   ): void
 
   /**
+   * Return the (name of the) data type of the elements of matrix, or 'mixed'.
+   * @param m  the matrix
+   * @returns   A string specifying the data type of the elements of m
+   */
+  getMatrixDataType(m: MathCollection): string
+
+  /**
    * Calculate the inverse of a square matrix.
-   * @param x Matrix to be inversed
+   * @param x Matrix to be inverted
    * @returns The inverse of x
    */
   inv<T extends number | Complex | MathCollection>(x: T): NoLiteralType<T>
@@ -2178,7 +2269,7 @@ export interface MathJsInstance extends MathJsFactory {
 
   /**
    * Calculate the Moore–Penrose inverse of a matrix.
-   * @param x Matrix to be inversed
+   * @param x Matrix to be inverted
    * @return The inverse of `x`.
    */
   pinv<T extends MathType>(x: T): T
@@ -2408,6 +2499,14 @@ export interface MathJsInstance extends MathJsFactory {
    ************************************************************************/
 
   /**
+   * Compute the nth Bernoulli number
+   * @param n  index
+   * @returns  nth Bernoulli number
+   */
+  bernoulli<T extends number | Fraction | BigNumber>(n: T): NoLiteralType<T>
+  bernoulli(n: bigint): Fraction
+
+  /**
    * Compute the number of ways of picking k unordered outcomes from n
    * possibilities. Combinations only takes integer arguments. The
    * following condition must be enforced: k <= n.
@@ -2445,7 +2544,7 @@ export interface MathJsInstance extends MathJsFactory {
    * distributions
    * @param q First vector
    * @param p Second vector
-   * @returns Returns disance between q and p
+   * @returns Returns distance between q and p
    */
   kldivergence(q: MathCollection, p: MathCollection): number
 
@@ -2462,7 +2561,7 @@ export interface MathJsInstance extends MathJsFactory {
    * takes one array of integers as an argument. The following condition
    * must be enforced: every ai <= 0
    * @param a Integer number of objects in the subset
-   * @returns multinomial coefficent
+   * @returns multinomial coefficient
    */
   multinomial<T extends number | BigNumber>(a: T[]): NoLiteralType<T>
 
@@ -2567,7 +2666,7 @@ export interface MathJsInstance extends MathJsFactory {
    * Test element wise whether two matrices are equal. The function
    * accepts both matrices and scalar values.
    * @param x First matrix to compare
-   * @param y Second amtrix to compare
+   * @param y Second matrix to compare
    * @returns Returns true when the input matrices have the same size and
    * each of their elements is equal.
    */
@@ -2609,7 +2708,7 @@ export interface MathJsInstance extends MathJsFactory {
    * compare values smaller than approximately 2.22e-16. For matrices, the
    * function is evaluated element wise.
    * @param x First value to compare
-   * @param y Second value to vcompare
+   * @param y Second value to compare
    * @returns Returns true when x is larger than y, else returns false
    */
   larger(x: MathType | string, y: MathType | string): boolean | MathCollection
@@ -2621,7 +2720,7 @@ export interface MathJsInstance extends MathJsFactory {
    * to compare values smaller than approximately 2.22e-16. For matrices,
    * the function is evaluated element wise.
    * @param x First value to compare
-   * @param y Second value to vcompare
+   * @param y Second value to compare
    * @returns Returns true when x is larger than or equal to y, else
    * returns false
    */
@@ -2634,7 +2733,7 @@ export interface MathJsInstance extends MathJsFactory {
    * to compare values smaller than approximately 2.22e-16. For matrices,
    * the function is evaluated element wise.
    * @param x First value to compare
-   * @param y Second value to vcompare
+   * @param y Second value to compare
    * @returns Returns true when x is smaller than y, else returns false
    */
   smaller(x: MathType | string, y: MathType | string): boolean | MathCollection
@@ -2646,7 +2745,7 @@ export interface MathJsInstance extends MathJsFactory {
    * used to compare values smaller than approximately 2.22e-16. For
    * matrices, the function is evaluated element wise.
    * @param x First value to compare
-   * @param y Second value to vcompare
+   * @param y Second value to compare
    * @returns Returns true when x is smaller than or equal to y, else
    * returns false
    */
@@ -2680,7 +2779,7 @@ export interface MathJsInstance extends MathJsFactory {
    * strictly, thus null is unequal with everything except null, and
    * undefined is unequal with everything except undefined.
    * @param x First value to compare
-   * @param y Second value to vcompare
+   * @param y Second value to compare
    * @returns Returns true when the compared values are unequal, else
    * returns false
    */
@@ -3484,6 +3583,18 @@ export interface MathJsInstance extends MathJsFactory {
    */
   to(x: Unit | MathCollection, unit: Unit | string): Unit | MathCollection
 
+  /**
+   * Converts a unit to the most appropriate display unit.
+   * When no preferred units are provided, the function automatically find the best prefix.
+   * When preferred units are provided, it converts to
+   * the unit that gives a value closest to 1.
+   * @param preferredUnits - Optional preferred target units
+   * @param options - Optional options object
+   * @returns Unit with optimized prefix/unit
+   */
+  toBest(): Unit
+  toBest(units: string[] | Unit[], options: object): Unit
+
   /*************************************************************************
    * Utils
    ************************************************************************/
@@ -3598,6 +3709,21 @@ export interface MathJsInstance extends MathJsFactory {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   hasNumericValue(x: any): boolean | boolean[]
+
+  /**
+   * Test whether a value is bounded
+   * @param x Value to be tested
+   * @returns Boolean  true when x represents a bounded mathematical entity
+   */
+  isBounded(x: MathType): boolean
+
+  /**
+   * Test whether a value is finite, elementwise on collections
+   * @param x Value to be tested
+   * @returns Boolean | MathCollection
+   */
+  isFinite(x: MathScalarType): boolean
+  isFinite(A: MathCollection): MathCollection
 
   /**
    * Test whether a value is an integer number. The function supports
@@ -3735,267 +3861,44 @@ export interface MathJsFactory {
 }
 
 export const {
+  // system dependencies
   all,
-  typedDependencies,
   ResultSetDependencies,
+  FibonacciHeapDependencies,
+  SpaDependencies,
   BigNumberDependencies,
   ComplexDependencies,
   FractionDependencies,
   RangeDependencies,
-  MatrixDependencies,
   DenseMatrixDependencies,
-  cloneDependencies,
-  isIntegerDependencies,
-  isNegativeDependencies,
-  isNumericDependencies,
-  hasNumericValueDependencies,
-  isPositiveDependencies,
-  isZeroDependencies,
-  isNaNDependencies,
-  typeOfDependencies,
-  typeofDependencies,
-  equalScalarDependencies,
-  SparseMatrixDependencies,
-  numberDependencies,
-  stringDependencies,
-  booleanDependencies,
-  bignumberDependencies,
-  complexDependencies,
-  fractionDependencies,
-  matrixDependencies,
-  splitUnitDependencies,
-  unaryMinusDependencies,
-  unaryPlusDependencies,
-  absDependencies,
-  mapSlicesDependencies,
-  addScalarDependencies,
-  cbrtDependencies,
-  ceilDependencies,
-  cubeDependencies,
-  expDependencies,
-  expm1Dependencies,
-  fixDependencies,
-  floorDependencies,
-  gcdDependencies,
-  lcmDependencies,
-  log10Dependencies,
-  log2Dependencies,
-  modDependencies,
-  multiplyScalarDependencies,
-  multiplyDependencies,
-  nthRootDependencies,
-  signDependencies,
-  sqrtDependencies,
-  squareDependencies,
-  subtractDependencies,
-  xgcdDependencies,
-  dotMultiplyDependencies,
-  bitAndDependencies,
-  bitNotDependencies,
-  bitOrDependencies,
-  bitXorDependencies,
-  argDependencies,
-  conjDependencies,
-  imDependencies,
-  reDependencies,
-  notDependencies,
-  orDependencies,
-  xorDependencies,
-  concatDependencies,
-  columnDependencies,
-  crossDependencies,
-  diagDependencies,
-  eyeDependencies,
-  filterDependencies,
-  flattenDependencies,
-  forEachDependencies,
-  getMatrixDataTypeDependencies,
-  identityDependencies,
-  kronDependencies,
-  mapDependencies,
-  onesDependencies,
-  rangeDependencies,
-  reshapeDependencies,
-  resizeDependencies,
-  rowDependencies,
-  sizeDependencies,
-  squeezeDependencies,
-  subsetDependencies,
-  transposeDependencies,
-  ctransposeDependencies,
-  zerosDependencies,
-  erfDependencies,
-  modeDependencies,
-  prodDependencies,
-  formatDependencies,
-  printDependencies,
-  toDependencies,
-  isPrimeDependencies,
-  numericDependencies,
-  divideScalarDependencies,
-  powDependencies,
-  roundDependencies,
-  logDependencies,
-  log1pDependencies,
-  nthRootsDependencies,
-  dotPowDependencies,
-  dotDivideDependencies,
-  lsolveDependencies,
-  usolveDependencies,
-  leftShiftDependencies,
-  rightArithShiftDependencies,
-  rightLogShiftDependencies,
-  andDependencies,
-  compareDependencies,
-  compareNaturalDependencies,
-  compareTextDependencies,
-  equalDependencies,
-  equalTextDependencies,
-  smallerDependencies,
-  smallerEqDependencies,
-  largerDependencies,
-  largerEqDependencies,
-  deepEqualDependencies,
-  unequalDependencies,
-  partitionSelectDependencies,
-  sortDependencies,
-  maxDependencies,
-  minDependencies,
   ImmutableDenseMatrixDependencies,
+  SparseMatrixDependencies,
   IndexDependencies,
-  FibonacciHeapDependencies,
-  SpaDependencies,
-  UnitDependencies,
-  unitDependencies,
-  sparseDependencies,
-  createUnitDependencies,
-  acosDependencies,
-  acoshDependencies,
-  acotDependencies,
-  acothDependencies,
-  acscDependencies,
-  acschDependencies,
-  asecDependencies,
-  asechDependencies,
-  asinDependencies,
-  asinhDependencies,
-  atanDependencies,
-  atan2Dependencies,
-  atanhDependencies,
-  cosDependencies,
-  coshDependencies,
-  cotDependencies,
-  cothDependencies,
-  cscDependencies,
-  cschDependencies,
-  secDependencies,
-  sechDependencies,
-  sinDependencies,
-  sinhDependencies,
-  tanDependencies,
-  tanhDependencies,
-  setCartesianDependencies,
-  setDifferenceDependencies,
-  setDistinctDependencies,
-  setIntersectDependencies,
-  setIsSubsetDependencies,
-  setMultiplicityDependencies,
-  setPowersetDependencies,
-  setSizeDependencies,
-  setSymDifferenceDependencies,
-  setUnionDependencies,
-  zpk2tfDependencies,
-  freqzDependencies,
-  addDependencies,
-  hypotDependencies,
-  normDependencies,
-  dotDependencies,
-  traceDependencies,
-  indexDependencies,
-  NodeDependencies,
-  AccessorNodeDependencies,
-  ArrayNodeDependencies,
-  AssignmentNodeDependencies,
-  BlockNodeDependencies,
-  ConditionalNodeDependencies,
-  ConstantNodeDependencies,
-  FunctionAssignmentNodeDependencies,
-  IndexNodeDependencies,
-  ObjectNodeDependencies,
-  OperatorNodeDependencies,
-  ParenthesisNodeDependencies,
-  RangeNodeDependencies,
-  RelationalNodeDependencies,
-  SymbolNodeDependencies,
-  FunctionNodeDependencies,
-  parseDependencies,
-  compileDependencies,
-  evaluateDependencies,
-  evalDependencies,
   ParserDependencies,
-  parserDependencies,
-  lupDependencies,
-  qrDependencies,
-  sluDependencies,
-  lusolveDependencies,
   HelpDependencies,
   ChainDependencies,
-  helpDependencies,
-  chainDependencies,
-  detDependencies,
-  invDependencies,
-  expmDependencies,
-  sqrtmDependencies,
-  sylvesterDependencies,
-  schurDependencies,
-  lyapDependencies,
-  divideDependencies,
-  distanceDependencies,
-  intersectDependencies,
-  sumDependencies,
-  meanDependencies,
-  medianDependencies,
-  madDependencies,
-  varianceDependencies,
-  varDependencies,
-  quantileSeqDependencies,
-  stdDependencies,
-  combinationsDependencies,
-  gammaDependencies,
-  factorialDependencies,
-  kldivergenceDependencies,
-  multinomialDependencies,
-  permutationsDependencies,
-  pickRandomDependencies,
-  randomDependencies,
-  randomIntDependencies,
-  stirlingS2Dependencies,
-  bellNumbersDependencies,
-  catalanDependencies,
-  compositionDependencies,
-  simplifyDependencies,
-  derivativeDependencies,
-  rationalizeDependencies,
   reviverDependencies,
+  versionDependencies,
+
+  // core function dependencies
+  typedDependencies,
+  // create and factory do not have dependencies
+
+  // constant dependencies
   eDependencies,
-  EDependencies,
-  falseDependencies,
+  piDependencies,
   iDependencies,
   InfinityDependencies,
-  LN10Dependencies,
   LN2Dependencies,
-  LOG10EDependencies,
+  LN10Dependencies,
   LOG2EDependencies,
-  NaNDependencies,
-  nullDependencies,
+  LOG10EDependencies,
   phiDependencies,
-  piDependencies,
-  PIDependencies,
   SQRT1_2Dependencies,
   SQRT2Dependencies,
   tauDependencies,
-  trueDependencies,
-  versionDependencies,
+
+  // physical constant dependencies
   atomicMassDependencies,
   avogadroDependencies,
   bohrMagnetonDependencies,
@@ -4006,7 +3909,6 @@ export const {
   coulombDependencies,
   deuteronMassDependencies,
   efimovFactorDependencies,
-  eigsDependencies,
   electricConstantDependencies,
   electronMassDependencies,
   elementaryChargeDependencies,
@@ -4047,6 +3949,341 @@ export const {
   vacuumImpedanceDependencies,
   weakMixingAngleDependencies,
   wienDisplacementDependencies,
+
+  // constructor dependencies
+  NodeDependencies,
+  AccessorNodeDependencies,
+  ArrayNodeDependencies,
+  AssignmentNodeDependencies,
+  BlockNodeDependencies,
+  ConditionalNodeDependencies,
+  ConstantNodeDependencies,
+  FunctionAssignmentNodeDependencies,
+  FunctionNodeDependencies,
+  IndexNodeDependencies,
+  ObjectNodeDependencies,
+  OperatorNodeDependencies,
+  ParenthesisNodeDependencies,
+  RangeNodeDependencies,
+  RelationalNodeDependencies,
+  SymbolNodeDependencies,
+  MatrixDependencies,
+  UnitDependencies,
+
+  // construction function dependencies
+  bignumberDependencies,
+  bigintDependencies,
+  booleanDependencies,
+  chainDependencies,
+  complexDependencies,
+  createUnitDependencies,
+  fractionDependencies,
+  indexDependencies,
+  matrixDependencies,
+  numberDependencies,
+  numericDependencies,
+  sparseDependencies,
+  splitUnitDependencies,
+  stringDependencies,
+  unitDependencies,
+
+  // expression function dependencies
+  compileDependencies,
+  evaluateDependencies,
+  helpDependencies,
+  parseDependencies,
+  parserDependencies,
+
+  // algebra dependencies
+  derivativeDependencies,
+  lsolveDependencies,
+  lupDependencies,
+  lusolveDependencies,
+  polynomialRootDependencies,
+  qrDependencies,
+  rationalizeDependencies,
+  simplifyDependencies,
+  simplifyConstantDependencies,
+  simplifyCoreDependencies,
+  symbolicEqualDependencies,
+  leafCountDependencies,
+  resolveDependencies,
+  sluDependencies,
+  usolveDependencies,
+
+  // arithmetic function dependencies
+  absDependencies,
+  addDependencies,
+  addScalarDependencies,
+  cbrtDependencies,
+  ceilDependencies,
+  cubeDependencies,
+  divideDependencies,
+  divideScalarDependencies,
+  dotDivideDependencies,
+  dotMultiplyDependencies,
+  dotPowDependencies,
+  expDependencies,
+  expm1Dependencies,
+  fixDependencies,
+  floorDependencies,
+  gcdDependencies,
+  hypotDependencies,
+  lcmDependencies,
+  logDependencies,
+  log10Dependencies,
+  log1pDependencies,
+  log2Dependencies,
+  matrixFromRowsDependencies,
+  matrixFromColumnsDependencies,
+  matrixFromFunctionDependencies,
+  modDependencies,
+  multiplyDependencies,
+  multiplyScalarDependencies,
+  normDependencies,
+  nthRootDependencies,
+  nthRootsDependencies,
+  powDependencies,
+  roundDependencies,
+  signDependencies,
+  sqrtDependencies,
+  squareDependencies,
+  subtractDependencies,
+  unaryMinusDependencies,
+  unaryPlusDependencies,
+  xgcdDependencies,
+
+  // bitwise dependencies
+  bitAndDependencies,
+  bitNotDependencies,
+  bitOrDependencies,
+  bitXorDependencies,
+  leftShiftDependencies,
+  rightArithShiftDependencies,
+  rightLogShiftDependencies,
+
+  // combinatorics dependencies
+  bellNumbersDependencies,
+  catalanDependencies,
+  compositionDependencies,
+  stirlingS2Dependencies,
+
+  // complex dependencies
+  argDependencies,
+  conjDependencies,
+  imDependencies,
+  reDependencies,
+
+  // geometry dependencies
+  distanceDependencies,
+  intersectDependencies,
+
+  // logical dependencies
+  andDependencies,
+  notDependencies,
+  orDependencies,
+  xorDependencies,
+
+  // matrix function dependencies
+  mapSlicesDependencies,
+  // array is deprecated
+  concatDependencies,
+  crossDependencies,
+  ctransposeDependencies,
+  detDependencies,
+  diffDependencies,
+  diagDependencies,
+  dotDependencies,
+  eigsDependencies,
+  expmDependencies,
+  sylvesterDependencies,
+  schurDependencies,
+  lyapDependencies,
+  identityDependencies,
+  filterDependencies,
+  flattenDependencies,
+  forEachDependencies,
+  getMatrixDataTypeDependencies,
+  invDependencies,
+  kronDependencies,
+  mapDependencies,
+  onesDependencies,
+  partitionSelectDependencies,
+  pinvDependencies,
+  rangeDependencies,
+  reshapeDependencies,
+  resizeDependencies,
+  rotationMatrixDependencies,
+  rowDependencies,
+  columnDependencies,
+  rotateDependencies,
+  sizeDependencies,
+  sortDependencies,
+  sqrtmDependencies,
+  squeezeDependencies,
+  subsetDependencies,
+  traceDependencies,
+  transposeDependencies,
+  zerosDependencies,
+  fftDependencies,
+  ifftDependencies,
+
+  // probability dependencies
+  bernoulliDependencies,
+  combinationsDependencies,
+  factorialDependencies,
+  gammaDependencies,
+  kldivergenceDependencies,
+  lgammaDependencies,
+  multinomialDependencies,
+  permutationsDependencies,
+  pickRandomDependencies,
+  randomDependencies,
+  randomIntDependencies,
+
+  // relational function dependencies
+  compareDependencies,
+  compareNaturalDependencies,
+  compareTextDependencies,
+  deepEqualDependencies,
+  equalDependencies,
+  equalScalarDependencies,
+  equalTextDependencies,
+  largerDependencies,
+  largerEqDependencies,
+  smallerDependencies,
+  smallerEqDependencies,
+  unequalDependencies,
+
+  // set function dependencies
+  setCartesianDependencies,
+  setDifferenceDependencies,
+  setDistinctDependencies,
+  setIntersectDependencies,
+  setIsSubsetDependencies,
+  setMultiplicityDependencies,
+  setPowersetDependencies,
+  setSizeDependencies,
+  setSymDifferenceDependencies,
+  setUnionDependencies,
+
+  // signal function dependencies
+  zpk2tfDependencies,
+  freqzDependencies,
+
+  // special function dependencies
+  erfDependencies,
+  zetaDependencies,
+
+  // statistics function dependencies
+  madDependencies,
+  maxDependencies,
+  meanDependencies,
+  medianDependencies,
+  minDependencies,
+  modeDependencies,
+  prodDependencies,
+  quantileSeqDependencies,
+  stdDependencies,
+  sumDependencies,
+  countDependencies,
+  cumsumDependencies,
+  varianceDependencies,
+  corrDependencies,
+
+  // string function dependencies
+  formatDependencies,
+  printDependencies,
+
+  // trigonometry function dependencies
+  acosDependencies,
+  acoshDependencies,
+  acotDependencies,
+  acothDependencies,
+  acscDependencies,
+  acschDependencies,
+  asecDependencies,
+  asechDependencies,
+  asinDependencies,
+  asinhDependencies,
+  atanDependencies,
+  atan2Dependencies,
+  atanhDependencies,
+  cosDependencies,
+  coshDependencies,
+  cotDependencies,
+  cothDependencies,
+  cscDependencies,
+  cschDependencies,
+  secDependencies,
+  sechDependencies,
+  sinDependencies,
+  sinhDependencies,
+  tanDependencies,
+  tanhDependencies,
+
+  // unit function dependencies
+  toDependencies,
+  toBestDependencies,
+
+  // util function dependencies
+  isNumberDependencies,
+  isBigNumberDependencies,
+  isBigIntDependencies,
+  isComplexDependencies,
+  isFractionDependencies,
+  isUnitDependencies,
+  isStringDependencies,
+  isArrayDependencies,
+  isMatrixDependencies,
+  isCollectionDependencies,
+  isDenseMatrixDependencies,
+  isSparseMatrixDependencies,
+  isRangeDependencies,
+  isIndexDependencies,
+  isBooleanDependencies,
+  isResultSetDependencies,
+  isHelpDependencies,
+  isFunctionDependencies,
+  isDateDependencies,
+  isRegExpDependencies,
+  isObjectDependencies,
+  isMapDependencies,
+  isPartitionedMapDependencies,
+  isObjectWrappingMapDependencies,
+  isNullDependencies,
+  isUndefinedDependencies,
+  isAccessorNodeDependencies,
+  isArrayNodeDependencies,
+  isAssignmentNodeDependencies,
+  isBlockNodeDependencies,
+  isConditionalNodeDependencies,
+  isConstantNodeDependencies,
+  isFunctionAssignmentNodeDependencies,
+  isFunctionNodeDependencies,
+  isIndexNodeDependencies,
+  isNodeDependencies,
+  isObjectNodeDependencies,
+  isOperatorNodeDependencies,
+  isParenthesisNodeDependencies,
+  isRangeNodeDependencies,
+  isRelationalNodeDependencies,
+  isSymbolNodeDependencies,
+  isChainDependencies,
+  cloneDependencies,
+  hasNumericValueDependencies,
+  isBoundedDependencies,
+  isFiniteDependencies,
+  isIntegerDependencies,
+  isNaNDependencies,
+  isNegativeDependencies,
+  isNumericDependencies,
+  isPositiveDependencies,
+  isPrimeDependencies,
+  isZeroDependencies,
+  typeOfDependencies,
+
+  // Transform dependencies
   mapSlicesTransformDependencies,
   columnTransformDependencies,
   filterTransformDependencies,
@@ -4062,7 +4299,8 @@ export const {
   concatTransformDependencies,
   stdTransformDependencies,
   sumTransformDependencies,
-  varianceTransformDependencies
+  varianceTransformDependencies,
+  printTransformDependencies
 }: Record<string, FactoryFunctionMap>
 
 export interface Matrix<T = MathGeneric> {
@@ -4172,7 +4410,9 @@ export interface Unit {
   divide(unit: Unit): Unit | number
   pow(unit: Unit): Unit
   abs(unit: Unit): Unit
-  to(unit: string): Unit
+  to(unit: string | Unit): Unit
+  toBest(): Unit
+  toBest(units?: string[] | Unit[], options?: object): Unit
   toNumber(unit?: string): number
   toNumeric(unit?: string): number | Fraction | BigNumber
   toSI(): Unit
@@ -4286,10 +4526,14 @@ export interface Simplify {
   (
     expr: MathNode | string,
     rules: SimplifyRule[],
-    scope?: object,
+    scope?: MathScope,
     options?: SimplifyOptions
   ): MathNode
-  (expr: MathNode | string, scope: object, options?: SimplifyOptions): MathNode
+  (
+    expr: MathNode | string,
+    scope: MathScope,
+    options?: SimplifyOptions
+  ): MathNode
 
   rules: SimplifyRule[]
 }
@@ -4316,7 +4560,7 @@ export interface ObjectWrappingMap<T extends string | number | symbol, U> {
 
 export interface EvalFunction {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  evaluate(scope?: any): any
+  evaluate(scope?: MathScope): any
 }
 
 // ResultSet type and helper
@@ -4354,7 +4598,7 @@ export interface MathNode {
    * node.compile().evaluate(scope). Example:
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  evaluate(expr?: any): any
+  evaluate(scope?: MathScope): any
   /**
    * Test whether this node equals an other node. Does a deep comparison
    * of the values of both nodes.
@@ -4818,7 +5062,7 @@ export interface MathJsChain<TValue> {
    */
   unit(this: MathJsChain<string>, unit?: string): MathJsChain<Unit>
   unit(this: MathJsChain<MathNumericType>, unit?: string): MathJsChain<Unit>
-  unit(this: MathJsChain<MathCollection>, unit?: string): MathJsChain<Unit[]>
+  unit(this: MathJsChain<MathCollection>): MathJsChain<Unit[]>
 
   /*************************************************************************
    * Expression functions
@@ -4837,12 +5081,12 @@ export interface MathJsChain<TValue> {
    */
   evaluate(
     this: MathJsChain<MathExpression | Matrix>,
-    scope?: object
+    scope?: MathScope
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): MathJsChain<any>
   evaluate(
     this: MathJsChain<MathExpression[]>,
-    scope?: object
+    scope?: MathScope
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): MathJsChain<any[]>
 
@@ -4879,12 +5123,12 @@ export interface MathJsChain<TValue> {
   resolve(
     this: MathJsChain<MathNode>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    scope?: Record<string, any>
+    scope?: MathScope
   ): MathJsChain<MathNode>
   resolve(
     this: MathJsChain<MathNode[]>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    scope?: Record<string, any>
+    scope?: MathScope
   ): MathJsChain<MathNode[]>
 
   /*************************************************************************
@@ -5044,6 +5288,7 @@ export interface MathJsChain<TValue> {
    * Calculate the absolute value of a number. For matrices, the function
    * is evaluated element wise.
    */
+  abs(this: MathJsChain<Complex>): MathJsChain<number>
   abs<T extends MathType>(this: MathJsChain<T>): MathJsChain<T>
 
   /**
@@ -5410,9 +5655,22 @@ export interface MathJsChain<TValue> {
    * @param root The root. Default value: 2.
    */
   nthRoot(
-    this: MathJsChain<number | BigNumber | MathCollection | Complex>,
+    this: MathJsChain<number | BigNumber | Complex>,
     root?: number | BigNumber
-  ): MathJsChain<number | Complex | MathCollection>
+  ): MathJsChain<number | Complex>
+  nthRoot(
+    this: MathCollection,
+    root?: number | BigNumber
+  ): MathJsChain<MathCollection>
+
+  /**
+   * Calculate all nth roots of a value.
+   * @param n  Which root to take. Default value: 2.
+   */
+  nthRoots(
+    this: MathJsChain<number | BigNumber | Complex>,
+    n?: number
+  ): MathJsChain<Array<Complex>>
 
   /**
    * Calculates the power of x to y, x ^ y. Matrix exponentiation is
@@ -5783,6 +6041,22 @@ export interface MathJsChain<TValue> {
   ): MathJsChain<MathCollection>
 
   /**
+   * Transpose and complex conjugate a matrix. All values of the matrix are
+   * reflected over its main diagonal and then the complex conjugate is taken.
+   * This is equivalent to complex conjugation for scalars and vectors.
+   */
+  ctranspose(this: MathJsChain<MathCollection>): MathJsChain<MathCollection>
+
+  /**
+   * Calculate the difference between adjacent elements of the chained matrix or array.
+   * @param dim The dimension to apply the difference on.
+   */
+  diff<T extends MathCollection>(
+    this: MathJsChain<T>,
+    dim?: number | BigNumber
+  ): MathJsChain<T>
+
+  /**
    * Calculate the determinant of a matrix.
    */
 
@@ -5894,6 +6168,11 @@ export interface MathJsChain<TValue> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (value: any, index: number[], matrix: T) => void
   ): void
+
+  /**
+   * Get the data type in a collection
+   */
+  getMatrixDataType(this: MathJsChain<MathCollection>): MathJsChain<string>
 
   /**
    * Calculate the inverse of a square matrix.
@@ -6077,6 +6356,14 @@ export interface MathJsChain<TValue> {
   /*************************************************************************
    * Probability functions
    ************************************************************************/
+
+  /**
+   * Bernoulli number at this index
+   */
+  bernoulli<T extends number | BigNumber | Fraction>(
+    this: MathJsChain<T>
+  ): MathJsChain<NoLiteralType<T>>
+  bernoulli(this: MathJsChain<bigint>): MathJsChain<Fraction>
 
   /**
    * Compute the number of ways of picking k unordered outcomes from n
@@ -6983,6 +7270,21 @@ export interface MathJsChain<TValue> {
     unit: Unit | string
   ): MathJsChain<Unit | MathCollection>
 
+  /**
+   * Converts a unit to the most appropriate display unit.
+   * When no preferred units are provided, the function automatically find the best prefix.
+   * When preferred units are provided, it converts to
+   * the unit that gives a value closest to 1.
+   * @param preferredUnits - Optional preferred target units
+   * @param options - Optional options object
+   */
+  toBest(this: MathJsChain<Unit>): MathJsChain<Unit>
+  toBest(
+    this: MathJsChain<Unit>,
+    units: string[] | Unit[],
+    options: object
+  ): MathJsChain<Unit>
+
   /*************************************************************************
    * Utils functions
    ************************************************************************/
@@ -7013,6 +7315,17 @@ export interface MathJsChain<TValue> {
   isNaN(
     this: MathJsChain<number | BigNumber | Fraction | MathCollection | Unit>
   ): MathJsChain<boolean>
+
+  /**
+   * Test whether a value is bounded, works on entire collection at once
+   */
+  isBounded(this: MathJsChain<MathType>): MathJsChain<boolean>
+
+  /**
+   * Test whether a value is finite, works elementwise on collections
+   */
+  isFinite(this: MathJsChain<MathScalarType>): MathJsChain<boolean>
+  isFinite(this: MathJsChain<MathCollection>): MathJsChain<MathCollection>
 
   /**
    * Test whether a value is negative: smaller than zero. The function
@@ -7081,6 +7394,13 @@ export interface ImportObject {
   [key: string]: any
 }
 
+export interface MapLike<TKey = string, TValue = unknown> {
+  get(key: TKey): TValue
+  set(key: TKey, value: TValue): MapLike<TKey, TValue>
+  has(key: TKey): boolean
+  keys(): IterableIterator<TKey> | TKey[]
+}
+
 export const {
   // config // Don't export config: no config available in the static instance
 
@@ -7103,6 +7423,58 @@ export const {
   SQRT1_2,
   SQRT2,
   tau,
+
+  // Physical constants
+  atomicMass,
+  avogadro,
+  bohrMagneton,
+  bohrRadius,
+  boltzmann,
+  classicalElectronRadius,
+  conductanceQuantum,
+  coulomb,
+  deuteronMass,
+  efimovFactor,
+  electricConstant,
+  electronMass,
+  elementaryCharge,
+  faraday,
+  fermiCoupling,
+  fineStructure,
+  firstRadiation,
+  gasConstant,
+  gravitationConstant,
+  gravity,
+  hartreeEnergy,
+  inverseConductanceQuantum,
+  klitzing,
+  loschmidt,
+  magneticConstant,
+  magneticFluxQuantum,
+  molarMass,
+  molarMassC12,
+  molarPlanckConstant,
+  molarVolume,
+  neutronMass,
+  nuclearMagneton,
+  planckCharge,
+  planckConstant,
+  planckLength,
+  planckMass,
+  planckTemperature,
+  planckTime,
+  protonMass,
+  quantumOfCirculation,
+  reducedPlanckConstant,
+  rydberg,
+  sackurTetrode,
+  secondRadiation,
+  speedOfLight,
+  stefanBoltzmann,
+  thomsonCrossSection,
+  vacuumImpedance,
+  weakMixingAngle,
+  wienDisplacement,
 
   // Class-like constructors
   Node,
@@ -7130,7 +7502,9 @@ export const {
   reviver,
   replacer,
 
+  // Construction functions
   bignumber,
+  bigint,
   boolean,
   chain,
   complex,
@@ -7139,10 +7513,13 @@ export const {
   index,
   matrix,
   number,
+  numeric,
   sparse,
   splitUnit,
   string,
   unit,
+
+  // Expression functions
   compile,
   evaluate,
   help,
@@ -7171,9 +7548,6 @@ export const {
   add,
   cbrt,
   ceil,
-  fix,
-  floor,
-  round,
   cube,
   divide,
   dotDivide,
@@ -7181,6 +7555,8 @@ export const {
   dotPow,
   exp,
   expm1,
+  fix,
+  floor,
   gcd,
   hypot,
   lcm,
@@ -7188,11 +7564,16 @@ export const {
   log10,
   log1p,
   log2,
+  matrixFromRows,
+  matrixFromColumns,
+  matrixFromFunction,
   mod,
   multiply,
   norm,
   nthRoot,
+  nthRoots,
   pow,
+  round,
   sign,
   sqrt,
   square,
@@ -7237,7 +7618,9 @@ export const {
   apply, // @deprecated prior name of mapSlices
   concat,
   cross,
+  ctranspose,
   det,
+  diff,
   diag,
   dot,
   eigs,
@@ -7249,6 +7632,7 @@ export const {
   filter,
   flatten,
   forEach,
+  getMatrixDataType,
   inv,
   kron,
   map,
@@ -7274,6 +7658,7 @@ export const {
   ifft,
 
   // probability
+  bernoulli,
   combinations,
   factorial,
   gamma,
@@ -7310,9 +7695,11 @@ export const {
   setSymDifference,
   setUnion,
 
-  // special functions
+  // signal functions
   zpk2tf,
   freqz,
+
+  // special functions
   erf,
   zeta,
 
@@ -7365,10 +7752,12 @@ export const {
 
   // unit functions
   to,
+  toBest,
 
   // util functions
   isNumber,
   isBigNumber,
+  isBigInt,
   isComplex,
   isFraction,
   isUnit,
@@ -7387,6 +7776,9 @@ export const {
   isDate,
   isRegExp,
   isObject,
+  isMap,
+  isPartitionedMap,
+  isObjectWrappingMap,
   isNull,
   isUndefined,
   isAccessorNode,
@@ -7408,6 +7800,8 @@ export const {
   isChain,
   clone,
   hasNumericValue,
+  isBounded,
+  isFinite,
   isInteger,
   isNaN,
   isNegative,

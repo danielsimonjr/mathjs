@@ -2,7 +2,7 @@ import { clone, deepExtend } from '../../utils/object.js'
 import { DEFAULT_CONFIG } from '../config.js'
 
 export const MATRIX_OPTIONS = ['Matrix', 'Array'] // valid values for option matrix
-export const NUMBER_OPTIONS = ['number', 'BigNumber', 'Fraction'] // valid values for option number
+export const NUMBER_OPTIONS = ['number', 'BigNumber', 'bigint', 'Fraction'] // valid values for option number
 
 export function configFactory (config, emit) {
   /**
@@ -16,7 +16,6 @@ export function configFactory (config, emit) {
    *     math.config(config: Object): Object
    *
    * Examples:
-   *
    *
    *     import { create, all } from 'mathjs'
    *
@@ -60,6 +59,11 @@ export function configFactory (config, emit) {
         optionsFix.absTol = options.epsilon * 1e-3
         delete optionsFix.epsilon
         return _config(optionsFix)
+      }
+
+      if (options.legacySubset === true) {
+        // this if is only for backwards compatibility, it can be removed in the future.
+        console.warn('Warning: The configuration option "legacySubset" is for compatibility only and might be deprecated in the future.')
       }
       const prev = clone(config)
 

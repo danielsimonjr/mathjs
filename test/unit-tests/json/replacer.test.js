@@ -59,7 +59,7 @@ describe('replacer', function () {
     const i = new math.Index(new math.Range(0, 10), 2)
     const json = '{"mathjs":"Index","dimensions":[' +
         '{"mathjs":"Range","start":0,"end":10,"step":1},' +
-        '{"mathjs":"ImmutableDenseMatrix","data":[2],"size":[1]}' +
+        '2' +
         ']}'
     assert.deepStrictEqual(JSON.stringify(i), json)
     assert.deepStrictEqual(JSON.stringify(i, replacer), json)
@@ -74,21 +74,21 @@ describe('replacer', function () {
 
   it('should stringify a Unit', function () {
     const u = new math.Unit(5, 'cm')
-    const json = '{"mathjs":"Unit","value":5,"unit":"cm","fixPrefix":false}'
+    const json = '{"mathjs":"Unit","value":5,"unit":"cm","fixPrefix":false,"skipSimp":true}'
     assert.deepStrictEqual(JSON.stringify(u), json)
     assert.deepStrictEqual(JSON.stringify(u, replacer), json)
   })
 
   it('should stringify a Unit with a value only', function () {
     const u = new math.Unit(5)
-    const json = '{"mathjs":"Unit","value":5,"unit":null,"fixPrefix":false}'
+    const json = '{"mathjs":"Unit","value":5,"unit":null,"fixPrefix":false,"skipSimp":true}'
     assert.deepStrictEqual(JSON.stringify(u), json)
     assert.deepStrictEqual(JSON.stringify(u, replacer), json)
   })
 
   it('should stringify a Unit without a value', function () {
     const u = new math.Unit(null, 'cm')
-    const json = '{"mathjs":"Unit","value":null,"unit":"cm","fixPrefix":false}'
+    const json = '{"mathjs":"Unit","value":null,"unit":"cm","fixPrefix":false,"skipSimp":true}'
     assert.deepStrictEqual(JSON.stringify(u), json)
     assert.deepStrictEqual(JSON.stringify(u, replacer), json)
   })
@@ -185,6 +185,36 @@ describe('replacer', function () {
 
     assert.deepStrictEqual(JSON.parse(JSON.stringify(node)), json)
     assert.deepStrictEqual(JSON.parse(JSON.stringify(node, replacer)), json)
+  })
+
+  it('should stringify a Parser', function () {
+    const parser = new math.Parser()
+    parser.evaluate('a = 42')
+    parser.evaluate('w = bignumber(2)')
+    parser.evaluate('f(x) = w * x')
+    parser.evaluate('c = f(3)')
+
+    const json = {
+      mathjs: 'Parser',
+      variables: {
+        a: 42,
+        c: { mathjs: 'BigNumber', value: '6' },
+        w: { mathjs: 'BigNumber', value: '2' }
+      },
+      functions: {
+        f: 'f(x) = w * x'
+      }
+    }
+
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(parser)), json)
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(parser, replacer)), json)
+  })
+
+  it('should throw when stringifying a Parser containing external functions', function () {
+    const parser = new math.Parser()
+    parser.set('f', (x) => 2 * x)
+
+    assert.throws(() => JSON.stringify(parser), /Cannot serialize external function f/)
   })
 
   it('should stringify Help', function () {

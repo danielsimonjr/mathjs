@@ -21,7 +21,10 @@ class CaseIndifferentMap {
   }
 
   get (key) { return this._map.get(key.toLowerCase()) }
-  set (key, value) { return this._map.set(key.toLowerCase(), value) }
+  set (key, value) {
+    this._map.set(key.toLowerCase(), value)
+    return this
+  }
 }
 
 const log = spawn(
@@ -80,6 +83,13 @@ const mailmap = new CaseIndifferentMap()
 
 const seen = new Set()
 
+const replaceEmails = {
+  '<91676649+ikemHood@users.noreply.github.com>': {
+    author: 'Ikem Peter',
+    email: '<ikempeter2020@gmail.com>'
+  }
+}
+
 // Commits from which we do not want the author to pop up in the AUTHORS list,
 // for example because the commit was done with a wrong git user account
 const ignoreCommits = [
@@ -113,7 +123,13 @@ rl.on('line', (line) => {
     return
   }
 
-  const { author, email } = authorMatch.groups
+  let { author, email } = authorMatch.groups
+
+  if (email in replaceEmails) {
+    const replacement = replaceEmails[email]
+    author = replacement.author
+    email = replacement.email
+  }
 
   if (seen.has(email) ||
       /@chromium\.org/.test(email) ||

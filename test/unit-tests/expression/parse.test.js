@@ -97,6 +97,9 @@ describe('parse', function () {
     math.evaluate('\uD835\uDD38 = 1', scope) // double struck capital A
     assert.strictEqual(scope['\uD835\uDD38'], 1)
 
+    math.evaluate('x\t=\u00A02 +\u00A04', scope) // Non-breaking space (&nbsp;)
+    assert.strictEqual(scope.x, 6)
+
     // should not allow the "holes"
     assert.throws(function () {
       math.evaluate('\uD835\uDCA3 = 1', scope)
@@ -286,6 +289,21 @@ describe('parse', function () {
       assert.strictEqual(parseAndEval('0x1.'), 1)
     })
 
+    it('should require hex, bin, oct values to be followed by whitespace or a delimiter', function () {
+      assert.throws(() => parseAndEval('0b0a'), /SyntaxError: String "0b0a" is not a valid number/)
+      assert.throws(() => parseAndEval('0x1k'), /SyntaxError: String "0x1k" is not a valid number/)
+      assert.throws(() => parseAndEval('0o1k'), /SyntaxError: String "0o1k" is not a valid number/)
+      assert.throws(() => parseAndEval('0b1k'), /SyntaxError: String "0b1k" is not a valid number/)
+
+      assert.strictEqual(parseAndEval('0x1 k', { k: 2 }), 2)
+      assert.strictEqual(parseAndEval('0o1 k', { k: 2 }), 2)
+      assert.strictEqual(parseAndEval('0b1 k', { k: 2 }), 2)
+
+      assert.strictEqual(parseAndEval('0x1*k', { k: 2 }), 2)
+      assert.strictEqual(parseAndEval('0o1*k', { k: 2 }), 2)
+      assert.strictEqual(parseAndEval('0b1*k', { k: 2 }), 2)
+    })
+
     it('should parse a number followed by e', function () {
       approxEqual(parseAndEval('2e'), 2 * Math.E)
     })
@@ -334,7 +352,7 @@ describe('parse', function () {
 
       assert.throws(function () { parseAndEval('0b123.45') }, /SyntaxError: String "0b123\.45" is not a valid number/)
       assert.throws(function () { parseAndEval('0o89.89') }, /SyntaxError: String "0o89\.89" is not a valid number/)
-      assert.throws(function () { parseAndEval('0xghji.xyz') }, /SyntaxError: String "0x" is not a valid number/)
+      assert.throws(function () { parseAndEval('0xghji.xyz') }, /SyntaxError: String "0xghji.xyz" is not a valid number/)
     })
   })
 
@@ -697,18 +715,18 @@ describe('parse', function () {
           [7, 8, 9]
         ])
       }
-      assert.deepStrictEqual(parseAndEval('a[2, :]', scope), math.matrix([[4, 5, 6]]))
-      assert.deepStrictEqual(parseAndEval('a[2, :2]', scope), math.matrix([[4, 5]]))
-      assert.deepStrictEqual(parseAndEval('a[2, :end-1]', scope), math.matrix([[4, 5]]))
-      assert.deepStrictEqual(parseAndEval('a[2, 2:]', scope), math.matrix([[5, 6]]))
-      assert.deepStrictEqual(parseAndEval('a[2, 2:3]', scope), math.matrix([[5, 6]]))
-      assert.deepStrictEqual(parseAndEval('a[2, 1:2:3]', scope), math.matrix([[4, 6]]))
-      assert.deepStrictEqual(parseAndEval('a[:, 2]', scope), math.matrix([[2], [5], [8]]))
-      assert.deepStrictEqual(parseAndEval('a[:2, 2]', scope), math.matrix([[2], [5]]))
-      assert.deepStrictEqual(parseAndEval('a[:end-1, 2]', scope), math.matrix([[2], [5]]))
-      assert.deepStrictEqual(parseAndEval('a[2:, 2]', scope), math.matrix([[5], [8]]))
-      assert.deepStrictEqual(parseAndEval('a[2:3, 2]', scope), math.matrix([[5], [8]]))
-      assert.deepStrictEqual(parseAndEval('a[1:2:3, 2]', scope), math.matrix([[2], [8]]))
+      assert.deepStrictEqual(parseAndEval('a[2, :]', scope), math.matrix([4, 5, 6]))
+      assert.deepStrictEqual(parseAndEval('a[2, :2]', scope), math.matrix([4, 5]))
+      assert.deepStrictEqual(parseAndEval('a[2, :end-1]', scope), math.matrix([4, 5]))
+      assert.deepStrictEqual(parseAndEval('a[2, 2:]', scope), math.matrix([5, 6]))
+      assert.deepStrictEqual(parseAndEval('a[2, 2:3]', scope), math.matrix([5, 6]))
+      assert.deepStrictEqual(parseAndEval('a[2, 1:2:3]', scope), math.matrix([4, 6]))
+      assert.deepStrictEqual(parseAndEval('a[:, 2]', scope), math.matrix([2, 5, 8]))
+      assert.deepStrictEqual(parseAndEval('a[:2, [2]]', scope), math.matrix([[2], [5]]))
+      assert.deepStrictEqual(parseAndEval('a[:end-1, [2]]', scope), math.matrix([[2], [5]]))
+      assert.deepStrictEqual(parseAndEval('a[2:, [2]]', scope), math.matrix([[5], [8]]))
+      assert.deepStrictEqual(parseAndEval('a[2:3, [2]]', scope), math.matrix([[5], [8]]))
+      assert.deepStrictEqual(parseAndEval('a[1:2:3, [2]]', scope), math.matrix([[2], [8]]))
     })
 
     it('should get a matrix subset of a matrix subset', function () {
@@ -719,7 +737,7 @@ describe('parse', function () {
           [7, 8, 9]
         ])
       }
-      assert.deepStrictEqual(parseAndEval('a[2, :][1,1]', scope), 4)
+      assert.deepStrictEqual(parseAndEval('a[[2], :][1,1]', scope), 4)
     })
 
     it('should get BigNumber value from an array', function () {
@@ -768,13 +786,13 @@ describe('parse', function () {
       assert.deepStrictEqual(parseAndEval('a[1:3,1:2]', scope), math.matrix([[100, 2], [3, 10], [0, 12]]))
 
       scope.b = [[1, 2], [3, 4]]
-      assert.deepStrictEqual(parseAndEval('b[1,:]', scope), [[1, 2]])
+      assert.deepStrictEqual(parseAndEval('b[1,:]', scope), [1, 2])
     })
 
     it('should get/set the matrix correctly for 3d matrices', function () {
       const scope = {}
       assert.deepStrictEqual(parseAndEval('f=[1,2;3,4]', scope), math.matrix([[1, 2], [3, 4]]))
-      assert.deepStrictEqual(parseAndEval('size(f)', scope), math.matrix([2, 2], 'dense', 'number'))
+      assert.deepStrictEqual(parseAndEval('size(f)', scope), [2, 2])
 
       parseAndEval('f[:,:,2]=[5,6;7,8]', scope)
       assert.deepStrictEqual(scope.f, math.matrix([
@@ -788,11 +806,11 @@ describe('parse', function () {
         ]
       ]))
 
-      assert.deepStrictEqual(parseAndEval('size(f)', scope), math.matrix([2, 2, 2], 'dense', 'number'))
-      assert.deepStrictEqual(parseAndEval('f[:,:,1]', scope), math.matrix([[[1], [2]], [[3], [4]]]))
-      assert.deepStrictEqual(parseAndEval('f[:,:,2]', scope), math.matrix([[[5], [6]], [[7], [8]]]))
-      assert.deepStrictEqual(parseAndEval('f[:,2,:]', scope), math.matrix([[[2, 6]], [[4, 8]]]))
-      assert.deepStrictEqual(parseAndEval('f[2,:,:]', scope), math.matrix([[[3, 7], [4, 8]]]))
+      assert.deepStrictEqual(parseAndEval('size(f)', scope), [2, 2, 2])
+      assert.deepStrictEqual(parseAndEval('f[:,:,1]', scope), math.matrix([[1, 2], [3, 4]]))
+      assert.deepStrictEqual(parseAndEval('f[:,:,2]', scope), math.matrix([[5, 6], [7, 8]]))
+      assert.deepStrictEqual(parseAndEval('f[:,2,:]', scope), math.matrix([[2, 6], [4, 8]]))
+      assert.deepStrictEqual(parseAndEval('f[2,:,:]', scope), math.matrix([[3, 7], [4, 8]]))
 
       parseAndEval('a=diag([1,2,3,4])', scope)
       assert.deepStrictEqual(parseAndEval('a[3:end, 3:end]', scope), math.matrix([[3, 0], [0, 4]]))
@@ -835,11 +853,11 @@ describe('parse', function () {
       assert.deepStrictEqual(parseAndEval('d=1:3', scope), math.matrix([1, 2, 3]))
       assert.deepStrictEqual(parseAndEval('concat(d,d)', scope), math.matrix([1, 2, 3, 1, 2, 3]))
       assert.deepStrictEqual(parseAndEval('e=1+d', scope), math.matrix([2, 3, 4]))
-      assert.deepStrictEqual(parseAndEval('size(e)', scope), math.matrix([3], 'dense', 'number'))
+      assert.deepStrictEqual(parseAndEval('size(e)', scope), [3])
       assert.deepStrictEqual(parseAndEval('concat(e,e)', scope), math.matrix([2, 3, 4, 2, 3, 4]))
       assert.deepStrictEqual(parseAndEval('[[],[]]', scope), math.matrix([[], []]))
       assert.deepStrictEqual(parseAndEval('[[],[]]', scope).size(), [2, 0])
-      assert.deepStrictEqual(parseAndEval('size([[],[]])', scope), math.matrix([2, 0], 'dense', 'number'))
+      assert.deepStrictEqual(parseAndEval('size([[],[]])', scope), [2, 0])
     })
 
     it('should disable arrays as range in a matrix index', function () {
@@ -877,8 +895,46 @@ describe('parse', function () {
       assert.deepStrictEqual(parseAndEval('obj["foo"]', { obj: { foo: 2 } }), 2)
     })
 
+    it('should get an object property using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]', { obj: { foo: 2 } }), 2)
+    })
+
+    it('should return undefined accessing a property of undefined using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]', { obj: undefined }), undefined)
+    })
+
+    it('should return undefined accessing a property of null using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]', { obj: null }), undefined)
+    })
+
     it('should get a nested object property', function () {
       assert.deepStrictEqual(parseAndEval('obj["foo"]["bar"]', { obj: { foo: { bar: 2 } } }), 2)
+    })
+
+    it('should get a nested object property using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.["bar"]', { obj: { foo: { bar: 2 } } }), 2)
+    })
+
+    it('should return undefined accessing a nested property of undefined using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj["foo"]?.["bar"]', { obj: { foo: undefined } }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]["bar"]', { obj: undefined }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.["bar"]', { obj: undefined }), undefined)
+    })
+
+    it('should return undefined accessing a nested property of null using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj["foo"]?.["bar"]', { obj: { foo: null } }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]["bar"]', { obj: null }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.["bar"]', { obj: null }), undefined)
+    })
+
+    it('should throw an error accessing a nested property of undefined using optional chaining', function () {
+      assert.throws(function () { parseAndEval('obj["foo"]?.["bar"]', { obj: undefined }) }, TypeError)
+      assert.throws(function () { parseAndEval('obj?.["foo"]["bar"]', { obj: { foo: undefined } }) }, TypeError)
+    })
+
+    it('should throw an error accessing a nested null of null using optional chaining', function () {
+      assert.throws(function () { parseAndEval('obj["foo"]?.["bar"]', { obj: null }) }, TypeError)
+      assert.throws(function () { parseAndEval('obj?.["foo"]["bar"]', { obj: { foo: null } }) }, TypeError)
     })
 
     it('should get a nested matrix subset from an object property', function () {
@@ -900,6 +956,8 @@ describe('parse', function () {
       const res = parseAndEval('obj["b"] = 2', scope)
       assert.strictEqual(res, 2)
       assert.deepStrictEqual(scope, { obj: { a: 3, b: 2 } })
+      assert.deepStrictEqual(
+        parseAndEval('b = {}; b.a = 2; b').valueOf(), [{ a: 2 }])
     })
 
     it('should set a nested object property', function () {
@@ -908,6 +966,17 @@ describe('parse', function () {
       assert.strictEqual(res, 2)
       assert.deepStrictEqual(scope, { obj: { foo: { bar: 2 } } })
     })
+
+    it(
+      'should not set an object property through optional chaining',
+      function () {
+        assert.throws(
+          () => parseAndEval('obj = {a: 2}; obj?.b = 7'), SyntaxError)
+        assert.throws(
+          () => parseAndEval('obj = {a: 2}; obj?.["b"] = 7'), SyntaxError)
+        assert.throws(
+          () => parseAndEval('obj = {a: {}}; obj.a?.b = 7'), SyntaxError)
+      })
 
     it('should throw an error when trying to apply a matrix index as object property', function () {
       const scope = { a: {} }
@@ -951,12 +1020,54 @@ describe('parse', function () {
       assert.deepStrictEqual(parseAndEval('obj.foo', { obj: { foo: 2 } }), 2)
     })
 
+    it('should get an object property with dot notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.foo', { obj: { foo: 2 } }), 2)
+    })
+
+    it('should return undefined accessing a property of undefined with dot notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.foo', { obj: undefined }), undefined)
+    })
+
+    it('should return undefined accessing a property of null with dot notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.foo', { obj: null }), undefined)
+    })
+
     it('should get an object property from an object inside parentheses', function () {
       assert.deepStrictEqual(parseAndEval('(obj).foo', { obj: { foo: 2 } }), 2)
     })
 
+    it('should get an object property from an object inside parentheses using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('(obj)?.foo', { obj: { foo: 2 } }), 2)
+    })
+
     it('should get a nested object property with dot notation', function () {
       assert.deepStrictEqual(parseAndEval('obj.foo.bar', { obj: { foo: { bar: 2 } } }), 2)
+    })
+
+    it('should get a nested object property with dot notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.bar', { obj: { foo: { bar: 2 } } }), 2)
+    })
+
+    it('should return undefined accessing a nested property of undefined with dot notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj.foo?.bar', { obj: { foo: undefined } }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.bar', { obj: undefined }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.foo.bar', { obj: undefined }), undefined)
+    })
+
+    it('should return undefined accessing a nested property of null with dot notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj.foo?.bar', { obj: { foo: null } }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.foo.bar', { obj: null }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.bar', { obj: null }), undefined)
+    })
+
+    it('should throw an error accessing a nested property of undefined with dot notation using optional chaining', function () {
+      assert.throws(function () { parseAndEval('obj.foo?.bar', { obj: undefined }) }, TypeError)
+      assert.throws(function () { parseAndEval('obj?.foo.bar', { obj: { foo: undefined } }) }, TypeError)
+    })
+
+    it('should throw an error accessing a nested property of null with dot notation using optional chaining', function () {
+      assert.throws(function () { parseAndEval('obj.foo?.bar', { obj: null }) }, TypeError)
+      assert.throws(function () { parseAndEval('obj?.foo.bar', { obj: { foo: null } }) }, TypeError)
     })
 
     it('should get a nested object property e using dot notation', function () {
@@ -978,6 +1089,66 @@ describe('parse', function () {
       assert.deepStrictEqual(parseAndEval('obj["fn"](2)', scope), 4)
     })
 
+    it('should invoke a function in an object using optional chaining', function () {
+      const scope = {
+        obj: {
+          fn: function (x) {
+            return x * x
+          }
+        }
+      }
+      assert.deepStrictEqual(parseAndEval('obj?.fn(2)', scope), 4)
+      assert.deepStrictEqual(parseAndEval('obj?.["fn"](2)', scope), 4)
+    })
+
+    it('should return undefined when invoking an undefined function using optional chaining', function () {
+      const scope = { obj: undefined }
+      assert.deepStrictEqual(parseAndEval('obj?.fn(2)', scope), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["fn"](2)', scope), undefined)
+    })
+
+    it('should return undefined when invoking a null function using optional chaining', function () {
+      const scope = { obj: null }
+      assert.deepStrictEqual(parseAndEval('obj?.fn(2)', scope), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["fn"](2)', scope), undefined)
+    })
+
+    it('should get a object property from a function result using optional chaining', function () {
+      const scope = {
+        obj: {
+          fn: function (x) {
+            return { foo: x }
+          }
+        }
+      }
+      assert.deepStrictEqual(parseAndEval('obj.fn(2)?.foo', scope), 2)
+      assert.deepStrictEqual(parseAndEval('obj["fn"](2)?.foo', scope), 2)
+    })
+
+    it('should return undefined accessing an undefined function result using optional chaining', function () {
+      const scope = {
+        obj: {
+          fn: function () {
+            return undefined
+          }
+        }
+      }
+      assert.deepStrictEqual(parseAndEval('obj.fn(2)?.foo', scope), undefined)
+      assert.deepStrictEqual(parseAndEval('obj["fn"](2)?.foo', scope), undefined)
+    })
+
+    it('should return undefined accessing a null function result using optional chaining', function () {
+      const scope = {
+        obj: {
+          fn: function () {
+            return null
+          }
+        }
+      }
+      assert.deepStrictEqual(parseAndEval('obj.fn(2)?.foo', scope), undefined)
+      assert.deepStrictEqual(parseAndEval('obj["fn"](2)?.foo', scope), undefined)
+    })
+
     it('should apply implicit multiplication after a function call', function () {
       assert.deepStrictEqual(parseAndEval('sqrt(4)(1+2)'), 6)
       assert.deepStrictEqual(parseAndEval('sqrt(4)(1+2)(2)'), 12)
@@ -997,6 +1168,58 @@ describe('parse', function () {
     it('should get nested object property with mixed dot- and index-notation', function () {
       assert.deepStrictEqual(parseAndEval('obj.foo["bar"].baz', { obj: { foo: { bar: { baz: 2 } } } }), 2)
       assert.deepStrictEqual(parseAndEval('obj["foo"].bar["baz"]', { obj: { foo: { bar: { baz: 2 } } } }), 2)
+    })
+
+    it('should get nested object property with mixed dot- and index-notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.["bar"]?.baz', { obj: { foo: { bar: { baz: 2 } } } }), 2)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.bar?.["baz"]', { obj: { foo: { bar: { baz: 2 } } } }), 2)
+    })
+
+    it('should return undefined accessing a property of undefined with mixed dot- and index-notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.["bar"]?.baz', { obj: undefined }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.bar?.["baz"]', { obj: undefined }), undefined)
+
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.["bar"]?.baz', { obj: { foo: undefined } }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.bar?.["baz"]', { obj: { foo: undefined } }), undefined)
+
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.["bar"]?.baz', { obj: { foo: { bar: undefined } } }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.bar?.["baz"]', { obj: { foo: { bar: undefined } } }), undefined)
+    })
+
+    it('should return undefined accessing a property of null with mixed dot- and index-notation using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.["bar"]?.baz', { obj: null }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.bar?.["baz"]', { obj: null }), undefined)
+
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.["bar"]?.baz', { obj: { foo: null } }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.bar?.["baz"]', { obj: { foo: null } }), undefined)
+
+      assert.deepStrictEqual(parseAndEval('obj?.foo?.["bar"]?.baz', { obj: { foo: { bar: null } } }), undefined)
+      assert.deepStrictEqual(parseAndEval('obj?.["foo"]?.bar?.["baz"]', { obj: { foo: { bar: null } } }), undefined)
+    })
+
+    it('should throw an error accessing a nested property of undefined with mixed dot- and index-notation using optional chaining', function () {
+      assert.throws(function () { parseAndEval('obj.foo?.["bar"]?.baz', { obj: undefined }) }, TypeError)
+      assert.throws(function () { parseAndEval('obj.foo["bar"]?.baz', { obj: { foo: undefined } }) }, TypeError)
+      assert.throws(function () { parseAndEval('obj.foo["bar"].baz', { obj: { foo: { bar: undefined } } }) }, TypeError)
+    })
+
+    it('should throw an error accessing a nested property of null with mixed dot- and index-notation using optional chaining', function () {
+      assert.throws(function () { parseAndEval('obj.foo?.["bar"]?.baz', { obj: null }) }, TypeError)
+      assert.throws(function () { parseAndEval('obj.foo["bar"]?.baz', { obj: { foo: null } }) }, TypeError)
+      assert.throws(function () { parseAndEval('obj.foo["bar"].baz', { obj: { foo: { bar: null } } }) }, TypeError)
+    })
+
+    it('should throw an error when using double-dot after optional chaining operator', function () {
+      // ?.. is not valid in JavaScript and should be rejected
+      assert.throws(function () { parseAndEval('{a: 3}?..a') }, /SyntaxError: Property name expected after optional chain \(char 9\)/)
+      assert.throws(function () { parseAndEval('obj?..foo', { obj: { foo: 2 } }) }, /SyntaxError: Property name expected after optional chain \(char 6\)/)
+      assert.throws(function () { parseAndEval('obj?.["a"]?..b', { obj: { a: { b: 2 } } }) }, /SyntaxError: Property name expected after optional chain \(char 13\)/)
+    })
+
+    it('should set an object property with dot notation', function () {
+      const scope = { obj: {} }
+      parseAndEval('obj.foo = 2', scope)
+      assert.deepStrictEqual(scope, { obj: { foo: 2 } })
     })
 
     it('should set an object property with dot notation', function () {
@@ -1042,6 +1265,10 @@ describe('parse', function () {
 
     it('should get a property from a just created object', function () {
       assert.deepStrictEqual(parseAndEval('{foo:2}["foo"]'), 2)
+    })
+
+    it('should get a property from a just created object using optional chaining', function () {
+      assert.deepStrictEqual(parseAndEval('{foo:2}?.["foo"]'), 2)
     })
 
     it('should parse an object containing a function assignment', function () {
@@ -1264,6 +1491,40 @@ describe('parse', function () {
         parseAndEval('2(x, 2) = x^2', scope)
       }, SyntaxError)
     })
+
+    it('should call functions via optional chaining', function () {
+      assert.strictEqual(parseAndEval('square?.(2)'), 4)
+      assert.deepStrictEqual(parseAndEval('f(x) = x+x; f?.(2)').valueOf(), [4])
+      assert.strictEqual(parseAndEval('(_(x) = x^x)?.(2)'), 4)
+      assert.strictEqual(parseAndEval('foo?.(2)', { foo: x => x * x }), 4)
+      assert.deepStrictEqual(
+        parseAndEval('f(x) = 4x/x; bar = {a: f}; bar.a?.(2)').valueOf(), [4])
+    })
+
+    it(
+      'should shortcircuit undefined functions via optional chaining',
+      function () {
+        assert.strictEqual(
+          parseAndEval('foo?.(2)', { foo: undefined }), undefined)
+        assert.strictEqual(parseAndEval('{a: 3}.foo?.(2)'), undefined)
+        assert.strictEqual(
+          parseAndEval('foo.bar?.(2)', { foo: {} }), undefined)
+        assert.deepStrictEqual(
+          parseAndEval('f(x) = undefined; f(0)?.(2)').valueOf(), [undefined])
+        assert.strictEqual(parseAndEval('(undefined)?.(2)'), undefined)
+        assert.strictEqual(parseAndEval('foo?.(2)'), undefined)
+      })
+
+    it('should throw with optional chain call on non-function', function () {
+      // I guess it is OK to consider this a syntax error since we know just
+      // by reading the expression that the function call can't succeed.
+      assert.throws(() => parseAndEval('7?.(2)'), SyntaxError)
+      assert.throws(() => parseAndEval('a = 7; a?.(2)'), TypeError)
+      assert.throws(() => parseAndEval('(3+4)?.(2)'), TypeError)
+      assert.throws(() => parseAndEval('add(3,4)?.(2)'), TypeError)
+      assert.throws(() => parseAndEval('{a: true}.a?.(2)'), Error)
+      assert.throws(() => parseAndEval('[3, 4]?.(2)'), TypeError)
+    })
   })
 
   describe('parentheses', function () {
@@ -1371,36 +1632,62 @@ describe('parse', function () {
     it('should parse % with multiplication', function () {
       approxEqual(parseAndEval('100*50%'), 50)
       approxEqual(parseAndEval('50%*100'), 50)
-      assert.throws(function () { parseAndEval('50%(*100)') }, /Value expected/)
+      assert.throws(function () { parseAndEval('50%(*100)') }, SyntaxError)
     })
 
     it('should parse % with division', function () {
-      approxEqual(parseAndEval('100/50%'), 0.02) // should be treated as ((100/50)%)
-      approxEqual(parseAndEval('100/50%*2'), 0.04) // should be treated as ((100/50)%))×2
+      approxEqual(parseAndEval('100/50%'), 200) // should be treated as 100/(50%)
+      approxEqual(parseAndEval('100/50%*2'), 400) // should be treated as (100/(50%))×2
       approxEqual(parseAndEval('50%/100'), 0.005)
-      assert.throws(function () { parseAndEval('50%(/100)') }, /Value expected/)
+      approxEqual(parseAndEval('50%(13)'), 11) // should be treated as 50 % (13)
+      assert.throws(function () { parseAndEval('50%(/100)') }, SyntaxError)
     })
 
-    it('should parse % with addition', function () {
+    it('should parse unary % before division, binary % with division', function () {
+      approxEqual(parseAndEval('10/200%%3'), 2) // should be treated as (10/(200%))%3
+    })
+
+    it('should reject repeated unary percentage operators', function () {
+      assert.throws(function () { math.parse('17%%') }, SyntaxError)
+      assert.throws(function () { math.parse('17%%*5') }, SyntaxError)
+      assert.throws(function () { math.parse('10/200%%%3') }, SyntaxError)
+    })
+
+    it('should parse unary % before division, binary % with division', function () {
+      approxEqual(parseAndEval('10/200%%3'), 2) // should be treated as (10/(200%))%3
+    })
+
+    it('should reject repeated unary percentage operators', function () {
+      assert.throws(function () { math.parse('17%%') }, /Unexpected end of expression/)
+      assert.throws(function () { math.parse('17%%*5') }, /Value expected \(char 5\)/)
+      assert.throws(function () { math.parse('10/200%%%3') }, /Value expected \(char 9\)/)
+    })
+
+    it('should parse unary % with addition', function () {
       approxEqual(parseAndEval('100+3%'), 103)
-      approxEqual(parseAndEval('3%+100'), 100.03)
+      assert.strictEqual(parseAndEval('3%+100'), 3) // treat as 3 mod 100
     })
 
-    it('should parse % with subtraction', function () {
+    it('should parse unary % with subtraction', function () {
       approxEqual(parseAndEval('100-3%'), 97)
-      approxEqual(parseAndEval('3%-100'), -99.97)
+      assert.strictEqual(parseAndEval('3%-100'), -97) // treat as 3 mod -100
+    })
+
+    it('should parse binary % with bitwise negation', function () {
+      assert.strictEqual(parseAndEval('11%~1'), -1) // equivalent to 11 mod -2
+      assert.strictEqual(parseAndEval('11%~-3'), 1) // equivalent to 11 mod 2
     })
 
     it('should parse operator mod', function () {
       approxEqual(parseAndEval('8 mod 3'), 2)
     })
 
-    it('should give equal precedence to % and * operators', function () {
+    it('should give equal precedence to binary % and * operators', function () {
       approxEqual(parseAndStringifyWithParens('10 % 3 * 2'), '(10 % 3) * 2')
       approxEqual(parseAndStringifyWithParens('10 * 3 % 4'), '(10 * 3) % 4')
     })
 
-    it('should give equal precedence to % and / operators', function () {
+    it('should give equal precedence to binary % and / operators', function () {
       approxEqual(parseAndStringifyWithParens('10 % 4 / 2'), '(10 % 4) / 2')
       approxEqual(parseAndStringifyWithParens('10 / 2 % 3'), '(10 / 2) % 3')
     })
@@ -1415,12 +1702,12 @@ describe('parse', function () {
       approxEqual(parseAndStringifyWithParens('8 / 3 mod 2'), '(8 / 3) mod 2')
     })
 
-    it('should give equal precedence to % and .* operators', function () {
+    it('should give equal precedence to binary % and .* operators', function () {
       approxEqual(parseAndStringifyWithParens('10 % 3 .* 2'), '(10 % 3) .* 2')
       approxEqual(parseAndStringifyWithParens('10 .* 3 % 4'), '(10 .* 3) % 4')
     })
 
-    it('should give equal precedence to % and ./ operators', function () {
+    it('should give equal precedence to binary % and ./ operators', function () {
       approxEqual(parseAndStringifyWithParens('10 % 4 ./ 2'), '(10 % 4) ./ 2')
       approxEqual(parseAndStringifyWithParens('10 ./ 2 % 3'), '(10 ./ 2) % 3')
     })
@@ -1898,6 +2185,10 @@ describe('parse', function () {
       assert.strictEqual(parseAndEval('0 > 0 ? 1 : 0 < 0 ? -1 : 0'), 0)
     })
 
+    it('should parse a conditional operator and not optional chaining when followed by a number', function () {
+      assert.strictEqual(parseAndEval('true?.3:.7'), 0.3)
+    })
+
     it('should lazily evaluate conditional expression a ? b : c', function () {
       const scope = {}
       math.parse('true ? (a = 2) : (b = 2)').compile().evaluate(scope)
@@ -1949,7 +2240,7 @@ describe('parse', function () {
       assert.ok(parseAndEval('[1,2,3;4,5,6]\'') instanceof Matrix)
       assert.deepStrictEqual(parseAndEval('[1:5]'), math.matrix([[1, 2, 3, 4, 5]]))
       assert.deepStrictEqual(parseAndEval('[1:5]\''), math.matrix([[1], [2], [3], [4], [5]]))
-      assert.deepStrictEqual(parseAndEval('size([1:5])'), math.matrix([1, 5], 'dense', 'number'))
+      assert.deepStrictEqual(parseAndEval('size([1:5])'), [1, 5])
       assert.deepStrictEqual(parseAndEval('[1,2;3,4]\''), math.matrix([[1, 3], [2, 4]]))
     })
 

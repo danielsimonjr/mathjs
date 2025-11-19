@@ -24,6 +24,7 @@ the lower level syntax of math.js. Differences are:
   not bitwise xor.
 - Implicit multiplication, like `2 pi`, is supported and has special rules.
 - Relational operators (`<`, `>`, `<=`, `>=`, `==`, and `!=`) are chained, so the expression `5 < x < 10` is equivalent to `5 < x and x < 10`.
+- The precedence of some operators is different; see a complete list at the precedence table below.
 - Multi-expression constructs like `a = 1; b = 2; a + b` or
   `"a = 1;\n cos(a)\n sin(a)"` (where `\n` denotes newline)
   produce a collection ("ResultSet") of values. Those expressions
@@ -53,53 +54,56 @@ interchangeably. For example, `x+y` will always evaluate identically to
 `add(x,y)`. For a full list of the equivalences, see the section on
 Functions below.
 
-Operator    | Name                       | Syntax      | Associativity | Example               | Result
------------ | -------------------------- | ----------  | ------------- | --------------------- | ---------------
-`(`, `)`    | Grouping                   | `(x)`       | None          | `2 * (3 + 4)`         | `14`
-`[`, `]`    | Matrix, Index              | `[...]`     | None          | `[[1,2],[3,4]]`       | `[[1,2],[3,4]]`
-`{`, `}`    | Object                     | `{...}`     | None          | `{a: 1, b: 2}`        | `{a: 1, b: 2}`
-`,`         | Parameter separator        | `x, y`      | Left to right | `max(2, 1, 5)`        | `5`
-`.`         | Property accessor          | `obj.prop`  | Left to right | `obj={a: 12}; obj.a`  | `12`
-`;`         | Statement separator        | `x; y`      | Left to right | `a=2; b=3; a*b`       | `[6]`
-`;`         | Row separator              | `[x; y]`    | Left to right | `[1,2;3,4]`           | `[[1,2],[3,4]]`
-`\n`        | Statement separator        | `x \n y`    | Left to right | `a=2 \n b=3 \n a*b`   | `[2,3,6]`
-`+`         | Add                        | `x + y`     | Left to right | `4 + 5`               | `9`
-`+`         | Unary plus                 | `+y`        | Right to left | `+4`                  | `4`
-`-`         | Subtract                   | `x - y`     | Left to right | `7 - 3`               | `4`
-`-`         | Unary minus                | `-y`        | Right to left | `-4`                  | `-4`
-`*`         | Multiply                   | `x * y`     | Left to right | `2 * 3`               | `6`
-`.*`        | Element-wise multiply      | `x .* y`    | Left to right | `[1,2,3] .* [1,2,3]`  | `[1,4,9]`
-`/`         | Divide                     | `x / y`     | Left to right | `6 / 2`               | `3`
-`./`        | Element-wise divide        | `x ./ y`    | Left to right | `[9,6,4] ./ [3,2,2]`  | `[3,3,2]`
-`%`         | Percentage                 | `x%`        | None          | `8%`                  | `0.08`
-`%`         | Addition with Percentage   | `x + y%`    | Left to right | `100 + 3%`            | `103`
-`%`         | Subtraction with Percentage| `x - y%`    | Left to right | `100 - 3%`            | `97`
-`%` `mod`   | Modulus                    | `x % y`     | Left to right | `8 % 3`               | `2`
-`^`         | Power                      | `x ^ y`     | Right to left | `2 ^ 3`               | `8`
-`.^`        | Element-wise power         | `x .^ y`    | Right to left | `[2,3] .^ [3,3]`      | `[8,27]`
-`'`         | Transpose                  | `y'`        | Left to right | `[[1,2],[3,4]]'`      | `[[1,3],[2,4]]`
-`!`         | Factorial                  | `y!`        | Left to right | `5!`                  | `120`
-`&`         | Bitwise and                | `x & y`     | Left to right | `5 & 3`               | `1`
-`~`         | Bitwise not                | `~x`        | Right to left | `~2`                  | `-3`
-<code>&#124;</code>  | Bitwise or     | <code>x &#124; y</code>   | Left to right | <code>5 &#124; 3</code>  | `7`
-<code>^&#124;</code> | Bitwise xor    | <code>x ^&#124; y</code>  | Left to right | <code>5 ^&#124; 2</code> | `7`
-`<<`        | Left shift                 | `x << y`    | Left to right | `4 << 1`              | `8`
-`>>`        | Right arithmetic shift     | `x >> y`    | Left to right | `8 >> 1`              | `4`
-`>>>`       | Right logical shift        | `x >>> y`   | Left to right | `-8 >>> 1`            | `2147483644`
-`and`       | Logical and                | `x and y`   | Left to right | `true and false`      | `false`
-`not`       | Logical not                | `not y`     | Right to left | `not true`            | `false`
-`or`        | Logical or                 | `x or y`    | Left to right | `true or false`       | `true`
-`xor`       | Logical xor                | `x xor y`   | Left to right | `true xor true`       | `false`
-`=`         | Assignment                 | `x = y`     | Right to left | `a = 5`               | `5`
-`?` `:`     | Conditional expression     | `x ? y : z` | Right to left | `15 > 100 ? 1 : -1`   | `-1`
-`:`         | Range                      | `x : y`     | Right to left | `1:4`                 | `[1,2,3,4]`
-`to`, `in`  | Unit conversion            | `x to y`    | Left to right | `2 inch to cm`        | `5.08 cm`
-`==`        | Equal                      | `x == y`    | Left to right | `2 == 4 - 2`          | `true`
-`!=`        | Unequal                    | `x != y`    | Left to right | `2 != 3`              | `true`
-`<`         | Smaller                    | `x < y`     | Left to right | `2 < 3`               | `true`
-`>`         | Larger                     | `x > y`     | Left to right | `2 > 3`               | `false`
-`<=`        | Smallereq                  | `x <= y`    | Left to right | `4 <= 3`              | `false`
-`>=`        | Largereq                   | `x >= y`    | Left to right | `2 + 4 >= 6`          | `true`
+
+Operator    | Name                        | Syntax      | Associativity | Example               | Result
+----------- |-----------------------------|-------------| ------------- |-----------------------| ---------------
+`(`, `)`    | Grouping                    | `(x)`       | None          | `2 * (3 + 4)`         | `14`
+`[`, `]`    | Matrix, Index               | `[...]`     | None          | `[[1,2],[3,4]]`       | `[[1,2],[3,4]]`
+`{`, `}`    | Object                      | `{...}`     | None          | `{a: 1, b: 2}`        | `{a: 1, b: 2}`
+`,`         | Parameter separator         | `x, y`      | Left to right | `max(2, 1, 5)`        | `5`
+`.`         | Property accessor           | `obj.prop`  | Left to right | `obj={a: 12}; obj.a`  | `12`
+`;`         | Statement separator         | `x; y`      | Left to right | `a=2; b=3; a*b`       | `[6]`
+`;`         | Row separator               | `[x; y]`    | Left to right | `[1,2;3,4]`           | `[[1,2],[3,4]]`
+`\n`        | Statement separator         | `x \n y`    | Left to right | `a=2 \n b=3 \n a*b`   | `[2,3,6]`
+`+`         | Add                         | `x + y`     | Left to right | `4 + 5`               | `9`
+`+`         | Unary plus                  | `+y`        | Right to left | `+4`                  | `4`
+`-`         | Subtract                    | `x - y`     | Left to right | `7 - 3`               | `4`
+`-`         | Unary minus                 | `-y`        | Right to left | `-4`                  | `-4`
+`*`         | Multiply                    | `x * y`     | Left to right | `2 * 3`               | `6`
+`.*`        | Element-wise multiply       | `x .* y`    | Left to right | `[1,2,3] .* [1,2,3]`  | `[1,4,9]`
+`/`         | Divide                      | `x / y`     | Left to right | `6 / 2`               | `3`
+`./`        | Element-wise divide         | `x ./ y`    | Left to right | `[9,6,4] ./ [3,2,2]`  | `[3,3,2]`
+`%`         | Percentage                  | `x%`        | None          | `8%`                  | `0.08`
+`%`         | Addition with Percentage    | `x + y%`    | Left to right | `100 + 3%`            | `103`
+`%`         | Subtraction with Percentage | `x - y%`    | Left to right | `100 - 3%`            | `97`
+`%` `mod`   | Modulus                     | `x % y`     | Left to right | `8 % 3`               | `2`
+`^`         | Power                       | `x ^ y`     | Right to left | `2 ^ 3`               | `8`
+`.^`        | Element-wise power          | `x .^ y`    | Right to left | `[2,3] .^ [3,3]`      | `[8,27]`
+`'`         | Transpose                   | `y'`        | Left to right | `[[1,2],[3,4]]'`      | `[[1,3],[2,4]]`
+`!`         | Factorial                   | `y!`        | Left to right | `5!`                  | `120`
+`&`         | Bitwise and                 | `x & y`     | Left to right | `5 & 3`               | `1`
+`~`         | Bitwise not                 | `~x`        | Right to left | `~2`                  | `-3`
+<code>&#124;</code>  | Bitwise or    | <code>x &#124; y</code> | Left to right | <code>5 &#124; 3</code> | `7`
+<code>^&#124;</code> | Bitwise xor   | <code>x ^&#124; y</code> | Left to right | <code>5 ^&#124; 2</code> | `7`
+`<<`        | Left shift                  | `x << y`    | Left to right | `4 << 1`              | `8`
+`>>`        | Right arithmetic shift      | `x >> y`    | Left to right | `8 >> 1`              | `4`
+`>>>`       | Right logical shift         | `x >>> y`   | Left to right | `-8 >>> 1`            | `2147483644`
+`and`       | Logical and                 | `x and y`   | Left to right | `true and false`      | `false`
+`not`       | Logical not                 | `not y`     | Right to left | `not true`            | `false`
+`or`        | Logical or                  | `x or y`    | Left to right | `true or false`       | `true`
+`xor`       | Logical xor                 | `x xor y`   | Left to right | `true xor true`       | `false`
+`=`         | Assignment                  | `x = y`     | Right to left | `a = 5`               | `5`
+`?` `:`     | Conditional expression      | `x ? y : z` | Right to left | `15 > 100 ? 1 : -1`   | `-1`
+`??`        | Nullish coalescing          | `x ?? y`    | Left to right | `null ?? 2`           | `2`
+`?.`        | Optional chaining accessor  | `obj?.prop` | Left to right | `obj={}; obj?.a`      | `undefined`
+`:`         | Range                       | `x : y`     | Right to left | `1:4`                 | `[1,2,3,4]`
+`to`, `in`  | Unit conversion             | `x to y`    | Left to right | `2 inch to cm`        | `5.08 cm`
+`==`        | Equal                       | `x == y`    | Left to right | `2 == 4 - 2`          | `true`
+`!=`        | Unequal                     | `x != y`    | Left to right | `2 != 3`              | `true`
+`<`         | Smaller                     | `x < y`     | Left to right | `2 < 3`               | `true`
+`>`         | Larger                      | `x > y`     | Left to right | `2 > 3`               | `false`
+`<=`        | Smallereq                   | `x <= y`    | Left to right | `4 <= 3`              | `false`
+`>=`        | Largereq                    | `x >= y`    | Left to right | `2 + 4 >= 6`          | `true`
 
 
 ## Precedence
@@ -112,10 +116,12 @@ Operators                         | Description
 `x(...)`<br>`x[...]`<br>`obj.prop`<br>`:`| Function call<br>Matrix index<br>Property accessor<br>Key/value separator
 `'`                               | Matrix transpose
 `!`                               | Factorial
+`??`                              | Nullish coalescing
 `^`, `.^`                         | Exponentiation
 `+`, `-`, `~`, `not`              | Unary plus, unary minus, bitwise not, logical not
+`%`                               | Unary percentage
 See section below                 | Implicit multiplication
-`*`, `/`, `.*`, `./`,`%`, `mod`   | Multiply, divide , percentage, modulus
+`*`, `/`, `.*`, `./`,`%`, `mod`   | Multiply, divide, modulus
 `+`, `-`                          | Add, subtract
 `:`                               | Range
 `to`, `in`                        | Unit conversion
@@ -134,8 +140,8 @@ See section below                 | Implicit multiplication
 `\n`, `;`                         | Statement separators
 
 Lazy evaluation is used where logically possible for bitwise and logical
-operators. In the following example, the value of `x` will not even be 
-evaluated because it cannot effect the final result: 
+operators. In the following example, the sub-expression `x` will not even be
+evaluated because it cannot affect the final result:
 ```js
 math.evaluate('false and x')        // false, no matter what x equals
 ```
@@ -221,6 +227,7 @@ Operator Expression  | Equivalent Function Expression
 `a \| b`             |`bitOr(a,b)`
 `a ^\| b`            |`bitXor(a,b)`
 `a & b`              |`bitAnd(a,b)`
+`a ?? b`             |`nullish(a,b)`
 `a == b`             |`equal(a,b)`
 `a != b`             |`unequal(a,b)`
 `a < b`              |`smaller(a,b)`
@@ -672,12 +679,14 @@ at 1, when the end is undefined, the range will end at the end of the matrix.
 
 There is a context variable `end` available as well to denote the end of the
 matrix. This variable cannot be used in multiple nested indices. In that case,
-`end` will be resolved as the end of the innermost matrix. To solve this, 
+`end` will be resolved as the end of the innermost matrix. To solve this,
 resolving of the nested index needs to be split in two separate operations.
 
 *IMPORTANT: matrix indexes and ranges work differently from the math.js indexes
 in JavaScript: They are one-based with an included upper-bound, similar to most
 math applications.*
+
+*IMPORTANT: The matrix indexing behavior has been changed in mathjs `v15`, see section [Migrate matrix indexing to mathjs v15](#migrate-matrix-indexing-to-mathjs-v15).*
 
 ```js
 parser = math.parser()
@@ -696,9 +705,38 @@ parser.evaluate('d = a * b')              // Matrix, [[19, 22], [43, 50]]
 
 // retrieve a subset of a matrix
 parser.evaluate('d[2, 1]')                // 43
-parser.evaluate('d[2, 1:end]')            // Matrix, [[43, 50]]
+parser.evaluate('d[2, 1:end]')            // Matrix, [43, 50]
 parser.evaluate('c[end - 1 : -1 : 2]')    // Matrix, [8, 7, 6]
 ```
+
+#### Migrate matrix indexing to mathjs v15
+
+With mathjs v15, matrix indexing has changed to be more consistent and predictable. In v14, using a scalar index would sometimes reduce the dimensionality of the result. In v15, if you want to preserve dimensions, use array, matrix, or range indices. If you want a scalar value, use scalar indices.
+
+To maintain the old indexing behavior without need for any code changes, use the configuration option `legacySubset`:
+
+```js
+math.config({ legacySubset: true })
+```
+
+To migrate your code, you'll have to change all matrix indexes from the old index notation to the new index notation. Basically: scalar indexes have to be wrapped in array brackets if you want an array as output. Here some examples:
+
+```js
+parser = math.parser()
+parser.evaluate('m = [1, 2, 3; 4, 5, 6]')
+```
+
+| v14 code                | v15 equivalent code           | Result             |
+|-------------------------|-------------------------------|--------------------|
+| `m[1:2, 2:3]`           | No change needed              | `[[2, 3], [5, 6]]` |
+| `m[2, 2:3]`             | `m[[2], 2:3]`                 | `[[5, 6]]`         |
+| `m[1:2, 3]`             | `m[1:2, [3]]`                 | `[[3], [6]]`       |
+| `m[2, 3]`               | No change needed              | `6`                |
+
+> **Tip:**  
+> If you want to always get a scalar value, use scalar indices.  
+> If you want to preserve dimensions, use array, matrix or range indices.
+
 
 ## Objects
 

@@ -49,6 +49,7 @@ function extractValue (spec) {
     DenseMatrix: "math.matrix(_, 'dense')",
     string: '_',
     Node: 'math.parse(_)',
+    value: 'math._',
     throws: "'_'"
   }
   if (words[0] in keywords) {
@@ -86,6 +87,10 @@ function extractValue (spec) {
   return value
 }
 
+const ignoreFunctions = new Set([
+  'config'
+])
+
 const knownProblems = new Set([
   'setUnion', 'unequal', 'equal', 'deepEqual', 'compareNatural', 'randomInt',
   'random', 'pickRandom', 'kldivergence',
@@ -97,7 +102,10 @@ const knownProblems = new Set([
   'mod', 'floor', 'fix', 'expm1', 'exp',
   'ceil', 'cbrt', 'add', 'slu',
   'rationalize', 'qr', 'lusolve', 'lup', 'derivative',
-  'symbolicEqual', 'schur', 'sylvester', 'freqz', 'round'
+  'symbolicEqual', 'schur', 'sylvester', 'freqz', 'round',
+  'import', 'typed',
+  'unit', 'sparse', 'matrix', 'index', 'bignumber', 'fraction', 'complex',
+  'parse'
 ])
 
 let issueCount = 0
@@ -153,6 +161,9 @@ function checkExpectation (want, got) {
     got.startsWith(want)
   ) {
     return true // we obtained the expected error type
+  }
+  if (want && got && want.isBigNumber && got.isBigNumber) {
+    return approxEqual(got, want, 1e-50)
   }
   if (typeof want !== 'undefined') {
     return approxDeepEqual(got, want)
@@ -371,6 +382,10 @@ describe('Testing examples from (jsdoc) comments', function () {
   for (const category in byCategory) {
     describe('category: ' + category, function () {
       for (const doc of byCategory[category]) {
+        if (ignoreFunctions.has(doc.name)) {
+          continue
+        }
+
         it('satisfies ' + doc.name, function () {
           if (debug) {
             console.log(`      Testing ${doc.name} ...`) // can remove once no known failures; for now it clarifies "PLEASE RESOLVE"

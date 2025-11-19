@@ -112,6 +112,7 @@ import { distanceDocs } from './function/geometry/distance.js'
 import { intersectDocs } from './function/geometry/intersect.js'
 import { andDocs } from './function/logical/and.js'
 import { notDocs } from './function/logical/not.js'
+import { nullishDocs } from './function/logical/nullish.js'
 import { orDocs } from './function/logical/or.js'
 import { xorDocs } from './function/logical/xor.js'
 import { mapSlicesDocs } from './function/matrix/mapSlices.js'
@@ -154,6 +155,7 @@ import { transposeDocs } from './function/matrix/transpose.js'
 import { zerosDocs } from './function/matrix/zeros.js'
 import { fftDocs } from './function/matrix/fft.js'
 import { ifftDocs } from './function/matrix/ifft.js'
+import { bernoulliDocs } from './function/probability/bernoulli.js'
 import { combinationsDocs } from './function/probability/combinations.js'
 import { combinationsWithRepDocs } from './function/probability/combinationsWithRep.js'
 import { factorialDocs } from './function/probability/factorial.js'
@@ -229,6 +231,7 @@ import { sinhDocs } from './function/trigonometry/sinh.js'
 import { tanDocs } from './function/trigonometry/tan.js'
 import { tanhDocs } from './function/trigonometry/tanh.js'
 import { toDocs } from './function/units/to.js'
+import { toBestDocs } from './function/units/toBest.js'
 import { binDocs } from './function/utils/bin.js'
 import { cloneDocs } from './function/utils/clone.js'
 import { formatDocs } from './function/utils/format.js'
@@ -236,6 +239,8 @@ import { hasNumericValueDocs } from './function/utils/hasNumericValue.js'
 import { hexDocs } from './function/utils/hex.js'
 import { isIntegerDocs } from './function/utils/isInteger.js'
 import { isNaNDocs } from './function/utils/isNaN.js'
+import { isBoundedDocs } from './function/utils/isBounded.js'
+import { isFiniteDocs } from './function/utils/isFinite.js'
 import { isNegativeDocs } from './function/utils/isNegative.js'
 import { isNumericDocs } from './function/utils/isNumeric.js'
 import { isPositiveDocs } from './function/utils/isPositive.js'
@@ -444,6 +449,7 @@ export const embeddedDocs = {
   // functions - logical
   and: andDocs,
   not: notDocs,
+  nullish: nullishDocs,
   or: orDocs,
   xor: xorDocs,
 
@@ -496,6 +502,7 @@ export const embeddedDocs = {
   solveODE: solveODEDocs,
 
   // functions - probability
+  bernoulli: bernoulliDocs,
   combinations: combinationsDocs,
   combinationsWithRep: combinationsWithRepDocs,
   // distribution: distributionDocs,
@@ -586,6 +593,7 @@ export const embeddedDocs = {
 
   // functions - units
   to: toDocs,
+  toBest: toBestDocs,
 
   // functions - utils
   clone: cloneDocs,
@@ -594,6 +602,8 @@ export const embeddedDocs = {
   oct: octDocs,
   hex: hexDocs,
   isNaN: isNaNDocs,
+  isBounded: isBoundedDocs,
+  isFinite: isFiniteDocs,
   isInteger: isIntegerDocs,
   isNegative: isNegativeDocs,
   isNumeric: isNumericDocs,

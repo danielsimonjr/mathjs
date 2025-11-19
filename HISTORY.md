@@ -1,5 +1,101 @@
 # History
 
+# 2025-11-05, 15.1.0
+
+- Feat: implement functions `isFinite` and `isBounded` (#3554, #3553). 
+  Thanks @gwhitney.
+- Feat: add function `bernoulli` to calculate Bernoulli numbers (#3551).
+  Thanks @gwhitney.
+- Feat: support for optional chaining `object?.key` (#3547). 
+  Thanks @NilsDietrich.
+- Fix: #3580, #3586, #3587 issues with the optional chaining operator: disallow
+  double dot `?..`, allow optional function calls, throw errors on invalid uses
+  of `?.` (#3585). Thanks @AnslemHack.
+- Fix: #3579 conditional parsed as optional chaining (#3584).
+- Fix: #3564 Avoid error throws when mapping/filtering empty arrays/matrices.
+  (#3567). Thanks @richardt-cla.
+- Fix: #3574 respect tolerances in function `isInteger` (#3575). 
+  Thanks @gwhitney.
+- Fix: #3562 serializing units missing an internal property (#3572).
+
+# 2025-10-10, 15.0.0
+
+!!! BE CAREFUL: BREAKING CHANGES !!!
+
+- Feat: #3349 Decouple precedence of unary percentage operator and binary
+  modulus operator (that both use symbol `%`), and raise the former (#3432).
+  Thanks @kiprobinsonknack.
+- Feat: #1753 enhance Kronecker product to handle arbitrary dimension (#3461,
+  #3455). Thanks @gwhitney and @Delaney.
+- Feat: #2344 matrix subset according to the type of input (#3485).
+  Thanks @dvd101x.
+- Fix: #3501 parse `%` as unary only when not followed by a term (#3505).
+  Thanks @gwhitney.
+- Fix: #3421 require a space or delimiter after hex, bin, and oct values (#3463).
+- Fix: #3529 Change function `size` to always return an `Array` (#3535).
+- Fix: #3530 throw an error when trying to flatten a `SparseMatrix` (#3536).
+
+# 2025-10-10, 14.9.1
+
+- Fix: issue in HISTORY.md listing all fixes of `v14.8.2` under `v14.9.0`. 
+
+# 2025-10-10, 14.9.0
+
+- Feat: improve the performance of `map` with multiple arguments (#3526).
+  Thanks @dvd101x.
+- Fix: #3541 throw an error when evaluating a range with a step of zero 
+  (#3548). Thanks @dvd101x.
+
+# 2025-10-03, 14.8.2
+
+- Fix: improve performance in functions like `map` when passing a unary
+  function (#3546). Thanks @dvd101x.
+- Fix: improve the type definition of `abs(complex)` which returns a `number`
+  (#3543). Thanks @joshkel.
+- Fix: add missing type definitions for `ctranspose` (#3545). Thanks @joshkel.
+- Fix: typos in code comments (#3544). Thanks @joshkel.
+
+# 2025-09-26, 14.8.1
+
+- Fix: #3538 `config` printing a warning when using `{ number: 'bigint' }` 
+  (#3540).
+
+# 2025-09-24, 14.8.0
+
+- Feat: #3353 support for the nullish coalescing operator `??` in the
+  expression parser (#3497). Thanks @ikemHood.
+
+# 2025-09-05, 14.7.0
+
+- Feat: faster `DenseMatrix` symbol iterator (#3521). Thanks @dvd101x.
+- Feat: implement serialization support for `Parser`, fixing #3509 (#3525).
+- Fix: #3519, #3368 categories "Core functions" and "Construction functions"
+  missing from the generated function overview.
+- Fix: #3517 `printTransformDependencies` not exported in the type definitions.
+- Fix: add missing type definition for function `diff` (#3520). Thanks @dodokw.
+- Fix: #3396 improve documentation of function `range`.
+- Fix: #3523 cleanup old polyfills from the browser bundle 
+  by removing `core-js` (#3524).
+
+# 2025-07-25, 14.6.0
+
+- Feat: new function `toBest(unit, unitList, offset)`, and corresponding
+  method `unit.toBest(...)` (#3484). Thanks @Mundi93, @EliaAlesiani, and 
+  @HeavyRainLQ.
+- Fix: #3512 `sign` of zero not returning zero in case of a fraction (#3513). 
+  Thanks @kyle-compute.
+
+# 2025-07-02, 14.5.3
+
+- Fix: #2199 parse non-breaking white space `&nbsp;` as white space 
+  (#3487). Thanks donmccurdy.
+- Fix: refine the type definitions of `scope` (#3490). Thanks @JayChang4w.
+- Fix: #3493 type definitions of `unit(number)` (#3495). Thanks @mrft.
+- Fix: #3494 type definitions not supporting `unit.to(unit)` (#3495).
+  Thanks @mrft.
+- Fix: #3499 refine type definitions of `add` and `multiply` to not allow zero
+  or one argument (#3495). Thanks @mrft.
+
 # 2025-05-30, 14.5.2
 
 - Fix: add embedded docs for the deprecated physical constant `coulomb`, 

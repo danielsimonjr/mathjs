@@ -79,7 +79,7 @@ describe('reviver', function () {
   })
 
   it('should parse a stringified Unit', function () {
-    const json = '{"mathjs":"Unit","value":5,"unit":"cm","fixPrefix":false}'
+    const json = '{"mathjs":"Unit","value":5,"unit":"cm","fixPrefix":false,"skipSimp":true}'
     const u = new math.Unit(5, 'cm')
 
     const obj = JSON.parse(json, reviver)
@@ -89,7 +89,7 @@ describe('reviver', function () {
   })
 
   it('should parse a stringified Unit with a value only', function () {
-    const json = '{"mathjs":"Unit","value":5,"unit":null,"fixPrefix":false}'
+    const json = '{"mathjs":"Unit","value":5,"unit":null,"fixPrefix":false,"skipSimp":true}'
     const u = new math.Unit(5)
 
     const obj = JSON.parse(json, reviver)
@@ -99,7 +99,7 @@ describe('reviver', function () {
   })
 
   it('should parse a stringified Unit without a value', function () {
-    const json = '{"mathjs":"Unit","value":null,"unit":"cm","fixPrefix":false}'
+    const json = '{"mathjs":"Unit","value":null,"unit":"cm","fixPrefix":false,"skipSimp":true}'
     const u = new math.Unit(null, 'cm')
 
     const obj = JSON.parse(json, reviver)
@@ -245,5 +245,26 @@ describe('reviver', function () {
 
     assert.strictEqual(node.type, 'OperatorNode')
     assert.strictEqual(node.toString(), '2 + sin(3 x)')
+  })
+
+  it('should parse a stringified Parser', function () {
+    const json = JSON.stringify({
+      mathjs: 'Parser',
+      variables: {
+        a: 42,
+        c: { mathjs: 'BigNumber', value: '6' },
+        w: { mathjs: 'BigNumber', value: '2' }
+      },
+      functions: {
+        f: 'f(x) = w * x'
+      }
+    })
+
+    const parser = JSON.parse(json, reviver)
+
+    assert.deepStrictEqual(parser.get('a'), 42)
+    assert.deepStrictEqual(parser.get('c'), math.bignumber('6'))
+    assert.deepStrictEqual(parser.get('w'), math.bignumber('2'))
+    assert.deepStrictEqual(parser.evaluate('f(4)'), math.bignumber('8'))
   })
 })

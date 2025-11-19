@@ -224,6 +224,7 @@ export const createSubset = /* #__PURE__ */ factory('subset', [], () => noSubset
 export { createPartitionSelect } from './function/matrix/partitionSelect.js'
 
 // probability
+export { createBernoulli } from './function/probability/bernoulli.js'
 export const createCombinations = createNumberFactory('combinations', combinationsNumber)
 export const createGamma = createNumberFactory('gamma', gammaNumber)
 export const createLgamma = createNumberFactory('lgamma', lgammaNumber)
@@ -322,6 +323,8 @@ export { createHasNumericValue } from './function/utils/hasNumericValue.js'
 export const createIsPositive = /* #__PURE__ */ createNumberFactory('isPositive', isPositiveNumber)
 export const createIsZero = /* #__PURE__ */ createNumberFactory('isZero', isZeroNumber)
 export const createIsNaN = /* #__PURE__ */ createNumberFactory('isNaN', isNaNNumber)
+export { createIsBounded } from './function/utils/isBounded.js'
+export { createIsFinite } from './function/utils/isFinite.js'
 export { createTypeOf } from './function/utils/typeOf.js'
 export { createIsPrime } from './function/utils/isPrime.js'
 export { createNumeric } from './function/utils/numeric.js'

@@ -8,16 +8,26 @@ import { typeOf as _typeOf } from './is.js'
  * @param {Function} callback The original callback function to simplify.
  * @param {Array|Matrix} array The array that will be used with the callback function.
  * @param {string} name The name of the function that is using the callback.
- * @param {boolean} [isUnary=false] If true, the callback function is unary and will be optimized as such.
+ * @param {boolean} isUnary If true, the callback function is unary and will be optimized as such.
  * @returns {Function} Returns a simplified version of the callback function.
  */
-export function optimizeCallback (callback, array, name, isUnary = false) {
+export function optimizeCallback (callback, array, name, isUnary) {
   if (typed.isTypedFunction(callback)) {
     let numberOfArguments
     if (isUnary) {
       numberOfArguments = 1
     } else {
-      const firstIndex = (array.isMatrix ? array.size() : arraySize(array)).map(() => 0)
+      const size = array.isMatrix ? array.size() : arraySize(array)
+
+      // Check the size of the last dimension to see if the array/matrix is empty
+      const isEmpty = size.length ? size[size.length - 1] === 0 : true
+      if (isEmpty) {
+        // don't optimize callbacks for empty arrays/matrix, as they will never be called
+        // and in fact will throw an exception when we try to access the first element below
+        return { isUnary, fn: callback }
+      }
+
+      const firstIndex = size.map(() => 0)
       const firstValue = array.isMatrix ? array.get(firstIndex) : get(array, firstIndex)
       numberOfArguments = _findNumberOfArgumentsTyped(callback, firstValue, firstIndex, array)
     }

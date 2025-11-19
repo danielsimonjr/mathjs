@@ -16,9 +16,27 @@ const dependencies = [
 
 export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencies, ({ typed, equalScalar, Matrix }) => {
   /**
-   * Sparse Matrix implementation. This type implements
-   * a [Compressed Column Storage](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS))
-   * format for two-dimensional sparse matrices.
+   * Sparse Matrix implementation. This type (currently) implements 2D
+   * matrices only via the format known as
+   * [Compressed Column Storage](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS)).
+   *
+   * The structure/invariants of the internal data should be:
+   * 1. _values is an array of the nonzero values in order from top to bottom
+   *    (of each column), left to right.
+   * 2. _index is an array of row numbers, of the same length as and
+   *    corresponding positionally to _values.
+   * 3. _ptr is an array of length one more than the number of columns. For j
+   *    less than the number of columns, the "half-open" span of indices
+   *    _ptr[j] to _ptr[j+1] (i.e. including _ptr[j] if it is less than
+   *    _ptr[j+1], but never including _ptr[j+1]) are the indices in _values
+   *    of the nonzero elements in column j. Note there are no nonzero elements
+   *    in column j exactly when _ptr[j] === _ptr[j+1], and that the final
+   *    entry in _ptr is always exactly the number of nonzero entries in the
+   *    matrix.
+   * 4. _size is a length-2 array consisting of the number of rows followed by
+   *    the number of columns.
+   * 5. _datatype, if set, is the mathjs typeOf value of all entries of the
+   *    SparseMatrix.
    * @class SparseMatrix
    */
   function SparseMatrix (data, datatype) {
@@ -133,7 +151,9 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       while (j < columns)
     }
     // store number of values in ptr
-    matrix._ptr.push(matrix._index.length)
+    while (matrix._ptr.length <= columns) {
+      matrix._ptr.push(matrix._index.length)
+    }
     // size
     matrix._size = [rows, columns]
   }
@@ -295,12 +315,14 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
     const pv = []
 
     // loop rows in resulting matrix
-    rows.forEach(function (i, r) {
+    function rowsCallback (i, r) {
       // update permutation vector
       pv[i] = r[0]
       // mark i in workspace
       w[i] = true
-    })
+    }
+    if (Number.isInteger(rows)) rowsCallback(rows, [0])
+    else rows.forEach(rowsCallback)
 
     // result matrix arrays
     const values = mvalues ? [] : undefined
@@ -308,7 +330,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
     const ptr = []
 
     // loop columns in result matrix
-    columns.forEach(function (j) {
+    function columnsCallback (j) {
       // update ptr
       ptr.push(index.length)
       // loop values in column j
@@ -323,7 +345,9 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
           if (values) { values.push(mvalues[k]) }
         }
       }
-    })
+    }
+    if (Number.isInteger(columns)) columnsCallback(columns)
+    else columns.forEach(columnsCallback)
     // update ptr
     ptr.push(index.length)
 
@@ -398,7 +422,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       if (iSize.length === 1) {
         // if the replacement index only has 1 dimension, go trough each one and set its value
         const range = index.dimension(0)
-        range.forEach(function (dataIndex, subIndex) {
+        _forEachIndex(range, (dataIndex, subIndex) => {
           validateIndex(dataIndex)
           matrix.set([dataIndex, 0], submatrix[subIndex[0]], defaultValue)
         })
@@ -406,9 +430,9 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
         // if the replacement index has 2 dimensions, go through each one and set the value in the correct index
         const firstDimensionRange = index.dimension(0)
         const secondDimensionRange = index.dimension(1)
-        firstDimensionRange.forEach(function (firstDataIndex, firstSubIndex) {
+        _forEachIndex(firstDimensionRange, (firstDataIndex, firstSubIndex) => {
           validateIndex(firstDataIndex)
-          secondDimensionRange.forEach(function (secondDataIndex, secondSubIndex) {
+          _forEachIndex(secondDimensionRange, (secondDataIndex, secondSubIndex) => {
             validateIndex(secondDataIndex)
             matrix.set([firstDataIndex, secondDataIndex], submatrix[firstSubIndex[0]][secondSubIndex[0]], defaultValue)
           })
@@ -416,6 +440,12 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       }
     }
     return matrix
+
+    function _forEachIndex (index, callback) {
+      // iterate cases where index is a Matrix or a Number
+      if (isNumber(index)) callback(index, [0])
+      else index.forEach(callback)
+    }
   }
 
   /**

@@ -10,10 +10,11 @@ import { optimizeCallback } from '../../utils/optimizeCallback.js'
 
 const name = 'DenseMatrix'
 const dependencies = [
-  'Matrix'
+  'Matrix',
+  'config'
 ]
 
-export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies, ({ Matrix }) => {
+export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies, ({ Matrix, config }) => {
   /**
    * Dense Matrix implementation. A regular, dense matrix, supporting multi-dimensional matrices. This is the default matrix type.
    * @class DenseMatrix
@@ -218,7 +219,9 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
       throw new TypeError('Invalid index')
     }
 
-    const isScalar = index.isScalar()
+    const isScalar = config.legacySubset
+      ? index.size().every(idx => idx === 1)
+      : index.isScalar()
     if (isScalar) {
       // return a scalar
       return matrix.get(index.min())
@@ -238,12 +241,12 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
       }
 
       // retrieve submatrix
-      const returnMatrix = new DenseMatrix([])
+      const returnMatrix = new DenseMatrix()
       const submatrix = _getSubmatrix(matrix._data, index)
       returnMatrix._size = submatrix.size
       returnMatrix._datatype = matrix._datatype
       returnMatrix._data = submatrix.data
-      return returnMatrix
+      return config.legacySubset ? returnMatrix.reshape(index.size()) : returnMatrix
     }
   }
 
@@ -259,21 +262,31 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
   function _getSubmatrix (data, index) {
     const maxDepth = index.size().length - 1
     const size = Array(maxDepth)
-    return { data: getSubmatrixRecursive(data), size }
+    return { data: getSubmatrixRecursive(data), size: size.filter(x => x !== null) }
 
     function getSubmatrixRecursive (data, depth = 0) {
-      const ranges = index.dimension(depth)
-      size[depth] = ranges.size()[0]
-      if (depth < maxDepth) {
-        return ranges.map(rangeIndex => {
-          validateIndex(rangeIndex, data.length)
-          return getSubmatrixRecursive(data[rangeIndex], depth + 1)
-        }).valueOf()
+      const dims = index.dimension(depth)
+      function _mapIndex (dim, callback) {
+        // applies a callback for when the index is a Number or a Matrix
+        if (isNumber(dim)) return callback(dim)
+        else return dim.map(callback).valueOf()
+      }
+
+      if (isNumber(dims)) {
+        size[depth] = null
       } else {
-        return ranges.map(rangeIndex => {
-          validateIndex(rangeIndex, data.length)
-          return data[rangeIndex]
-        }).valueOf()
+        size[depth] = dims.size()[0]
+      }
+      if (depth < maxDepth) {
+        return _mapIndex(dims, dimIndex => {
+          validateIndex(dimIndex, data.length)
+          return getSubmatrixRecursive(data[dimIndex], depth + 1)
+        })
+      } else {
+        return _mapIndex(dims, dimIndex => {
+          validateIndex(dimIndex, data.length)
+          return data[dimIndex]
+        })
       }
     }
   }
@@ -300,19 +313,19 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
     const isScalar = index.isScalar()
 
     // calculate the size of the submatrix, and convert it into an Array if needed
-    let sSize
+    let submatrixSize
     if (isMatrix(submatrix)) {
-      sSize = submatrix.size()
+      submatrixSize = submatrix.size()
       submatrix = submatrix.valueOf()
     } else {
-      sSize = arraySize(submatrix)
+      submatrixSize = arraySize(submatrix)
     }
 
     if (isScalar) {
       // set a scalar
 
       // check whether submatrix is a scalar
-      if (sSize.length !== 0) {
+      if (submatrixSize.length !== 0) {
         throw new TypeError('Scalar expected')
       }
       matrix.set(index.min(), submatrix, defaultValue)
@@ -320,16 +333,16 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
       // set a submatrix
 
       // broadcast submatrix
-      if (!deepStrictEqual(sSize, iSize)) {
-        try {
-          if (sSize.length === 0) {
-            submatrix = broadcastTo([submatrix], iSize)
-          } else {
+      if (!deepStrictEqual(submatrixSize, iSize)) {
+        if (submatrixSize.length === 0) {
+          submatrix = broadcastTo([submatrix], iSize)
+        } else {
+          try {
             submatrix = broadcastTo(submatrix, iSize)
+          } catch (error) {
           }
-          sSize = arraySize(submatrix)
-        } catch {
         }
+        submatrixSize = arraySize(submatrix)
       }
 
       // validate dimensions
@@ -337,11 +350,11 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
         throw new DimensionError(iSize.length, matrix._size.length, '<')
       }
 
-      if (sSize.length < iSize.length) {
+      if (submatrixSize.length < iSize.length) {
         // calculate number of missing outer dimensions
         let i = 0
         let outer = 0
-        while (iSize[i] === 1 && sSize[i] === 1) {
+        while (iSize[i] === 1 && submatrixSize[i] === 1) {
           i++
         }
         while (iSize[i] === 1) {
@@ -350,12 +363,12 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
         }
 
         // unsqueeze both outer and inner dimensions
-        submatrix = unsqueeze(submatrix, iSize.length, outer, sSize)
+        submatrix = unsqueeze(submatrix, iSize.length, outer, submatrixSize)
       }
 
       // check whether the size of the submatrix matches the index size
-      if (!deepStrictEqual(iSize, sSize)) {
-        throw new DimensionError(iSize, sSize, '>')
+      if (!deepStrictEqual(iSize, submatrixSize)) {
+        throw new DimensionError(iSize, submatrixSize, '>')
       }
 
       // enlarge matrix when needed
@@ -386,16 +399,21 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
 
     function setSubmatrixRecursive (data, submatrix, depth = 0) {
       const range = index.dimension(depth)
+      const recursiveCallback = (rangeIndex, i) => {
+        validateIndex(rangeIndex, data.length)
+        setSubmatrixRecursive(data[rangeIndex], submatrix[i[0]], depth + 1)
+      }
+      const finalCallback = (rangeIndex, i) => {
+        validateIndex(rangeIndex, data.length)
+        data[rangeIndex] = submatrix[i[0]]
+      }
+
       if (depth < maxDepth) {
-        range.forEach((rangeIndex, i) => {
-          validateIndex(rangeIndex, data.length)
-          setSubmatrixRecursive(data[rangeIndex], submatrix[i[0]], depth + 1)
-        })
+        if (isNumber(range)) recursiveCallback(range, [0])
+        else range.forEach(recursiveCallback)
       } else {
-        range.forEach((rangeIndex, i) => {
-          validateIndex(rangeIndex, data.length)
-          data[rangeIndex] = submatrix[i[0]]
-        })
+        if (isNumber(range)) finalCallback(range, [0])
+        else range.forEach(finalCallback)
       }
     }
   }
@@ -678,21 +696,25 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
       return
     }
 
-    const index = []
-    const recurse = function * (value, depth) {
-      if (depth < maxDepth) {
-        for (let i = 0; i < value.length; i++) {
-          index[depth] = i
-          yield * recurse(value[i], depth + 1)
-        }
-      } else {
-        for (let i = 0; i < value.length; i++) {
-          index[depth] = i
-          yield ({ value: value[i], index: index.slice() })
-        }
+    // Multi-dimensional matrix: iterate over all elements
+    const index = Array(maxDepth + 1).fill(0)
+    const totalElements = this._size.reduce((a, b) => a * b, 1)
+
+    for (let count = 0; count < totalElements; count++) {
+      // Traverse to the current element using indices
+      let current = this._data
+      for (let d = 0; d < maxDepth; d++) {
+        current = current[index[d]]
+      }
+      yield { value: current[index[maxDepth]], index: index.slice() }
+
+      // Increment indices for next element
+      for (let d = maxDepth; d >= 0; d--) {
+        index[d]++
+        if (index[d] < this._size[d]) break
+        index[d] = 0
       }
     }
-    yield * recurse(this._data, 0)
   }
 
   /**
