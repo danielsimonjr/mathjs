@@ -1,0 +1,15 @@
+{
+  "extends": "assemblyscript/std/assembly.json",
+  "compilerOptions": {
+    "target": "wasm32",
+    "noEmit": false,
+    "outDir": "./lib/wasm",
+    "sourceMap": true,
+    "optimizeLevel": 3,
+    "shrinkLevel": 2,
+    "runtime": "stub"
+  },
+  "include": [
+    "src-wasm/**/*.ts"
+  ]
+}

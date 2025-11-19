@@ -1,0 +1,34 @@
+{
+  "extends": "assemblyscript/std/assembly.json",
+  "targets": {
+    "release": {
+      "outFile": "lib/wasm/index.wasm",
+      "textFile": "lib/wasm/index.wat",
+      "sourceMap": true,
+      "optimizeLevel": 3,
+      "shrinkLevel": 2,
+      "converge": true,
+      "noAssert": true,
+      "runtime": "stub",
+      "importMemory": true,
+      "initialMemory": 256,
+      "maximumMemory": 16384,
+      "memoryBase": 0,
+      "exportRuntime": true
+    },
+    "debug": {
+      "outFile": "lib/wasm/index.debug.wasm",
+      "textFile": "lib/wasm/index.debug.wat",
+      "sourceMap": true,
+      "debug": true,
+      "runtime": "stub",
+      "importMemory": true,
+      "initialMemory": 256,
+      "maximumMemory": 16384
+    }
+  },
+  "options": {
+    "bindings": "esm",
+    "exportStart": "_start"
+  }
+}

@@ -136,12 +136,16 @@
     "lib": "./lib"
   },
   "scripts": {
-    "build": "gulp && npm run update-authors",
+    "build": "gulp && npm run build:wasm && npm run update-authors",
+    "build:wasm": "asc src-wasm/index.ts --config asconfig.json --target release",
+    "build:wasm:debug": "asc src-wasm/index.ts --config asconfig.json --target debug",
     "build-and-test": "npm run build && npm run test:all && npm run lint",
     "build:clean": "gulp clean",
     "build:docs": "gulp docs",
     "compile": "gulp compile",
+    "compile:ts": "tsc -p tsconfig.build.json",
     "watch": "gulp watch",
+    "watch:ts": "tsc -p tsconfig.build.json --watch",
     "lint": "eslint --cache --max-warnings 0 src/ test/ types/",
     "format": "npm run lint -- --fix",
     "validate:ascii": "gulp validate:ascii",
