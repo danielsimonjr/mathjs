@@ -1,32 +1,10 @@
 import { reshape as arrayReshape } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
-
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface IsIntegerFunction {
-  (value: any): boolean
-}
-
-interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
-}
-
-interface Matrix {
-  reshape(sizes: number[], copy?: boolean): Matrix
-}
-
-interface Dependencies {
-  typed: TypedFunction
-  isInteger: IsIntegerFunction
-}
+import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'reshape'
-const dependencies = ['typed', 'isInteger', 'matrix']
+const dependencies = ['typed', 'isInteger', 'matrix'] as const
 
-export const createReshape = /* #__PURE__ */ factory(name, dependencies, ({ typed, isInteger }: Dependencies) => {
+export const createReshape: FactoryFunction<'typed' | 'isInteger' | 'matrix', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, isInteger }) => {
   /**
    * Reshape a multi dimensional array to fit the specified dimensions
    *
@@ -69,12 +47,12 @@ export const createReshape = /* #__PURE__ */ factory(name, dependencies, ({ type
    */
   return typed(name, {
 
-    'Matrix, Array': function (x: Matrix, sizes: number[]): Matrix {
+    'Matrix, Array': function (x: any, sizes: number[]): any {
       return x.reshape(sizes, true)
     },
 
-    'Array, Array': function (x: any[], sizes: number[]): any[] | any[][] {
-      sizes.forEach(function (size: any) {
+    'Array, Array': function (x: any[], sizes: number[]): any[] {
+      sizes.forEach(function (size) {
         if (!isInteger(size)) {
           throw new TypeError('Invalid size for dimension: ' + size)
         }
