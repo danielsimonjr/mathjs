@@ -91,7 +91,7 @@ export const createSign = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     },
 
     Fraction: function (x: any): any {
-      return new Fraction(x.s)
+      return x.n === 0n ? new Fraction(0) : new Fraction(x.s)
     },
 
     // deep map collection, skip zeros since sign(0) = 0
