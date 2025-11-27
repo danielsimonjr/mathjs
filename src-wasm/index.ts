@@ -33,3 +33,29 @@ export {
   irfft,
   isPowerOf2
 } from './signal/fft'
+
+export {
+  freqz,
+  freqzUniform,
+  polyMultiply,
+  zpk2tf,
+  magnitude,
+  magnitudeDb,
+  phase,
+  unwrapPhase,
+  groupDelay
+} from './signal/processing'
+
+// Numeric solvers
+export {
+  rk45Step,
+  rk23Step,
+  maxError,
+  computeStepAdjustment,
+  interpolate,
+  vectorCopy,
+  vectorScale,
+  vectorAdd,
+  wouldOvershoot,
+  trimStep
+} from './numeric/ode'

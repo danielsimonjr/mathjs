@@ -10,12 +10,41 @@ import * as allIsFunctions from './is.js'
 import { create } from '../core/create.js'
 import { endsWith } from './string.js'
 
+type TypeName = string
+
+interface BundleStructure {
+  [key: string]: TypeName | BundleStructure
+}
+
+interface ValidationIssue {
+  actualType: TypeName
+  expectedType: TypeName
+  message: string
+}
+
+interface Factory {
+  fn: string
+  meta?: {
+    isTransformFunction?: boolean
+    formerly?: string
+  }
+}
+
+interface Factories {
+  [key: string]: Factory
+}
+
+interface SnapshotResult {
+  expectedInstanceStructure: BundleStructure
+  expectedES6Structure: BundleStructure
+}
+
 export const validateTypeOf = allIsFunctions.typeOf
 
-export function validateBundle (expectedBundleStructure, bundle) {
+export function validateBundle(expectedBundleStructure: BundleStructure, bundle: any): void {
   const originalWarn = console.warn
 
-  console.warn = function (...args) {
+  console.warn = function (...args: any[]): void {
     if (args.join(' ').includes('is moved to') && args.join(' ').includes('Please use the new location instead')) {
       // Ignore warnings like:
       // Warning: math.type.isNumber is moved to math.isNumber in v6.0.0. Please use the new location instead.
@@ -26,10 +55,10 @@ export function validateBundle (expectedBundleStructure, bundle) {
   }
 
   try {
-    const issues = []
+    const issues: ValidationIssue[] = []
 
     // see whether all expected functions and objects are there
-    traverse(expectedBundleStructure, (expectedType, path) => {
+    traverse(expectedBundleStructure, (expectedType: TypeName, path: (string | number)[]) => {
       const actualValue = get(bundle, path)
       const actualType = validateTypeOf(actualValue)
 
@@ -47,7 +76,7 @@ export function validateBundle (expectedBundleStructure, bundle) {
     })
 
     // see whether there are any functions or objects that shouldn't be there
-    traverse(bundle, (actualValue, path) => {
+    traverse(bundle, (actualValue: any, path: (string | number)[]) => {
       const actualType = validateTypeOf(actualValue)
       const expectedType = get(expectedBundleStructure, path) || 'undefined'
 
@@ -91,19 +120,19 @@ export function validateBundle (expectedBundleStructure, bundle) {
 /**
  * Based on an object with factory functions, create the expected
  * structures for ES6 export and a mathjs instance.
- * @param {Object} factories
- * @return {{expectedInstanceStructure: Object, expectedES6Structure: Object}}
+ * @param factories - Object containing factory functions
+ * @return Object with expectedInstanceStructure and expectedES6Structure
  */
-export function createSnapshotFromFactories (factories) {
+export function createSnapshotFromFactories(factories: Factories): SnapshotResult {
   const math = create(factories)
 
-  const allFactoryFunctions = {}
-  const allFunctionsConstantsClasses = {}
-  const allFunctionsConstants = {}
-  const allTransformFunctions = {}
-  const allDependencyCollections = {}
-  const allClasses = {}
-  const allNodeClasses = {}
+  const allFactoryFunctions: BundleStructure = {}
+  const allFunctionsConstantsClasses: BundleStructure = {}
+  const allFunctionsConstants: BundleStructure = {}
+  const allTransformFunctions: BundleStructure = {}
+  const allDependencyCollections: BundleStructure = {}
+  const allClasses: BundleStructure = {}
+  const allNodeClasses: BundleStructure = {}
 
   Object.keys(factories).forEach(factoryName => {
     const factory = factories[factoryName]
@@ -139,7 +168,7 @@ export function createSnapshotFromFactories (factories) {
     }
   })
 
-  let embeddedDocs = {}
+  let embeddedDocs: BundleStructure = {}
   Object.keys(factories).forEach(factoryName => {
     const factory = factories[factoryName]
     const name = factory.fn
@@ -164,20 +193,20 @@ export function createSnapshotFromFactories (factories) {
     'replacer'
   ])
 
-  const allTypeChecks = {}
+  const allTypeChecks: BundleStructure = {}
   Object.keys(allIsFunctions).forEach(name => {
     if (name.indexOf('is') === 0) {
       allTypeChecks[name] = 'function'
     }
   })
 
-  const allErrorClasses = {
+  const allErrorClasses: BundleStructure = {
     ArgumentsError: 'function',
     DimensionError: 'function',
     IndexError: 'function'
   }
 
-  const expectedInstanceStructure = {
+  const expectedInstanceStructure: BundleStructure = {
     ...allFunctionsConstantsClasses,
 
     on: 'function',
@@ -207,7 +236,7 @@ export function createSnapshotFromFactories (factories) {
     }
   }
 
-  const expectedES6Structure = {
+  const expectedES6Structure: BundleStructure = {
     // functions
     ...exclude(allFunctionsConstantsClasses, [
       'E',
@@ -241,13 +270,17 @@ export function createSnapshotFromFactories (factories) {
   }
 }
 
-function traverse (obj, callback = (value, path) => {}, path = []) {
+function traverse(
+  obj: any,
+  callback: (value: any, path: (string | number)[]) => void = () => {},
+  path: (string | number)[] = []
+): void {
   // FIXME: ugly to have these special cases
-  if (path.length > 0 && path[0].includes('Dependencies')) {
+  if (path.length > 0 && path[0].toString().includes('Dependencies')) {
     // special case for objects holding a collection of dependencies
     callback(obj, path)
   } else if (validateTypeOf(obj) === 'Array') {
-    obj.map((item, index) => traverse(item, callback, path.concat(index)))
+    obj.map((item: any, index: number) => traverse(item, callback, path.concat(index)))
   } else if (validateTypeOf(obj) === 'Object') {
     Object.keys(obj).forEach(key => {
       // FIXME: ugly to have these special cases
@@ -263,7 +296,7 @@ function traverse (obj, callback = (value, path) => {}, path = []) {
   }
 }
 
-function get (object, path) {
+function get(object: any, path: (string | number)[]): any {
   let child = object
 
   for (let i = 0; i < path.length; i++) {
@@ -277,11 +310,11 @@ function get (object, path) {
 /**
  * Create a copy of the provided `object` and delete
  * all properties listed in `excludedProperties`
- * @param {Object} object
- * @param {string[]} excludedProperties
- * @return {Object}
+ * @param object - Object to filter
+ * @param excludedProperties - Array of property names to exclude
+ * @return Filtered object
  */
-function exclude (object, excludedProperties) {
+function exclude(object: BundleStructure, excludedProperties: string[]): BundleStructure {
   const strippedObject = Object.assign({}, object)
 
   excludedProperties.forEach(excludedProperty => {
@@ -291,6 +324,6 @@ function exclude (object, excludedProperties) {
   return strippedObject
 }
 
-function isLowerCase (text) {
+function isLowerCase(text: string): boolean {
   return typeof text === 'string' && text.toLowerCase() === text
 }

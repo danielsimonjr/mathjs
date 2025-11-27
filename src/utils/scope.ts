@@ -9,14 +9,17 @@ import { ObjectWrappingMap, PartitionedMap } from './map.js'
  * creates an empty map, and copies the parent scope to it, adding in
  * the remaining `args`.
  *
- * @param {Map} parentScope
- * @param  {Object} args
- * @returns {PartitionedMap}
+ * @param parentScope - Parent scope
+ * @param args - Arguments to add to the new scope
+ * @returns PartitionedMap with parent and args
  */
-export function createSubScope (parentScope, args) {
+export function createSubScope<K = any, V = any>(
+  parentScope: Map<K, V>,
+  args: Record<string, V>
+): PartitionedMap<K, V> {
   return new PartitionedMap(
     parentScope,
-    new ObjectWrappingMap(args),
-    new Set(Object.keys(args))
+    new ObjectWrappingMap(args) as unknown as Map<K, V>,
+    new Set(Object.keys(args) as K[])
   )
 }
