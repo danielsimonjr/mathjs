@@ -356,6 +356,166 @@ node -e "import('./lib/wasm/index.js').then(wasm => console.log(wasm))"
 4. **Don't commit generated files**: Only commit changes in `src/`, not `lib/` or `dist/`
 5. **Pull requests go to `develop` branch**, not `master`
 
+## MCP Servers Available
+
+This project has access to several MCP (Model Context Protocol) servers configured in `.mcp.json`:
+
+### Core Development Tools
+
+- **sequential-thinking-mcp** - Structured reasoning and problem-solving
+- **deepthinking-mcp** - 18 advanced reasoning modes with taxonomy-based classification
+  - Use for complex theoretical physics, mathematical proofs, algorithm design
+  - `mcp__deepthinking-mcp__deepthinking` tool with modes: sequential, mathematics, physics, hybrid, etc.
+
+### Mathematical Tools
+
+- **math-mcp** - WASM-accelerated mathematical operations server
+  - Provides matrix operations, statistics, and symbolic math tools
+  - Multi-tier acceleration: mathjs → WASM → WebWorkers
+  - Use for performance testing and validation of math.js implementations
+
+- **fermat-mcp** - Advanced mathematical theorem proving and symbolic computation
+
+### Knowledge Management
+
+- **memory-mcp** - Persistent knowledge graph with 45 tools
+  - **Critical**: Use this to maintain context across sessions
+  - Store project learnings, architectural decisions, refactoring progress
+  - See "Memory Usage Guidelines" section below
+
+### Search & Navigation
+
+- **everything-mcp** - Fast file system search (Windows Everything integration)
+- **fzf-mcp** - Fuzzy file finder
+
+### Other Tools
+
+- **playwright** - Browser automation and testing
+- **time** - Time and date utilities
+- **substack-mcp** - Substack API integration for documentation publishing
+
+## Memory Usage Guidelines
+
+**IMPORTANT**: Use `memory-mcp` tools to maintain continuity across sessions and prevent context loss.
+
+### Session Start Workflow
+
+```bash
+# 1. Search for existing context about mathjs
+mcp__memory-mcp__search_nodes with query "mathjs" or "Math.js"
+
+# 2. Review graph statistics
+mcp__memory-mcp__get_graph_stats
+
+# 3. Search for specific topics if working on focused areas
+mcp__memory-mcp__search_nodes with query "TypeScript refactoring"
+mcp__memory-mcp__search_nodes with query "WASM acceleration"
+```
+
+### During Development
+
+Store important discoveries and decisions:
+
+```bash
+# Create entity for new architectural patterns discovered
+mcp__memory-mcp__create_entities
+  entities: [{
+    name: "Math.js Factory Pattern Extension",
+    entityType: "architectural-pattern",
+    observations: ["Details about the pattern..."],
+    tags: ["mathjs", "architecture", "factory-pattern"]
+  }]
+
+# Add observations to existing "Math.js" entity
+mcp__memory-mcp__add_observations
+  entityName: "Math.js"
+  observations: ["Converted 5 more arithmetic functions to TypeScript", "WASM build now includes FFT operations"]
+
+# Create relations between concepts
+mcp__memory-mcp__create_relations
+  relations: [{
+    from: "Math.js WASM Integration",
+    to: "AssemblyScript Best Practices",
+    relationType: "implements"
+  }]
+```
+
+### Session End Workflow
+
+```bash
+# 1. Summarize accomplishments
+mcp__memory-mcp__add_observations
+  entityName: "Math.js TypeScript Refactoring"
+  observations: ["Session 2025-11-28: Converted 10 matrix operations to TS", "All unit tests passing"]
+
+# 2. Record next steps
+mcp__memory-mcp__add_observations
+  entityName: "Math.js Development Tasks"
+  observations: ["TODO: Convert sparse matrix algorithms", "TODO: Add WASM benchmarks"]
+
+# 3. Set importance for critical learnings
+mcp__memory-mcp__set_importance
+  entityName: "Math.js Build Pipeline"
+  importance: 9
+```
+
+### Recommended Memory Entities
+
+Create/update these entities for mathjs project:
+
+1. **"Math.js"** (importance: 10, tags: mathjs, library, mathematics, active-project)
+   - Main project entity with high-level observations
+
+2. **"Math.js TypeScript Refactoring"** (importance: 9, tags: mathjs, typescript, refactoring)
+   - Track refactoring progress, files converted, issues encountered
+
+3. **"Math.js WASM Integration"** (importance: 8, tags: mathjs, wasm, performance)
+   - WASM-specific learnings, performance metrics, build issues
+
+4. **"Math.js Factory Pattern"** (importance: 7, tags: mathjs, architecture, design-pattern)
+   - Document how dependency injection works, examples, gotchas
+
+5. **"Math.js Development Environment"** (importance: 6, tags: mathjs, development, tooling)
+   - Build commands, test workflows, common issues and solutions
+
+## Advanced Development Patterns
+
+### Using deepthinking-mcp for Complex Problems
+
+When working on complex architectural decisions or mathematical implementations:
+
+```bash
+# For theoretical physics or advanced math
+mcp__deepthinking-mcp__deepthinking
+  mode: "mathematics" or "physics"
+  prompt: "Design optimal WASM memory layout for sparse matrix operations"
+
+# For multi-faceted problems
+mcp__deepthinking-mcp__deepthinking
+  mode: "hybrid"
+  prompt: "Analyze trade-offs between WASM binary size and performance for matrix operations"
+
+# For step-by-step reasoning
+mcp__deepthinking-mcp__deepthinking
+  mode: "sequential"
+  prompt: "Design migration strategy for converting expression parser to TypeScript"
+```
+
+### Using math-mcp for Validation
+
+Cross-validate math.js implementations against the WASM-accelerated math-mcp server:
+
+```bash
+# Test matrix operations
+mcp__math-mcp__matrix_multiply with your test matrices
+
+# Compare performance characteristics
+# Use math-mcp results to validate your WASM implementations
+
+# Test statistical functions
+mcp__math-mcp__statistics with sample data
+```
+
 ## Documentation References
 
 - **Main README**: `README.md` - Getting started, usage examples
