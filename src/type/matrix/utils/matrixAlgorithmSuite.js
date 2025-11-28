@@ -2,7 +2,7 @@ import { factory } from '../../../utils/factory.js'
 import { extend } from '../../../utils/object.js'
 import { createMatAlgo13xDD } from './matAlgo13xDD.js'
 import { createMatAlgo14xDs } from './matAlgo14xDs.js'
-import { broadcast } from './broadcast.js'
+import { broadcast } from './broadcast.ts'
 
 const name = 'matrixAlgorithmSuite'
 const dependencies = ['typed', 'matrix']
