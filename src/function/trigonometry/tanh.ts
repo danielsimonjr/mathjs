@@ -3,7 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { tanh as _tanh } from '../../utils/number.js'
 
 const name = 'tanh'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createTanh: FactoryFunction<'tanh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

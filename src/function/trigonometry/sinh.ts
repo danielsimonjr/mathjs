@@ -3,7 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { sinhNumber } from '../../plain/number/index.js'
 
 const name = 'sinh'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createSinh: FactoryFunction<'sinh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

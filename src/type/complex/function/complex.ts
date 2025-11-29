@@ -4,7 +4,7 @@ import { deepMap } from '../../../utils/collection.js'
 const name = 'complex'
 const dependencies = ['typed', 'Complex'] as const
 
-export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex }) => {
+export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Complex }) => {
   /**
    * Create a complex value or convert a value to a complex value.
    *
@@ -58,7 +58,7 @@ export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = 
 
     // TODO: this signature should be redundant
     'BigNumber, BigNumber': function (re: any, im: any): any {
-      return new Complex(re.toNumber(), im.toNumber())
+      return new Complex((re as any).toNumber(), (im as any).toNumber())
     },
 
     Fraction: function (x: any): any {

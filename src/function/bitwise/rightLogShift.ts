@@ -8,7 +8,7 @@ import { factory } from '../../utils/factory.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
 import { rightLogShiftNumber } from '../../plain/number/index.js'
 import { createUseMatrixForArrayScalar } from './useMatrixForArrayScalar.js'
-import type { MathJsChain } from '../../types.js'
+import type { MathJsChain } from '../../../types/index.js'
 import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 
 const name = 'rightLogShift'
@@ -19,7 +19,7 @@ const dependencies = [
   'zeros',
   'DenseMatrix',
   'concat'
-] as const
+]
 
 export const createRightLogShift = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, zeros, DenseMatrix, concat }) => {
   const matAlgo01xDSid = createMatAlgo01xDSid({ typed })

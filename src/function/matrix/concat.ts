@@ -6,7 +6,7 @@ import { DimensionError } from '../../error/DimensionError.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'concat'
-const dependencies = ['typed', 'matrix', 'isInteger'] as const
+const dependencies = ['typed', 'matrix', 'isInteger']
 
 export const createConcat: FactoryFunction<'typed' | 'matrix' | 'isInteger', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, isInteger }) => {
   /**
@@ -71,7 +71,7 @@ export const createConcat: FactoryFunction<'typed' | 'matrix' | 'isInteger', typ
 
           if (dim < 0 || (i > 0 && dim > prevDim)) {
             // TODO: would be more clear when throwing a DimensionError here
-            throw new IndexError(dim, prevDim + 1)
+            throw new IndexError(dim, 1, prevDim + 1) as any
           }
         } else {
           // this is a matrix or array

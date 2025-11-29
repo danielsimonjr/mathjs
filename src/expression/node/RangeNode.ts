@@ -46,20 +46,20 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
    * @private
    */
   function calculateNecessaryParentheses (node: RangeNode, parenthesis: string, implicit: string): Parens {
-    const precedence = getPrecedence(node as any, parenthesis, implicit)
+    const precedence = getPrecedence(node as any, parenthesis, implicit, undefined)
     const parens: Parens = { start: false, end: false }
 
-    const startPrecedence = getPrecedence(node.start as any, parenthesis, implicit)
+    const startPrecedence = getPrecedence(node.start as any, parenthesis, implicit, undefined)
     parens.start = ((startPrecedence !== null) && (startPrecedence <= precedence)) ||
       (parenthesis === 'all')
 
     if (node.step) {
-      const stepPrecedence = getPrecedence(node.step as any, parenthesis, implicit)
+      const stepPrecedence = getPrecedence(node.step as any, parenthesis, implicit, undefined)
       parens.step = ((stepPrecedence !== null) && (stepPrecedence <= precedence)) ||
         (parenthesis === 'all')
     }
 
-    const endPrecedence = getPrecedence(node.end as any, parenthesis, implicit)
+    const endPrecedence = getPrecedence(node.end as any, parenthesis, implicit, undefined)
     parens.end = ((endPrecedence !== null) && (endPrecedence <= precedence)) ||
       (parenthesis === 'all')
 

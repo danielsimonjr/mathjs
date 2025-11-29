@@ -6,7 +6,7 @@ import { xgcdNumber } from '../../plain/number/index.js'
 type Dependencies = 'typed' | 'config' | 'matrix' | 'BigNumber'
 
 const name = 'xgcd'
-const dependencies = ['typed', 'config', 'matrix', 'BigNumber'] as const
+const dependencies = ['typed', 'config', 'matrix', 'BigNumber']
 
 export const createXgcd = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, matrix, BigNumber }: any): TypedFunction => {
   /**

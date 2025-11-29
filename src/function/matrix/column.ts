@@ -10,7 +10,7 @@ interface Matrix {
 }
 
 interface Index {
-  new (ranges: any[]): Index
+  new (...ranges: any[]): Index
 }
 
 interface TypedFunction<T = any> {

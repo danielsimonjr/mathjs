@@ -1,8 +1,8 @@
-import { map } from '../../utils/array.js'
-import { getSafeProperty } from '../../utils/customs.js'
-import { factory } from '../../utils/factory.js'
-import { isArray, isConstantNode, isMatrix, isNode, isString, typeOf } from '../../utils/is.js'
-import { escape } from '../../utils/string.js'
+import { map } from '../../utils/array.ts'
+import { getSafeProperty } from '../../utils/customs.ts'
+import { factory } from '../../utils/factory.ts'
+import { isArray, isConstantNode, isMatrix, isNode, isString, typeOf } from '../../utils/is.ts'
+import { escape } from '../../utils/string.ts'
 
 const name = 'IndexNode'
 const dependencies = [
@@ -10,7 +10,13 @@ const dependencies = [
   'size'
 ]
 
-export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, size }) => {
+export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({
+  Node,
+  size
+}: {
+  Node: any;
+  size: any;
+}) => {
   class IndexNode extends Node {
     /**
      * @constructor IndexNode

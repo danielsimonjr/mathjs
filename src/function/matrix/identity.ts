@@ -157,8 +157,8 @@ export const createIdentity = /* #__PURE__ */ factory(name, dependencies, ({ typ
       ? BigNumber
       : null
 
-    if (isBigNumber(rows)) rows = rows.toNumber()
-    if (isBigNumber(cols)) cols = cols.toNumber()
+    if (isBigNumber(rows)) rows = (rows as any).toNumber()
+    if (isBigNumber(cols)) cols = (cols as any).toNumber()
 
     if (!isInteger(rows as number) || (rows as number) < 1) {
       throw new Error('Parameters in function identity must be positive integers')

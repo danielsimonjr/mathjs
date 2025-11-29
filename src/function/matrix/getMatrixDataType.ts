@@ -3,7 +3,7 @@ import { getArrayDataType } from '../../utils/array.js'
 import { typeOf } from '../../utils/is.js'
 
 const name = 'getMatrixDataType'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createGetMatrixDataType: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

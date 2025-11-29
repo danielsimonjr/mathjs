@@ -38,7 +38,7 @@ type MatrixCallback = (a: any, b: any) => any
 const name = 'matAlgo03xDSf'
 const dependencies = ['typed']
 
-export const createMatAlgo03xDSf = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: TypedFunction }) => {
+export const createMatAlgo03xDSf = /* #__PURE__ */ factory(name, dependencies, ({ typed }: any) => {
   /**
    * Iterates over SparseMatrix items and invokes the callback function f(Dij, Sij).
    * Callback function invoked M*N times.
@@ -109,7 +109,7 @@ export const createMatAlgo03xDSf = /* #__PURE__ */ factory(name, dependencies, (
       // convert 0 to the same datatype
       zero = typed.convert(0, dt)
       // callback
-      cf = typed.find(callback, [dt, dt])
+      cf = typed.find(callback, [dt, dt]) as any as any as any
     }
 
     // result (DenseMatrix)

@@ -3,7 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { subtractNumber } from '../../plain/number/index.js'
 
 const name = 'subtractScalar'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createSubtractScalar: FactoryFunction<
   { typed: TypedFunction },

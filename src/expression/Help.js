@@ -1,12 +1,16 @@
-import { isHelp } from '../utils/is.js'
-import { clone } from '../utils/object.js'
-import { format } from '../utils/string.js'
-import { factory } from '../utils/factory.js'
+import { isHelp } from '../utils/is.ts'
+import { clone } from '../utils/object.ts'
+import { format } from '../utils/string.ts'
+import { factory } from '../utils/factory.ts'
 
 const name = 'Help'
 const dependencies = ['evaluate']
 
-export const createHelpClass = /* #__PURE__ */ factory(name, dependencies, ({ evaluate }) => {
+export const createHelpClass = /* #__PURE__ */ factory(name, dependencies, ({
+  evaluate
+}: {
+  evaluate: any;
+}) => {
   /**
    * Documentation object
    * @param {Object} doc  Object containing properties:

@@ -1,11 +1,13 @@
-import { isNode } from '../../utils/is.js'
+import { isNode } from '../../utils/is.ts'
 
-import { keywords } from '../keywords.js'
-import { escape } from '../../utils/string.js'
-import { forEach, join } from '../../utils/array.js'
-import { toSymbol } from '../../utils/latex.js'
-import { getPrecedence } from '../operators.js'
-import { factory } from '../../utils/factory.js'
+import { keywords } from '../keywords.ts'
+import { escape } from '../../utils/string.ts'
+import { forEach, join } from '../../utils/array.ts'
+import { toSymbol } from '../../utils/latex.ts'
+import { getPrecedence } from '../operators.ts'
+import { factory } from '../../utils/factory.ts'
+
+import { TypedFunction } from '../../types.ts';
 
 const name = 'FunctionAssignmentNode'
 const dependencies = [
@@ -13,7 +15,15 @@ const dependencies = [
   'Node'
 ]
 
-export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, dependencies, ({ typed, Node }) => {
+export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, dependencies, (
+  {
+    typed,
+    Node
+  }: {
+    typed: TypedFunction;
+    Node: any;
+  }
+): TypedFunction => {
   /**
    * Is parenthesis needed?
    * @param {Node} node

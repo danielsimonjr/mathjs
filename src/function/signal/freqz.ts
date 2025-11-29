@@ -10,7 +10,7 @@ const dependencies = [
   'Complex',
   'divide',
   'matrix'
-] as const
+]
 
 /**
  * Frequency response result

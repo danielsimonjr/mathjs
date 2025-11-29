@@ -376,7 +376,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
           case 'undefined':
             return
           case 'function':
-            return options.handler(this, options)
+            return options.handler(this as any, options)
           default:
             throw new TypeError('Object or function expected as callback')
         }
@@ -402,3 +402,6 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
 
   return Node
 }, { isClass: true, isNode: true })
+
+// Export the Node type for use in other modules
+export type MathNode = InstanceType<ReturnType<typeof createNode>>

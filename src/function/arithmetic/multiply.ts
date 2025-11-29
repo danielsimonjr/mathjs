@@ -855,7 +855,7 @@ export const createMultiply = /* #__PURE__ */ factory(name, dependencies, ({ typ
   return typed(name, multiplyScalar, {
     // we extend the signatures of multiplyScalar with signatures dealing with matrices
 
-    'Array, Array': typed.referTo('Matrix, Matrix', (selfMM: TypedFunction) => (x: any[], y: any[]) => {
+    'Array, Array': typed.referTo('Matrix, Matrix', ((selfMM: TypedFunction) => (x: any[], y: any[]) => {
       // check dimensions
       _validateMatrixDimensions(arraySize(x), arraySize(y))
 
@@ -863,7 +863,7 @@ export const createMultiply = /* #__PURE__ */ factory(name, dependencies, ({ typ
       const m = selfMM(matrix(x), matrix(y))
       // return array or scalar
       return isMatrix(m) ? m.valueOf() : m
-    }),
+    }) as any),
 
     'Matrix, Matrix': function (x: Matrix, y: Matrix): Matrix | any {
       // dimensions
@@ -892,43 +892,43 @@ export const createMultiply = /* #__PURE__ */ factory(name, dependencies, ({ typ
       return _multiplyMatrixMatrix(x, y)
     },
 
-    'Matrix, Array': typed.referTo('Matrix,Matrix', (selfMM: TypedFunction) =>
-      (x: Matrix, y: any[]) => selfMM(x, matrix(y))),
+    'Matrix, Array': typed.referTo('Matrix,Matrix', ((selfMM: TypedFunction) =>
+      (x: Matrix, y: any[]) => selfMM(x, matrix(y))) as any),
 
-    'Array, Matrix': typed.referToSelf((self: TypedFunction) => (x: any[], y: Matrix) => {
+    'Array, Matrix': typed.referToSelf((self: TypedFunction): any => (x: any[], y: Matrix) => {
       // use Matrix * Matrix implementation
       return self(matrix(x, y.storage()), y)
     }),
 
     'SparseMatrix, any': function (x: SparseMatrix, y: any): SparseMatrix {
-      return matAlgo11xS0s(x, y, multiplyScalar, false)
+      return matAlgo11xS0s(x as any, y, multiplyScalar, false)
     },
 
     'DenseMatrix, any': function (x: DenseMatrix, y: any): DenseMatrix {
-      return matAlgo14xDs(x, y, multiplyScalar, false)
+      return matAlgo14xDs(x as any, y, multiplyScalar, false)
     },
 
     'any, SparseMatrix': function (x: any, y: SparseMatrix): SparseMatrix {
-      return matAlgo11xS0s(y, x, multiplyScalar, true)
+      return matAlgo11xS0s(y as any, x, multiplyScalar, true)
     },
 
     'any, DenseMatrix': function (x: any, y: DenseMatrix): DenseMatrix {
-      return matAlgo14xDs(y, x, multiplyScalar, true)
+      return matAlgo14xDs(y as any, x, multiplyScalar, true)
     },
 
     'Array, any': function (x: any[], y: any): any[] {
       // use matrix implementation
-      return matAlgo14xDs(matrix(x), y, multiplyScalar, false).valueOf() as any[]
+      return matAlgo14xDs(matrix(x) as any, y, multiplyScalar, false).valueOf() as any[]
     },
 
     'any, Array': function (x: any, y: any[]): any[] {
       // use matrix implementation
-      return matAlgo14xDs(matrix(y), x, multiplyScalar, true).valueOf() as any[]
+      return matAlgo14xDs(matrix(y) as any, x, multiplyScalar, true).valueOf() as any[]
     },
 
     'any, any': multiplyScalar,
 
-    'any, any, ...any': typed.referToSelf((self: TypedFunction) => (x: any, y: any, rest: any[]) => {
+    'any, any, ...any': typed.referToSelf((self: TypedFunction): any => (x: any, y: any, rest: any[]) => {
       let result = self(x, y)
 
       for (let i = 0; i < rest.length; i++) {

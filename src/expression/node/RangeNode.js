@@ -1,13 +1,17 @@
-import { isNode, isSymbolNode } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { getPrecedence } from '../operators.js'
+import { isNode, isSymbolNode } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { getPrecedence } from '../operators.ts'
 
 const name = 'RangeNode'
 const dependencies = [
   'Node'
 ]
 
-export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }) => {
+export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({
+  Node
+}: {
+  Node: any;
+}) => {
   /**
    * Calculate the necessary parentheses
    * @param {Node} node

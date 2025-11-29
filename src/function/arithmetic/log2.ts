@@ -6,7 +6,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/config.js'
 
 const name = 'log2'
-const dependencies = ['typed', 'config', 'Complex'] as const
+const dependencies = ['typed', 'config', 'Complex']
 
 export const createLog2: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }: { typed: TypedFunction; config: MathJsConfig; Complex: any }): any => {
   /**
@@ -57,7 +57,7 @@ export const createLog2: FactoryFunction<typeof name, typeof dependencies> = /* 
         return x.log(2)
       } else {
         // downgrade to number, return Complex valued result
-        return complexLog2Number(x.toNumber())
+        return complexLog2Number((x as any).toNumber())
       }
     },
 

@@ -10,7 +10,7 @@ const dependencies = [
   'combinations',
   'isNegative',
   'isInteger'
-] as const
+]
 
 export const createCatalan: FactoryFunction<
   {
@@ -61,7 +61,7 @@ export const createCatalan: FactoryFunction<
         throw new TypeError('Non-negative integer value expected in function catalan')
       }
 
-      return divideScalar(combinations(multiplyScalar(n, 2), n), addScalar(n, 1))
+      return divideScalar(combinations(multiplyScalar(n, 2), n), (addScalar as any)(n, 1))
     }
   })
 })

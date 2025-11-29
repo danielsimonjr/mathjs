@@ -146,7 +146,7 @@ export const createZeros = /* #__PURE__ */ factory(name, dependencies, ({ typed,
     size.forEach(function (value: any, index: number, arr: any[]) {
       if (isBigNumber(value)) {
         hasBigNumbers = true
-        arr[index] = value.toNumber()
+        arr[index] = (value as any).toNumber()
       }
     })
     return hasBigNumbers

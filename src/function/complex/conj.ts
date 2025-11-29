@@ -2,7 +2,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 
 const name = 'conj'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createConj: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
@@ -33,7 +33,7 @@ export const createConj: FactoryFunction<'typed', typeof name> = /* #__PURE__ */
   return typed(name, {
     'number | BigNumber | Fraction': (x: any) => x,
     Complex: (x: any) => x.conjugate(),
-    Unit: typed.referToSelf((self: Function) => (x: any) => new x.constructor(self(x.toNumeric()), x.formatUnits())),
-    'Array | Matrix': typed.referToSelf((self: Function) => (x: any) => deepMap(x, self))
+    Unit: typed.referToSelf(((self: any) => ((x: any) => new x.constructor(self(x.toNumeric()), x.formatUnits()))) as any) as any,
+    'Array | Matrix': typed.referToSelf(((self: any) => ((x: any) => deepMap(x, self))) as any) as any
   })
 })

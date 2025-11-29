@@ -3,7 +3,7 @@ import { arraySize, broadcastSizes, broadcastTo, get, deepMap } from '../../util
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'map'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createMap: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

@@ -24,7 +24,7 @@ const dependencies = [
   'ParenthesisNode',
   'SymbolNode',
   'replacer'
-] as const
+]
 
 type SimplifyRule = string | { s?: string; l?: string; r?: string; repeat?: boolean; assuming?: any; imposeContext?: any; evaluate?: any; expanded?: any; expandedNC1?: any; expandedNC2?: any } | Function
 type SimplifyOptions = { consoleDebug?: boolean; context?: any; exactFractions?: boolean; fractionsLimit?: number }

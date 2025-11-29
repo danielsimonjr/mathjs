@@ -17,7 +17,7 @@ const dependencies = [
   'number',
   '?bignumber',
   'larger'
-] as const
+]
 
 export const createStirlingS2: FactoryFunction<
   {

@@ -37,7 +37,7 @@
  */
 
 import typedFunction from 'typed-function'
-import { factory } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.ts'
 import {
   isAccessorNode,
   isArray,
@@ -80,8 +80,8 @@ import {
   isSymbolNode,
   isUndefined,
   isUnit
-} from '../../utils/is.js'
-import { digits } from '../../utils/number.js'
+} from '../../utils/is.ts'
+import { digits } from '../../utils/number.ts'
 
 // returns a new instance of typed-function
 let _createTyped = function () {
@@ -103,7 +103,12 @@ const dependencies = [
  * @param {Object} dependencies   Object with data types like Complex and BigNumber
  * @returns {Function}
  */
-export const createTyped = /* #__PURE__ */ factory('typed', dependencies, function createTyped ({ BigNumber, Complex, DenseMatrix, Fraction }) {
+export const createTyped = /* #__PURE__ */ factory('typed', dependencies, function createTyped ({
+  BigNumber,
+  Complex,
+  DenseMatrix,
+  Fraction
+}) {
   // TODO: typed-function must be able to silently ignore signatures with unknown data types
 
   // get a new instance of typed-function
@@ -127,7 +132,7 @@ export const createTyped = /* #__PURE__ */ factory('typed', dependencies, functi
     // TODO: deprecate the identifier type (it's not used anymore, see https://github.com/josdejong/mathjs/issues/3253)
     {
       name: 'identifier',
-      test: s => isString && /^\p{L}[\p{L}\d]*$/u.test(s)
+      test: (s) => isString(s) && /^\p{L}[\p{L}\d]*$/u.test(s)
     },
     { name: 'string', test: isString },
     { name: 'Chain', test: isChain },

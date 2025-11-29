@@ -4,7 +4,7 @@ import { unaryMinusNumber } from '../../plain/number/index.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'unaryMinus'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createUnaryMinus: FactoryFunction<
   { typed: TypedFunction },

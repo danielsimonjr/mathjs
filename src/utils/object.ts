@@ -35,7 +35,7 @@ export function clone<T>(x: T): T {
 
   // object
   if (isObject(x)) {
-    return mapObject(x, clone) as T
+    return mapObject(x as any, clone) as T
   }
 
   if (type === 'function') {
@@ -102,18 +102,18 @@ export function deepExtend<T extends Record<string, any>>(a: T, b: Record<string
     // to prevent polluting for example Object.__proto__.
     if (hasOwnProperty(b, prop) && !(prop in Object.prototype) && !(prop in Function.prototype)) {
       if (b[prop] && b[prop].constructor === Object) {
-        if (a[prop] === undefined) {
-          a[prop] = {} as any
+        if ((a as any)[prop] === undefined) {
+          (a as any)[prop] = {} as any
         }
-        if (a[prop] && a[prop].constructor === Object) {
-          deepExtend(a[prop], b[prop])
+        if ((a as any)[prop] && (a as any)[prop].constructor === Object) {
+          deepExtend((a as any)[prop], b[prop])
         } else {
-          a[prop] = b[prop]
+          (a as any)[prop] = b[prop]
         }
       } else if (Array.isArray(b[prop])) {
         throw new TypeError('Arrays are not supported by deepExtend')
       } else {
-        a[prop] = b[prop]
+        (a as any)[prop] = b[prop]
       }
     }
   }
@@ -349,7 +349,7 @@ export function set<T extends Record<string, any>>(
     if (isPath(path)) {
       return set(object, path.split('.'), value)
     } else {
-      object[path] = value
+      (object as any)[path] = value
       return object
     }
   }

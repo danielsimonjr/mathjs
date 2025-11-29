@@ -150,6 +150,6 @@ export const createMod = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
 
     // We use mathjs floor to handle errors associated with
     // precision float approximation
-    return (y === 0) ? x : x - y * floor(x / y)
+    return (y === 0) ? x : x - y * (floor as any)(x / y)
   }
 })

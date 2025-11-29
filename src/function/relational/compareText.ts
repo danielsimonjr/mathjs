@@ -60,5 +60,5 @@ export const createCompareText = /* #__PURE__ */ factory(name, dependencies, ({ 
 })
 
 export const createCompareTextNumber = /* #__PURE__ */ factory(
-  name, ['typed'], ({ typed }: { typed: TypedFunction }) => typed(name, _compareText)
+  name, ['typed'], ({ typed }: any) => typed(name, _compareText)
 )

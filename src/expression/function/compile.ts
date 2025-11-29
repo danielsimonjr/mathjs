@@ -1,6 +1,6 @@
 import { deepMap } from '../../utils/collection.js'
 import { factory } from '../../utils/factory.js'
-import type { MathArray, Matrix } from '../../types.js'
+import type { MathArray, Matrix } from '../../../types/index.js'
 
 const name = 'compile'
 const dependencies = ['typed', 'parse']
@@ -46,7 +46,7 @@ export const createCompile = /* #__PURE__ */ factory(name, dependencies, ({ type
     },
 
     'Array | Matrix': function (expr: MathArray | Matrix) {
-      return deepMap(expr, function (entry: any) {
+      return deepMap(expr as any, function (entry: any) {
         return parse(entry).compile()
       })
     }

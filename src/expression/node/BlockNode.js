@@ -1,6 +1,6 @@
-import { isNode } from '../../utils/is.js'
-import { forEach, map } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { isNode } from '../../utils/is.ts'
+import { forEach, map } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'BlockNode'
 const dependencies = [
@@ -8,7 +8,13 @@ const dependencies = [
   'Node'
 ]
 
-export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ ResultSet, Node }) => {
+export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({
+  ResultSet,
+  Node
+}: {
+  ResultSet: typeof ResultSet;
+  Node: any;
+}) => {
   class BlockNode extends Node {
     /**
      * @constructor BlockNode

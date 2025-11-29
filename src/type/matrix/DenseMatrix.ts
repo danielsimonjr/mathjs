@@ -66,8 +66,8 @@ interface MatrixEntry {
   index: number[]
 }
 
-type MapCallback = (value: any, index?: number[], matrix?: DenseMatrix) => any
-type ForEachCallback = (value: any, index?: number[], matrix?: DenseMatrix) => void
+type MapCallback = (value: any, index?: number[], matrix?: any) => any
+type ForEachCallback = (value: any, index?: number[], matrix?: any) => void
 
 interface DenseMatrixConstructorData {
   data: MatrixData
@@ -108,16 +108,16 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
 
       if (isMatrix(data)) {
         // check data is a DenseMatrix
-        if (data.type === 'DenseMatrix') {
+        if ((data as any).type === 'DenseMatrix') {
           // clone data & size
-          this._data = clone(data._data!)
-          this._size = clone(data._size!)
-          this._datatype = datatype || data._datatype
+          this._data = clone((data as any)._data!)
+          this._size = clone((data as any)._size!)
+          this._datatype = datatype || (data as any)._datatype
         } else {
           // build data from existing matrix
-          this._data = data.toArray()
-          this._size = data.size()
-          this._datatype = datatype || data._datatype
+          this._data = (data as any).toArray()
+          this._size = (data as any).size()
+          this._datatype = datatype || (data as any)._datatype
         }
       } else if (data && isArray((data as DenseMatrixConstructorData).data) && isArray((data as DenseMatrixConstructorData).size)) {
         // initialize fields from JSON representation
@@ -376,7 +376,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
 
       if (maxDepth < 0) return me.clone()
 
-      const fastCallback: OptimizedCallback = optimizeCallback(callback, me, 'map', isUnary) as OptimizedCallback
+      const fastCallback: OptimizedCallback = optimizeCallback(callback, me as any, 'map', isUnary) as OptimizedCallback
       const fastCallbackFn = fastCallback.fn
 
       const result = me.create(undefined, me._datatype)
@@ -445,7 +445,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
 
       if (maxDepth < 0) return
 
-      const fastCallback: OptimizedCallback = optimizeCallback(callback, me, 'map', isUnary) as OptimizedCallback
+      const fastCallback: OptimizedCallback = optimizeCallback(callback, me as any, 'map', isUnary) as OptimizedCallback
       const fastCallbackFn = fastCallback.fn
       if (isUnary || fastCallback.isUnary) {
         iterateUnary(me._data)
@@ -600,7 +600,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
      * @returns {string} str
      */
     toString(): string {
-      return format(this._data)
+      return format(this._data, {})
     }
 
     /**
@@ -629,7 +629,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
       // validate k if any
       if (k) {
         // convert BigNumber to a number
-        if (isBigNumber(k)) { k = k.toNumber() }
+        if (isBigNumber(k)) { k = (k as any).toNumber() }
         // is must be an integer
         if (!isNumber(k) || !isInteger(k)) {
           throw new TypeError('The parameter k must be an integer number')
@@ -714,7 +714,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
         // check it is a big number
         if (isBigNumber(s)) {
           // convert it
-          s = s.toNumber()
+          s = (s as any).toNumber()
         }
         // validate arguments
         if (!isNumber(s) || !isInteger(s) || s < 1) {
@@ -726,7 +726,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
       // validate k if any
       if (k) {
         // convert BigNumber to a number
-        if (isBigNumber(k)) { k = k.toNumber() }
+        if (isBigNumber(k)) { k = (k as any).toNumber() }
         // is must be an integer
         if (!isNumber(k) || !isInteger(k)) {
           throw new TypeError('The parameter k must be an integer number')
@@ -763,7 +763,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
         }
       } else if (isMatrix(value)) {
         // matrix size
-        const ms = value.size()
+        const ms = (value as any).size()
         // validate matrix
         if (ms.length !== 1 || ms[0] !== n) {
           // number of values in array must be n
@@ -772,7 +772,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
         // define function
         _value = function (i: number) {
           // return value @ i
-          return value.get([i])
+          return (value as any).get([i])
         }
       } else {
         // define function
@@ -943,8 +943,8 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
     // calculate the size of the submatrix, and convert it into an Array if needed
     let sSize: number[]
     if (isMatrix(submatrix)) {
-      sSize = submatrix.size()
-      submatrix = submatrix.valueOf()
+      sSize = (submatrix as any).size()
+      submatrix = (submatrix as any).valueOf()
     } else {
       sSize = arraySize(submatrix)
     }

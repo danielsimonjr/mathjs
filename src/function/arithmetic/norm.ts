@@ -18,7 +18,7 @@ const dependencies = [
   'matrix',
   'ctranspose',
   'eigs'
-] as const
+]
 
 export const createNorm = /* #__PURE__ */ factory(
   name,

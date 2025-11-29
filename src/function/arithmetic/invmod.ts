@@ -5,7 +5,7 @@ import type { MathJsConfig } from '../../core/create.js'
 type Dependencies = 'typed' | 'config' | 'BigNumber' | 'xgcd' | 'equal' | 'smaller' | 'mod' | 'add' | 'isInteger'
 
 const name = 'invmod'
-const dependencies = ['typed', 'config', 'BigNumber', 'xgcd', 'equal', 'smaller', 'mod', 'add', 'isInteger'] as const
+const dependencies = ['typed', 'config', 'BigNumber', 'xgcd', 'equal', 'smaller', 'mod', 'add', 'isInteger']
 
 export const createInvmod = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, BigNumber, xgcd, equal, smaller, mod, add, isInteger }: any): TypedFunction => {
   /**

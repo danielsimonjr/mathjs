@@ -62,7 +62,7 @@ export const createMedian = /* #__PURE__ */ factory(name, dependencies, ({ typed
         return middle(m)
       }
     } catch (err) {
-      throw improveErrorMessage(err, 'median')
+      throw improveErrorMessage(err, 'median', undefined)
     }
   }
 

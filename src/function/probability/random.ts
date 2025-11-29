@@ -5,7 +5,7 @@ import { createRng } from './util/seededRNG.js'
 import { randomMatrix } from './util/randomMatrix.js'
 
 const name = 'random'
-const dependencies = ['typed', 'config', '?on'] as const
+const dependencies = ['typed', 'config', '?on']
 
 export const createRandom: FactoryFunction<
   { typed: TypedFunction; config: any; on?: any },

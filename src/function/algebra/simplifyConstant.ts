@@ -22,7 +22,7 @@ const dependencies = [
   'ObjectNode',
   'OperatorNode',
   'SymbolNode'
-] as const
+]
 
 export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -217,11 +217,11 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
     },
 
     'Matrix, Object': function (s: any, options: any): any {
-      return matrix(_exactFraction(s.valueOf()))
+      return matrix(_exactFraction(s.valueOf(), options))
     },
 
     'Array, Object': function (s: any[], options: any): any {
-      return s.map(_exactFraction)
+      return s.map((item) => _exactFraction(item, options))
     }
   })
 

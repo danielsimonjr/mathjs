@@ -14,7 +14,7 @@ const dependencies = [
   'matrix',
   'equalScalar',
   'concat'
-] as const
+]
 
 export const createLcm = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, concat }: any): TypedFunction => {
   const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })

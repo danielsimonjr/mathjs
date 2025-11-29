@@ -38,7 +38,7 @@ type MatrixCallback = (a: any, b: any) => any
 const name = 'matAlgo01xDSid'
 const dependencies = ['typed']
 
-export const createMatAlgo01xDSid = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: TypedFunction }) => {
+export const createMatAlgo01xDSid = /* #__PURE__ */ factory(name, dependencies, ({ typed }: any) => {
   /**
    * Iterates over SparseMatrix nonzero items and invokes the callback function f(Dij, Sij).
    * Callback function invoked NNZ times (number of nonzero items in SparseMatrix).
@@ -98,7 +98,7 @@ export const createMatAlgo01xDSid = /* #__PURE__ */ factory(name, dependencies, 
     // process data types
     const dt: DataType = typeof adt === 'string' && adt !== 'mixed' && adt === bdt ? adt : undefined
     // callback function
-    const cf: MatrixCallback = dt ? typed.find(callback, [dt, dt]) : callback
+    const cf: MatrixCallback = dt ? typed.find(callback, [dt, dt]) as any as any : callback
 
     // vars
     let i: number, j: number

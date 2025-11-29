@@ -1,14 +1,18 @@
-import { isNode } from '../../utils/is.js'
+import { isNode } from '../../utils/is.ts'
 
-import { keywords } from '../keywords.js'
-import { deepStrictEqual } from '../../utils/object.js'
-import { factory } from '../../utils/factory.js'
-import { createMap } from '../../utils/map.js'
+import { keywords } from '../keywords.ts'
+import { deepStrictEqual } from '../../utils/object.ts'
+import { factory } from '../../utils/factory.ts'
+import { createMap } from '../../utils/map.ts'
 
 const name = 'Node'
 const dependencies = ['mathWithTransform']
 
-export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWithTransform }) => {
+export const createNode = /* #__PURE__ */ factory(name, dependencies, ({
+  mathWithTransform
+}: {
+  mathWithTransform: any;
+}) => {
   /**
    * Validate the symbol names of a scope.
    * Throws an error when the scope contains an illegal symbol.

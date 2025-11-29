@@ -70,7 +70,7 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
    * @returns {string}
    */
   Chain.prototype.toString = function(this: any): string {
-    return format(this.value)
+    return format(this.value, {})
   }
 
   /**

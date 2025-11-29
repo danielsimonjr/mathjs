@@ -50,7 +50,7 @@ interface ParseOptions {
   nodes?: Record<string, any>
 }
 
-export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
+export const createParse = /* #__PURE__ */ factory(name, dependencies as string[], ({
   typed,
   numeric,
   config,
@@ -715,7 +715,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
         getTokenSkipNewline(state)
         value = parseAssignment(state)
         return new AssignmentNode(node.object, node.index, value)
-      } else if (isFunctionNode(node) && isSymbolNode(node.fn)) {
+      } else if (isFunctionNode(node) && isSymbolNode((node as any).fn)) {
         // parse function assignment like 'f(x) = x^2'
         valid = true
         args = []

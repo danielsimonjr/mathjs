@@ -1,7 +1,7 @@
-import { escape } from '../../utils/string.js'
-import { getSafeProperty } from '../../utils/customs.js'
-import { factory } from '../../utils/factory.js'
-import { toSymbol } from '../../utils/latex.js'
+import { escape } from '../../utils/string.ts'
+import { getSafeProperty } from '../../utils/customs.ts'
+import { factory } from '../../utils/factory.ts'
+import { toSymbol } from '../../utils/latex.ts'
 
 const name = 'SymbolNode'
 const dependencies = [
@@ -10,7 +10,15 @@ const dependencies = [
   'Node'
 ]
 
-export const createSymbolNode = /* #__PURE__ */ factory(name, dependencies, ({ math, Unit, Node }) => {
+export const createSymbolNode = /* #__PURE__ */ factory(name, dependencies, ({
+  math,
+  Unit,
+  Node
+}: {
+  math: any;
+  Unit: typeof Unit;
+  Node: any;
+}) => {
   /**
    * Check whether some name is a valueless unit like "inch".
    * @param {string} name

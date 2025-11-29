@@ -1,6 +1,6 @@
 import { flatten } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-import type { MathArray, Matrix } from '../../types.js'
+import type { MathArray, Matrix } from '../../../types/index.js'
 
 const name = 'setSize'
 const dependencies = ['typed', 'compareNatural']

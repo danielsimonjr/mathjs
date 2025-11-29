@@ -1,12 +1,16 @@
-import { isNode } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
+import { isNode } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'ParenthesisNode'
 const dependencies = [
   'Node'
 ]
 
-export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }) => {
+export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies, ({
+  Node
+}: {
+  Node: any;
+}) => {
   class ParenthesisNode extends Node {
     /**
      * @constructor ParenthesisNode

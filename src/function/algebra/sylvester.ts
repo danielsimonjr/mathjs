@@ -17,7 +17,7 @@ const dependencies = [
   'identity',
   'lusolve',
   'abs'
-] as const
+]
 
 export const createSylvester = /* #__PURE__ */ factory(name, dependencies, (
   {

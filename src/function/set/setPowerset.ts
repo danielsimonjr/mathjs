@@ -1,6 +1,6 @@
 import { flatten } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-import type { MathArray, Matrix, MathNumericType } from '../../types.js'
+import type { MathArray, Matrix, MathNumericType } from '../../../types/index.js'
 
 const name = 'setPowerset'
 const dependencies = ['typed', 'size', 'subset', 'compareNatural', 'Index']
