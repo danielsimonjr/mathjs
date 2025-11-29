@@ -145,7 +145,7 @@ export function importFactory (typed: any, load: any, math: any, importedFactori
       })
     }
 
-    if (typed.isTypedFunction(math[name]) && typed.isTypedFunction(value)) {
+    if ((typed as any).isTypedFunction(math[name]) && (typed as any).isTypedFunction(value)) {
       if (options.override) {
         // give the typed function the right name
         value = typed(name, value.signatures)
@@ -283,7 +283,7 @@ export function importFactory (typed: any, load: any, math: any, importedFactori
         return instance
       }
 
-      if (typed.isTypedFunction(existing) && typed.isTypedFunction(instance)) {
+      if ((typed as any).isTypedFunction(existing) && (typed as any).isTypedFunction(instance)) {
         // merge the existing and new typed function
         return typed(existing, instance)
       }

@@ -142,7 +142,7 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
       for (let i = 0; i < rest.length; i++) {
         args[i + 1] = rest[i]
       }
-      if (typed.isTypedFunction(fn)) {
+      if ((typed as any).isTypedFunction(fn)) {
         const sigObject = typed.resolve(fn, args)
         // We want to detect if a rest parameter has matched across the
         // value in the chain and the current arguments of this call.

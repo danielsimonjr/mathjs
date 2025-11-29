@@ -20,7 +20,7 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
          * @returns {*} - The transformed callback function.
          */
   return function (callback, numberOfArrays) {
-    if (typed.isTypedFunction(callback)) {
+    if ((typed as any).isTypedFunction(callback)) {
       return _transformTypedCallbackFunction(callback, numberOfArrays)
     } else {
       return _transformCallbackFunction(callback, callback.length, numberOfArrays)
@@ -39,7 +39,7 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
       Object.entries(typedFunction.signatures)
         .map(([signature, callbackFunction]) => {
           const numberOfCallbackInputs = signature.split(',').length
-          if (typed.isTypedFunction(callbackFunction)) {
+          if ((typed as any).isTypedFunction(callbackFunction)) {
             return [signature, _transformTypedCallbackFunction(callbackFunction, numberOfArrays)]
           } else {
             return [signature, _transformCallbackFunction(callbackFunction, numberOfCallbackInputs, numberOfArrays)]

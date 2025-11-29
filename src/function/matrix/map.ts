@@ -93,7 +93,7 @@ export const createMap: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ 
     }
     )
 
-    const callbackArgCount = typed.isTypedFunction(multiCallback)
+    const callbackArgCount = (typed as any).isTypedFunction(multiCallback)
       ? _getTypedCallbackArgCount(multiCallback, firstValues, newSize.map(() => 0), Arrays)
       : _getCallbackArgCount(multiCallback, numberOfArrays)
 

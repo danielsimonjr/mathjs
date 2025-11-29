@@ -149,8 +149,8 @@ export const createTyped = /* #__PURE__ */ factory(
     // define all types. The order of the types determines in which order function
     // arguments are type-checked (so for performance it's important to put the
     // most used types first).
-    typed.clear()
-    typed.addTypes([
+    (typed as any).clear()
+    (typed as any).addTypes([
       { name: 'number', test: isNumber },
       { name: 'Complex', test: isComplex },
       { name: 'BigNumber', test: isBigNumber },
@@ -205,7 +205,7 @@ export const createTyped = /* #__PURE__ */ factory(
       { name: 'Object', test: isObject } // order 'Object' last, it matches on other classes too
     ] as TypeDefinition[])
 
-    typed.addConversions([
+    (typed as any).addConversions([
       {
         from: 'number',
         to: 'BigNumber',
@@ -470,8 +470,8 @@ export const createTyped = /* #__PURE__ */ factory(
     // This was added primarily as guidance for the v10 -> v11 transition,
     // and could potentially be removed in the future if it no longer seems
     // to be helpful.
-    typed.onMismatch = (name: string, args: any[], signatures: any[]) => {
-      const usualError = typed.createError(name, args, signatures)
+    (typed as any).onMismatch = (name: string, args: any[], signatures: any[]) => {
+      const usualError = (typed as any).createError(name, args, signatures)
       if (
         ['wrongType', 'mismatch'].includes(usualError.data.category) &&
         args.length === 1 &&
