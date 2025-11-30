@@ -16,7 +16,7 @@ const dependencies = [
 export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, matrix, Node }: {
   subset: any
   matrix: any
-  Node: typeof MathNode
+  Node: new () => MathNode
 }) => {
   const access = accessFactory({ subset })
   const assign = assignFactory({ subset, matrix })
@@ -97,7 +97,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
     }
 
     // class name for typing purposes:
-    static name = name
+    static readonly className = name
 
     // readonly property name
     get name (): string {
@@ -106,7 +106,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
           ? this.index.getObjectProperty()
           : ''
       } else {
-        return this.object.name || ''
+        return (this.object as any).name || ''
       }
     }
 
@@ -130,7 +130,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
       const evalObject = this.object._compile(math, argNames)
       const evalIndex = this.index ? this.index._compile(math, argNames) : null
       const evalValue = this.value._compile(math, argNames)
-      const name = this.object.name
+      const name = (this.object as any).name
 
       if (!this.index) {
         // apply a variable to the scope, for example `a=2`
@@ -170,10 +170,10 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
         // compile it ourselves here as we need the parent object of the
         // AccessorNode:
         // wee need to apply the updated object to parent object
-        const evalParentObject = this.object.object._compile(math, argNames)
+        const evalParentObject = (this.object as any).object._compile(math, argNames)
 
-        if (this.object.index.isObjectProperty()) {
-          const parentProp = this.object.index.getObjectProperty()
+        if ((this.object as any).index.isObjectProperty()) {
+          const parentProp = (this.object as any).index.getObjectProperty()
 
           return function evalAssignmentNode (scope: any, args: any, context: any) {
             const parent = evalParentObject(scope, args, context)
@@ -188,7 +188,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
         } else {
           // if some parameters use the 'end' parameter, we need to calculate
           // the size
-          const evalParentIndex = this.object.index._compile(math, argNames)
+          const evalParentIndex = (this.object as any).index._compile(math, argNames)
 
           return function evalAssignmentNode (scope: any, args: any, context: any) {
             const parent = evalParentObject(scope, args, context)
@@ -226,11 +226,11 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
      * @returns {AssignmentNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): AssignmentNode {
-      const object = this._ifNode(callback(this.object, 'object', this as any))
+      const object = (this as any)._ifNode(callback(this.object, 'object', this as any))
       const index = this.index
-        ? this._ifNode(callback(this.index, 'index', this as any))
+        ? (this as any)._ifNode(callback(this.index, 'index', this as any))
         : null
-      const value = this._ifNode(callback(this.value, 'value', this as any))
+      const value = (this as any)._ifNode(callback(this.value, 'value', this as any))
 
       return new AssignmentNode(object, index, value)
     }

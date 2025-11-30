@@ -1,23 +1,21 @@
 import { factory } from '../../utils/factory.js'
 
-import { TypedFunction } from '../../types.js';
-
 export const createUseMatrixForArrayScalar = /* #__PURE__ */ factory('useMatrixForArrayScalar', ['typed', 'matrix'], ({
   typed,
   matrix
 }: {
-  typed: TypedFunction;
-  matrix: MatrixConstructor;
+  typed: any;
+  matrix: (data: any) => any;
 }) => ({
   'Array, number': typed.referTo('DenseMatrix, number',
-    selfDn => (x, y) => selfDn(matrix(x), y).valueOf()),
+    (selfDn: any) => (x: any, y: any) => selfDn(matrix(x), y).valueOf()),
 
   'Array, BigNumber': typed.referTo('DenseMatrix, BigNumber',
-    selfDB => (x, y) => selfDB(matrix(x), y).valueOf()),
+    (selfDB: any) => (x: any, y: any) => selfDB(matrix(x), y).valueOf()),
 
   'number, Array': typed.referTo('number, DenseMatrix',
-    selfnD => (x, y) => selfnD(x, matrix(y)).valueOf()),
+    (selfnD: any) => (x: any, y: any) => selfnD(x, matrix(y)).valueOf()),
 
   'BigNumber, Array': typed.referTo('BigNumber, DenseMatrix',
-    selfBD => (x, y) => selfBD(x, matrix(y)).valueOf())
+    (selfBD: any) => (x: any, y: any) => selfBD(x, matrix(y)).valueOf())
 }))

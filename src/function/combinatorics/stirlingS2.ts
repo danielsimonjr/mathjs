@@ -1,5 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 import { isNumber } from '../../utils/is.js'
 
 const name = 'stirlingS2'
@@ -19,24 +18,7 @@ const dependencies = [
   'larger'
 ]
 
-export const createStirlingS2: FactoryFunction<
-  {
-    typed: TypedFunction
-    addScalar: TypedFunction
-    subtractScalar: TypedFunction
-    multiplyScalar: TypedFunction
-    divideScalar: TypedFunction
-    pow: TypedFunction
-    factorial: TypedFunction
-    combinations: TypedFunction
-    isNegative: TypedFunction
-    isInteger: TypedFunction
-    number: TypedFunction
-    bignumber?: TypedFunction
-    larger: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, (
+export const createStirlingS2 = /* #__PURE__ */ factory(name, dependencies, (
   {
     typed,
     addScalar,
@@ -51,6 +33,20 @@ export const createStirlingS2: FactoryFunction<
     number,
     bignumber,
     larger
+  }: {
+    typed: any
+    addScalar: (a: any, b: any) => any
+    subtractScalar: (a: any, b: any) => any
+    multiplyScalar: (a: any, b: any) => any
+    divideScalar: (a: any, b: any) => any
+    pow: (a: any, b: any) => any
+    factorial: (n: any) => any
+    combinations: (n: any, k: any) => any
+    isNegative: (x: any) => boolean
+    isInteger: (x: any) => boolean
+    number: (x: any) => number
+    bignumber?: (x: any) => any
+    larger: (a: any, b: any) => boolean
   }
 ) => {
   const smallCache: any[][] = []
