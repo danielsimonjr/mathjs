@@ -168,9 +168,9 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      */
     map (callback: (child: Node, path: string, parent: RangeNode) => Node): RangeNode {
       return new RangeNode(
-        this._ifNode(callback(this.start, 'start', this)),
-        this._ifNode(callback(this.end, 'end', this)),
-        this.step ? this._ifNode(callback(this.step, 'step', this)) : undefined
+        (this as any)._ifNode(callback(this.start, 'start', this)),
+        (this as any)._ifNode(callback(this.end, 'end', this)),
+        this.step ? (this as any)._ifNode(callback(this.step, 'step', this)) : undefined
       )
     }
 

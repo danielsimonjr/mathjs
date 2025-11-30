@@ -117,9 +117,9 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): ConditionalNode {
       return new ConditionalNode(
-        this._ifNode(callback(this.condition, 'condition', this as any)),
-        this._ifNode(callback(this.trueExpr, 'trueExpr', this as any)),
-        this._ifNode(callback(this.falseExpr, 'falseExpr', this as any))
+        (this as any)._ifNode(callback(this.condition, 'condition', this as any)),
+        (this as any)._ifNode(callback(this.trueExpr, 'trueExpr', this as any)),
+        (this as any)._ifNode(callback(this.falseExpr, 'falseExpr', this as any))
       )
     }
 

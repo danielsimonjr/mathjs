@@ -35,20 +35,20 @@ export const createForEachTransform = /* #__PURE__ */ factory(name, dependencies
    *
    * This transform creates a one-based index instead of a zero-based index
    */
-  const forEach = createForEach({ typed })
-  const transformCallback = createTransformCallback({ typed })
+  const forEach = createForEach({ typed }) as any
+  const transformCallback = createTransformCallback({ typed }) as any
   function forEachTransform(args: Node[], math: any, scope: any): any {
     if (args.length === 0) {
       return forEach()
     }
-    let x = args[0]
+    let x: any = args[0]
 
     if (args.length === 1) {
       return forEach(x)
     }
 
     const N = args.length - 1
-    let callback = args[N]
+    let callback: any = args[N]
 
     if (x) {
       x = _compileAndEvaluate(x, scope)
