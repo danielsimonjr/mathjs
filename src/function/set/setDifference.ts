@@ -33,7 +33,7 @@ export const createSetDifference = /* #__PURE__ */ factory(name, dependencies, (
       if (subset(size(a1), new Index(0)) === 0) { // empty-anything=empty
         result = []
       } else if (subset(size(a2), new Index(0)) === 0) { // anything-empty=anything
-        return flatten(a1.toArray())
+        return flatten((a1 as any).toArray())
       } else {
         const b1 = identify(flatten(Array.isArray(a1) ? a1 : a1.toArray()).sort(compareNatural))
         const b2 = identify(flatten(Array.isArray(a2) ? a2 : a2.toArray()).sort(compareNatural))

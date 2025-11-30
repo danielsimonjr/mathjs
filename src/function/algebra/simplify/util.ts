@@ -130,7 +130,7 @@ export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ Functio
       for (let i = 0; i < (node.args?.length ?? 0); i++) {
         const child = node.args![i] as any
         if (isOperatorNode(child) && op === (child as any).op) {
-          findChildren(child)
+          findChildren(child as any)
         } else {
           children.push(child)
         }

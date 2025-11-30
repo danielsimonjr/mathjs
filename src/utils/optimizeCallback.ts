@@ -125,7 +125,7 @@ function _findNumberOfArgumentsTyped(
   const testArgs = [value, index, array]
   for (let i = 3; i > 0; i--) {
     const args = testArgs.slice(0, i)
-    if (typed.resolve(callback, args) !== null) {
+    if ((typed as any).resolve(callback, args) !== null) {
       return i
     }
   }

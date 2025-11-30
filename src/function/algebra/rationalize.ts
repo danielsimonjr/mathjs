@@ -185,8 +185,8 @@ export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
 
     if (expr.type === 'OperatorNode' && (expr as OperatorNode).isBinary() && (expr as OperatorNode).op === '/') { // Separate numerator from denominator
       if (nVars === 1) {
-        (expr as OperatorNode).args[0] = polyToCanonical((expr as OperatorNode).args[0], coefficients)
-        (expr as OperatorNode).args[1] = polyToCanonical((expr as OperatorNode).args[1])
+        (expr as OperatorNode).args[0] = (polyToCanonical as any)((expr as OperatorNode).args[0], coefficients)
+        (expr as OperatorNode).args[1] = (polyToCanonical as any)((expr as OperatorNode).args[1])
       }
       if (detailed) {
         retRationalize.numerator = (expr as OperatorNode).args[0]
@@ -194,7 +194,7 @@ export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
       }
     } else {
       if (nVars === 1) {
-        expr = polyToCanonical(expr, coefficients)
+        expr = (polyToCanonical as any)(expr, coefficients)
       }
       if (detailed) {
         retRationalize.numerator = expr

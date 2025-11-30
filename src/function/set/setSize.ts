@@ -33,7 +33,7 @@ export const createSetSize = /* #__PURE__ */ factory(name, dependencies, ({ type
       return Array.isArray(a) ? flatten(a).length : flatten(a.toArray()).length
     },
     'Array | Matrix, boolean': function (a: MathArray | Matrix, unique: boolean): number {
-      if (unique === false || a.length === 0) {
+      if (unique === false || (a as any).length === 0) {
         return Array.isArray(a) ? flatten(a).length : flatten(a.toArray()).length
       } else {
         const b = flatten(Array.isArray(a) ? a : a.toArray()).sort(compareNatural)
