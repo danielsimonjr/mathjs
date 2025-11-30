@@ -1,8 +1,6 @@
 import { factory } from '../../utils/factory.js'
 import { isInteger } from '../../utils/number.js'
 
-import { TypedFunction, BigNumber, Fraction } from '../../types.js';
-
 const name = 'bernoulli'
 const dependencies = [
   'typed', 'config', 'isInteger', 'number', '?BigNumber', '?Fraction'
@@ -16,13 +14,13 @@ export const createBernoulli = /* #__PURE__ */ factory(name, dependencies, (
     BigNumber,
     Fraction
   }: {
-    typed: TypedFunction;
-    config: ConfigOptions;
-    number: any;
-    BigNumber: typeof BigNumber;
-    Fraction: typeof Fraction;
+    typed: any;
+    config: { precision: number };
+    number: (x: any) => number;
+    BigNumber?: new (value: any) => any;
+    Fraction?: new (value: any) => any;
   }
-): TypedFunction => {
+): any => {
   /**
    * Return the `n`th Bernoulli number, for positive integers `n`
    *
@@ -50,9 +48,9 @@ export const createBernoulli = /* #__PURE__ */ factory(name, dependencies, (
    *    nth Bernoulli number, of a type corresponding to the argument n
    */
 
-  const numberCache = [undefined]
-  const fractionCache = [undefined]
-  let bigCache = [undefined]
+  const numberCache: any[] = [undefined]
+  const fractionCache: any[] = [undefined]
+  let bigCache: any[] = [undefined]
   let cachedPrecision = 50
   return typed(name, {
     number: (index: number) => _bernoulli(
