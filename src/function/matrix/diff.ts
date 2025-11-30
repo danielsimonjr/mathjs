@@ -2,8 +2,6 @@ import { factory } from '../../utils/factory.js'
 import { isInteger } from '../../utils/number.js'
 import { isMatrix } from '../../utils/is.js'
 
-import { TypedFunction, Matrix } from '../../types.js';
-
 const name = 'diff'
 const dependencies = ['typed', 'matrix', 'subtract', 'number']
 
@@ -14,12 +12,12 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
     subtract,
     number
   }: {
-    typed: TypedFunction;
-    matrix: (data: any) => Matrix;
+    typed: any;
+    matrix: (data: any) => any;
     subtract: (a: any, b: any) => any;
     number: (value: any) => number;
   }
-): TypedFunction => {
+) => {
   /**
    * Create a new matrix or array of the difference between elements of the given array
    * The optional dim parameter lets you specify the dimension to evaluate the difference of
@@ -84,8 +82,8 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
     },
     'Array, BigNumber': typed.referTo('Array,number', (selfAn: (arr: any[], dim: number) => any[]) =>
       (arr: any[], dim: any) => selfAn(arr, number(dim))),
-    'Matrix, BigNumber': typed.referTo('Matrix,number', (selfMn: (arr: Matrix, dim: number) => Matrix) =>
-      (arr: Matrix, dim: any) => selfMn(arr, number(dim)))
+    'Matrix, BigNumber': typed.referTo('Matrix,number', (selfMn: (arr: any, dim: number) => any) =>
+      (arr: any, dim: any) => selfMn(arr, number(dim)))
   });
 
   /**

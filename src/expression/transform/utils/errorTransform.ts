@@ -1,11 +1,11 @@
-import { IndexError } from '../../../error/IndexError.ts'
+import { IndexError } from '../../../error/IndexError.js'
 
 /**
  * Transform zero-based indices to one-based indices in errors
  * @param {Error} err
  * @returns {Error | IndexError} Returns the transformed error
  */
-export function errorTransform (err) {
+export function errorTransform (err: any): any {
   if (err && err.isIndexError) {
     return new IndexError(
       err.index + 1,

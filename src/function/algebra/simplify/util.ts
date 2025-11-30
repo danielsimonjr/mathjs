@@ -8,11 +8,11 @@ const dependencies = [
   'FunctionNode',
   'OperatorNode',
   'SymbolNode'
-] as const
+]
 
 type OperatorContext = Record<string, Record<string, boolean>>
 
-export const createUtil = /* #__PURE__ */ factory(name, dependencies as string[], ({ FunctionNode, OperatorNode, SymbolNode }: {
+export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ FunctionNode, OperatorNode, SymbolNode }: {
   FunctionNode: any
   OperatorNode: any
   SymbolNode: any
@@ -128,8 +128,8 @@ export const createUtil = /* #__PURE__ */ factory(name, dependencies as string[]
     const children: MathNode[] = []
     const findChildren = function (node: MathNode & { args?: MathNode[]; op?: string }): void {
       for (let i = 0; i < (node.args?.length ?? 0); i++) {
-        const child = node.args![i] as MathNode & { op?: string }
-        if (isOperatorNode(child) && op === child.op) {
+        const child = node.args![i] as any
+        if (isOperatorNode(child) && op === (child as any).op) {
           findChildren(child)
         } else {
           children.push(child)

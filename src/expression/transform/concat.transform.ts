@@ -39,11 +39,11 @@ export const createConcatTransform = /* #__PURE__ */ factory(name, dependencies,
       if (isNumber(last)) {
         args[lastIndex] = last - 1
       } else if (isBigNumber(last)) {
-        args[lastIndex] = (last as BigNumber).minus(1)
+        args[lastIndex] = (last as any).minus(1)
       }
 
       try {
-        return concat.apply(null, args)
+        return (concat as any).apply(null, args)
       } catch (err) {
         throw errorTransform(err as Error)
       }

@@ -1,7 +1,5 @@
 import { factory } from '../../utils/factory.js'
 
-import { TypedFunction, BigNumber, Complex } from '../../types.js';
-
 const name = 'isBounded'
 const dependencies = ['typed']
 
@@ -9,9 +7,9 @@ export const createIsBounded = /* #__PURE__ */ factory(name, dependencies, (
   {
     typed
   }: {
-    typed: TypedFunction;
+    typed: any;
   }
-): TypedFunction => {
+) => {
   /**
    * Test whether a value is bounded. For scalars, this test is equivalent
    * to the isFinite finiteness test. On the other hand, a Matrix or Array
@@ -43,7 +41,7 @@ export const createIsBounded = /* #__PURE__ */ factory(name, dependencies, (
    */
   return typed(name, {
     number: (n: number) => Number.isFinite(n),
-    'BigNumber | Complex': (x: BigNumber | Complex) => x.isFinite(),
+    'BigNumber | Complex': (x: any) => x.isFinite(),
     'bigint | Fraction': () => true,
     'null | undefined': () => false,
     Unit: typed.referToSelf((self: any) => (x: any) => self(x.value)),
