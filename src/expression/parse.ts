@@ -5,6 +5,20 @@ import { safeNumberType } from '../utils/number.js'
 import { hasOwnProperty } from '../utils/object.js'
 import type { MathNode } from './node/Node.js'
 
+// Extended Node interface with runtime properties
+interface ExtendedNode extends MathNode {
+  name?: string
+  value?: any
+  args?: ExtendedNode[]
+  fn?: ExtendedNode
+  object?: ExtendedNode
+  index?: ExtendedNode
+  optionalChaining?: boolean
+  items?: ExtendedNode[]
+  properties?: Record<string, ExtendedNode>
+  [key: string]: any
+}
+
 const name = 'parse'
 const dependencies = [
   'typed',
@@ -50,7 +64,7 @@ interface ParseOptions {
   nodes?: Record<string, any>
 }
 
-export const createParse = /* #__PURE__ */ factory(name, dependencies as string[], ({
+export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({
   typed,
   numeric,
   config,
