@@ -556,14 +556,15 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       if (debug) console.log('Working on: ', str)
       for (let i = 0; i < rules.length; i++) {
         let rulestr = ''
-        if (typeof rules[i] === 'function') {
-          res = rules[i](res, options)
-          if (debug) rulestr = rules[i].name
+        const rule = rules[i]
+        if (typeof rule === 'function') {
+          res = (rule as Function)(res, options)
+          if (debug) rulestr = (rule as Function).name
         } else {
           flatten(res as any, options.context)
-          res = applyRule(res, rules[i], options.context)
+          res = applyRule(res, rule, options.context)
           if (debug) {
-            rulestr = `${rules[i].l.toString()} -> ${rules[i].r.toString()}`
+            rulestr = `${(rule as any).l.toString()} -> ${(rule as any).r.toString()}`
           }
         }
         if (debug) {
@@ -654,9 +655,9 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       if ((res as AccessorNode).object) {
         newObj = applyRule((res as AccessorNode).object, rule, context)
       }
-      let newIndex = (res as AccessorNode).index
+      let newIndex: any = (res as AccessorNode).index
       if ((res as AccessorNode).index) {
-        newIndex = applyRule((res as AccessorNode).index, rule, context)
+        newIndex = applyRule((res as AccessorNode).index, rule, context) as any
       }
       if (newObj !== (res as AccessorNode).object || newIndex !== (res as AccessorNode).index) {
         res = new AccessorNode(newObj, newIndex)
@@ -872,11 +873,11 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       (rule instanceof FunctionNode && node instanceof FunctionNode)) {
       // If the rule is an OperatorNode or a FunctionNode, then node must match exactly
       if (rule instanceof OperatorNode) {
-        if (rule.op !== (node as OperatorNode).op || rule.fn !== (node as OperatorNode).fn) {
+        if ((rule as OperatorNode).op !== (node as OperatorNode).op || (rule as OperatorNode).fn !== (node as OperatorNode).fn) {
           return []
         }
       } else if (rule instanceof FunctionNode) {
-        if (rule.name !== (node as FunctionNode).name) {
+        if ((rule as any).name !== (node as any).name) {
           return []
         }
       }
@@ -1067,7 +1068,7 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
           return false
         }
       } else if (p instanceof FunctionNode) {
-        if ((p as FunctionNode).name !== (q as FunctionNode).name) {
+        if ((p as any).name !== (q as any).name) {
           return false
         }
       }

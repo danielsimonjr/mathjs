@@ -274,7 +274,7 @@ export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
       } else if (tp === 'OperatorNode') {
         if ((node as OperatorNode).op === '^') {
           // TODO: handle negative exponents like in '1/x^(-2)'
-          if ((node as OperatorNode).args[1].type !== 'ConstantNode' || !isInteger(parseFloat(((node as OperatorNode).args[1] as ConstantNode).value))) {
+          if ((node as OperatorNode).args[1].type !== 'ConstantNode' || !isInteger(parseFloat(String(((node as OperatorNode).args[1] as ConstantNode).value)))) {
             throw new Error('There is a non-integer exponent')
           } else {
             recPoly((node as OperatorNode).args[0])
@@ -424,7 +424,7 @@ export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
         if (((node as OperatorNode).args[0].type === 'ParenthesisNode' ||
             (node as OperatorNode).args[0].type === 'OperatorNode') &&
             ((node as OperatorNode).args[1].type === 'ConstantNode')) { // Second operator: Constant
-          val = parseFloat(((node as OperatorNode).args[1] as ConstantNode).value)
+          val = parseFloat(String(((node as OperatorNode).args[1] as ConstantNode).value))
           does = (val >= 2 && isInteger(val))
         }
       }
@@ -618,7 +618,7 @@ export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
           maxExpo = Math.max(1, maxExpo)
         }
       } else if (tp === 'ConstantNode') {
-        const valor = parseFloat((node as ConstantNode).value)
+        const valor = parseFloat(String((node as ConstantNode).value))
         if (noPai === null) {
           coefficients![0] = valor
           return
