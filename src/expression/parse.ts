@@ -779,7 +779,8 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
       const condition = node
       const trueExpr = parseAssignment(state)
 
-      if (state.token !== ':') throw createSyntaxError(state, 'False part of conditional expression expected')
+      // Type assertion needed because getTokenSkipNewline changes state.token
+      if ((state.token as string) !== ':') throw createSyntaxError(state, 'False part of conditional expression expected')
 
       state.conditionalLevel = null
       getTokenSkipNewline(state)

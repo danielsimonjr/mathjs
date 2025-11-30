@@ -102,71 +102,106 @@ export interface Chain {
 // AST Node types
 export interface Node {
   isNode: boolean
+  type?: string
   constructor: {
     prototype: { isNode: boolean }
   }
+  [key: string]: any
 }
 
 export interface AccessorNode extends Node {
   isAccessorNode: boolean
+  object: Node
+  index: Node
+  optionalChaining?: boolean
 }
 
 export interface ArrayNode extends Node {
   isArrayNode: boolean
+  items: Node[]
 }
 
 export interface AssignmentNode extends Node {
   isAssignmentNode: boolean
+  object: Node
+  index?: Node
+  value: Node
+  name?: string
 }
 
 export interface BlockNode extends Node {
   isBlockNode: boolean
+  blocks: Array<{ node: Node; visible: boolean }>
 }
 
 export interface ConditionalNode extends Node {
   isConditionalNode: boolean
+  condition: Node
+  trueExpr: Node
+  falseExpr: Node
 }
 
 export interface ConstantNode extends Node {
   isConstantNode: boolean
+  value: any
 }
 
 export interface FunctionAssignmentNode extends Node {
   isFunctionAssignmentNode: boolean
+  name: string
+  params: string[]
+  expr: Node
 }
 
 export interface FunctionNode extends Node {
   isFunctionNode: boolean
+  name: string
+  fn: Node | Function
+  args: Node[]
 }
 
 export interface IndexNode extends Node {
   isIndexNode: boolean
+  dimensions: Node[]
+  dotNotation?: boolean
 }
 
 export interface ObjectNode extends Node {
   isObjectNode: boolean
+  properties: Record<string, Node>
 }
 
 export interface OperatorNode extends Node {
   isOperatorNode: boolean
   op: string
+  fn: string
   args: Node[]
+  implicit?: boolean
+  isUnary(): boolean
+  isBinary(): boolean
 }
 
 export interface ParenthesisNode extends Node {
   isParenthesisNode: boolean
+  content: Node
 }
 
 export interface RangeNode extends Node {
   isRangeNode: boolean
+  start: Node
+  end: Node
+  step?: Node
 }
 
 export interface RelationalNode extends Node {
   isRelationalNode: boolean
+  conditionals: string[]
+  params: Node[]
 }
 
 export interface SymbolNode extends Node {
   isSymbolNode: boolean
+  name: string
 }
 
 // Map types
