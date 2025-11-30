@@ -1,18 +1,12 @@
 import { factory } from '../utils/factory.js'
 import { deepMap } from '../utils/collection.js'
 
-import { TypedFunction, BigNumber, Fraction } from '../../types.js';
-
 const name = 'bigint'
 const dependencies = ['typed']
 
 export const createBigint = /* #__PURE__ */ factory(name, dependencies, (
-  {
-    typed
-  }: {
-    typed: TypedFunction;
-  }
-): TypedFunction => {
+  { typed }: { typed: any }
+) => {
   /**
    * Create a bigint or convert a string, boolean, or unit to a bigint.
    * When value is a matrix, all elements will be converted to bigint.
@@ -48,11 +42,11 @@ export const createBigint = /* #__PURE__ */ factory(name, dependencies, (
       return BigInt(x.toFixed())
     },
 
-    BigNumber: function (x: BigNumber) {
+    BigNumber: function (x: any) {
       return BigInt(x.round().toString())
     },
 
-    Fraction: function (x: Fraction) {
+    Fraction: function (x: any) {
       return BigInt(x.valueOf().toFixed())
     },
 
@@ -64,7 +58,7 @@ export const createBigint = /* #__PURE__ */ factory(name, dependencies, (
       return 0n
     },
 
-    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 
   // reviver function to parse a JSON object like:
@@ -72,7 +66,7 @@ export const createBigint = /* #__PURE__ */ factory(name, dependencies, (
   //     {"mathjs":"bigint","value":"123"}
   //
   // into a bigint 123n
-  bigint.fromJSON = function (json) {
+  bigint.fromJSON = function (json: { value: string }): bigint {
     return BigInt(json.value)
   }
 

@@ -1184,7 +1184,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
           getTokenSkipNewline(state)
 
           // Match the "symbol" part of the pattern, or a left parenthesis
-          if (state.tokenType === TOKENTYPE.SYMBOL || (state.token as string) === '(' || (state.token as string) === 'in') {
+          if ((state.tokenType as any) === TOKENTYPE.SYMBOL || (state.token as string) === '(' || (state.token as string) === 'in') {
             // We've matched the pattern "number / number symbol".
             // Rewind once and build the "number / number" node; the symbol will be consumed later
             Object.assign(state, tokenStates.pop())
@@ -1653,7 +1653,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
           params = [row]
 
           // the rows of the matrix are separated by dot-comma's
-          while (state.token === ';') { // eslint-disable-line no-unmodified-loop-condition
+          while ((state.token as string) === ';') { // eslint-disable-line no-unmodified-loop-condition
             getToken(state)
 
             if (state.token !== ']') {
@@ -1739,7 +1739,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
         if ((state.token as string) !== '}') {
           // parse key
           if ((state.token as string) === '"' || (state.token as string) === "'") {
-            key = parseStringToken(state, state.token)
+            key = parseStringToken(state, state.token as any)
           } else if (state.tokenType === TOKENTYPE.SYMBOL || (state.tokenType === TOKENTYPE.DELIMITER && state.token in NAMED_DELIMITERS)) {
             key = state.token
             getToken(state)
@@ -1757,9 +1757,9 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
           properties[key] = parseAssignment(state)
         }
       }
-      while (state.token === ',') // eslint-disable-line no-unmodified-loop-condition
+      while ((state.token as string) === ',') // eslint-disable-line no-unmodified-loop-condition
 
-      if (state.token !== '}') {
+      if ((state.token as string) !== '}') {
         throw createSyntaxError(state, 'Comma , or bracket } expected after object value')
       }
       closeParams(state)

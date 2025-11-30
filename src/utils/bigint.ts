@@ -14,8 +14,8 @@
  * @param {(number) -> Complex} cplx  the associated Complex log
  * @returns {(bigint) -> number}   the corresponding logarithm for bigints
  */
-export function promoteLogarithm (log16, numberLog, config, cplx) {
-  return function (b) {
+export function promoteLogarithm (log16: number, numberLog: (n: number) => number, config: any, cplx: (n: number) => any): (b: bigint) => number {
+  return function (b: bigint): number {
     if (b > 0 || config.predictable) {
       if (b <= 0) return NaN
       const s = b.toString(16)
