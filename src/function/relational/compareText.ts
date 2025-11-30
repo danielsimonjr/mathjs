@@ -45,7 +45,7 @@ export const createCompareText = /* #__PURE__ */ factory(name, dependencies, ({ 
   return typed(name, _compareText, matrixAlgorithmSuite({
     elop: _compareText,
     Ds: true
-  }))
+  } as any))
 })
 
 export const createCompareTextNumber = /* #__PURE__ */ factory(

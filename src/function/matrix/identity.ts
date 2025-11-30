@@ -98,7 +98,7 @@ export const createIdentity = /* #__PURE__ */ factory(name, dependencies, ({ typ
     },
 
     string: function (format: string): any {
-      return matrix(format)
+      return (matrix as any)(format)
     },
 
     'number | BigNumber': function (rows: number | BigNumber): any[][] | Matrix {

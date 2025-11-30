@@ -90,7 +90,7 @@ export const createNorm = /* #__PURE__ */ factory(
 
       boolean: function (x: boolean): number {
         // norm(x) = abs(x)
-        return Math.abs(x)
+        return Math.abs(x ? 1 : 0)
       },
 
       Array: function (x: any) {

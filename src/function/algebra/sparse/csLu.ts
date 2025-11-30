@@ -106,7 +106,7 @@ export const createCsLu = /* #__PURE__ */ factory(name, dependencies, ({ abs, di
       // apply column permutations if needed
       const col = q ? q[k] : k
       // solve triangular system, x = L\A(:,col)
-      const top = csSpsolve(L, m, col, xi, x, pinv, 1)
+      const top = csSpsolve(L, m, col, xi, x, pinv, 1 as any)
       // find pivot
       let ipiv = -1
       let a = -1

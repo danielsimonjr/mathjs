@@ -1656,7 +1656,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
           while ((state.token as string) === ';') { // eslint-disable-line no-unmodified-loop-condition
             getToken(state)
 
-            if (state.token !== ']') {
+            if ((state.token as string) !== ']') {
               params[rows] = parseRow(state)
               rows++
             }

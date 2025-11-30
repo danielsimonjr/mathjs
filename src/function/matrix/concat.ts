@@ -63,7 +63,7 @@ export const createConcat: FactoryFunction<'typed' | 'matrix' | 'isInteger', typ
 
           // last argument contains the dimension on which to concatenate
           prevDim = dim
-          dim = arg.valueOf() // change BigNumber to number
+          dim = arg.valueOf() as number // change BigNumber to number
 
           if (!isInteger(dim)) {
             throw new TypeError('Integer number expected for dimension')
