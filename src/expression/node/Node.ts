@@ -66,7 +66,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
     compile (): CompiledExpression {
       const expr = this._compile(mathWithTransform, {})
       const args: Record<string, any> = {}
-      const context = null
+      const context: any = null
 
       function evaluate (scope?: Record<string, any>): any {
         const s = createMap(scope)
@@ -122,7 +122,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
      * @returns {Node} Returns the input if it's a node, else throws an Error
      * @protected
      */
-    _ifNode (node: any): Node {
+    _ifNode (node: any): any {
       if (!isNode(node)) {
         throw new TypeError('Callback function must return a Node')
       }

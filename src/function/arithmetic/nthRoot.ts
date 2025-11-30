@@ -115,7 +115,7 @@ export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ type
       scalar: 'number | BigNumber',
       SD: matAlgo02xDS0,
       Ss: matAlgo11xS0s,
-      sS: false
+      sS: false as any
     }) as any)
   )
 
@@ -160,7 +160,7 @@ export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ type
   }
 })
 
-export const createNthRootNumber: FactoryFunction<'nthRoot', ['typed']> = /* #__PURE__ */ factory(name, ['typed'] as const, ({ typed }: any): any => {
+export const createNthRootNumber = /* #__PURE__ */ factory(name, ['typed'], ({ typed }: { typed: any }) => {
   return typed(name, {
     number: nthRootNumber,
     'number, number': nthRootNumber

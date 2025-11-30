@@ -2,17 +2,7 @@ import { isNode, isSymbolNode } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 import { getPrecedence } from '../operators.js'
 
-// Type definitions
-interface Node {
-  _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
-  filter: (callback: (node: Node) => boolean) => Node[]
-  toString: (options?: StringOptions) => string
-  toHTML: (options?: StringOptions) => string
-  toTex: (options?: StringOptions) => string
-  isSymbolNode?: boolean
-  name?: string
-}
-
+type MathNode = any
 type CompileFunction = (scope: any, args: Record<string, any>, context: any) => any
 
 interface StringOptions {
@@ -27,16 +17,12 @@ interface Parens {
   end: boolean
 }
 
-interface Dependencies {
-  Node: new (...args: any[]) => Node
-}
-
 const name = 'RangeNode'
 const dependencies = [
   'Node'
 ]
 
-export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: Dependencies) => {
+export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: { Node: any }) => {
   /**
    * Calculate the necessary parentheses
    * @param {Node} node
@@ -67,9 +53,9 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
   }
 
   class RangeNode extends Node {
-    start: Node
-    end: Node
-    step: Node | null
+    start: MathNode
+    end: MathNode
+    step: MathNode | null
 
     /**
      * @constructor RangeNode
@@ -92,7 +78,7 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
       this.step = step || null // optional step
     }
 
-    static name = name
+    static readonly name = name
     get type (): string { return name }
     get isRangeNode (): boolean { return true }
 

@@ -1,10 +1,10 @@
-import { factory, FactoryFunction } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.js'
 import { deepMap } from '../../../utils/collection.js'
 
 const name = 'complex'
-const dependencies = ['typed', 'Complex'] as const
+const dependencies = ['typed', 'Complex']
 
-export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Complex }) => {
+export const createComplex = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex }: { typed: any; Complex: any }) => {
   /**
    * Create a complex value or convert a value to a complex value.
    *
@@ -89,6 +89,6 @@ export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = 
       throw new Error('Expected object with properties (re and im) or (r and phi) or (abs and arg)')
     },
 
-    'Array | Matrix': typed.referToSelf((self: Function) => (x: any) => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 })

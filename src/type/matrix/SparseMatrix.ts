@@ -1201,7 +1201,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
     })
 
     // result matrix arrays
-    const values = mvalues ? [] : undefined
+    const values: any[] | undefined = mvalues ? [] : undefined
     const index: number[] = []
     const ptr: number[] = []
 

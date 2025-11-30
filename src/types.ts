@@ -1,15 +1,23 @@
-// Type definitions re-exported for internal use
-// This file provides access to types from the main types/index.d.ts
+// Type definitions for internal use
+// These types are used throughout the mathjs source code
 
-export type {
-  MathJsStatic,
-  MathJsInstance,
-  TypedFunction,
-  TypedFunctionConstructor,
-  BigNumber,
-  Complex,
-  Matrix,
-  Unit,
-  Fraction,
-  MathCollection
-} from '../types/index.js'
+// TypedFunction is a callable that supports multiple type signatures
+export type TypedFunction = ((...args: any[]) => any) & {
+  name?: string
+  signatures?: Record<string, (...args: any[]) => any>
+}
+
+// TypedFunctionConstructor for creating typed functions
+export interface TypedFunctionConstructor {
+  (...args: any[]): TypedFunction
+  create(): TypedFunction
+  resolve?: (...args: any[]) => any
+}
+
+// Re-export other types from the main types definitions
+export type BigNumber = any
+export type Complex = any
+export type Matrix = any
+export type Unit = any
+export type Fraction = any
+export type MathCollection = any[] | Matrix

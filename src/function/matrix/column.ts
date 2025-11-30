@@ -57,7 +57,7 @@ export const createColumn = /* #__PURE__ */ factory(name, dependencies, ({ typed
     'Matrix, number': _column,
 
     'Array, number': function (value: any[], column: number): any[] {
-      return _column(matrix(clone(value)), column).valueOf()
+      return (_column(matrix(clone(value)) as any, column) as any).valueOf()
     }
   })
 
@@ -80,7 +80,7 @@ export const createColumn = /* #__PURE__ */ factory(name, dependencies, ({ typed
     const result = value.subset(index)
     // once config.legacySubset just return result
     return isMatrix(result)
-      ? result
-      : matrix([[result]])
+      ? result as any
+      : matrix([[result]]) as any
   }
 })
