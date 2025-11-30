@@ -1,6 +1,6 @@
 ================================================================================
 MATH.JS TYPESCRIPT CONVERSION STATUS REPORT
-Generated: 2025-11-30T15:37:35.412Z
+Generated: 2025-11-30T16:29:02.818Z
 ================================================================================
 
 SUMMARY STATISTICS:
@@ -24,9 +24,9 @@ Overall Totals:
   Overall Coverage:   42.2%
 
 TypeScript Compilation:
-  Total Errors:        1187
-  Files with Errors:   237
-  Error-Free TS Files: 449
+  Total Errors:        1137
+  Files with Errors:   234
+  Error-Free TS Files: 452
 
 ================================================================================
 
@@ -46,7 +46,7 @@ src/
 │   │   ├── ✅ config.ts
 │   │   ├── ⚠️  import.ts (4 errors)
 │   │   ├── 📄 typed.js
-│   │   └── ⚠️  typed.ts (7 errors)
+│   │   └── ⚠️  typed.ts (6 errors)
 │   ├── 📄 config.js
 │   ├── ✅ config.ts
 │   ├── 📄 create.js
@@ -402,7 +402,7 @@ src/
 │   │   │   │   ├── 📄 combinationsWithRep.js
 │   │   │   │   ├── ✅ combinationsWithRep.ts
 │   │   │   │   ├── 📄 distribution.js
-│   │   │   │   ├── ⚠️  distribution.ts (1 errors)
+│   │   │   │   ├── ✅ distribution.ts
 │   │   │   │   ├── 📄 factorial.js
 │   │   │   │   ├── ✅ factorial.ts
 │   │   │   │   ├── 📄 gamma.js
@@ -648,7 +648,7 @@ src/
 │   │   │   ├── ⚠️  dimToZeroBase.ts (3 errors)
 │   │   │   ├── ⚠️  errorTransform.ts (2 errors)
 │   │   │   ├── ⚠️  lastDimToZeroBase.ts (1 errors)
-│   │   │   └── ⚠️  transformCallback.ts (14 errors)
+│   │   │   └── ⚠️  transformCallback.ts (9 errors)
 │   │   ├── 📄 and.transform.js
 │   │   ├── ✅ and.transform.ts
 │   │   ├── 📄 bitAnd.transform.js
@@ -953,7 +953,7 @@ src/
 │   │   ├── ✅ det.ts
 │   │   ├── 📄 diag.js
 │   │   ├── ⚠️  diag.ts (1 errors)
-│   │   ├── ⚠️  diff.ts (24 errors)
+│   │   ├── ⚠️  diff.ts (18 errors)
 │   │   ├── 📄 dot.js
 │   │   ├── ✅ dot.ts
 │   │   ├── 📄 eigs.js
@@ -980,7 +980,7 @@ src/
 │   │   ├── ✅ kron.ts
 │   │   ├── 📄 map.js
 │   │   ├── ⚠️  map.ts (1 errors)
-│   │   ├── ⚠️  mapSlices.ts (10 errors)
+│   │   ├── ⚠️  mapSlices.ts (6 errors)
 │   │   ├── 📄 matrixFromColumns.js
 │   │   ├── ✅ matrixFromColumns.ts
 │   │   ├── ⚠️  matrixFromFunction.ts (13 errors)
@@ -1022,7 +1022,7 @@ src/
 │   │   └── ⚠️  solveODE.ts (3 errors)
 │   ├── probability/
 │   │   ├── util/
-│   │   │   ├── ⚠️  randomMatrix.ts (3 errors)
+│   │   │   ├── ✅ randomMatrix.ts
 │   │   │   └── ⚠️  seededRNG.ts (5 errors)
 │   │   ├── ⚠️  bernoulli.ts (8 errors)
 │   │   ├── 📄 combinations.js
@@ -1035,7 +1035,7 @@ src/
 │   │   ├── ⚠️  gamma.ts (1 errors)
 │   │   ├── 📄 kldivergence.js
 │   │   ├── ⚠️  kldivergence.ts (3 errors)
-│   │   ├── ⚠️  lgamma.ts (7 errors)
+│   │   ├── ⚠️  lgamma.ts (4 errors)
 │   │   ├── 📄 multinomial.js
 │   │   ├── ⚠️  multinomial.ts (1 errors)
 │   │   ├── 📄 permutations.js
@@ -1346,7 +1346,7 @@ src/
 │   │   │   └── ⚠️  unit.ts (1 errors)
 │   │   ├── ⚠️  physicalConstants.ts (5 errors)
 │   │   ├── 📄 Unit.js
-│   │   └── ⚠️  Unit.ts (104 errors)
+│   │   └── ⚠️  Unit.ts (96 errors)
 │   ├── ⚠️  bigint.ts (4 errors)
 │   ├── 📄 boolean.js
 │   ├── ⚠️  boolean.ts (1 errors)
@@ -1372,11 +1372,11 @@ src/
 │   ├── ⚠️  emitter.ts (1 errors)
 │   ├── 📄 factory.js
 │   ├── ✅ factory.ts
-│   ├── ⚠️  function.ts (15 errors)
+│   ├── ⚠️  function.ts (11 errors)
 │   ├── 📄 is.js
 │   ├── ✅ is.ts
 │   ├── ✅ latex.d.ts
-│   ├── ⚠️  latex.ts (8 errors)
+│   ├── ⚠️  latex.ts (6 errors)
 │   ├── ✅ log.ts
 │   ├── ⚠️  lruQueue.ts (3 errors)
 │   ├── ⚠️  map.ts (2 errors)
@@ -1388,12 +1388,12 @@ src/
 │   ├── ✅ object.ts
 │   ├── ⚠️  optimizeCallback.ts (1 errors)
 │   ├── ✅ print.ts
-│   ├── ⚠️  product.ts (3 errors)
+│   ├── ✅ product.ts
 │   ├── ✅ scope.ts
 │   ├── ⚠️  snapshot.ts (1 errors)
 │   ├── ✅ string.d.ts
 │   ├── 📄 string.js
-│   ├── ⚠️  string.ts (15 errors)
+│   ├── ⚠️  string.ts (5 errors)
 │   └── ⚠️  switch.ts (1 errors)
 ├── wasm/
 │   ├── ✅ MatrixWasmBridge.ts
@@ -1823,36 +1823,36 @@ test/
 
 FILES WITH MOST ERRORS:
 -----------------------
- 1. src/type/unit/Unit.ts                                        104 errors
+ 1. src/type/unit/Unit.ts                                         96 errors
  2. src/function/algebra/simplifyCore.ts                          65 errors
  3. src/expression/parse.ts                                       35 errors
  4. src/function/algebra/simplifyConstant.ts                      28 errors
- 5. src/function/matrix/diff.ts                                   24 errors
- 6. src/function/matrix/rotationMatrix.ts                         19 errors
- 7. src/type/complex/Complex.ts                                   19 errors
+ 5. src/function/matrix/rotationMatrix.ts                         19 errors
+ 6. src/type/complex/Complex.ts                                   19 errors
+ 7. src/function/matrix/diff.ts                                   18 errors
  8. src/expression/node/FunctionNode.ts                           16 errors
  9. src/expression/operators.ts                                   16 errors
 10. src/function/arithmetic/ceil.ts                               16 errors
 11. src/function/arithmetic/floor.ts                              16 errors
 12. src/type/fraction/function/fraction.ts                        15 errors
-13. src/utils/function.ts                                         15 errors
-14. src/utils/string.ts                                           15 errors
-15. src/expression/transform/utils/transformCallback.ts           14 errors
-16. src/type/bignumber/BigNumber.ts                               14 errors
-17. src/function/arithmetic/round.ts                              13 errors
-18. src/function/bitwise/useMatrixForArrayScalar.ts               13 errors
-19. src/function/matrix/matrixFromFunction.ts                     13 errors
-20. src/utils/bignumber/formatter.ts                              13 errors
-21. src/expression/node/AssignmentNode.ts                         12 errors
-22. src/function/arithmetic/fix.ts                                12 errors
-23. src/function/combinatorics/stirlingS2.ts                      12 errors
-24. src/utils/customs.ts                                          12 errors
-25. src/function/algebra/simplify.ts                              11 errors
-26. src/function/matrix/mapSlices.ts                              10 errors
-27. src/function/statistics/corr.ts                               10 errors
-28. src/type/bignumber/function/bignumber.ts                      10 errors
-29. src/function/arithmetic/nthRoot.ts                             9 errors
-30. src/plain/bignumber/arithmetic.ts                              9 errors
+13. src/type/bignumber/BigNumber.ts                               14 errors
+14. src/function/arithmetic/round.ts                              13 errors
+15. src/function/bitwise/useMatrixForArrayScalar.ts               13 errors
+16. src/function/matrix/matrixFromFunction.ts                     13 errors
+17. src/utils/bignumber/formatter.ts                              13 errors
+18. src/expression/node/AssignmentNode.ts                         12 errors
+19. src/function/arithmetic/fix.ts                                12 errors
+20. src/function/combinatorics/stirlingS2.ts                      12 errors
+21. src/utils/customs.ts                                          12 errors
+22. src/function/algebra/simplify.ts                              11 errors
+23. src/utils/function.ts                                         11 errors
+24. src/function/statistics/corr.ts                               10 errors
+25. src/type/bignumber/function/bignumber.ts                      10 errors
+26. src/expression/transform/utils/transformCallback.ts            9 errors
+27. src/function/arithmetic/nthRoot.ts                             9 errors
+28. src/plain/bignumber/arithmetic.ts                              9 errors
+29. src/function/algebra/derivative.ts                             8 errors
+30. src/function/algebra/solver/utils/solveValidation.ts           8 errors
 
 ================================================================================
 
@@ -1880,13 +1880,13 @@ REMAINING WORK:
 ⏳ Next Steps:
   - Convert remaining 596 source .js files to TypeScript
   - Convert 343 test .js files to TypeScript
-  - Fix remaining 1187 TypeScript errors in 237 files
+  - Fix remaining 1137 TypeScript errors in 234 files
   - Remove original .js files after build system updated
   - Update tsconfig.json to handle all type definitions
 
-ERROR CATEGORIES (Remaining 1187 errors):
-  - TS2339: 362 errors
-  - TS7006: 255 errors
+ERROR CATEGORIES (Remaining 1137 errors):
+  - TS2339: 360 errors
+  - TS7006: 234 errors
   - TS2322: 76 errors
   - TS2345: 59 errors
   - TS7053: 37 errors
@@ -1901,11 +1901,11 @@ ERROR CATEGORIES (Remaining 1187 errors):
   - TS7005: 16 errors
   - TS2459: 15 errors
   - TS2699: 14 errors
-  - TS7018: 12 errors
-  - TS7023: 11 errors
-  - TS7022: 10 errors
   - TS2307: 10 errors
-  ... and 28 more error types
+  - TS2425: 9 errors
+  - TS7009: 9 errors
+  - TS2693: 8 errors
+  ... and 26 more error types
 
 ================================================================================
 END OF REPORT
