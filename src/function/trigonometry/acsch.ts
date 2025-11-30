@@ -1,13 +1,10 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-import type { Complex } from '../../type/complex/Complex.js'
+import { factory } from '../../utils/factory.js'
 import { acschNumber } from '../../plain/number/index.js'
 
 const name = 'acsch'
 const dependencies = ['typed', 'BigNumber']
 
-export const createAcsch: FactoryFunction<'acsch', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
+export const createAcsch = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
   /**
    * Calculate the inverse hyperbolic cosecant of a value,
    * defined as `acsch(x) = asinh(1/x) = ln(1/x + sqrt(1/x^2 + 1))`.
@@ -33,12 +30,12 @@ export const createAcsch: FactoryFunction<'acsch', typeof dependencies> = /* #__
   return typed(name, {
     number: acschNumber,
 
-    Complex: function (x: Complex) {
+    Complex: function (x: any) {
       return x.acsch()
     },
 
-    BigNumber: function (x: BigNumber) {
+    BigNumber: function (x: any) {
       return new BigNumber(1).div(x).asinh()
     }
-  }) as TypedFunction
+  })
 })

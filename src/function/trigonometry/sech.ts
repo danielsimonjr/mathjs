@@ -1,13 +1,10 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-import type { Complex } from '../../type/complex/Complex.js'
+import { factory } from '../../utils/factory.js'
 import { sechNumber } from '../../plain/number/index.js'
 
 const name = 'sech'
 const dependencies = ['typed', 'BigNumber']
 
-export const createSech: FactoryFunction<'sech', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
+export const createSech = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
   /**
    * Calculate the hyperbolic secant of a value,
    * defined as `sech(x) = 1 / cosh(x)`.
@@ -34,7 +31,7 @@ export const createSech: FactoryFunction<'sech', typeof dependencies> = /* #__PU
    */
   return typed(name, {
     number: sechNumber,
-    Complex: (x: Complex) => x.sech(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.cosh())
-  }) as TypedFunction
+    Complex: (x: any) => x.sech(),
+    BigNumber: (x: any) => new BigNumber(1).div(x.cosh())
+  })
 })

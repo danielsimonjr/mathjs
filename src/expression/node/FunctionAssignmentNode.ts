@@ -6,7 +6,9 @@ import { forEach, join } from '../../utils/array.js'
 import { toSymbol } from '../../utils/latex.js'
 import { getPrecedence } from '../operators.js'
 import { factory } from '../../utils/factory.js'
-import type { MathNode } from './Node.js'
+
+// Use any for MathNode to avoid type conflicts
+type MathNode = any
 
 const name = 'FunctionAssignmentNode'
 const dependencies = [
@@ -21,7 +23,7 @@ interface ParamWithType {
 
 export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, dependencies, ({ typed, Node }: {
   typed: any
-  Node: typeof MathNode
+  Node: any
 }) => {
   /**
    * Is parenthesis needed?
@@ -87,7 +89,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
       this.expr = expr
     }
 
-    static name = name
+    static readonly name = name
     get type (): string { return name }
     get isFunctionAssignmentNode (): boolean { return true }
 
@@ -155,7 +157,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
      * @returns {FunctionAssignmentNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): FunctionAssignmentNode {
-      const expr = this._ifNode(callback(this.expr, 'expr', this as any))
+      const expr = (this as any)._ifNode(callback(this.expr, 'expr', this as any))
 
       return new FunctionAssignmentNode(this.name, this.params.slice(0), expr)
     }
@@ -261,7 +263,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
       }
 
       return '\\mathrm{' + this.name +
-        '}\\left(' + this.params.map(toSymbol).join(',') + '\\right)=' + expr
+        '}\\left(' + this.params.map((p: string) => toSymbol(p)).join(',') + '\\right)=' + expr
     }
   }
 

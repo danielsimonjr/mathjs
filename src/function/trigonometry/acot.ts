@@ -1,13 +1,10 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-import type { Complex } from '../../type/complex/Complex.js'
+import { factory } from '../../utils/factory.js'
 import { acotNumber } from '../../plain/number/index.js'
 
 const name = 'acot'
 const dependencies = ['typed', 'BigNumber']
 
-export const createAcot: FactoryFunction<'acot', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
+export const createAcot = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
   /**
    * Calculate the inverse cotangent of a value, defined as `acot(x) = atan(1/x)`.
    *
@@ -34,12 +31,12 @@ export const createAcot: FactoryFunction<'acot', typeof dependencies> = /* #__PU
   return typed(name, {
     number: acotNumber,
 
-    Complex: function (x: Complex) {
+    Complex: function (x: any) {
       return x.acot()
     },
 
-    BigNumber: function (x: BigNumber) {
+    BigNumber: function (x: any) {
       return new BigNumber(1).div(x).atan()
     }
-  }) as TypedFunction
+  })
 })

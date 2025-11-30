@@ -252,7 +252,7 @@ export function importFactory (typed: any, load: any, math: any, importedFactori
 
     const resolver = function () {
       // collect all dependencies, handle finding both functions and classes and other special cases
-      const dependencies = {}
+      const dependencies: Record<string, any> = {}
       factory.dependencies
         .map(stripOptionalNotation)
         .forEach((dependency: any) => {

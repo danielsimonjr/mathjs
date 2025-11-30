@@ -1,14 +1,11 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-import type { Complex } from '../../type/complex/Complex.js'
+import { factory } from '../../utils/factory.js'
 import { secNumber } from '../../plain/number/index.js'
 import { createTrigUnit } from './trigUnit.js'
 
 const name = 'sec'
 const dependencies = ['typed', 'BigNumber']
 
-export const createSec: FactoryFunction<'sec', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
+export const createSec = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
   const trigUnit = createTrigUnit({ typed })
 
   /**
@@ -35,7 +32,7 @@ export const createSec: FactoryFunction<'sec', typeof dependencies> = /* #__PURE
    */
   return typed(name, {
     number: secNumber,
-    Complex: (x: Complex) => x.sec(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.cos())
-  }, trigUnit) as TypedFunction
+    Complex: (x: any) => x.sec(),
+    BigNumber: (x: any) => new BigNumber(1).div(x.cos())
+  }, trigUnit)
 })

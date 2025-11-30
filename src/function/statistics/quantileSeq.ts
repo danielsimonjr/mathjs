@@ -84,7 +84,7 @@ export const createQuantileSeq = /* #__PURE__ */ factory(name, dependencies, ({ 
 
   function _quantileSeqProbNumber (data: any[] | Matrix, probOrN: number | any, sorted: boolean): any {
     let probArr: any[]
-    const dataArr = data.valueOf()
+    const dataArr: any[] = data.valueOf() as any[]
     if (smaller(probOrN, 0)) {
       throw new Error('N/prob must be non-negative')
     }
@@ -129,12 +129,12 @@ export const createQuantileSeq = /* #__PURE__ */ factory(name, dependencies, ({ 
    */
 
   function _quantileSeqProbCollection (data: any[] | Matrix, probOrN: any[] | Matrix, sorted: boolean): any {
-    const dataArr = data.valueOf()
+    const dataArr: any[] = data.valueOf() as any[]
     // quantileSeq([a, b, c, d, ...], [prob1, prob2, ...][,sorted])
-    const probOrNArr = probOrN.valueOf()
+    const probOrNArr: any[] = probOrN.valueOf() as any[]
     const probArr: any[] = []
     for (let i = 0; i < probOrNArr.length; ++i) {
-      probArr.push(_quantileSeq(dataArr, (probOrNArr as any)[i], sorted))
+      probArr.push(_quantileSeq(dataArr, probOrNArr[i], sorted))
     }
     return probArr
   }
