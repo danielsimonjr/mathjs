@@ -1,13 +1,12 @@
 import { factory } from '../../../utils/factory.js'
 import { deepMap } from '../../../utils/collection.js'
-import type Decimal from 'decimal.js'
 
 const name = 'bignumber'
 const dependencies = ['typed', 'BigNumber']
 
 export const createBignumber = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: {
   typed: any
-  BigNumber: Decimal.Constructor
+  BigNumber: new (value: any) => any
 }) => {
   /**
    * Create a BigNumber, which can store numbers with arbitrary precision.
@@ -35,16 +34,16 @@ export const createBignumber = /* #__PURE__ */ factory(name, dependencies, ({ ty
    * @returns {BigNumber} The created bignumber
    */
   return typed('bignumber', {
-    '': function (): Decimal {
+    '': function (): any {
       return new BigNumber(0)
     },
 
-    number: function (x: number): Decimal {
+    number: function (x: number): any {
       // convert to string to prevent errors in case of >15 digits
       return new BigNumber(x + '')
     },
 
-    string: function (x: string): Decimal {
+    string: function (x: string): any {
       const wordSizeSuffixMatch = x.match(/(0[box][0-9a-fA-F]*)i([0-9]*)/)
       if (wordSizeSuffixMatch) {
         // x has a word size suffix
@@ -64,26 +63,26 @@ export const createBignumber = /* #__PURE__ */ factory(name, dependencies, ({ ty
       return new BigNumber(x)
     },
 
-    BigNumber: function (x: Decimal): Decimal {
+    BigNumber: function (x: any): any {
       // we assume a BigNumber is immutable
       return x
     },
 
-    bigint: function (x: bigint): Decimal {
+    bigint: function (x: bigint): any {
       return new BigNumber(x.toString())
     },
 
-    Unit: typed.referToSelf((self: (x: any) => Decimal) => (x: any) => {
+    Unit: typed.referToSelf((self: (x: any) => any) => (x: any) => {
       const clone = x.clone()
       clone.value = self(x.value)
       return clone
     }),
 
-    Fraction: function (x: { n: number; d: number; s: number }): Decimal {
+    Fraction: function (x: { n: number; d: number; s: number }): any {
       return new BigNumber(String(x.n)).div(String(x.d)).times(String(x.s))
     },
 
-    null: function (_x: null): Decimal {
+    null: function (_x: null): any {
       return new BigNumber(0)
     },
 

@@ -15,9 +15,9 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
     number
   }: {
     typed: TypedFunction;
-    matrix: MatrixConstructor;
-    subtract: any;
-    number: any;
+    matrix: (data: any) => Matrix;
+    subtract: (a: any, b: any) => any;
+    number: (value: any) => number;
   }
 ): TypedFunction => {
   /**
@@ -67,25 +67,25 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @return {Array | Matrix}         Difference between array elements in given dimension
    */
   return typed(name, {
-    'Array | Matrix': function (arr: any[] | Matrix) { // No dimension specified => assume dimension 0
+    'Array | Matrix': function (arr: any[] | Matrix): any[] | Matrix { // No dimension specified => assume dimension 0
       if (isMatrix(arr)) {
-        return matrix(_diff(arr.toArray()))
+        return matrix(_diff((arr as any).toArray()))
       } else {
         return _diff(arr)
       }
     },
-    'Array | Matrix, number': function(arr: any[] | Matrix, dim: number): number {
+    'Array | Matrix, number': function(arr: any[] | Matrix, dim: number): any[] | Matrix {
       if (!isInteger(dim)) throw new RangeError('Dimension must be a whole number')
       if (isMatrix(arr)) {
-        return matrix(_recursive(arr.toArray(), dim))
+        return matrix(_recursive((arr as any).toArray(), dim))
       } else {
         return _recursive(arr, dim)
       }
     },
-    'Array, BigNumber': typed.referTo('Array,number', selfAn =>
-      (arr, dim) => selfAn(arr, number(dim))),
-    'Matrix, BigNumber': typed.referTo('Matrix,number', selfMn =>
-      (arr, dim) => selfMn(arr, number(dim)))
+    'Array, BigNumber': typed.referTo('Array,number', (selfAn: (arr: any[], dim: number) => any[]) =>
+      (arr: any[], dim: any) => selfAn(arr, number(dim))),
+    'Matrix, BigNumber': typed.referTo('Matrix,number', (selfMn: (arr: Matrix, dim: number) => Matrix) =>
+      (arr: Matrix, dim: any) => selfMn(arr, number(dim)))
   });
 
   /**
@@ -96,16 +96,16 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {number} dim     Dimension
    * @return {Array}         resulting array
    */
-  function _recursive (arr, dim) {
+  function _recursive (arr: any, dim: number): any[] {
     if (isMatrix(arr)) {
-      arr = arr.toArray() // Makes sure arrays like [ matrix([0, 1]), matrix([1, 0]) ] are processed properly
+      arr = (arr as any).toArray() // Makes sure arrays like [ matrix([0, 1]), matrix([1, 0]) ] are processed properly
     }
     if (!Array.isArray(arr)) {
       throw RangeError('Array/Matrix does not have that many dimensions')
     }
     if (dim > 0) {
-      const result = []
-      arr.forEach(element => {
+      const result: any[] = []
+      arr.forEach((element: any) => {
         result.push(_recursive(element, dim - 1))
       })
       return result
@@ -122,8 +122,8 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Array} arr      An array
    * @return {Array}         resulting array
    */
-  function _diff (arr) {
-    const result = []
+  function _diff (arr: any[]): any[] {
+    const result: any[] = []
     const size = arr.length
     for (let i = 1; i < size; i++) {
       result.push(_ElementDiff(arr[i - 1], arr[i]))
@@ -138,10 +138,10 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Object} obj2    Second object
    * @return {Array}         resulting array
    */
-  function _ElementDiff (obj1, obj2) {
+  function _ElementDiff (obj1: any, obj2: any): any {
     // Convert matrices to arrays
-    if (isMatrix(obj1)) obj1 = obj1.toArray()
-    if (isMatrix(obj2)) obj2 = obj2.toArray()
+    if (isMatrix(obj1)) obj1 = (obj1 as any).toArray()
+    if (isMatrix(obj2)) obj2 = (obj2 as any).toArray()
 
     const obj1IsArray = Array.isArray(obj1)
     const obj2IsArray = Array.isArray(obj2)
@@ -161,11 +161,11 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Array} arr2     Array 2
    * @return {Array}         resulting array
    */
-  function _ArrayDiff (arr1, arr2) {
+  function _ArrayDiff (arr1: any[], arr2: any[]): any[] {
     if (arr1.length !== arr2.length) {
       throw RangeError('Not all sub-arrays have the same length')
     }
-    const result = []
+    const result: any[] = []
     const size = arr1.length
     for (let i = 0; i < size; i++) {
       result.push(_ElementDiff(arr1[i], arr2[i]))

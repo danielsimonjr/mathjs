@@ -1,7 +1,6 @@
 import Decimal from 'decimal.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/create.js'
+import { factory } from '../../utils/factory.js'
+import type { MathJsConfig } from '../../core/config.js'
 import { deepMap } from '../../utils/collection.js'
 import { isInteger, nearlyEqual } from '../../utils/number.js'
 import { nearlyEqual as bigNearlyEqual } from '../../utils/bignumber/nearlyEqual.js'
@@ -12,13 +11,11 @@ import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 const name = 'ceil'
 const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zeros', 'DenseMatrix']
 
-const bigTen = new Decimal(10)
+// Cast Decimal to any for construction
+const bigTen = new (Decimal as any)(10)
 
-export const createCeilNumber: FactoryFunction<
-  { typed: TypedFunction, config: MathJsConfig, round: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(
-  name, ['typed', 'config', 'round'] as const, ({ typed, config, round }) => {
+export const createCeilNumber = /* #__PURE__ */ factory(
+  name, ['typed', 'config', 'round'] as const, ({ typed, config, round }: { typed: any, config: MathJsConfig, round: any }) => {
     function _ceilNumber (x: number): number {
       // See ./floor.js _floorNumber for rationale here
       const c = Math.ceil(x)
@@ -51,10 +48,7 @@ export const createCeilNumber: FactoryFunction<
   }
 )
 
-export const createCeil: FactoryFunction<
-  { typed: TypedFunction, config: MathJsConfig, round: any, matrix: any, equalScalar: any, zeros: any, DenseMatrix: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, round, matrix, equalScalar, zeros, DenseMatrix }) => {
+export const createCeil = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, round, matrix, equalScalar, zeros, DenseMatrix }: { typed: any, config: MathJsConfig, round: any, matrix: any, equalScalar: any, zeros: any, DenseMatrix: any }) => {
   const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
   const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
   const matAlgo14xDs = createMatAlgo14xDs({ typed })

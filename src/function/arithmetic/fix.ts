@@ -1,5 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
@@ -7,11 +6,8 @@ import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 const name = 'fix'
 const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix']
 
-export const createFixNumber: FactoryFunction<
-  { typed: TypedFunction, ceil: any, floor: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(
-  name, ['typed', 'ceil', 'floor'] as const, ({ typed, ceil, floor }) => {
+export const createFixNumber = /* #__PURE__ */ factory(
+  name, ['typed', 'ceil', 'floor'] as const, ({ typed, ceil, floor }: { typed: any, ceil: any, floor: any }) => {
     return typed(name, {
       number: function (x: number): number {
         return (x > 0) ? floor(x) : ceil(x)
@@ -24,10 +20,7 @@ export const createFixNumber: FactoryFunction<
   }
 )
 
-export const createFix: FactoryFunction<
-  { typed: TypedFunction, Complex: any, matrix: any, ceil: any, floor: any, equalScalar: any, zeros: any, DenseMatrix: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex, matrix, ceil, floor, equalScalar, zeros, DenseMatrix }) => {
+export const createFix = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex, matrix, ceil, floor, equalScalar, zeros, DenseMatrix }: { typed: any, Complex: any, matrix: any, ceil: any, floor: any, equalScalar: any, zeros: any, DenseMatrix: any }) => {
   const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
   const matAlgo14xDs = createMatAlgo14xDs({ typed })
 

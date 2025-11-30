@@ -1,6 +1,5 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/create.js'
+import { factory } from '../../utils/factory.js'
+import type { MathJsConfig } from '../../core/config.js'
 import { deepMap } from '../../utils/collection.js'
 import { nearlyEqual, splitNumber } from '../../utils/number.js'
 import { nearlyEqual as bigNearlyEqual } from '../../utils/bignumber/nearlyEqual.js'
@@ -22,10 +21,7 @@ const dependencies = [
   'DenseMatrix'
 ]
 
-export const createRound: FactoryFunction<
-  { typed: TypedFunction, config: MathJsConfig, matrix: any, equalScalar: any, zeros: any, BigNumber: any, DenseMatrix: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, matrix, equalScalar, zeros, BigNumber, DenseMatrix }) => {
+export const createRound = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, matrix, equalScalar, zeros, BigNumber, DenseMatrix }: { typed: any, config: MathJsConfig, matrix: any, equalScalar: any, zeros: any, BigNumber: any, DenseMatrix: any }) => {
   const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
   const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
   const matAlgo14xDs = createMatAlgo14xDs({ typed })

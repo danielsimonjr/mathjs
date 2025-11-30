@@ -8,7 +8,7 @@ import { isInteger, normalizeFormatOptions } from '../number.js'
  * @param {number} size
  * @returns {string}
  */
-function formatBigNumberToBase (n, base, size) {
+function formatBigNumberToBase (n: any, base: number, size: number | undefined): string {
   const BigNumberCtor = n.constructor
   const big2 = new BigNumberCtor(2)
   let suffix = ''
@@ -119,7 +119,7 @@ function formatBigNumberToBase (n, base, size) {
  * @param {Object | Function | number | BigNumber} [options]
  * @return {string} str The formatted value
  */
-export function format (value, options) {
+export function format (value: any, options: any): string {
   if (typeof options === 'function') {
     // handle format(value, fn)
     return options(value)
@@ -192,7 +192,7 @@ export function format (value, options) {
  * @param {BigNumber} value
  * @param {number} [precision]        Optional number of significant figures to return.
  */
-export function toEngineering (value, precision) {
+export function toEngineering (value: any, precision: number | undefined): string {
   // find nearest lower multiple of 3 for exponent
   const e = value.e
   const newExp = e % 3 === 0 ? e : (e < 0 ? (e - 3) - (e % 3) : e - (e % 3))
@@ -217,7 +217,7 @@ export function toEngineering (value, precision) {
  *                              is used.
  * @returns {string} str
  */
-export function toExponential (value, precision) {
+export function toExponential (value: any, precision: number | undefined): string {
   if (precision !== undefined) {
     return value.toExponential(precision - 1) // Note the offset of one
   } else {
@@ -231,11 +231,11 @@ export function toExponential (value, precision) {
  * @param {number} [precision=undefined] Optional number of decimals after the
  *                                       decimal point. Undefined by default.
  */
-export function toFixed (value, precision) {
+export function toFixed (value: any, precision: number | undefined): string {
   return value.toFixed(precision)
 }
 
-function _toNumberOrDefault (value, defaultValue) {
+function _toNumberOrDefault (value: any, defaultValue: number): number {
   if (isNumber(value)) {
     return value
   } else if (isBigNumber(value)) {
