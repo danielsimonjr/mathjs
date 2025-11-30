@@ -9,5 +9,5 @@ export const InfinityDocs = {
     'Infinity',
     '1 / 0'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

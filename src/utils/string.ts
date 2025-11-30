@@ -7,7 +7,7 @@ import { format as formatBigNumber } from './bignumber/formatter.js'
  * @param {string} text
  * @param {string} search
  */
-export function endsWith (text, search) {
+export function endsWith (text: any, search: any) {
   const start = text.length - search.length
   const end = text.length
   return (text.substring(start, end) === search)
@@ -123,7 +123,7 @@ export function stringify (value) {
   let i = 0
   while (i < text.length) {
     const c = text.charAt(i)
-    escaped += (c in controlCharacters) ? controlCharacters[c] : c
+    escaped += (c in controlCharacters) ? (controlCharacters as any)[c] : c
     i++
   }
 

@@ -5,5 +5,11 @@ export type {
   MathJsStatic,
   MathJsInstance,
   TypedFunction,
-  TypedFunctionConstructor
+  TypedFunctionConstructor,
+  BigNumber,
+  Complex,
+  Matrix,
+  Unit,
+  Fraction,
+  MathCollection
 } from '../types/index.js'

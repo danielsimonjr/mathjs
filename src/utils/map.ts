@@ -15,7 +15,7 @@ export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
 
   constructor(object: Record<string, V>) {
     this.wrappedObject = object
-    this[Symbol.iterator] = this.entries
+    ;(this as any)[Symbol.iterator] = this.entries
   }
 
   keys(): IterableIterator<K> {
@@ -102,7 +102,7 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
     this.b = b
     this.bKeys = bKeys
 
-    this[Symbol.iterator] = this.entries
+    ;(this as any)[Symbol.iterator] = this.entries
   }
 
   get(key: K): V | undefined {

@@ -8,5 +8,5 @@ export const phiDocs = {
   examples: [
     'phi'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

@@ -11,5 +11,5 @@ export const typedDocs = {
     'double(2)',
     'double("hello")'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

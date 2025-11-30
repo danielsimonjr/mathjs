@@ -10,5 +10,5 @@ export const helpDocs = {
     'help(sqrt)',
     'help("complex")'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

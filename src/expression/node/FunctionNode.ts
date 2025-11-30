@@ -484,8 +484,8 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
 
       let latexConverter: any
 
-      if (latexFunctions[this.name]) {
-        latexConverter = latexFunctions[this.name]
+      if ((latexFunctions as any)[this.name]) {
+        latexConverter = (latexFunctions as any)[this.name]
       }
 
       // toTex property on the function itself

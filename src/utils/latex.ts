@@ -309,14 +309,14 @@ export function toSymbol (name, isUnit) {
   isUnit = typeof isUnit === 'undefined' ? false : isUnit
   if (isUnit) {
     if (hasOwnProperty(latexUnits, name)) {
-      return latexUnits[name]
+      return (latexUnits as any)[name]
     }
 
     return '\\mathrm{' + escapeLatex(name) + '}'
   }
 
   if (hasOwnProperty(latexSymbols, name)) {
-    return latexSymbols[name]
+    return (latexSymbols as any)[name]
   }
 
   return escapeLatex(name)

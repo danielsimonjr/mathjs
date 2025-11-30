@@ -2,7 +2,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import { isBigNumber, isComplex, isFraction } from '../../utils/is.js'
 import { cbrtNumber } from '../../plain/number/index.js'
 import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/create.js'
+import type { MathJsConfig } from '../../core/config.js'
 
 const name = 'cbrt'
 const dependencies = [

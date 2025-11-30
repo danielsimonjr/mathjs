@@ -9,5 +9,5 @@ export const LN2Docs = {
     'LN2',
     'log(2)'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

@@ -11,5 +11,5 @@ export const importDocs = {
     'myFn(2)',
     'myConstant'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

@@ -134,7 +134,7 @@ export const createQuantileSeq = /* #__PURE__ */ factory(name, dependencies, ({ 
     const probOrNArr = probOrN.valueOf()
     const probArr: any[] = []
     for (let i = 0; i < probOrNArr.length; ++i) {
-      probArr.push(_quantileSeq(dataArr, probOrNArr[i], sorted))
+      probArr.push(_quantileSeq(dataArr, (probOrNArr as any)[i], sorted))
     }
     return probArr
   }

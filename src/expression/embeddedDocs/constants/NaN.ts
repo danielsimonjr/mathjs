@@ -9,5 +9,5 @@ export const NaNDocs = {
     'NaN',
     '0 / 0'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

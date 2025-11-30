@@ -106,7 +106,7 @@ export function importFactory (typed: any, load: any, math: any, importedFactori
     for (const name in flatValues) {
       if (hasOwnProperty(flatValues, name)) {
         // console.log('import', name)
-        const value = flatValues[name]
+        const value = (flatValues as any)[name]
 
         if (isFactory(value)) {
           // we ignore name here and enforce the name of the factory
@@ -268,7 +268,7 @@ export function importFactory (typed: any, load: any, math: any, importedFactori
           } else if (dependency === 'classes') { // special case for json reviver
             dependencies.classes = math
           } else {
-            dependencies[dependency] = math[dependency]
+            dependencies[dependency] = (math as any)[dependency]
           }
         })
 
