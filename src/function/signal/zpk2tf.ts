@@ -1,5 +1,5 @@
 import { factory } from '../../utils/factory.js'
-import type { Matrix, Complex } from '../../types/index.js'
+import type { Matrix, Complex } from '../../types.js'
 
 const name = 'zpk2tf'
 

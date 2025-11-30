@@ -1,6 +1,6 @@
 import { isBigNumber } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
-import type { MathNumericType } from '../../utils/types.js'
+import type { MathNumericType } from '../../types.js'
 
 const name = 'distance'
 const dependencies = [

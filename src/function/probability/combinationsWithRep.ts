@@ -6,10 +6,7 @@ import { product } from '../../utils/product.js'
 const name = 'combinationsWithRep'
 const dependencies = ['typed']
 
-export const createCombinationsWithRep: FactoryFunction<
-  { typed: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createCombinationsWithRep = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Compute the number of ways of picking `k` unordered outcomes from `n`
    * possibilities, allowing individual outcomes to be repeated more than once.

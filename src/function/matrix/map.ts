@@ -139,7 +139,7 @@ export const createMap: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ 
     const offsets = sizes.map((size: number[]) => finalSize.length - size.length)
     const maxDepth = finalSize.length - 1
     const callbackUsesIndex = callback.length > 1
-    const index = callbackUsesIndex ? [] : null
+    const index: any[] | null = callbackUsesIndex ? [] : null
     const resultsArray = iterate(arrays, 0)
     if (firstCollection.isMatrix) {
       const resultsMatrix = firstCollection.create()

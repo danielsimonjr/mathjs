@@ -6,7 +6,7 @@ import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
 import { bitOrNumber } from '../../plain/number/index.js'
 import type { MathJsChain } from '../../../types/index.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+import type { BigNumber } from '../../type/bignumber/BigNumber.js'
 
 const name = 'bitOr'
 const dependencies = [

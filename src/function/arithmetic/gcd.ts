@@ -1,7 +1,7 @@
 import { isInteger } from '../../utils/number.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/create.js'
+import type { MathJsConfig } from '../../core/config.js'
 import { createMod } from './mod.js'
 import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.js'
 import { createMatAlgo04xSidSid } from '../../type/matrix/utils/matAlgo04xSidSid.js'

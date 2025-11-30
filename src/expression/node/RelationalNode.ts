@@ -59,6 +59,7 @@ export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, 
       this.params = params
     }
 
+    // @ts-expect-error - intentionally override Function.name
     static readonly name = name
     get type (): string { return name }
     get isRelationalNode (): boolean { return true }

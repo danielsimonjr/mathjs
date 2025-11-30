@@ -4,16 +4,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 const name = 'bellNumbers'
 const dependencies = ['typed', 'addScalar', 'isNegative', 'isInteger', 'stirlingS2']
 
-export const createBellNumbers: FactoryFunction<
-  {
-    typed: TypedFunction
-    addScalar: TypedFunction
-    isNegative: TypedFunction
-    isInteger: TypedFunction
-    stirlingS2: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, addScalar, isNegative, isInteger, stirlingS2 }) => {
+export const createBellNumbers = /* #__PURE__ */ factory(name, dependencies, ({ typed, addScalar, isNegative, isInteger, stirlingS2 }: any) => {
   /**
    * The Bell Numbers count the number of partitions of a set. A partition is a pairwise disjoint subset of S whose union is S.
    * bellNumbers only takes integer arguments.

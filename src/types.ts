@@ -2,9 +2,12 @@
 // These types are used throughout the mathjs source code
 
 // TypedFunction is a callable that supports multiple type signatures
-export type TypedFunction = ((...args: any[]) => any) & {
+export type TypedFunction<T = any> = ((...args: any[]) => T) & {
   name?: string
   signatures?: Record<string, (...args: any[]) => any>
+  referToSelf?: (callback: (self: any) => any) => any
+  referTo?: (...args: any[]) => any
+  find?: (...args: any[]) => any
 }
 
 // TypedFunctionConstructor for creating typed functions
@@ -21,3 +24,4 @@ export type Matrix = any
 export type Unit = any
 export type Fraction = any
 export type MathCollection = any[] | Matrix
+export type MathNumericType = number | BigNumber | Fraction | Complex

@@ -86,8 +86,11 @@ import { digits } from '../../utils/number.js'
 /**
  * Type definition for a typed function
  */
-export type TypedFunction = typeof typedFunction & {
+export type TypedFunction<T = unknown> = typeof typedFunction & {
   isTypedFunction?: (value: any) => boolean
+  referToSelf?: (callback: (self: any) => any) => any
+  referTo?: (...args: any[]) => any
+  find?: (...args: any[]) => any
 }
 
 /**

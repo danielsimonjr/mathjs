@@ -5,10 +5,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 const name = 'square'
 const dependencies = ['typed']
 
-export const createSquare: FactoryFunction<
-  { typed: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createSquare = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Compute the square of a value, `x * x`.
    * To avoid confusion with multiplying a square matrix by itself,

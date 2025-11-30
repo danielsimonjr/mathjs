@@ -89,6 +89,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
       this.expr = expr
     }
 
+    // @ts-expect-error - intentionally override Function.name
     static readonly name = name
     get type (): string { return name }
     get isFunctionAssignmentNode (): boolean { return true }

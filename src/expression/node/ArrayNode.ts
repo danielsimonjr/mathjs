@@ -31,6 +31,7 @@ export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ No
       }
     }
 
+    // @ts-expect-error - intentionally override Function.name
     static readonly name = name
     get type (): string { return name }
     get isArrayNode (): boolean { return true }

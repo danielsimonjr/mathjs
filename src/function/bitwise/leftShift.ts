@@ -10,7 +10,7 @@ import { createUseMatrixForArrayScalar } from './useMatrixForArrayScalar.js'
 import { leftShiftNumber } from '../../plain/number/index.js'
 import { leftShiftBigNumber } from '../../utils/bignumber/bitwise.js'
 import type { MathJsChain } from '../../../types/index.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+import type { BigNumber } from '../../type/bignumber/BigNumber.js'
 
 const name = 'leftShift'
 const dependencies = [

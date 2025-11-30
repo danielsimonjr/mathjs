@@ -85,6 +85,7 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
       }
     }
 
+    // @ts-expect-error - intentionally override Function.name
     static readonly name = name
     get type (): string { return name }
     get isAccessorNode (): boolean { return true }

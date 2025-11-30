@@ -12,18 +12,7 @@ const dependencies = [
   'larger'
 ]
 
-export const createComposition: FactoryFunction<
-  {
-    typed: TypedFunction
-    addScalar: TypedFunction
-    combinations: TypedFunction
-    isPositive: TypedFunction
-    isNegative: TypedFunction
-    isInteger: TypedFunction
-    larger: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, (
+export const createComposition = /* #__PURE__ */ factory(name, dependencies, (
   {
     typed,
     addScalar,
@@ -32,7 +21,7 @@ export const createComposition: FactoryFunction<
     isNegative,
     isInteger,
     larger
-  }
+  }: any
 ) => {
   /**
    * The composition counts of n into k parts.

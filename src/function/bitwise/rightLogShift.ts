@@ -9,7 +9,7 @@ import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgori
 import { rightLogShiftNumber } from '../../plain/number/index.js'
 import { createUseMatrixForArrayScalar } from './useMatrixForArrayScalar.js'
 import type { MathJsChain } from '../../../types/index.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+import type { BigNumber } from '../../type/bignumber/BigNumber.js'
 
 const name = 'rightLogShift'
 const dependencies = [
