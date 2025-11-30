@@ -22,7 +22,7 @@ const dependencies = [
 
 export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, Node }: {
   subset: any
-  Node: typeof MathNode
+  Node: any
 }) => {
   const access = accessFactory({ subset })
 
@@ -81,11 +81,11 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
           ? this.index.getObjectProperty()
           : ''
       } else {
-        return this.object.name || ''
+        return (this.object as any).name || ''
       }
     }
 
-    static name = name
+    static readonly name = name
     get type (): string { return name }
     get isAccessorNode (): boolean { return true }
 
@@ -165,8 +165,8 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): AccessorNode {
       return new AccessorNode(
-        this._ifNode(callback(this.object, 'object', this as any)),
-        this._ifNode(callback(this.index, 'index', this as any)),
+        (this as any)._ifNode(callback(this.object, 'object', this as any)),
+        (this as any)._ifNode(callback(this.index, 'index', this as any)),
         this.optionalChaining
       )
     }

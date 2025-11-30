@@ -110,7 +110,7 @@ export const latexOperators = {
   or: '\\vee'
 }
 
-export const latexFunctions = {
+export const latexFunctions: Record<string, any> = {
   // arithmetic
   abs: { 1: '\\left|${args[0]}\\right|' },
   add: { 2: `\\left(\${args[0]}${latexOperators.add}\${args[1]}\\right)` },

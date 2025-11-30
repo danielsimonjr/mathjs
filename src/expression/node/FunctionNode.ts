@@ -8,7 +8,7 @@ import { defaultTemplate, latexFunctions } from '../../utils/latex.js'
 import type { MathNode } from './Node.js'
 
 // Extended Node interface with runtime properties
-interface ExtendedNode extends MathNode {
+interface ExtendedNode {
   name?: string
   toTex?: (options?: any) => string
   optionalChaining?: boolean
@@ -133,17 +133,17 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
         throw new TypeError('optional flag, if specified, must be boolean')
       }
 
-      this.fn = fn
+      this.fn = fn as MathNode
       this.args = args || []
       this.optional = !!optional
     }
 
     // readonly property name
     get name (): string {
-      return this.fn.name || ''
+      return (this.fn as any).name || ''
     }
 
-    static name = name
+    static readonly name = name
     get type (): string { return name }
     get isFunctionNode (): boolean { return true }
 
@@ -284,7 +284,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
             return undefined
           }
 
-          const fn = getSafeMethod(object, prop)
+          const fn: any = getSafeMethod(object, prop)
 
           if (fn?.rawArgs) {
             // "Raw" evaluation
