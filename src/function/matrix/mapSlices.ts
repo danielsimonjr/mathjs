@@ -55,20 +55,21 @@ export const createMapSlices = /* #__PURE__ */ factory(name, dependencies, (
    * @return {Array | Matrix} res    The residual matrix with the function mapped on the slices over some dimension.
    */
   return typed(name, {
-    'Array | Matrix, number | BigNumber, function': function (mat: any[] | Matrix, dim: number | BigNumber, callback: function) {
+    'Array | Matrix, number | BigNumber, function': function (mat: any[] | Matrix, dim: number | BigNumber, callback: Function): any {
       if (!isInteger(dim)) {
         throw new TypeError('Integer number expected for dimension')
       }
 
-      const size = Array.isArray(mat) ? arraySize(mat) : mat.size()
-      if (dim < 0 || (dim >= size.length)) {
-        throw new IndexError(dim, 0, size.length) as any
+      const size = Array.isArray(mat) ? arraySize(mat) : (mat as any).size()
+      const dimNum = typeof dim === 'number' ? dim : (dim as any).toNumber()
+      if (dimNum < 0 || (dimNum >= size.length)) {
+        throw new IndexError(dimNum, 0, size.length) as any
       }
 
       if (isMatrix(mat)) {
-        return mat.create(_mapSlices(mat.valueOf(), dim, callback), mat.datatype())
+        return (mat as any).create(_mapSlices((mat as any).valueOf(), dimNum, callback), (mat as any).datatype())
       } else {
-        return _mapSlices(mat, dim, callback)
+        return _mapSlices(mat, dimNum, callback)
       }
     }
   });
@@ -82,7 +83,7 @@ export const createMapSlices = /* #__PURE__ */ factory(name, dependencies, (
  * @returns {Array} ret
  * @private
  */
-function _mapSlices (mat, dim, callback) {
+function _mapSlices (mat: any[], dim: number, callback: Function): any {
   let i, ret, tran
 
   if (dim <= 0) {
@@ -111,13 +112,13 @@ function _mapSlices (mat, dim, callback) {
  * @returns {Array} ret
  * @private
  */
-function _switch (mat) {
+function _switch (mat: any[]): any[] {
   const I = mat.length
   const J = mat[0].length
   let i, j
-  const ret = []
+  const ret: any[] = []
   for (j = 0; j < J; j++) {
-    const tmp = []
+    const tmp: any[] = []
     for (i = 0; i < I; i++) {
       tmp.push(mat[i][j])
     }
