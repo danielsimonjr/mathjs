@@ -1,0 +1,50 @@
+graph TD
+  core_function["core/function"]
+  expression_embeddedDocs["expression/embeddedDocs"]
+  expression_function["expression/function"]
+  expression_function --> expression_embeddedDocs
+  expression_node["expression/node"]
+  expression_transform["expression/transform"]
+  expression_transform --> function_bitwise
+  expression_transform --> function_logical
+  expression_transform --> function_matrix
+  expression_transform --> function_statistics
+  expression_transform --> function_string
+  function_algebra["function/algebra"]
+  function_arithmetic["function/arithmetic"]
+  function_arithmetic --> plain_number
+  function_arithmetic --> type_matrix
+  function_bitwise["function/bitwise"]
+  function_bitwise --> plain_number
+  function_bitwise --> type_matrix
+  function_combinatorics["function/combinatorics"]
+  function_complex["function/complex"]
+  function_geometry["function/geometry"]
+  function_logical["function/logical"]
+  function_logical --> plain_number
+  function_logical --> type_matrix
+  function_matrix["function/matrix"]
+  function_numeric["function/numeric"]
+  function_probability["function/probability"]
+  function_probability --> plain_number
+  function_relational["function/relational"]
+  function_relational --> type_matrix
+  function_set["function/set"]
+  function_signal["function/signal"]
+  function_special["function/special"]
+  function_statistics["function/statistics"]
+  function_string["function/string"]
+  function_trigonometry["function/trigonometry"]
+  function_trigonometry --> plain_number
+  function_trigonometry --> type_matrix
+  function_unit["function/unit"]
+  function_unit --> type_matrix
+  function_utils["function/utils"]
+  function_utils --> plain_number
+  plain_number["plain/number"]
+  type_bignumber["type/bignumber"]
+  type_chain["type/chain"]
+  type_complex["type/complex"]
+  type_fraction["type/fraction"]
+  type_matrix["type/matrix"]
+  type_unit["type/unit"]
