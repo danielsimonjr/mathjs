@@ -82,7 +82,7 @@ export const createMapSlices = /* #__PURE__ */ factory(name, dependencies, (
  * @returns {Array} ret
  * @private
  */
-function _mapSlices (mat, dim, callback) {
+function _mapSlices (mat: any, dim: any, callback: any): any {
   let i, ret, tran
 
   if (dim <= 0) {

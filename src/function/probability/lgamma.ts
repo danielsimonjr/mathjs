@@ -76,7 +76,7 @@ export const createLgamma = /* #__PURE__ */ factory(name, dependencies, (
     }
   })
 
-  function lgammaComplex (n) {
+  function lgammaComplex (n: any): any {
     const TWOPI = 6.2831853071795864769252842 // 2*pi
     const LOGPI = 1.1447298858494001741434262 // log(pi)
 
@@ -92,7 +92,7 @@ export const createLgamma = /* #__PURE__ */ factory(name, dependencies, (
       // Reflection formula. see Proposition 3.1 in [1]
       const tmp = copysign(TWOPI, n.im) * Math.floor(0.5 * n.re + 0.25)
       const a = n.mul(Math.PI).sin().log()
-      const b = lgammaComplex(new Complex(1 - n.re, -n.im))
+      const b: any = lgammaComplex(new Complex(1 - n.re, -n.im))
       return new Complex(LOGPI, tmp).sub(a).sub(b)
     } else if (n.im >= 0) {
       return lgammaRecurrence(n)

@@ -17,11 +17,11 @@ import { lruQueue } from './lruQueue.js'
  *    unlimited (default)
  * @return {function}                       Returns the memoized function
  */
-export function memoize (fn, { hasher, limit } = {}) {
+export function memoize (fn: any, { hasher, limit }: any = {}) {
   limit = limit == null ? Number.POSITIVE_INFINITY : limit
   hasher = hasher == null ? JSON.stringify : hasher
 
-  return function memoize () {
+  return function memoize (): any {
     if (typeof memoize.cache !== 'object') {
       memoize.cache = {
         values: new Map(),

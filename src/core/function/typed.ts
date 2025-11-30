@@ -144,7 +144,7 @@ export const createTyped = /* #__PURE__ */ factory(
     // TODO: typed-function must be able to silently ignore signatures with unknown data types
 
     // get a new instance of typed-function
-    const typed = _createTyped()
+    const typed: any = _createTyped()
 
     // define all types. The order of the types determines in which order function
     // arguments are type-checked (so for performance it's important to put the

@@ -11,7 +11,6 @@ export const distributionDocs = {
           '`randomInt([size,] [min,] [max])` and `pickRandom(array)`. ' +
           'Available types of distributions: "uniform", "normal". ' +
           'Note that the function distribution is currently not available via the expression parser.',
-  examples: [
-  ],
+  examples: [] as any[],
   seealso: ['random', 'randomInt']
 }

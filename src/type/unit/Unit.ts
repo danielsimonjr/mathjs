@@ -2279,14 +2279,14 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       name: 'deg',
       base: BASE_UNITS.ANGLE,
       prefixes: PREFIXES.SHORT,
-      value: null, // will be filled in by calculateAngleValues()
+      value: null as any, // will be filled in by calculateAngleValues()
       offset: 0
     },
     degree: {
       name: 'degree',
       base: BASE_UNITS.ANGLE,
       prefixes: PREFIXES.LONG,
-      value: null, // will be filled in by calculateAngleValues()
+      value: null as any, // will be filled in by calculateAngleValues()
       offset: 0
     },
     // grad = rad / (2*pi) * 400  = rad / 0.015707963267948966192313216916399
@@ -2294,14 +2294,14 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       name: 'grad',
       base: BASE_UNITS.ANGLE,
       prefixes: PREFIXES.SHORT,
-      value: null, // will be filled in by calculateAngleValues()
+      value: null as any, // will be filled in by calculateAngleValues()
       offset: 0
     },
     gradian: {
       name: 'gradian',
       base: BASE_UNITS.ANGLE,
       prefixes: PREFIXES.LONG,
-      value: null, // will be filled in by calculateAngleValues()
+      value: null as any, // will be filled in by calculateAngleValues()
       offset: 0
     },
     // cycle = rad / (2*pi) = rad / 6.2831853071795864769252867665793
@@ -2309,7 +2309,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       name: 'cycle',
       base: BASE_UNITS.ANGLE,
       prefixes: PREFIXES.NONE,
-      value: null, // will be filled in by calculateAngleValues()
+      value: null as any, // will be filled in by calculateAngleValues()
       offset: 0
     },
     // arcsec = rad / (3600 * (360 / 2 * pi)) = rad / 0.0000048481368110953599358991410235795
@@ -2317,7 +2317,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       name: 'arcsec',
       base: BASE_UNITS.ANGLE,
       prefixes: PREFIXES.NONE,
-      value: null, // will be filled in by calculateAngleValues()
+      value: null as any, // will be filled in by calculateAngleValues()
       offset: 0
     },
     // arcmin = rad / (60 * (360 / 2 * pi)) = rad / 0.00029088820866572159615394846141477
@@ -2325,7 +2325,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       name: 'arcmin',
       base: BASE_UNITS.ANGLE,
       prefixes: PREFIXES.NONE,
-      value: null, // will be filled in by calculateAngleValues()
+      value: null as any, // will be filled in by calculateAngleValues()
       offset: 0
     },
 
@@ -3305,7 +3305,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       }
 
       // Add the new base unit
-      const newBaseUnit = { dimensions: [] }
+      const newBaseUnit = { dimensions: [] as any[] }
       for (let i = 0; i < BASE_DIMENSIONS.length; i++) {
         newBaseUnit.dimensions[i] = 0
       }

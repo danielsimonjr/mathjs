@@ -138,7 +138,7 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Object} obj2    Second object
    * @return {Array}         resulting array
    */
-  function _ElementDiff (obj1, obj2) {
+  function _ElementDiff (obj1: any, obj2: any): any {
     // Convert matrices to arrays
     if (isMatrix(obj1)) obj1 = obj1.toArray()
     if (isMatrix(obj2)) obj2 = obj2.toArray()
@@ -161,7 +161,7 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Array} arr2     Array 2
    * @return {Array}         resulting array
    */
-  function _ArrayDiff (arr1, arr2) {
+  function _ArrayDiff (arr1: any, arr2: any): any {
     if (arr1.length !== arr2.length) {
       throw RangeError('Not all sub-arrays have the same length')
     }
