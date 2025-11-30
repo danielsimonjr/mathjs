@@ -18,37 +18,21 @@ const dependencies = [
   'larger'
 ]
 
-export const createStirlingS2 = /* #__PURE__ */ factory(name, dependencies, (
-  {
-    typed,
-    addScalar,
-    subtractScalar,
-    multiplyScalar,
-    divideScalar,
-    pow,
-    factorial,
-    combinations,
-    isNegative,
-    isInteger,
-    number,
-    bignumber,
-    larger
-  }: {
-    typed: any
-    addScalar: (a: any, b: any) => any
-    subtractScalar: (a: any, b: any) => any
-    multiplyScalar: (a: any, b: any) => any
-    divideScalar: (a: any, b: any) => any
-    pow: (a: any, b: any) => any
-    factorial: (n: any) => any
-    combinations: (n: any, k: any) => any
-    isNegative: (x: any) => boolean
-    isInteger: (x: any) => boolean
-    number: (x: any) => number
-    bignumber?: (x: any) => any
-    larger: (a: any, b: any) => boolean
-  }
-) => {
+export const createStirlingS2 = /* #__PURE__ */ factory(name, dependencies, ({
+  typed,
+  addScalar,
+  subtractScalar,
+  multiplyScalar,
+  divideScalar,
+  pow,
+  factorial,
+  combinations,
+  isNegative,
+  isInteger,
+  number,
+  bignumber,
+  larger
+}: any) => {
   const smallCache: any[][] = []
   const bigCache: any[][] = []
   /**
@@ -80,7 +64,7 @@ export const createStirlingS2 = /* #__PURE__ */ factory(name, dependencies, (
    * @return {Number | BigNumber}     S(n,k)
    */
   return typed(name, {
-    'number | BigNumber, number | BigNumber': function (n: any, k: any): any {
+    'number | BigNumber, number | BigNumber': function (n: number | any, k: number | any): number | any {
       if (!isInteger(n) || isNegative(n) || !isInteger(k) || isNegative(k)) {
         throw new TypeError('Non-negative integer value expected in function stirlingS2')
       } else if (larger(k, n)) {

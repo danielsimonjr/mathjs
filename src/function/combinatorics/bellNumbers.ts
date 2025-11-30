@@ -1,10 +1,15 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 
 const name = 'bellNumbers'
 const dependencies = ['typed', 'addScalar', 'isNegative', 'isInteger', 'stirlingS2']
 
-export const createBellNumbers = /* #__PURE__ */ factory(name, dependencies, ({ typed, addScalar, isNegative, isInteger, stirlingS2 }: any) => {
+export const createBellNumbers = /* #__PURE__ */ factory(name, dependencies, ({
+  typed,
+  addScalar,
+  isNegative,
+  isInteger,
+  stirlingS2
+}: any) => {
   /**
    * The Bell Numbers count the number of partitions of a set. A partition is a pairwise disjoint subset of S whose union is S.
    * bellNumbers only takes integer arguments.
@@ -27,15 +32,15 @@ export const createBellNumbers = /* #__PURE__ */ factory(name, dependencies, ({ 
    * @return {Number | BigNumber}     B(n)
    */
   return typed(name, {
-    'number | BigNumber': function (n: any): any {
+    'number | BigNumber': function (n: number | any): number | any {
       if (!isInteger(n) || isNegative(n)) {
         throw new TypeError('Non-negative integer value expected in function bellNumbers')
       }
 
       // Sum (k=0, n) S(n,k).
-      let result: any = 0
+      let result: number | any = 0
       for (let i = 0; i <= n; i++) {
-        result = (addScalar as any)(result, (stirlingS2 as any)(n, i))
+        result = addScalar(result, stirlingS2(n, i))
       }
 
       return result

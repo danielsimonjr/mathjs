@@ -1,11 +1,10 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import { squareNumber } from '../../plain/number/index.js'
-import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'square'
 const dependencies = ['typed']
 
-export const createSquare = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
+export const createSquare = /* #__PURE__ */ factory(name, dependencies, ({ typed }: any) => {
   /**
    * Compute the square of a value, `x * x`.
    * To avoid confusion with multiplying a square matrix by itself,
@@ -37,11 +36,11 @@ export const createSquare = /* #__PURE__ */ factory(name, dependencies, ({ typed
   return typed(name, {
     number: squareNumber,
 
-    Complex: function (x: any) {
+    Complex: function (x: any): any {
       return x.mul(x)
     },
 
-    BigNumber: function (x: any) {
+    BigNumber: function (x: any): any {
       return x.times(x)
     },
 
@@ -49,11 +48,11 @@ export const createSquare = /* #__PURE__ */ factory(name, dependencies, ({ typed
       return x * x
     },
 
-    Fraction: function (x: any) {
+    Fraction: function (x: any): any {
       return x.mul(x)
     },
 
-    Unit: function (x: any) {
+    Unit: function (x: any): any {
       return x.pow(2)
     }
   })

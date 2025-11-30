@@ -11,15 +11,15 @@ const dependencies = [
   'isInteger'
 ]
 
-export const createCatalan = /* #__PURE__ */ factory(name, dependencies, ({ typed, addScalar, divideScalar, multiplyScalar, combinations, isNegative, isInteger }: {
-  typed: any
-  addScalar: any
-  divideScalar: any
-  multiplyScalar: any
-  combinations: any
-  isNegative: any
-  isInteger: any
-}) => {
+export const createCatalan = /* #__PURE__ */ factory(name, dependencies, ({
+  typed,
+  addScalar,
+  divideScalar,
+  multiplyScalar,
+  combinations,
+  isNegative,
+  isInteger
+}: any) => {
   /**
    * The Catalan Numbers enumerate combinatorial structures of many different types.
    * catalan only takes integer arguments.
@@ -42,7 +42,7 @@ export const createCatalan = /* #__PURE__ */ factory(name, dependencies, ({ type
    * @return {Number | BigNumber}     Cn(n)
    */
   return typed(name, {
-    'number | BigNumber': function (n: any): any {
+    'number | BigNumber': function (n: number | any): number | any {
       if (!isInteger(n) || isNegative(n)) {
         throw new TypeError('Non-negative integer value expected in function catalan')
       }

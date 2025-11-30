@@ -1,11 +1,10 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import { cubeNumber } from '../../plain/number/index.js'
-import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'cube'
 const dependencies = ['typed']
 
-export const createCube = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
+export const createCube = /* #__PURE__ */ factory(name, dependencies, ({ typed }: any) => {
   /**
    * Compute the cube of a value, `x * x * x`.
    * To avoid confusion with `pow(M,3)`, this function does not apply to matrices.
@@ -34,11 +33,11 @@ export const createCube = /* #__PURE__ */ factory(name, dependencies, ({ typed }
   return typed(name, {
     number: cubeNumber,
 
-    Complex: function (x: any) {
+    Complex: function (x: any): any {
       return x.mul(x).mul(x) // Is faster than pow(x, 3)
     },
 
-    BigNumber: function (x: any) {
+    BigNumber: function (x: any): any {
       return x.times(x).times(x)
     },
 
@@ -46,11 +45,11 @@ export const createCube = /* #__PURE__ */ factory(name, dependencies, ({ typed }
       return x * x * x
     },
 
-    Fraction: function (x: any) {
+    Fraction: function (x: any): any {
       return x.pow(3) // Is faster than mul()mul()mul()
     },
 
-    Unit: function (x: any) {
+    Unit: function (x: any): any {
       return x.pow(3)
     }
   })
