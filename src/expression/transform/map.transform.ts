@@ -54,7 +54,7 @@ export const createMapTransform = /* #__PURE__ */ factory(name, dependencies, ({
     if (callback) {
       if (isSymbolNode(callback) || isFunctionAssignmentNode(callback)) {
         // a function pointer, like filter([3, -2, 5], myTestFunction)
-        callback = _compileAndEvaluate(callback, scope)
+        callback = _compileAndEvaluate(callback as any, scope)
       } else {
         // an expression like filter([3, -2, 5], x > 0)
         callback = compileInlineExpression(callback, math, scope)
