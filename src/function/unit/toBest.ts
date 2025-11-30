@@ -1,17 +1,9 @@
 import { factory } from '../../utils/factory.js'
 
-import { TypedFunction, Unit } from '../../types.js';
-
 const name = 'toBest'
 const dependencies = ['typed']
 
-export const createToBest = /* #__PURE__ */ factory(name, dependencies, (
-  {
-    typed
-  }: {
-    typed: TypedFunction;
-  }
-): TypedFunction => {
+export const createToBest = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Converts a unit to the most appropriate display unit.
    * When no preferred units are provided, the function automatically find the best prefix.
@@ -45,10 +37,10 @@ export const createToBest = /* #__PURE__ */ factory(name, dependencies, (
    * @return {Unit}                           Value converted to the best matching unit
    */
   return typed(name, {
-    Unit: (x: Unit) => x.toBest(),
-    'Unit, string': (x: Unit, unitList: string): Unit => x.toBest(unitList.split(',')),
-    'Unit, string, Object': (x: Unit, unitList: string, options: Object): Unit => x.toBest(unitList.split(','), options),
-    'Unit, Array': (x: Unit, unitList: any[]): any[] => x.toBest(unitList),
-    'Unit, Array, Object': (x: Unit, unitList: any[], options: Object): any[] => x.toBest(unitList, options)
-  });
+    Unit: (x: any) => x.toBest(),
+    'Unit, string': (x: any, unitList: string) => x.toBest(unitList.split(',')),
+    'Unit, string, Object': (x: any, unitList: string, options: object) => x.toBest(unitList.split(','), options),
+    'Unit, Array': (x: any, unitList: any[]) => x.toBest(unitList),
+    'Unit, Array, Object': (x: any, unitList: any[], options: object) => x.toBest(unitList, options)
+  })
 })

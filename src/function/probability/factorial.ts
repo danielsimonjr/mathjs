@@ -1,14 +1,10 @@
 import { deepMap } from '../../utils/collection.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 
 const name = 'factorial'
 const dependencies = ['typed', 'gamma']
 
-export const createFactorial: FactoryFunction<
-  { typed: TypedFunction; gamma: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, gamma }) => {
+export const createFactorial = /* #__PURE__ */ factory(name, dependencies, ({ typed, gamma }: { typed: any; gamma: any }) => {
   /**
    * Compute the factorial of a value
    *
@@ -48,6 +44,6 @@ export const createFactorial: FactoryFunction<
       return gamma(n.plus(1))
     },
 
-    'Array | Matrix': typed.referToSelf((self: TypedFunction): any => (n: any): any => deepMap(n, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (n: any) => deepMap(n, self))
   })
 })

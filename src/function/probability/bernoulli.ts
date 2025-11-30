@@ -56,10 +56,10 @@ export const createBernoulli = /* #__PURE__ */ factory(name, dependencies, (
     number: (index: number) => _bernoulli(
       index, (n: any) => n, numberCache,
       (a: any, b: any) => a + b, (a: any, b: any) => a * b, (a: any, b: any) => a / b),
-    'bigint | Fraction': (index: bigint | Fraction) => _bernoulli(
+    'bigint | Fraction': (index: any) => _bernoulli(
       number(index), (n: any) => new Fraction(n), fractionCache,
       (a: any, b: any) => a.add(b), (a: any, b: any) => a.mul(b), (a: any, b: any) => a.div(b)),
-    BigNumber: (index: BigNumber) => {
+    BigNumber: (index: any) => {
       if (config.precision !== cachedPrecision) {
         bigCache = [undefined]
         cachedPrecision = config.precision
