@@ -96,13 +96,16 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
     new (value?: any, valuelessUnit?: any): UnitInstance
     (value?: any, valuelessUnit?: any): void
     prototype: UnitInstance
-    parse(str: string): UnitInstance
+    parse(str: string, options?: any): UnitInstance
     isValidAlpha(c: string): boolean
     isValuelessUnit(name: string): boolean
     [key: string]: any
   }
 
-  const Unit = function (this: UnitInstance, value?: any, valuelessUnit?: any) {
+  // Define as UnitConstructor type so 'new Unit()' is recognized
+  // Properties are added to Unit after definition, so cast is needed
+  // @ts-expect-error - TypeScript can't track dynamic property additions
+  const Unit: UnitConstructor = function (this: UnitInstance, value?: any, valuelessUnit?: any): void {
     if (!(this instanceof Unit)) {
       throw new Error('Constructor must be called with the new operator')
     }
@@ -227,7 +230,8 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       tentativeNumber += c
       next()
 
-      if (c === '+' || c === '-') {
+      // Use string type assertion since next() changes c but TypeScript doesn't track it
+      if ((c as string) === '+' || (c as string) === '-') {
         tentativeNumber += c
         next()
       }
@@ -398,7 +402,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
           // No valid number found for the power!
           throw new SyntaxError('In "' + str + '", "^" must be followed by a floating-point number')
         }
-        power *= p
+        power *= parseFloat(p)
       }
 
       // Add the unit to the list
@@ -1177,7 +1181,8 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
           throw new Error('Invalid unit type. Expected compatible string or Unit.')
         }
         if (unit === null) {
-          unit = u.clone()
+          // u is guaranteed to be a Unit here since we checked isUnit above
+          unit = (u as UnitInstance).clone()
         }
         try {
           this.to(unit.formatUnits())
@@ -1399,7 +1404,29 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
     return ret
   }
 
-  const PREFIXES = {
+  // Prefix value type
+  interface PrefixValue {
+    name: string
+    value: number
+    scientific: boolean
+  }
+
+  // Prefixes container type with index signature for dynamic access
+  interface PrefixesType {
+    [key: string]: { [key: string]: PrefixValue }
+    NONE: { [key: string]: PrefixValue }
+    SHORT: { [key: string]: PrefixValue }
+    LONG: { [key: string]: PrefixValue }
+    SQUARED: { [key: string]: PrefixValue }
+    CUBIC: { [key: string]: PrefixValue }
+    BINARY_SHORT_SI: { [key: string]: PrefixValue }
+    BINARY_SHORT_IEC: { [key: string]: PrefixValue }
+    BINARY_LONG_SI: { [key: string]: PrefixValue }
+    BINARY_LONG_IEC: { [key: string]: PrefixValue }
+    BTU: { [key: string]: PrefixValue }
+  }
+
+  const PREFIXES: PrefixesType = {
     NONE: {
       '': { name: '', value: 1, scientific: true }
     },
@@ -1591,7 +1618,13 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
 
   const BASE_DIMENSIONS = ['MASS', 'LENGTH', 'TIME', 'CURRENT', 'TEMPERATURE', 'LUMINOUS_INTENSITY', 'AMOUNT_OF_SUBSTANCE', 'ANGLE', 'BIT']
 
-  const BASE_UNITS = {
+  // Type for base units with index signature for dynamic access
+  interface BaseUnitType {
+    dimensions: number[]
+    key?: string
+  }
+
+  const BASE_UNITS: { [key: string]: BaseUnitType } = {
     NONE: {
       dimensions: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     },
@@ -1678,11 +1711,21 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
     }
   }
 
-  const BASE_UNIT_NONE = {}
+  const BASE_UNIT_NONE: BaseUnitType = { dimensions: [] }
 
   const UNIT_NONE = { name: '', base: BASE_UNIT_NONE, value: 1, offset: 0, dimensions: BASE_DIMENSIONS.map(x => 0) }
 
-  const UNITS = {
+  // Type for unit definitions with index signature for dynamic access
+  interface UnitDefinition {
+    name: string
+    base: BaseUnitType | typeof BASE_UNIT_NONE
+    prefixes?: { [key: string]: PrefixValue }
+    value: number | (() => any)
+    offset?: number
+    [key: string]: any
+  }
+
+  const UNITS: { [key: string]: UnitDefinition } = {
     // length
     meter: {
       name: 'meter',
@@ -2838,7 +2881,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
 
   // aliases (formerly plurals)
   // note that ALIASES is only used at creation to create more entries in UNITS by copying the aliased units
-  const ALIASES = {
+  const ALIASES: { [key: string]: string } = {
     meters: 'meter',
     inches: 'inch',
     feet: 'foot',
@@ -2995,7 +3038,17 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * A user perhaps could issue a command to select a preferred unit system, or use the default (see below).
    * Auto unit system: The default unit system is updated on the fly anytime a unit is parsed. The corresponding unit in the default unit system is updated, so that answers are given in the same units the user supplies.
    */
-  const UNIT_SYSTEMS = {
+  // Type for unit system with index signature for dynamic access
+  interface UnitSystemValue {
+    unit: UnitDefinition | typeof UNIT_NONE
+    prefix: PrefixValue
+  }
+
+  interface UnitSystemType {
+    [key: string]: { [dimension: string]: UnitSystemValue }
+  }
+
+  const UNIT_SYSTEMS: UnitSystemType = {
     si: {
       // Base units
       NONE: { unit: UNIT_NONE, prefix: PREFIXES.NONE[''] },
@@ -3147,10 +3200,10 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
   for (const name in ALIASES) {
     if (hasOwnProperty(ALIASES, name)) {
       const unit = UNITS[ALIASES[name]]
-      const alias = {}
+      const alias: UnitDefinition = { name: '', base: BASE_UNIT_NONE, value: 1 }
       for (const key in unit) {
         if (hasOwnProperty(unit, key)) {
-          alias[key] = unit[key]
+          (alias as any)[key] = unit[key]
         }
       }
       alias.name = name
@@ -3321,7 +3374,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
 
     // If defUnit is null, it is because the user did not
     // specify a defintion. So create a new base dimension.
-    let newUnit = {}
+    let newUnit: any = {}
     if (!defUnit) {
       // Add a new base dimension
       baseName = baseName || name + '_STUFF' // foo --> foo_STUFF, or the essence of foo
@@ -3338,7 +3391,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       }
 
       // Add the new base unit
-      const newBaseUnit = { dimensions: [] }
+      const newBaseUnit: BaseUnitType = { dimensions: [] }
       for (let i = 0; i < BASE_DIMENSIONS.length; i++) {
         newBaseUnit.dimensions[i] = 0
       }
@@ -3389,7 +3442,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       if (!anyMatch) {
         baseName = baseName || name + '_STUFF' // foo --> foo_STUFF, or the essence of foo
         // Add the new base unit
-        const newBaseUnit = { dimensions: defUnit.dimensions.slice(0) }
+        const newBaseUnit: BaseUnitType = { dimensions: defUnit.dimensions.slice(0) }
         newBaseUnit.key = baseName
         BASE_UNITS[baseName] = newBaseUnit
 
@@ -3402,14 +3455,14 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       }
     }
 
-    Unit.UNITS[name] = newUnit
+    Unit.UNITS[name] = newUnit as UnitDefinition
 
     for (let i = 0; i < aliases.length; i++) {
       const aliasName = aliases[i]
-      const alias = {}
+      const alias: UnitDefinition = { name: '', base: BASE_UNIT_NONE, value: 1 }
       for (const key in newUnit) {
         if (hasOwnProperty(newUnit, key)) {
-          alias[key] = newUnit[key]
+          (alias as any)[key] = (newUnit as any)[key]
         }
       }
       alias.name = aliasName

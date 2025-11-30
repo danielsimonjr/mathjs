@@ -37,6 +37,14 @@ export interface Unit {
   constructor: {
     prototype: { isUnit: boolean }
   }
+  fixPrefix: boolean
+  skipAutomaticSimplification: boolean
+  units: any[]
+  dimensions: number[]
+  value: any
+  _normalize(value: any): any
+  clone(): Unit
+  [key: string]: any
 }
 
 export interface Matrix {
