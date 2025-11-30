@@ -7,6 +7,18 @@ import { factory } from '../../utils/factory.js'
 import { defaultTemplate, latexFunctions } from '../../utils/latex.js'
 import type { MathNode } from './Node.js'
 
+// Extended Node interface with runtime properties
+interface ExtendedNode extends MathNode {
+  name?: string
+  toTex?: (options?: any) => string
+  optionalChaining?: boolean
+  object?: ExtendedNode
+  index?: ExtendedNode
+  args?: ExtendedNode[]
+  fn?: ExtendedNode
+  [key: string]: any
+}
+
 const name = 'FunctionNode'
 const dependencies = [
   'math',
@@ -16,7 +28,7 @@ const dependencies = [
 
 export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({ math, Node, SymbolNode }: {
   math: any
-  Node: typeof MathNode
+  Node: any
   SymbolNode: any
 }) => {
   /* format to fixed length */
@@ -38,7 +50,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
     const regex = /\$(?:\{([a-z_][a-z_0-9]*)(?:\[([0-9]+)\])?\}|\$)/gi
 
     let inputPos = 0 // position in the input string
-    let match
+    let match: RegExpExecArray | null
     while ((match = regex.exec(template)) !== null) { // go through all matches
       // add everything in front of the match to the LaTeX string
       latex += template.substring(inputPos, match.index)

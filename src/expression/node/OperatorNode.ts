@@ -128,7 +128,7 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
             break
           }
 
-          if (operandPrecedence <= precedence) {
+          if (precedence !== null && operandPrecedence <= precedence) {
             // if the operands precedence is lower, parens are needed
             result = [true]
             break
