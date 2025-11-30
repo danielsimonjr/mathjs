@@ -3,7 +3,21 @@ import { factory } from '../../utils/factory.js'
 import { safeNumberType } from '../../utils/number.js'
 import { createUtil } from './simplify/util.js'
 import { noBignumber, noFraction } from '../../utils/noop.js'
-import type { MathNode, ConstantNode, ArrayNode, AccessorNode, IndexNode, ObjectNode, OperatorNode, FunctionNode, ParenthesisNode } from '../../utils/node.js'
+import type { MathNode } from '../../utils/node.js'
+
+// Extended MathNode interface for nodes with runtime properties
+interface ExtendedNode extends MathNode {
+  value?: any
+  items?: ExtendedNode[]
+  dimensions?: any[]
+  properties?: Record<string, ExtendedNode>
+  args?: ExtendedNode[]
+  name?: string
+  fn?: any
+  object?: ExtendedNode
+  index?: ExtendedNode
+  [key: string]: any
+}
 
 const name = 'simplifyConstant'
 const dependencies = [
@@ -138,7 +152,7 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
       }
       return new ConstantNode(n)
     },
-    Complex: function (s: any): never {
+    Complex: function (_s: any): never {
       throw new Error('Cannot convert Complex number to Node')
     },
     string: function (s: string): ConstantNode {
@@ -197,15 +211,15 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
       }
     },
 
-    'Fraction, Object': function (s: any, options: any): any { return s }, // we don't need options here
+    'Fraction, Object': function (s: any, _options: any): any { return s }, // we don't need options here
 
-    'BigNumber, Object': function (s: any, options: any): any { return s }, // we don't need options here
+    'BigNumber, Object': function (s: any, _options: any): any { return s }, // we don't need options here
 
     'number, Object': function (s: number, options: any): any {
       return _exactFraction(s, options)
     },
 
-    'bigint, Object': function (s: bigint, options: any): bigint {
+    'bigint, Object': function (s: bigint, _options: any): bigint {
       return s
     },
 

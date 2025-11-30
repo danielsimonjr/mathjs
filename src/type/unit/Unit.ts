@@ -4,6 +4,16 @@ import { memoize } from '../../utils/function.js'
 import { endsWith } from '../../utils/string.js'
 import { clone, hasOwnProperty } from '../../utils/object.js'
 import { createBigNumberPi as createPi } from '../../utils/bignumber/constants.js'
+// Types for Unit configuration
+interface UnitConfig {
+  fixPrefix?: boolean
+  skipAutomaticSimplification?: boolean
+  units?: any[]
+  dimensions?: number[]
+  value?: any
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { MathJsStatic } from '../../../types/index.js'
 
 const name = 'Unit'
@@ -69,7 +79,30 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {number | BigNumber | Fraction | Complex | boolean} [value]  A value like 5.2
    * @param {string | Unit} valuelessUnit   A unit without value. Can have prefix, like "cm"
    */
-  function Unit (this: any, value?: any, valuelessUnit?: any) {
+  // Unit interface for type checking
+  interface UnitInstance {
+    fixPrefix: boolean
+    skipAutomaticSimplification: boolean
+    units: any[]
+    dimensions: number[]
+    value: any
+    _normalize(value: any): any
+    clone(): UnitInstance
+    [key: string]: any
+  }
+
+  // Define Unit as a constructor function
+  interface UnitConstructor {
+    new (value?: any, valuelessUnit?: any): UnitInstance
+    (value?: any, valuelessUnit?: any): void
+    prototype: UnitInstance
+    parse(str: string): UnitInstance
+    isValidAlpha(c: string): boolean
+    isValuelessUnit(name: string): boolean
+    [key: string]: any
+  }
+
+  const Unit = function (this: UnitInstance, value?: any, valuelessUnit?: any) {
     if (!(this instanceof Unit)) {
       throw new Error('Constructor must be called with the new operator')
     }
@@ -3403,5 +3436,5 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
   Unit.UNIT_SYSTEMS = UNIT_SYSTEMS
   Unit.UNITS = UNITS
 
-  return Unit
+  return Unit as unknown as UnitConstructor
 }, { isClass: true })

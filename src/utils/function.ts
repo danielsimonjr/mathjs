@@ -2,6 +2,24 @@
 
 import { lruQueue } from './lruQueue.js'
 
+// Interface for memoize options
+interface MemoizeOptions {
+  hasher?: (args: any[]) => string
+  limit?: number
+}
+
+// Interface for the cache structure
+interface MemoizeCache {
+  values: Map<string, any>
+  lru: ReturnType<typeof lruQueue>
+}
+
+// Interface for memoized function
+interface MemoizedFunction {
+  (...args: any[]): any
+  cache?: MemoizeCache
+}
+
 /**
  * Memoize a given function by caching the computed result.
  * The cache of a memoized function can be cleared by deleting the `cache`
@@ -17,34 +35,46 @@ import { lruQueue } from './lruQueue.js'
  *    unlimited (default)
  * @return {function}                       Returns the memoized function
  */
-export function memoize (fn, { hasher, limit } = {}) {
-  limit = limit == null ? Number.POSITIVE_INFINITY : limit
-  hasher = hasher == null ? JSON.stringify : hasher
+export function memoize (fn: (...args: any[]) => any, options: MemoizeOptions = {}): MemoizedFunction {
+  const limit = options.limit == null ? Number.POSITIVE_INFINITY : options.limit
+  const hasher = options.hasher == null ? JSON.stringify : options.hasher
 
-  return function memoize () {
-    if (typeof memoize.cache !== 'object') {
-      memoize.cache = {
+  const memoized: MemoizedFunction = function (...callArgs: any[]): any {
+    const self = memoized as MemoizedFunction
+    if (typeof self.cache !== 'object') {
+      self.cache = {
         values: new Map(),
         lru: lruQueue(limit || Number.POSITIVE_INFINITY)
       }
     }
-    const args = []
-    for (let i = 0; i < arguments.length; i++) {
-      args[i] = arguments[i]
-    }
-    const hash = hasher(args)
 
-    if (memoize.cache.values.has(hash)) {
-      memoize.cache.lru.hit(hash)
-      return memoize.cache.values.get(hash)
+    const hash = hasher(callArgs)
+
+    if (self.cache!.values.has(hash)) {
+      self.cache!.lru.hit(hash)
+      return self.cache!.values.get(hash)
     }
 
-    const newVal = fn.apply(fn, args)
-    memoize.cache.values.set(hash, newVal)
-    memoize.cache.values.delete(memoize.cache.lru.hit(hash))
+    const newVal = fn.apply(fn, callArgs)
+    self.cache!.values.set(hash, newVal)
+    self.cache!.values.delete(self.cache!.lru.hit(hash))
 
     return newVal
   }
+
+  return memoized
+}
+
+// Interface for memoizeCompare cached entry
+interface CacheEntry {
+  args: any[]
+  res: any
+}
+
+// Interface for memoizeCompare function
+interface MemoizedCompareFunction {
+  (...args: any[]): any
+  cache: CacheEntry[]
 }
 
 /**
@@ -61,29 +91,25 @@ export function memoize (fn, { hasher, limit } = {}) {
  * @param {function(a: *, b: *) : boolean} isEqual
  * @returns {function}
  */
-export function memoizeCompare (fn, isEqual) {
-  const memoize = function memoize () {
-    const args = []
-    for (let i = 0; i < arguments.length; i++) {
-      args[i] = arguments[i]
-    }
+export function memoizeCompare (fn: (...args: any[]) => any, isEqual: (a: any[], b: any[]) => boolean): MemoizedCompareFunction {
+  const memoized: MemoizedCompareFunction = Object.assign(
+    function (...callArgs: any[]): any {
+      for (let c = 0; c < memoized.cache.length; c++) {
+        const cached = memoized.cache[c]
 
-    for (let c = 0; c < memoize.cache.length; c++) {
-      const cached = memoize.cache[c]
-
-      if (isEqual(args, cached.args)) {
-        // TODO: move this cache entry to the top so recently used entries move up?
-        return cached.res
+        if (isEqual(callArgs, cached.args)) {
+          // TODO: move this cache entry to the top so recently used entries move up?
+          return cached.res
+        }
       }
-    }
 
-    const res = fn.apply(fn, args)
-    memoize.cache.unshift({ args, res })
+      const res = fn.apply(fn, callArgs)
+      memoized.cache.unshift({ args: callArgs, res })
 
-    return res
-  }
+      return res
+    },
+    { cache: [] as CacheEntry[] }
+  )
 
-  memoize.cache = []
-
-  return memoize
+  return memoized
 }

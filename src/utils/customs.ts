@@ -8,7 +8,7 @@ import { hasOwnProperty } from './object.js'
  * @param {string} prop
  * @return {*} Returns the property value when safe
  */
-function getSafeProperty (object, prop) {
+function getSafeProperty (object: any, prop: string): any {
   // only allow getting safe properties of a plain object
   if (isSafeProperty(object, prop)) {
     return object[prop]
@@ -31,7 +31,7 @@ function getSafeProperty (object, prop) {
  * @return {*} Returns the value
  */
 // TODO: merge this function into access.js?
-function setSafeProperty (object, prop, value) {
+function setSafeProperty (object: any, prop: string, value: any): any {
   // only allow setting safe properties of a plain object
   if (isSafeProperty(object, prop)) {
     object[prop] = value
@@ -48,7 +48,7 @@ function setSafeProperty (object, prop, value) {
  * @param {string} prop
  * @return {boolean} Returns true when safe
  */
-function isSafeProperty (object, prop) {
+function isSafeProperty (object: any, prop: string): boolean {
   if (!isPlainObject(object) && !Array.isArray(object)) {
     return false
   }
@@ -83,7 +83,7 @@ function isSafeProperty (object, prop) {
  * @param {string} method
  * @return {function} Returns the method when valid
  */
-function getSafeMethod (object, method) {
+function getSafeMethod (object: any, method: string): Function {
   if (!isSafeMethod(object, method)) {
     throw new Error('No access to method "' + method + '"')
   }
@@ -98,7 +98,7 @@ function getSafeMethod (object, method) {
  * @param {string} method
  * @return {boolean} Returns true when safe, false otherwise
  */
-function isSafeMethod (object, method) {
+function isSafeMethod (object: any, method: string): boolean {
   if (object === null || object === undefined || typeof object[method] !== 'function') {
     return false
   }
@@ -133,7 +133,7 @@ function isSafeMethod (object, method) {
   return true
 }
 
-function isPlainObject (object) {
+function isPlainObject (object: any): boolean {
   return typeof object === 'object' && object && object.constructor === Object
 }
 

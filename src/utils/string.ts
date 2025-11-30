@@ -51,8 +51,8 @@ export function endsWith (text: any, search: any) {
  *     have been more, they are deleted and replaced by an ellipsis).
  * @return {string} str
  */
-export function format (value, options) {
-  const result = _format(value, options)
+export function format (value: any, options?: any): string {
+  const result: string = _format(value, options)
   if (options && typeof options === 'object' && 'truncate' in options &&
       result.length > options.truncate) {
     return result.substring(0, options.truncate - 3) + '...'
@@ -60,7 +60,7 @@ export function format (value, options) {
   return result
 }
 
-function _format (value, options) {
+function _format (value: any, options?: any): string {
   if (typeof value === 'number') {
     return formatNumber(value, options)
   }
@@ -117,7 +117,7 @@ function _format (value, options) {
  * @param {*} value
  * @return {string}
  */
-export function stringify (value) {
+export function stringify (value: any): string {
   const text = String(value)
   let escaped = ''
   let i = 0
@@ -145,7 +145,7 @@ const controlCharacters = {
  * @param {*} value
  * @return {string}
  */
-export function escape (value) {
+export function escape (value: any): string {
   let text = String(value)
   text = text.replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
@@ -166,7 +166,7 @@ export function escape (value) {
  *                                                options.
  * @returns {string} str
  */
-function formatArray (array, options) {
+function formatArray (array: any, options?: any): string {
   if (Array.isArray(array)) {
     let str = '['
     const len = array.length
@@ -188,7 +188,7 @@ function formatArray (array, options) {
  * @param {*} value
  * @return {boolean}
  */
-function looksLikeFraction (value) {
+function looksLikeFraction (value: any): boolean {
   return (value &&
       typeof value === 'object' &&
       typeof value.s === 'bigint' &&
@@ -202,7 +202,7 @@ function looksLikeFraction (value) {
  * @param {string} y
  * @returns {number}
  */
-export function compareText (x, y) {
+export function compareText (x: any, y: any): number {
   // we don't want to convert numbers to string, only accept string input
   if (!isString(x)) {
     throw new TypeError('Unexpected type of argument in function compareText ' +

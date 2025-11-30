@@ -1,13 +1,13 @@
 // (c) 2018, Mariusz Nowak
 // SPDX-License-Identifier: ISC
 // Derived from https://github.com/medikoo/lru-queue
-export function lruQueue (limit) {
+export function lruQueue (limit: number) {
   let size = 0
   let base = 1
-  let queue = Object.create(null)
-  let map = Object.create(null)
+  let queue: Record<number, any> = Object.create(null)
+  let map: Record<any, number> = Object.create(null)
   let index = 0
-  const del = function (id) {
+  const del = function (id: any): void {
     const oldIndex = map[id]
     if (!oldIndex) return
     delete queue[oldIndex]
@@ -23,7 +23,7 @@ export function lruQueue (limit) {
   }
   limit = Math.abs(limit)
   return {
-    hit: function (id) {
+    hit: function (id: any): any {
       const oldIndex = map[id]; const nuIndex = ++index
       queue[nuIndex] = id
       map[id] = nuIndex
