@@ -1,15 +1,7 @@
 import { isNode } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 
-// Type definitions
-interface Node {
-  _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
-  getContent: () => Node
-  toString: (options?: StringOptions) => string
-  toHTML: (options?: StringOptions) => string
-  toTex: (options?: StringOptions) => string
-}
-
+type MathNode = any
 type CompileFunction = (scope: any, args: Record<string, any>, context: any) => any
 
 interface StringOptions {
@@ -17,18 +9,14 @@ interface StringOptions {
   [key: string]: any
 }
 
-interface Dependencies {
-  Node: new (...args: any[]) => Node
-}
-
 const name = 'ParenthesisNode'
 const dependencies = [
   'Node'
 ]
 
-export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: Dependencies) => {
+export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: { Node: any }) => {
   class ParenthesisNode extends Node {
-    content: Node
+    content: MathNode
 
     /**
      * @constructor ParenthesisNode
@@ -37,7 +25,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
      * @param {Node} content
      * @extends {Node}
      */
-    constructor (content: Node) {
+    constructor (content: MathNode) {
       super()
       // validate input
       if (!isNode(content)) {
@@ -47,7 +35,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
       this.content = content
     }
 
-    static name = name
+    static readonly name = name
     get type (): string { return name }
     get isParenthesisNode (): boolean { return true }
 
@@ -73,7 +61,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
      * @return {Node} content
      * @override
      **/
-    getContent (): Node {
+    getContent (): MathNode {
       return this.content.getContent()
     }
 
@@ -81,7 +69,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
      * Execute a callback for each of the child nodes of this node
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
-    forEach (callback: (child: Node, path: string, parent: ParenthesisNode) => void): void {
+    forEach (callback: (child: MathNode, path: string, parent: ParenthesisNode) => void): void {
       callback(this.content, 'content', this)
     }
 
@@ -91,7 +79,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
      * @param {function(child: Node, path: string, parent: Node) : Node} callback
      * @returns {ParenthesisNode} Returns a clone of the node
      */
-    map (callback: (child: Node, path: string, parent: ParenthesisNode) => Node): ParenthesisNode {
+    map (callback: (child: MathNode, path: string, parent: ParenthesisNode) => MathNode): ParenthesisNode {
       const content = callback(this.content, 'content', this)
       return new ParenthesisNode(content)
     }
@@ -134,7 +122,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
      *                       where mathjs is optional
      * @returns {ParenthesisNode}
      */
-    static fromJSON (json: { content: Node }): ParenthesisNode {
+    static fromJSON (json: { content: MathNode }): ParenthesisNode {
       return new ParenthesisNode(json.content)
     }
 

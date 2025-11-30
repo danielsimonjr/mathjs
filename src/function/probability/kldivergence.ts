@@ -1,23 +1,19 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 
 const name = 'kldivergence'
 const dependencies = ['typed', 'matrix', 'divide', 'sum', 'multiply', 'map', 'dotDivide', 'log', 'isNumeric']
 
-export const createKldivergence: FactoryFunction<
-  {
-    typed: TypedFunction
-    matrix: TypedFunction
-    divide: TypedFunction
-    sum: TypedFunction
-    multiply: TypedFunction
-    map: TypedFunction
-    dotDivide: TypedFunction
-    log: TypedFunction
-    isNumeric: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divide, sum, multiply, map, dotDivide, log, isNumeric }) => {
+export const createKldivergence = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divide, sum, multiply, map, dotDivide, log, isNumeric }: {
+  typed: any
+  matrix: any
+  divide: any
+  sum: any
+  multiply: any
+  map: any
+  dotDivide: any
+  log: any
+  isNumeric: any
+}) => {
   /**
      * Calculate the Kullback-Leibler (KL) divergence  between two distributions
      *
@@ -70,18 +66,18 @@ export const createKldivergence: FactoryFunction<
 
     // Before calculation, apply normalization
     const sumq = sum(q)
-    if (sumq === 0) {
+    if ((sumq as any) === 0) {
       throw new Error('Sum of elements in first object must be non zero')
     }
 
     const sump = sum(p)
-    if (sump === 0) {
+    if ((sump as any) === 0) {
       throw new Error('Sum of elements in second object must be non zero')
     }
-    const qnorm = (divide as any)(q, (sum as any)(q))
-    const pnorm = (divide as any)(p, (sum as any)(p))
+    const qnorm = divide(q, sum(q))
+    const pnorm = divide(p, sum(p))
 
-    const result = (sum as any)((multiply as any)(qnorm, (map as any)((dotDivide as any)(qnorm, pnorm), (x: any) => (log as any)(x))))
+    const result = sum(multiply(qnorm, map(dotDivide(qnorm, pnorm), (x: any) => log(x))))
     if (isNumeric(result)) {
       return result
     } else {

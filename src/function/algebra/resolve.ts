@@ -1,7 +1,8 @@
 import { createMap } from '../../utils/map.js'
 import { isFunctionNode, isNode, isOperatorNode, isParenthesisNode, isSymbolNode } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
-import type { MathNode, SymbolNode, OperatorNode, ParenthesisNode, FunctionNode } from '../../utils/node.js'
+
+type MathNode = any
 
 const name = 'resolve'
 const dependencies = [

@@ -4,27 +4,11 @@ import { factory } from '../../utils/factory.js'
 import { isArray, isConstantNode, isMatrix, isNode, isString, typeOf } from '../../utils/is.js'
 import { escape } from '../../utils/string.js'
 
-// Type definitions
-interface Node {
-  _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
-  filter: (callback: (node: Node) => boolean) => Node[]
-  isSymbolNode?: boolean
-  name?: string
-  value?: any
-  toHTML: (options?: StringOptions) => string
-  toTex: (options?: StringOptions) => string
-  toString: (options?: StringOptions) => string
-}
-
+type MathNode = any
 type CompileFunction = (scope: any, args: Record<string, any>, context: any) => any
 
 interface StringOptions {
   [key: string]: any
-}
-
-interface Dependencies {
-  Node: new (...args: any[]) => Node
-  size: (value: any) => number[]
 }
 
 const name = 'IndexNode'
@@ -33,9 +17,9 @@ const dependencies = [
   'size'
 ]
 
-export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, size }: Dependencies) => {
+export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, size }: { Node: any; size: any }) => {
   class IndexNode extends Node {
-    dimensions: Node[]
+    dimensions: MathNode[]
     dotNotation: boolean
 
     /**
@@ -52,7 +36,7 @@ export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      *     notation like `a.b`, or using bracket notation like `a["b"]`
      *     (which is the default). This property is used for string conversion.
      */
-    constructor (dimensions: Node[], dotNotation?: boolean) {
+    constructor (dimensions: MathNode[], dotNotation?: boolean) {
       super()
       this.dimensions = dimensions
       this.dotNotation = dotNotation || false
@@ -67,7 +51,7 @@ export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ No
       }
     }
 
-    static name = name
+    static readonly name = name
     get type (): string { return name }
     get isIndexNode (): boolean { return true }
 
@@ -92,9 +76,9 @@ export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ No
       //       we can beforehand resolve the zero-based value
 
       // optimization for a simple object property
-      const evalDimensions = map(this.dimensions, function (dimension: Node, i: number): CompileFunction {
+      const evalDimensions = map(this.dimensions, function (dimension: MathNode, i: number): CompileFunction {
         const needsEnd = dimension
-          .filter((node: Node) => node.isSymbolNode && node.name === 'end')
+          .filter((node: MathNode) => node.isSymbolNode && node.name === 'end')
           .length > 0
 
         if (needsEnd) {
@@ -140,7 +124,7 @@ export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      * Execute a callback for each of the child nodes of this node
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
-    forEach (callback: (child: Node, path: string, parent: IndexNode) => void): void {
+    forEach (callback: (child: MathNode, path: string, parent: IndexNode) => void): void {
       for (let i = 0; i < this.dimensions.length; i++) {
         callback(this.dimensions[i], 'dimensions[' + i + ']', this)
       }
@@ -152,10 +136,10 @@ export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      * @param {function(child: Node, path: string, parent: Node): Node} callback
      * @returns {IndexNode} Returns a transformed copy of the node
      */
-    map (callback: (child: Node, path: string, parent: IndexNode) => Node): IndexNode {
-      const dimensions: Node[] = []
+    map (callback: (child: MathNode, path: string, parent: IndexNode) => MathNode): IndexNode {
+      const dimensions: MathNode[] = []
       for (let i = 0; i < this.dimensions.length; i++) {
-        dimensions[i] = this._ifNode(
+        dimensions[i] = (this as any)._ifNode(
           callback(this.dimensions[i], 'dimensions[' + i + ']', this))
       }
 
@@ -221,7 +205,7 @@ export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      *     where mathjs is optional
      * @returns {IndexNode}
      */
-    static fromJSON (json: { dimensions: Node[], dotNotation: boolean }): IndexNode {
+    static fromJSON (json: { dimensions: MathNode[], dotNotation: boolean }): IndexNode {
       return new IndexNode(json.dimensions, json.dotNotation)
     }
 
@@ -253,7 +237,7 @@ export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      * @return {string} str
      */
     _toTex (options?: StringOptions): string {
-      const dimensions = this.dimensions.map(function (range: Node): string {
+      const dimensions = this.dimensions.map(function (range: MathNode): string {
         return range.toTex(options)
       })
 

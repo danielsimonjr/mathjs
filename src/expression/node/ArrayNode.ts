@@ -1,7 +1,8 @@
 import { isArrayNode, isNode } from '../../utils/is.js'
 import { map } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-import type { MathNode } from './Node.js'
+
+type MathNode = any
 
 const name = 'ArrayNode'
 const dependencies = [
@@ -9,7 +10,7 @@ const dependencies = [
 ]
 
 export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: {
-  Node: typeof MathNode
+  Node: any
 }) => {
   class ArrayNode extends Node {
     items: MathNode[]
@@ -30,7 +31,7 @@ export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ No
       }
     }
 
-    static name = name
+    static readonly name = name
     get type (): string { return name }
     get isArrayNode (): boolean { return true }
 
@@ -89,7 +90,7 @@ export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ No
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): ArrayNode {
       const items: MathNode[] = []
       for (let i = 0; i < this.items.length; i++) {
-        items[i] = this._ifNode(callback(this.items[i], 'items[' + i + ']', this as any))
+        items[i] = (this as any)._ifNode(callback(this.items[i], 'items[' + i + ']', this as any))
       }
       return new ArrayNode(items)
     }

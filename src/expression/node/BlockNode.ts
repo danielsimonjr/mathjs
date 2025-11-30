@@ -1,7 +1,8 @@
 import { isNode } from '../../utils/is.js'
 import { forEach, map } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-import type { MathNode } from './Node.js'
+
+type MathNode = any
 
 const name = 'BlockNode'
 const dependencies = [
@@ -16,7 +17,7 @@ interface BlockItem {
 
 export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ ResultSet, Node }: {
   ResultSet: any
-  Node: typeof MathNode
+  Node: any
 }) => {
   class BlockNode extends Node {
     blocks: BlockItem[]
@@ -49,7 +50,7 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
       })
     }
 
-    static name = name
+    static readonly name = name
     get type (): string { return name }
     get isBlockNode (): boolean { return true }
 
@@ -108,7 +109,7 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
       const blocks: BlockItem[] = []
       for (let i = 0; i < this.blocks.length; i++) {
         const block = this.blocks[i]
-        const node = this._ifNode(
+        const node = (this as any)._ifNode(
           callback(block.node, 'blocks[' + i + '].node', this as any))
         blocks[i] = {
           node,

@@ -2,19 +2,9 @@ import { isAccessorNode, isArrayNode, isConstantNode, isFunctionNode, isIndexNod
 import { getOperator } from '../../expression/operators.js'
 import { createUtil } from './simplify/util.js'
 import { factory } from '../../utils/factory.js'
-// Import types but mark as used for type annotations
-import type { MathNode } from '../../utils/node.js'
 
-// Extended MathNode interface for nodes with args and name
-interface ExtendedNode extends MathNode {
-  args?: any[]
-  name?: string
-  fn?: any
-  value?: any
-  object?: any
-  index?: any
-  [key: string]: any
-}
+type MathNode = any
+type ExtendedNode = any
 
 const name = 'simplifyCore'
 const dependencies = [

@@ -4,7 +4,7 @@ import { factory } from '../../utils/factory.js'
 const name = 'isPrime'
 const dependencies = ['typed']
 
-export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Test whether a value is prime: has no divisors other than itself and one.
    * The function supports type `number`, `bignumber`.
@@ -126,6 +126,6 @@ export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ type
       return true
     },
 
-    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 })
