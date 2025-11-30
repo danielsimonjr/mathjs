@@ -160,7 +160,7 @@ The codebase is being gradually converted to TypeScript with WASM support:
 - **Status**: 61/673 files converted (9%)
 - **Goal**: Type safety, 2-25x performance improvements, multi-core support
 - **Strategy**: Incremental conversion, 100% backward compatible
-- **See**: `docs/architecture/README_TYPESCRIPT_WASM.md`, `docs/refactoring/REFACTORING_PLAN.md`, `docs/refactoring/REFACTORING_TASKS.md`
+- **See**: `README_TYPESCRIPT_WASM.md`, `REFACTORING_PLAN.md`, `REFACTORING_TASKS.md`
 
 **Three-tier performance system**:
 1. JavaScript fallback (always available)
@@ -288,7 +288,7 @@ npm run test:types  # Verify type definitions
 ```
 
 **Priority files for WASM conversion**:
-- See `docs/refactoring/REFACTORING_TASKS.md` for complete list
+- See `REFACTORING_TASKS.md` for complete list
 - Focus on: plain number implementations, sparse algorithms, combinatorics, numeric solvers
 
 ## Common Development Workflows
@@ -516,35 +516,12 @@ mcp__math-mcp__matrix_multiply with your test matrices
 mcp__math-mcp__statistics with sample data
 ```
 
-## Important Behavioral Guidelines
-
-### Summary Files and Documentation
-
-**CRITICAL**: Do NOT create summary files (like `.note.txt`, `SUMMARY.md`, etc.) unless explicitly requested by the user.
-
-- ❌ **Never create**: Unsolicited summary files, recap documents, or session notes
-- ✅ **Only create when**: User explicitly asks for a summary file or documentation
-- ✅ **Exception**: Project documentation files that are part of the normal workflow (like updating existing docs, adding to existing guides, etc.)
-
-**Rationale**: Summary files clutter the project directory and can become outdated. Users prefer to request summaries when needed rather than have them created proactively.
-
-### File Management
-
-- Only create files that are permanent project artifacts (tools, documentation, tests, source code)
-- Temporary or informational content should be communicated directly to the user, not written to files
-- Before creating any new file, verify it serves a long-term purpose for the project
-
 ## Documentation References
 
 - **Main README**: `README.md` - Getting started, usage examples
-- **TypeScript/WASM Guide**: `docs/architecture/README_TYPESCRIPT_WASM.md` - Complete refactoring overview
-- **Refactoring Plan**: `docs/refactoring/REFACTORING_PLAN.md` - Detailed conversion strategy
-- **Refactoring Summary**: `docs/refactoring/REFACTORING_SUMMARY.md` - Infrastructure overview
-- **Refactoring Tasks**: `docs/refactoring/REFACTORING_TASKS.md` - File-by-file task list
-- **TypeScript Conversion**: `docs/refactoring/TYPESCRIPT_CONVERSION_SUMMARY.md` - Conversion details
-- **Architecture Guide**: `docs/architecture/TYPESCRIPT_WASM_ARCHITECTURE.md` - Technical architecture
+- **TypeScript/WASM Guide**: `README_TYPESCRIPT_WASM.md` - Complete refactoring overview
+- **Refactoring Plan**: `REFACTORING_PLAN.md` - Detailed conversion strategy
 - **Type Definitions**: `types/EXPLANATION.md` - TypeScript type system guide
-- **Migration Guide**: `docs/migration/MIGRATION_GUIDE.md` - User migration guide for TS/WASM
-- **History**: `docs/migration/HISTORY.md` - Historical changes
+- **Migration Guide**: `MIGRATION_GUIDE.md` - User migration guide for TS/WASM
 - **Contributing**: `CONTRIBUTING.md` - Contribution guidelines
 - **Online Docs**: https://mathjs.org/docs/ - Full user documentation
