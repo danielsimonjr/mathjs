@@ -35,9 +35,9 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
     }
 
     if (isChain(value)) {
-      this.value = value.value
+      (this as any).value = (value as any).value
     } else {
-      this.value = value
+      (this as any).value = value
     }
   }
 
