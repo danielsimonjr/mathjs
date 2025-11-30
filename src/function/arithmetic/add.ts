@@ -121,7 +121,7 @@ export const createAdd = /* #__PURE__ */ factory(
       {
         'any, any': addScalar,
 
-        'any, any, ...any': typed.referToSelf((self: TypedFunction) => (x: any, y: any, rest: any[]) => {
+        'any, any, ...any': typed.referToSelf((self: TypedFunction): any => (x: any, y: any, rest: any[]) => {
           let result = self(x, y)
 
           for (let i = 0; i < rest.length; i++) {

@@ -3,7 +3,7 @@ import { squeeze as arraySqueeze } from '../../utils/array.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'squeeze'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createSqueeze: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

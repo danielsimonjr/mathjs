@@ -1,7 +1,7 @@
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'ctranspose'
-const dependencies = ['typed', 'transpose', 'conj'] as const
+const dependencies = ['typed', 'transpose', 'conj']
 
 export const createCtranspose: FactoryFunction<'typed' | 'transpose' | 'conj', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, transpose, conj }) => {
   /**

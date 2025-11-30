@@ -3,7 +3,7 @@ import { cubeNumber } from '../../plain/number/index.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'cube'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createCube: FactoryFunction<
   { typed: TypedFunction },

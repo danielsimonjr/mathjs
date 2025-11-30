@@ -4,7 +4,7 @@ import { isNumber, isUnit } from '../../utils/is.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'Complex'
-const dependencies = [] as const
+const dependencies = []
 
 export const createComplexClass: FactoryFunction<never, typeof name> = /* #__PURE__ */ factory(name, dependencies, () => {
   /**

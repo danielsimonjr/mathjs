@@ -5,7 +5,7 @@ import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 import { asinhNumber } from '../../plain/number/index.js'
 
 const name = 'asinh'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createAsinh: FactoryFunction<'asinh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

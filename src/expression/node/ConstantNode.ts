@@ -7,7 +7,7 @@ import type { MathNode } from './Node.js'
 const name = 'ConstantNode'
 const dependencies = [
   'Node', 'isBounded'
-] as const
+]
 
 export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, isBounded }: {
   Node: typeof MathNode

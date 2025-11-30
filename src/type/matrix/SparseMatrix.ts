@@ -87,7 +87,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
 
       if (data && isMatrix(data)) {
         // create from matrix
-        _createFromMatrix(this, data, datatype)
+        _createFromMatrix(this, data as any, datatype)
       } else if (data && typeof data === 'object' && 'index' in data && 'ptr' in data && 'size' in data &&
                  isArray((data as SparseMatrixData).index) &&
                  isArray((data as SparseMatrixData).ptr) &&
@@ -298,7 +298,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
 
       if (isString(this._datatype)) {
         // find signature that matches (datatype, datatype)
-        eq = typed.find(equalScalar, [this._datatype, this._datatype]) || equalScalar
+        eq = typed.find(equalScalar, [this._datatype, this._datatype]) as any || equalScalar
         // convert 0 to the same datatype
         zero = typed.convert(0, this._datatype)
       }
@@ -374,7 +374,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       sizeArray.forEach(function (value: any) {
         if (!isNumber(value) || !isInteger(value) || value < 0) {
           throw new TypeError('Invalid size, must contain positive integers ' +
-            '(size: ' + format(sizeArray) + ')')
+            '(size: ' + format(sizeArray, {}) + ')')
         }
       })
 
@@ -413,7 +413,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       sizes.forEach(function (value) {
         if (!isNumber(value) || !isInteger(value) || value <= -2 || value === 0) {
           throw new TypeError('Invalid size, must contain positive integers or -1 ' +
-            '(size: ' + format(sizes) + ')')
+            '(size: ' + format(sizes, {}) + ')')
         }
       })
 
@@ -533,7 +533,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       // rows and columns
       const rows = this._size[0]
       const columns = this._size[1]
-      const fastCallback = optimizeCallback(callback, me, 'map')
+      const fastCallback = optimizeCallback(callback, me as any, 'map')
       // invoke callback
       const invoke = function (v: MatrixValue, i: number, j: number): MatrixValue {
         // invoke callback
@@ -563,7 +563,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       // rows and columns
       const rows = this._size[0]
       const columns = this._size[1]
-      const fastCallback = optimizeCallback(callback, me, 'forEach')
+      const fastCallback = optimizeCallback(callback, me as any, 'forEach')
       // loop columns
       for (let j = 0; j < columns; j++) {
         // k0 <= k < k1 where k0 = _ptr[j] && k1 = _ptr[j+1]
@@ -679,7 +679,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
      * @returns {string} str
      */
     toString(): string {
-      return format(this.toArray())
+      return format(this.toArray(), {})
     }
 
     /**
@@ -711,7 +711,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       if (k) {
         // convert BigNumber to a number
         if (isBigNumber(k)) {
-          k = k.toNumber()
+          k = (k as any).toNumber()
         }
         // is must be an integer
         if (!isNumber(k) || !isInteger(k)) {
@@ -812,7 +812,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
         // check it is a big number
         if (isBigNumber(s)) {
           // convert it
-          s = s.toNumber()
+          s = (s as any).toNumber()
         }
         // validate arguments
         if (!isNumber(s) || !isInteger(s) || s < 1) {
@@ -825,7 +825,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       if (k) {
         // convert BigNumber to a number
         if (isBigNumber(k)) {
-          k = k.toNumber()
+          k = (k as any).toNumber()
         }
         // is must be an integer
         if (!isNumber(k) || !isInteger(k)) {
@@ -843,7 +843,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
 
       if (isString(datatype)) {
         // find signature that matches (datatype, datatype)
-        eq = typed.find(equalScalar, [datatype, datatype]) || equalScalar
+        eq = typed.find(equalScalar, [datatype, datatype]) as any || equalScalar
         // convert 0 to the same datatype
         zero = typed.convert(0, datatype)
       }
@@ -875,7 +875,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
         }
       } else if (isMatrix(value)) {
         // matrix size
-        const ms = value.size()
+        const ms = (value as any).size()
         // validate matrix
         if (ms.length !== 1 || ms[0] !== n) {
           // number of values in array must be n
@@ -884,7 +884,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
         // define function
         _value = function (i: number): MatrixValue {
           // return value @ i
-          return value.get!([i])
+          return (value as any).get!([i])
         }
       } else {
         // define function
@@ -1092,7 +1092,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
 
     if (isString(datatype)) {
       // find signature that matches (datatype, datatype)
-      eq = typed.find(equalScalar, [datatype, datatype]) || equalScalar
+      eq = typed.find(equalScalar, [datatype, datatype]) as any || equalScalar
       // convert 0 to the same datatype
       zero = typed.convert(0, datatype)
     }
@@ -1371,7 +1371,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
 
     if (isString(matrix._datatype)) {
       // find signature that matches (datatype, datatype)
-      eq = typed.find(equalScalar, [matrix._datatype, matrix._datatype]) || equalScalar
+      eq = typed.find(equalScalar, [matrix._datatype, matrix._datatype]) as any || equalScalar
       // convert 0 to the same datatype
       zero = typed.convert(0, matrix._datatype)
       // convert value to the same datatype
@@ -1499,7 +1499,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
 
     if (isString(matrix._datatype)) {
       // find signature that matches (datatype, datatype)
-      eq = typed.find(equalScalar, [matrix._datatype, matrix._datatype]) || equalScalar
+      eq = typed.find(equalScalar, [matrix._datatype, matrix._datatype]) as any || equalScalar
       // convert 0 to the same datatype
       zero = typed.convert(0, matrix._datatype)
     }

@@ -2,7 +2,7 @@ import { arraySize, squeeze } from '../../utils/array.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'cross'
-const dependencies = ['typed', 'matrix', 'subtract', 'multiply'] as const
+const dependencies = ['typed', 'matrix', 'subtract', 'multiply']
 
 export const createCross: FactoryFunction<'typed' | 'matrix' | 'subtract' | 'multiply', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, subtract, multiply }) => {
   /**

@@ -71,7 +71,7 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
    */
   function calculateNecessaryParentheses (root: OperatorNode, parenthesis: string, implicit: string, args: Node[], latex: boolean): boolean[] {
     // precedence of the root OperatorNode
-    const precedence = getPrecedence(root as any, parenthesis, implicit)
+    const precedence = getPrecedence(root as any, parenthesis, implicit, undefined)
     const associativity = getAssociativity(root as any, parenthesis)
 
     if ((parenthesis === 'all') || ((args.length > 2) && (root.getIdentifier() !== 'OperatorNode:add') && (root.getIdentifier() !== 'OperatorNode:multiply'))) {

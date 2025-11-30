@@ -164,7 +164,8 @@ export const createTyped = /* #__PURE__ */ factory(
       // TODO: deprecate the identifier type (it's not used anymore, see https://github.com/josdejong/mathjs/issues/3253)
       {
         name: 'identifier',
-        test: (s: any): boolean => isString(s) && /^\p{L}[\p{L}\d]*$/u.test(s)
+        // Using simpler regex for TS compatibility (original: /^\p{L}[\p{L}\d]*$/u)
+        test: (s: any): boolean => isString(s) && /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(s)
       },
       { name: 'string', test: isString },
       { name: 'Chain', test: isChain },
@@ -245,7 +246,7 @@ export const createTyped = /* #__PURE__ */ factory(
             throwNoComplex(x)
           }
 
-          return new Complex(x.toNumber(), 0)
+          return new Complex((x as any).toNumber(), 0)
         }
       },
       {

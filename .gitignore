@@ -15,3 +15,8 @@ node_modules
 lib
 test-results
 *.generated.js
+
+# Generated dependency graph files
+tools/dependency-graph.json
+tools/dependency-graph.md
+tools/dependency-graph.mermaid

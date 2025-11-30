@@ -1,6 +1,6 @@
 import Fraction from 'fraction.js'
 import { factory } from '../../utils/factory.js'
-import type { FactoryFunctionMap } from '../../types.js'
+import type { FactoryFunctionMap } from '../../../types/index.js'
 
 const name = 'Fraction'
 const dependencies: [] = []

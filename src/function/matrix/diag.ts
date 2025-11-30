@@ -93,7 +93,7 @@ export const createDiag = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     },
 
     'Array, BigNumber': function (x: any[], k: BigNumber): any[] | any[][] | Matrix {
-      return _diag(x, k.toNumber(), arraySize(x), null)
+      return _diag(x, (k as any).toNumber(), arraySize(x), null)
     },
 
     'Array, string': function (x: any[], format: string): Matrix {
@@ -105,7 +105,7 @@ export const createDiag = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     },
 
     'Array, BigNumber, string': function (x: any[], k: BigNumber, format: string): Matrix {
-      return _diag(x, k.toNumber(), arraySize(x), format) as Matrix
+      return _diag(x, (k as any).toNumber(), arraySize(x), format) as Matrix
     },
 
     Matrix: function (x: Matrix): Matrix {
@@ -117,7 +117,7 @@ export const createDiag = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     },
 
     'Matrix, BigNumber': function (x: Matrix, k: BigNumber): Matrix | any[] {
-      return _diag(x, k.toNumber(), x.size(), x.storage())
+      return _diag(x, (k as any).toNumber(), x.size(), x.storage())
     },
 
     'Matrix, string': function (x: Matrix, format: string): Matrix {
@@ -129,7 +129,7 @@ export const createDiag = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     },
 
     'Matrix, BigNumber, string': function (x: Matrix, k: BigNumber, format: string): Matrix | any[] {
-      return _diag(x, k.toNumber(), x.size(), format)
+      return _diag(x, (k as any).toNumber(), x.size(), format)
     }
   })
 

@@ -2,7 +2,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 
 const name = 'arg'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createArg: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
@@ -47,6 +47,6 @@ export const createArg: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ 
 
     // TODO: implement BigNumber support for function arg
 
-    'Array | Matrix': typed.referToSelf((self: Function) => (x: any) => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf(((self: any) => ((x: any) => deepMap(x, self))) as any) as any
   })
 })

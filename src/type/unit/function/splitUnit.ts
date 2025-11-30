@@ -4,7 +4,7 @@ import type { MathJsStatic } from '../../../types.js'
 const name = 'splitUnit'
 const dependencies = ['typed'] as const
 
-export const createSplitUnit = /* #__PURE__ */ factory(name, dependencies, ({ typed }: MathJsStatic) => {
+export const createSplitUnit = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed }: any) => {
   /**
    * Split a unit in an array of units whose sum is equal to the original unit.
    *

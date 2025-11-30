@@ -8,10 +8,10 @@ import {
   isObjectNode,
   isParenthesisNode,
   isSymbolNode
-} from '../../utils/is.js'
-import { getSafeProperty } from '../../utils/customs.js'
-import { factory } from '../../utils/factory.js'
-import { accessFactory } from './utils/access.js'
+} from '../../utils/is.ts'
+import { getSafeProperty } from '../../utils/customs.ts'
+import { factory } from '../../utils/factory.ts'
+import { accessFactory } from './utils/access.ts'
 
 const name = 'AccessorNode'
 const dependencies = [
@@ -19,7 +19,13 @@ const dependencies = [
   'Node'
 ]
 
-export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, Node }) => {
+export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
+  subset,
+  Node
+}: {
+  subset: any;
+  Node: any;
+}) => {
   const access = accessFactory({ subset })
 
   /**

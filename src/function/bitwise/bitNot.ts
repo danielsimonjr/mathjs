@@ -2,11 +2,11 @@ import { bitNotBigNumber } from '../../utils/bignumber/bitwise.js'
 import { deepMap } from '../../utils/collection.js'
 import { factory } from '../../utils/factory.js'
 import { bitNotNumber } from '../../plain/number/index.js'
-import type { MathJsChain } from '../../types.js'
+import type { MathJsChain } from '../../../types/index.js'
 import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 
 const name = 'bitNot'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createBitNot = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

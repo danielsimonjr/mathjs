@@ -118,7 +118,7 @@ export const createTranspose = /* #__PURE__ */ factory(name, dependencies, ({ ty
           // check columns
           if (columns === 0) {
             // throw exception
-            throw new RangeError('Cannot transpose a 2D matrix with no columns (size: ' + format(size) + ')')
+            throw new RangeError('Cannot transpose a 2D matrix with no columns (size: ' + format(size, {}) + ')')
           }
 
           // process storage format
@@ -135,7 +135,7 @@ export const createTranspose = /* #__PURE__ */ factory(name, dependencies, ({ ty
 
       default:
         // multi dimensional
-        throw new RangeError('Matrix must be a vector or two dimensional (size: ' + format(size) + ')')
+        throw new RangeError('Matrix must be a vector or two dimensional (size: ' + format(size, {}) + ')')
     }
     return c
   }

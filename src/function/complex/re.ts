@@ -2,7 +2,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 
 const name = 're'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createRe: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
@@ -35,6 +35,6 @@ export const createRe: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ f
   return typed(name, {
     'number | BigNumber | Fraction': (x: any) => x,
     Complex: (x: any): number => x.re,
-    'Array | Matrix': typed.referToSelf((self: Function) => (x: any) => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf(((self: any) => ((x: any) => deepMap(x, self))) as any) as any
   })
 })

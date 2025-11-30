@@ -5,7 +5,7 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 
 const name = 'fix'
-const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix'] as const
+const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix']
 
 export const createFixNumber: FactoryFunction<
   { typed: TypedFunction, ceil: any, floor: any },
@@ -96,7 +96,7 @@ export const createFix: FactoryFunction<
     },
 
     'Complex, BigNumber': function (x: any, bn: any): any {
-      const n = bn.toNumber()
+      const n = (bn as any).toNumber()
       return new Complex(
         (x.re > 0) ? floor(x.re, n) : ceil(x.re, n),
         (x.im > 0) ? floor(x.im, n) : ceil(x.im, n)
@@ -128,7 +128,7 @@ export const createFix: FactoryFunction<
       return unit.multiply(self(valueless, n))
     }),
 
-    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, n.toNumber(), unit)),
+    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, (n as any).toNumber(), unit)),
 
     'Array | Matrix, number | BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => {
       // deep map collection, skip zeros since fix(0) = 0

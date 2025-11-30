@@ -12,7 +12,7 @@ const dependencies = [
   'math',
   'Node',
   'SymbolNode'
-] as const
+]
 
 export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({ math, Node, SymbolNode }: {
   math: any
@@ -284,7 +284,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
           }
         }
       } else {
-        // node.fn.isAccessorNode && !node.fn.index.isObjectProperty()
+        // (node as any).fn.isAccessorNode && !(node as any).fn.index.isObjectProperty()
         // we have to dynamically determine whether the function has the
         // rawArgs property
         const fnExpr = this.fn.toString()
@@ -318,10 +318,10 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-      callback(this.fn, 'fn', this)
+      callback(this.fn, 'fn', this as any)
 
       for (let i = 0; i < this.args.length; i++) {
-        callback(this.args[i], 'args[' + i + ']', this)
+        callback(this.args[i], 'args[' + i + ']', this as any)
       }
     }
 
@@ -332,10 +332,10 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @returns {FunctionNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): FunctionNode {
-      const fn = this._ifNode(callback(this.fn, 'fn', this))
+      const fn = this._ifNode(callback(this.fn, 'fn', this as any))
       const args: MathNode[] = []
       for (let i = 0; i < this.args.length; i++) {
-        args[i] = this._ifNode(callback(this.args[i], 'args[' + i + ']', this))
+        args[i] = this._ifNode(callback(this.args[i], 'args[' + i + ']', this as any))
       }
       return new FunctionNode(fn, args)
     }

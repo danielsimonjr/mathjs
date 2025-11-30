@@ -4,7 +4,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'permutations'
-const dependencies = ['typed', 'factorial'] as const
+const dependencies = ['typed', 'factorial']
 
 export const createPermutations: FactoryFunction<
   { typed: TypedFunction; factorial: TypedFunction },

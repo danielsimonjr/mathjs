@@ -4,7 +4,7 @@ import { memoize } from '../../utils/function.js'
 import { endsWith } from '../../utils/string.js'
 import { clone, hasOwnProperty } from '../../utils/object.js'
 import { createBigNumberPi as createPi } from '../../utils/bignumber/constants.js'
-import type { MathJsStatic } from '../../types.js'
+import type { MathJsStatic } from '../../../types/index.js'
 
 const name = 'Unit'
 const dependencies = [
@@ -25,7 +25,7 @@ const dependencies = [
   'Complex',
   'BigNumber',
   'Fraction'
-] as const
+]
 
 export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
   on,
@@ -45,7 +45,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
   Complex,
   BigNumber,
   Fraction
-}: MathJsStatic) => {
+}: any) => {
   const toNumber = number
   const fixPrefixDefault = false
   const skipAutomaticSimplificationDefault = true
@@ -349,7 +349,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       }
 
       // Verify the unit exists and get the prefix (if any)
-      const res = _findUnit(uStr)
+      const res = (_findUnit as any)(uStr)
       if (res === null) {
         // Unit not found.
         throw new SyntaxError('Unit "' + uStr + '" not found.')
@@ -498,7 +498,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @return {number | BigNumber | Fraction | boolean} normalized value
    * @private
    */
-  Unit.prototype._normalize = function (value) {
+  Unit.prototype._normalize = function (value: any) {
     if (value === null || value === undefined || this.units.length === 0) {
       return value
     }
@@ -523,7 +523,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @return {number} denormalized value
    * @private
    */
-  Unit.prototype._denormalize = function (value, prefixValue) {
+  Unit.prototype._denormalize = function (value: any, prefixValue: any) {
     if (value === null || value === undefined || this.units.length === 0) {
       return value
     }
@@ -574,7 +574,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
     }
 
     return null
-  }, { hasher: (args) => args[0], limit: 100 })
+  }, { hasher: (args: any) => args[0], limit: 100 })
 
   /**
    * Test if the given expression is a unit.
@@ -585,7 +585,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @return {boolean}      true if the given string is a unit
    */
   Unit.isValuelessUnit = function (name: string): boolean {
-    return (_findUnit(name) !== null)
+    return ((_findUnit as any)(name) !== null)
   }
 
   /**
@@ -633,7 +633,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {Unit} other
    * @return {boolean} true if both units are equal
    */
-  Unit.prototype.equals = function (other) {
+  Unit.prototype.equals = function (other: any) {
     return (this.equalBase(other) && equal(this.value, other.value))
   }
 
@@ -643,7 +643,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {Unit} other
    * @return {Unit} product of this unit and the other unit
    */
-  Unit.prototype.multiply = function (_other) {
+  Unit.prototype.multiply = function (_other: any) {
     const res = this.clone()
     const other = isUnit(_other) ? _other : new Unit(_other)
 
@@ -685,7 +685,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {numeric} numerator
    * @param {unit} result of dividing numerator by this unit
    */
-  Unit.prototype.divideInto = function (numerator) {
+  Unit.prototype.divideInto = function (numerator: any) {
     return new Unit(numerator).divide(this)
   }
 
@@ -695,7 +695,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {Unit | numeric} other
    * @return {Unit} result of dividing this unit by the other unit
    */
-  Unit.prototype.divide = function (_other) {
+  Unit.prototype.divide = function (_other: any) {
     const res = this.clone()
     const other = isUnit(_other) ? _other : new Unit(_other)
 
@@ -736,7 +736,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {number | Fraction | BigNumber} p
    * @returns {Unit}      The result: this^p
    */
-  Unit.prototype.pow = function (p) {
+  Unit.prototype.pow = function (p: any) {
     const res = this.clone()
 
     for (let i = 0; i < BASE_DIMENSIONS.length; i++) {
@@ -833,7 +833,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {string | Unit} valuelessUnit   A unit without value. Can have prefix, like "cm"
    * @returns {Unit} Returns a clone of the unit with a fixed prefix and unit.
    */
-  Unit.prototype.to = function (valuelessUnit) {
+  Unit.prototype.to = function (valuelessUnit: any) {
     const value = this.value === null ? this._normalize(1) : this.value
     let other
     if (typeof valuelessUnit === 'string') {
@@ -881,7 +881,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @return {number} Returns the unit value as number.
    */
   // TODO: deprecate Unit.toNumber? It's always better to use toNumeric
-  Unit.prototype.toNumber = function (valuelessUnit) {
+  Unit.prototype.toNumber = function (valuelessUnit: any) {
     return toNumber(this.toNumeric(valuelessUnit))
   }
 
@@ -891,7 +891,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {string | Unit} valuelessUnit    For example 'cm' or 'inch'
    * @return {number | BigNumber | Fraction} Returns the unit value
    */
-  Unit.prototype.toNumeric = function (valuelessUnit) {
+  Unit.prototype.toNumeric = function (valuelessUnit: any) {
     let other
     if (valuelessUnit) {
       // Allow getting the numeric value without converting to a different unit
@@ -939,7 +939,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    *                       `{"mathjs": "Unit", "value": 2, "unit": "cm", "fixPrefix": false}`
    * @return {Unit}
    */
-  Unit.fromJSON = function (json) {
+  Unit.fromJSON = function (json: any) {
     const unit = new Unit(json.value, json.unit ?? undefined)
     unit.fixPrefix = json.fixPrefix ?? fixPrefixDefault
     unit.skipAutomaticSimplification = json.skipSimp ?? skipAutomaticSimplificationDefault
@@ -1126,7 +1126,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    *
    * @return {Unit} Returns a new Unit with the given value and unit.
    */
-  Unit.prototype.toBest = function (unitList = [], options = {}) {
+  Unit.prototype.toBest = function (unitList: any[] = [], options: any = {}) {
     if (unitList && !Array.isArray(unitList)) {
       throw new Error('Invalid unit type. Expected string or Unit.')
     }
@@ -1175,7 +1175,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    *                                                options.
    * @return {string}
    */
-  Unit.prototype.format = function (options) {
+  Unit.prototype.format = function (options: any) {
     const { simp, valueStr, unitStr } = formatBest(this, options)
     let str = valueStr
     if (simp.value && isComplex(simp.value)) {
@@ -1322,7 +1322,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    *
    * @return {Array} An array of units.
    */
-  Unit.prototype.splitUnit = function (parts) {
+  Unit.prototype.splitUnit = function (parts: any) {
     let x = this.clone()
     const ret = []
     for (let i = 0; i < parts.length; i++) {
@@ -2923,7 +2923,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    */
   function calculateAngleValues (config: any): void {
     if (config.number === 'BigNumber') {
-      const pi = createPi(BigNumber)
+      const pi = (createPi as any)(BigNumber)
       UNITS.rad.value = new BigNumber(1)
       UNITS.deg.value = pi.div(180) // 2 * pi / 360
       UNITS.grad.value = pi.div(200) // 2 * pi / 400
@@ -2950,7 +2950,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
 
   if (on) {
     // recalculate the values on change of configuration
-    on('config', function (curr, prev) {
+    on('config', function (curr: any, prev: any) {
       if (curr.number !== prev.number) {
         calculateAngleValues(curr)
       }
@@ -3052,20 +3052,20 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * or Fraction
    */
   Unit.typeConverters = {
-    BigNumber: function (x) {
+    BigNumber: function (x: any) {
       if (x?.isFraction) return new BigNumber(String(x.n)).div(String(x.d)).times(String(x.s))
       return new BigNumber(x + '') // stringify to prevent constructor error
     },
 
-    Fraction: function (x) {
+    Fraction: function (x: any) {
       return new Fraction(x)
     },
 
-    Complex: function (x) {
+    Complex: function (x: any) {
       return x
     },
 
-    number: function (x) {
+    number: function (x: any) {
       if (x?.isFraction) return number(x)
       return x
     }
@@ -3094,7 +3094,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    *                        In case of an unknown type,
    * @return {Function}
    */
-  Unit._getNumberConverter = function (type) {
+  Unit._getNumberConverter = function (type: any) {
     if (!Unit.typeConverters[type]) {
       throw new TypeError('Unsupported type "' + type + '"')
     }

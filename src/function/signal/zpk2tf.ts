@@ -9,7 +9,7 @@ const dependencies = [
   'multiply',
   'Complex',
   'number'
-] as const
+]
 
 /**
  * Transfer function representation [numerator, denominator]

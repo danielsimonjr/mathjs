@@ -6,7 +6,7 @@ import { cotNumber } from '../../plain/number/index.js'
 import { createTrigUnit } from './trigUnit.js'
 
 const name = 'cot'
-const dependencies = ['typed', 'BigNumber'] as const
+const dependencies = ['typed', 'BigNumber']
 
 export const createCot: FactoryFunction<'cot', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
   const trigUnit = createTrigUnit({ typed })

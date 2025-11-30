@@ -5,7 +5,7 @@ import { deepMap } from '../../utils/collection.js'
 import { log1p as _log1p } from '../../utils/number.js'
 
 const name = 'log1p'
-const dependencies = ['typed', 'config', 'divideScalar', 'log', 'Complex'] as const
+const dependencies = ['typed', 'config', 'divideScalar', 'log', 'Complex']
 
 export const createLog1p: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, divideScalar, log, Complex }: { typed: TypedFunction; config: MathJsConfig; divideScalar: any; log: any; Complex: any }): any => {
   /**
@@ -57,7 +57,7 @@ export const createLog1p: FactoryFunction<typeof name, typeof dependencies> = /*
         return y.ln()
       } else {
         // downgrade to number, return Complex valued result
-        return _log1pComplex(new Complex(x.toNumber(), 0))
+        return _log1pComplex(new Complex((x as any).toNumber(), 0))
       }
     },
 

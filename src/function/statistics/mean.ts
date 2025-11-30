@@ -83,7 +83,7 @@ export const createMean = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
       const s = Array.isArray(array) ? arraySize(array) : array.size()
       return divide(sum, s[dim])
     } catch (err) {
-      throw improveErrorMessage(err, 'mean')
+      throw improveErrorMessage(err, 'mean', undefined)
     }
   }
 

@@ -1,13 +1,17 @@
-import { isBigNumber, isComplex, isNode, isUnit, typeOf } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { getPrecedence } from '../operators.js'
+import { isBigNumber, isComplex, isNode, isUnit, typeOf } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { getPrecedence } from '../operators.ts'
 
 const name = 'ConditionalNode'
 const dependencies = [
   'Node'
 ]
 
-export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }) => {
+export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies, ({
+  Node
+}: {
+  Node: any;
+}) => {
   /**
    * Test whether a condition is met
    * @param {*} condition

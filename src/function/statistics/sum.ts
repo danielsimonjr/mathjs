@@ -110,7 +110,7 @@ export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
       const sum = reduce(array, dim, add)
       return sum
     } catch (err) {
-      throw improveErrorMessage(err, 'sum')
+      throw improveErrorMessage(err, 'sum', undefined)
     }
   }
 })

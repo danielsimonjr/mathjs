@@ -5,6 +5,11 @@
     "module": "ES2020",
     "lib": ["ES2020", "DOM", "ES2020.BigInt", "WebWorker"],
     "moduleResolution": "node",
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "baseUrl": ".",
+    "paths": {
+      "typed-function": ["./src/types/typed-function"]
+    },
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

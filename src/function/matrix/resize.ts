@@ -8,7 +8,7 @@ import { resize as arrayResize } from '../../utils/array.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'resize'
-const dependencies = ['config', 'matrix'] as const
+const dependencies = ['config', 'matrix']
 
 export const createResize: FactoryFunction<'config' | 'matrix', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ config, matrix }) => {
   /**
@@ -50,7 +50,7 @@ export const createResize: FactoryFunction<'config' | 'matrix', typeof name> = /
     if (isBigNumber(size[0])) {
       // convert bignumbers to numbers
       size = size.map(function (value: any) {
-        return !isBigNumber(value) ? value : value.toNumber()
+        return !isBigNumber(value) ? value : (value as any).toNumber()
       })
     }
 
@@ -109,7 +109,7 @@ export const createResize: FactoryFunction<'config' | 'matrix', typeof name> = /
     const len = size[0]
     if (typeof len !== 'number' || !isInteger(len)) {
       throw new TypeError('Invalid size, must contain positive integers ' +
-          '(size: ' + format(size) + ')')
+          '(size: ' + format(size, {}) + ')')
     }
 
     if (str.length > len) {

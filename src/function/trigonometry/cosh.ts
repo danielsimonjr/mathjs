@@ -3,7 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { cosh as coshNumber } from '../../utils/number.js'
 
 const name = 'cosh'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createCosh: FactoryFunction<'cosh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

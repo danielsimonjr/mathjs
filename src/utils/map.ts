@@ -49,7 +49,7 @@ export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
 
   forEach(callback: (value: V, key: K, map: Map<K, V>) => void): void {
     for (const key of this.keys()) {
-      callback(this.get(key)!, key, this)
+      callback(this.get(key)!, key, this as any)
     }
   }
 
@@ -143,7 +143,7 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
 
   forEach(callback: (value: V, key: K, map: Map<K, V>) => void): void {
     for (const key of this.keys()) {
-      callback(this.get(key)!, key, this)
+      callback(this.get(key)!, key, this as any)
     }
   }
 

@@ -30,7 +30,7 @@ const dependencies = [
   'OperatorNode',
   'SymbolNode',
   'ParenthesisNode'
-] as const
+]
 
 export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
   config,

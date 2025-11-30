@@ -10,7 +10,7 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 
 const name = 'ceil'
-const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zeros', 'DenseMatrix'] as const
+const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zeros', 'DenseMatrix']
 
 const bigTen = new Decimal(10)
 
@@ -128,7 +128,7 @@ export const createCeil: FactoryFunction<
     },
 
     'Complex, BigNumber': function (x: any, n: any): any {
-      return x.ceil(n.toNumber())
+      return x.ceil((n as any).toNumber())
     },
 
     BigNumber: _bigCeil,
@@ -151,7 +151,7 @@ export const createCeil: FactoryFunction<
     },
 
     'Fraction, BigNumber': function (x: any, n: any): any {
-      return x.ceil(n.toNumber())
+      return x.ceil((n as any).toNumber())
     },
 
     'Unit, number, Unit': typed.referToSelf((self: any) => function (x: any, n: number, unit: any): any {
@@ -159,7 +159,7 @@ export const createCeil: FactoryFunction<
       return unit.multiply(self(valueless, n))
     }),
 
-    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, n.toNumber(), unit)),
+    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, (n as any).toNumber(), unit)),
 
     'Array | Matrix, number | BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => {
       // deep map collection, skip zeros since ceil(0) = 0

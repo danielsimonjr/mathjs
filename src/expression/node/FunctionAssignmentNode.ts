@@ -12,7 +12,7 @@ const name = 'FunctionAssignmentNode'
 const dependencies = [
   'typed',
   'Node'
-] as const
+]
 
 interface ParamWithType {
   name: string
@@ -31,8 +31,8 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
    * @private
    */
   function needParenthesis (node: FunctionAssignmentNode, parenthesis?: string, implicit?: string): boolean {
-    const precedence = getPrecedence(node, parenthesis, implicit)
-    const exprPrecedence = getPrecedence(node.expr, parenthesis, implicit)
+    const precedence = getPrecedence(node, parenthesis, implicit, undefined)
+    const exprPrecedence = getPrecedence(node.expr, parenthesis, implicit, undefined)
 
     return (parenthesis === 'all') ||
       ((exprPrecedence !== null) && (exprPrecedence <= precedence))
@@ -144,7 +144,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-      callback(this.expr, 'expr', this)
+      callback(this.expr, 'expr', this as any)
     }
 
     /**
@@ -155,7 +155,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
      * @returns {FunctionAssignmentNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): FunctionAssignmentNode {
-      const expr = this._ifNode(callback(this.expr, 'expr', this))
+      const expr = this._ifNode(callback(this.expr, 'expr', this as any))
 
       return new FunctionAssignmentNode(this.name, this.params.slice(0), expr)
     }

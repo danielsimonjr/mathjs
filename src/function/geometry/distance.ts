@@ -12,7 +12,7 @@ const dependencies = [
   'deepEqual',
   'sqrt',
   'abs'
-] as const
+]
 
 export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typed, addScalar, subtractScalar, multiplyScalar, divideScalar, deepEqual, sqrt, abs }: {
   typed: any

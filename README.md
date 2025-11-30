@@ -86,6 +86,48 @@ Math.js works on any [ES2020](https://262.ecma-international.org/11.0/) compatib
 - [Overview](https://mathjs.org/docs/index.html)
 - [History](https://mathjs.org/history.html)
 
+### Documentation Organization
+
+This repository contains documentation in the root and `docs/` directory:
+
+**Root Directory:**
+- **README.md** - Main project documentation (this file)
+- **CHANGELOG.md** - Version history and changes
+- **CLAUDE.md** - Guidance for Claude Code when working in this repository
+- **CONTRIBUTING.md** - Contribution guidelines
+- **CODE_OF_CONDUCT.md** - Community standards
+- **SECURITY.md** - Security policy
+- **PARALLEL_COMPUTING_IMPROVEMENT_PLAN.md** - Parallel computing roadmap
+- **SCIENTIFIC_COMPUTING_IMPROVEMENT_PLAN.md** - Scientific computing roadmap
+
+**docs/architecture/** - Architecture and design documentation:
+- **README_TYPESCRIPT_WASM.md** - Complete TypeScript + WASM refactoring overview
+- **TYPESCRIPT_WASM_ARCHITECTURE.md** - Technical architecture guide
+
+**docs/refactoring/** - TypeScript refactoring progress and plans:
+- **REFACTORING_PLAN.md** - Detailed conversion strategy
+- **REFACTORING_SUMMARY.md** - Infrastructure overview
+- **REFACTORING_TASKS.md** - File-by-file task list
+- **TYPESCRIPT_CONVERSION_SUMMARY.md** - 50-file conversion details
+
+**docs/migration/** - Migration guides and history:
+- **MIGRATION_GUIDE.md** - User migration guide for TS/WASM features
+- **HISTORY.md** - Historical project changes
+
+**Quick Navigation:**
+
+| Need to... | Look in... |
+|------------|------------|
+| Get started with mathjs | `README.md` |
+| Contribute to the project | `CONTRIBUTING.md` |
+| Report security issues | `SECURITY.md` |
+| Understand TypeScript/WASM refactoring | `docs/architecture/README_TYPESCRIPT_WASM.md` |
+| Find files to convert | `docs/refactoring/REFACTORING_TASKS.md` |
+| Learn the architecture | `docs/architecture/TYPESCRIPT_WASM_ARCHITECTURE.md` |
+| Migrate existing code | `docs/migration/MIGRATION_GUIDE.md` |
+| View historical changes | `docs/migration/HISTORY.md` |
+| Configure Claude Code | `CLAUDE.md` |
+
 
 ## Build
 

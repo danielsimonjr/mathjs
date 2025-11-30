@@ -75,7 +75,7 @@ export const createSqrt = /* #__PURE__ */ factory(name, dependencies, ({ config,
         return x.sqrt()
       } else {
         // negative value -> downgrade to number to do complex value computation
-        return _sqrtNumber(x.toNumber())
+        return _sqrtNumber((x as any).toNumber())
       }
     },
 

@@ -3,9 +3,9 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { expNumber } from '../../plain/number/index.js'
 
 const name = 'exp'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
-export const createExp: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: TypedFunction }): any => {
+export const createExp: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }: any): any => {
   /**
    * Calculate the exponential of a value.
    * For matrices, if you want the matrix exponential of square matrix, use

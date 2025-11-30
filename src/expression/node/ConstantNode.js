@@ -1,14 +1,20 @@
-import { format } from '../../utils/string.js'
-import { typeOf } from '../../utils/is.js'
-import { escapeLatex } from '../../utils/latex.js'
-import { factory } from '../../utils/factory.js'
+import { format } from '../../utils/string.ts'
+import { typeOf } from '../../utils/is.ts'
+import { escapeLatex } from '../../utils/latex.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'ConstantNode'
 const dependencies = [
   'Node', 'isBounded'
 ]
 
-export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, isBounded }) => {
+export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({
+  Node,
+  isBounded
+}: {
+  Node: any;
+  isBounded: any;
+}) => {
   class ConstantNode extends Node {
     /**
      * A ConstantNode holds a constant value like a number or string.

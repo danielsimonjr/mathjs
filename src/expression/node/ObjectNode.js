@@ -1,15 +1,19 @@
-import { getSafeProperty } from '../../utils/customs.js'
-import { factory } from '../../utils/factory.js'
-import { isNode } from '../../utils/is.js'
-import { hasOwnProperty } from '../../utils/object.js'
-import { escape, stringify } from '../../utils/string.js'
+import { getSafeProperty } from '../../utils/customs.ts'
+import { factory } from '../../utils/factory.ts'
+import { isNode } from '../../utils/is.ts'
+import { hasOwnProperty } from '../../utils/object.ts'
+import { escape, stringify } from '../../utils/string.ts'
 
 const name = 'ObjectNode'
 const dependencies = [
   'Node'
 ]
 
-export const createObjectNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }) => {
+export const createObjectNode = /* #__PURE__ */ factory(name, dependencies, ({
+  Node
+}: {
+  Node: any;
+}) => {
   class ObjectNode extends Node {
     /**
      * @constructor ObjectNode

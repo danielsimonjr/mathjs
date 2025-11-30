@@ -2,7 +2,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'kldivergence'
-const dependencies = ['typed', 'matrix', 'divide', 'sum', 'multiply', 'map', 'dotDivide', 'log', 'isNumeric'] as const
+const dependencies = ['typed', 'matrix', 'divide', 'sum', 'multiply', 'map', 'dotDivide', 'log', 'isNumeric']
 
 export const createKldivergence: FactoryFunction<
   {
@@ -78,10 +78,10 @@ export const createKldivergence: FactoryFunction<
     if (sump === 0) {
       throw new Error('Sum of elements in second object must be non zero')
     }
-    const qnorm = divide(q, sum(q))
-    const pnorm = divide(p, sum(p))
+    const qnorm = (divide as any)(q, (sum as any)(q))
+    const pnorm = (divide as any)(p, (sum as any)(p))
 
-    const result = sum(multiply(qnorm, map(dotDivide(qnorm, pnorm), (x: any) => log(x))))
+    const result = (sum as any)((multiply as any)(qnorm, (map as any)((dotDivide as any)(qnorm, pnorm), (x: any) => (log as any)(x))))
     if (isNumeric(result)) {
       return result
     } else {

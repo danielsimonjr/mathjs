@@ -94,7 +94,7 @@ export const createTrace = /* #__PURE__ */ factory(name, dependencies, ({ typed,
           // return data[0]
           return clone((data as any[])[0])
         }
-        throw new RangeError('Matrix must be square (size: ' + format(size) + ')')
+        throw new RangeError('Matrix must be square (size: ' + format(size, {}) + ')')
       case 2:
       {
         // two dimensional
@@ -108,12 +108,12 @@ export const createTrace = /* #__PURE__ */ factory(name, dependencies, ({ typed,
           // return trace
           return sum
         } else {
-          throw new RangeError('Matrix must be square (size: ' + format(size) + ')')
+          throw new RangeError('Matrix must be square (size: ' + format(size, {}) + ')')
         }
       }
       default:
         // multi dimensional
-        throw new RangeError('Matrix must be two dimensional (size: ' + format(size) + ')')
+        throw new RangeError('Matrix must be two dimensional (size: ' + format(size, {}) + ')')
     }
   }
 
@@ -158,6 +158,6 @@ export const createTrace = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       // return trace
       return sum
     }
-    throw new RangeError('Matrix must be square (size: ' + format(size) + ')')
+    throw new RangeError('Matrix must be square (size: ' + format(size, {}) + ')')
   }
 })

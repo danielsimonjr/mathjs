@@ -1,9 +1,9 @@
-import { isAccessorNode, isIndexNode, isNode, isSymbolNode } from '../../utils/is.js'
-import { getSafeProperty, setSafeProperty } from '../../utils/customs.js'
-import { factory } from '../../utils/factory.js'
-import { accessFactory } from './utils/access.js'
-import { assignFactory } from './utils/assign.js'
-import { getPrecedence } from '../operators.js'
+import { isAccessorNode, isIndexNode, isNode, isSymbolNode } from '../../utils/is.ts'
+import { getSafeProperty, setSafeProperty } from '../../utils/customs.ts'
+import { factory } from '../../utils/factory.ts'
+import { accessFactory } from './utils/access.ts'
+import { assignFactory } from './utils/assign.ts'
+import { getPrecedence } from '../operators.ts'
 
 const name = 'AssignmentNode'
 const dependencies = [
@@ -12,7 +12,15 @@ const dependencies = [
   'Node'
 ]
 
-export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, matrix, Node }) => {
+export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, ({
+  subset,
+  matrix,
+  Node
+}: {
+  subset: any;
+  matrix: MatrixConstructor;
+  Node: any;
+}) => {
   const access = accessFactory({ subset })
   const assign = assignFactory({ subset, matrix })
 

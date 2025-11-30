@@ -3,7 +3,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'multinomial'
-const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInteger', 'isPositive'] as const
+const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInteger', 'isPositive']
 
 export const createMultinomial: FactoryFunction<
   {
@@ -47,11 +47,11 @@ export const createMultinomial: FactoryFunction<
         if (!isInteger(ai) || !isPositive(ai)) {
           throw new TypeError('Positive integer value expected in function multinomial')
         }
-        sum = add(sum, ai)
-        denom = multiply(denom, factorial(ai))
+        sum = (add as any)(sum, ai)
+        denom = (multiply as any)(denom, (factorial as any)(ai))
       })
 
-      return divide(factorial(sum), denom)
+      return (divide as any)((factorial as any)(sum), denom)
     }
   })
 })

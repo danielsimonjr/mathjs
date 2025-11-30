@@ -117,7 +117,7 @@ export function validateIndex(index: number | undefined, length?: number): void 
       throw new TypeError('Index must be an integer (value: ' + index + ')')
     }
     if (index < 0 || (typeof length === 'number' && index >= length)) {
-      throw new IndexError(index, length)
+      throw new IndexError(index, 0, length) as any
     }
   }
 }
@@ -173,7 +173,7 @@ export function resize<T = any>(
   size.forEach(function (value) {
     if (!isNumber(value) || !isInteger(value) || value < 0) {
       throw new TypeError('Invalid size, must contain positive integers ' +
-        '(size: ' + format(size) + ')')
+        '(size: ' + format(size, {}) + ')')
     }
   })
 
@@ -814,7 +814,7 @@ export function broadcastTo<T>(array: NestedArray<T>, toSize: number[]): NestedA
   const N = broadcastedSize.length
   const paddedSize = [...Array(N - Asize.length).fill(1), ...Asize]
 
-  let A: any = clone(array)
+  let A: any = clone(array as any)
   // reshape A if needed to make it ready for concat
   if (Asize.length < N) {
     A = reshape(A, paddedSize)

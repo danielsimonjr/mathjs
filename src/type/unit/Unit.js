@@ -1,9 +1,9 @@
-import { isComplex, isUnit, typeOf } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { memoize } from '../../utils/function.js'
-import { endsWith } from '../../utils/string.js'
-import { clone, hasOwnProperty } from '../../utils/object.js'
-import { createBigNumberPi as createPi } from '../../utils/bignumber/constants.js'
+import { isComplex, isUnit, typeOf } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { memoize } from '../../utils/function.ts'
+import { endsWith } from '../../utils/string.ts'
+import { clone, hasOwnProperty } from '../../utils/object.ts'
+import { createBigNumberPi as createPi } from '../../utils/bignumber/constants.ts'
 
 const name = 'Unit'
 const dependencies = [
@@ -44,6 +44,24 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
   Complex,
   BigNumber,
   Fraction
+}: {
+  on: any;
+  config: ConfigOptions;
+  addScalar: (a: number, b: number) => number;
+  subtractScalar: (a: number, b: number) => number;
+  multiplyScalar: (a: number, b: number) => number;
+  divideScalar: (a: number, b: number) => number;
+  pow: any;
+  abs: any;
+  fix: any;
+  round: any;
+  equal: any;
+  isNumeric: (value: any) => boolean;
+  format: any;
+  number: any;
+  Complex: typeof Complex;
+  BigNumber: typeof BigNumber;
+  Fraction: typeof Fraction;
 }) => {
   const toNumber = number
   const fixPrefixDefault = false

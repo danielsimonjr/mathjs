@@ -1,15 +1,19 @@
-import { getPrecedence } from '../operators.js'
-import { escape } from '../../utils/string.js'
-import { getSafeProperty } from '../../utils/customs.js'
-import { latexOperators } from '../../utils/latex.js'
-import { factory } from '../../utils/factory.js'
+import { getPrecedence } from '../operators.ts'
+import { escape } from '../../utils/string.ts'
+import { getSafeProperty } from '../../utils/customs.ts'
+import { latexOperators } from '../../utils/latex.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'RelationalNode'
 const dependencies = [
   'Node'
 ]
 
-export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }) => {
+export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, ({
+  Node
+}: {
+  Node: any;
+}) => {
   const operatorMap = {
     equal: '==',
     unequal: '!=',

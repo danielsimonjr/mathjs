@@ -5,7 +5,7 @@ import type { Complex } from '../../type/complex/Complex.js'
 import { cschNumber } from '../../plain/number/index.js'
 
 const name = 'csch'
-const dependencies = ['typed', 'BigNumber'] as const
+const dependencies = ['typed', 'BigNumber']
 
 export const createCsch: FactoryFunction<'csch', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
   /**

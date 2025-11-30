@@ -5,7 +5,7 @@ import { promoteLogarithm } from '../../utils/bigint.js'
 import { logNumber } from '../../plain/number/index.js'
 
 const name = 'log'
-const dependencies = ['config', 'typed', 'typeOf', 'divideScalar', 'Complex'] as const
+const dependencies = ['config', 'typed', 'typeOf', 'divideScalar', 'Complex']
 const nlg16 = Math.log(16)
 
 export const createLog: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, typeOf, config, divideScalar, Complex }: { typed: TypedFunction; typeOf: any; config: MathJsConfig; divideScalar: any; Complex: any }): any => {
@@ -71,7 +71,7 @@ export const createLog: FactoryFunction<typeof name, typeof dependencies> = /* #
         return x.ln()
       } else {
         // downgrade to number, return Complex valued result
-        return complexLogNumber(x.toNumber())
+        return complexLogNumber((x as any).toNumber())
       }
     },
 

@@ -4,7 +4,7 @@ import { isInteger } from '../../utils/number.js'
 import { product } from '../../utils/product.js'
 
 const name = 'combinationsWithRep'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createCombinationsWithRep: FactoryFunction<
   { typed: TypedFunction },

@@ -110,14 +110,14 @@ export const createPow = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
     'number, number': _pow,
 
     'Complex, Complex': function (x: Complex, y: Complex): Complex {
-      return x.pow(y)
+      return (x as any).pow(y)
     },
 
     'BigNumber, BigNumber': function (x: BigNumber, y: BigNumber): BigNumber | Complex {
       if (y.isInteger() || x >= 0 || config.predictable) {
         return x.pow(y)
       } else {
-        return new Complex(x.toNumber(), 0).pow(y.toNumber(), 0)
+        return new Complex((x as any).toNumber(), 0).pow((y as any).toNumber(), 0)
       }
     },
 
@@ -140,13 +140,13 @@ export const createPow = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
     'Array, number': _powArray,
 
     'Array, BigNumber': function (x: any[][], y: BigNumber): any[][] {
-      return _powArray(x, y.toNumber())
+      return _powArray(x, (y as any).toNumber())
     },
 
     'Matrix, number': _powMatrix,
 
     'Matrix, BigNumber': function (x: any, y: BigNumber): any {
-      return _powMatrix(x, y.toNumber())
+      return _powMatrix(x, (y as any).toNumber())
     },
 
     'Unit, number | BigNumber': function (x: Unit, y: number | BigNumber): Unit {

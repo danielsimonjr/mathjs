@@ -98,7 +98,7 @@ export const createInv = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
             }
           } else {
             throw new RangeError('Matrix must be square ' +
-            '(size: ' + format(size) + ')')
+            '(size: ' + format(size, {}) + ')')
           }
 
         case 2:
@@ -120,14 +120,14 @@ export const createInv = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
             }
           } else {
             throw new RangeError('Matrix must be square ' +
-              '(size: ' + format(size) + ')')
+              '(size: ' + format(size, {}) + ')')
           }
         }
 
         default:
           // multi dimensional array
           throw new RangeError('Matrix must be two dimensional ' +
-          '(size: ' + format(size) + ')')
+          '(size: ' + format(size, {}) + ')')
       }
     },
 

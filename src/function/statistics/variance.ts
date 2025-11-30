@@ -186,7 +186,7 @@ export const createVariance = /* #__PURE__ */ factory(name, dependencies, ({ typ
       }
       return mapSlices(array, dim, (x: any) => _var(x, normalization))
     } catch (err) {
-      throw improveErrorMessage(err, 'variance')
+      throw improveErrorMessage(err, 'variance', undefined)
     }
   }
 })

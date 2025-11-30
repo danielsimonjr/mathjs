@@ -17,7 +17,7 @@ const dependencies = [
   'OperatorNode',
   'ParenthesisNode',
   'SymbolNode'
-] as const
+]
 
 export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -191,7 +191,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
     },
 
     'function, ParenthesisNode, string': function (isConst: (node: MathNode, varName: string) => boolean, node: ParenthesisNode, varName: string): boolean {
-      return isConst(node.content, varName)
+      return isConst((node as any).content, varName)
     },
 
     'function, FunctionAssignmentNode, string': function (isConst: (node: MathNode, varName: string) => boolean, node: FunctionAssignmentNode, varName: string): boolean {
@@ -226,7 +226,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
     },
 
     'ParenthesisNode, function': function (node: ParenthesisNode, isConst: (node: MathNode) => boolean): ParenthesisNode {
-      return new ParenthesisNode(_derivative(node.content, isConst))
+      return new ParenthesisNode(_derivative((node as any).content, isConst))
     },
 
     'FunctionAssignmentNode, function': function (node: FunctionAssignmentNode, isConst: (node: MathNode) => boolean): MathNode {
@@ -601,7 +601,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
 
       if (node.op === '+') {
         // d/dx(sum(f(x)) = sum(f'(x))
-        return new OperatorNode(node.op, node.fn, node.args.map(function (arg: MathNode) {
+        return new OperatorNode(node.op, (node as any).fn, node.args.map(function (arg: MathNode) {
           return _derivative(arg, isConst)
         }))
       }
@@ -609,14 +609,14 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
       if (node.op === '-') {
         // d/dx(+/-f(x)) = +/-f'(x)
         if (node.isUnary()) {
-          return new OperatorNode(node.op, node.fn, [
+          return new OperatorNode(node.op, (node as any).fn, [
             _derivative(node.args[0], isConst)
           ])
         }
 
         // Linearity of differentiation, d/dx(f(x) +/- g(x)) = f'(x) +/- g'(x)
         if (node.isBinary()) {
-          return new OperatorNode(node.op, node.fn, [
+          return new OperatorNode(node.op, (node as any).fn, [
             _derivative(node.args[0], isConst),
             _derivative(node.args[1], isConst)
           ])

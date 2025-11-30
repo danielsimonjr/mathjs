@@ -4,7 +4,7 @@ import type { MathNumericType } from '../../utils/types.js'
 const name = 'intersect'
 const dependencies = [
   'typed', 'config', 'abs', 'add', 'addScalar', 'matrix', 'multiply', 'multiplyScalar', 'divideScalar', 'subtract', 'smaller', 'equalScalar', 'flatten', 'isZero', 'isNumeric'
-] as const
+]
 
 export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, abs, add, addScalar, matrix, multiply, multiplyScalar, divideScalar, subtract, smaller, equalScalar, flatten, isZero, isNumeric }: {
   typed: any

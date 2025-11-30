@@ -3,7 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { combinationsNumber } from '../../plain/number/combinations.js'
 
 const name = 'combinations'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createCombinations: FactoryFunction<
   { typed: TypedFunction },

@@ -1,10 +1,10 @@
-import { isAccessorNode, isFunctionAssignmentNode, isIndexNode, isNode, isSymbolNode } from '../../utils/is.js'
-import { escape, format } from '../../utils/string.js'
-import { hasOwnProperty } from '../../utils/object.js'
-import { getSafeProperty, getSafeMethod } from '../../utils/customs.js'
-import { createSubScope } from '../../utils/scope.js'
-import { factory } from '../../utils/factory.js'
-import { defaultTemplate, latexFunctions } from '../../utils/latex.js'
+import { isAccessorNode, isFunctionAssignmentNode, isIndexNode, isNode, isSymbolNode } from '../../utils/is.ts'
+import { escape, format } from '../../utils/string.ts'
+import { hasOwnProperty } from '../../utils/object.ts'
+import { getSafeProperty, getSafeMethod } from '../../utils/customs.ts'
+import { createSubScope } from '../../utils/scope.ts'
+import { factory } from '../../utils/factory.ts'
+import { defaultTemplate, latexFunctions } from '../../utils/latex.ts'
 
 const name = 'FunctionNode'
 const dependencies = [
@@ -13,7 +13,15 @@ const dependencies = [
   'SymbolNode'
 ]
 
-export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({ math, Node, SymbolNode }) => {
+export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
+  math,
+  Node,
+  SymbolNode
+}: {
+  math: any;
+  Node: any;
+  SymbolNode: any;
+}) => {
   /* format to fixed length */
   const strin = entity => format(entity, { truncate: 78 })
 

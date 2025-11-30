@@ -6,7 +6,7 @@ import { cscNumber } from '../../plain/number/index.js'
 import { createTrigUnit } from './trigUnit.js'
 
 const name = 'csc'
-const dependencies = ['typed', 'BigNumber'] as const
+const dependencies = ['typed', 'BigNumber']
 
 export const createCsc: FactoryFunction<'csc', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
   const trigUnit = createTrigUnit({ typed })

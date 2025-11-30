@@ -3,7 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { gammaG, gammaNumber, gammaP } from '../../plain/number/index.js'
 
 const name = 'gamma'
-const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', 'Complex'] as const
+const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', 'Complex']
 
 export const createGamma: FactoryFunction<
   {
@@ -111,7 +111,7 @@ export const createGamma: FactoryFunction<
       return new BigNumber([1, 1, 2, 6, 24, 120, 720, 5040][n])
     }
 
-    const precision = config.precision + (Math.log(n.toNumber()) | 0)
+    const precision = config.precision + (Math.log((n as any).toNumber()) | 0)
     const Big = BigNumber.clone({ precision })
 
     if (n % 2 === 1) {
@@ -120,7 +120,7 @@ export const createGamma: FactoryFunction<
 
     let p = n
     let prod = new Big(n)
-    let sum = n.toNumber()
+    let sum = (n as any).toNumber()
 
     while (p > 2) {
       p -= 2

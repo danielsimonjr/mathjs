@@ -52,6 +52,6 @@ export const createAbs = /* #__PURE__ */ factory(name, dependencies, ({ typed }:
     bigint: (x: bigint): bigint => x < 0n ? -x : x,
 
     // deep map collection, skip zeros since abs(0) = 0
-    'Array | Matrix': typed.referToSelf(self => (x: any): any => deepMap(x, self, true))
+    'Array | Matrix': typed.referToSelf(((self: any) => ((x: any): any => deepMap(x, self, true))) as any) as any
   })
 })

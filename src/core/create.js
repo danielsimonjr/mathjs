@@ -1,8 +1,8 @@
 import typedFunction from 'typed-function'
-import { ArgumentsError } from '../error/ArgumentsError.js'
-import { DimensionError } from '../error/DimensionError.js'
-import { IndexError } from '../error/IndexError.js'
-import { factory, isFactory } from '../utils/factory.js'
+import { ArgumentsError } from '../error/ArgumentsError.ts'
+import { DimensionError } from '../error/DimensionError.ts'
+import { IndexError } from '../error/IndexError.ts'
+import { factory, isFactory } from '../utils/factory.ts'
 import {
   isAccessorNode,
   isArray,
@@ -47,12 +47,14 @@ import {
   isSymbolNode,
   isUndefined,
   isUnit
-} from '../utils/is.js'
-import { deepFlatten, isLegacyFactory } from '../utils/object.js'
-import * as emitter from './../utils/emitter.js'
-import { DEFAULT_CONFIG } from './config.js'
-import { configFactory } from './function/config.js'
-import { importFactory } from './function/import.js'
+} from '../utils/is.ts'
+import { deepFlatten, isLegacyFactory } from '../utils/object.ts'
+import * as emitter from './../utils/emitter.ts'
+import { DEFAULT_CONFIG } from './config.ts'
+import { configFactory } from './function/config.ts'
+import { importFactory } from './function/import.ts'
+
+import { TypedFunction } from '../../types.ts';
 
 /**
  * Create a mathjs instance from given factory functions and optionally config

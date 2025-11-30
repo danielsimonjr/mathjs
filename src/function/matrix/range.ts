@@ -200,8 +200,8 @@ export const createRange = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       return _out(_range(
         bignumber(r.start),
         bignumber(r.end),
-        bignumber(r.step)),
-      includeEnd)
+        bignumber(r.step),
+        includeEnd))
     } else {
       return _out(_range(r.start, r.end, r.step, includeEnd))
     }

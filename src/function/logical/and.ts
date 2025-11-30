@@ -111,7 +111,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
           // return zero matrix
           return zeros(x.size(), x.storage())
         }
-        return matAlgo11xS0s(x, y, self, false)
+        return matAlgo11xS0s(x as any, y, self, false)
       }),
 
       'DenseMatrix, any': typed.referToSelf(self => (x: Matrix, y: any): any => {
@@ -120,7 +120,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
           // return zero matrix
           return zeros(x.size(), x.storage())
         }
-        return matAlgo14xDs(x, y, self, false)
+        return matAlgo14xDs(x as any, y, self, false)
       }),
 
       'any, SparseMatrix': typed.referToSelf(self => (x: any, y: Matrix): any => {
@@ -129,7 +129,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
           // return zero matrix
           return zeros(x.size(), x.storage())
         }
-        return matAlgo11xS0s(y, x, self, true)
+        return matAlgo11xS0s(y as any, x, self, true)
       }),
 
       'any, DenseMatrix': typed.referToSelf(self => (x: any, y: Matrix): any => {
@@ -138,7 +138,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
           // return zero matrix
           return zeros(x.size(), x.storage())
         }
-        return matAlgo14xDs(y, x, self, true)
+        return matAlgo14xDs(y as any, x, self, true)
       }),
 
       'Array, any': typed.referToSelf(self => (x: any[], y: any): any => {

@@ -14,7 +14,7 @@ const dependencies = [
   'Complex',
   'BigNumber',
   'Fraction'
-] as const
+]
 
 export const createCbrt: FactoryFunction<
   {

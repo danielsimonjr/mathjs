@@ -1,18 +1,22 @@
-import { isNode, isConstantNode, isOperatorNode, isParenthesisNode } from '../../utils/is.js'
-import { map } from '../../utils/array.js'
-import { createSubScope } from '../../utils/scope.js'
-import { escape } from '../../utils/string.js'
-import { getSafeProperty, isSafeMethod } from '../../utils/customs.js'
-import { getAssociativity, getPrecedence, isAssociativeWith, properties } from '../operators.js'
-import { latexOperators } from '../../utils/latex.js'
-import { factory } from '../../utils/factory.js'
+import { isNode, isConstantNode, isOperatorNode, isParenthesisNode } from '../../utils/is.ts'
+import { map } from '../../utils/array.ts'
+import { createSubScope } from '../../utils/scope.ts'
+import { escape } from '../../utils/string.ts'
+import { getSafeProperty, isSafeMethod } from '../../utils/customs.ts'
+import { getAssociativity, getPrecedence, isAssociativeWith, properties } from '../operators.ts'
+import { latexOperators } from '../../utils/latex.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'OperatorNode'
 const dependencies = [
   'Node'
 ]
 
-export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }) => {
+export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
+  Node
+}: {
+  Node: any;
+}) => {
   /**
    * Returns true if the expression starts with a constant, under
    * the current parenthesization:

@@ -380,7 +380,7 @@ export function normalizeFormatOptions(
     if (isNumber(options)) {
       precision = options
     } else if (isBigNumber(options)) {
-      precision = options.toNumber()
+      precision = (options as any).toNumber()
     } else if (isObject(options)) {
       if (options.precision !== undefined) {
         precision = _toNumberOrThrow(options.precision, () => {
@@ -524,7 +524,7 @@ export function toFixed(value: number | string, precision?: number): string {
     typeof precision === 'number'
       ? roundDigits(splitValue, splitValue.exponent + 1 + precision)
       : splitValue
-  let c = rounded.coefficients
+  let c: Array<number | string> = rounded.coefficients
   let p = rounded.exponent + 1 // exponent may have changed
 
   // append zeros if needed
@@ -535,7 +535,7 @@ export function toFixed(value: number | string, precision?: number): string {
 
   // prepend zeros if needed
   if (p < 0) {
-    c = zeros(-p + 1).concat(c)
+    c = zeros(-p + 1).concat(c as any)
     p = 1
   }
 
@@ -607,7 +607,7 @@ export function toPrecision(
     // exponential notation
     return toExponential(value, precision)
   } else {
-    let c = rounded.coefficients
+    let c: Array<number | string> = rounded.coefficients
     const e = rounded.exponent
 
     // append trailing zeros
@@ -622,7 +622,7 @@ export function toPrecision(
     )
 
     // prepend zeros
-    c = zeros(-e).concat(c)
+    c = zeros(-e).concat(c as any)
 
     const dot = e > 0 ? e : 0
     if (dot < c.length - 1) {
@@ -684,7 +684,7 @@ export function roundDigits(split: SplitValue, precision?: number): SplitValue {
  * @param length The length of the array
  * @return Array of zeros
  */
-function zeros(length: number): Array<number | string> {
+function zeros(length: number): number[] {
   const arr: number[] = []
   for (let i = 0; i < length; i++) {
     arr.push(0)
@@ -848,7 +848,7 @@ function _toNumberOrThrow(value: any, onError: () => void): number {
   if (isNumber(value)) {
     return value
   } else if (isBigNumber(value)) {
-    return value.toNumber()
+    return (value as any).toNumber()
   } else {
     onError()
     return 0 // unreachable but TypeScript needs a return
@@ -865,7 +865,7 @@ function _toNumberOrDefault(value: any, defaultValue: number): number {
   if (isNumber(value)) {
     return value
   } else if (isBigNumber(value)) {
-    return value.toNumber()
+    return (value as any).toNumber()
   } else {
     return defaultValue
   }

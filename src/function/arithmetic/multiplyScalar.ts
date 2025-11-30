@@ -3,7 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { multiplyNumber } from '../../plain/number/index.js'
 
 const name = 'multiplyScalar'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createMultiplyScalar: FactoryFunction<
   { typed: TypedFunction },
