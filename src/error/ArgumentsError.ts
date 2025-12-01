@@ -26,7 +26,7 @@ export class ArgumentsError extends Error {
     this.max = max
     this.name = 'ArgumentsError'
 
-    if (Error.captureStackTrace) {
+    if ((Error as any).captureStackTrace) {
       (Error as any).captureStackTrace(this, ArgumentsError)
     }
   }

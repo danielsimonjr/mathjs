@@ -43,7 +43,7 @@ export class IndexError extends RangeError {
     this.max = actualMax
     this.name = 'IndexError'
 
-    if (Error.captureStackTrace) {
+    if ((Error as any).captureStackTrace) {
       (Error as any).captureStackTrace(this, IndexError)
     }
   }
