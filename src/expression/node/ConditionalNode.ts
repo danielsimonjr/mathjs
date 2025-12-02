@@ -1,7 +1,8 @@
 import { isBigNumber, isComplex, isNode, isUnit, typeOf } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 import { getPrecedence } from '../operators.js'
-import type { MathNode } from './Node.js'
+
+type MathNode = any
 
 const name = 'ConditionalNode'
 const dependencies = [
@@ -9,7 +10,7 @@ const dependencies = [
 ] as const
 
 export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: {
-  Node: typeof MathNode
+  Node: any
 }) => {
   /**
    * Test whether a condition is met
@@ -25,7 +26,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
 
     if (condition) {
       if (isBigNumber(condition)) {
-        return !condition.isZero()
+        return !(condition as any).isZero()
       }
 
       if (isComplex(condition)) {
@@ -70,7 +71,8 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
       this.falseExpr = falseExpr
     }
 
-    static name = name
+    // @ts-expect-error - intentionally override Function.name
+    static readonly name = name
     get type (): string { return name }
     get isConditionalNode (): boolean { return true }
 
@@ -117,9 +119,15 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): ConditionalNode {
       return new ConditionalNode(
+<<<<<<< HEAD
         this._ifNode(callback(this.condition, 'condition', this)),
         this._ifNode(callback(this.trueExpr, 'trueExpr', this)),
         this._ifNode(callback(this.falseExpr, 'falseExpr', this))
+=======
+        (this as any)._ifNode(callback(this.condition, 'condition', this as any)),
+        (this as any)._ifNode(callback(this.trueExpr, 'trueExpr', this as any)),
+        (this as any)._ifNode(callback(this.falseExpr, 'falseExpr', this as any))
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       )
     }
 

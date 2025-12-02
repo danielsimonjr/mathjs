@@ -6,10 +6,14 @@ const name = 'Parser'
 const dependencies = ['evaluate', 'parse'] as const
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export const createParserClass = /* #__PURE__ */ factory(name, dependencies as string[], ({ evaluate, parse }: {
 =======
 export const createParserClass = /* #__PURE__ */ factory(name, dependencies, ({ evaluate, parse }: {
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+export const createParserClass = /* #__PURE__ */ factory(name, [...dependencies], ({ evaluate, parse }: {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   evaluate: any
   parse: any
 }) => {

@@ -4,7 +4,11 @@
  * @param {function} random
  * @returns {Array}
  */
+<<<<<<< HEAD
 export function randomMatrix (size: any, random: any): any {
+=======
+export function randomMatrix (size: number[], random: () => any): any[] {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   const data = []
   size = size.slice(0)
 

@@ -1,7 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-import type { Complex } from '../../type/complex/Complex.js'
+import { factory } from '../../utils/factory.js'
 import { cothNumber } from '../../plain/number/index.js'
 
 const name = 'coth'
@@ -11,7 +8,7 @@ const dependencies = ['typed', 'BigNumber']
 const dependencies = ['typed', 'BigNumber'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createCoth: FactoryFunction<'coth', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
+export const createCoth = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
   /**
    * Calculate the hyperbolic cotangent of a value,
    * defined as `coth(x) = 1 / tanh(x)`.
@@ -38,7 +35,7 @@ export const createCoth: FactoryFunction<'coth', typeof dependencies> = /* #__PU
    */
   return typed(name, {
     number: cothNumber,
-    Complex: (x: Complex) => x.coth(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.tanh())
-  }) as TypedFunction
+    Complex: (x: any) => x.coth(),
+    BigNumber: (x: any) => new BigNumber(1).div(x.tanh())
+  })
 })

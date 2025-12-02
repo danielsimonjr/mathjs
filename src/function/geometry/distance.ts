@@ -1,6 +1,5 @@
 import { isBigNumber } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
-import type { MathNumericType } from '../../utils/types.js'
 
 const name = 'distance'
 const dependencies = [
@@ -18,16 +17,16 @@ const dependencies = [
 ] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typed, addScalar, subtractScalar, multiplyScalar, divideScalar, deepEqual, sqrt, abs }: {
-  typed: any
-  addScalar: (a: any, b: any) => any
-  subtractScalar: (a: any, b: any) => any
-  multiplyScalar: (a: any, b: any) => any
-  divideScalar: (a: any, b: any) => any
-  deepEqual: (a: any, b: any) => boolean
-  sqrt: (x: any) => any
-  abs: (x: any) => any
-}) => {
+export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({
+  typed,
+  addScalar,
+  subtractScalar,
+  multiplyScalar,
+  divideScalar,
+  deepEqual,
+  sqrt,
+  abs
+}: any) => {
   /**
     * Calculates:
     *    The eucledian distance between two points in N-dimensional spaces.
@@ -80,7 +79,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     * @return {Number | BigNumber} Returns the distance from two/three points
   */
   return typed(name, {
-    'Array, Array, Array': function (x: MathNumericType[], y: MathNumericType[], z: MathNumericType[]): MathNumericType {
+    'Array, Array, Array': function (x: any[], y: any[], z: any[]): any {
       // Point to Line 2D (x=Point, y=LinePoint1, z=LinePoint2)
       if (x.length === 2 && y.length === 2 && z.length === 2) {
         if (!_2d(x)) { throw new TypeError('Array with 2 numbers or BigNumbers expected for first argument') }
@@ -96,7 +95,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
         throw new TypeError('Invalid Arguments: Try again')
       }
     },
-    'Object, Object, Object': function (x: Record<string, MathNumericType>, y: Record<string, MathNumericType>, z: Record<string, MathNumericType>): MathNumericType {
+    'Object, Object, Object': function (x: any, y: any, z: any): any {
       if (Object.keys(x).length === 2 && Object.keys(y).length === 2 && Object.keys(z).length === 2) {
         if (!_2d(x)) { throw new TypeError('Values of pointX and pointY should be numbers or BigNumbers') }
         if (!_2d(y)) { throw new TypeError('Values of lineOnePtX and lineOnePtY should be numbers or BigNumbers') }
@@ -115,7 +114,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
         throw new TypeError('Invalid Arguments: Try again')
       }
     },
-    'Array, Array': function (x: MathNumericType[], y: MathNumericType[]): MathNumericType {
+    'Array, Array': function (x: any[], y: any[]): any {
       // Point to Line 2D (x=[pointX, pointY], y=[x-coeff, y-coeff, const])
       if (x.length === 2 && y.length === 3) {
         if (!_2d(x)) {
@@ -150,7 +149,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
         throw new TypeError('Invalid Arguments: Try again')
       }
     },
-    'Object, Object': function (x: Record<string, MathNumericType>, y: Record<string, MathNumericType>): MathNumericType {
+    'Object, Object': function (x: any, y: any): any {
       if (Object.keys(x).length === 2 && Object.keys(y).length === 3) {
         if (!_2d(x)) {
           throw new TypeError('Values of pointX and pointY should be numbers or BigNumbers')
@@ -208,7 +207,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
         throw new TypeError('Invalid Arguments: Try again')
       }
     },
-    Array: function (arr: MathNumericType[][]): MathNumericType[] {
+    Array: function (arr: any[][]): any[] {
       if (!_pairwise(arr)) { throw new TypeError('Incorrect array format entered for pairwise distance calculation') }
 
       return _distancePairwise(arr)
@@ -220,42 +219,51 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     return (typeof a === 'number' || isBigNumber(a))
   }
 
-  function _2d (a: MathNumericType[] | Record<string, MathNumericType>): boolean {
+  function _2d (a: any): boolean {
     // checks if the number of arguments are correct in count and are valid (should be numbers)
-    if ((a as any).constructor !== Array) {
-      a = _objectToArray(a as Record<string, MathNumericType>)
+    if (a.constructor !== Array) {
+      a = _objectToArray(a)
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
     return _isNumber((a as any)[0]) && _isNumber((a as any)[1])
 =======
     return _isNumber(a[0]) && _isNumber(a[1])
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+    return _isNumber(a[0]) && _isNumber(a[1])
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
-  function _3d (a: MathNumericType[] | Record<string, MathNumericType>): boolean {
+  function _3d (a: any): boolean {
     // checks if the number of arguments are correct in count and are valid (should be numbers)
-    if ((a as any).constructor !== Array) {
-      a = _objectToArray(a as Record<string, MathNumericType>)
+    if (a.constructor !== Array) {
+      a = _objectToArray(a)
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
     return _isNumber((a as any)[0]) && _isNumber((a as any)[1]) && _isNumber((a as any)[2])
 =======
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2])
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+    return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2])
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
-  function _containsOnlyNumbers (a: MathNumericType[] | Record<string, MathNumericType>): boolean {
+  function _containsOnlyNumbers (a: any): boolean {
     // checks if the number of arguments are correct in count and are valid (should be numbers)
     if (!Array.isArray(a)) {
-      a = _objectToArray(a as Record<string, MathNumericType>)
+      a = _objectToArray(a)
     }
     return a.every(_isNumber)
   }
 
-  function _parametricLine (a: MathNumericType[] | Record<string, MathNumericType>): boolean {
-    if ((a as any).constructor !== Array) {
-      a = _objectToArray(a as Record<string, MathNumericType>)
+  function _parametricLine (a: any): boolean {
+    if (a.constructor !== Array) {
+      a = _objectToArray(a)
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
     return _isNumber((a as any)[0]) && _isNumber((a as any)[1]) && _isNumber((a as any)[2]) &&
       _isNumber((a as any)[3]) && _isNumber((a as any)[4]) && _isNumber((a as any)[5])
@@ -263,25 +271,29 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2]) &&
       _isNumber(a[3]) && _isNumber(a[4]) && _isNumber(a[5])
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+    return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2]) &&
+      _isNumber(a[3]) && _isNumber(a[4]) && _isNumber(a[5])
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
-  function _objectToArray (o: Record<string, MathNumericType>): MathNumericType[] {
+  function _objectToArray (o: Record<string, any>): any[] {
     const keys = Object.keys(o)
-    const a: MathNumericType[] = []
+    const a: any[] = []
     for (let i = 0; i < keys.length; i++) {
       a.push(o[keys[i]])
     }
     return a
   }
 
-  function _pairwise (a: MathNumericType[][]): boolean {
+  function _pairwise (a: any[][]): boolean {
     // checks for valid arguments passed to _distancePairwise(Array)
     if (a[0].length === 2 && _isNumber(a[0][0]) && _isNumber(a[0][1])) {
-      if (a.some(aI => aI.length !== 2 || !_isNumber(aI[0]) || !_isNumber(aI[1]))) {
+      if (a.some((aI: any[]) => aI.length !== 2 || !_isNumber(aI[0]) || !_isNumber(aI[1]))) {
         return false
       }
     } else if (a[0].length === 3 && _isNumber(a[0][0]) && _isNumber(a[0][1]) && _isNumber(a[0][2])) {
-      if (a.some(aI => aI.length !== 3 || !_isNumber(aI[0]) || !_isNumber(aI[1]) || !_isNumber(aI[2]))) {
+      if (a.some((aI: any[]) => aI.length !== 3 || !_isNumber(aI[0]) || !_isNumber(aI[1]) || !_isNumber(aI[2]))) {
         return false
       }
     } else {
@@ -290,13 +302,13 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     return true
   }
 
-  function _distancePointLine2D (x: MathNumericType, y: MathNumericType, a: MathNumericType, b: MathNumericType, c: MathNumericType): MathNumericType {
+  function _distancePointLine2D (x: any, y: any, a: any, b: any, c: any): any {
     const num = abs(addScalar(addScalar(multiplyScalar(a, x), multiplyScalar(b, y)), c))
     const den = sqrt(addScalar(multiplyScalar(a, a), multiplyScalar(b, b)))
     return divideScalar(num, den)
   }
 
-  function _distancePointLine3D (x: MathNumericType, y: MathNumericType, z: MathNumericType, x0: MathNumericType, y0: MathNumericType, z0: MathNumericType, a: MathNumericType, b: MathNumericType, c: MathNumericType): MathNumericType {
+  function _distancePointLine3D (x: any, y: any, z: any, x0: any, y0: any, z0: any, a: any, b: any, c: any): any {
     let num: any = [subtractScalar(multiplyScalar(subtractScalar(y0, y), c), multiplyScalar(subtractScalar(z0, z), b)),
       subtractScalar(multiplyScalar(subtractScalar(z0, z), a), multiplyScalar(subtractScalar(x0, x), c)),
       subtractScalar(multiplyScalar(subtractScalar(x0, x), b), multiplyScalar(subtractScalar(y0, y), a))]
@@ -305,7 +317,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     return divideScalar(num, den)
   }
 
-  function _euclideanDistance (x: MathNumericType[], y: MathNumericType[]): MathNumericType {
+  function _euclideanDistance (x: any[], y: any[]): any {
     const vectorSize = x.length
     let result: any = 0
     let diff: any = 0
@@ -316,10 +328,10 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     return sqrt(result)
   }
 
-  function _distancePairwise (a: MathNumericType[][]): MathNumericType[] {
-    const result: MathNumericType[] = []
-    let pointA: MathNumericType[] = []
-    let pointB: MathNumericType[] = []
+  function _distancePairwise (a: any[][]): any[] {
+    const result: any[] = []
+    let pointA: any[] = []
+    let pointB: any[] = []
     for (let i = 0; i < a.length - 1; i++) {
       for (let j = i + 1; j < a.length; j++) {
         if (a[0].length === 2) {

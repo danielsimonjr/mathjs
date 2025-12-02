@@ -2,7 +2,9 @@ import { isAccessorNode, isArrayNode, isConstantNode, isFunctionNode, isIndexNod
 import { getOperator } from '../../expression/operators.js'
 import { createUtil } from './simplify/util.js'
 import { factory } from '../../utils/factory.js'
-import type { MathNode, OperatorNode, FunctionNode, ArrayNode, AccessorNode, IndexNode, ObjectNode, ConstantNode } from '../../utils/node.js'
+
+type MathNode = any
+type ExtendedNode = any
 
 const name = 'simplifyCore'
 const dependencies = [
@@ -32,14 +34,14 @@ const dependencies = [
 
 export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
-  parse,
+  parse: _parse,
   equal,
   isZero,
-  add,
-  subtract,
-  multiply,
-  divide,
-  pow,
+  add: _add,
+  subtract: _subtract,
+  multiply: _multiply,
+  divide: _divide,
+  pow: _pow,
   AccessorNode,
   ArrayNode,
   ConstantNode,
@@ -47,7 +49,7 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
   IndexNode,
   ObjectNode,
   OperatorNode,
-  ParenthesisNode,
+  ParenthesisNode: _ParenthesisNode,
   SymbolNode
 }: {
   typed: any
@@ -125,18 +127,18 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
    *     Simplification options, as per simplify()
    * @return {Node} Returns expression with basic simplifications applied
    */
-  function _simplifyCore (nodeToSimplify: MathNode, options: any = {}): MathNode {
+  function _simplifyCore (nodeToSimplify: ExtendedNode, options: any = {}): ExtendedNode {
     const context = options ? options.context : undefined
     if (hasProperty(nodeToSimplify, 'trivial', context)) {
       // This node does nothing if it has only one argument, so if so,
       // return that argument simplified
-      if (isFunctionNode(nodeToSimplify) && nodeToSimplify.args.length === 1) {
+      if (isFunctionNode(nodeToSimplify) && nodeToSimplify.args && nodeToSimplify.args.length === 1) {
         return _simplifyCore(nodeToSimplify.args[0], options)
       }
       // For other node types, we try the generic methods
-      let simpChild: MathNode | false = false
+      let simpChild: ExtendedNode | false = false
       let childCount = 0
-      nodeToSimplify.forEach((c: MathNode) => {
+      nodeToSimplify.forEach((c: ExtendedNode) => {
         ++childCount
         if (childCount === 1) {
           simpChild = _simplifyCore(c, options)
@@ -146,27 +148,31 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
         return simpChild
       }
     }
-    let node: MathNode = nodeToSimplify
+    let node: ExtendedNode = nodeToSimplify
     if (isFunctionNode(node)) {
-      const op = getOperator(node.name)
+      const op = getOperator(node.name!)
       if (op) {
         // Replace FunctionNode with a new OperatorNode
-        if (node.args.length > 2 && hasProperty(node, 'associative', context)) {
+        if (node.args!.length > 2 && hasProperty(node as any, 'associative', context)) {
           // unflatten into binary operations since that's what simplifyCore handles
-          while (node.args.length > 2) {
-            const last = node.args.pop()!
-            const seclast = node.args.pop()!
-            node.args.push(new OperatorNode(op, node.name, [last, seclast]))
+          while (node.args!.length > 2) {
+            const last = node.args!.pop()!
+            const seclast = node.args!.pop()!
+            node.args!.push(new OperatorNode(op, node.name!, [last, seclast]))
           }
         }
-        node = new OperatorNode(op, node.name, node.args)
+        node = new OperatorNode(op, node.name!, node.args!)
       } else {
         return new FunctionNode(
+<<<<<<< HEAD
 <<<<<<< HEAD
           _simplifyCore((node as any).fn as any), node.args.map((n: MathNode) => _simplifyCore(n, options)))
 =======
           _simplifyCore(node.fn as any), node.args.map((n: MathNode) => _simplifyCore(n, options)))
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+          _simplifyCore(node.fn as any), node.args!.map((n: ExtendedNode) => _simplifyCore(n, options)))
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       }
     }
     if (isOperatorNode(node) && node.isUnary()) {

@@ -50,12 +50,12 @@ export const createIndexTransform = /* #__PURE__ */ factory(name, dependencies, 
         arg = arg.map(function (v: any): any { return v - 1 })
       } else if (isArray(arg) || isMatrix(arg)) {
         if (getMatrixDataType(arg) !== 'boolean') {
-          arg = arg.map(function (v: any): any { return v - 1 })
+          arg = (arg as any).map(function (v: any): any { return v - 1 })
         }
       } else if (isNumber(arg) || isBigInt(arg)) {
         arg--
       } else if (isBigNumber(arg)) {
-        arg = (arg as BigNumber).toNumber() - 1
+        arg = (arg as any).toNumber() - 1
       } else if (typeof arg === 'string') {
         // leave as is
       } else {

@@ -52,7 +52,11 @@ export function endsWith (text: any, search: any) {
  * @return {string} str
  */
 export function format (value: any, options?: any): string {
+<<<<<<< HEAD
   const result: any = _format(value, options)
+=======
+  const result: string = _format(value, options)
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   if (options && typeof options === 'object' && 'truncate' in options &&
       result.length > options.truncate) {
     return result.substring(0, options.truncate - 3) + '...'
@@ -60,7 +64,11 @@ export function format (value: any, options?: any): string {
   return result
 }
 
+<<<<<<< HEAD
 function _format (value: any, options?: any): any {
+=======
+function _format (value: any, options?: any): string {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   if (typeof value === 'number') {
     return formatNumber(value, options)
   }
@@ -117,7 +125,7 @@ function _format (value: any, options?: any): any {
  * @param {*} value
  * @return {string}
  */
-export function stringify (value) {
+export function stringify (value: any): string {
   const text = String(value)
   let escaped = ''
   let i = 0
@@ -145,7 +153,7 @@ const controlCharacters = {
  * @param {*} value
  * @return {string}
  */
-export function escape (value) {
+export function escape (value: any): string {
   let text = String(value)
   text = text.replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
@@ -188,7 +196,7 @@ function formatArray (array: any, options?: any): string {
  * @param {*} value
  * @return {boolean}
  */
-function looksLikeFraction (value) {
+function looksLikeFraction (value: any): boolean {
   return (value &&
       typeof value === 'object' &&
       typeof value.s === 'bigint' &&
@@ -202,7 +210,7 @@ function looksLikeFraction (value) {
  * @param {string} y
  * @returns {number}
  */
-export function compareText (x, y) {
+export function compareText (x: any, y: any): number {
   // we don't want to convert numbers to string, only accept string input
   if (!isString(x)) {
     throw new TypeError('Unexpected type of argument in function compareText ' +

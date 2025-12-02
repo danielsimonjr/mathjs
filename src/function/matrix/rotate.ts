@@ -1,8 +1,6 @@
 import { factory } from '../../utils/factory.js'
 import { arraySize } from '../../utils/array.js'
 
-import { TypedFunction, Matrix, BigNumber, Complex, Unit } from '../../types.js';
-
 const name = 'rotate'
 const dependencies = [
   'typed',
@@ -16,11 +14,11 @@ export const createRotate = /* #__PURE__ */ factory(name, dependencies, (
     multiply,
     rotationMatrix
   }: {
-    typed: TypedFunction;
+    typed: any;
     multiply: any;
     rotationMatrix: any;
   }
-): TypedFunction => {
+) => {
   /**
      * Rotate a vector of size 1x2 counter-clockwise by a given angle
      * Rotate a vector of size 1x3 counter-clockwise by a given angle around the given axis
@@ -50,30 +48,30 @@ export const createRotate = /* #__PURE__ */ factory(name, dependencies, (
      * @return {Array | Matrix}                              Multiplication of the rotation matrix and w
      */
   return typed(name, {
-    'Array , number | BigNumber | Complex | Unit': function(w: any[], theta: number | BigNumber | Complex | Unit): any[] {
+    'Array , number | BigNumber | Complex | Unit': function(w: any[], theta: any): any[] {
       _validateSize(w, 2)
       const matrixRes = multiply(rotationMatrix(theta), w)
       return matrixRes.toArray()
     },
 
-    'Matrix , number | BigNumber | Complex | Unit': function(w: Matrix, theta: number | BigNumber | Complex | Unit): Matrix {
+    'Matrix , number | BigNumber | Complex | Unit': function(w: any, theta: any): any {
       _validateSize(w, 2)
       return multiply(rotationMatrix(theta), w)
     },
 
-    'Array, number | BigNumber | Complex | Unit, Array | Matrix': function(w: any[], theta: number | BigNumber | Complex | Unit, v: any[] | Matrix): any[] {
+    'Array, number | BigNumber | Complex | Unit, Array | Matrix': function(w: any[], theta: any, v: any): any[] {
       _validateSize(w, 3)
       const matrixRes = multiply(rotationMatrix(theta, v), w)
       return matrixRes
     },
 
-    'Matrix, number | BigNumber | Complex | Unit, Array | Matrix': function(w: Matrix, theta: number | BigNumber | Complex | Unit, v: any[] | Matrix): Matrix {
+    'Matrix, number | BigNumber | Complex | Unit, Array | Matrix': function(w: any, theta: any, v: any): any {
       _validateSize(w, 3)
       return multiply(rotationMatrix(theta, v), w)
     }
   });
 
-  function _validateSize (v, expectedSize) {
+  function _validateSize (v: any, expectedSize: number): void {
     const actualSize = Array.isArray(v) ? arraySize(v) : v.size()
     if (actualSize.length > 2) {
       throw new RangeError(`Vector must be of dimensions 1x${expectedSize}`)

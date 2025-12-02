@@ -2,10 +2,14 @@ import { isInteger } from '../../utils/number.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 <<<<<<< HEAD
+<<<<<<< HEAD
 import type { ConfigOptions } from '../../core/config.js'
 =======
 import type { MathJsConfig } from '../../core/create.js'
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+import type { MathJsConfig } from '../../core/config.js'
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 import { createMod } from './mod.js'
 import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.js'
 import { createMatAlgo04xSidSid } from '../../type/matrix/utils/matAlgo04xSidSid.js'

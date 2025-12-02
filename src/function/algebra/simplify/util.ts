@@ -8,15 +8,19 @@ const dependencies = [
   'FunctionNode',
   'OperatorNode',
   'SymbolNode'
-] as const
+]
 
 type OperatorContext = Record<string, Record<string, boolean>>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export const createUtil = /* #__PURE__ */ factory(name, dependencies as string[], ({ FunctionNode, OperatorNode, SymbolNode }: {
 =======
 export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ FunctionNode, OperatorNode, SymbolNode }: {
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ FunctionNode, OperatorNode, SymbolNode }: {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   FunctionNode: any
   OperatorNode: any
   SymbolNode: any
@@ -132,9 +136,9 @@ export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ Functio
     const children: MathNode[] = []
     const findChildren = function (node: MathNode & { args?: MathNode[]; op?: string }): void {
       for (let i = 0; i < (node.args?.length ?? 0); i++) {
-        const child = node.args![i] as MathNode & { op?: string }
-        if (isOperatorNode(child) && op === child.op) {
-          findChildren(child)
+        const child = node.args![i] as any
+        if (isOperatorNode(child) && op === (child as any).op) {
+          findChildren(child as any)
         } else {
           children.push(child)
         }

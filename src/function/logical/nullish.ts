@@ -4,8 +4,6 @@ import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 import { createMatAlgo13xDD } from '../../type/matrix/utils/matAlgo13xDD.js'
 import { DimensionError } from '../../error/DimensionError.js'
 
-import { TypedFunction, Matrix, SparseMatrix } from '../../types.js';
-
 const name = 'nullish'
 const dependencies = ['typed', 'matrix', 'size', 'flatten', 'deepEqual']
 
@@ -13,20 +11,8 @@ export const createNullish = /* #__PURE__ */ factory(
   name,
   dependencies,
   (
-    {
-      typed,
-      matrix,
-      size,
-      flatten,
-      deepEqual
-    }: {
-      typed: TypedFunction;
-      matrix: MatrixConstructor;
-      size: any;
-      flatten: any;
-      deepEqual: any;
-    }
-  ): TypedFunction => {
+    { typed, matrix, size, flatten, deepEqual }: { typed: any, matrix: any, size: any, flatten: any, deepEqual: any }
+  ) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo14xDs = createMatAlgo14xDs({ typed })
     const matAlgo13xDD = createMatAlgo13xDD({ typed })
@@ -67,12 +53,12 @@ export const createNullish = /* #__PURE__ */ factory(
       name,
       {
         // Scalar and SparseMatrix-first short-circuit handlers
-        'number|bigint|Complex|BigNumber|Fraction|Unit|string|boolean|SparseMatrix, any': (x: number|bigint|Complex|BigNumber|Fraction|Unit|string|boolean|SparseMatrix, _y: any) => x,
+        'number|bigint|Complex|BigNumber|Fraction|Unit|string|boolean|SparseMatrix, any': (x: any, _y: any) => x,
         'null, any': (_x: null, y: any) => y,
         'undefined, any': (_x: undefined, y: any) => y,
 
         // SparseMatrix-first with collection RHS: enforce exact shape match
-        'SparseMatrix, Array | Matrix': (x: SparseMatrix, y: any[] | Matrix) => {
+        'SparseMatrix, Array | Matrix': (x: any, y: any) => {
           const sx = size(x)
           const sy = size(y)
           if (deepEqual(sx, sy)) return x

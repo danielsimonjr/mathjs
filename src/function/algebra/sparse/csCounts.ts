@@ -1,19 +1,21 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { factory, FactoryFunction } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.js'
 import { csLeaf } from './csLeaf.js'
 
 const name = 'csCounts'
-const dependencies = [
-  'transpose'
-] as const
+const dependencies = ['transpose']
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export const createCsCounts: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ transpose }) => {
 =======
 export const createCsCounts: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ transpose }) => {
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+export const createCsCounts = /* #__PURE__ */ factory(name, dependencies, ({ transpose }: { transpose: any }) => {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Computes the column counts using the upper triangular part of A.
    * It transposes A internally, none of the input parameters are modified.

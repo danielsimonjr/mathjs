@@ -11,11 +11,18 @@ import { isMap, isObject } from './is.js'
  */
 export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
   wrappedObject: Record<string, V>
-  readonly [Symbol.toStringTag]: string = 'ObjectWrappingMap'
+  readonly [Symbol.toStringTag]: string = 'ObjectWrappingMap';
+
+  [Symbol.iterator](): IterableIterator<[K, V]> {
+    return this.entries()
+  }
 
   constructor(object: Record<string, V>) {
     this.wrappedObject = object
+<<<<<<< HEAD
     this[Symbol.iterator] = this.entries
+=======
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
   keys(): IterableIterator<K> {
@@ -90,7 +97,11 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
   a: Map<K, V>
   b: Map<K, V>
   bKeys: Set<K>
-  readonly [Symbol.toStringTag]: string = 'PartitionedMap'
+  readonly [Symbol.toStringTag]: string = 'PartitionedMap';
+
+  [Symbol.iterator](): IterableIterator<[K, V]> {
+    return this.entries()
+  }
 
   /**
    * @param a - Primary map
@@ -101,8 +112,11 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
     this.a = a
     this.b = b
     this.bKeys = bKeys
+<<<<<<< HEAD
 
     this[Symbol.iterator] = this.entries
+=======
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
   get(key: K): V | undefined {

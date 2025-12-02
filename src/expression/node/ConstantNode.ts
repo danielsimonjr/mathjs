@@ -2,7 +2,8 @@ import { format } from '../../utils/string.js'
 import { typeOf } from '../../utils/is.js'
 import { escapeLatex } from '../../utils/latex.js'
 import { factory } from '../../utils/factory.js'
-import type { MathNode } from './Node.js'
+
+type MathNode = any
 
 const name = 'ConstantNode'
 const dependencies = [
@@ -14,7 +15,7 @@ const dependencies = [
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, isBounded }: {
-  Node: typeof MathNode
+  Node: any
   isBounded: (value: any) => boolean
 }) => {
   class ConstantNode extends Node {
@@ -37,7 +38,8 @@ export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({
       this.value = value
     }
 
-    static name = name
+    // @ts-expect-error - intentionally override Function.name
+    static readonly name = name
     get type (): string { return name }
     get isConstantNode (): boolean { return true }
 

@@ -1,7 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-import type { Complex } from '../../type/complex/Complex.js'
+import { factory } from '../../utils/factory.js'
 import { cscNumber } from '../../plain/number/index.js'
 import { createTrigUnit } from './trigUnit.js'
 
@@ -12,7 +9,7 @@ const dependencies = ['typed', 'BigNumber']
 const dependencies = ['typed', 'BigNumber'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createCsc: FactoryFunction<'csc', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
+export const createCsc = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
   const trigUnit = createTrigUnit({ typed })
 
   /**
@@ -39,7 +36,7 @@ export const createCsc: FactoryFunction<'csc', typeof dependencies> = /* #__PURE
    */
   return typed(name, {
     number: cscNumber,
-    Complex: (x: Complex) => x.csc(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.sin())
-  }, trigUnit) as TypedFunction
+    Complex: (x: any) => x.csc(),
+    BigNumber: (x: any) => new BigNumber(1).div(x.sin())
+  }, trigUnit)
 })

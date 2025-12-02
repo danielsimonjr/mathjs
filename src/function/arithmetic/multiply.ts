@@ -901,19 +901,19 @@ export const createMultiply = /* #__PURE__ */ factory(name, dependencies, ({ typ
     }),
 
     'SparseMatrix, any': function (x: SparseMatrix, y: any): SparseMatrix {
-      return matAlgo11xS0s(x as any, y, multiplyScalar, false)
+      return matAlgo11xS0s(x as any, y, multiplyScalar, false) as any
     },
 
     'DenseMatrix, any': function (x: DenseMatrix, y: any): DenseMatrix {
-      return matAlgo14xDs(x as any, y, multiplyScalar, false)
+      return matAlgo14xDs(x as any, y, multiplyScalar, false) as any
     },
 
     'any, SparseMatrix': function (x: any, y: SparseMatrix): SparseMatrix {
-      return matAlgo11xS0s(y as any, x, multiplyScalar, true)
+      return matAlgo11xS0s(y as any, x, multiplyScalar, true) as any
     },
 
     'any, DenseMatrix': function (x: any, y: DenseMatrix): DenseMatrix {
-      return matAlgo14xDs(y as any, x, multiplyScalar, true)
+      return matAlgo14xDs(y as any, x, multiplyScalar, true) as any
     },
 
     'Array, any': function (x: any[], y: any): any[] {

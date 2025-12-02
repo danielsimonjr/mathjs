@@ -4,9 +4,7 @@ import { factory } from '../../utils/factory.js'
 const name = 'isInteger'
 const dependencies = ['typed', 'equal']
 
-export const createIsInteger = /* #__PURE__ */ factory(name, dependencies, ({
-  typed, equal
-}) => {
+export const createIsInteger = /* #__PURE__ */ factory(name, dependencies, ({ typed, equal }: { typed: any; equal: any }) => {
   /**
    * Test whether a value is an integer number.
    * The function supports `number`, `BigNumber`, and `Fraction`.
@@ -45,6 +43,6 @@ export const createIsInteger = /* #__PURE__ */ factory(name, dependencies, ({
 
     Fraction: (r: any): boolean => r.d === 1n,
 
-    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 })

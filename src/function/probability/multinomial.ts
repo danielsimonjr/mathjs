@@ -9,18 +9,7 @@ const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInte
 const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInteger', 'isPositive'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createMultinomial: FactoryFunction<
-  {
-    typed: TypedFunction
-    add: TypedFunction
-    divide: TypedFunction
-    multiply: TypedFunction
-    factorial: TypedFunction
-    isInteger: TypedFunction
-    isPositive: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, add, divide, multiply, factorial, isInteger, isPositive }) => {
+export const createMultinomial = /* #__PURE__ */ factory(name, dependencies, ({ typed, add, divide, multiply, factorial, isInteger, isPositive }: any) => {
   /**
    * Multinomial Coefficients compute the number of ways of picking a1, a2, ..., ai unordered outcomes from `n` possibilities.
    *

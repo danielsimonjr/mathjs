@@ -49,6 +49,6 @@ export const createTo = /* #__PURE__ */ factory(name, dependencies, ({ typed, ma
   return typed(
     name,
     { 'Unit, Unit | string': (x: any, unit: any) => x.to(unit) },
-    matrixAlgorithmSuite({ Ds: true })
+    matrixAlgorithmSuite({ Ds: true } as any)
   )
 })

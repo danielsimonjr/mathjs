@@ -3,7 +3,21 @@ import { factory } from '../../utils/factory.js'
 import { safeNumberType } from '../../utils/number.js'
 import { createUtil } from './simplify/util.js'
 import { noBignumber, noFraction } from '../../utils/noop.js'
-import type { MathNode, ConstantNode, ArrayNode, AccessorNode, IndexNode, ObjectNode, OperatorNode, FunctionNode, ParenthesisNode } from '../../utils/node.js'
+import type { MathNode } from '../../utils/node.js'
+
+// Extended MathNode interface for nodes with runtime properties
+interface ExtendedNode extends MathNode {
+  value?: any
+  items?: ExtendedNode[]
+  dimensions?: any[]
+  properties?: Record<string, ExtendedNode>
+  args?: ExtendedNode[]
+  name?: string
+  fn?: any
+  object?: ExtendedNode
+  index?: ExtendedNode
+  [key: string]: any
+}
 
 const name = 'simplifyConstant'
 const dependencies = [
@@ -142,20 +156,20 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
       }
       return new ConstantNode(n)
     },
-    Complex: function (s: any): never {
+    Complex: function (_s: any): never {
       throw new Error('Cannot convert Complex number to Node')
     },
-    string: function (s: string): ConstantNode {
+    string: function (s: string): ExtendedNode {
       return new ConstantNode(s)
     },
-    Matrix: function (m: any): ArrayNode {
+    Matrix: function (m: any): ExtendedNode {
       return new ArrayNode(m.valueOf().map((e: any) => _toNode(e)))
     }
   })
 
-  function _ensureNode (thing: any): MathNode {
+  function _ensureNode (thing: any): ExtendedNode {
     if (isNode(thing)) {
-      return thing
+      return thing as ExtendedNode
     }
     return _toNode(thing)
   }
@@ -201,15 +215,15 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
       }
     },
 
-    'Fraction, Object': function (s: any, options: any): any { return s }, // we don't need options here
+    'Fraction, Object': function (s: any, _options: any): any { return s }, // we don't need options here
 
-    'BigNumber, Object': function (s: any, options: any): any { return s }, // we don't need options here
+    'BigNumber, Object': function (s: any, _options: any): any { return s }, // we don't need options here
 
     'number, Object': function (s: number, options: any): any {
       return _exactFraction(s, options)
     },
 
-    'bigint, Object': function (s: bigint, options: any): bigint {
+    'bigint, Object': function (s: bigint, _options: any): bigint {
       return s
     },
 
@@ -237,31 +251,31 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
     }
   })
 
-  function unaryMinusNode (n: MathNode): OperatorNode {
+  function unaryMinusNode (n: MathNode): ExtendedNode {
     return new OperatorNode('-', 'unaryMinus', [n])
   }
 
-  function _fractionToNode (f: any): MathNode {
+  function _fractionToNode (f: any): ExtendedNode {
     // note: we convert await from bigint values, because bigint values gives issues with divisions: 1n/2n=0n and not 0.5
-    const fromBigInt = (value: bigint): any => config.number === 'BigNumber' && bignumber ? bignumber(value) : Number(value)
+    const fromBigInt = (value: any): any => config.number === 'BigNumber' && bignumber ? bignumber(value) : Number(value)
 
     const numeratorValue = f.s * f.n
-    const numeratorNode = (numeratorValue < 0n)
+    const numeratorNode = (numeratorValue < 0)
       ? new OperatorNode('-', 'unaryMinus', [new ConstantNode(-fromBigInt(numeratorValue))])
       : new ConstantNode(fromBigInt(numeratorValue))
 
-    return (f.d === 1n)
+    return (f.d === 1 || f.d === 1n)
       ? numeratorNode
       : new OperatorNode('/', 'divide', [numeratorNode, new ConstantNode(fromBigInt(f.d))])
   }
 
   /* Handles constant indexing of ArrayNodes, matrices, and ObjectNodes */
-  function _foldAccessor (obj: any, index: any, options: any): MathNode {
+  function _foldAccessor (obj: any, index: ExtendedNode, options: any): ExtendedNode {
     if (!isIndexNode(index)) { // don't know what to do with that...
       return new AccessorNode(_ensureNode(obj), _ensureNode(index))
     }
     if (isArrayNode(obj) || isMatrix(obj)) {
-      const remainingDims = Array.from(index.dimensions)
+      const remainingDims: ExtendedNode[] = Array.from((index as ExtendedNode).dimensions || [])
       /* We will resolve constant indices one at a time, looking
        * just in the first or second dimensions because (a) arrays
        * of more than two dimensions are likely rare, and (b) pulling
@@ -270,10 +284,10 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
        */
       while (remainingDims.length > 0) {
         if (isConstantNode(remainingDims[0]) &&
-            typeof remainingDims[0].value !== 'string') {
-          const first = _toNumber(remainingDims.shift()!.value, options)
+            typeof (remainingDims[0] as any).value !== 'string') {
+          const first = _toNumber((remainingDims.shift() as any).value, options)
           if (isArrayNode(obj)) {
-            obj = obj.items[first - 1]
+            obj = (obj as any).items[first - 1]
           } else { // matrix
             obj = obj.valueOf()[first - 1]
             if (obj instanceof Array) {
@@ -282,13 +296,13 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
           }
         } else if (remainingDims.length > 1 &&
                    isConstantNode(remainingDims[1]) &&
-                   typeof remainingDims[1].value !== 'string') {
-          const second = _toNumber(remainingDims[1].value, options)
+                   typeof (remainingDims[1] as any).value !== 'string') {
+          const second = _toNumber((remainingDims[1] as any).value, options)
           const tryItems: any[] = []
-          const fromItems = isArrayNode(obj) ? obj.items : obj.valueOf()
+          const fromItems = isArrayNode(obj) ? (obj as any).items : obj.valueOf()
           for (const item of fromItems) {
             if (isArrayNode(item)) {
-              tryItems.push(item.items[second - 1])
+              tryItems.push((item as any).items[second - 1])
             } else if (isMatrix(obj)) {
               tryItems.push(item[second - 1])
             } else {
@@ -309,24 +323,25 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
           break
         }
       }
-      if (remainingDims.length === index.dimensions.length) {
+      if (remainingDims.length === ((index as ExtendedNode).dimensions || []).length) {
         /* No successful constant indexing */
         return new AccessorNode(_ensureNode(obj), index)
       }
       if (remainingDims.length > 0) {
         /* Indexed some but not all dimensions */
-        index = new IndexNode(remainingDims)
-        return new AccessorNode(_ensureNode(obj), index)
+        const newIndex = new IndexNode(remainingDims)
+        return new AccessorNode(_ensureNode(obj), newIndex)
       }
       /* All dimensions were constant, access completely resolved */
       return obj
     }
+    const indexDims = (index as any).dimensions || []
     if (isObjectNode(obj) &&
-        index.dimensions.length === 1 &&
-        isConstantNode(index.dimensions[0])) {
-      const key = index.dimensions[0].value
-      if (key in obj.properties) {
-        return obj.properties[key]
+        indexDims.length === 1 &&
+        isConstantNode(indexDims[0])) {
+      const key = (indexDims[0] as any).value
+      if (key in ((obj as any).properties || {})) {
+        return (obj as any).properties[key]
       }
       return new ConstantNode() // undefined
     }
@@ -386,46 +401,46 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
       case 'SymbolNode':
         return node
       case 'ConstantNode':
-        switch (typeof (node as ConstantNode).value) {
-          case 'number': return _toNumber((node as ConstantNode).value, options)
-          case 'bigint': return _toNumber((node as ConstantNode).value, options)
-          case 'string': return (node as ConstantNode).value
+        switch (typeof (node as any).value) {
+          case 'number': return _toNumber((node as any).value, options)
+          case 'bigint': return _toNumber((node as any).value, options)
+          case 'string': return (node as any).value
           default:
-            if (!isNaN((node as ConstantNode).value)) return _toNumber((node as ConstantNode).value, options)
+            if (!isNaN((node as any).value)) return _toNumber((node as any).value, options)
         }
         return node
       case 'FunctionNode':
-        if (mathWithTransform[(node as FunctionNode).name] && mathWithTransform[(node as FunctionNode).name].rawArgs) {
+        if (mathWithTransform[(node as any).name] && mathWithTransform[(node as any).name].rawArgs) {
           return node
         }
         {
           // Process operators as OperatorNode
           const operatorFunctions = ['add', 'multiply']
-          if (!operatorFunctions.includes((node as FunctionNode).name)) {
-            const args = (node as FunctionNode).args.map((arg: MathNode) => foldFraction(arg, options))
+          if (!operatorFunctions.includes((node as any).name)) {
+            const args = (node as any).args.map((arg: MathNode) => foldFraction(arg, options))
 
             // If all args are numbers
             if (!args.some(isNode)) {
               try {
-                return _eval((node as FunctionNode).name, args, options)
+                return _eval((node as any).name, args, options)
               } catch (ignoreandcontinue) { }
             }
 
             // Size of a matrix does not depend on entries
-            if ((node as FunctionNode).name === 'size' &&
+            if ((node as any).name === 'size' &&
                 args.length === 1 &&
                 isArrayNode(args[0])) {
               const sz: number[] = []
-              let section = args[0]
+              let section: any = args[0]
               while (isArrayNode(section)) {
-                sz.push(section.items.length)
-                section = section.items[0]
+                sz.push((section as any).items.length)
+                section = (section as any).items[0]
               }
               return matrix(sz)
             }
 
             // Convert all args to nodes and construct a symbolic function call
-            return new FunctionNode((node as FunctionNode).name, args.map(_ensureNode))
+            return new FunctionNode((node as any).name, args.map(_ensureNode))
           } else {
             // treat as operator
           }
@@ -433,12 +448,12 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
         /* falls through */
       case 'OperatorNode':
       {
-        const fn = (node as OperatorNode).fn.toString()
+        const fn = (node as any).fn.toString()
         let args: any[]
         let res: any
         const makeNode = createMakeNodeFunction(node as any)
-        if (isOperatorNode(node) && node.isUnary()) {
-          args = [foldFraction(node.args[0], options)]
+        if (isOperatorNode(node) && (node as any).isUnary()) {
+          args = [foldFraction((node as any).args[0], options)]
           if (!isNode(args[0])) {
             res = _eval(fn, args, options)
           } else {
@@ -475,21 +490,21 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
           }
         } else {
           // non-associative binary operator
-          args = (node as OperatorNode).args.map((arg: MathNode) => foldFraction(arg, options))
+          args = (node as any).args.map((arg: MathNode) => foldFraction(arg, options))
           res = foldOp(fn, args, makeNode, options)
         }
         return res
       }
       case 'ParenthesisNode':
         // remove the uneccessary parenthesis
-        return foldFraction((node as ParenthesisNode).content, options)
+        return foldFraction((node as any).content, options)
       case 'AccessorNode':
         return _foldAccessor(
-          foldFraction((node as AccessorNode).object, options),
-          foldFraction((node as AccessorNode).index, options),
+          foldFraction((node as any).object, options),
+          foldFraction((node as any).index, options),
           options)
       case 'ArrayNode': {
-        const foldItems = (node as ArrayNode).items.map((item: MathNode) => foldFraction(item, options))
+        const foldItems = (node as any).items.map((item: MathNode) => foldFraction(item, options))
         if (foldItems.some(isNode)) {
           return new ArrayNode(foldItems.map(_ensureNode))
         }
@@ -498,12 +513,12 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
       }
       case 'IndexNode': {
         return new IndexNode(
-          (node as IndexNode).dimensions.map((n: MathNode) => simplifyConstant(n, options)))
+          (node as any).dimensions.map((n: MathNode) => simplifyConstant(n, options)))
       }
       case 'ObjectNode': {
         const foldProps: Record<string, MathNode> = {}
-        for (const prop in (node as ObjectNode).properties) {
-          foldProps[prop] = simplifyConstant((node as ObjectNode).properties[prop], options)
+        for (const prop in (node as any).properties) {
+          foldProps[prop] = simplifyConstant((node as any).properties[prop], options)
         }
         return new ObjectNode(foldProps)
       }

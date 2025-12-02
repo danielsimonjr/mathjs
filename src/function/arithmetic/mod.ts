@@ -17,6 +17,7 @@ interface BigNumber {
   isZero(): boolean
   sub(value: BigNumber): BigNumber
   mul(value: BigNumber): BigNumber
+  div(value: BigNumber): BigNumber
 }
 
 interface Fraction {

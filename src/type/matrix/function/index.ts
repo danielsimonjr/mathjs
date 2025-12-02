@@ -1,6 +1,5 @@
 import { isBigNumber, isMatrix, isArray } from '../../../utils/is.js'
 import { factory } from '../../../utils/factory.js'
-import type Decimal from 'decimal.js'
 
 const name = 'index'
 const dependencies = ['typed', 'Index']
@@ -48,11 +47,11 @@ export const createIndex = /* #__PURE__ */ factory(name, dependencies, ({ typed,
     '...number | string | BigNumber | Range | Array | Matrix': function (args: any[]): any {
       const ranges = args.map(function (arg: any) {
         if (isBigNumber(arg)) {
-          return (arg as Decimal).toNumber() // convert BigNumber to Number
+          return (arg as any).toNumber() // convert BigNumber to Number
         } else if (isArray(arg) || isMatrix(arg)) {
-          return arg.map(function (elem: any) {
+          return (arg as any).map(function (elem: any) {
             // convert BigNumber to Number
-            return isBigNumber(elem) ? (elem as Decimal).toNumber() : elem
+            return isBigNumber(elem) ? (elem as any).toNumber() : elem
           })
         } else {
           return arg

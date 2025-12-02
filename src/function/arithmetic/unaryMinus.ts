@@ -1,7 +1,6 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 import { unaryMinusNumber } from '../../plain/number/index.js'
-import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'unaryMinus'
 <<<<<<< HEAD
@@ -10,10 +9,7 @@ const dependencies = ['typed']
 const dependencies = ['typed'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createUnaryMinus: FactoryFunction<
-  { typed: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createUnaryMinus = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Inverse the sign of a value, apply a unary minus operation.
    *

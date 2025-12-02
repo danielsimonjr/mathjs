@@ -3,6 +3,9 @@
  * Provides a bridge between JavaScript/TypeScript and compiled WASM
  */
 
+// Declare Node.js globals for environment detection
+declare const process: { versions?: { node?: string } } | undefined
+
 export interface WasmModule {
   // Matrix operations
   multiplyDense: (
@@ -101,7 +104,9 @@ export class WasmLoader {
   }
 
   private async loadNodeWasm(path: string): Promise<WasmModule> {
+    // @ts-ignore - Node.js modules
     const fs = await import('fs')
+    // @ts-ignore - Node.js modules
     const { promisify } = await import('util')
     const readFile = promisify(fs.readFile)
 
@@ -130,8 +135,8 @@ export class WasmLoader {
         },
         seed: () => Date.now()
       },
-      Math: Math,
-      Date: Date
+      Math: Math as unknown as WebAssembly.ModuleImports,
+      Date: Date as unknown as WebAssembly.ModuleImports
     }
   }
 

@@ -35,9 +35,9 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
     }
 
     if (isChain(value)) {
-      this.value = value.value
+      (this as any).value = (value as any).value
     } else {
-      this.value = value
+      (this as any).value = value
     }
   }
 
@@ -148,10 +148,14 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
       }
 <<<<<<< HEAD
       if ((typed as any).isTypedFunction(fn)) {
+<<<<<<< HEAD
 =======
       if (typed.isTypedFunction(fn)) {
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         const sigObject = typed.resolve(fn, args)
+=======
+        const sigObject = (typed as any).resolve(fn, args)
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
         // We want to detect if a rest parameter has matched across the
         // value in the chain and the current arguments of this call.
         // That is the case if and only if the matching signature has
@@ -180,6 +184,16 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
    *                                 functions
    * @param {*} [arg1]               A function, when arg0 is a name
    */
+  const excludedNames: Record<string, boolean> = {
+    expression: true,
+    docs: true,
+    type: true,
+    classes: true,
+    json: true,
+    error: true,
+    isChain: true // conflicts with the property isChain of a Chain instance
+  };
+
   (Chain as any).createProxy = function(arg0: string | Record<string, any>, arg1?: any): void {
     if (typeof arg0 === 'string') {
       // createProxy(name, value)
@@ -194,17 +208,8 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
     }
   }
 
-  const excludedNames: Record<string, boolean> = {
-    expression: true,
-    docs: true,
-    type: true,
-    classes: true,
-    json: true,
-    error: true,
-    isChain: true // conflicts with the property isChain of a Chain instance
-  }
-
   // create proxy for everything that is in math.js
+  // @ts-expect-error - Chain.createProxy is dynamically assigned above
   (Chain as any).createProxy(math)
 
   // register on the import event, automatically add a proxy for every imported function.

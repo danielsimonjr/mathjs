@@ -5,6 +5,20 @@ import { safeNumberType } from '../utils/number.js'
 import { hasOwnProperty } from '../utils/object.js'
 import type { MathNode } from './node/Node.js'
 
+// Extended Node interface with runtime properties
+interface ExtendedNode extends MathNode {
+  name?: string
+  value?: any
+  args?: ExtendedNode[]
+  fn?: ExtendedNode
+  object?: ExtendedNode
+  index?: ExtendedNode
+  optionalChaining?: boolean
+  items?: ExtendedNode[]
+  properties?: Record<string, ExtendedNode>
+  [key: string]: any
+}
+
 const name = 'parse'
 const dependencies = [
   'typed',
@@ -51,10 +65,14 @@ interface ParseOptions {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export const createParse = /* #__PURE__ */ factory(name, dependencies as string[], ({
 =======
 export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   typed,
   numeric,
   config,
@@ -773,7 +791,8 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
       const condition = node
       const trueExpr = parseAssignment(state)
 
-      if (state.token !== ':') throw createSyntaxError(state, 'False part of conditional expression expected')
+      // Type assertion needed because getTokenSkipNewline changes state.token
+      if ((state.token as string) !== ':') throw createSyntaxError(state, 'False part of conditional expression expected')
 
       state.conditionalLevel = null
       getTokenSkipNewline(state)
@@ -1020,7 +1039,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
       while (state.token === ':' && params.length < 3) { // eslint-disable-line no-unmodified-loop-condition
         getTokenSkipNewline(state)
 
-        if (state.token === ')' || state.token === ']' || state.token === ',' || state.token === '') {
+        if ((state.token as string) === ')' || (state.token as string) === ']' || (state.token as string) === ',' || (state.token as string) === '') {
           // implicit end
           params.push(new SymbolNode('end'))
         } else {
@@ -1177,7 +1196,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
           getTokenSkipNewline(state)
 
           // Match the "symbol" part of the pattern, or a left parenthesis
-          if (state.tokenType === TOKENTYPE.SYMBOL || state.token === '(' || state.token === 'in') {
+          if ((state.tokenType as any) === TOKENTYPE.SYMBOL || (state.token as string) === '(' || (state.token as string) === 'in') {
             // We've matched the pattern "number / number symbol".
             // Rewind once and build the "number / number" node; the symbol will be consumed later
             Object.assign(state, tokenStates.pop())
@@ -1379,17 +1398,17 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
         openParams(state)
         getToken(state)
 
-        if (state.token !== ')') {
+        if ((state.token as string) !== ')') {
           params.push(parseAssignment(state))
 
           // parse a list with parameters
-          while (state.token === ',') { // eslint-disable-line no-unmodified-loop-condition
+          while ((state.token as string) === ',') { // eslint-disable-line no-unmodified-loop-condition
             getToken(state)
             params.push(parseAssignment(state))
           }
         }
 
-        if (state.token !== ')') {
+        if ((state.token as string) !== ')') {
           throw createSyntaxError(state, 'Parenthesis ) expected')
         }
         closeParams(state)
@@ -1480,17 +1499,17 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
           openParams(state)
           getToken(state)
 
-          if (state.token !== ')') {
+          if ((state.token as string) !== ')') {
             params.push(parseAssignment(state))
 
             // parse a list with parameters
-            while (state.token === ',') { // eslint-disable-line no-unmodified-loop-condition
+            while ((state.token as string) === ',') { // eslint-disable-line no-unmodified-loop-condition
               getToken(state)
               params.push(parseAssignment(state))
             }
           }
 
-          if (state.token !== ')') {
+          if ((state.token as string) !== ')') {
             throw createSyntaxError(state, 'Parenthesis ) expected')
           }
           closeParams(state)
@@ -1508,17 +1527,17 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
         openParams(state)
         getToken(state)
 
-        if (state.token !== ']') {
+        if ((state.token as string) !== ']') {
           params.push(parseAssignment(state))
 
           // parse a list with parameters
-          while (state.token === ',') { // eslint-disable-line no-unmodified-loop-condition
+          while ((state.token as string) === ',') { // eslint-disable-line no-unmodified-loop-condition
             getToken(state)
             params.push(parseAssignment(state))
           }
         }
 
-        if (state.token !== ']') {
+        if ((state.token as string) !== ']') {
           throw createSyntaxError(state, 'Parenthesis ] expected')
         }
         closeParams(state)
@@ -1636,26 +1655,26 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
       openParams(state)
       getToken(state)
 
-      if (state.token !== ']') {
+      if ((state.token as string) !== ']') {
         // this is a non-empty matrix
         const row = parseRow(state)
 
-        if (state.token === ';') {
+        if ((state.token as string) === ';') {
           // 2 dimensional array
           rows = 1
           params = [row]
 
           // the rows of the matrix are separated by dot-comma's
-          while (state.token === ';') { // eslint-disable-line no-unmodified-loop-condition
+          while ((state.token as string) === ';') { // eslint-disable-line no-unmodified-loop-condition
             getToken(state)
 
-            if (state.token !== ']') {
+            if ((state.token as string) !== ']') {
               params[rows] = parseRow(state)
               rows++
             }
           }
 
-          if (state.token !== ']') {
+          if ((state.token as string) !== ']') {
             throw createSyntaxError(state, 'End of matrix ] expected')
           }
           closeParams(state)
@@ -1673,7 +1692,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
           array = new ArrayNode(params)
         } else {
           // 1 dimensional vector
-          if (state.token !== ']') {
+          if ((state.token as string) !== ']') {
             throw createSyntaxError(state, 'End of matrix ] expected')
           }
           closeParams(state)
@@ -1702,11 +1721,11 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
     const params: MathNode[] = [parseAssignment(state)]
     let len = 1
 
-    while (state.token === ',') { // eslint-disable-line no-unmodified-loop-condition
+    while ((state.token as string) === ',') { // eslint-disable-line no-unmodified-loop-condition
       getToken(state)
 
       // parse expression
-      if (state.token !== ']' && state.token !== ';') {
+      if ((state.token as string) !== ']' && (state.token as string) !== ';') {
         params[len] = parseAssignment(state)
         len++
       }
@@ -1729,10 +1748,10 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
       do {
         getToken(state)
 
-        if (state.token !== '}') {
+        if ((state.token as string) !== '}') {
           // parse key
-          if (state.token === '"' || state.token === "'") {
-            key = parseStringToken(state, state.token)
+          if ((state.token as string) === '"' || (state.token as string) === "'") {
+            key = parseStringToken(state, state.token as any)
           } else if (state.tokenType === TOKENTYPE.SYMBOL || (state.tokenType === TOKENTYPE.DELIMITER && state.token in NAMED_DELIMITERS)) {
             key = state.token
             getToken(state)
@@ -1741,7 +1760,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
           }
 
           // parse key/value separator
-          if (state.token !== ':') {
+          if ((state.token as string) !== ':') {
             throw createSyntaxError(state, 'Colon : expected after object key')
           }
           getToken(state)
@@ -1750,9 +1769,9 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
           properties[key] = parseAssignment(state)
         }
       }
-      while (state.token === ',') // eslint-disable-line no-unmodified-loop-condition
+      while ((state.token as string) === ',') // eslint-disable-line no-unmodified-loop-condition
 
-      if (state.token !== '}') {
+      if ((state.token as string) !== '}') {
         throw createSyntaxError(state, 'Comma , or bracket } expected after object value')
       }
       closeParams(state)
@@ -1807,7 +1826,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
 
       node = parseAssignment(state) // start again
 
-      if (state.token !== ')') {
+      if ((state.token as string) !== ')') {
         throw createSyntaxError(state, 'Parenthesis ) expected')
       }
       closeParams(state)

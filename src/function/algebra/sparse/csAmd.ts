@@ -1,7 +1,7 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { factory, FactoryFunction } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.js'
 import { csFkeep } from './csFkeep.js'
 import { csFlip } from './csFlip.js'
 import { csTdfs } from './csTdfs.js'
@@ -11,13 +11,17 @@ const dependencies = [
   'add',
   'multiply',
   'transpose'
-] as const
+]
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export const createCsAmd: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ add, multiply, transpose }) => {
 =======
 export const createCsAmd: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ add, multiply, transpose }) => {
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+export const createCsAmd = /* #__PURE__ */ factory(name, dependencies, ({ add, multiply, transpose }: { add: any; multiply: any; transpose: any }) => {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Approximate minimum degree ordering. The minimum degree algorithm is a widely used
    * heuristic for finding a permutation P so that P*A*P' has fewer nonzeros in its factorization

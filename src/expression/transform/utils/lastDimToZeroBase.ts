@@ -3,7 +3,11 @@ import { dimToZeroBase, isNumberOrBigNumber } from './dimToZeroBase.js'
 /**
  * Change last argument dim from one-based to zero-based.
  */
+<<<<<<< HEAD
 export function lastDimToZeroBase (args: any) {
+=======
+export function lastDimToZeroBase (args: any[]) {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   if (args.length === 2 && isCollection(args[0])) {
     args = args.slice()
     const dim = args[1]

@@ -152,16 +152,16 @@ function _getSubstring (str: string, index: any): string {
   if (isEmptyIndex(index)) { return '' }
   validateIndexSourceSize(Array.from(str), index)
 
-  if (index.size().length !== 1) {
-    throw new DimensionError(index.size().length, 1)
+  if ((index as any).size().length !== 1) {
+    throw new DimensionError((index as any).size().length, 1)
   }
 
   // validate whether the range is out of range
   const strLen = str.length
-  validateIndex(index.min()[0], strLen)
-  validateIndex(index.max()[0], strLen)
+  validateIndex((index as any).min()[0], strLen)
+  validateIndex((index as any).max()[0], strLen)
 
-  const range = index.dimension(0)
+  const range = (index as any).dimension(0)
 
   let substr = ''
   function callback (v: number): void {

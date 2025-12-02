@@ -9,17 +9,7 @@ const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', '
 const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', 'Complex'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createGamma: FactoryFunction<
-  {
-    typed: TypedFunction
-    config: any
-    multiplyScalar: TypedFunction
-    pow: TypedFunction
-    BigNumber: any
-    Complex: any
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, multiplyScalar, pow, BigNumber, Complex }) => {
+export const createGamma = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, multiplyScalar, pow, BigNumber, Complex }: any) => {
   /**
    * Compute the gamma function of a value using Lanczos approximation for
    * small values, and an extended Stirling approximation for large values.

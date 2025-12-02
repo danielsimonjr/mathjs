@@ -2,49 +2,10 @@ import { factory } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 import { signNumber } from '../../plain/number/index.js'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  referToSelf<U>(fn: (self: TypedFunction<U>) => TypedFunction<U>): TypedFunction<U>
-}
-
-interface BigNumberConstructor {
-  new (value: number): any
-}
-
-interface Complex {
-  re: number
-  im: number
-  sign(): Complex
-}
-
-interface ComplexConstructor {
-  (value: number): Complex
-}
-
-interface FractionConstructor {
-  new (value: number): any
-}
-
-interface Unit {
-  _isDerived(): boolean
-  units: Array<{ unit: { offset: number } }>
-  valueType(): string
-  value: any
-}
-
-interface Dependencies {
-  typed: TypedFunction
-  BigNumber: BigNumberConstructor
-  complex: ComplexConstructor
-  Fraction: FractionConstructor
-}
-
 const name = 'sign'
-const dependencies = ['typed', 'BigNumber', 'complex', 'Fraction']
+const dependencies = ['typed', 'BigNumber', 'Fraction', 'complex']
 
-export const createSign = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber, complex, Fraction }: Dependencies) => {
+export const createSign = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber, complex, Fraction }: any) => {
   /**
    * Compute the sign of a value. The sign of a value x is:
    *
@@ -78,7 +39,7 @@ export const createSign = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
   return typed(name, {
     number: signNumber,
 
-    Complex: function (x: Complex): Complex {
+    Complex: function (x: any): any {
       return x.im === 0 ? complex(signNumber(x.re)) : x.sign()
     },
 
@@ -95,9 +56,9 @@ export const createSign = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     },
 
     // deep map collection, skip zeros since sign(0) = 0
-    'Array | Matrix': typed.referToSelf(((self: any) => ((x: any): any => deepMap(x, self, true))) as any) as any,
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self, true)),
 
-    Unit: typed.referToSelf(self => (x: Unit): any => {
+    Unit: typed.referToSelf((self: any) => (x: any) => {
       if (!x._isDerived() && x.units[0].unit.offset !== 0) {
         throw new TypeError('sign is ambiguous for units with offset')
       }

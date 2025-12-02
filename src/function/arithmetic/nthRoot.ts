@@ -1,5 +1,4 @@
-import { factory, type FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.js'
 import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.js'
 import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.js'
@@ -20,7 +19,7 @@ const dependencies = [
 ] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createNthRoot: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, BigNumber, concat }: { typed: TypedFunction; matrix: any; equalScalar: any; BigNumber: any; concat: any }): any => {
+export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, BigNumber, concat }: { typed: any; matrix: any; equalScalar: any; BigNumber: any; concat: any }): any => {
   const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
   const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
   const matAlgo06xS0S0 = createMatAlgo06xS0S0({ typed, equalScalar })
@@ -124,8 +123,12 @@ export const createNthRoot: FactoryFunction<typeof name, typeof dependencies> = 
       scalar: 'number | BigNumber',
       SD: matAlgo02xDS0,
       Ss: matAlgo11xS0s,
+<<<<<<< HEAD
       sS: false
 <<<<<<< HEAD
+=======
+      sS: false as any
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
     }) as any)
 =======
     })
@@ -174,10 +177,14 @@ export const createNthRoot: FactoryFunction<typeof name, typeof dependencies> = 
 })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export const createNthRootNumber: FactoryFunction<'nthRoot', ['typed']> = /* #__PURE__ */ factory(name, ['typed'] as const, ({ typed }: any): any => {
 =======
 export const createNthRootNumber: FactoryFunction<'nthRoot', ['typed']> = /* #__PURE__ */ factory(name, ['typed'] as const, ({ typed }: { typed: TypedFunction }): any => {
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+export const createNthRootNumber = /* #__PURE__ */ factory(name, ['typed'], ({ typed }: { typed: any }) => {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   return typed(name, {
     number: nthRootNumber,
     'number, number': nthRootNumber

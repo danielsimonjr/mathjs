@@ -1,14 +1,8 @@
 import { factory } from '../../utils/factory.js'
 
-import { TypedFunction } from '../../types.js';
-
 export const createTrigUnit = /* #__PURE__ */ factory(
-  'trigUnit', ['typed'], ({
-  typed
-}: {
-  typed: TypedFunction;
-}) => ({
-    Unit: typed.referToSelf(self => x => {
+  'trigUnit', ['typed'], ({ typed }: { typed: any }) => ({
+    Unit: typed.referToSelf((self: any) => (x: any) => {
       if (!x.hasBase(x.constructor.BASE_UNITS.ANGLE)) {
         throw new TypeError('Unit in function cot is no angle')
       }

@@ -27,25 +27,25 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
     addScalar,
     unaryMinus,
     norm,
-    BigNumber,
+    BigNumber: BigNumberCtor,
     matrix,
-    DenseMatrix,
-    SparseMatrix,
+    DenseMatrix: DenseMatrixCtor,
+    SparseMatrix: SparseMatrixCtor,
     cos,
     sin
   }: {
     typed: TypedFunction;
-    config: ConfigOptions;
-    multiplyScalar: (a: number, b: number) => number;
-    addScalar: (a: number, b: number) => number;
-    unaryMinus: (a: number) => number;
-    norm: any;
-    BigNumber: typeof BigNumber;
-    matrix: MatrixConstructor;
-    DenseMatrix: typeof DenseMatrix;
-    SparseMatrix: typeof SparseMatrix;
-    cos: any;
-    sin: any;
+    config: { matrix: string };
+    multiplyScalar: (a: any, b: any) => any;
+    addScalar: (a: any, b: any) => any;
+    unaryMinus: (a: any) => any;
+    norm: (v: any) => number;
+    BigNumber: new (value: any) => BigNumber;
+    matrix: (data?: any) => Matrix;
+    DenseMatrix: new (data: any) => Matrix;
+    SparseMatrix: new (data: any) => Matrix;
+    cos: (theta: any) => any;
+    sin: (theta: any) => any;
   }
 ): TypedFunction => {
   /**
@@ -131,10 +131,10 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
    * @returns {Matrix}
    * @private
    */
-  function _rotationMatrix2x2 (theta, format) {
+  function _rotationMatrix2x2 (theta: number | BigNumber | Complex | Unit, format: string | undefined): any {
     const Big = isBigNumber(theta)
 
-    const minusOne = Big ? new BigNumber(-1) : -1
+    const minusOne = Big ? new BigNumberCtor(-1) : -1
     const cosTheta = cos(theta)
     const sinTheta = sin(theta)
     const data = [[cosTheta, multiplyScalar(minusOne, sinTheta)], [sinTheta, cosTheta]]
@@ -142,24 +142,24 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
     return _convertToFormat(data, format)
   }
 
-  function _validateVector (v) {
-    const size = v.size()
+  function _validateVector (v: Matrix): void {
+    const size = (v as any).size()
     if (size.length < 1 || size[0] !== 3) {
       throw new RangeError('Vector must be of dimensions 1x3')
     }
   }
 
-  function _mul (array) {
-    return array.reduce((p, curr) => multiplyScalar(p, curr))
+  function _mul (array: any[]): any {
+    return array.reduce((p: any, curr: any) => multiplyScalar(p, curr))
   }
 
-  function _convertToFormat (data, format) {
+  function _convertToFormat (data: any[][], format: string | undefined): any {
     if (format) {
       if (format === 'sparse') {
-        return new SparseMatrix(data)
+        return new SparseMatrixCtor(data)
       }
       if (format === 'dense') {
-        return new DenseMatrix(data)
+        return new DenseMatrixCtor(data)
       }
       throw new TypeError(`Unknown matrix type "${format}"`)
     }
@@ -175,19 +175,19 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
    * @returns {Matrix}
    * @private
    */
-  function _rotationMatrix3x3 (theta, v, format) {
+  function _rotationMatrix3x3 (theta: number | BigNumber | Complex | Unit, v: Matrix, format: string | undefined): any {
     const normV = norm(v)
     if (normV === 0) {
       throw new RangeError('Rotation around zero vector')
     }
 
-    const Big = isBigNumber(theta) ? BigNumber : null
+    const Big = isBigNumber(theta) ? BigNumberCtor : null
 
     const one = Big ? new Big(1) : 1
     const minusOne = Big ? new Big(-1) : -1
-    const vx = Big ? new Big(v.get([0]) / normV) : v.get([0]) / normV
-    const vy = Big ? new Big(v.get([1]) / normV) : v.get([1]) / normV
-    const vz = Big ? new Big(v.get([2]) / normV) : v.get([2]) / normV
+    const vx = Big ? new Big((v as any).get([0]) / normV) : (v as any).get([0]) / normV
+    const vy = Big ? new Big((v as any).get([1]) / normV) : (v as any).get([1]) / normV
+    const vz = Big ? new Big((v as any).get([2]) / normV) : (v as any).get([2]) / normV
     const c = cos(theta)
     const oneMinusC = addScalar(one, unaryMinus(c))
     const s = sin(theta)

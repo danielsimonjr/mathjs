@@ -3,9 +3,9 @@ import Decimal from 'decimal.js'
 export * from './arithmetic.js'
 
 // TODO: this is ugly. Instead, be able to pass your own isBigNumber function to typed?
-const BigNumber = Decimal.clone()
+const BigNumber = (Decimal as any).clone()
 BigNumber.prototype.isBigNumber = true
 
-export function bignumber (x) {
+export function bignumber (x: any): any {
   return new BigNumber(x)
 }

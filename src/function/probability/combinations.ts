@@ -9,10 +9,7 @@ const dependencies = ['typed']
 const dependencies = ['typed'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createCombinations: FactoryFunction<
-  { typed: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createCombinations = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Compute the number of ways of picking `k` unordered outcomes from `n`
    * possibilities.

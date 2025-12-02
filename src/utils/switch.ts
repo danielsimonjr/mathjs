@@ -4,7 +4,7 @@
  * @returns {Array} ret
  * @private
  */
-export function _switch (mat) {
+export function _switch (mat: any[][]): any[][] {
   const I = mat.length
   const J = mat[0].length
   let i, j

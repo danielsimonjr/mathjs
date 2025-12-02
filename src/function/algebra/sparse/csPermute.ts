@@ -23,7 +23,7 @@ export function csPermute (a: any, pinv: number[] | null, q: number[] | null, va
   const m = asize[0]
   const n = asize[1]
   // c arrays
-  const cvalues = values && a._values ? [] : null
+  const cvalues: any[] | null = values && a._values ? [] : null
   const cindex: number[] = [] // (aptr[n])
   const cptr: number[] = [] // (n + 1)
   // initialize vars

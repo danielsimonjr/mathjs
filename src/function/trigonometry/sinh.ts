@@ -1,5 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 import { sinhNumber } from '../../plain/number/index.js'
 
 const name = 'sinh'
@@ -9,7 +8,7 @@ const dependencies = ['typed']
 const dependencies = ['typed'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createSinh: FactoryFunction<'sinh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createSinh = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Calculate the hyperbolic sine of a value,
    * defined as `sinh(x) = 1/2 * (exp(x) - exp(-x))`.
@@ -34,6 +33,6 @@ export const createSinh: FactoryFunction<'sinh', typeof dependencies> = /* #__PU
    */
   return typed(name, {
     number: sinhNumber,
-    'Complex | BigNumber': x => x.sinh()
-  }) as TypedFunction
+    'Complex | BigNumber': (x: any) => x.sinh()
+  })
 })

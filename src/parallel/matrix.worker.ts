@@ -3,6 +3,9 @@
  * Handles matrix operations in a separate thread
  */
 
+declare const process: { versions?: { node?: string } } | undefined
+declare function require(module: string): any
+
 interface WorkerMessage {
   id: string
   type: 'task' | 'result' | 'error'

@@ -1,8 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/config.js'
-import type { Complex } from '../../type/complex/Complex.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+import { factory } from '../../utils/factory.js'
 import { acothNumber } from '../../plain/number/index.js'
 
 const name = 'acoth'
@@ -12,7 +8,7 @@ const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
 const dependencies = ['typed', 'config', 'Complex', 'BigNumber'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createAcoth: FactoryFunction<'acoth', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex, BigNumber }) => {
+export const createAcoth = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex, BigNumber }: { typed: any; config: any; Complex: any; BigNumber: any }) => {
   /**
    * Calculate the inverse hyperbolic tangent of a value,
    * defined as `acoth(x) = atanh(1/x) = (ln((x+1)/x) + ln(x/(x-1))) / 2`.
@@ -37,18 +33,18 @@ export const createAcoth: FactoryFunction<'acoth', typeof dependencies> = /* #__
    */
   return typed(name, {
     number: function (x: number) {
-      if (x >= 1 || x <= -1 || (config as MathJsConfig).predictable) {
+      if (x >= 1 || x <= -1 || config.predictable) {
         return acothNumber(x)
       }
       return new Complex(x, 0).acoth()
     },
 
-    Complex: function (x: Complex) {
+    Complex: function (x: any) {
       return x.acoth()
     },
 
-    BigNumber: function (x: BigNumber) {
+    BigNumber: function (x: any) {
       return new BigNumber(1).div(x).atanh()
     }
-  }) as TypedFunction
+  })
 })

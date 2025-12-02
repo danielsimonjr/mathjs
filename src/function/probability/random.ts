@@ -1,5 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 import { isMatrix } from '../../utils/is.js'
 import { createRng } from './util/seededRNG.js'
 import { randomMatrix } from './util/randomMatrix.js'
@@ -11,10 +10,7 @@ const dependencies = ['typed', 'config', '?on']
 const dependencies = ['typed', 'config', '?on'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createRandom: FactoryFunction<
-  { typed: TypedFunction; config: any; on?: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, on }) => {
+export const createRandom = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, on }: { typed: any; config: any; on?: any }) => {
   // seeded pseudo random number generator
   let rng = createRng(config.randomSeed)
 
@@ -67,7 +63,7 @@ export const createRandom: FactoryFunction<
 
   function _randomMatrix (size: any, min: number, max: number): any {
     const res = randomMatrix(size.valueOf(), () => _random(min, max))
-    return isMatrix(size) ? size.create(res, 'number') : res
+    return isMatrix(size) ? (size as any).create(res, 'number') : res
   }
 
   function _random (min: number, max: number): number {

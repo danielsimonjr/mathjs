@@ -7,7 +7,7 @@ import { nearlyEqual } from '../../utils/number.js'
 const name = 'isPositive'
 const dependencies = ['typed', 'config']
 
-export const createIsPositive = /* #__PURE__ */ factory(name, dependencies, ({ typed, config }) => {
+export const createIsPositive = /* #__PURE__ */ factory(name, dependencies, ({ typed, config }: { typed: any, config: any }) => {
   /**
    * Test whether a value is positive: larger than zero.
    * The function supports types `number`, `BigNumber`, `Fraction`, and `Unit`.
@@ -51,9 +51,9 @@ export const createIsPositive = /* #__PURE__ */ factory(name, dependencies, ({ t
 
     Fraction: (x: any): boolean => x.s > 0n && x.n > 0n,
 
-    Unit: typed.referToSelf(self =>
-      x => typed.find(self, x.valueType())(x.value)),
+    Unit: typed.referToSelf((self: any) =>
+      (x: any) => typed.find(self, x.valueType())(x.value)),
 
-    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 })

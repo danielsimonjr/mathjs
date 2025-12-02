@@ -7,6 +7,18 @@ import { factory } from '../../utils/factory.js'
 import { defaultTemplate, latexFunctions } from '../../utils/latex.js'
 import type { MathNode } from './Node.js'
 
+// Extended Node interface with runtime properties
+interface ExtendedNode {
+  name?: string
+  toTex?: (options?: any) => string
+  optionalChaining?: boolean
+  object?: ExtendedNode
+  index?: ExtendedNode
+  args?: ExtendedNode[]
+  fn?: ExtendedNode
+  [key: string]: any
+}
+
 const name = 'FunctionNode'
 const dependencies = [
   'math',
@@ -20,7 +32,7 @@ const dependencies = [
 
 export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({ math, Node, SymbolNode }: {
   math: any
-  Node: typeof MathNode
+  Node: any
   SymbolNode: any
 }) => {
   /* format to fixed length */
@@ -42,7 +54,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
     const regex = /\$(?:\{([a-z_][a-z_0-9]*)(?:\[([0-9]+)\])?\}|\$)/gi
 
     let inputPos = 0 // position in the input string
-    let match
+    let match: RegExpExecArray | null
     while ((match = regex.exec(template)) !== null) { // go through all matches
       // add everything in front of the match to the LaTeX string
       latex += template.substring(inputPos, match.index)
@@ -125,17 +137,18 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
         throw new TypeError('optional flag, if specified, must be boolean')
       }
 
-      this.fn = fn
+      this.fn = fn as MathNode
       this.args = args || []
       this.optional = !!optional
     }
 
     // readonly property name
     get name (): string {
-      return this.fn.name || ''
+      return (this.fn as any).name || ''
     }
 
-    static name = name
+    // @ts-expect-error - intentionally override Function.name
+    static readonly name = name
     get type (): string { return name }
     get isFunctionNode (): boolean { return true }
 
@@ -276,7 +289,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
             return undefined
           }
 
-          const fn = getSafeMethod(object, prop)
+          const fn: any = getSafeMethod(object, prop)
 
           if (fn?.rawArgs) {
             // "Raw" evaluation

@@ -61,7 +61,7 @@ export const createRow = /* #__PURE__ */ factory(name, dependencies, ({ typed, I
     'Matrix, number': _row,
 
     'Array, number': function (value: any[], row: number): any[] {
-      return _row(matrix(clone(value)), row).valueOf()
+      return (_row(matrix(clone(value)) as any, row) as any).valueOf()
     }
   })
 
@@ -84,7 +84,7 @@ export const createRow = /* #__PURE__ */ factory(name, dependencies, ({ typed, I
     const result = value.subset(index)
     // once config.legacySubset just return result
     return isMatrix(result)
-      ? result
-      : matrix([[result]])
+      ? result as any
+      : matrix([[result]]) as any
   }
 })

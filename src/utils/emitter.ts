@@ -1,3 +1,4 @@
+// @ts-ignore - tiny-emitter has no proper type declarations
 import Emitter from 'tiny-emitter'
 
 export interface EmitterMixin {
@@ -14,7 +15,7 @@ export interface EmitterMixin {
  */
 export function mixin<T extends object>(obj: T): T & EmitterMixin {
   // create event emitter
-  const emitter = new Emitter()
+  const emitter = new (Emitter as any)()
 
   // bind methods to obj (we don't want to expose the emitter.e Array...)
   const extendedObj = obj as T & EmitterMixin

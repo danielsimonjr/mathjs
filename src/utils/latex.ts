@@ -1,5 +1,6 @@
 /* eslint no-template-curly-in-string: "off" */
 
+// @ts-ignore - no type declarations for escape-latex
 import escapeLatexLib from 'escape-latex'
 import { hasOwnProperty } from './object.js'
 
@@ -109,7 +110,7 @@ export const latexOperators = {
   or: '\\vee'
 }
 
-export const latexFunctions = {
+export const latexFunctions: Record<string, any> = {
   // arithmetic
   abs: { 1: '\\left|${args[0]}\\right|' },
   add: { 2: `\\left(\${args[0]}${latexOperators.add}\${args[1]}\\right)` },
@@ -249,7 +250,7 @@ export const latexFunctions = {
   to: { 2: `\\left(\${args[0]}${latexOperators.to}\${args[1]}\\right)` },
 
   // utils
-  numeric: function (node, options) {
+  numeric: function (node: any, _options?: any): string {
     // Not sure if this is strictly right but should work correctly for the vast majority of use cases.
     return node.args[0].toTex()
   },
@@ -299,13 +300,13 @@ const latexUnits = {
   deg: '^\\circ'
 }
 
-export function escapeLatex (string) {
+export function escapeLatex (string: string): string {
   return escapeLatexLib(string, { preserveFormatting: true })
 }
 
 // @param {string} name
 // @param {boolean} isUnit
-export function toSymbol (name, isUnit) {
+export function toSymbol (name: string, isUnit?: boolean): string {
   isUnit = typeof isUnit === 'undefined' ? false : isUnit
   if (isUnit) {
     if (hasOwnProperty(latexUnits, name)) {

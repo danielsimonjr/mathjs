@@ -1,6 +1,6 @@
 import { factory } from '../../utils/factory.js'
 
-import { TypedFunction, Matrix } from '../../types.js';
+import { Matrix } from '../../types.js';
 
 const name = 'corr'
 const dependencies = ['typed', 'matrix', 'mean', 'sqrt', 'sum', 'add', 'subtract', 'multiply', 'pow', 'divide']
@@ -17,17 +17,17 @@ export const createCorr = /* #__PURE__ */ factory(name, dependencies, (
     pow,
     divide
   }: {
-    typed: TypedFunction;
-    matrix: MatrixConstructor;
-    sqrt: any;
-    sum: any;
-    add: any;
-    subtract: any;
-    multiply: any;
-    pow: any;
-    divide: any;
+    typed: any;
+    matrix: (data: any) => Matrix;
+    sqrt: (x: any) => any;
+    sum: (x: any) => any;
+    add: (a: any, b: any) => any;
+    subtract: (a: any, b: any) => any;
+    multiply: (a: any, b: any) => any;
+    pow: (a: any, b: any) => any;
+    divide: (a: any, b: any) => any;
   }
-): TypedFunction => {
+): any => {
   /**
    * Compute the correlation coefficient of a two list with values, For matrices, the matrix correlation coefficient is calculated.
    *
@@ -65,8 +65,8 @@ export const createCorr = /* #__PURE__ */ factory(name, dependencies, (
    * @return {*} correlation coefficient
    * @private
    */
-  function _corr (A, B) {
-    const correlations = []
+  function _corr (A: any[], B: any[]): any {
+    const correlations: any[] = []
     if (Array.isArray(A[0]) && Array.isArray(B[0])) {
       if (A.length !== B.length) {
         throw new SyntaxError('Dimension mismatch. Array A and B must have the same length.')
@@ -85,13 +85,13 @@ export const createCorr = /* #__PURE__ */ factory(name, dependencies, (
       return correlation(A, B)
     }
   }
-  function correlation (A, B) {
+  function correlation (A: any[], B: any[]): any {
     const n = A.length
     const sumX = sum(A)
     const sumY = sum(B)
-    const sumXY = A.reduce((acc, x, index) => add(acc, multiply(x, B[index])), 0)
-    const sumXSquare = sum(A.map(x => pow(x, 2)))
-    const sumYSquare = sum(B.map(y => pow(y, 2)))
+    const sumXY = A.reduce((acc: any, x: any, index: number) => add(acc, multiply(x, B[index])), 0)
+    const sumXSquare = sum(A.map((x: any) => pow(x, 2)))
+    const sumYSquare = sum(B.map((y: any) => pow(y, 2)))
     const numerator = subtract(multiply(n, sumXY), multiply(sumX, sumY))
     const denominator = sqrt(multiply(subtract(multiply(n, sumXSquare), pow(sumX, 2)), subtract(multiply(n, sumYSquare), pow(sumY, 2))))
     return divide(numerator, denominator)

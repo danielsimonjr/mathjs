@@ -3,8 +3,11 @@ import { deepMap } from '../../utils/collection.js'
 import { factory } from '../../utils/factory.js'
 import { bitNotNumber } from '../../plain/number/index.js'
 <<<<<<< HEAD
+<<<<<<< HEAD
 import type { MathJsChain } from '../../../types/index.js'
 import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+=======
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
 const name = 'bitNot'
 const dependencies = ['typed']
@@ -16,7 +19,7 @@ const name = 'bitNot'
 const dependencies = ['typed'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createBitNot = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createBitNot = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Bitwise NOT value, `~x`.
    * For matrices, the function is evaluated element wise.
@@ -43,6 +46,6 @@ export const createBitNot = /* #__PURE__ */ factory(name, dependencies, ({ typed
     number: bitNotNumber,
     BigNumber: bitNotBigNumber,
     bigint: (x: bigint): bigint => ~x,
-    'Array | Matrix': typed.referToSelf(self => (x: any) => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 })

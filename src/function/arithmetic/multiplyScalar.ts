@@ -9,10 +9,7 @@ const dependencies = ['typed']
 const dependencies = ['typed'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createMultiplyScalar: FactoryFunction<
-  { typed: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createMultiplyScalar = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Multiply two scalar values, `x * y`.
    * This function is meant for internal use: it is used by the public function

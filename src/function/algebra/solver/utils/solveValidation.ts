@@ -37,8 +37,8 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
     let data: any[] = []
 
     if (isMatrix(b)) {
-      const bSize = b.size()
-      const bdata = b._data
+      const bSize = (b as any).size()
+      const bdata = (b as any)._data
 
       // 1-dim vector
       if (bSize.length === 1) {
@@ -53,7 +53,7 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
         return new DenseMatrix({
           data,
           size: [rows, 1],
-          datatype: b._datatype
+          datatype: (b as any)._datatype
         })
       }
 
@@ -74,7 +74,7 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
             return new DenseMatrix({
               data,
               size: [rows, 1],
-              datatype: b._datatype
+              datatype: (b as any)._datatype
             })
           }
 
@@ -84,9 +84,10 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
         if (isSparseMatrix(b)) {
           for (let i = 0; i < rows; i++) { data[i] = [0] }
 
-          const values = b._values
-          const index = b._index
-          const ptr = b._ptr
+          const bSparse = b as any
+          const values = bSparse._values
+          const index = bSparse._index
+          const ptr = bSparse._ptr
 
           for (let k1 = ptr[1], k = ptr[0]; k < k1; k++) {
             const i = index[k]
@@ -96,7 +97,7 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
           return new DenseMatrix({
             data,
             size: [rows, 1],
-            datatype: b._datatype
+            datatype: bSparse._datatype
           })
         }
       }

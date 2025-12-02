@@ -1,6 +1,5 @@
 import { flatten } from '../../utils/array.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.js'
 import { isMatrix, isNumber } from '../../utils/is.js'
 import { createRng } from './util/seededRNG.js'
 
@@ -11,10 +10,7 @@ const dependencies = ['typed', 'config', '?on']
 const dependencies = ['typed', 'config', '?on'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createPickRandom: FactoryFunction<
-  { typed: TypedFunction; config: any; on?: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, on }) => {
+export const createPickRandom = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, on }: { typed: any; config: any; on?: any }) => {
   // seeded pseudo random number generator
   let rng = createRng(config.randomSeed)
 
@@ -104,9 +100,9 @@ export const createPickRandom: FactoryFunction<
     }
 
     const createMatrix = isMatrix(possibles)
-      ? possibles.create
+      ? (possibles as any).create
       : isMatrix(weights)
-        ? weights.create
+        ? (weights as any).create
         : null
 
     possibles = possibles.valueOf() // get Array

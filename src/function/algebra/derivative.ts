@@ -260,7 +260,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
       let negative = false // is output negative?
 
       let funcDerivative: MathNode | undefined
-      switch (node.name) {
+      switch ((node as any).name) {
         case 'cbrt':
           // d/dx(cbrt(x)) = 1 / (3x^(2/3))
           div = true
@@ -582,7 +582,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
           break
         case 'gamma': // Needs digamma function, d/dx(gamma(x)) = gamma(x)digamma(x)
         default:
-          throw new Error('Cannot process function "' + node.name + '" in derivative: ' +
+          throw new Error('Cannot process function "' + (node as any).name + '" in derivative: ' +
           'the function is not supported, undefined, or the number of arguments passed to it are not supported')
       }
 

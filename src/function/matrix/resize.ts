@@ -5,7 +5,7 @@ import { isInteger } from '../../utils/number.js'
 import { format } from '../../utils/string.js'
 import { clone } from '../../utils/object.js'
 import { resize as arrayResize } from '../../utils/array.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 
 const name = 'resize'
 <<<<<<< HEAD
@@ -14,7 +14,7 @@ const dependencies = ['config', 'matrix']
 const dependencies = ['config', 'matrix'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createResize: FactoryFunction<'config' | 'matrix', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ config, matrix }) => {
+export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ config, matrix }: { config: any; matrix: any }) => {
   /**
    * Resize a matrix
    *
@@ -65,7 +65,7 @@ export const createResize: FactoryFunction<'config' | 'matrix', typeof name> = /
     // check x is a Matrix
     if (isMatrix(x)) {
       // use optimized matrix implementation, return copy
-      return x.resize(size, defaultValue, true)
+      return (x as any).resize(size, defaultValue, true)
     }
 
     if (typeof x === 'string') {

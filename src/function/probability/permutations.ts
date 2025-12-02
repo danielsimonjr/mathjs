@@ -10,10 +10,7 @@ const dependencies = ['typed', 'factorial']
 const dependencies = ['typed', 'factorial'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createPermutations: FactoryFunction<
-  { typed: TypedFunction; factorial: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, factorial }) => {
+export const createPermutations = /* #__PURE__ */ factory(name, dependencies, ({ typed, factorial }: any) => {
   /**
    * Compute the number of ways of obtaining an ordered subset of `k` elements
    * from a set of `n` elements.

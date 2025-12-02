@@ -5,8 +5,8 @@ import { notNumber } from '../../plain/number/index.js'
 // Type definitions
 interface TypedFunction<T = any> {
   (...args: any[]): T
-  referToSelf<U>(fn: (self: TypedFunction<U>) => TypedFunction<U>): TypedFunction<U>
-  find(signatures: any, signature: string): TypedFunction
+  referToSelf(fn: (self: any) => any): any
+  find(signatures: any, signature: string): any
 }
 
 interface Complex {

@@ -1,7 +1,7 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { factory, FactoryFunction } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.js'
 import { csEreach } from './csEreach.js'
 import { createCsSymperm } from './csSymperm.js'
 
@@ -17,8 +17,9 @@ const dependencies = [
   'equal',
   'smallerEq',
   'SparseMatrix'
-] as const
+]
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export const createCsChol: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], (
 =======
@@ -37,6 +38,20 @@ export const createCsChol: FactoryFunction<typeof name, typeof dependencies> = /
     SparseMatrix
   }
 ) => {
+=======
+export const createCsChol = /* #__PURE__ */ factory(name, dependencies, ({ divideScalar, sqrt, subtract, multiply, im, re, conj, equal, smallerEq, SparseMatrix }: {
+  divideScalar: any
+  sqrt: any
+  subtract: any
+  multiply: any
+  im: any
+  re: any
+  conj: any
+  equal: any
+  smallerEq: any
+  SparseMatrix: any
+}) => {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   const csSymperm = createCsSymperm({ conj, SparseMatrix })
 
   /**

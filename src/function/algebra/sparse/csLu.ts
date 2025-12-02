@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 
-import { factory, FactoryFunction } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.js'
 import { createCsSpsolve } from './csSpsolve.js'
 
 const name = 'csLu'
@@ -14,13 +14,25 @@ const dependencies = [
   'larger',
   'largerEq',
   'SparseMatrix'
-] as const
+]
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export const createCsLu: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }) => {
 =======
 export const createCsLu: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }) => {
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+export const createCsLu = /* #__PURE__ */ factory(name, dependencies, ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }: {
+  abs: any
+  divideScalar: any
+  multiply: any
+  subtract: any
+  larger: any
+  largerEq: any
+  SparseMatrix: any
+}) => {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   const csSpsolve = createCsSpsolve({ divideScalar, multiply, subtract })
 
   /**
@@ -102,7 +114,7 @@ export const createCsLu: FactoryFunction<typeof name, typeof dependencies> = /* 
       // apply column permutations if needed
       const col = q ? q[k] : k
       // solve triangular system, x = L\A(:,col)
-      const top = csSpsolve(L, m, col, xi, x, pinv, 1)
+      const top = csSpsolve(L, m, col, xi, x, pinv, 1 as any)
       // find pivot
       let ipiv = -1
       let a = -1

@@ -2,20 +2,20 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 import { csReach } from './csReach.js'
-import { factory, FactoryFunction } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.js'
 
 const name = 'csSpsolve'
-const dependencies = [
-  'divideScalar',
-  'multiply',
-  'subtract'
-] as const
+const dependencies = ['divideScalar', 'multiply', 'subtract']
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export const createCsSpsolve: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ divideScalar, multiply, subtract }) => {
 =======
 export const createCsSpsolve: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ divideScalar, multiply, subtract }) => {
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
+=======
+export const createCsSpsolve = /* #__PURE__ */ factory(name, dependencies, ({ divideScalar, multiply, subtract }: { divideScalar: any; multiply: any; subtract: any }) => {
+>>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * The function csSpsolve() computes the solution to G * x = bk, where bk is the
    * kth column of B. When lo is true, the function assumes G = L is lower triangular with the

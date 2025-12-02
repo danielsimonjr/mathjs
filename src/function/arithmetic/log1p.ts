@@ -1,6 +1,4 @@
-import { factory, type FactoryFunction } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/config.js'
+import { factory } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 import { log1p as _log1p } from '../../utils/number.js'
 
@@ -11,7 +9,7 @@ const dependencies = ['typed', 'config', 'divideScalar', 'log', 'Complex']
 const dependencies = ['typed', 'config', 'divideScalar', 'log', 'Complex'] as const
 >>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
-export const createLog1p: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, divideScalar, log, Complex }: { typed: TypedFunction; config: MathJsConfig; divideScalar: any; log: any; Complex: any }): any => {
+export const createLog1p = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, divideScalar, log, Complex }: { typed: any; config: any; divideScalar: any; log: any; Complex: any }) => {
   /**
    * Calculate the logarithm of a `value+1`.
    *

@@ -1,6 +1,6 @@
 import { factory } from '../../utils/factory.js'
 
-import { TypedFunction, Matrix } from '../../types.js';
+import { Matrix } from '../../types.js';
 
 const name = 'matrixFromFunction'
 const dependencies = ['typed', 'matrix', 'isZero']
@@ -11,11 +11,11 @@ export const createMatrixFromFunction = /* #__PURE__ */ factory(name, dependenci
     matrix,
     isZero
   }: {
-    typed: TypedFunction;
-    matrix: MatrixConstructor;
+    typed: any;
+    matrix: (format?: string, datatype?: string) => Matrix;
     isZero: (value: any) => boolean;
   }
-): TypedFunction => {
+): any => {
   /**
    * Create a matrix by evaluating a generating function at each index.
    * The simplest overload returns a multi-dimensional array as long as `size`
@@ -79,27 +79,27 @@ export const createMatrixFromFunction = /* #__PURE__ */ factory(name, dependenci
    * @return {Array | Matrix} Returns the created matrix
    */
   return typed(name, {
-    'Array | Matrix, function, string, string': function (size: any[] | Matrix, fn: function, format: string, datatype: string) {
+    'Array | Matrix, function, string, string': function (size: any[] | Matrix, fn: Function, format: string, datatype: string) {
       return _create(size, fn, format, datatype)
     },
-    'Array | Matrix, function, string': function (size: any[] | Matrix, fn: function, format: string) {
+    'Array | Matrix, function, string': function (size: any[] | Matrix, fn: Function, format: string) {
       return _create(size, fn, format, undefined)
     },
-    'Matrix, function': function(size: Matrix, fn: function): Matrix {
+    'Matrix, function': function(size: Matrix, fn: Function): Matrix {
       return _create(size, fn, 'dense', undefined)
     },
-    'Array, function': function(size: any[], fn: function): any[] {
+    'Array, function': function(size: any[], fn: Function): any[] {
       return _create(size, fn, 'dense', undefined).toArray()
     },
-    'Array | Matrix, string, function': function (size: any[] | Matrix, format: string, fn: function) {
+    'Array | Matrix, string, function': function (size: any[] | Matrix, format: string, fn: Function) {
       return _create(size, fn, format, undefined)
     },
-    'Array | Matrix, string, string, function': function (size: any[] | Matrix, format: string, datatype: string, fn: function) {
+    'Array | Matrix, string, string, function': function (size: any[] | Matrix, format: string, datatype: string, fn: Function) {
       return _create(size, fn, format, datatype)
     }
   });
 
-  function _create (size, fn, format, datatype) {
+  function _create (size: any, fn: Function, format: string, datatype: string | undefined): Matrix {
     let m
     if (datatype !== undefined) {
       m = matrix(format, datatype)
@@ -108,7 +108,7 @@ export const createMatrixFromFunction = /* #__PURE__ */ factory(name, dependenci
     }
 
     m.resize(size)
-    m.forEach(function (_, index) {
+    m.forEach(function (_: any, index: number[]) {
       const val = fn(index)
       if (isZero(val)) return
       m.set(index, val)
