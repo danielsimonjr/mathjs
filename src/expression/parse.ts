@@ -65,9 +65,7 @@ interface ParseOptions {
 }
 
 export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
-=======
 export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   typed,
   numeric,
   config,

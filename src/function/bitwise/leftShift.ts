@@ -11,9 +11,7 @@ import { leftShiftNumber } from '../../plain/number/index.js'
 import { leftShiftBigNumber } from '../../utils/bignumber/bitwise.js'
 import type { MathJsChain } from '../../types.js'
 import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-=======
 import type { BigNumber } from '../../type/bignumber/BigNumber.js'
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
 const name = 'leftShift'
 const dependencies = [

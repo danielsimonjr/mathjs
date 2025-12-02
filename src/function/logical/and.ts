@@ -76,9 +76,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
           return zeros(x.size(), x.storage())
         }
         return matAlgo11xS0s(x, y, self, false)
-=======
         return matAlgo11xS0s(x, y, self, false)
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       }),
 
       'DenseMatrix, any': typed.referToSelf((self: any) => (x: any, y: any): any => {
@@ -88,9 +86,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
           return zeros(x.size(), x.storage())
         }
         return matAlgo14xDs(x, y, self, false)
-=======
         return matAlgo14xDs(x, y, self, false)
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       }),
 
       'any, SparseMatrix': typed.referToSelf((self: any) => (x: any, y: any): any => {
@@ -100,9 +96,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
           return zeros(y.size(), y.storage())
         }
         return matAlgo11xS0s(y, x, self, true)
-=======
         return matAlgo11xS0s(y, x, self, true)
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       }),
 
       'any, DenseMatrix': typed.referToSelf((self: any) => (x: any, y: any): any => {
@@ -112,9 +106,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
           return zeros(y.size(), y.storage())
         }
         return matAlgo14xDs(y, x, self, true)
-=======
         return matAlgo14xDs(y, x, self, true)
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       }),
 
       'Array, any': typed.referToSelf((self: any) => (x: any[], y: any): any => {

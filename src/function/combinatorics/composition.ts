@@ -51,9 +51,7 @@ export const createComposition = /* #__PURE__ */ factory(name, dependencies, ({
       }
 
       return combinations(addScalar(n, -1), addScalar(k, -1))
-=======
       return combinations(addScalar(n, -1), addScalar(k, -1))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
     }
   })
 })

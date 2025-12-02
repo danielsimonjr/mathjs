@@ -5,9 +5,7 @@ const name = 'complex'
 const dependencies = ['typed', 'Complex']
 
 export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex }) => {
-=======
 export const createComplex = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex }: { typed: any; Complex: any }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Create a complex value or convert a value to a complex value.
    *

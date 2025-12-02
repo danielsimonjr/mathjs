@@ -17,7 +17,6 @@ const dependencies = [
 ]
 
 export const createCsLu: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }) => {
-=======
 export const createCsLu = /* #__PURE__ */ factory(name, dependencies, ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }: {
   abs: any
   divideScalar: any
@@ -27,7 +26,6 @@ export const createCsLu = /* #__PURE__ */ factory(name, dependencies, ({ abs, di
   largerEq: any
   SparseMatrix: any
 }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   const csSpsolve = createCsSpsolve({ divideScalar, multiply, subtract })
 
   /**

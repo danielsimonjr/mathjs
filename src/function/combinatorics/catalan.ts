@@ -48,9 +48,7 @@ export const createCatalan = /* #__PURE__ */ factory(name, dependencies, ({
       }
 
       return divideScalar(combinations(multiplyScalar(n, 2), n), addScalar(n, 1))
-=======
       return divideScalar(combinations(multiplyScalar(n, 2), n), addScalar(n, 1))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
     }
   })
 })

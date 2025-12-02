@@ -33,7 +33,6 @@ export const createCsChol: FactoryFunction<typeof name, typeof dependencies> = /
     SparseMatrix
   }
 ) => {
-=======
 export const createCsChol = /* #__PURE__ */ factory(name, dependencies, ({ divideScalar, sqrt, subtract, multiply, im, re, conj, equal, smallerEq, SparseMatrix }: {
   divideScalar: any
   sqrt: any
@@ -46,7 +45,6 @@ export const createCsChol = /* #__PURE__ */ factory(name, dependencies, ({ divid
   smallerEq: any
   SparseMatrix: any
 }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   const csSymperm = createCsSymperm({ conj, SparseMatrix })
 
   /**

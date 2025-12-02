@@ -117,9 +117,7 @@ export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ type
       Ss: matAlgo11xS0s,
       sS: false as any
     }) as any)
-=======
     })
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   )
 
   /**
@@ -164,9 +162,7 @@ export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ type
 })
 
 export const createNthRootNumber: FactoryFunction<'nthRoot', ['typed']> = /* #__PURE__ */ factory(name, ['typed'] as const, ({ typed }: { typed: TypedFunction }): any => {
-=======
 export const createNthRootNumber = /* #__PURE__ */ factory(name, ['typed'], ({ typed }: { typed: any }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   return typed(name, {
     number: nthRootNumber,
     'number, number': nthRootNumber

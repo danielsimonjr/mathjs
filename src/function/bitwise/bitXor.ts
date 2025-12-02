@@ -7,9 +7,7 @@ import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgori
 import { bitXorNumber } from '../../plain/number/index.js'
 import type { MathJsChain } from '../../types.js'
 import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-=======
 import type { BigNumber } from '../../type/bignumber/BigNumber.js'
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
 const name = 'bitXor'
 const dependencies = [

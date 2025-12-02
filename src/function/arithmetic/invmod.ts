@@ -1,9 +1,7 @@
 import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/create.js'
-=======
 import type { MathJsConfig } from '../../core/config.js'
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
 type Dependencies = 'typed' | 'config' | 'BigNumber' | 'xgcd' | 'equal' | 'smaller' | 'mod' | 'add' | 'isInteger'
 

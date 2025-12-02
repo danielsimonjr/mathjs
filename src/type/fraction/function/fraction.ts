@@ -5,9 +5,7 @@ const name = 'fraction'
 const dependencies = ['typed', 'Fraction']
 
 export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Fraction }): TypedFunction => {
-=======
 export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Fraction }: { typed: any, Fraction: any }): any => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Create a fraction or convert a value to a fraction.
    *

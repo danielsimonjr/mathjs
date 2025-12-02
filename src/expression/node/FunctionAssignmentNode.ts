@@ -159,9 +159,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): FunctionAssignmentNode {
       const expr = this._ifNode(callback(this.expr, 'expr', this))
-=======
       const expr = (this as any)._ifNode(callback(this.expr, 'expr', this as any))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
       return new FunctionAssignmentNode(this.name, this.params.slice(0), expr)
     }

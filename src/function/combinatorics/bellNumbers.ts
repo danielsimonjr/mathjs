@@ -41,9 +41,7 @@ export const createBellNumbers = /* #__PURE__ */ factory(name, dependencies, ({
       let result: number | any = 0
       for (let i = 0; i <= n; i++) {
         result = addScalar(result, stirlingS2(n, i))
-=======
         result = addScalar(result, stirlingS2(n, i))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       }
 
       return result

@@ -5,9 +5,7 @@ import { factory } from '../../utils/factory.js'
 
 const name = 'Complex'
 const dependencies = [] as const
-=======
 const dependencies: string[] = []
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
 // Cast Complex to any for extending with custom properties
 const ComplexClass = Complex as any

@@ -221,9 +221,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({
       a = _objectToArray(a)
     }
     return _isNumber(a[0]) && _isNumber(a[1])
-=======
     return _isNumber(a[0]) && _isNumber(a[1])
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
   function _3d (a: any): boolean {
@@ -232,9 +230,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({
       a = _objectToArray(a)
     }
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2])
-=======
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2])
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
   function _containsOnlyNumbers (a: any): boolean {
@@ -251,10 +247,8 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({
     }
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2]) &&
       _isNumber(a[3]) && _isNumber(a[4]) && _isNumber(a[5])
-=======
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2]) &&
       _isNumber(a[3]) && _isNumber(a[4]) && _isNumber(a[5])
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
   function _objectToArray (o: Record<string, any>): any[] {

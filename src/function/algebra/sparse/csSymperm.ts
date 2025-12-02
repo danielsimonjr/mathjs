@@ -8,9 +8,7 @@ const name = 'csSymperm'
 const dependencies = ['conj', 'SparseMatrix']
 
 export const createCsSymperm: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ conj, SparseMatrix }) => {
-=======
 export const createCsSymperm = /* #__PURE__ */ factory(name, dependencies, ({ conj, SparseMatrix }: { conj: any; SparseMatrix: any }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Computes the symmetric permutation of matrix A accessing only
    * the upper triangular part of A.

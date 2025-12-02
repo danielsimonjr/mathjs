@@ -144,9 +144,7 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
       }
       if (typed.isTypedFunction(fn)) {
         const sigObject = typed.resolve(fn, args)
-=======
         const sigObject = (typed as any).resolve(fn, args)
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
         // We want to detect if a rest parameter has matched across the
         // value in the chain and the current arguments of this call.
         // That is the case if and only if the matching signature has

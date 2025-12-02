@@ -78,12 +78,10 @@ export const createKldivergence = /* #__PURE__ */ factory(name, dependencies, ({
     const pnorm = divide(p, sum(p))
 
     const result = sum(multiply(qnorm, map(dotDivide(qnorm, pnorm), (x: any) => log(x))))
-=======
     const qnorm = divide(q, sum(q))
     const pnorm = divide(p, sum(p))
 
     const result = sum(multiply(qnorm, map(dotDivide(qnorm, pnorm), (x: any) => log(x))))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
     if (isNumeric(result)) {
       return result
     } else {

@@ -64,9 +64,7 @@ interface ODESolution<T = any> {
 type ForcingFunction = (t: MathNumericType, y: MathNumericType | MathArray) => MathNumericType | MathArray
 
 export const createSolveODE = /* #__PURE__ */ factory(name, dependencies, (
-=======
 export const createSolveODE = /* #__PURE__ */ factory(name, dependencies, (
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   {
     typed,
     add,

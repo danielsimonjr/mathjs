@@ -8,9 +8,7 @@ const name = 'csCounts'
 const dependencies = ['transpose']
 
 export const createCsCounts: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ transpose }) => {
-=======
 export const createCsCounts = /* #__PURE__ */ factory(name, dependencies, ({ transpose }: { transpose: any }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Computes the column counts using the upper triangular part of A.
    * It transposes A internally, none of the input parameters are modified.

@@ -1,8 +1,6 @@
 import { flatten } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
 import type { MathArray, Matrix, MathNumericType } from '../../types.js'
-=======
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
 const name = 'setSymDifference'
 const dependencies = ['typed', 'size', 'concat', 'subset', 'setDifference', 'Index']

@@ -16,9 +16,7 @@ const dependencies = [
 ]
 
 export const createCsSqr: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ add, multiply, transpose }) => {
-=======
 export const createCsSqr = /* #__PURE__ */ factory(name, dependencies, ({ add, multiply, transpose }: { add: any; multiply: any; transpose: any }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   const csAmd = createCsAmd({ add, multiply, transpose })
   const csCounts = createCsCounts({ transpose })
 

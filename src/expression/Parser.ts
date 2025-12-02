@@ -6,9 +6,7 @@ const name = 'Parser'
 const dependencies = ['evaluate', 'parse'] as const
 
 export const createParserClass = /* #__PURE__ */ factory(name, dependencies, ({ evaluate, parse }: {
-=======
 export const createParserClass = /* #__PURE__ */ factory(name, [...dependencies], ({ evaluate, parse }: {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   evaluate: any
   parse: any
 }) => {

@@ -135,9 +135,7 @@ export const createQuantileSeq = /* #__PURE__ */ factory(name, dependencies, ({ 
     const probArr: any[] = []
     for (let i = 0; i < probOrNArr.length; ++i) {
       probArr.push(_quantileSeq(dataArr, probOrNArr[i], sorted))
-=======
       probArr.push(_quantileSeq(dataArr, probOrNArr[i], sorted))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
     }
     return probArr
   }

@@ -13,9 +13,7 @@ const dependencies = [
 type OperatorContext = Record<string, Record<string, boolean>>
 
 export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ FunctionNode, OperatorNode, SymbolNode }: {
-=======
 export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ FunctionNode, OperatorNode, SymbolNode }: {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   FunctionNode: any
   OperatorNode: any
   SymbolNode: any

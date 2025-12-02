@@ -45,8 +45,6 @@ export const createFactorial = /* #__PURE__ */ factory(name, dependencies, ({ ty
     },
 
     'Array | Matrix': typed.referToSelf((self: TypedFunction) => (n: any): any => deepMap(n, self))
-=======
     'Array | Matrix': typed.referToSelf((self: any) => (n: any) => deepMap(n, self))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   })
 })

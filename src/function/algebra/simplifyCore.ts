@@ -161,9 +161,7 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
       } else {
         return new FunctionNode(
           _simplifyCore(node.fn as any), node.args.map((n: MathNode) => _simplifyCore(n, options)))
-=======
           _simplifyCore(node.fn as any), node.args!.map((n: ExtendedNode) => _simplifyCore(n, options)))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       }
     }
     if (isOperatorNode(node) && node.isUnary()) {
