@@ -9,7 +9,7 @@ Math.js is an extensive math library for JavaScript and Node.js featuring:
 - Large set of built-in functions and constants
 - Support for multiple data types: numbers, big numbers, complex numbers, fractions, units, matrices
 - ES modules codebase requiring all files to have real `.js` extensions
-- Currently undergoing TypeScript + WASM + parallel computing refactoring (9% complete)
+- Currently undergoing TypeScript + WASM + parallel computing refactoring (53% source coverage)
 
 ## Build Commands
 
@@ -157,10 +157,19 @@ tools/                       # Build and development tools
 
 The codebase is being gradually converted to TypeScript with WASM support:
 
-- **Status**: 61/673 files converted (9%)
+- **Source Status**: 685 TS / 596 JS (53% converted)
+- **Test Status**: 1 TS / 343 JS (0.3% converted)
+- **TypeScript Errors**: 1,330 remaining across 230+ files
 - **Goal**: Type safety, 2-25x performance improvements, multi-core support
 - **Strategy**: Incremental conversion, 100% backward compatible
-- **See**: `README_TYPESCRIPT_WASM.md`, `REFACTORING_PLAN.md`, `REFACTORING_TASKS.md`
+- **See**: `README_TYPESCRIPT_WASM.md`, `REFACTORING_PLAN.md`, `docs/refactoring/REFACTORING_STATUS_REPORT.md`
+
+**Top Error Categories** (as of Dec 2025):
+- TS2339 (361): Property does not exist on type
+- TS7006 (267): Parameter implicitly has 'any' type
+- TS2322 (73): Type assignment errors
+- TS7053 (63): Element implicitly has 'any' type
+- TS2305 (60): Module has no exported member
 
 **Three-tier performance system**:
 1. JavaScript fallback (always available)
