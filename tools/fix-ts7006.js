@@ -2,20 +2,28 @@ import fs from 'fs';
 import { execSync } from 'child_process';
 
 // Get all TS7006 errors
-const errors = execSync('npx tsc --noEmit 2>&1', { encoding: 'utf-8' });
+let errors = '';
+try {
+  errors = execSync('npx tsc --noEmit 2>&1', { encoding: 'utf-8' });
+} catch (e) {
+  errors = e.stdout || '';
+}
 const ts7006Errors = errors.split('\n').filter(line => line.includes('error TS7006'));
 
 // Parse errors to get file locations and parameter names
 const errorMap = new Map();
 
 ts7006Errors.forEach(error => {
-  const match = error.match(/^(.+?)\((\d+),(\d+)\): error TS7006: Parameter '(.+?)' implicitly has an 'any' type\.$/);
+  const match = error.match(/^(.+?)\((\d+),(\d+)\): error TS7006: Parameter '(.+?)' implicitly has an 'any' type\./);
   if (match) {
     const [, file, line, col, paramName] = match;
-    if (!errorMap.has(file)) {
-      errorMap.set(file, []);
+    const normalizedFile = file.replace(/\\/g, '/');
+    if (!errorMap.has(normalizedFile)) {
+      errorMap.set(normalizedFile, []);
     }
-    errorMap.get(file).push({ line: parseInt(line), col: parseInt(col), paramName });
+    errorMap.get(normalizedFile).push({ line: parseInt(line), col: parseInt(col), paramName });
+  } else {
+    console.log(`Failed to parse: ${error}`);
   }
 });
 

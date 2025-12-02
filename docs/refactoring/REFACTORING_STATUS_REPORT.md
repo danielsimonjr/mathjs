@@ -1,6 +1,6 @@
 ================================================================================
 MATH.JS TYPESCRIPT CONVERSION STATUS REPORT
-Generated: 2025-11-30T16:29:02.818Z
+Generated: 2025-12-01T00:34:19.865Z
 ================================================================================
 
 SUMMARY STATISTICS:
@@ -24,9 +24,9 @@ Overall Totals:
   Overall Coverage:   42.2%
 
 TypeScript Compilation:
-  Total Errors:        1137
-  Files with Errors:   234
-  Error-Free TS Files: 452
+  Total Errors:        0
+  Files with Errors:   0
+  Error-Free TS Files: 686
 
 ================================================================================
 
@@ -44,24 +44,24 @@ src/
 │   ├── function/
 │   │   ├── 📄 config.js
 │   │   ├── ✅ config.ts
-│   │   ├── ⚠️  import.ts (4 errors)
+│   │   ├── ✅ import.ts
 │   │   ├── 📄 typed.js
-│   │   └── ⚠️  typed.ts (6 errors)
+│   │   └── ✅ typed.ts
 │   ├── 📄 config.js
 │   ├── ✅ config.ts
 │   ├── 📄 create.js
-│   └── ⚠️  create.ts (3 errors)
+│   └── ✅ create.ts
 ├── entry/
 │   ├── ✅ allFactoriesAny.ts
 │   ├── ✅ allFactoriesNumber.ts
-│   ├── ⚠️  configReadonly.ts (1 errors)
+│   ├── ✅ configReadonly.ts
 │   ├── ✅ mainAny.ts
 │   ├── ✅ mainNumber.ts
 │   └── ✅ typeChecks.ts
 ├── error/
-│   ├── ⚠️  ArgumentsError.ts (1 errors)
+│   ├── ✅ ArgumentsError.ts
 │   ├── ✅ DimensionError.ts
-│   └── ⚠️  IndexError.ts (1 errors)
+│   └── ✅ IndexError.ts
 ├── expression/
 │   ├── embeddedDocs/
 │   │   ├── constants/
@@ -608,47 +608,47 @@ src/
 │   │   └── ✅ parser.ts
 │   ├── node/
 │   │   ├── utils/
-│   │   │   ├── ⚠️  access.ts (3 errors)
-│   │   │   └── ⚠️  assign.ts (7 errors)
+│   │   │   ├── ✅ access.ts
+│   │   │   └── ✅ assign.ts
 │   │   ├── 📄 AccessorNode.js
-│   │   ├── ⚠️  AccessorNode.ts (6 errors)
+│   │   ├── ✅ AccessorNode.ts
 │   │   ├── 📄 ArrayNode.js
-│   │   ├── ⚠️  ArrayNode.ts (3 errors)
+│   │   ├── ✅ ArrayNode.ts
 │   │   ├── 📄 AssignmentNode.js
-│   │   ├── ⚠️  AssignmentNode.ts (12 errors)
+│   │   ├── ✅ AssignmentNode.ts
 │   │   ├── 📄 BlockNode.js
-│   │   ├── ⚠️  BlockNode.ts (3 errors)
+│   │   ├── ✅ BlockNode.ts
 │   │   ├── 📄 ConditionalNode.js
-│   │   ├── ⚠️  ConditionalNode.ts (7 errors)
+│   │   ├── ✅ ConditionalNode.ts
 │   │   ├── 📄 ConstantNode.js
-│   │   ├── ⚠️  ConstantNode.ts (2 errors)
+│   │   ├── ✅ ConstantNode.ts
 │   │   ├── 📄 FunctionAssignmentNode.js
-│   │   ├── ⚠️  FunctionAssignmentNode.ts (3 errors)
+│   │   ├── ✅ FunctionAssignmentNode.ts
 │   │   ├── 📄 FunctionNode.js
-│   │   ├── ⚠️  FunctionNode.ts (16 errors)
+│   │   ├── ✅ FunctionNode.ts
 │   │   ├── 📄 IndexNode.js
-│   │   ├── ⚠️  IndexNode.ts (3 errors)
+│   │   ├── ✅ IndexNode.ts
 │   │   ├── 📄 Node.js
-│   │   ├── ⚠️  Node.ts (2 errors)
+│   │   ├── ✅ Node.ts
 │   │   ├── 📄 ObjectNode.js
-│   │   ├── ⚠️  ObjectNode.ts (3 errors)
+│   │   ├── ✅ ObjectNode.ts
 │   │   ├── 📄 OperatorNode.js
-│   │   ├── ⚠️  OperatorNode.ts (5 errors)
+│   │   ├── ✅ OperatorNode.ts
 │   │   ├── 📄 ParenthesisNode.js
-│   │   ├── ⚠️  ParenthesisNode.ts (3 errors)
+│   │   ├── ✅ ParenthesisNode.ts
 │   │   ├── 📄 RangeNode.js
-│   │   ├── ⚠️  RangeNode.ts (5 errors)
+│   │   ├── ✅ RangeNode.ts
 │   │   ├── 📄 RelationalNode.js
-│   │   ├── ⚠️  RelationalNode.ts (4 errors)
+│   │   ├── ✅ RelationalNode.ts
 │   │   ├── 📄 SymbolNode.js
-│   │   └── ⚠️  SymbolNode.ts (1 errors)
+│   │   └── ✅ SymbolNode.ts
 │   ├── transform/
 │   │   ├── utils/
-│   │   │   ├── ⚠️  compileInlineExpression.ts (7 errors)
-│   │   │   ├── ⚠️  dimToZeroBase.ts (3 errors)
-│   │   │   ├── ⚠️  errorTransform.ts (2 errors)
-│   │   │   ├── ⚠️  lastDimToZeroBase.ts (1 errors)
-│   │   │   └── ⚠️  transformCallback.ts (9 errors)
+│   │   │   ├── ✅ compileInlineExpression.ts
+│   │   │   ├── ✅ dimToZeroBase.ts
+│   │   │   ├── ✅ errorTransform.ts
+│   │   │   ├── ✅ lastDimToZeroBase.ts
+│   │   │   └── ✅ transformCallback.ts
 │   │   ├── 📄 and.transform.js
 │   │   ├── ✅ and.transform.ts
 │   │   ├── 📄 bitAnd.transform.js
@@ -658,21 +658,21 @@ src/
 │   │   ├── 📄 column.transform.js
 │   │   ├── ✅ column.transform.ts
 │   │   ├── 📄 concat.transform.js
-│   │   ├── ⚠️  concat.transform.ts (2 errors)
+│   │   ├── ✅ concat.transform.ts
 │   │   ├── 📄 cumsum.transform.js
-│   │   ├── ⚠️  cumsum.transform.ts (1 errors)
+│   │   ├── ✅ cumsum.transform.ts
 │   │   ├── 📄 diff.transform.js
 │   │   ├── ✅ diff.transform.ts
 │   │   ├── 📄 filter.transform.js
-│   │   ├── ⚠️  filter.transform.ts (4 errors)
+│   │   ├── ✅ filter.transform.ts
 │   │   ├── 📄 forEach.transform.js
-│   │   ├── ⚠️  forEach.transform.ts (4 errors)
+│   │   ├── ✅ forEach.transform.ts
 │   │   ├── 📄 index.transform.js
-│   │   ├── ⚠️  index.transform.ts (2 errors)
+│   │   ├── ✅ index.transform.ts
 │   │   ├── 📄 map.transform.js
-│   │   ├── ⚠️  map.transform.ts (4 errors)
+│   │   ├── ✅ map.transform.ts
 │   │   ├── 📄 mapSlices.transform.js
-│   │   ├── ⚠️  mapSlices.transform.ts (1 errors)
+│   │   ├── ✅ mapSlices.transform.ts
 │   │   ├── 📄 max.transform.js
 │   │   ├── ✅ max.transform.ts
 │   │   ├── 📄 mean.transform.js
@@ -694,7 +694,7 @@ src/
 │   │   ├── 📄 std.transform.js
 │   │   ├── ✅ std.transform.ts
 │   │   ├── 📄 subset.transform.js
-│   │   ├── ⚠️  subset.transform.ts (1 errors)
+│   │   ├── ✅ subset.transform.ts
 │   │   ├── 📄 sum.transform.js
 │   │   ├── ✅ sum.transform.ts
 │   │   ├── 📄 variance.transform.js
@@ -702,11 +702,11 @@ src/
 │   ├── 📄 Help.js
 │   ├── ✅ Help.ts
 │   ├── ✅ keywords.ts
-│   ├── ⚠️  operators.ts (16 errors)
+│   ├── ✅ operators.ts
 │   ├── 📄 parse.js
-│   ├── ⚠️  parse.ts (35 errors)
+│   ├── ✅ parse.ts
 │   ├── 📄 Parser.js
-│   ├── ⚠️  Parser.ts (1 errors)
+│   ├── ✅ Parser.ts
 │   └── ✅ types.ts
 ├── function/
 │   ├── algebra/
@@ -718,33 +718,33 @@ src/
 │   │   │   ├── 📄 schur.js
 │   │   │   ├── ✅ schur.ts
 │   │   │   ├── 📄 slu.js
-│   │   │   └── ⚠️  slu.ts (2 errors)
+│   │   │   └── ✅ slu.ts
 │   │   ├── simplify/
 │   │   │   ├── 📄 util.js
-│   │   │   ├── ⚠️  util.ts (4 errors)
+│   │   │   ├── ✅ util.ts
 │   │   │   ├── 📄 wildcards.js
-│   │   │   └── ⚠️  wildcards.ts (3 errors)
+│   │   │   └── ✅ wildcards.ts
 │   │   ├── solver/
 │   │   │   ├── utils/
 │   │   │   │   ├── 📄 solveValidation.js
-│   │   │   │   └── ⚠️  solveValidation.ts (8 errors)
+│   │   │   │   └── ✅ solveValidation.ts
 │   │   │   ├── 📄 lsolve.js
 │   │   │   ├── ✅ lsolve.ts
 │   │   │   ├── 📄 lsolveAll.js
-│   │   │   ├── ⚠️  lsolveAll.ts (1 errors)
+│   │   │   ├── ✅ lsolveAll.ts
 │   │   │   ├── 📄 lusolve.js
 │   │   │   ├── ✅ lusolve.ts
 │   │   │   ├── 📄 usolve.js
 │   │   │   ├── ✅ usolve.ts
 │   │   │   ├── 📄 usolveAll.js
-│   │   │   └── ⚠️  usolveAll.ts (1 errors)
+│   │   │   └── ✅ usolveAll.ts
 │   │   ├── sparse/
 │   │   │   ├── 📄 csAmd.js
-│   │   │   ├── ⚠️  csAmd.ts (2 errors)
+│   │   │   ├── ✅ csAmd.ts
 │   │   │   ├── 📄 csChol.js
-│   │   │   ├── ⚠️  csChol.ts (3 errors)
+│   │   │   ├── ✅ csChol.ts
 │   │   │   ├── 📄 csCounts.js
-│   │   │   ├── ⚠️  csCounts.ts (2 errors)
+│   │   │   ├── ✅ csCounts.ts
 │   │   │   ├── 📄 csCumsum.js
 │   │   │   ├── ✅ csCumsum.ts
 │   │   │   ├── 📄 csDfs.js
@@ -762,29 +762,29 @@ src/
 │   │   │   ├── 📄 csLeaf.js
 │   │   │   ├── ✅ csLeaf.ts
 │   │   │   ├── 📄 csLu.js
-│   │   │   ├── ⚠️  csLu.ts (3 errors)
+│   │   │   ├── ✅ csLu.ts
 │   │   │   ├── 📄 csMark.js
 │   │   │   ├── ✅ csMark.ts
 │   │   │   ├── 📄 csMarked.js
 │   │   │   ├── ✅ csMarked.ts
 │   │   │   ├── 📄 csPermute.js
-│   │   │   ├── ⚠️  csPermute.ts (1 errors)
+│   │   │   ├── ✅ csPermute.ts
 │   │   │   ├── 📄 csPost.js
 │   │   │   ├── ✅ csPost.ts
 │   │   │   ├── 📄 csReach.js
 │   │   │   ├── ✅ csReach.ts
 │   │   │   ├── 📄 csSpsolve.js
-│   │   │   ├── ⚠️  csSpsolve.ts (2 errors)
+│   │   │   ├── ✅ csSpsolve.ts
 │   │   │   ├── 📄 csSqr.js
-│   │   │   ├── ⚠️  csSqr.ts (4 errors)
+│   │   │   ├── ✅ csSqr.ts
 │   │   │   ├── 📄 csSymperm.js
-│   │   │   ├── ⚠️  csSymperm.ts (3 errors)
+│   │   │   ├── ✅ csSymperm.ts
 │   │   │   ├── 📄 csTdfs.js
 │   │   │   ├── ✅ csTdfs.ts
 │   │   │   ├── 📄 csUnflip.js
 │   │   │   ├── ✅ csUnflip.ts
 │   │   ├── 📄 derivative.js
-│   │   ├── ⚠️  derivative.ts (8 errors)
+│   │   ├── ✅ derivative.ts
 │   │   ├── 📄 leafCount.js
 │   │   ├── ✅ leafCount.ts
 │   │   ├── 📄 lyap.js
@@ -792,36 +792,36 @@ src/
 │   │   ├── 📄 polynomialRoot.js
 │   │   ├── ✅ polynomialRoot.ts
 │   │   ├── 📄 rationalize.js
-│   │   ├── ⚠️  rationalize.ts (4 errors)
+│   │   ├── ✅ rationalize.ts
 │   │   ├── 📄 resolve.js
-│   │   ├── ⚠️  resolve.ts (7 errors)
+│   │   ├── ✅ resolve.ts
 │   │   ├── 📄 simplify.js
-│   │   ├── ⚠️  simplify.ts (11 errors)
+│   │   ├── ✅ simplify.ts
 │   │   ├── 📄 simplifyConstant.js
-│   │   ├── ⚠️  simplifyConstant.ts (28 errors)
+│   │   ├── ✅ simplifyConstant.ts
 │   │   ├── 📄 simplifyCore.js
-│   │   ├── ⚠️  simplifyCore.ts (65 errors)
+│   │   ├── ✅ simplifyCore.ts
 │   │   ├── 📄 sylvester.js
 │   │   ├── ✅ sylvester.ts
 │   │   ├── 📄 symbolicEqual.js
-│   │   └── ⚠️  symbolicEqual.ts (1 errors)
+│   │   └── ✅ symbolicEqual.ts
 │   ├── arithmetic/
 │   │   ├── 📄 abs.js
 │   │   ├── ✅ abs.ts
 │   │   ├── 📄 add.js
 │   │   ├── ✅ add.ts
 │   │   ├── 📄 addScalar.js
-│   │   ├── ⚠️  addScalar.ts (2 errors)
+│   │   ├── ✅ addScalar.ts
 │   │   ├── 📄 cbrt.js
-│   │   ├── ⚠️  cbrt.ts (1 errors)
+│   │   ├── ✅ cbrt.ts
 │   │   ├── 📄 ceil.js
-│   │   ├── ⚠️  ceil.ts (16 errors)
+│   │   ├── ✅ ceil.ts
 │   │   ├── 📄 cube.js
-│   │   ├── ⚠️  cube.ts (1 errors)
+│   │   ├── ✅ cube.ts
 │   │   ├── 📄 divide.js
-│   │   ├── ⚠️  divide.ts (3 errors)
+│   │   ├── ✅ divide.ts
 │   │   ├── 📄 divideScalar.js
-│   │   ├── ⚠️  divideScalar.ts (1 errors)
+│   │   ├── ✅ divideScalar.ts
 │   │   ├── 📄 dotDivide.js
 │   │   ├── ✅ dotDivide.ts
 │   │   ├── 📄 dotMultiply.js
@@ -833,82 +833,82 @@ src/
 │   │   ├── 📄 expm1.js
 │   │   ├── ✅ expm1.ts
 │   │   ├── 📄 fix.js
-│   │   ├── ⚠️  fix.ts (12 errors)
+│   │   ├── ✅ fix.ts
 │   │   ├── 📄 floor.js
-│   │   ├── ⚠️  floor.ts (16 errors)
+│   │   ├── ✅ floor.ts
 │   │   ├── 📄 gcd.js
-│   │   ├── ⚠️  gcd.ts (1 errors)
+│   │   ├── ✅ gcd.ts
 │   │   ├── 📄 hypot.js
 │   │   ├── ✅ hypot.ts
 │   │   ├── 📄 invmod.js
-│   │   ├── ⚠️  invmod.ts (1 errors)
+│   │   ├── ✅ invmod.ts
 │   │   ├── 📄 lcm.js
 │   │   ├── ✅ lcm.ts
 │   │   ├── 📄 log.js
-│   │   ├── ⚠️  log.ts (1 errors)
+│   │   ├── ✅ log.ts
 │   │   ├── 📄 log10.js
-│   │   ├── ⚠️  log10.ts (1 errors)
+│   │   ├── ✅ log10.ts
 │   │   ├── 📄 log1p.js
-│   │   ├── ⚠️  log1p.ts (2 errors)
+│   │   ├── ✅ log1p.ts
 │   │   ├── 📄 log2.js
-│   │   ├── ⚠️  log2.ts (1 errors)
+│   │   ├── ✅ log2.ts
 │   │   ├── 📄 mod.js
-│   │   ├── ⚠️  mod.ts (4 errors)
+│   │   ├── ✅ mod.ts
 │   │   ├── 📄 multiply.js
-│   │   ├── ⚠️  multiply.ts (4 errors)
+│   │   ├── ✅ multiply.ts
 │   │   ├── 📄 multiplyScalar.js
-│   │   ├── ⚠️  multiplyScalar.ts (1 errors)
+│   │   ├── ✅ multiplyScalar.ts
 │   │   ├── 📄 norm.js
-│   │   ├── ⚠️  norm.ts (1 errors)
+│   │   ├── ✅ norm.ts
 │   │   ├── 📄 nthRoot.js
-│   │   ├── ⚠️  nthRoot.ts (9 errors)
+│   │   ├── ✅ nthRoot.ts
 │   │   ├── 📄 nthRoots.js
 │   │   ├── ✅ nthRoots.ts
 │   │   ├── 📄 pow.js
-│   │   ├── ⚠️  pow.ts (2 errors)
+│   │   ├── ✅ pow.ts
 │   │   ├── 📄 round.js
-│   │   ├── ⚠️  round.ts (13 errors)
+│   │   ├── ✅ round.ts
 │   │   ├── 📄 sign.js
-│   │   ├── ⚠️  sign.ts (2 errors)
+│   │   ├── ✅ sign.ts
 │   │   ├── 📄 sqrt.js
 │   │   ├── ✅ sqrt.ts
 │   │   ├── 📄 square.js
-│   │   ├── ⚠️  square.ts (1 errors)
+│   │   ├── ✅ square.ts
 │   │   ├── 📄 subtract.js
 │   │   ├── ✅ subtract.ts
 │   │   ├── 📄 subtractScalar.js
-│   │   ├── ⚠️  subtractScalar.ts (2 errors)
+│   │   ├── ✅ subtractScalar.ts
 │   │   ├── 📄 unaryMinus.js
-│   │   ├── ⚠️  unaryMinus.ts (3 errors)
+│   │   ├── ✅ unaryMinus.ts
 │   │   ├── 📄 unaryPlus.js
-│   │   ├── ⚠️  unaryPlus.ts (3 errors)
+│   │   ├── ✅ unaryPlus.ts
 │   │   ├── 📄 xgcd.js
-│   │   └── ⚠️  xgcd.ts (1 errors)
+│   │   └── ✅ xgcd.ts
 │   ├── bitwise/
 │   │   ├── 📄 bitAnd.js
-│   │   ├── ⚠️  bitAnd.ts (2 errors)
+│   │   ├── ✅ bitAnd.ts
 │   │   ├── 📄 bitNot.js
-│   │   ├── ⚠️  bitNot.ts (3 errors)
+│   │   ├── ✅ bitNot.ts
 │   │   ├── 📄 bitOr.js
-│   │   ├── ⚠️  bitOr.ts (2 errors)
+│   │   ├── ✅ bitOr.ts
 │   │   ├── 📄 bitXor.js
-│   │   ├── ⚠️  bitXor.ts (2 errors)
+│   │   ├── ✅ bitXor.ts
 │   │   ├── 📄 leftShift.js
-│   │   ├── ⚠️  leftShift.ts (6 errors)
+│   │   ├── ✅ leftShift.ts
 │   │   ├── 📄 rightArithShift.js
-│   │   ├── ⚠️  rightArithShift.ts (6 errors)
+│   │   ├── ✅ rightArithShift.ts
 │   │   ├── 📄 rightLogShift.js
-│   │   ├── ⚠️  rightLogShift.ts (6 errors)
-│   │   └── ⚠️  useMatrixForArrayScalar.ts (13 errors)
+│   │   ├── ✅ rightLogShift.ts
+│   │   └── ✅ useMatrixForArrayScalar.ts
 │   ├── combinatorics/
 │   │   ├── 📄 bellNumbers.js
-│   │   ├── ⚠️  bellNumbers.ts (1 errors)
+│   │   ├── ✅ bellNumbers.ts
 │   │   ├── 📄 catalan.js
-│   │   ├── ⚠️  catalan.ts (4 errors)
+│   │   ├── ✅ catalan.ts
 │   │   ├── 📄 composition.js
-│   │   ├── ⚠️  composition.ts (1 errors)
+│   │   ├── ✅ composition.ts
 │   │   ├── 📄 stirlingS2.js
-│   │   └── ⚠️  stirlingS2.ts (12 errors)
+│   │   └── ✅ stirlingS2.ts
 │   ├── complex/
 │   │   ├── 📄 arg.js
 │   │   ├── ✅ arg.ts
@@ -920,29 +920,29 @@ src/
 │   │   └── ✅ re.ts
 │   ├── geometry/
 │   │   ├── 📄 distance.js
-│   │   ├── ⚠️  distance.ts (1 errors)
+│   │   ├── ✅ distance.ts
 │   │   ├── 📄 intersect.js
-│   │   └── ⚠️  intersect.ts (1 errors)
+│   │   └── ✅ intersect.ts
 │   ├── logical/
 │   │   ├── 📄 and.js
-│   │   ├── ⚠️  and.ts (7 errors)
+│   │   ├── ✅ and.ts
 │   │   ├── 📄 not.js
-│   │   ├── ⚠️  not.ts (1 errors)
-│   │   ├── ⚠️  nullish.ts (6 errors)
+│   │   ├── ✅ not.ts
+│   │   ├── ✅ nullish.ts
 │   │   ├── 📄 or.js
-│   │   ├── ⚠️  or.ts (1 errors)
+│   │   ├── ✅ or.ts
 │   │   ├── 📄 xor.js
-│   │   └── ⚠️  xor.ts (1 errors)
+│   │   └── ✅ xor.ts
 │   ├── matrix/
 │   │   ├── eigs/
 │   │   │   ├── 📄 complexEigs.js
-│   │   │   ├── ⚠️  complexEigs.ts (2 errors)
+│   │   │   ├── ✅ complexEigs.ts
 │   │   │   ├── 📄 realSymmetric.js
 │   │   │   └── ✅ realSymmetric.ts
 │   │   ├── 📄 column.js
-│   │   ├── ⚠️  column.ts (2 errors)
+│   │   ├── ✅ column.ts
 │   │   ├── 📄 concat.js
-│   │   ├── ⚠️  concat.ts (1 errors)
+│   │   ├── ✅ concat.ts
 │   │   ├── 📄 count.js
 │   │   ├── ✅ count.ts
 │   │   ├── 📄 cross.js
@@ -952,8 +952,8 @@ src/
 │   │   ├── 📄 det.js
 │   │   ├── ✅ det.ts
 │   │   ├── 📄 diag.js
-│   │   ├── ⚠️  diag.ts (1 errors)
-│   │   ├── ⚠️  diff.ts (18 errors)
+│   │   ├── ✅ diag.ts
+│   │   ├── ✅ diff.ts
 │   │   ├── 📄 dot.js
 │   │   ├── ✅ dot.ts
 │   │   ├── 📄 eigs.js
@@ -971,7 +971,7 @@ src/
 │   │   ├── 📄 getMatrixDataType.js
 │   │   ├── ✅ getMatrixDataType.ts
 │   │   ├── 📄 identity.js
-│   │   ├── ⚠️  identity.ts (2 errors)
+│   │   ├── ✅ identity.ts
 │   │   ├── 📄 ifft.js
 │   │   ├── ✅ ifft.ts
 │   │   ├── 📄 inv.js
@@ -979,15 +979,15 @@ src/
 │   │   ├── 📄 kron.js
 │   │   ├── ✅ kron.ts
 │   │   ├── 📄 map.js
-│   │   ├── ⚠️  map.ts (1 errors)
-│   │   ├── ⚠️  mapSlices.ts (6 errors)
+│   │   ├── ✅ map.ts
+│   │   ├── ✅ mapSlices.ts
 │   │   ├── 📄 matrixFromColumns.js
 │   │   ├── ✅ matrixFromColumns.ts
-│   │   ├── ⚠️  matrixFromFunction.ts (13 errors)
+│   │   ├── ✅ matrixFromFunction.ts
 │   │   ├── 📄 matrixFromRows.js
 │   │   ├── ✅ matrixFromRows.ts
 │   │   ├── 📄 ones.js
-│   │   ├── ⚠️  ones.ts (1 errors)
+│   │   ├── ✅ ones.ts
 │   │   ├── 📄 partitionSelect.js
 │   │   ├── ✅ partitionSelect.ts
 │   │   ├── 📄 pinv.js
@@ -997,68 +997,68 @@ src/
 │   │   ├── 📄 reshape.js
 │   │   ├── ✅ reshape.ts
 │   │   ├── 📄 resize.js
-│   │   ├── ⚠️  resize.ts (2 errors)
-│   │   ├── ⚠️  rotate.ts (2 errors)
-│   │   ├── ⚠️  rotationMatrix.ts (19 errors)
+│   │   ├── ✅ resize.ts
+│   │   ├── ✅ rotate.ts
+│   │   ├── ✅ rotationMatrix.ts
 │   │   ├── 📄 row.js
-│   │   ├── ⚠️  row.ts (2 errors)
+│   │   ├── ✅ row.ts
 │   │   ├── 📄 size.js
-│   │   ├── ⚠️  size.ts (1 errors)
-│   │   ├── ⚠️  sort.ts (8 errors)
+│   │   ├── ✅ size.ts
+│   │   ├── ✅ sort.ts
 │   │   ├── 📄 sqrtm.js
 │   │   ├── ✅ sqrtm.ts
 │   │   ├── 📄 squeeze.js
 │   │   ├── ✅ squeeze.ts
 │   │   ├── 📄 subset.js
-│   │   ├── ⚠️  subset.ts (5 errors)
+│   │   ├── ✅ subset.ts
 │   │   ├── 📄 trace.js
 │   │   ├── ✅ trace.ts
 │   │   ├── 📄 transpose.js
 │   │   ├── ✅ transpose.ts
 │   │   ├── 📄 zeros.js
-│   │   └── ⚠️  zeros.ts (1 errors)
+│   │   └── ✅ zeros.ts
 │   ├── numeric/
 │   │   ├── 📄 solveODE.js
-│   │   └── ⚠️  solveODE.ts (3 errors)
+│   │   └── ✅ solveODE.ts
 │   ├── probability/
 │   │   ├── util/
 │   │   │   ├── ✅ randomMatrix.ts
-│   │   │   └── ⚠️  seededRNG.ts (5 errors)
-│   │   ├── ⚠️  bernoulli.ts (8 errors)
+│   │   │   └── ✅ seededRNG.ts
+│   │   ├── ✅ bernoulli.ts
 │   │   ├── 📄 combinations.js
-│   │   ├── ⚠️  combinations.ts (1 errors)
+│   │   ├── ✅ combinations.ts
 │   │   ├── 📄 combinationsWithRep.js
-│   │   ├── ⚠️  combinationsWithRep.ts (1 errors)
+│   │   ├── ✅ combinationsWithRep.ts
 │   │   ├── 📄 factorial.js
-│   │   ├── ⚠️  factorial.ts (2 errors)
+│   │   ├── ✅ factorial.ts
 │   │   ├── 📄 gamma.js
-│   │   ├── ⚠️  gamma.ts (1 errors)
+│   │   ├── ✅ gamma.ts
 │   │   ├── 📄 kldivergence.js
-│   │   ├── ⚠️  kldivergence.ts (3 errors)
-│   │   ├── ⚠️  lgamma.ts (4 errors)
+│   │   ├── ✅ kldivergence.ts
+│   │   ├── ✅ lgamma.ts
 │   │   ├── 📄 multinomial.js
-│   │   ├── ⚠️  multinomial.ts (1 errors)
+│   │   ├── ✅ multinomial.ts
 │   │   ├── 📄 permutations.js
-│   │   ├── ⚠️  permutations.ts (1 errors)
+│   │   ├── ✅ permutations.ts
 │   │   ├── 📄 pickRandom.js
-│   │   ├── ⚠️  pickRandom.ts (3 errors)
+│   │   ├── ✅ pickRandom.ts
 │   │   ├── 📄 random.js
-│   │   ├── ⚠️  random.ts (2 errors)
+│   │   ├── ✅ random.ts
 │   │   ├── 📄 randomInt.js
-│   │   └── ⚠️  randomInt.ts (4 errors)
+│   │   └── ✅ randomInt.ts
 │   ├── relational/
 │   │   ├── 📄 compare.js
 │   │   ├── ✅ compare.ts
 │   │   ├── 📄 compareNatural.js
-│   │   ├── ⚠️  compareNatural.ts (7 errors)
+│   │   ├── ✅ compareNatural.ts
 │   │   ├── 📄 compareText.js
-│   │   ├── ⚠️  compareText.ts (2 errors)
-│   │   ├── ⚠️  compareUnits.ts (3 errors)
+│   │   ├── ✅ compareText.ts
+│   │   ├── ✅ compareUnits.ts
 │   │   ├── 📄 deepEqual.js
 │   │   ├── ✅ deepEqual.ts
 │   │   ├── 📄 equal.js
 │   │   ├── ✅ equal.ts
-│   │   ├── ⚠️  equalScalar.ts (7 errors)
+│   │   ├── ✅ equalScalar.ts
 │   │   ├── 📄 equalText.js
 │   │   ├── ✅ equalText.ts
 │   │   ├── 📄 larger.js
@@ -1075,7 +1075,7 @@ src/
 │   │   ├── 📄 setCartesian.js
 │   │   ├── ✅ setCartesian.ts
 │   │   ├── 📄 setDifference.js
-│   │   ├── ⚠️  setDifference.ts (1 errors)
+│   │   ├── ✅ setDifference.ts
 │   │   ├── 📄 setDistinct.js
 │   │   ├── ✅ setDistinct.ts
 │   │   ├── 📄 setIntersect.js
@@ -1087,49 +1087,49 @@ src/
 │   │   ├── 📄 setPowerset.js
 │   │   ├── ✅ setPowerset.ts
 │   │   ├── 📄 setSize.js
-│   │   ├── ⚠️  setSize.ts (1 errors)
+│   │   ├── ✅ setSize.ts
 │   │   ├── 📄 setSymDifference.js
-│   │   ├── ⚠️  setSymDifference.ts (4 errors)
+│   │   ├── ✅ setSymDifference.ts
 │   │   ├── 📄 setUnion.js
-│   │   └── ⚠️  setUnion.ts (4 errors)
+│   │   └── ✅ setUnion.ts
 │   ├── signal/
 │   │   ├── 📄 freqz.js
-│   │   ├── ⚠️  freqz.ts (1 errors)
+│   │   ├── ✅ freqz.ts
 │   │   ├── 📄 zpk2tf.js
-│   │   └── ⚠️  zpk2tf.ts (1 errors)
+│   │   └── ✅ zpk2tf.ts
 │   ├── special/
 │   │   ├── 📄 erf.js
-│   │   ├── ⚠️  erf.ts (1 errors)
+│   │   ├── ✅ erf.ts
 │   │   ├── 📄 zeta.js
 │   │   └── ✅ zeta.ts
 │   ├── statistics/
 │   │   ├── utils/
-│   │   │   └── ⚠️  improveErrorMessage.ts (3 errors)
-│   │   ├── ⚠️  corr.ts (10 errors)
+│   │   │   └── ✅ improveErrorMessage.ts
+│   │   ├── ✅ corr.ts
 │   │   ├── 📄 cumsum.js
 │   │   ├── ✅ cumsum.ts
 │   │   ├── 📄 mad.js
 │   │   ├── ✅ mad.ts
 │   │   ├── 📄 max.js
-│   │   ├── ⚠️  max.ts (3 errors)
+│   │   ├── ✅ max.ts
 │   │   ├── 📄 mean.js
-│   │   ├── ⚠️  mean.ts (2 errors)
+│   │   ├── ✅ mean.ts
 │   │   ├── 📄 median.js
 │   │   ├── ✅ median.ts
 │   │   ├── 📄 min.js
-│   │   ├── ⚠️  min.ts (3 errors)
+│   │   ├── ✅ min.ts
 │   │   ├── 📄 mode.js
 │   │   ├── ✅ mode.ts
 │   │   ├── 📄 prod.js
-│   │   ├── ⚠️  prod.ts (2 errors)
+│   │   ├── ✅ prod.ts
 │   │   ├── 📄 quantileSeq.js
-│   │   ├── ⚠️  quantileSeq.ts (5 errors)
+│   │   ├── ✅ quantileSeq.ts
 │   │   ├── 📄 std.js
-│   │   ├── ⚠️  std.ts (1 errors)
+│   │   ├── ✅ std.ts
 │   │   ├── 📄 sum.js
-│   │   ├── ⚠️  sum.ts (3 errors)
+│   │   ├── ✅ sum.ts
 │   │   ├── 📄 variance.js
-│   │   └── ⚠️  variance.ts (3 errors)
+│   │   └── ✅ variance.ts
 │   ├── string/
 │   │   ├── 📄 bin.js
 │   │   ├── ✅ bin.ts
@@ -1145,93 +1145,93 @@ src/
 │   │   ├── 📄 acos.js
 │   │   ├── ✅ acos.ts
 │   │   ├── 📄 acosh.js
-│   │   ├── ⚠️  acosh.ts (4 errors)
+│   │   ├── ✅ acosh.ts
 │   │   ├── 📄 acot.js
-│   │   ├── ⚠️  acot.ts (4 errors)
+│   │   ├── ✅ acot.ts
 │   │   ├── 📄 acoth.js
-│   │   ├── ⚠️  acoth.ts (4 errors)
+│   │   ├── ✅ acoth.ts
 │   │   ├── 📄 acsc.js
-│   │   ├── ⚠️  acsc.ts (4 errors)
+│   │   ├── ✅ acsc.ts
 │   │   ├── 📄 acsch.js
-│   │   ├── ⚠️  acsch.ts (4 errors)
+│   │   ├── ✅ acsch.ts
 │   │   ├── 📄 asec.js
-│   │   ├── ⚠️  asec.ts (4 errors)
+│   │   ├── ✅ asec.ts
 │   │   ├── 📄 asech.js
-│   │   ├── ⚠️  asech.ts (4 errors)
+│   │   ├── ✅ asech.ts
 │   │   ├── 📄 asin.js
 │   │   ├── ✅ asin.ts
 │   │   ├── 📄 asinh.js
-│   │   ├── ⚠️  asinh.ts (4 errors)
+│   │   ├── ✅ asinh.ts
 │   │   ├── 📄 atan.js
 │   │   ├── ✅ atan.ts
 │   │   ├── 📄 atan2.js
 │   │   ├── ✅ atan2.ts
 │   │   ├── 📄 atanh.js
-│   │   ├── ⚠️  atanh.ts (4 errors)
+│   │   ├── ✅ atanh.ts
 │   │   ├── 📄 cos.js
 │   │   ├── ✅ cos.ts
 │   │   ├── 📄 cosh.js
-│   │   ├── ⚠️  cosh.ts (2 errors)
+│   │   ├── ✅ cosh.ts
 │   │   ├── 📄 cot.js
-│   │   ├── ⚠️  cot.ts (4 errors)
+│   │   ├── ✅ cot.ts
 │   │   ├── 📄 coth.js
-│   │   ├── ⚠️  coth.ts (4 errors)
+│   │   ├── ✅ coth.ts
 │   │   ├── 📄 csc.js
-│   │   ├── ⚠️  csc.ts (4 errors)
+│   │   ├── ✅ csc.ts
 │   │   ├── 📄 csch.js
-│   │   ├── ⚠️  csch.ts (4 errors)
+│   │   ├── ✅ csch.ts
 │   │   ├── 📄 sec.js
-│   │   ├── ⚠️  sec.ts (4 errors)
+│   │   ├── ✅ sec.ts
 │   │   ├── 📄 sech.js
-│   │   ├── ⚠️  sech.ts (4 errors)
+│   │   ├── ✅ sech.ts
 │   │   ├── 📄 sin.js
 │   │   ├── ✅ sin.ts
 │   │   ├── 📄 sinh.js
-│   │   ├── ⚠️  sinh.ts (2 errors)
+│   │   ├── ✅ sinh.ts
 │   │   ├── 📄 tan.js
 │   │   ├── ✅ tan.ts
 │   │   ├── 📄 tanh.js
-│   │   ├── ⚠️  tanh.ts (2 errors)
-│   │   └── ⚠️  trigUnit.ts (2 errors)
+│   │   ├── ✅ tanh.ts
+│   │   └── ✅ trigUnit.ts
 │   ├── unit/
 │   │   ├── 📄 to.js
-│   │   ├── ⚠️  to.ts (1 errors)
-│   │   └── ⚠️  toBest.ts (2 errors)
+│   │   ├── ✅ to.ts
+│   │   └── ✅ toBest.ts
 │   └── utils/
 │       ├── 📄 clone.js
 │       ├── ✅ clone.ts
 │       ├── 📄 hasNumericValue.js
 │       ├── ✅ hasNumericValue.ts
-│       ├── ⚠️  isBounded.ts (6 errors)
+│       ├── ✅ isBounded.ts
 │       ├── ✅ isFinite.ts
 │       ├── 📄 isInteger.js
-│       ├── ⚠️  isInteger.ts (2 errors)
+│       ├── ✅ isInteger.ts
 │       ├── 📄 isNaN.js
-│       ├── ⚠️  isNaN.ts (2 errors)
+│       ├── ✅ isNaN.ts
 │       ├── 📄 isNegative.js
-│       ├── ⚠️  isNegative.ts (4 errors)
-│       ├── ⚠️  isNumeric.ts (2 errors)
+│       ├── ✅ isNegative.ts
+│       ├── ✅ isNumeric.ts
 │       ├── 📄 isPositive.js
-│       ├── ⚠️  isPositive.ts (4 errors)
+│       ├── ✅ isPositive.ts
 │       ├── 📄 isPrime.js
-│       ├── ⚠️  isPrime.ts (2 errors)
+│       ├── ✅ isPrime.ts
 │       ├── 📄 isZero.js
-│       ├── ⚠️  isZero.ts (4 errors)
+│       ├── ✅ isZero.ts
 │       ├── 📄 numeric.js
 │       ├── ✅ numeric.ts
 │       ├── 📄 typeOf.js
 │       └── ✅ typeOf.ts
 ├── json/
-│   ├── ⚠️  replacer.ts (4 errors)
-│   └── ⚠️  reviver.ts (2 errors)
+│   ├── ✅ replacer.ts
+│   └── ✅ reviver.ts
 ├── parallel/
-│   ├── ⚠️  matrix.worker.ts (3 errors)
+│   ├── ✅ matrix.worker.ts
 │   ├── ✅ ParallelMatrix.ts
-│   └── ⚠️  WorkerPool.ts (3 errors)
+│   └── ✅ WorkerPool.ts
 ├── plain/
 │   ├── bignumber/
-│   │   ├── ⚠️  arithmetic.ts (9 errors)
-│   │   └── ⚠️  index.ts (2 errors)
+│   │   ├── ✅ arithmetic.ts
+│   │   └── ✅ index.ts
 │   └── number/
 │       ├── 📄 arithmetic.js
 │       ├── ✅ arithmetic.ts
@@ -1257,30 +1257,30 @@ src/
 │   ├── bignumber/
 │   │   ├── function/
 │   │   │   ├── 📄 bignumber.js
-│   │   │   └── ⚠️  bignumber.ts (10 errors)
+│   │   │   └── ✅ bignumber.ts
 │   │   ├── 📄 BigNumber.js
-│   │   └── ⚠️  BigNumber.ts (14 errors)
+│   │   └── ✅ BigNumber.ts
 │   ├── chain/
 │   │   ├── function/
-│   │   │   └── ⚠️  chain.ts (1 errors)
+│   │   │   └── ✅ chain.ts
 │   │   ├── 📄 Chain.js
-│   │   └── ⚠️  Chain.ts (4 errors)
+│   │   └── ✅ Chain.ts
 │   ├── complex/
 │   │   ├── function/
 │   │   │   ├── 📄 complex.js
-│   │   │   └── ⚠️  complex.ts (2 errors)
+│   │   │   └── ✅ complex.ts
 │   │   ├── 📄 Complex.js
-│   │   └── ⚠️  Complex.ts (19 errors)
+│   │   └── ✅ Complex.ts
 │   ├── fraction/
 │   │   ├── function/
 │   │   │   ├── 📄 fraction.js
-│   │   │   └── ⚠️  fraction.ts (15 errors)
+│   │   │   └── ✅ fraction.ts
 │   │   ├── 📄 Fraction.js
-│   │   └── ⚠️  Fraction.ts (8 errors)
+│   │   └── ✅ Fraction.ts
 │   ├── matrix/
 │   │   ├── function/
 │   │   │   ├── 📄 index.js
-│   │   │   ├── ⚠️  index.ts (3 errors)
+│   │   │   ├── ✅ index.ts
 │   │   │   ├── 📄 matrix.js
 │   │   │   ├── ✅ matrix.ts
 │   │   │   ├── 📄 sparse.js
@@ -1325,31 +1325,31 @@ src/
 │   │   ├── 📄 ImmutableDenseMatrix.js
 │   │   ├── ✅ ImmutableDenseMatrix.ts
 │   │   ├── 📄 Matrix.js
-│   │   ├── ⚠️  Matrix.ts (2 errors)
+│   │   ├── ✅ Matrix.ts
 │   │   ├── 📄 MatrixIndex.js
 │   │   ├── ✅ MatrixIndex.ts
 │   │   ├── 📄 Range.js
-│   │   ├── ⚠️  Range.ts (2 errors)
+│   │   ├── ✅ Range.ts
 │   │   ├── 📄 Spa.js
 │   │   ├── ✅ Spa.ts
 │   │   ├── 📄 SparseMatrix.js
-│   │   └── ⚠️  SparseMatrix.ts (1 errors)
+│   │   └── ✅ SparseMatrix.ts
 │   ├── resultset/
-│   │   └── ⚠️  ResultSet.ts (7 errors)
+│   │   └── ✅ ResultSet.ts
 │   ├── unit/
 │   │   ├── function/
 │   │   │   ├── 📄 createUnit.js
-│   │   │   ├── ⚠️  createUnit.ts (1 errors)
+│   │   │   ├── ✅ createUnit.ts
 │   │   │   ├── 📄 splitUnit.js
-│   │   │   ├── ⚠️  splitUnit.ts (1 errors)
+│   │   │   ├── ✅ splitUnit.ts
 │   │   │   ├── 📄 unit.js
-│   │   │   └── ⚠️  unit.ts (1 errors)
-│   │   ├── ⚠️  physicalConstants.ts (5 errors)
+│   │   │   └── ✅ unit.ts
+│   │   ├── ✅ physicalConstants.ts
 │   │   ├── 📄 Unit.js
-│   │   └── ⚠️  Unit.ts (96 errors)
-│   ├── ⚠️  bigint.ts (4 errors)
+│   │   └── ✅ Unit.ts
+│   ├── ✅ bigint.ts
 │   ├── 📄 boolean.js
-│   ├── ⚠️  boolean.ts (1 errors)
+│   ├── ✅ boolean.ts
 │   ├── 📄 number.js
 │   ├── ✅ number.ts
 │   ├── 📄 string.js
@@ -1359,53 +1359,53 @@ src/
 ├── utils/
 │   ├── bignumber/
 │   │   ├── ✅ bitwise.ts
-│   │   ├── ⚠️  constants.ts (5 errors)
-│   │   ├── ⚠️  formatter.ts (13 errors)
-│   │   └── ⚠️  nearlyEqual.ts (2 errors)
+│   │   ├── ✅ constants.ts
+│   │   ├── ✅ formatter.ts
+│   │   └── ✅ nearlyEqual.ts
 │   ├── 📄 array.js
 │   ├── ✅ array.ts
-│   ├── ⚠️  bigint.ts (5 errors)
+│   ├── ✅ bigint.ts
 │   ├── ✅ collection.ts
-│   ├── ⚠️  complex.ts (4 errors)
+│   ├── ✅ complex.ts
 │   ├── ✅ customs.d.ts
-│   ├── ⚠️  customs.ts (12 errors)
-│   ├── ⚠️  emitter.ts (1 errors)
+│   ├── ✅ customs.ts
+│   ├── ✅ emitter.ts
 │   ├── 📄 factory.js
 │   ├── ✅ factory.ts
-│   ├── ⚠️  function.ts (11 errors)
+│   ├── ✅ function.ts
 │   ├── 📄 is.js
 │   ├── ✅ is.ts
 │   ├── ✅ latex.d.ts
-│   ├── ⚠️  latex.ts (6 errors)
+│   ├── ✅ latex.ts
 │   ├── ✅ log.ts
-│   ├── ⚠️  lruQueue.ts (3 errors)
-│   ├── ⚠️  map.ts (2 errors)
+│   ├── ✅ lruQueue.ts
+│   ├── ✅ map.ts
 │   ├── ✅ node.ts
 │   ├── ✅ noop.ts
 │   ├── 📄 number.js
 │   ├── ✅ number.ts
 │   ├── 📄 object.js
 │   ├── ✅ object.ts
-│   ├── ⚠️  optimizeCallback.ts (1 errors)
+│   ├── ✅ optimizeCallback.ts
 │   ├── ✅ print.ts
 │   ├── ✅ product.ts
 │   ├── ✅ scope.ts
-│   ├── ⚠️  snapshot.ts (1 errors)
+│   ├── ✅ snapshot.ts
 │   ├── ✅ string.d.ts
 │   ├── 📄 string.js
-│   ├── ⚠️  string.ts (5 errors)
-│   └── ⚠️  switch.ts (1 errors)
+│   ├── ✅ string.ts
+│   └── ✅ switch.ts
 ├── wasm/
 │   ├── ✅ MatrixWasmBridge.ts
-│   └── ⚠️  WasmLoader.ts (6 errors)
-├── ⚠️  constants.ts (1 errors)
+│   └── ✅ WasmLoader.ts
+├── ✅ constants.ts
 ├── ✅ defaultInstance.ts
 ├── ✅ factoriesAny.ts
-├── ⚠️  factoriesNumber.ts (5 errors)
+├── ✅ factoriesNumber.ts
 ├── ✅ header.ts
 ├── ✅ index.ts
 ├── ✅ number.ts
-├── ⚠️  types.ts (2 errors)
+├── ✅ types.ts
 └── ✅ version.ts
 
 test/
@@ -1823,36 +1823,6 @@ test/
 
 FILES WITH MOST ERRORS:
 -----------------------
- 1. src/type/unit/Unit.ts                                         96 errors
- 2. src/function/algebra/simplifyCore.ts                          65 errors
- 3. src/expression/parse.ts                                       35 errors
- 4. src/function/algebra/simplifyConstant.ts                      28 errors
- 5. src/function/matrix/rotationMatrix.ts                         19 errors
- 6. src/type/complex/Complex.ts                                   19 errors
- 7. src/function/matrix/diff.ts                                   18 errors
- 8. src/expression/node/FunctionNode.ts                           16 errors
- 9. src/expression/operators.ts                                   16 errors
-10. src/function/arithmetic/ceil.ts                               16 errors
-11. src/function/arithmetic/floor.ts                              16 errors
-12. src/type/fraction/function/fraction.ts                        15 errors
-13. src/type/bignumber/BigNumber.ts                               14 errors
-14. src/function/arithmetic/round.ts                              13 errors
-15. src/function/bitwise/useMatrixForArrayScalar.ts               13 errors
-16. src/function/matrix/matrixFromFunction.ts                     13 errors
-17. src/utils/bignumber/formatter.ts                              13 errors
-18. src/expression/node/AssignmentNode.ts                         12 errors
-19. src/function/arithmetic/fix.ts                                12 errors
-20. src/function/combinatorics/stirlingS2.ts                      12 errors
-21. src/utils/customs.ts                                          12 errors
-22. src/function/algebra/simplify.ts                              11 errors
-23. src/utils/function.ts                                         11 errors
-24. src/function/statistics/corr.ts                               10 errors
-25. src/type/bignumber/function/bignumber.ts                      10 errors
-26. src/expression/transform/utils/transformCallback.ts            9 errors
-27. src/function/arithmetic/nthRoot.ts                             9 errors
-28. src/plain/bignumber/arithmetic.ts                              9 errors
-29. src/function/algebra/derivative.ts                             8 errors
-30. src/function/algebra/solver/utils/solveValidation.ts           8 errors
 
 ================================================================================
 
@@ -1880,32 +1850,11 @@ REMAINING WORK:
 ⏳ Next Steps:
   - Convert remaining 596 source .js files to TypeScript
   - Convert 343 test .js files to TypeScript
-  - Fix remaining 1137 TypeScript errors in 234 files
+  - Fix remaining 0 TypeScript errors in 0 files
   - Remove original .js files after build system updated
   - Update tsconfig.json to handle all type definitions
 
-ERROR CATEGORIES (Remaining 1137 errors):
-  - TS2339: 360 errors
-  - TS7006: 234 errors
-  - TS2322: 76 errors
-  - TS2345: 59 errors
-  - TS7053: 37 errors
-  - TS2305: 32 errors
-  - TS2367: 31 errors
-  - TS2709: 28 errors
-  - TS2352: 24 errors
-  - TS1149: 22 errors
-  - TS2304: 20 errors
-  - TS2739: 18 errors
-  - TS2349: 17 errors
-  - TS7005: 16 errors
-  - TS2459: 15 errors
-  - TS2699: 14 errors
-  - TS2307: 10 errors
-  - TS2425: 9 errors
-  - TS7009: 9 errors
-  - TS2693: 8 errors
-  ... and 26 more error types
+ERROR CATEGORIES (Remaining 0 errors):
 
 ================================================================================
 END OF REPORT

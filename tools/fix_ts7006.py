@@ -4,8 +4,8 @@ import subprocess
 from collections import defaultdict
 
 # Get all TS7006 errors
-result = subprocess.run(['npx', 'tsc', '--noEmit'], capture_output=True, text=True, cwd='.')
-errors = [line for line in result.stderr.split('\n') if 'error TS7006' in line]
+result = subprocess.run('npx tsc --noEmit', capture_output=True, text=True, cwd='.', shell=True)
+errors = [line for line in result.stdout.split('\n') if 'error TS7006' in line]
 
 print(f"Found {len(errors)} TS7006 errors")
 
@@ -64,12 +64,12 @@ for file_path, errors_list in sorted(file_errors.items()):
     try:
         with open(file_path, 'w', encoding='utf-8', newline='') as f:
             f.writelines(lines)
-        print(f"  ✓ Fixed {file_path}")
+        print(f"  * Fixed {file_path}")
     except Exception as e:
         print(f"  Error writing file: {e}")
 
 print("\n" + "="*60)
 print("Re-checking errors...")
-result = subprocess.run(['npx', 'tsc', '--noEmit'], capture_output=True, text=True, cwd='.')
-remaining = [line for line in result.stderr.split('\n') if 'error TS7006' in line]
+result = subprocess.run('npx tsc --noEmit', capture_output=True, text=True, cwd='.', shell=True)
+remaining = [line for line in result.stdout.split('\n') if 'error TS7006' in line]
 print(f"Remaining TS7006 errors: {len(remaining)}")
