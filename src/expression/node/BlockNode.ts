@@ -7,7 +7,7 @@ const name = 'BlockNode'
 const dependencies = [
   'ResultSet',
   'Node'
-]
+] as const
 
 interface BlockItem {
   node: MathNode
@@ -94,7 +94,7 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
       for (let i = 0; i < this.blocks.length; i++) {
-        callback(this.blocks[i].node, 'blocks[' + i + '].node', this as any)
+        callback(this.blocks[i].node, 'blocks[' + i + '].node', this)
       }
     }
 
@@ -109,7 +109,7 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
       for (let i = 0; i < this.blocks.length; i++) {
         const block = this.blocks[i]
         const node = this._ifNode(
-          callback(block.node, 'blocks[' + i + '].node', this as any))
+          callback(block.node, 'blocks[' + i + '].node', this))
         blocks[i] = {
           node,
           visible: block.visible

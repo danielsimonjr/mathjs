@@ -9,7 +9,11 @@ import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgori
 import { createUseMatrixForArrayScalar } from './useMatrixForArrayScalar.js'
 import { leftShiftNumber } from '../../plain/number/index.js'
 import { leftShiftBigNumber } from '../../utils/bignumber/bitwise.js'
+<<<<<<< HEAD
 import type { MathJsChain } from '../../../types/index.js'
+=======
+import type { MathJsChain } from '../../types.js'
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 
 const name = 'leftShift'
@@ -20,7 +24,11 @@ const dependencies = [
   'zeros',
   'DenseMatrix',
   'concat'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createLeftShift = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, zeros, DenseMatrix, concat }) => {
   const matAlgo01xDSid = createMatAlgo01xDSid({ typed })

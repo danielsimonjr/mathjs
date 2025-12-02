@@ -81,7 +81,11 @@ export const createMad = /* #__PURE__ */ factory(name, dependencies, ({ typed, a
       if (err instanceof TypeError && err.message.includes('median')) {
         throw new TypeError(err.message.replace('median', 'mad'))
       } else {
+<<<<<<< HEAD
         throw improveErrorMessage(err, 'mad', undefined)
+=======
+        throw improveErrorMessage(err, 'mad')
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
     }
   }

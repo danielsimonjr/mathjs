@@ -6,7 +6,7 @@ import type { MathNode } from './Node.js'
 const name = 'ArrayNode'
 const dependencies = [
   'Node'
-]
+] as const
 
 export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: {
   Node: typeof MathNode
@@ -76,7 +76,7 @@ export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ No
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
       for (let i = 0; i < this.items.length; i++) {
         const node = this.items[i]
-        callback(node, 'items[' + i + ']', this as any)
+        callback(node, 'items[' + i + ']', this)
       }
     }
 
@@ -89,7 +89,7 @@ export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ No
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): ArrayNode {
       const items: MathNode[] = []
       for (let i = 0; i < this.items.length; i++) {
-        items[i] = this._ifNode(callback(this.items[i], 'items[' + i + ']', this as any))
+        items[i] = this._ifNode(callback(this.items[i], 'items[' + i + ']', this))
       }
       return new ArrayNode(items)
     }

@@ -18,7 +18,11 @@ const dependencies = [
   'matrix',
   'ctranspose',
   'eigs'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createNorm = /* #__PURE__ */ factory(
   name,

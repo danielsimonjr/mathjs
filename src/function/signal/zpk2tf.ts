@@ -9,7 +9,11 @@ const dependencies = [
   'multiply',
   'Complex',
   'number'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 /**
  * Transfer function representation [numerator, denominator]

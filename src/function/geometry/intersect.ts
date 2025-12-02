@@ -4,7 +4,11 @@ import type { MathNumericType } from '../../utils/types.js'
 const name = 'intersect'
 const dependencies = [
   'typed', 'config', 'abs', 'add', 'addScalar', 'matrix', 'multiply', 'multiplyScalar', 'divideScalar', 'subtract', 'smaller', 'equalScalar', 'flatten', 'isZero', 'isNumeric'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, abs, add, addScalar, matrix, multiply, multiplyScalar, divideScalar, subtract, smaller, equalScalar, flatten, isZero, isNumeric }: {
   typed: any

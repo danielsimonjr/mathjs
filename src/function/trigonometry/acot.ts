@@ -5,7 +5,11 @@ import type { Complex } from '../../type/complex/Complex.js'
 import { acotNumber } from '../../plain/number/index.js'
 
 const name = 'acot'
+<<<<<<< HEAD
 const dependencies = ['typed', 'BigNumber']
+=======
+const dependencies = ['typed', 'BigNumber'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createAcot: FactoryFunction<'acot', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
   /**

@@ -109,7 +109,7 @@ export const createMatAlgo05xSfSf = /* #__PURE__ */ factory(
         // convert 0 to the same datatype
         zero = typed.convert(0, dt)
         // callback
-        cf = typed.find(callback, [dt, dt]) as any as any
+        cf = typed.find(callback, [dt, dt])
       }
 
       // result arrays

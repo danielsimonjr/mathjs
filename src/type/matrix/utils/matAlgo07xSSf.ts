@@ -85,7 +85,7 @@ export const createMatAlgo07xSSf = /* #__PURE__ */ factory(
       if (typeof adt === 'string' && adt === bdt && adt !== 'mixed') {
         dt = adt
         zero = typed.convert(0, dt)
-        cf = typed.find(callback, [dt, dt]) as any as any
+        cf = typed.find(callback, [dt, dt])
       }
 
       // result arrays for sparse format

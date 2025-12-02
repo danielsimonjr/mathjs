@@ -15,7 +15,11 @@ const dependencies = [
   'typeOf',
   'im',
   're'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createPolynomialRoot = /* #__PURE__ */ factory(name, dependencies, ({
   typed,

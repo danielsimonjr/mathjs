@@ -7,7 +7,11 @@ import type { MathNode } from './Node.js'
 const name = 'ConstantNode'
 const dependencies = [
   'Node', 'isBounded'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, isBounded }: {
   Node: typeof MathNode

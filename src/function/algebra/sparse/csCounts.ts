@@ -9,7 +9,11 @@ const dependencies = [
   'transpose'
 ] as const
 
+<<<<<<< HEAD
 export const createCsCounts: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ transpose }) => {
+=======
+export const createCsCounts: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ transpose }) => {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   /**
    * Computes the column counts using the upper triangular part of A.
    * It transposes A internally, none of the input parameters are modified.

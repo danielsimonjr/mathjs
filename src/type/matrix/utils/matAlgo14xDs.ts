@@ -28,7 +28,9 @@ type CallbackFunction = (a: any, b: any) => any
 const name = 'matAlgo14xDs'
 const dependencies = ['typed']
 
-export const createMatAlgo14xDs = /* #__PURE__ */ factory(name, dependencies, ({ typed }: any) => {
+export const createMatAlgo14xDs = /* #__PURE__ */ factory(name, dependencies, ({ typed }: {
+  typed: TypedFunction
+}) => {
   /**
    * Iterates over DenseMatrix items and invokes the callback function f(Aij..z, b).
    * Callback function invoked MxN times.
@@ -62,7 +64,7 @@ export const createMatAlgo14xDs = /* #__PURE__ */ factory(name, dependencies, ({
       // convert b to the same datatype
       b = typed.convert(b, dt)
       // callback
-      cf = typed.find(callback, [dt, dt]) as any as any as CallbackFunction
+      cf = typed.find(callback, [dt, dt]) as CallbackFunction
     }
 
     // populate cdata, iterate through dimensions

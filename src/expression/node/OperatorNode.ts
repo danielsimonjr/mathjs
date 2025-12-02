@@ -71,7 +71,11 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
    */
   function calculateNecessaryParentheses (root: OperatorNode, parenthesis: string, implicit: string, args: Node[], latex: boolean): boolean[] {
     // precedence of the root OperatorNode
+<<<<<<< HEAD
     const precedence = getPrecedence(root as any, parenthesis, implicit, undefined)
+=======
+    const precedence = getPrecedence(root as any, parenthesis, implicit)
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     const associativity = getAssociativity(root as any, parenthesis)
 
     if ((parenthesis === 'all') || ((args.length > 2) && (root.getIdentifier() !== 'OperatorNode:add') && (root.getIdentifier() !== 'OperatorNode:multiply'))) {
@@ -111,12 +115,20 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
               operandIdentifier = args[0].getContent().getIdentifier()
               rootIdentifier = root.getContent().getIdentifier()
             }
+<<<<<<< HEAD
             if ((properties as any)[precedence][rootIdentifier].latexLeftParens === false) {
+=======
+            if (properties[precedence][rootIdentifier].latexLeftParens === false) {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
               result = [false]
               break
             }
 
+<<<<<<< HEAD
             if ((properties as any)[operandPrecedence][operandIdentifier].latexParens === false) {
+=======
+            if (properties[operandPrecedence][operandIdentifier].latexParens === false) {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
               result = [false]
               break
             }
@@ -201,21 +213,37 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
             }
 
             if (lhsPrecedence !== null) {
+<<<<<<< HEAD
               if ((properties as any)[precedence][rootIdentifier].latexLeftParens === false) {
                 lhsParens = false
               }
 
               if ((properties as any)[lhsPrecedence][lhsIdentifier].latexParens === false) {
+=======
+              if (properties[precedence][rootIdentifier].latexLeftParens === false) {
+                lhsParens = false
+              }
+
+              if (properties[lhsPrecedence][lhsIdentifier].latexParens === false) {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
                 lhsParens = false
               }
             }
 
             if (rhsPrecedence !== null) {
+<<<<<<< HEAD
               if ((properties as any)[precedence][rootIdentifier].latexRightParens === false) {
                 rhsParens = false
               }
 
               if ((properties as any)[rhsPrecedence][rhsIdentifier].latexParens === false) {
+=======
+              if (properties[precedence][rootIdentifier].latexRightParens === false) {
+                rhsParens = false
+              }
+
+              if (properties[rhsPrecedence][rhsIdentifier].latexParens === false) {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
                 rhsParens = false
               }
             }

@@ -3,7 +3,11 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { addNumber } from '../../plain/number/index.js'
 
 const name = 'addScalar'
+<<<<<<< HEAD
 const dependencies = ['typed']
+=======
+const dependencies = ['typed'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createAddScalar: FactoryFunction<
   { typed: TypedFunction },

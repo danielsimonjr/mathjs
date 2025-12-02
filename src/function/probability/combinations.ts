@@ -3,7 +3,11 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { combinationsNumber } from '../../plain/number/combinations.js'
 
 const name = 'combinations'
+<<<<<<< HEAD
 const dependencies = ['typed']
+=======
+const dependencies = ['typed'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createCombinations: FactoryFunction<
   { typed: TypedFunction },

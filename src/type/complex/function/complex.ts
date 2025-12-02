@@ -4,7 +4,11 @@ import { deepMap } from '../../../utils/collection.js'
 const name = 'complex'
 const dependencies = ['typed', 'Complex'] as const
 
+<<<<<<< HEAD
 export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Complex }) => {
+=======
+export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex }) => {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   /**
    * Create a complex value or convert a value to a complex value.
    *
@@ -58,7 +62,11 @@ export const createComplex: FactoryFunction<'typed' | 'Complex', typeof name> = 
 
     // TODO: this signature should be redundant
     'BigNumber, BigNumber': function (re: any, im: any): any {
+<<<<<<< HEAD
       return new Complex((re as any).toNumber(), (im as any).toNumber())
+=======
+      return new Complex(re.toNumber(), im.toNumber())
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     Fraction: function (x: any): any {

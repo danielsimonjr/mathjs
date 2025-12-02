@@ -18,7 +18,11 @@ const dependencies = [
   'DenseMatrix',
   'concat',
   'SparseMatrix'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createDotDivide = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, divideScalar, DenseMatrix, concat, SparseMatrix }: any): TypedFunction => {
   const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })

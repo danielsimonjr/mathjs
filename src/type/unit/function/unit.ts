@@ -6,7 +6,7 @@ const name = 'unit'
 const dependencies = ['typed', 'Unit'] as const
 
 // This function is named createUnitFunction to prevent a naming conflict with createUnit
-export const createUnitFunction = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Unit }: any) => {
+export const createUnitFunction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Unit }: MathJsStatic) => {
   /**
    * Create a unit. Depending on the passed arguments, the function
    * will create and return a new math.Unit object.

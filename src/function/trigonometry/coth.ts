@@ -5,7 +5,11 @@ import type { Complex } from '../../type/complex/Complex.js'
 import { cothNumber } from '../../plain/number/index.js'
 
 const name = 'coth'
+<<<<<<< HEAD
 const dependencies = ['typed', 'BigNumber']
+=======
+const dependencies = ['typed', 'BigNumber'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createCoth: FactoryFunction<'coth', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
   /**

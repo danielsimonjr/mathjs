@@ -29,7 +29,7 @@ export const createHelpClass = /* #__PURE__ */ factory(name, dependencies, ({ ev
    *                      {string[]} seealso
    * @constructor
    */
-  function Help (this: { doc?: HelpDoc }, doc: HelpDoc) {
+  function Help (this: any, doc: HelpDoc) {
     if (!(this instanceof Help)) {
       throw new SyntaxError('Constructor must be called with the new operator')
     }

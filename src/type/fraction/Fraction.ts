@@ -1,6 +1,10 @@
 import Fraction from 'fraction.js'
 import { factory } from '../../utils/factory.js'
+<<<<<<< HEAD
 import type { FactoryFunctionMap } from '../../../types/index.js'
+=======
+import type { FactoryFunctionMap } from '../../types.js'
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 const name = 'Fraction'
 const dependencies: [] = []

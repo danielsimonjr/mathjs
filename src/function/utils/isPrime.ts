@@ -68,7 +68,11 @@ export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ type
       if (n.lte(3)) return n.gt(1)
       if (n.mod(2).eq(0) || n.mod(3).eq(0)) return false
       if (n.lt(Math.pow(2, 32))) {
+<<<<<<< HEAD
         const x = (n as any).toNumber()
+=======
+        const x = n.toNumber()
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         for (let i = 5; i * i <= x; i += 6) {
           if (x % i === 0 || x % (i + 2) === 0) {
             return false
@@ -106,7 +110,11 @@ export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ type
       if (n.lt('3317044064679887385961981')) {
         bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41].filter(x => x < n)
       } else {
+<<<<<<< HEAD
         const max = Math.min((n as any).toNumber() - 2, Math.floor(2 * Math.pow(n.toFixed(0).length * Math.log(10), 2)))
+=======
+        const max = Math.min(n.toNumber() - 2, Math.floor(2 * Math.pow(n.toFixed(0).length * Math.log(10), 2)))
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         bases = []
         for (let i = 2; i <= max; i += 1) {
           bases.push(max)

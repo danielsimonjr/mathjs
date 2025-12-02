@@ -1,6 +1,10 @@
 import { flatten } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
+<<<<<<< HEAD
 import type { MathArray, Matrix, MathNumericType } from '../../../types/index.js'
+=======
+import type { MathArray, Matrix, MathNumericType } from '../../types.js'
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 const name = 'setSymDifference'
 const dependencies = ['typed', 'size', 'concat', 'subset', 'setDifference', 'Index']

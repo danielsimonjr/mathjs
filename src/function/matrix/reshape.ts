@@ -2,7 +2,7 @@ import { reshape as arrayReshape } from '../../utils/array.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'reshape'
-const dependencies = ['typed', 'isInteger', 'matrix']
+const dependencies = ['typed', 'isInteger', 'matrix'] as const
 
 export const createReshape: FactoryFunction<'typed' | 'isInteger' | 'matrix', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, isInteger }) => {
   /**

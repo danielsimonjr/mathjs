@@ -22,7 +22,11 @@ const dependencies = [
   'ObjectNode',
   'OperatorNode',
   'SymbolNode'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -217,11 +221,19 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
     },
 
     'Matrix, Object': function (s: any, options: any): any {
+<<<<<<< HEAD
       return matrix(_exactFraction(s.valueOf(), options))
     },
 
     'Array, Object': function (s: any[], options: any): any {
       return s.map((item) => _exactFraction(item, options))
+=======
+      return matrix(_exactFraction(s.valueOf()))
+    },
+
+    'Array, Object': function (s: any[], options: any): any {
+      return s.map(_exactFraction)
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
   })
 

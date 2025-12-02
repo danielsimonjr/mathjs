@@ -1,7 +1,11 @@
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'count'
+<<<<<<< HEAD
 const dependencies = ['typed', 'size', 'prod']
+=======
+const dependencies = ['typed', 'size', 'prod'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createCount: FactoryFunction<'typed' | 'size' | 'prod', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, size, prod }) => {
   /**

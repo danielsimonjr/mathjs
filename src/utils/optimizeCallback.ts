@@ -36,7 +36,7 @@ export function optimizeCallback(
   name: string,
   isUnary?: boolean
 ): OptimizedCallback {
-  if ((typed as any).isTypedFunction(callback)) {
+  if (typed.isTypedFunction(callback)) {
     let numberOfArguments: number | undefined
     if (isUnary) {
       numberOfArguments = 1

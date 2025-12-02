@@ -24,7 +24,11 @@ const dependencies = [
   'OperatorNode',
   'ParenthesisNode',
   'SymbolNode'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -158,7 +162,11 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
         node = new OperatorNode(op, node.name, node.args)
       } else {
         return new FunctionNode(
+<<<<<<< HEAD
           _simplifyCore((node as any).fn as any), node.args.map((n: MathNode) => _simplifyCore(n, options)))
+=======
+          _simplifyCore(node.fn as any), node.args.map((n: MathNode) => _simplifyCore(n, options)))
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
     }
     if (isOperatorNode(node) && node.isUnary()) {
@@ -191,7 +199,11 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
           }
         }
       }
+<<<<<<< HEAD
       if (finish) return new OperatorNode(node.op, (node as any).fn, [a0])
+=======
+      if (finish) return new OperatorNode(node.op, node.fn, [a0])
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
     if (isOperatorNode(node) && node.isBinary()) {
       const a0 = _simplifyCore(node.args[0], options)
@@ -220,7 +232,11 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
         if (isConstantNode(a1) && isZero(a1.value)) {
           return a0
         }
+<<<<<<< HEAD
         return new OperatorNode(node.op, (node as any).fn, [a0, a1])
+=======
+        return new OperatorNode(node.op, node.fn, [a0, a1])
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
       if (node.op === '*') {
         if (isConstantNode(a0)) {
@@ -237,10 +253,17 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
             return a0
           }
           if (isCommutative(node, context)) {
+<<<<<<< HEAD
             return new OperatorNode(node.op, (node as any).fn, [a1, a0], (node as any).implicit) // constants on left
           }
         }
         return new OperatorNode(node.op, (node as any).fn, [a0, a1], (node as any).implicit)
+=======
+            return new OperatorNode(node.op, node.fn, [a1, a0], node.implicit) // constants on left
+          }
+        }
+        return new OperatorNode(node.op, node.fn, [a0, a1], node.implicit)
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
       if (node.op === '/') {
         if (isConstantNode(a0) && isZero(a0.value)) {
@@ -249,7 +272,11 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
         if (isConstantNode(a1) && equal(a1.value, 1)) {
           return a0
         }
+<<<<<<< HEAD
         return new OperatorNode(node.op, (node as any).fn, [a0, a1])
+=======
+        return new OperatorNode(node.op, node.fn, [a0, a1])
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
       if (node.op === '^') {
         if (isConstantNode(a1)) {
@@ -295,11 +322,19 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
           }
         }
       }
+<<<<<<< HEAD
       return new OperatorNode(node.op, (node as any).fn, [a0, a1])
     }
     if (isOperatorNode(node)) {
       return new OperatorNode(
         node.op, (node as any).fn, node.args.map((a: MathNode) => _simplifyCore(a, options)))
+=======
+      return new OperatorNode(node.op, node.fn, [a0, a1])
+    }
+    if (isOperatorNode(node)) {
+      return new OperatorNode(
+        node.op, node.fn, node.args.map((a: MathNode) => _simplifyCore(a, options)))
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
     if (isArrayNode(node)) {
       return new ArrayNode(node.items.map((n: MathNode) => _simplifyCore(n, options)))

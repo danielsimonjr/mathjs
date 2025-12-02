@@ -14,7 +14,11 @@ const dependencies = [
   'equalScalar',
   'BigNumber',
   'concat'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createNthRoot: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, BigNumber, concat }: { typed: TypedFunction; matrix: any; equalScalar: any; BigNumber: any; concat: any }): any => {
   const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
@@ -112,12 +116,20 @@ export const createNthRoot: FactoryFunction<typeof name, typeof dependencies> = 
         }
       })
     },
+<<<<<<< HEAD
     ...(matrixAlgorithmSuite({
+=======
+    matrixAlgorithmSuite({
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       scalar: 'number | BigNumber',
       SD: matAlgo02xDS0,
       Ss: matAlgo11xS0s,
       sS: false
+<<<<<<< HEAD
     }) as any)
+=======
+    })
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   )
 
   /**
@@ -161,7 +173,11 @@ export const createNthRoot: FactoryFunction<typeof name, typeof dependencies> = 
   }
 })
 
+<<<<<<< HEAD
 export const createNthRootNumber: FactoryFunction<'nthRoot', ['typed']> = /* #__PURE__ */ factory(name, ['typed'] as const, ({ typed }: any): any => {
+=======
+export const createNthRootNumber: FactoryFunction<'nthRoot', ['typed']> = /* #__PURE__ */ factory(name, ['typed'] as const, ({ typed }: { typed: TypedFunction }): any => {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   return typed(name, {
     number: nthRootNumber,
     'number, number': nthRootNumber

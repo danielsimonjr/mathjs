@@ -6,7 +6,11 @@ import { xgcdNumber } from '../../plain/number/index.js'
 type Dependencies = 'typed' | 'config' | 'matrix' | 'BigNumber'
 
 const name = 'xgcd'
+<<<<<<< HEAD
 const dependencies = ['typed', 'config', 'matrix', 'BigNumber']
+=======
+const dependencies = ['typed', 'config', 'matrix', 'BigNumber'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createXgcd = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, matrix, BigNumber }: any): TypedFunction => {
   /**

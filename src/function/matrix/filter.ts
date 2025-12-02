@@ -3,7 +3,11 @@ import { filter, filterRegExp } from '../../utils/array.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'filter'
+<<<<<<< HEAD
 const dependencies = ['typed']
+=======
+const dependencies = ['typed'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createFilter: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

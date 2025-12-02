@@ -28,8 +28,8 @@ export class DimensionError extends RangeError {
     this.relation = relation
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if ((Error as any).captureStackTrace) {
-      (Error as any).captureStackTrace(this, DimensionError)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, DimensionError)
     }
   }
 }

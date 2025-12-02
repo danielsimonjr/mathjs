@@ -95,7 +95,7 @@ export const createMatAlgo11xS0s = /* #__PURE__ */ factory(name, dependencies, (
       // convert b to the same datatype
       b = typed.convert(b, dt)
       // callback
-      cf = typed.find(callback, [dt, dt]) as any as any as CallbackFunction
+      cf = typed.find(callback, [dt, dt]) as CallbackFunction
     }
 
     // result arrays

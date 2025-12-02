@@ -70,7 +70,11 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
    * @returns {string}
    */
   Chain.prototype.toString = function(this: any): string {
+<<<<<<< HEAD
     return format(this.value, {})
+=======
+    return format(this.value)
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   }
 
   /**
@@ -142,7 +146,11 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
       for (let i = 0; i < rest.length; i++) {
         args[i + 1] = rest[i]
       }
+<<<<<<< HEAD
       if ((typed as any).isTypedFunction(fn)) {
+=======
+      if (typed.isTypedFunction(fn)) {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         const sigObject = typed.resolve(fn, args)
         // We want to detect if a rest parameter has matched across the
         // value in the chain and the current arguments of this call.

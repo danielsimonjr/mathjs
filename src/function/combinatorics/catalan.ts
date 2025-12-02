@@ -10,7 +10,11 @@ const dependencies = [
   'combinations',
   'isNegative',
   'isInteger'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createCatalan: FactoryFunction<
   {
@@ -61,7 +65,11 @@ export const createCatalan: FactoryFunction<
         throw new TypeError('Non-negative integer value expected in function catalan')
       }
 
+<<<<<<< HEAD
       return divideScalar(combinations(multiplyScalar(n, 2), n), (addScalar as any)(n, 1))
+=======
+      return divideScalar(combinations(multiplyScalar(n, 2), n), addScalar(n, 1))
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
   })
 })

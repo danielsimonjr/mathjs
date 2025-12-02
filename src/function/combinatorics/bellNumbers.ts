@@ -2,7 +2,11 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'bellNumbers'
+<<<<<<< HEAD
 const dependencies = ['typed', 'addScalar', 'isNegative', 'isInteger', 'stirlingS2']
+=======
+const dependencies = ['typed', 'addScalar', 'isNegative', 'isInteger', 'stirlingS2'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createBellNumbers: FactoryFunction<
   {
@@ -44,7 +48,11 @@ export const createBellNumbers: FactoryFunction<
       // Sum (k=0, n) S(n,k).
       let result: any = 0
       for (let i = 0; i <= n; i++) {
+<<<<<<< HEAD
         result = (addScalar as any)(result, (stirlingS2 as any)(n, i))
+=======
+        result = addScalar(result, stirlingS2(n, i))
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
 
       return result

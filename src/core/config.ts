@@ -1,7 +1,7 @@
 /**
  * Configuration interface for math.js
  */
-export interface ConfigOptions {
+export interface MathJsConfig {
   // minimum relative difference between two compared values,
   // used by all comparison functions
   relTol: number
@@ -39,10 +39,7 @@ export interface ConfigOptions {
   legacySubset: boolean
 }
 
-// Keep MathJsConfig as an alias for backwards compatibility
-export type MathJsConfig = ConfigOptions
-
-export const DEFAULT_CONFIG: ConfigOptions = {
+export const DEFAULT_CONFIG: MathJsConfig = {
   // minimum relative difference between two compared values,
   // used by all comparison functions
   relTol: 1e-12,

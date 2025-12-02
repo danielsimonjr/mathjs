@@ -97,7 +97,7 @@ export function reduce(
   const size = Array.isArray(mat) ? arraySize(mat) : (mat as Matrix).size()
   if (dim < 0 || (dim >= size.length)) {
     // TODO: would be more clear when throwing a DimensionError here
-    throw new IndexError(dim, 0, size.length) as any
+    throw new IndexError(dim, size.length)
   }
 
   if (isMatrix(mat)) {

@@ -1,7 +1,7 @@
 import { deepMap } from '../../utils/collection.js'
 import { factory } from '../../utils/factory.js'
 import { createEmptyMap } from '../../utils/map.js'
-import type { MathArray, Matrix } from '../../../types/index.js'
+import type { MathArray, Matrix } from '../../types.js'
 
 const name = 'evaluate'
 const dependencies = ['typed', 'parse']
@@ -56,13 +56,13 @@ export const createEvaluate = /* #__PURE__ */ factory(name, dependencies, ({ typ
 
     'Array | Matrix': function (expr: MathArray | Matrix) {
       const scope = createEmptyMap()
-      return deepMap(expr as any, function (entry: any) {
+      return deepMap(expr, function (entry: any) {
         return parse(entry).compile().evaluate(scope)
       })
     },
 
     'Array | Matrix, Map | Object': function (expr: MathArray | Matrix, scope: Map<string, any> | Record<string, any>) {
-      return deepMap(expr as any, function (entry: any) {
+      return deepMap(expr, function (entry: any) {
         return parse(entry).compile().evaluate(scope)
       })
     }

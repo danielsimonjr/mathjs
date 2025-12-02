@@ -12,7 +12,11 @@ const dependencies = [
   'deepEqual',
   'sqrt',
   'abs'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typed, addScalar, subtractScalar, multiplyScalar, divideScalar, deepEqual, sqrt, abs }: {
   typed: any
@@ -221,7 +225,11 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     if ((a as any).constructor !== Array) {
       a = _objectToArray(a as Record<string, MathNumericType>)
     }
+<<<<<<< HEAD
     return _isNumber((a as any)[0]) && _isNumber((a as any)[1])
+=======
+    return _isNumber(a[0]) && _isNumber(a[1])
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   }
 
   function _3d (a: MathNumericType[] | Record<string, MathNumericType>): boolean {
@@ -229,7 +237,11 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     if ((a as any).constructor !== Array) {
       a = _objectToArray(a as Record<string, MathNumericType>)
     }
+<<<<<<< HEAD
     return _isNumber((a as any)[0]) && _isNumber((a as any)[1]) && _isNumber((a as any)[2])
+=======
+    return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2])
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   }
 
   function _containsOnlyNumbers (a: MathNumericType[] | Record<string, MathNumericType>): boolean {
@@ -244,8 +256,13 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     if ((a as any).constructor !== Array) {
       a = _objectToArray(a as Record<string, MathNumericType>)
     }
+<<<<<<< HEAD
     return _isNumber((a as any)[0]) && _isNumber((a as any)[1]) && _isNumber((a as any)[2]) &&
       _isNumber((a as any)[3]) && _isNumber((a as any)[4]) && _isNumber((a as any)[5])
+=======
+    return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2]) &&
+      _isNumber(a[3]) && _isNumber(a[4]) && _isNumber(a[5])
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   }
 
   function _objectToArray (o: Record<string, MathNumericType>): MathNumericType[] {

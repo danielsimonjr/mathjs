@@ -5,7 +5,11 @@ const name = 'leafCount'
 const dependencies = [
   'parse',
   'typed'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createLeafCount = /* #__PURE__ */ factory(name, dependencies, ({
   parse,

@@ -122,7 +122,11 @@ export const createMatAlgo02xDS0 = /* #__PURE__ */ factory(
         // convert 0 to the same datatype
         zero = typed.convert(0, dt)
         // callback
+<<<<<<< HEAD
         cf = typed.find(callback, [dt, dt]) as any as any
+=======
+        cf = typed.find(callback, [dt, dt])
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
 
       // result (SparseMatrix)

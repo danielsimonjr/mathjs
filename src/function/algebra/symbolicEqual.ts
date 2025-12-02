@@ -8,7 +8,11 @@ const dependencies = [
   'simplify',
   'typed',
   'OperatorNode'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createSymbolicEqual = /* #__PURE__ */ factory(name, dependencies, ({
   parse,

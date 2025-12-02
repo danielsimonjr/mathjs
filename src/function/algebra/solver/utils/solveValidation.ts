@@ -16,14 +16,22 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
     const mSize = m.size()
 
     if (mSize.length !== 2) {
+<<<<<<< HEAD
       throw new RangeError('Matrix must be two dimensional (size: ' + format(mSize, {}) + ')')
+=======
+      throw new RangeError('Matrix must be two dimensional (size: ' + format(mSize) + ')')
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
 
     const rows = mSize[0]
     const columns = mSize[1]
 
     if (rows !== columns) {
+<<<<<<< HEAD
       throw new RangeError('Matrix must be square (size: ' + format(mSize, {}) + ')')
+=======
+      throw new RangeError('Matrix must be square (size: ' + format(mSize) + ')')
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
 
     let data: any[] = []

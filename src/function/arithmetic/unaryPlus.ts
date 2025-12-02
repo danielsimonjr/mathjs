@@ -6,7 +6,11 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/create.js'
 
 const name = 'unaryPlus'
+<<<<<<< HEAD
 const dependencies = ['typed', 'config', 'numeric']
+=======
+const dependencies = ['typed', 'config', 'numeric'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createUnaryPlus: FactoryFunction<
   { typed: TypedFunction; config: MathJsConfig; numeric: any },

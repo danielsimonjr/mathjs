@@ -4,7 +4,11 @@ import { isInteger } from '../../utils/number.js'
 import { product } from '../../utils/product.js'
 
 const name = 'combinationsWithRep'
+<<<<<<< HEAD
 const dependencies = ['typed']
+=======
+const dependencies = ['typed'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createCombinationsWithRep: FactoryFunction<
   { typed: TypedFunction },

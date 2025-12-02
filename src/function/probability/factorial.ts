@@ -3,7 +3,11 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'factorial'
+<<<<<<< HEAD
 const dependencies = ['typed', 'gamma']
+=======
+const dependencies = ['typed', 'gamma'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createFactorial: FactoryFunction<
   { typed: TypedFunction; gamma: TypedFunction },
@@ -37,7 +41,11 @@ export const createFactorial: FactoryFunction<
         throw new Error('Value must be non-negative')
       }
 
+<<<<<<< HEAD
       return (gamma as any)(n + 1)
+=======
+      return gamma(n + 1)
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     BigNumber: function (n: any): any {
@@ -48,6 +56,10 @@ export const createFactorial: FactoryFunction<
       return gamma(n.plus(1))
     },
 
+<<<<<<< HEAD
     'Array | Matrix': typed.referToSelf((self: TypedFunction): any => (n: any): any => deepMap(n, self))
+=======
+    'Array | Matrix': typed.referToSelf((self: TypedFunction) => (n: any): any => deepMap(n, self))
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   })
 })

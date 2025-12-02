@@ -134,7 +134,11 @@ export const createQuantileSeq = /* #__PURE__ */ factory(name, dependencies, ({ 
     const probOrNArr = probOrN.valueOf()
     const probArr: any[] = []
     for (let i = 0; i < probOrNArr.length; ++i) {
+<<<<<<< HEAD
       probArr.push(_quantileSeq(dataArr, (probOrNArr as any)[i], sorted))
+=======
+      probArr.push(_quantileSeq(dataArr, probOrNArr[i], sorted))
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
     return probArr
   }

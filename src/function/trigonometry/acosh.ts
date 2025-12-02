@@ -6,7 +6,11 @@ import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 import { acoshNumber } from '../../plain/number/index.js'
 
 const name = 'acosh'
+<<<<<<< HEAD
 const dependencies = ['typed', 'config', 'Complex']
+=======
+const dependencies = ['typed', 'config', 'Complex'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createAcosh: FactoryFunction<'acosh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }) => {
   /**

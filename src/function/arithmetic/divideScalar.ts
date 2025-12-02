@@ -2,7 +2,11 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'divideScalar'
+<<<<<<< HEAD
 const dependencies = ['typed', 'numeric']
+=======
+const dependencies = ['typed', 'numeric'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createDivideScalar: FactoryFunction<
   { typed: TypedFunction, numeric: any },

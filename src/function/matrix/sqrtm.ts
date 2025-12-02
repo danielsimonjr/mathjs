@@ -98,7 +98,11 @@ export const createSqrtm = /* #__PURE__ */ factory(name, dependencies, ({ typed,
             return map(A, sqrt)
           } else {
             throw new RangeError('Matrix must be square ' +
+<<<<<<< HEAD
             '(size: ' + format(sizeArray, {}) + ')')
+=======
+            '(size: ' + format(sizeArray) + ')')
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
           }
 
         case 2:
@@ -110,13 +114,21 @@ export const createSqrtm = /* #__PURE__ */ factory(name, dependencies, ({ typed,
             return _denmanBeavers(A)
           } else {
             throw new RangeError('Matrix must be square ' +
+<<<<<<< HEAD
               '(size: ' + format(sizeArray, {}) + ')')
+=======
+              '(size: ' + format(sizeArray) + ')')
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
           }
         }
         default:
           // Multi dimensional array
           throw new RangeError('Matrix must be at most two dimensional ' +
+<<<<<<< HEAD
           '(size: ' + format(sizeArray, {}) + ')')
+=======
+          '(size: ' + format(sizeArray) + ')')
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
     }
   })

@@ -3,7 +3,11 @@ import { arraySize, broadcastSizes, broadcastTo, get, deepMap } from '../../util
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'map'
+<<<<<<< HEAD
 const dependencies = ['typed']
+=======
+const dependencies = ['typed'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createMap: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
@@ -93,7 +97,11 @@ export const createMap: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ 
     }
     )
 
+<<<<<<< HEAD
     const callbackArgCount = (typed as any).isTypedFunction(multiCallback)
+=======
+    const callbackArgCount = typed.isTypedFunction(multiCallback)
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       ? _getTypedCallbackArgCount(multiCallback, firstValues, newSize.map(() => 0), Arrays)
       : _getCallbackArgCount(multiCallback, numberOfArrays)
 

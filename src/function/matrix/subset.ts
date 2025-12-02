@@ -6,7 +6,11 @@ import { DimensionError } from '../../error/DimensionError.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'subset'
+<<<<<<< HEAD
 const dependencies = ['typed', 'matrix', 'zeros', 'add']
+=======
+const dependencies = ['typed', 'matrix', 'zeros', 'add'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createSubset: FactoryFunction<'typed' | 'matrix' | 'zeros' | 'add', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, zeros, add }) => {
   /**

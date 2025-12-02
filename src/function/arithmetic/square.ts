@@ -3,7 +3,11 @@ import { squareNumber } from '../../plain/number/index.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'square'
+<<<<<<< HEAD
 const dependencies = ['typed']
+=======
+const dependencies = ['typed'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createSquare: FactoryFunction<
   { typed: TypedFunction },

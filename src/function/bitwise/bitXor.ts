@@ -5,7 +5,11 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
 import { factory } from '../../utils/factory.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
 import { bitXorNumber } from '../../plain/number/index.js'
+<<<<<<< HEAD
 import type { MathJsChain } from '../../../types/index.js'
+=======
+import type { MathJsChain } from '../../types.js'
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 
 const name = 'bitXor'
@@ -15,7 +19,11 @@ const dependencies = [
   'DenseMatrix',
   'concat',
   'SparseMatrix'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createBitXor = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, DenseMatrix, concat, SparseMatrix }) => {
   const matAlgo03xDSf = createMatAlgo03xDSf({ typed })

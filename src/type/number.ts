@@ -116,7 +116,7 @@ export const createNumber = /* #__PURE__ */ factory(name, dependencies, ({ typed
     },
 
     BigNumber: function (x: any): number {
-      return (x as any).toNumber()
+      return x.toNumber()
     },
 
     bigint: function (x: bigint): number {

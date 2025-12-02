@@ -18,7 +18,7 @@ const name = 'AccessorNode'
 const dependencies = [
   'subset',
   'Node'
-]
+] as const
 
 export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, Node }: {
   subset: any
@@ -153,8 +153,8 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-      callback(this.object, 'object', this as any)
-      callback(this.index, 'index', this as any)
+      callback(this.object, 'object', this)
+      callback(this.index, 'index', this)
     }
 
     /**
@@ -165,8 +165,8 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): AccessorNode {
       return new AccessorNode(
-        this._ifNode(callback(this.object, 'object', this as any)),
-        this._ifNode(callback(this.index, 'index', this as any)),
+        this._ifNode(callback(this.object, 'object', this)),
+        this._ifNode(callback(this.index, 'index', this)),
         this.optionalChaining
       )
     }

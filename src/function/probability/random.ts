@@ -5,7 +5,11 @@ import { createRng } from './util/seededRNG.js'
 import { randomMatrix } from './util/randomMatrix.js'
 
 const name = 'random'
+<<<<<<< HEAD
 const dependencies = ['typed', 'config', '?on']
+=======
+const dependencies = ['typed', 'config', '?on'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createRandom: FactoryFunction<
   { typed: TypedFunction; config: any; on?: any },

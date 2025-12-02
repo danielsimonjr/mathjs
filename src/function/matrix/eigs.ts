@@ -212,7 +212,11 @@ export const createEigs = /* #__PURE__ */ factory(name, dependencies, ({ config,
     const asize = mat.size()
 
     if (asize.length !== 2 || asize[0] !== asize[1]) {
+<<<<<<< HEAD
       throw new RangeError(`Matrix must be square (size: ${format(asize, {})})`)
+=======
+      throw new RangeError(`Matrix must be square (size: ${format(asize)})`)
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
 
     const N = asize[0]

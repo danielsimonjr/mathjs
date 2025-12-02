@@ -7,7 +7,11 @@ import type { TypedFunction } from '../../../core/function/typed.js'
 const name = 'fraction'
 const dependencies = ['typed', 'Fraction'] as const
 
+<<<<<<< HEAD
 export const createFraction = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Fraction }): TypedFunction => {
+=======
+export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Fraction }): TypedFunction => {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   /**
    * Create a fraction or convert a value to a fraction.
    *

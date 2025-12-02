@@ -2,7 +2,11 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import { isBigNumber, isComplex, isFraction } from '../../utils/is.js'
 import { cbrtNumber } from '../../plain/number/index.js'
 import type { TypedFunction } from '../../core/function/typed.js'
+<<<<<<< HEAD
 import type { MathJsConfig } from '../../core/config.js'
+=======
+import type { MathJsConfig } from '../../core/create.js'
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 const name = 'cbrt'
 const dependencies = [
@@ -14,7 +18,11 @@ const dependencies = [
   'Complex',
   'BigNumber',
   'Fraction'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createCbrt: FactoryFunction<
   {

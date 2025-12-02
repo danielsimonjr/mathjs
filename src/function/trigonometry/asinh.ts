@@ -5,7 +5,11 @@ import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 import { asinhNumber } from '../../plain/number/index.js'
 
 const name = 'asinh'
+<<<<<<< HEAD
 const dependencies = ['typed']
+=======
+const dependencies = ['typed'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createAsinh: FactoryFunction<'asinh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

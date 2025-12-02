@@ -11,7 +11,7 @@ const dependencies = [
   'subset',
   '?matrix', // FIXME: should not be needed at all, should be handled by subset
   'Node'
-]
+] as const
 
 export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, matrix, Node }: {
   subset: any
@@ -33,8 +33,8 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
       parenthesis = 'keep'
     }
 
-    const precedence = getPrecedence(node, parenthesis, implicit, undefined)
-    const exprPrecedence = getPrecedence(node.value, parenthesis, implicit, undefined)
+    const precedence = getPrecedence(node, parenthesis, implicit)
+    const exprPrecedence = getPrecedence(node.value, parenthesis, implicit)
     return (parenthesis === 'all') ||
       ((exprPrecedence !== null) && (exprPrecedence <= precedence))
   }
@@ -212,11 +212,11 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-      callback(this.object, 'object', this as any)
+      callback(this.object, 'object', this)
       if (this.index) {
-        callback(this.index, 'index', this as any)
+        callback(this.index, 'index', this)
       }
-      callback(this.value, 'value', this as any)
+      callback(this.value, 'value', this)
     }
 
     /**
@@ -226,11 +226,11 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
      * @returns {AssignmentNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): AssignmentNode {
-      const object = this._ifNode(callback(this.object, 'object', this as any))
+      const object = this._ifNode(callback(this.object, 'object', this))
       const index = this.index
-        ? this._ifNode(callback(this.index, 'index', this as any))
+        ? this._ifNode(callback(this.index, 'index', this))
         : null
-      const value = this._ifNode(callback(this.value, 'value', this as any))
+      const value = this._ifNode(callback(this.value, 'value', this))
 
       return new AssignmentNode(object, index, value)
     }

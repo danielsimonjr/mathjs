@@ -7,7 +7,11 @@ import { factory, FactoryFunction } from '../../../utils/factory.js'
 const name = 'csSymperm'
 const dependencies = ['conj', 'SparseMatrix'] as const
 
+<<<<<<< HEAD
 export const createCsSymperm: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ conj, SparseMatrix }) => {
+=======
+export const createCsSymperm: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ conj, SparseMatrix }) => {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   /**
    * Computes the symmetric permutation of matrix A accessing only
    * the upper triangular part of A.

@@ -1,15 +1,25 @@
 import { factory } from '../../utils/factory.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
+<<<<<<< HEAD
 import type { MathJsStatic } from '../../../types/index.js'
+=======
+import type { MathJsStatic } from '../../types.js'
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 const name = 'to'
 const dependencies = [
   'typed',
   'matrix',
   'concat'
+<<<<<<< HEAD
 ]
 
 export const createTo = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, concat }: any) => {
+=======
+] as const
+
+export const createTo = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, concat }: MathJsStatic) => {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   const matrixAlgorithmSuite = createMatrixAlgorithmSuite({ typed, matrix, concat })
 
   /**

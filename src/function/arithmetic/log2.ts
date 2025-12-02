@@ -6,7 +6,11 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/config.js'
 
 const name = 'log2'
+<<<<<<< HEAD
 const dependencies = ['typed', 'config', 'Complex']
+=======
+const dependencies = ['typed', 'config', 'Complex'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createLog2: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }: { typed: TypedFunction; config: MathJsConfig; Complex: any }): any => {
   /**
@@ -57,7 +61,11 @@ export const createLog2: FactoryFunction<typeof name, typeof dependencies> = /* 
         return x.log(2)
       } else {
         // downgrade to number, return Complex valued result
+<<<<<<< HEAD
         return complexLog2Number((x as any).toNumber())
+=======
+        return complexLog2Number(x.toNumber())
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
     },
 

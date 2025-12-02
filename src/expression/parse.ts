@@ -50,7 +50,11 @@ interface ParseOptions {
   nodes?: Record<string, any>
 }
 
+<<<<<<< HEAD
 export const createParse = /* #__PURE__ */ factory(name, dependencies as string[], ({
+=======
+export const createParse = /* #__PURE__ */ factory(name, dependencies, ({
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   typed,
   numeric,
   config,
@@ -715,7 +719,11 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as string[
         getTokenSkipNewline(state)
         value = parseAssignment(state)
         return new AssignmentNode(node.object, node.index, value)
+<<<<<<< HEAD
       } else if (isFunctionNode(node) && isSymbolNode((node as any).fn)) {
+=======
+      } else if (isFunctionNode(node) && isSymbolNode(node.fn)) {
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         // parse function assignment like 'f(x) = x^2'
         valid = true
         args = []

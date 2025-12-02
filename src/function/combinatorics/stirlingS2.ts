@@ -17,7 +17,11 @@ const dependencies = [
   'number',
   '?bignumber',
   'larger'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createStirlingS2: FactoryFunction<
   {

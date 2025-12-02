@@ -3,7 +3,11 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'multinomial'
+<<<<<<< HEAD
 const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInteger', 'isPositive']
+=======
+const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInteger', 'isPositive'] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createMultinomial: FactoryFunction<
   {
@@ -47,11 +51,19 @@ export const createMultinomial: FactoryFunction<
         if (!isInteger(ai) || !isPositive(ai)) {
           throw new TypeError('Positive integer value expected in function multinomial')
         }
+<<<<<<< HEAD
         sum = (add as any)(sum, ai)
         denom = (multiply as any)(denom, (factorial as any)(ai))
       })
 
       return (divide as any)((factorial as any)(sum), denom)
+=======
+        sum = add(sum, ai)
+        denom = multiply(denom, factorial(ai))
+      })
+
+      return divide(factorial(sum), denom)
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
   })
 })

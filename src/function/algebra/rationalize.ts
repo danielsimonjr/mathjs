@@ -30,7 +30,11 @@ const dependencies = [
   'OperatorNode',
   'SymbolNode',
   'ParenthesisNode'
+<<<<<<< HEAD
 ]
+=======
+] as const
+>>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
   config,
