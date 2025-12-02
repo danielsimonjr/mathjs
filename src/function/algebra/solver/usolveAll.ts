@@ -12,7 +12,7 @@ const dependencies = [
   'DenseMatrix'
 ] as const
 
-export const createUsolveAll = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, matrix, divideScalar, multiplyScalar, subtractScalar, equalScalar, DenseMatrix }: {
+export const createUsolveAll = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({ typed, matrix, divideScalar, multiplyScalar, subtractScalar, equalScalar, DenseMatrix }: {
   typed: any
   matrix: any
   divideScalar: any

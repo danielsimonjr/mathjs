@@ -102,10 +102,10 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
 
       'bigint, bigint': andNumber,
 
-      'Unit, Unit': typed.referToSelf(self =>
+      'Unit, Unit': typed.referToSelf((self: any) =>
         (x: Unit, y: Unit): any => self(x.value || 0, y.value || 0)),
 
-      'SparseMatrix, any': typed.referToSelf(self => (x: Matrix, y: any): any => {
+      'SparseMatrix, any': typed.referToSelf((self: any) => (x: Matrix, y: any): any => {
         // check scalar
         if (not(y)) {
           // return zero matrix
@@ -114,7 +114,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
         return matAlgo11xS0s(x as any, y, self, false)
       }),
 
-      'DenseMatrix, any': typed.referToSelf(self => (x: Matrix, y: any): any => {
+      'DenseMatrix, any': typed.referToSelf((self: any) => (x: Matrix, y: any): any => {
         // check scalar
         if (not(y)) {
           // return zero matrix
@@ -123,7 +123,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
         return matAlgo14xDs(x as any, y, self, false)
       }),
 
-      'any, SparseMatrix': typed.referToSelf(self => (x: any, y: Matrix): any => {
+      'any, SparseMatrix': typed.referToSelf((self: any) => (x: any, y: Matrix): any => {
         // check scalar
         if (not(x)) {
           // return zero matrix
@@ -132,7 +132,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
         return matAlgo11xS0s(y as any, x, self, true)
       }),
 
-      'any, DenseMatrix': typed.referToSelf(self => (x: any, y: Matrix): any => {
+      'any, DenseMatrix': typed.referToSelf((self: any) => (x: any, y: Matrix): any => {
         // check scalar
         if (not(x)) {
           // return zero matrix
@@ -141,12 +141,12 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
         return matAlgo14xDs(y as any, x, self, true)
       }),
 
-      'Array, any': typed.referToSelf(self => (x: any[], y: any): any => {
+      'Array, any': typed.referToSelf((self: any) => (x: any[], y: any): any => {
         // use matrix implementation
         return self(matrix(x), y).valueOf()
       }),
 
-      'any, Array': typed.referToSelf(self => (x: any, y: any[]): any => {
+      'any, Array': typed.referToSelf((self: any) => (x: any, y: any[]): any => {
         // use matrix implementation
         return self(x, matrix(y)).valueOf()
       })

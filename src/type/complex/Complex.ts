@@ -1,7 +1,13 @@
-import Complex from 'complex.js'
+import ComplexJS from 'complex.js'
 import { format } from '../../utils/number.js'
 import { isNumber, isUnit } from '../../utils/is.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
+
+// Re-export Complex type for use in other modules
+export type Complex = ComplexJS
+
+// Use the imported Complex class internally
+const Complex = ComplexJS
 
 const name = 'Complex'
 const dependencies = []

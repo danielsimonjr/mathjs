@@ -64,7 +64,7 @@ export const createBigint = /* #__PURE__ */ factory(name, dependencies, (
       return 0n
     },
 
-    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => x => deepMap(x, self))
   })
 
   // reviver function to parse a JSON object like:

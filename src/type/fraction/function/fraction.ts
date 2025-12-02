@@ -82,7 +82,7 @@ export const createFraction = /* #__PURE__ */ factory(name, dependencies as stri
       return x // fractions are immutable
     },
 
-    Unit: typed.referToSelf(self => (x: any): any => {
+    Unit: typed.referToSelf((self: any) => (x: any): any => {
       const clone = x.clone()
       clone.value = self(x.value)
       return clone
@@ -92,7 +92,7 @@ export const createFraction = /* #__PURE__ */ factory(name, dependencies as stri
       return new Fraction(x)
     },
 
-    'Array | Matrix': typed.referToSelf(self => (x: MathCollection): MathCollection => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: MathCollection): MathCollection => deepMap(x, self))
   })
 })
 

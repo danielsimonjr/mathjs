@@ -48,9 +48,9 @@ export const createIsNegative = /* #__PURE__ */ factory(name, dependencies, ({ t
 
     Fraction: (x: any): boolean => x.s < 0n, // It's enough to decide on the sign
 
-    Unit: typed.referToSelf(self =>
+    Unit: typed.referToSelf((self: any) =>
       x => typed.find(self, x.valueType())(x.value)),
 
-    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => x => deepMap(x, self))
   })
 })

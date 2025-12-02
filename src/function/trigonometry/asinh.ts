@@ -1,7 +1,7 @@
 import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { Complex } from '../../type/complex/Complex.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+import type { BigNumber } from '../../type/bignumber/BigNumber.js'
 import { asinhNumber } from '../../plain/number/index.js'
 
 const name = 'asinh'

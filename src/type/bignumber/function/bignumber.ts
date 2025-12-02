@@ -1,13 +1,14 @@
 import { factory } from '../../../utils/factory.js'
 import { deepMap } from '../../../utils/collection.js'
-import type Decimal from 'decimal.js'
+import type { Decimal } from 'decimal.js'
+import type Decimal_ from 'decimal.js'
 
 const name = 'bignumber'
 const dependencies = ['typed', 'BigNumber']
 
 export const createBignumber = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: {
   typed: any
-  BigNumber: Decimal.Constructor
+  BigNumber: Decimal_.Constructor
 }) => {
   /**
    * Create a BigNumber, which can store numbers with arbitrary precision.

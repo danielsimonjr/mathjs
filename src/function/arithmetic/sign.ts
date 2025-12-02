@@ -97,7 +97,7 @@ export const createSign = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     // deep map collection, skip zeros since sign(0) = 0
     'Array | Matrix': typed.referToSelf(((self: any) => ((x: any): any => deepMap(x, self, true))) as any) as any,
 
-    Unit: typed.referToSelf(self => (x: Unit): any => {
+    Unit: typed.referToSelf((self: any) => (x: Unit): any => {
       if (!x._isDerived() && x.units[0].unit.offset !== 0) {
         throw new TypeError('sign is ambiguous for units with offset')
       }

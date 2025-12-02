@@ -1,30 +1,42 @@
 /**
- * Create a syntax error with the message:
- *     'Wrong number of arguments in function <fn> (<count> provided, <min>-<max> expected)'
- * @param {string} fn     Function name
- * @param {number} count  Actual argument count
- * @param {number} min    Minimum required argument count
- * @param {number} [max]  Maximum required argument count
+ * Custom error type for wrong number of arguments
  * @extends Error
  */
-export function ArgumentsError (fn, count, min, max) {
-  if (!(this instanceof ArgumentsError)) {
-    throw new SyntaxError('Constructor must be called with the new operator')
-  }
+export class ArgumentsError extends Error {
+  fn: string
+  count: number
+  min: number
+  max: number | undefined
+  isArgumentsError: true = true
 
-  this.fn = fn
-  this.count = count
-  this.min = min
-  this.max = max
-
-  this.message = 'Wrong number of arguments in function ' + fn +
+  /**
+   * Create an ArgumentsError
+   * @param fn     Function name
+   * @param count  Actual argument count
+   * @param min    Minimum required argument count
+   * @param max    Maximum required argument count (optional)
+   */
+  constructor(fn: string, count: number, min: number, max?: number) {
+    const message = 'Wrong number of arguments in function ' + fn +
       ' (' + count + ' provided, ' +
       min + ((max !== undefined && max !== null) ? ('-' + max) : '') + ' expected)'
 
-  this.stack = (new Error()).stack
+    super(message)
+
+    this.fn = fn
+    this.count = count
+    this.min = min
+    this.max = max
+    this.name = 'ArgumentsError'
+
+    // Maintains proper stack trace for where error was thrown (V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ArgumentsError)
+    }
+  }
 }
 
-ArgumentsError.prototype = new Error()
-ArgumentsError.prototype.constructor = Error
-ArgumentsError.prototype.name = 'ArgumentsError'
-ArgumentsError.prototype.isArgumentsError = true
+// Backward compatibility - allow calling as a function (with new operator)
+export function createArgumentsError(fn: string, count: number, min: number, max?: number): ArgumentsError {
+  return new ArgumentsError(fn, count, min, max)
+}

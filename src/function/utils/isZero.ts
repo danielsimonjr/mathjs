@@ -43,9 +43,9 @@ export const createIsZero = /* #__PURE__ */ factory(name, dependencies, ({ typed
 
     bigint: (x: bigint): boolean => x === 0n,
 
-    Unit: typed.referToSelf(self =>
+    Unit: typed.referToSelf((self: any) =>
       x => typed.find(self, x.valueType())(x.value)),
 
-    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => x => deepMap(x, self))
   })
 })

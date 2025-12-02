@@ -8,7 +8,7 @@ export const createTrigUnit = /* #__PURE__ */ factory(
 }: {
   typed: TypedFunction;
 }) => ({
-    Unit: typed.referToSelf(self => x => {
+    Unit: typed.referToSelf((self: any) => x => {
       if (!x.hasBase(x.constructor.BASE_UNITS.ANGLE)) {
         throw new TypeError('Unit in function cot is no angle')
       }

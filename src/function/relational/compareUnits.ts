@@ -8,7 +8,7 @@ export const createCompareUnits = /* #__PURE__ */ factory(
 }: {
   typed: TypedFunction;
 }) => ({
-    'Unit, Unit': typed.referToSelf(self => (x, y) => {
+    'Unit, Unit': typed.referToSelf((self: any) => (x, y) => {
       if (!x.equalBase(y)) {
         throw new Error('Cannot compare units with different base')
       }

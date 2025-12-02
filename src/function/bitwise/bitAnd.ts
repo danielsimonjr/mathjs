@@ -6,7 +6,7 @@ import { factory } from '../../utils/factory.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
 import { bitAndNumber } from '../../plain/number/index.js'
 import type { MathJsChain } from '../../../types/index.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+import type { BigNumber } from '../../type/bignumber/BigNumber.js'
 
 const name = 'bitAnd'
 const dependencies = [

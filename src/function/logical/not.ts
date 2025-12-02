@@ -72,7 +72,7 @@ export const createNot = /* #__PURE__ */ factory(name, dependencies, ({ typed }:
 
     bigint: (x: bigint): boolean => !x,
 
-    Unit: typed.referToSelf(self => (x: Unit): any => typed.find(self, x.valueType())(x.value)),
+    Unit: typed.referToSelf((self: any) => (x: Unit): any => typed.find(self, x.valueType())(x.value)),
 
     'Array | Matrix': typed.referToSelf(((self: any) => ((x: any): any => deepMap(x, self))) as any) as any
   })

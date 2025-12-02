@@ -2,7 +2,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/config.js'
 import type { Complex } from '../../type/complex/Complex.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+import type { BigNumber } from '../../type/bignumber/BigNumber.js'
 import { atanhNumber } from '../../plain/number/index.js'
 
 const name = 'atanh'
