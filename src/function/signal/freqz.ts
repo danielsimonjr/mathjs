@@ -10,11 +10,7 @@ const dependencies = [
   'Complex',
   'divide',
   'matrix'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 /**
  * Frequency response result

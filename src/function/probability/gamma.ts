@@ -3,11 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { gammaG, gammaNumber, gammaP } from '../../plain/number/index.js'
 
 const name = 'gamma'
-<<<<<<< HEAD
-const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', 'Complex']
-=======
 const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', 'Complex'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createGamma = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, multiplyScalar, pow, BigNumber, Complex }: any) => {
   /**
@@ -105,11 +101,7 @@ export const createGamma = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       return new BigNumber([1, 1, 2, 6, 24, 120, 720, 5040][n])
     }
 
-<<<<<<< HEAD
-    const precision = config.precision + (Math.log((n as any).toNumber()) | 0)
-=======
     const precision = config.precision + (Math.log(n.toNumber()) | 0)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     const Big = BigNumber.clone({ precision })
 
     if (n % 2 === 1) {
@@ -118,11 +110,7 @@ export const createGamma = /* #__PURE__ */ factory(name, dependencies, ({ typed,
 
     let p = n
     let prod = new Big(n)
-<<<<<<< HEAD
-    let sum = (n as any).toNumber()
-=======
     let sum = n.toNumber()
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
     while (p > 2) {
       p -= 2

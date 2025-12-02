@@ -5,12 +5,7 @@ import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.js'
 import { factory } from '../../utils/factory.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
 import { bitAndNumber } from '../../plain/number/index.js'
-<<<<<<< HEAD
-import type { MathJsChain } from '../../../types/index.js'
-<<<<<<< HEAD
-=======
 import type { MathJsChain } from '../../types.js'
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 =======
 import type { BigNumber } from '../../type/bignumber/BigNumber.js'
@@ -22,11 +17,7 @@ const dependencies = [
   'matrix',
   'equalScalar',
   'concat'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createBitAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, concat }) => {
   const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })

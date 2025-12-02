@@ -110,11 +110,7 @@ export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
       const sum = reduce(array as any, dim, add)
       return sum
     } catch (err) {
-<<<<<<< HEAD
-      throw improveErrorMessage(err, 'sum', undefined)
-=======
       throw improveErrorMessage(err, 'sum')
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
   }
 })

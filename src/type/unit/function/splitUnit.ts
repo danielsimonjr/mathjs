@@ -3,11 +3,7 @@ import { factory } from '../../../utils/factory.js'
 const name = 'splitUnit'
 const dependencies = ['typed']
 
-<<<<<<< HEAD
-export const createSplitUnit = /* #__PURE__ */ factory(name, dependencies, ({ typed }: MathJsStatic) => {
-=======
 export const createSplitUnit = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Split a unit in an array of units whose sum is equal to the original unit.
    *

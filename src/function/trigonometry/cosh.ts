@@ -2,11 +2,7 @@ import { factory } from '../../utils/factory.js'
 import { cosh as coshNumber } from '../../utils/number.js'
 
 const name = 'cosh'
-<<<<<<< HEAD
-const dependencies = ['typed']
-=======
 const dependencies = ['typed'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createCosh = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**

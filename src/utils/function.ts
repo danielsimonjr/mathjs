@@ -35,15 +35,6 @@ interface MemoizedFunction {
  *    unlimited (default)
  * @return {function}                       Returns the memoized function
  */
-<<<<<<< HEAD
-export function memoize (fn: any, { hasher, limit }: any = {}) {
-  limit = limit == null ? Number.POSITIVE_INFINITY : limit
-  hasher = hasher == null ? JSON.stringify : hasher
-
-  return function memoize (): any {
-    if (typeof memoize.cache !== 'object') {
-      memoize.cache = {
-=======
 export function memoize (fn: (...args: any[]) => any, options: MemoizeOptions = {}): MemoizedFunction {
   const limit = options.limit == null ? Number.POSITIVE_INFINITY : options.limit
   const hasher = options.hasher == null ? JSON.stringify : options.hasher
@@ -52,7 +43,6 @@ export function memoize (fn: (...args: any[]) => any, options: MemoizeOptions = 
     const self = memoized as MemoizedFunction
     if (typeof self.cache !== 'object') {
       self.cache = {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
         values: new Map(),
         lru: lruQueue(limit || Number.POSITIVE_INFINITY)
       }

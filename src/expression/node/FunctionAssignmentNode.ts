@@ -14,11 +14,7 @@ const name = 'FunctionAssignmentNode'
 const dependencies = [
   'typed',
   'Node'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 interface ParamWithType {
   name: string
@@ -37,13 +33,8 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
    * @private
    */
   function needParenthesis (node: FunctionAssignmentNode, parenthesis?: string, implicit?: string): boolean {
-<<<<<<< HEAD
-    const precedence = getPrecedence(node, parenthesis, implicit, undefined)
-    const exprPrecedence = getPrecedence(node.expr, parenthesis, implicit, undefined)
-=======
     const precedence = getPrecedence(node, parenthesis, implicit)
     const exprPrecedence = getPrecedence(node.expr, parenthesis, implicit)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
     return (parenthesis === 'all') ||
       ((exprPrecedence !== null) && (exprPrecedence <= precedence))
@@ -156,11 +147,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-<<<<<<< HEAD
-      callback(this.expr, 'expr', this as any)
-=======
       callback(this.expr, 'expr', this)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
 
     /**
@@ -171,12 +158,7 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
      * @returns {FunctionAssignmentNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): FunctionAssignmentNode {
-<<<<<<< HEAD
-<<<<<<< HEAD
-      const expr = this._ifNode(callback(this.expr, 'expr', this as any))
-=======
       const expr = this._ifNode(callback(this.expr, 'expr', this))
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
       const expr = (this as any)._ifNode(callback(this.expr, 'expr', this as any))
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

@@ -19,11 +19,7 @@ const dependencies = [
   'zeros',
   'BigNumber',
   'DenseMatrix'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createRound = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, matrix, equalScalar, zeros, BigNumber, DenseMatrix }: { typed: any, config: MathJsConfig, matrix: any, equalScalar: any, zeros: any, BigNumber: any, DenseMatrix: any }) => {
   const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
@@ -99,11 +95,7 @@ export const createRound = /* #__PURE__ */ factory(name, dependencies, ({ typed,
     'number, BigNumber': function (x: number, n: any): any {
       if (!n.isInteger()) { throw new TypeError(NO_INT) }
 
-<<<<<<< HEAD
-      return new BigNumber(x).toDecimalPlaces((n as any).toNumber())
-=======
       return new BigNumber(x).toDecimalPlaces(n.toNumber())
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     Complex: function (x: any): any {
@@ -119,11 +111,7 @@ export const createRound = /* #__PURE__ */ factory(name, dependencies, ({ typed,
     'Complex, BigNumber': function (x: any, n: any): any {
       if (!n.isInteger()) { throw new TypeError(NO_INT) }
 
-<<<<<<< HEAD
-      const _n = (n as any).toNumber()
-=======
       const _n = n.toNumber()
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       return x.round(_n)
     },
 
@@ -139,19 +127,11 @@ export const createRound = /* #__PURE__ */ factory(name, dependencies, ({ typed,
 
       // Same as BigNumber: unless user specifies more decimals than relTol
       const epsilonExponent = toExponent(config.relTol)
-<<<<<<< HEAD
-      if (n >= epsilonExponent) { return x.toDecimalPlaces((n as any).toNumber()) }
-
-      const xEpsilon = x.toDecimalPlaces(epsilonExponent)
-      const xSelected = bigNearlyEqual(x, xEpsilon, config.relTol, config.absTol) ? xEpsilon : x
-      return xSelected.toDecimalPlaces((n as any).toNumber())
-=======
       if (n >= epsilonExponent) { return x.toDecimalPlaces(n.toNumber()) }
 
       const xEpsilon = x.toDecimalPlaces(epsilonExponent)
       const xSelected = bigNearlyEqual(x, xEpsilon, config.relTol, config.absTol) ? xEpsilon : x
       return xSelected.toDecimalPlaces(n.toNumber())
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     // bigints can't be rounded
@@ -170,11 +150,7 @@ export const createRound = /* #__PURE__ */ factory(name, dependencies, ({ typed,
 
     'Fraction, BigNumber': function (x: any, n: any): any {
       if (!n.isInteger()) { throw new TypeError(NO_INT) }
-<<<<<<< HEAD
-      return x.round((n as any).toNumber())
-=======
       return x.round(n.toNumber())
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     'Unit, number, Unit': typed.referToSelf((self: any) => function (x: any, n: number, unit: any): any {
@@ -182,11 +158,7 @@ export const createRound = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       return unit.multiply(self(valueless, n))
     }),
 
-<<<<<<< HEAD
-    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, (n as any).toNumber(), unit)),
-=======
     'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, n.toNumber(), unit)),
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
     'Array | Matrix, number | BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => {
       // deep map collection, skip zeros since round(0) = 0

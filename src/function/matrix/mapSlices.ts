@@ -83,11 +83,7 @@ export const createMapSlices = /* #__PURE__ */ factory(name, dependencies, (
  * @returns {Array} ret
  * @private
  */
-<<<<<<< HEAD
-function _mapSlices (mat: any, dim: any, callback: any): any {
-=======
 function _mapSlices (mat: any[], dim: number, callback: Function): any {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   let i, ret, tran
 
   if (dim <= 0) {

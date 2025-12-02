@@ -8,11 +8,7 @@ import { resize as arrayResize } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
 
 const name = 'resize'
-<<<<<<< HEAD
-const dependencies = ['config', 'matrix']
-=======
 const dependencies = ['config', 'matrix'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ config, matrix }: { config: any; matrix: any }) => {
   /**
@@ -54,11 +50,7 @@ export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ confi
     if (isBigNumber(size[0])) {
       // convert bignumbers to numbers
       size = size.map(function (value: any) {
-<<<<<<< HEAD
-        return !isBigNumber(value) ? value : (value as any).toNumber()
-=======
         return !isBigNumber(value) ? value : value.toNumber()
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       })
     }
 
@@ -117,11 +109,7 @@ export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ confi
     const len = size[0]
     if (typeof len !== 'number' || !isInteger(len)) {
       throw new TypeError('Invalid size, must contain positive integers ' +
-<<<<<<< HEAD
-          '(size: ' + format(size, {}) + ')')
-=======
           '(size: ' + format(size) + ')')
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
 
     if (str.length > len) {

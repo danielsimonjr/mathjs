@@ -1,10 +1,6 @@
 import { flatten, generalize, identify } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-<<<<<<< HEAD
-import type { MathArray, Matrix } from '../../../types/index.js'
-=======
 import type { MathArray, Matrix } from '../../types.js'
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 const name = 'setIntersect'
 const dependencies = ['typed', 'size', 'subset', 'compareNatural', 'Index', 'DenseMatrix']

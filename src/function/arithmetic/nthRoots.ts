@@ -3,11 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/config.js'
 
 const name = 'nthRoots'
-<<<<<<< HEAD
-const dependencies = ['config', 'typed', 'divideScalar', 'Complex']
-=======
 const dependencies = ['config', 'typed', 'divideScalar', 'Complex'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createNthRoots: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, divideScalar, Complex }: { typed: TypedFunction; config: MathJsConfig; divideScalar: any; Complex: any }): any => {
   /**

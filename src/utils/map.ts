@@ -19,10 +19,6 @@ export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
 
   constructor(object: Record<string, V>) {
     this.wrappedObject = object
-<<<<<<< HEAD
-    this[Symbol.iterator] = this.entries
-=======
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
   keys(): IterableIterator<K> {
@@ -112,11 +108,6 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
     this.a = a
     this.b = b
     this.bKeys = bKeys
-<<<<<<< HEAD
-
-    this[Symbol.iterator] = this.entries
-=======
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   }
 
   get(key: K): V | undefined {

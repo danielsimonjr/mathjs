@@ -91,11 +91,7 @@ export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ No
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): ArrayNode {
       const items: MathNode[] = []
       for (let i = 0; i < this.items.length; i++) {
-<<<<<<< HEAD
-        items[i] = this._ifNode(callback(this.items[i], 'items[' + i + ']', this))
-=======
         items[i] = (this as any)._ifNode(callback(this.items[i], 'items[' + i + ']', this as any))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       }
       return new ArrayNode(items)
     }

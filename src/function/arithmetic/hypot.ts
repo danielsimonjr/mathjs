@@ -15,11 +15,7 @@ const dependencies = [
   'sqrt',
   'smaller',
   'isPositive'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createHypot = /* #__PURE__ */ factory(name, dependencies, ({ typed, abs, addScalar, divideScalar, multiplyScalar, sqrt, smaller, isPositive }: any): TypedFunction => {
   /**

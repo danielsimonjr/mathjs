@@ -1,11 +1,6 @@
 import { flatten } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-<<<<<<< HEAD
-<<<<<<< HEAD
-import type { MathArray, Matrix, MathNumericType } from '../../../types/index.js'
-=======
 import type { MathArray, Matrix, MathNumericType } from '../../types.js'
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 

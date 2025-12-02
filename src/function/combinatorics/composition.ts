@@ -9,11 +9,7 @@ const dependencies = [
   'isPositive',
   'isInteger',
   'larger'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createComposition = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -54,12 +50,7 @@ export const createComposition = /* #__PURE__ */ factory(name, dependencies, ({
         throw new TypeError('k must be less than or equal to n in function composition')
       }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      return combinations((addScalar as any)(n, -1), (addScalar as any)(k, -1))
-=======
       return combinations(addScalar(n, -1), addScalar(k, -1))
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
       return combinations(addScalar(n, -1), addScalar(k, -1))
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

@@ -136,19 +136,11 @@ export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, 
       const parenthesis =
           (options && options.parenthesis) ? options.parenthesis : 'keep'
       const precedence =
-<<<<<<< HEAD
-          getPrecedence(this as any, parenthesis, options && options.implicit || 'hide', undefined)
-
-      const paramStrings = this.params.map(function (p: MathNode, index: number): string {
-        const paramPrecedence =
-            getPrecedence(p as any, parenthesis, options && options.implicit || 'hide', undefined)
-=======
           getPrecedence(this as any, parenthesis, options && options.implicit || 'hide')
 
       const paramStrings = this.params.map(function (p: Node, index: number): string {
         const paramPrecedence =
             getPrecedence(p as any, parenthesis, options && options.implicit || 'hide')
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         return (parenthesis === 'all' ||
                 (paramPrecedence !== null && paramPrecedence <= precedence))
           ? '(' + p.toString(options) + ')'
@@ -197,19 +189,11 @@ export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, 
       const parenthesis =
           (options && options.parenthesis) ? options.parenthesis : 'keep'
       const precedence =
-<<<<<<< HEAD
-          getPrecedence(this as any, parenthesis, options && options.implicit || 'hide', undefined)
-
-      const paramStrings = this.params.map(function (p: MathNode, index: number): string {
-        const paramPrecedence =
-            getPrecedence(p as any, parenthesis, options && options.implicit || 'hide', undefined)
-=======
           getPrecedence(this as any, parenthesis, options && options.implicit || 'hide')
 
       const paramStrings = this.params.map(function (p: Node, index: number): string {
         const paramPrecedence =
             getPrecedence(p as any, parenthesis, options && options.implicit || 'hide')
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         return (parenthesis === 'all' ||
                 (paramPrecedence !== null && paramPrecedence <= precedence))
           ? ('<span class="math-parenthesis math-round-parenthesis">(</span>' +
@@ -238,19 +222,11 @@ export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, 
       const parenthesis =
           (options && options.parenthesis) ? options.parenthesis : 'keep'
       const precedence =
-<<<<<<< HEAD
-          getPrecedence(this as any, parenthesis, options && options.implicit || 'hide', undefined)
-
-      const paramStrings = this.params.map(function (p: MathNode, index: number): string {
-        const paramPrecedence =
-            getPrecedence(p as any, parenthesis, options && options.implicit || 'hide', undefined)
-=======
           getPrecedence(this as any, parenthesis, options && options.implicit || 'hide')
 
       const paramStrings = this.params.map(function (p: Node, index: number): string {
         const paramPrecedence =
             getPrecedence(p as any, parenthesis, options && options.implicit || 'hide')
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         return (parenthesis === 'all' ||
                 (paramPrecedence !== null && paramPrecedence <= precedence))
           ? '\\left(' + p.toTex(options) + '\\right)'

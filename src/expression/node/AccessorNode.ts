@@ -166,13 +166,8 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): AccessorNode {
       return new AccessorNode(
-<<<<<<< HEAD
-        this._ifNode(callback(this.object, 'object', this)),
-        this._ifNode(callback(this.index, 'index', this)),
-=======
         (this as any)._ifNode(callback(this.object, 'object', this as any)),
         (this as any)._ifNode(callback(this.index, 'index', this as any)),
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
         this.optionalChaining
       )
     }

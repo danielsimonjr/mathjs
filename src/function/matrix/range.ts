@@ -200,13 +200,8 @@ export const createRange = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       return _out(_range(
         bignumber(r.start),
         bignumber(r.end),
-<<<<<<< HEAD
-        bignumber(r.step),
-        includeEnd))
-=======
         bignumber(r.step)),
       includeEnd)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     } else {
       return _out(_range(r.start, r.end, r.step, includeEnd))
     }

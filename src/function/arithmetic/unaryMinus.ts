@@ -3,11 +3,7 @@ import { deepMap } from '../../utils/collection.js'
 import { unaryMinusNumber } from '../../plain/number/index.js'
 
 const name = 'unaryMinus'
-<<<<<<< HEAD
-const dependencies = ['typed']
-=======
 const dependencies = ['typed'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createUnaryMinus = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**

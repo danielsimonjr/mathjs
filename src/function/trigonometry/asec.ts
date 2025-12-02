@@ -2,11 +2,7 @@ import { factory } from '../../utils/factory.js'
 import { asecNumber } from '../../plain/number/index.js'
 
 const name = 'asec'
-<<<<<<< HEAD
-const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
-=======
 const dependencies = ['typed', 'config', 'Complex', 'BigNumber'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createAsec = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex, BigNumber }: { typed: any; config: any; Complex: any; BigNumber: any }) => {
   /**

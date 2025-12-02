@@ -4,11 +4,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'permutations'
-<<<<<<< HEAD
-const dependencies = ['typed', 'factorial']
-=======
 const dependencies = ['typed', 'factorial'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createPermutations = /* #__PURE__ */ factory(name, dependencies, ({ typed, factorial }: any) => {
   /**

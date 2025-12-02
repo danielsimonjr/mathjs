@@ -12,12 +12,7 @@ const dependencies = [
   'DenseMatrix'
 ]
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export const createUsolveAll = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, matrix, divideScalar, multiplyScalar, subtractScalar, equalScalar, DenseMatrix }: {
-=======
 export const createUsolveAll = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divideScalar, multiplyScalar, subtractScalar, equalScalar, DenseMatrix }: {
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 export const createUsolveAll = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divideScalar, multiplyScalar, subtractScalar, equalScalar, DenseMatrix }: {
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

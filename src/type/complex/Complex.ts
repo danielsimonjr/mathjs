@@ -4,12 +4,7 @@ import { isNumber, isUnit } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 
 const name = 'Complex'
-<<<<<<< HEAD
-<<<<<<< HEAD
-const dependencies = []
-=======
 const dependencies = [] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 const dependencies: string[] = []
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

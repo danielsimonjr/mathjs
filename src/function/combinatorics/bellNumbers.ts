@@ -1,11 +1,7 @@
 import { factory } from '../../utils/factory.js'
 
 const name = 'bellNumbers'
-<<<<<<< HEAD
-const dependencies = ['typed', 'addScalar', 'isNegative', 'isInteger', 'stirlingS2']
-=======
 const dependencies = ['typed', 'addScalar', 'isNegative', 'isInteger', 'stirlingS2'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createBellNumbers = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -44,12 +40,7 @@ export const createBellNumbers = /* #__PURE__ */ factory(name, dependencies, ({
       // Sum (k=0, n) S(n,k).
       let result: number | any = 0
       for (let i = 0; i <= n; i++) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        result = (addScalar as any)(result, (stirlingS2 as any)(n, i))
-=======
         result = addScalar(result, stirlingS2(n, i))
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
         result = addScalar(result, stirlingS2(n, i))
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

@@ -17,11 +17,7 @@ const dependencies = [
   'OperatorNode',
   'ParenthesisNode',
   'SymbolNode'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -195,11 +191,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
     },
 
     'function, ParenthesisNode, string': function (isConst: (node: MathNode, varName: string) => boolean, node: ParenthesisNode, varName: string): boolean {
-<<<<<<< HEAD
-      return isConst((node as any).content, varName)
-=======
       return isConst(node.content, varName)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     'function, FunctionAssignmentNode, string': function (isConst: (node: MathNode, varName: string) => boolean, node: FunctionAssignmentNode, varName: string): boolean {
@@ -234,11 +226,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
     },
 
     'ParenthesisNode, function': function (node: ParenthesisNode, isConst: (node: MathNode) => boolean): ParenthesisNode {
-<<<<<<< HEAD
-      return new ParenthesisNode(_derivative((node as any).content, isConst))
-=======
       return new ParenthesisNode(_derivative(node.content, isConst))
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     'FunctionAssignmentNode, function': function (node: FunctionAssignmentNode, isConst: (node: MathNode) => boolean): MathNode {
@@ -613,11 +601,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
 
       if (node.op === '+') {
         // d/dx(sum(f(x)) = sum(f'(x))
-<<<<<<< HEAD
-        return new OperatorNode(node.op, (node as any).fn, node.args.map(function (arg: MathNode) {
-=======
         return new OperatorNode(node.op, node.fn, node.args.map(function (arg: MathNode) {
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
           return _derivative(arg, isConst)
         }))
       }
@@ -625,22 +609,14 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
       if (node.op === '-') {
         // d/dx(+/-f(x)) = +/-f'(x)
         if (node.isUnary()) {
-<<<<<<< HEAD
-          return new OperatorNode(node.op, (node as any).fn, [
-=======
           return new OperatorNode(node.op, node.fn, [
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
             _derivative(node.args[0], isConst)
           ])
         }
 
         // Linearity of differentiation, d/dx(f(x) +/- g(x)) = f'(x) +/- g'(x)
         if (node.isBinary()) {
-<<<<<<< HEAD
-          return new OperatorNode(node.op, (node as any).fn, [
-=======
           return new OperatorNode(node.op, node.fn, [
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
             _derivative(node.args[0], isConst),
             _derivative(node.args[1], isConst)
           ])

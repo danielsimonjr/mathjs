@@ -1,10 +1,6 @@
 import FractionLib from 'fraction.js'
 import { factory } from '../../utils/factory.js'
-<<<<<<< HEAD
-import type { FactoryFunctionMap } from '../../../types/index.js'
-=======
 import type { FactoryFunctionMap } from '../../types.js'
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 // Cast to any to work around TypeScript's namespace limitations
 const Fraction = FractionLib as any

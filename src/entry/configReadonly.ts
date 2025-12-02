@@ -2,11 +2,7 @@ import { DEFAULT_CONFIG } from '../core/config.js'
 import { MATRIX_OPTIONS, NUMBER_OPTIONS } from '../core/function/config.js'
 
 // create a read-only version of config
-<<<<<<< HEAD
-export const config = function (options: any) {
-=======
 export const config = function (options: any): any {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   if (options) {
     throw new Error('The global config is readonly. \n' +
       'Please create a mathjs instance if you want to change the default configuration. \n' +

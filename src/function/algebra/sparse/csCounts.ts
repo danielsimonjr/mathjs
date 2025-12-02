@@ -7,12 +7,7 @@ import { csLeaf } from './csLeaf.js'
 const name = 'csCounts'
 const dependencies = ['transpose']
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export const createCsCounts: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ transpose }) => {
-=======
 export const createCsCounts: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ transpose }) => {
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 export const createCsCounts = /* #__PURE__ */ factory(name, dependencies, ({ transpose }: { transpose: any }) => {
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

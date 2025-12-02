@@ -16,12 +16,7 @@ const dependencies = [
   'SparseMatrix'
 ]
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export const createCsLu: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }) => {
-=======
 export const createCsLu: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }) => {
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 export const createCsLu = /* #__PURE__ */ factory(name, dependencies, ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }: {
   abs: any

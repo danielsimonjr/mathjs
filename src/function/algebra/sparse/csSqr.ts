@@ -15,12 +15,7 @@ const dependencies = [
   'transpose'
 ]
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export const createCsSqr: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ add, multiply, transpose }) => {
-=======
 export const createCsSqr: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ add, multiply, transpose }) => {
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 export const createCsSqr = /* #__PURE__ */ factory(name, dependencies, ({ add, multiply, transpose }: { add: any; multiply: any; transpose: any }) => {
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

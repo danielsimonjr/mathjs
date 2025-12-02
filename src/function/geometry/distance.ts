@@ -11,11 +11,7 @@ const dependencies = [
   'deepEqual',
   'sqrt',
   'abs'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -224,12 +220,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({
     if (a.constructor !== Array) {
       a = _objectToArray(a)
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    return _isNumber((a as any)[0]) && _isNumber((a as any)[1])
-=======
     return _isNumber(a[0]) && _isNumber(a[1])
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
     return _isNumber(a[0]) && _isNumber(a[1])
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
@@ -240,12 +231,7 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({
     if (a.constructor !== Array) {
       a = _objectToArray(a)
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    return _isNumber((a as any)[0]) && _isNumber((a as any)[1]) && _isNumber((a as any)[2])
-=======
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2])
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2])
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
@@ -263,14 +249,8 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({
     if (a.constructor !== Array) {
       a = _objectToArray(a)
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    return _isNumber((a as any)[0]) && _isNumber((a as any)[1]) && _isNumber((a as any)[2]) &&
-      _isNumber((a as any)[3]) && _isNumber((a as any)[4]) && _isNumber((a as any)[5])
-=======
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2]) &&
       _isNumber(a[3]) && _isNumber(a[4]) && _isNumber(a[5])
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
     return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2]) &&
       _isNumber(a[3]) && _isNumber(a[4]) && _isNumber(a[5])

@@ -161,11 +161,7 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Array} arr2     Array 2
    * @return {Array}         resulting array
    */
-<<<<<<< HEAD
-  function _ArrayDiff (arr1: any, arr2: any): any {
-=======
   function _ArrayDiff (arr1: any[], arr2: any[]): any[] {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
     if (arr1.length !== arr2.length) {
       throw RangeError('Not all sub-arrays have the same length')
     }

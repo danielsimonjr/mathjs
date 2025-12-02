@@ -2,11 +2,7 @@ import { factory } from '../../utils/factory.js'
 import { cschNumber } from '../../plain/number/index.js'
 
 const name = 'csch'
-<<<<<<< HEAD
-const dependencies = ['typed', 'BigNumber']
-=======
 const dependencies = ['typed', 'BigNumber'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createCsch = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
   /**

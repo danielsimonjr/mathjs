@@ -2,12 +2,6 @@ import { bitNotBigNumber } from '../../utils/bignumber/bitwise.js'
 import { deepMap } from '../../utils/collection.js'
 import { factory } from '../../utils/factory.js'
 import { bitNotNumber } from '../../plain/number/index.js'
-<<<<<<< HEAD
-<<<<<<< HEAD
-import type { MathJsChain } from '../../../types/index.js'
-import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
-=======
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
 const name = 'bitNot'
 const dependencies = ['typed']

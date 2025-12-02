@@ -3,11 +3,7 @@ import { secNumber } from '../../plain/number/index.js'
 import { createTrigUnit } from './trigUnit.js'
 
 const name = 'sec'
-<<<<<<< HEAD
-const dependencies = ['typed', 'BigNumber']
-=======
 const dependencies = ['typed', 'BigNumber'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createSec = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
   const trigUnit = createTrigUnit({ typed })

@@ -5,11 +5,7 @@ const name = 'unit'
 const dependencies = ['typed', 'Unit']
 
 // This function is named createUnitFunction to prevent a naming conflict with createUnit
-<<<<<<< HEAD
-export const createUnitFunction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Unit }: MathJsStatic) => {
-=======
 export const createUnitFunction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Unit }: { typed: any; Unit: any }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Create a unit. Depending on the passed arguments, the function
    * will create and return a new math.Unit object.

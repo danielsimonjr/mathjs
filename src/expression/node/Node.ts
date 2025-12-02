@@ -376,11 +376,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
           case 'undefined':
             return
           case 'function':
-<<<<<<< HEAD
-            return options.handler(this as any, options)
-=======
             return options.handler(this, options)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
           default:
             throw new TypeError('Object or function expected as callback')
         }
@@ -406,9 +402,3 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
 
   return Node
 }, { isClass: true, isNode: true })
-<<<<<<< HEAD
-
-// Export the Node type for use in other modules
-export type MathNode = InstanceType<ReturnType<typeof createNode>>
-=======
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu

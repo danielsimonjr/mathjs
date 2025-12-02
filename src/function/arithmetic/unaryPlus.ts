@@ -4,11 +4,7 @@ import { unaryPlusNumber } from '../../plain/number/index.js'
 import { safeNumberType } from '../../utils/number.js'
 
 const name = 'unaryPlus'
-<<<<<<< HEAD
-const dependencies = ['typed', 'config', 'numeric']
-=======
 const dependencies = ['typed', 'config', 'numeric'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createUnaryPlus = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, numeric }: { typed: any; config: any; numeric: any }) => {
   /**

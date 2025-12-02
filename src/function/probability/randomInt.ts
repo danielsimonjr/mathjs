@@ -4,11 +4,7 @@ import { createRng } from './util/seededRNG.js'
 import { isMatrix } from '../../utils/is.js'
 
 const name = 'randomInt'
-<<<<<<< HEAD
-const dependencies = ['typed', 'config', 'log2', '?on']
-=======
 const dependencies = ['typed', 'config', 'log2', '?on'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createRandomInt = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, log2, on }: {
   typed: any

@@ -3,11 +3,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import { deepForEach } from '../../utils/array.js'
 
 const name = 'forEach'
-<<<<<<< HEAD
-const dependencies = ['typed']
-=======
 const dependencies = ['typed'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createForEach: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

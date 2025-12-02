@@ -12,12 +12,7 @@ const dependencies = [
 
 type OperatorContext = Record<string, Record<string, boolean>>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export const createUtil = /* #__PURE__ */ factory(name, dependencies as string[], ({ FunctionNode, OperatorNode, SymbolNode }: {
-=======
 export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ FunctionNode, OperatorNode, SymbolNode }: {
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ FunctionNode, OperatorNode, SymbolNode }: {
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
@@ -200,11 +195,7 @@ export const createUtil = /* #__PURE__ */ factory(name, dependencies, ({ Functio
     if (isOperatorNode(node)) {
       return function (args: MathNode[]): MathNode {
         try {
-<<<<<<< HEAD
-          return new OperatorNode(node.op, (node as any).fn, args, (node as any).implicit)
-=======
           return new OperatorNode(node.op, node.fn, args, node.implicit)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         } catch (err) {
           console.error(err)
           return [] as any

@@ -2,11 +2,7 @@ import { factory } from '../../utils/factory.js'
 import { atanhNumber } from '../../plain/number/index.js'
 
 const name = 'atanh'
-<<<<<<< HEAD
-const dependencies = ['typed', 'config', 'Complex']
-=======
 const dependencies = ['typed', 'config', 'Complex'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createAtanh = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }: { typed: any; config: any; Complex: any }) => {
   /**

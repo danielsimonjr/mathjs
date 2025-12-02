@@ -110,13 +110,8 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
       const blocks: BlockItem[] = []
       for (let i = 0; i < this.blocks.length; i++) {
         const block = this.blocks[i]
-<<<<<<< HEAD
-        const node = this._ifNode(
-          callback(block.node, 'blocks[' + i + '].node', this))
-=======
         const node = (this as any)._ifNode(
           callback(block.node, 'blocks[' + i + '].node', this as any))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
         blocks[i] = {
           node,
           visible: block.visible

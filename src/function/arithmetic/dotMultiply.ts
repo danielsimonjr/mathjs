@@ -14,11 +14,7 @@ const dependencies = [
   'equalScalar',
   'multiplyScalar',
   'concat'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createDotMultiply = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, multiplyScalar, concat }: any): TypedFunction => {
   const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })

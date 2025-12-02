@@ -2,11 +2,7 @@ import { deepMap } from '../../utils/collection.js'
 import { factory } from '../../utils/factory.js'
 
 const name = 'factorial'
-<<<<<<< HEAD
-const dependencies = ['typed', 'gamma']
-=======
 const dependencies = ['typed', 'gamma'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createFactorial = /* #__PURE__ */ factory(name, dependencies, ({ typed, gamma }: { typed: any; gamma: any }) => {
   /**
@@ -37,11 +33,7 @@ export const createFactorial = /* #__PURE__ */ factory(name, dependencies, ({ ty
         throw new Error('Value must be non-negative')
       }
 
-<<<<<<< HEAD
-      return (gamma as any)(n + 1)
-=======
       return gamma(n + 1)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     BigNumber: function (n: any): any {
@@ -52,12 +44,7 @@ export const createFactorial = /* #__PURE__ */ factory(name, dependencies, ({ ty
       return gamma(n.plus(1))
     },
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    'Array | Matrix': typed.referToSelf((self: TypedFunction): any => (n: any): any => deepMap(n, self))
-=======
     'Array | Matrix': typed.referToSelf((self: TypedFunction) => (n: any): any => deepMap(n, self))
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
     'Array | Matrix': typed.referToSelf((self: any) => (n: any) => deepMap(n, self))
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

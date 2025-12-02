@@ -9,11 +9,7 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 
 const name = 'floor'
-<<<<<<< HEAD
-const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zeros', 'DenseMatrix']
-=======
 const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zeros', 'DenseMatrix'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 // Cast Decimal to any for construction
 const bigTen = new (Decimal as any)(10)
@@ -136,11 +132,7 @@ export const createFloor = /* #__PURE__ */ factory(name, dependencies, ({ typed,
     },
 
     'Complex, BigNumber': function (x: any, n: any): any {
-<<<<<<< HEAD
-      return x.floor((n as any).toNumber())
-=======
       return x.floor(n.toNumber())
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     BigNumber: _bigFloor,
@@ -163,11 +155,7 @@ export const createFloor = /* #__PURE__ */ factory(name, dependencies, ({ typed,
     },
 
     'Fraction, BigNumber': function (x: any, n: any): any {
-<<<<<<< HEAD
-      return x.floor((n as any).toNumber())
-=======
       return x.floor(n.toNumber())
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     },
 
     'Unit, number, Unit': typed.referToSelf((self: any) => function (x: any, n: number, unit: any): any {
@@ -175,11 +163,7 @@ export const createFloor = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       return unit.multiply(self(valueless, n))
     }),
 
-<<<<<<< HEAD
-    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, (n as any).toNumber(), unit)),
-=======
     'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, n.toNumber(), unit)),
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
     'Array | Matrix, number | BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => {
       // deep map collection, skip zeros since floor(0) = 0

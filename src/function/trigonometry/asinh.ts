@@ -2,11 +2,7 @@ import { factory } from '../../utils/factory.js'
 import { asinhNumber } from '../../plain/number/index.js'
 
 const name = 'asinh'
-<<<<<<< HEAD
-const dependencies = ['typed']
-=======
 const dependencies = ['typed'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createAsinh = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**

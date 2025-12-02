@@ -7,12 +7,7 @@ import { factory } from '../../../utils/factory.js'
 const name = 'csSpsolve'
 const dependencies = ['divideScalar', 'multiply', 'subtract']
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export const createCsSpsolve: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ divideScalar, multiply, subtract }) => {
-=======
 export const createCsSpsolve: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ divideScalar, multiply, subtract }) => {
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 export const createCsSpsolve = /* #__PURE__ */ factory(name, dependencies, ({ divideScalar, multiply, subtract }: { divideScalar: any; multiply: any; subtract: any }) => {
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

@@ -24,11 +24,7 @@ const dependencies = [
   'math',
   'Node',
   'SymbolNode'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({ math, Node, SymbolNode }: {
   math: any
@@ -301,11 +297,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
           }
         }
       } else {
-<<<<<<< HEAD
-        // (node as any).fn.isAccessorNode && !(node as any).fn.index.isObjectProperty()
-=======
         // node.fn.isAccessorNode && !node.fn.index.isObjectProperty()
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
         // we have to dynamically determine whether the function has the
         // rawArgs property
         const fnExpr = this.fn.toString()
@@ -339,17 +331,10 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-<<<<<<< HEAD
-      callback(this.fn, 'fn', this as any)
-
-      for (let i = 0; i < this.args.length; i++) {
-        callback(this.args[i], 'args[' + i + ']', this as any)
-=======
       callback(this.fn, 'fn', this)
 
       for (let i = 0; i < this.args.length; i++) {
         callback(this.args[i], 'args[' + i + ']', this)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
     }
 
@@ -360,17 +345,10 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @returns {FunctionNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): FunctionNode {
-<<<<<<< HEAD
-      const fn = this._ifNode(callback(this.fn, 'fn', this as any))
-      const args: MathNode[] = []
-      for (let i = 0; i < this.args.length; i++) {
-        args[i] = this._ifNode(callback(this.args[i], 'args[' + i + ']', this as any))
-=======
       const fn = this._ifNode(callback(this.fn, 'fn', this))
       const args: MathNode[] = []
       for (let i = 0; i < this.args.length; i++) {
         args[i] = this._ifNode(callback(this.args[i], 'args[' + i + ']', this))
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
       return new FunctionNode(fn, args)
     }
@@ -519,13 +497,8 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
 
       let latexConverter: any
 
-<<<<<<< HEAD
-      if ((latexFunctions as any)[this.name]) {
-        latexConverter = (latexFunctions as any)[this.name]
-=======
       if (latexFunctions[this.name]) {
         latexConverter = latexFunctions[this.name]
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }
 
       // toTex property on the function itself

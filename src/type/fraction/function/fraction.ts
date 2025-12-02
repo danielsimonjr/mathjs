@@ -4,12 +4,7 @@ import { deepMap } from '../../../utils/collection.js'
 const name = 'fraction'
 const dependencies = ['typed', 'Fraction']
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export const createFraction = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Fraction }): TypedFunction => {
-=======
 export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Fraction }): TypedFunction => {
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Fraction }: { typed: any, Fraction: any }): any => {
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8

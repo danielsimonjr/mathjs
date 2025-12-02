@@ -34,13 +34,8 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
        * @param {number} numberOfArrays - The number of arrays to pass to the callback function.
        * @returns {*} - The transformed callback function.
        */
-<<<<<<< HEAD
-  function _transformTypedCallbackFunction (typedFunction: any, numberOfArrays: any): any {
-    const signatures: any = Object.fromEntries(
-=======
   function _transformTypedCallbackFunction (typedFunction: any, numberOfArrays: number): any {
     const signatures: Record<string, any> = Object.fromEntries(
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       Object.entries(typedFunction.signatures)
         .map(([signature, callbackFunction]: [string, any]) => {
           const numberOfCallbackInputs = signature.split(',').length

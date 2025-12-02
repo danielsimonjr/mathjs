@@ -88,11 +88,7 @@ export const createCumSum = /* #__PURE__ */ factory(name, dependencies, ({ typed
     try {
       return _cumsummap(array)
     } catch (err) {
-<<<<<<< HEAD
-      throw improveErrorMessage(err, name, undefined)
-=======
       throw improveErrorMessage(err, name)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
   }
 
@@ -128,21 +124,13 @@ export const createCumSum = /* #__PURE__ */ factory(name, dependencies, ({ typed
     const size = arraySize(array)
     if (dim < 0 || (dim >= size.length)) {
       // TODO: would be more clear when throwing a DimensionError here
-<<<<<<< HEAD
-      throw new IndexError(dim, 0, size.length) as any
-=======
       throw new IndexError(dim, size.length)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
 
     try {
       return _cumsumDimensional(array, dim)
     } catch (err) {
-<<<<<<< HEAD
-      throw improveErrorMessage(err, name, undefined)
-=======
       throw improveErrorMessage(err, name)
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
     }
   }
 

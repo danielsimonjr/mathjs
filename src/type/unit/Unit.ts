@@ -4,9 +4,6 @@ import { memoize } from '../../utils/function.js'
 import { endsWith } from '../../utils/string.js'
 import { clone, hasOwnProperty } from '../../utils/object.js'
 import { createBigNumberPi as createPi } from '../../utils/bignumber/constants.js'
-<<<<<<< HEAD
-import type { MathJsStatic } from '../../types.js'
-=======
 // Types for Unit configuration
 interface UnitConfig {
   fixPrefix?: boolean
@@ -18,7 +15,6 @@ interface UnitConfig {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { MathJsStatic } from '../../../types/index.js'
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
 const name = 'Unit'
 const dependencies = [

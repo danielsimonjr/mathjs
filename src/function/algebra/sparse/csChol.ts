@@ -19,12 +19,7 @@ const dependencies = [
   'SparseMatrix'
 ]
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export const createCsChol: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], (
-=======
 export const createCsChol: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, (
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   {
     divideScalar,
     sqrt,

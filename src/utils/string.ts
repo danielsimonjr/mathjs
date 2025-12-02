@@ -52,11 +52,7 @@ export function endsWith (text: any, search: any) {
  * @return {string} str
  */
 export function format (value: any, options?: any): string {
-<<<<<<< HEAD
-  const result: any = _format(value, options)
-=======
   const result: string = _format(value, options)
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   if (options && typeof options === 'object' && 'truncate' in options &&
       result.length > options.truncate) {
     return result.substring(0, options.truncate - 3) + '...'
@@ -64,11 +60,7 @@ export function format (value: any, options?: any): string {
   return result
 }
 
-<<<<<<< HEAD
-function _format (value: any, options?: any): any {
-=======
 function _format (value: any, options?: any): string {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   if (typeof value === 'number') {
     return formatNumber(value, options)
   }

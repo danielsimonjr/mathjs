@@ -226,19 +226,11 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
      * @returns {AssignmentNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): AssignmentNode {
-<<<<<<< HEAD
-      const object = this._ifNode(callback(this.object, 'object', this))
-      const index = this.index
-        ? this._ifNode(callback(this.index, 'index', this))
-        : null
-      const value = this._ifNode(callback(this.value, 'value', this))
-=======
       const object = (this as any)._ifNode(callback(this.object, 'object', this as any))
       const index = this.index
         ? (this as any)._ifNode(callback(this.index, 'index', this as any))
         : null
       const value = (this as any)._ifNode(callback(this.value, 'value', this as any))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
 
       return new AssignmentNode(object, index, value)
     }

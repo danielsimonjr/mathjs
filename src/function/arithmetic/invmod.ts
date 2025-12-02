@@ -1,11 +1,6 @@
 import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
-<<<<<<< HEAD
-<<<<<<< HEAD
-import type { ConfigOptions } from '../../core/config.js'
-=======
 import type { MathJsConfig } from '../../core/create.js'
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 import type { MathJsConfig } from '../../core/config.js'
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
@@ -13,11 +8,7 @@ import type { MathJsConfig } from '../../core/config.js'
 type Dependencies = 'typed' | 'config' | 'BigNumber' | 'xgcd' | 'equal' | 'smaller' | 'mod' | 'add' | 'isInteger'
 
 const name = 'invmod'
-<<<<<<< HEAD
-const dependencies = ['typed', 'config', 'BigNumber', 'xgcd', 'equal', 'smaller', 'mod', 'add', 'isInteger']
-=======
 const dependencies = ['typed', 'config', 'BigNumber', 'xgcd', 'equal', 'smaller', 'mod', 'add', 'isInteger'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createInvmod = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, BigNumber, xgcd, equal, smaller, mod, add, isInteger }: any): TypedFunction => {
   /**

@@ -3,11 +3,7 @@ import { factory } from '../../../utils/factory.js'
 const name = 'createUnit'
 const dependencies = ['typed', 'Unit']
 
-<<<<<<< HEAD
-export const createCreateUnit = /* #__PURE__ */ factory(name, dependencies, ({ typed, Unit }: MathJsStatic) => {
-=======
 export const createCreateUnit = /* #__PURE__ */ factory(name, dependencies, ({ typed, Unit }: { typed: any; Unit: any }) => {
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
   /**
    * Create a user-defined unit and register it with the Unit type.
    *

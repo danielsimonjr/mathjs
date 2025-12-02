@@ -4,11 +4,7 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 
 const name = 'fix'
-<<<<<<< HEAD
-const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix']
-=======
 const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createFixNumber = /* #__PURE__ */ factory(
   name, ['typed', 'ceil', 'floor'] as const, ({ typed, ceil, floor }: { typed: any, ceil: any, floor: any }) => {
@@ -93,11 +89,7 @@ export const createFix = /* #__PURE__ */ factory(name, dependencies, ({ typed, C
     },
 
     'Complex, BigNumber': function (x: any, bn: any): any {
-<<<<<<< HEAD
-      const n = (bn as any).toNumber()
-=======
       const n = bn.toNumber()
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       return new Complex(
         (x.re > 0) ? floor(x.re, n) : ceil(x.re, n),
         (x.im > 0) ? floor(x.im, n) : ceil(x.im, n)
@@ -129,11 +121,7 @@ export const createFix = /* #__PURE__ */ factory(name, dependencies, ({ typed, C
       return unit.multiply(self(valueless, n))
     }),
 
-<<<<<<< HEAD
-    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, (n as any).toNumber(), unit)),
-=======
     'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, n.toNumber(), unit)),
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
     'Array | Matrix, number | BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => {
       // deep map collection, skip zeros since fix(0) = 0

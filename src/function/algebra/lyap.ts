@@ -7,11 +7,7 @@ const dependencies = [
   'sylvester',
   'multiply',
   'transpose'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createLyap = /* #__PURE__ */ factory(name, dependencies, (
   {

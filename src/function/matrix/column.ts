@@ -10,11 +10,7 @@ interface Matrix {
 }
 
 interface Index {
-<<<<<<< HEAD
-  new (...ranges: any[]): Index
-=======
   new (ranges: any[]): Index
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 }
 
 interface TypedFunction<T = any> {

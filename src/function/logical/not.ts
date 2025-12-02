@@ -74,10 +74,6 @@ export const createNot = /* #__PURE__ */ factory(name, dependencies, ({ typed }:
 
     Unit: typed.referToSelf(self => (x: Unit): any => typed.find(self, x.valueType())(x.value)),
 
-<<<<<<< HEAD
-    'Array | Matrix': typed.referToSelf(((self: any) => ((x: any): any => deepMap(x, self))) as any) as any
-=======
     'Array | Matrix': typed.referToSelf(self => (x: any): any => deepMap(x, self))
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
   })
 })

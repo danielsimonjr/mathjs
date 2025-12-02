@@ -1,11 +1,7 @@
 import { factory } from '../../utils/factory.js'
 
 const name = 'kldivergence'
-<<<<<<< HEAD
-const dependencies = ['typed', 'matrix', 'divide', 'sum', 'multiply', 'map', 'dotDivide', 'log', 'isNumeric']
-=======
 const dependencies = ['typed', 'matrix', 'divide', 'sum', 'multiply', 'map', 'dotDivide', 'log', 'isNumeric'] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createKldivergence = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divide, sum, multiply, map, dotDivide, log, isNumeric }: {
   typed: any
@@ -78,18 +74,10 @@ export const createKldivergence = /* #__PURE__ */ factory(name, dependencies, ({
     if ((sump as any) === 0) {
       throw new Error('Sum of elements in second object must be non zero')
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const qnorm = (divide as any)(q, (sum as any)(q))
-    const pnorm = (divide as any)(p, (sum as any)(p))
-
-    const result = (sum as any)((multiply as any)(qnorm, (map as any)((dotDivide as any)(qnorm, pnorm), (x: any) => (log as any)(x))))
-=======
     const qnorm = divide(q, sum(q))
     const pnorm = divide(p, sum(p))
 
     const result = sum(multiply(qnorm, map(dotDivide(qnorm, pnorm), (x: any) => log(x))))
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
     const qnorm = divide(q, sum(q))
     const pnorm = divide(p, sum(p))

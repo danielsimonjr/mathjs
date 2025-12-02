@@ -119,15 +119,9 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): ConditionalNode {
       return new ConditionalNode(
-<<<<<<< HEAD
-        this._ifNode(callback(this.condition, 'condition', this)),
-        this._ifNode(callback(this.trueExpr, 'trueExpr', this)),
-        this._ifNode(callback(this.falseExpr, 'falseExpr', this))
-=======
         (this as any)._ifNode(callback(this.condition, 'condition', this as any)),
         (this as any)._ifNode(callback(this.trueExpr, 'trueExpr', this as any)),
         (this as any)._ifNode(callback(this.falseExpr, 'falseExpr', this as any))
->>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
       )
     }
 

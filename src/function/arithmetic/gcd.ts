@@ -1,12 +1,7 @@
 import { isInteger } from '../../utils/number.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
-<<<<<<< HEAD
-<<<<<<< HEAD
-import type { ConfigOptions } from '../../core/config.js'
-=======
 import type { MathJsConfig } from '../../core/create.js'
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 =======
 import type { MathJsConfig } from '../../core/config.js'
 >>>>>>> claude/typecheck-and-convert-js-01YLWgcoNb8jFsVbPqer68y8
@@ -30,11 +25,7 @@ const dependencies = [
   'BigNumber',
   'DenseMatrix',
   'concat'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 const gcdTypes = 'number | BigNumber | Fraction | Matrix | Array'
 const gcdManyTypesSignature = `${gcdTypes}, ${gcdTypes}, ...${gcdTypes}`
@@ -102,11 +93,7 @@ export const createGcd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
         if (is1d(array)) {
           return self(...array)
         }
-<<<<<<< HEAD
-        throw new (ArgumentsError as any)('gcd() supports only 1d matrices!')
-=======
         throw new ArgumentsError('gcd() supports only 1d matrices!')
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
       }),
       Matrix: typed.referToSelf((self: any) => (matrix: any) => {
         return self(matrix.toArray())

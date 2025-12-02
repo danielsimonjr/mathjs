@@ -14,11 +14,7 @@ const dependencies = [
   'matrix',
   'equalScalar',
   'concat'
-<<<<<<< HEAD
-]
-=======
 ] as const
->>>>>>> claude/typescript-wasm-refactor-019dszeNRqExsgy5oKFU3mVu
 
 export const createLcm = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, concat }: any): TypedFunction => {
   const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
