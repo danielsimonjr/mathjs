@@ -141,14 +141,14 @@ export const latexFunctions = {
   multiply: { 2: `\\left(\${args[0]}${latexOperators.multiply}\${args[1]}\\right)` },
   norm: {
     1: '\\left\\|${args[0]}\\right\\|',
-    2: undefined // use default template
+    2: undefined as any // use default template
   },
   nthRoot: { 2: '\\sqrt[${args[1]}]{${args[0]}}' },
   nthRoots: { 2: '\\{y : y^${args[1]} = {${args[0]}}\\}' },
   pow: { 2: `\\left(\${args[0]}\\right)${latexOperators.pow}{\${args[1]}}` },
   round: {
     1: '\\left\\lfloor${args[0]}\\right\\rceil',
-    2: undefined // use default template
+    2: undefined as any // use default template
   },
   sign: { 1: '\\mathrm{${name}}\\left(${args[0]}\\right)' },
   sqrt: { 1: '\\sqrt{${args[0]}}' },

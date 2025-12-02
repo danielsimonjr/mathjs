@@ -10,5 +10,5 @@ export const zetaDocs = {
     'zeta(-0.5)',
     'zeta(4)'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

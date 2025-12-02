@@ -10,5 +10,5 @@ export const zpk2tfDocs = {
     'zpk2tf([1, 2], [-1, -2])',
     'zpk2tf([1 - 3i, 2 + 2i], [-1, -2])'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

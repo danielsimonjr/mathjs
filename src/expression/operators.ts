@@ -37,7 +37,7 @@ export const properties = [
     'OperatorNode:or': {
       op: 'or',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // logical xor

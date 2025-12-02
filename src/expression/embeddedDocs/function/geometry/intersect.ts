@@ -10,5 +10,5 @@ export const intersectDocs = {
     'intersect([0, 0], [10, 10], [10, 0], [0, 10])',
     'intersect([1, 0, 1],  [4, -2, 2], [1, 1, 1, 6])'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

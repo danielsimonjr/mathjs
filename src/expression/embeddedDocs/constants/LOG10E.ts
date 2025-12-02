@@ -9,5 +9,5 @@ export const LOG10EDocs = {
     'LOG10E',
     'log(e, 10)'
   ],
-  seealso: []
+  seealso: [] as any[]
 }

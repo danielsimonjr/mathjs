@@ -11,5 +11,5 @@ export const toDocs = {
     '3.2kg to g',
     '16 bytes in bits'
   ],
-  seealso: []
+  seealso: [] as any[]
 }
