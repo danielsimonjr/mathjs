@@ -4,9 +4,12 @@ import { isInteger } from '../../utils/number.js'
 import { product } from '../../utils/product.js'
 
 const name = 'combinationsWithRep'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
-export const createCombinationsWithRep = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
+export const createCombinationsWithRep: FactoryFunction<
+  { typed: TypedFunction },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
    * Compute the number of ways of picking `k` unordered outcomes from `n`
    * possibilities, allowing individual outcomes to be repeated more than once.

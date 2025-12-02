@@ -1,21 +1,20 @@
-// @ts-ignore - no type declarations for seedrandom
 import seedrandom from 'seedrandom'
 
-const singletonRandom = /* #__PURE__ */ (seedrandom as any)(Date.now())
+const singletonRandom = /* #__PURE__ */ seedrandom(Date.now())
 
-export function createRng (randomSeed: any): () => number {
-  let random: any
+export function createRng (randomSeed) {
+  let random
 
   // create a new random generator with given seed
-  function setSeed (seed: any): void {
-    random = seed === null ? singletonRandom : (seedrandom as any)(String(seed))
+  function setSeed (seed) {
+    random = seed === null ? singletonRandom : seedrandom(String(seed))
   }
 
   // initialize a seeded pseudo random number generator with config's random seed
   setSeed(randomSeed)
 
   // wrapper function so the rng can be updated via generator
-  function rng (): number {
+  function rng () {
     return random()
   }
 

@@ -86,11 +86,8 @@ import { digits } from '../../utils/number.js'
 /**
  * Type definition for a typed function
  */
-export type TypedFunction<T = unknown> = typeof typedFunction & {
-  isTypedFunction?: (value: any) => boolean
-  referToSelf?: (callback: (self: any) => any) => any
-  referTo?: (...args: any[]) => any
-  find?: (...args: any[]) => any
+export type TypedFunction = typeof typedFunction & {
+  isTypedFunction?: typeof typedFunction.isTypedFunction
 }
 
 /**
@@ -126,11 +123,11 @@ type TypeDefinition = {
 }
 
 // returns a new instance of typed-function
-let _createTyped: (() => any) = function (): any {
+let _createTyped: (() => TypedFunction) = function (): TypedFunction {
   // initially, return the original instance of typed-function
   // consecutively, return a new instance from typed.create.
-  _createTyped = (typedFunction as any).create
-  return typedFunction
+  _createTyped = typedFunction.create as () => TypedFunction
+  return typedFunction as TypedFunction
 }
 
 const dependencies = ['?BigNumber', '?Complex', '?DenseMatrix', '?Fraction']
@@ -143,17 +140,17 @@ const dependencies = ['?BigNumber', '?Complex', '?DenseMatrix', '?Fraction']
 export const createTyped = /* #__PURE__ */ factory(
   'typed',
   dependencies,
-  function createTyped({ BigNumber, Complex, DenseMatrix, Fraction }: TypedDependencies): any {
+  function createTyped({ BigNumber, Complex, DenseMatrix, Fraction }: TypedDependencies) {
     // TODO: typed-function must be able to silently ignore signatures with unknown data types
 
     // get a new instance of typed-function
-    const typed: any = _createTyped()
+    const typed = _createTyped()
 
     // define all types. The order of the types determines in which order function
     // arguments are type-checked (so for performance it's important to put the
     // most used types first).
-    typed.clear()
-    typed.addTypes([
+    (typed as any).clear()
+    (typed as any).addTypes([
       { name: 'number', test: isNumber },
       { name: 'Complex', test: isComplex },
       { name: 'BigNumber', test: isBigNumber },
@@ -208,7 +205,7 @@ export const createTyped = /* #__PURE__ */ factory(
       { name: 'Object', test: isObject } // order 'Object' last, it matches on other classes too
     ] as TypeDefinition[])
 
-    typed.addConversions([
+    (typed as any).addConversions([
       {
         from: 'number',
         to: 'BigNumber',
@@ -473,8 +470,8 @@ export const createTyped = /* #__PURE__ */ factory(
     // This was added primarily as guidance for the v10 -> v11 transition,
     // and could potentially be removed in the future if it no longer seems
     // to be helpful.
-    typed.onMismatch = (name: string, args: any[], signatures: any[]) => {
-      const usualError = typed.createError(name, args, signatures)
+    (typed as any).onMismatch = (name: string, args: any[], signatures: any[]) => {
+      const usualError = (typed as any).createError(name, args, signatures)
       if (
         ['wrongType', 'mismatch'].includes(usualError.data.category) &&
         args.length === 1 &&

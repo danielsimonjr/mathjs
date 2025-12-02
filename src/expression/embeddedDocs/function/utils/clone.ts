@@ -12,5 +12,5 @@ export const cloneDocs = {
     'clone([1, 2; 3, 4])',
     'clone("hello world")'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

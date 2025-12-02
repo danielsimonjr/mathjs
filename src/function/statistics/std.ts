@@ -98,7 +98,7 @@ export const createStd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
   })
 
   function _std (array: any[] | Matrix, normalization?: NormalizationType | number | any): any {
-    if ((array as any).length === 0) {
+    if (array.length === 0) {
       throw new SyntaxError('Function std requires one or more parameters (0 provided)')
     }
 

@@ -8,7 +8,7 @@ import { xorNumber } from '../../plain/number/index.js'
 // Type definitions
 interface TypedFunction<T = any> {
   (...args: any[]): T
-  referToSelf(fn: (self: any) => any): any
+  referToSelf<U>(fn: (self: TypedFunction<U>) => TypedFunction<U>): TypedFunction<U>
 }
 
 interface Complex {

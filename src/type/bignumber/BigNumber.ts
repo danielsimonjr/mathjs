@@ -1,9 +1,6 @@
 import Decimal from 'decimal.js'
 import { factory } from '../../utils/factory.js'
 
-// Export BigNumber type for use in other modules
-export type BigNumber = any
-
 const name = 'BigNumber'
 const dependencies = ['?on', 'config']
 
@@ -12,14 +9,21 @@ export interface BigNumberJSON {
   value: string
 }
 
-// Cast Decimal to any for extending with custom properties
-const DecimalClass = Decimal as any
+export interface BigNumberClass extends Decimal.Constructor {
+  fromJSON(json: BigNumberJSON): Decimal
+}
+
+export interface BigNumberInstance extends Decimal {
+  type: 'BigNumber'
+  isBigNumber: true
+  toJSON(): BigNumberJSON
+}
 
 export const createBigNumberClass = /* #__PURE__ */ factory(name, dependencies, ({ on, config }: {
   on?: (event: string, callback: (curr: any, prev: any) => void) => void
   config: { precision: number }
 }) => {
-  const BigNumber = DecimalClass.clone({ precision: config.precision, modulo: DecimalClass.EUCLID }) as any
+  const BigNumber = Decimal.clone({ precision: config.precision, modulo: Decimal.EUCLID }) as BigNumberClass
   BigNumber.prototype = Object.create(BigNumber.prototype)
 
   /**
@@ -34,7 +38,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(name, dependencies, 
    * @returns {Object} Returns a JSON object structured as:
    *                   `{"mathjs": "BigNumber", "value": "0.2"}`
    */
-  BigNumber.prototype.toJSON = function (this: any): BigNumberJSON {
+  BigNumber.prototype.toJSON = function (this: Decimal): BigNumberJSON {
     return {
       mathjs: 'BigNumber',
       value: this.toString()
@@ -47,7 +51,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(name, dependencies, 
    *                       `{"mathjs": "BigNumber", "value": "0.2"}`
    * @return {BigNumber}
    */
-  BigNumber.fromJSON = function (json: BigNumberJSON): any {
+  BigNumber.fromJSON = function (json: BigNumberJSON): Decimal {
     return new BigNumber(json.value)
   }
 

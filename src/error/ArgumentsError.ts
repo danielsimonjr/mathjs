@@ -7,30 +7,24 @@
  * @param {number} [max]  Maximum required argument count
  * @extends Error
  */
-export class ArgumentsError extends Error {
-  fn: any
-  count: any
-  min: any
-  max: any
-
-  constructor (fn: any, count: any, min: any, max?: any) {
-    const message = 'Wrong number of arguments in function ' + fn +
-        ' (' + count + ' provided, ' +
-        min + ((max !== undefined && max !== null) ? ('-' + max) : '') + ' expected)'
-
-    super(message)
-
-    this.fn = fn
-    this.count = count
-    this.min = min
-    this.max = max
-    this.name = 'ArgumentsError'
-
-    if ((Error as any).captureStackTrace) {
-      (Error as any).captureStackTrace(this, ArgumentsError)
-    }
+export function ArgumentsError (fn, count, min, max) {
+  if (!(this instanceof ArgumentsError)) {
+    throw new SyntaxError('Constructor must be called with the new operator')
   }
+
+  this.fn = fn
+  this.count = count
+  this.min = min
+  this.max = max
+
+  this.message = 'Wrong number of arguments in function ' + fn +
+      ' (' + count + ' provided, ' +
+      min + ((max !== undefined && max !== null) ? ('-' + max) : '') + ' expected)'
+
+  this.stack = (new Error()).stack
 }
 
-// Add static property for type checking
-(ArgumentsError.prototype as any).isArgumentsError = true
+ArgumentsError.prototype = new Error()
+ArgumentsError.prototype.constructor = Error
+ArgumentsError.prototype.name = 'ArgumentsError'
+ArgumentsError.prototype.isArgumentsError = true

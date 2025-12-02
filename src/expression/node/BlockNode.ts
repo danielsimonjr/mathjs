@@ -1,14 +1,13 @@
 import { isNode } from '../../utils/is.js'
 import { forEach, map } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-
-type MathNode = any
+import type { MathNode } from './Node.js'
 
 const name = 'BlockNode'
 const dependencies = [
   'ResultSet',
   'Node'
-] as const
+]
 
 interface BlockItem {
   node: MathNode
@@ -17,7 +16,7 @@ interface BlockItem {
 
 export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ ResultSet, Node }: {
   ResultSet: any
-  Node: any
+  Node: typeof MathNode
 }) => {
   class BlockNode extends Node {
     blocks: BlockItem[]
@@ -50,8 +49,7 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
       })
     }
 
-    // @ts-expect-error - intentionally override Function.name
-    static readonly name = name
+    static name = name
     get type (): string { return name }
     get isBlockNode (): boolean { return true }
 
@@ -96,7 +94,7 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
       for (let i = 0; i < this.blocks.length; i++) {
-        callback(this.blocks[i].node, 'blocks[' + i + '].node', this)
+        callback(this.blocks[i].node, 'blocks[' + i + '].node', this as any)
       }
     }
 
@@ -110,7 +108,7 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
       const blocks: BlockItem[] = []
       for (let i = 0; i < this.blocks.length; i++) {
         const block = this.blocks[i]
-        const node = (this as any)._ifNode(
+        const node = this._ifNode(
           callback(block.node, 'blocks[' + i + '].node', this as any))
         blocks[i] = {
           node,

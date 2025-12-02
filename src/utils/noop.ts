@@ -1,19 +1,19 @@
-export function noBignumber (): never {
+export function noBignumber () {
   throw new Error('No "bignumber" implementation available')
 }
 
-export function noFraction (): never {
+export function noFraction () {
   throw new Error('No "fraction" implementation available')
 }
 
-export function noMatrix (): never {
+export function noMatrix () {
   throw new Error('No "matrix" implementation available')
 }
 
-export function noIndex (): never {
+export function noIndex () {
   throw new Error('No "index" implementation available')
 }
 
-export function noSubset (): never {
+export function noSubset () {
   throw new Error('No "matrix" implementation available')
 }

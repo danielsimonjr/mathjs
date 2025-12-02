@@ -1,10 +1,14 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
 import { subtractNumber } from '../../plain/number/index.js'
 
 const name = 'subtractScalar'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
-export const createSubtractScalar = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
+export const createSubtractScalar: FactoryFunction<
+  { typed: TypedFunction },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
    * Subtract two scalar values, `x - y`.
    * This function is meant for internal use: it is used by the public function

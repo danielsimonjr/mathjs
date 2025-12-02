@@ -1,7 +1,7 @@
 import { factory } from '../../utils/factory.js'
 
 const name = 'Matrix'
-const dependencies: string[] = []
+const dependencies = []
 
 /**
  * Formatting options for matrix display

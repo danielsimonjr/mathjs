@@ -3,9 +3,20 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'multinomial'
-const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInteger', 'isPositive'] as const
+const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInteger', 'isPositive']
 
-export const createMultinomial = /* #__PURE__ */ factory(name, dependencies, ({ typed, add, divide, multiply, factorial, isInteger, isPositive }: any) => {
+export const createMultinomial: FactoryFunction<
+  {
+    typed: TypedFunction
+    add: TypedFunction
+    divide: TypedFunction
+    multiply: TypedFunction
+    factorial: TypedFunction
+    isInteger: TypedFunction
+    isPositive: TypedFunction
+  },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed, add, divide, multiply, factorial, isInteger, isPositive }) => {
   /**
    * Multinomial Coefficients compute the number of ways of picking a1, a2, ..., ai unordered outcomes from `n` possibilities.
    *
@@ -36,11 +47,11 @@ export const createMultinomial = /* #__PURE__ */ factory(name, dependencies, ({ 
         if (!isInteger(ai) || !isPositive(ai)) {
           throw new TypeError('Positive integer value expected in function multinomial')
         }
-        sum = add(sum, ai)
-        denom = multiply(denom, factorial(ai))
+        sum = (add as any)(sum, ai)
+        denom = (multiply as any)(denom, (factorial as any)(ai))
       })
 
-      return divide(factorial(sum), denom)
+      return (divide as any)((factorial as any)(sum), denom)
     }
   })
 })

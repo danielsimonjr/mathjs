@@ -66,7 +66,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
     compile (): CompiledExpression {
       const expr = this._compile(mathWithTransform, {})
       const args: Record<string, any> = {}
-      const context: any = null
+      const context = null
 
       function evaluate (scope?: Record<string, any>): any {
         const s = createMap(scope)
@@ -92,7 +92,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
      * @return {function} Returns a function which can be called like:
      *                        evalNode(scope: Object, args: Object, context: *)
      */
-    _compile (_math: Record<string, any>, _argNames: Record<string, boolean>): CompileFunction {
+    _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
       throw new Error('Method _compile must be implemented by type ' + this.type)
     }
 
@@ -100,7 +100,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
      * Execute a callback for each of the child nodes of this node
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
-    forEach (_callback: (child: Node, path: string, parent: Node) => void): void {
+    forEach (callback: (child: Node, path: string, parent: Node) => void): void {
       // must be implemented by each of the Node implementations
       throw new Error('Cannot run forEach on a Node interface')
     }
@@ -111,7 +111,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
      * @param {function(child: Node, path: string, parent: Node): Node} callback
      * @returns {OperatorNode} Returns a transformed copy of the node
      */
-    map (_callback: (child: Node, path: string, parent: Node) => Node): Node {
+    map (callback: (child: Node, path: string, parent: Node) => Node): Node {
       // must be implemented by each of the Node implementations
       throw new Error('Cannot run map on a Node interface')
     }
@@ -122,7 +122,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
      * @returns {Node} Returns the input if it's a node, else throws an Error
      * @protected
      */
-    _ifNode (node: any): any {
+    _ifNode (node: any): Node {
       if (!isNode(node)) {
         throw new TypeError('Callback function must return a Node')
       }
@@ -277,7 +277,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
      *
      * @throws {Error}
      */
-    _toString (_options?: StringOptions): string {
+    _toString (options?: StringOptions): string {
       // must be implemented by each of the Node implementations
       throw new Error('_toString not implemented for ' + this.type)
     }
@@ -324,7 +324,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
      *
      * @throws {Error}
      */
-    _toHTML (_options?: StringOptions): string {
+    _toHTML (options?: StringOptions): string {
       // must be implemented by each of the Node implementations
       throw new Error('_toHTML not implemented for ' + this.type)
     }
@@ -361,7 +361,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
      * @param {Object} [options]
      * @throws {Error}
      */
-    _toTex (_options?: StringOptions): string {
+    _toTex (options?: StringOptions): string {
       // must be implemented by each of the Node implementations
       throw new Error('_toTex not implemented for ' + this.type)
     }
@@ -376,7 +376,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
           case 'undefined':
             return
           case 'function':
-            return options.handler(this, options)
+            return options.handler(this as any, options)
           default:
             throw new TypeError('Object or function expected as callback')
         }
@@ -402,3 +402,6 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
 
   return Node
 }, { isClass: true, isNode: true })
+
+// Export the Node type for use in other modules
+export type MathNode = InstanceType<ReturnType<typeof createNode>>

@@ -88,7 +88,7 @@ export const createCumSum = /* #__PURE__ */ factory(name, dependencies, ({ typed
     try {
       return _cumsummap(array)
     } catch (err) {
-      throw improveErrorMessage(err, name)
+      throw improveErrorMessage(err, name, undefined)
     }
   }
 
@@ -124,13 +124,13 @@ export const createCumSum = /* #__PURE__ */ factory(name, dependencies, ({ typed
     const size = arraySize(array)
     if (dim < 0 || (dim >= size.length)) {
       // TODO: would be more clear when throwing a DimensionError here
-      throw new IndexError(dim, size.length)
+      throw new IndexError(dim, 0, size.length) as any
     }
 
     try {
       return _cumsumDimensional(array, dim)
     } catch (err) {
-      throw improveErrorMessage(err, name)
+      throw improveErrorMessage(err, name, undefined)
     }
   }
 

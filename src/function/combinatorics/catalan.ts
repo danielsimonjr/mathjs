@@ -1,4 +1,5 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'catalan'
 const dependencies = [
@@ -9,17 +10,30 @@ const dependencies = [
   'combinations',
   'isNegative',
   'isInteger'
-] as const
+]
 
-export const createCatalan = /* #__PURE__ */ factory(name, dependencies, ({
-  typed,
-  addScalar,
-  divideScalar,
-  multiplyScalar,
-  combinations,
-  isNegative,
-  isInteger
-}: any) => {
+export const createCatalan: FactoryFunction<
+  {
+    typed: TypedFunction
+    addScalar: TypedFunction
+    divideScalar: TypedFunction
+    multiplyScalar: TypedFunction
+    combinations: TypedFunction
+    isNegative: TypedFunction
+    isInteger: TypedFunction
+  },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, (
+  {
+    typed,
+    addScalar,
+    divideScalar,
+    multiplyScalar,
+    combinations,
+    isNegative,
+    isInteger
+  }
+) => {
   /**
    * The Catalan Numbers enumerate combinatorial structures of many different types.
    * catalan only takes integer arguments.
@@ -42,13 +56,12 @@ export const createCatalan = /* #__PURE__ */ factory(name, dependencies, ({
    * @return {Number | BigNumber}     Cn(n)
    */
   return typed(name, {
-    'number | BigNumber': function (n: number | any): number | any {
+    'number | BigNumber': function (n: any): any {
       if (!isInteger(n) || isNegative(n)) {
         throw new TypeError('Non-negative integer value expected in function catalan')
       }
 
-      return divideScalar(combinations(multiplyScalar(n, 2), n), addScalar(n, 1))
-      return divideScalar(combinations(multiplyScalar(n, 2), n), addScalar(n, 1))
+      return divideScalar(combinations(multiplyScalar(n, 2), n), (addScalar as any)(n, 1))
     }
   })
 })

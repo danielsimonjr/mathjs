@@ -1,27 +1,28 @@
 import { factory } from '../../utils/factory.js'
+import type { MathNumericType } from '../../utils/types.js'
 
 const name = 'intersect'
 const dependencies = [
   'typed', 'config', 'abs', 'add', 'addScalar', 'matrix', 'multiply', 'multiplyScalar', 'divideScalar', 'subtract', 'smaller', 'equalScalar', 'flatten', 'isZero', 'isNumeric'
-] as const
+]
 
-export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({
-  typed,
-  config,
-  abs,
-  add,
-  addScalar,
-  matrix,
-  multiply,
-  multiplyScalar,
-  divideScalar,
-  subtract,
-  smaller,
-  equalScalar,
-  flatten,
-  isZero,
-  isNumeric
-}: any) => {
+export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, abs, add, addScalar, matrix, multiply, multiplyScalar, divideScalar, subtract, smaller, equalScalar, flatten, isZero, isNumeric }: {
+  typed: any
+  config: any
+  abs: (x: any) => any
+  add: (a: any, b: any) => any
+  addScalar: (a: any, b: any) => any
+  matrix: (arr: any) => any
+  multiply: (a: any, b: any) => any
+  multiplyScalar: (a: any, b: any) => any
+  divideScalar: (a: any, b: any) => any
+  subtract: (a: any, b: any) => any
+  smaller: (a: any, b: any) => boolean
+  equalScalar: (a: any, b: any) => boolean
+  flatten: (arr: any) => any
+  isZero: (x: any) => boolean
+  isNumeric: (x: any) => boolean
+}) => {
   /**
    * Calculates the point of intersection of two lines in two or three dimensions
    * and of a line and a plane in three dimensions. The inputs are in the form of
@@ -66,7 +67,7 @@ export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({
     }
   })
 
-  function _AAA (x: any[], y: any[], plane: any[]): any[] | null {
+  function _AAA (x: any[], y: any[], plane: any[]): MathNumericType[] | null {
     x = _coerceArr(x)
     y = _coerceArr(y)
     plane = _coerceArr(plane)
@@ -78,7 +79,7 @@ export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({
     return _intersectLinePlane(x[0], x[1], x[2], y[0], y[1], y[2], plane[0], plane[1], plane[2], plane[3])
   }
 
-  function _AAAA (w: any[], x: any[], y: any[], z: any[]): any[] | null {
+  function _AAAA (w: any[], x: any[], y: any[], z: any[]): MathNumericType[] | null {
     w = _coerceArr(w)
     x = _coerceArr(x)
     y = _coerceArr(y)
@@ -110,7 +111,7 @@ export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({
 
     // column matrix
     if (arr.length > 1 && Array.isArray(arr[0])) {
-      if (arr.every((el: any) => Array.isArray(el) && el.length === 1)) return flatten(arr)
+      if (arr.every(el => Array.isArray(el) && el.length === 1)) return flatten(arr)
     }
 
     return arr
@@ -146,7 +147,7 @@ export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({
     return add(multiply(d1, t), o1)
   }
 
-  function _intersect3dHelper (a: any, b: any, c: any, d: any, e: any, f: any, g: any, h: any, i: any, j: any, k: any, l: any): any {
+  function _intersect3dHelper (a: MathNumericType, b: MathNumericType, c: MathNumericType, d: MathNumericType, e: MathNumericType, f: MathNumericType, g: MathNumericType, h: MathNumericType, i: MathNumericType, j: MathNumericType, k: MathNumericType, l: MathNumericType): MathNumericType {
     // (a - b)*(c - d) + (e - f)*(g - h) + (i - j)*(k - l)
     const add1 = multiplyScalar(subtract(a, b), subtract(c, d))
     const add2 = multiplyScalar(subtract(e, f), subtract(g, h))
@@ -154,7 +155,7 @@ export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({
     return addScalar(addScalar(add1, add2), add3)
   }
 
-  function _intersect3d (x1: any, y1: any, z1: any, x2: any, y2: any, z2: any, x3: any, y3: any, z3: any, x4: any, y4: any, z4: any): any[] | null {
+  function _intersect3d (x1: MathNumericType, y1: MathNumericType, z1: MathNumericType, x2: MathNumericType, y2: MathNumericType, z2: MathNumericType, x3: MathNumericType, y3: MathNumericType, z3: MathNumericType, x4: MathNumericType, y4: MathNumericType, z4: MathNumericType): MathNumericType[] | null {
     const d1343 = _intersect3dHelper(x1, x3, x4, x3, y1, y3, y4, y3, z1, z3, z4, z3)
     const d4321 = _intersect3dHelper(x4, x3, x2, x1, y4, y3, y2, y1, z4, z3, z2, z1)
     const d1321 = _intersect3dHelper(x1, x3, x2, x1, y1, y3, y2, y1, z1, z3, z2, z1)
@@ -179,7 +180,7 @@ export const createIntersect = /* #__PURE__ */ factory(name, dependencies, ({
     }
   }
 
-  function _intersectLinePlane (x1: any, y1: any, z1: any, x2: any, y2: any, z2: any, x: any, y: any, z: any, c: any): any[] {
+  function _intersectLinePlane (x1: MathNumericType, y1: MathNumericType, z1: MathNumericType, x2: MathNumericType, y2: MathNumericType, z2: MathNumericType, x: MathNumericType, y: MathNumericType, z: MathNumericType, c: MathNumericType): MathNumericType[] {
     const x1x = multiplyScalar(x1, x)
     const x2x = multiplyScalar(x2, x)
     const y1y = multiplyScalar(y1, y)

@@ -3,7 +3,7 @@ import { arraySize, broadcastSizes, broadcastTo, get, deepMap } from '../../util
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'map'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createMap: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
@@ -93,7 +93,7 @@ export const createMap: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ 
     }
     )
 
-    const callbackArgCount = typed.isTypedFunction(multiCallback)
+    const callbackArgCount = (typed as any).isTypedFunction(multiCallback)
       ? _getTypedCallbackArgCount(multiCallback, firstValues, newSize.map(() => 0), Arrays)
       : _getCallbackArgCount(multiCallback, numberOfArrays)
 
@@ -139,7 +139,7 @@ export const createMap: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ 
     const offsets = sizes.map((size: number[]) => finalSize.length - size.length)
     const maxDepth = finalSize.length - 1
     const callbackUsesIndex = callback.length > 1
-    const index: any[] | null = callbackUsesIndex ? [] : null
+    const index = callbackUsesIndex ? [] : null
     const resultsArray = iterate(arrays, 0)
     if (firstCollection.isMatrix) {
       const resultsMatrix = firstCollection.create()

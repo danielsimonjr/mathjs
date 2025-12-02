@@ -5,8 +5,7 @@ import { createEmptyMap, toObject } from '../utils/map.js'
 const name = 'Parser'
 const dependencies = ['evaluate', 'parse'] as const
 
-export const createParserClass = /* #__PURE__ */ factory(name, dependencies, ({ evaluate, parse }: {
-export const createParserClass = /* #__PURE__ */ factory(name, [...dependencies], ({ evaluate, parse }: {
+export const createParserClass = /* #__PURE__ */ factory(name, dependencies as string[], ({ evaluate, parse }: {
   evaluate: any
   parse: any
 }) => {

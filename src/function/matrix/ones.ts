@@ -127,7 +127,7 @@ export const createOnes = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
 
     if (format) {
       // return a matrix
-      const m = (matrix as any)(format)
+      const m = matrix(format)
       if ((size as number[]).length > 0) {
         return m.resize(size as number[], defaultValue)
       }

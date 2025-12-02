@@ -124,7 +124,7 @@ export function validateBundle(expectedBundleStructure: BundleStructure, bundle:
  * @return Object with expectedInstanceStructure and expectedES6Structure
  */
 export function createSnapshotFromFactories(factories: Factories): SnapshotResult {
-  const math = create(factories as any)
+  const math = create(factories)
 
   const allFactoryFunctions: BundleStructure = {}
   const allFunctionsConstantsClasses: BundleStructure = {}

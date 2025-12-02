@@ -56,9 +56,6 @@ import { importFactory } from './function/import.ts'
 
 import { TypedFunction } from '../../types.ts';
 
-// Re-export MathJsConfig for TypeScript consumers
-export { MathJsConfig } from './config.ts';
-
 /**
  * Create a mathjs instance from given factory functions and optionally config
  *

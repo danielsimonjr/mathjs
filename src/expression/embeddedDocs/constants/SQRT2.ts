@@ -9,5 +9,5 @@ export const SQRT2Docs = {
     'SQRT2',
     'sqrt(2)'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

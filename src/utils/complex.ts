@@ -9,6 +9,6 @@ import { nearlyEqual } from './number.js'
  * @param {number} absTol - The absolute tolerance for comparison.
  * @returns {boolean} - Returns true if the two complex numbers are equal within the given tolerances, otherwise returns false.
  */
-export function complexEquals (x: any, y: any, relTol: number, absTol: number): boolean {
+export function complexEquals (x, y, relTol, absTol) {
   return nearlyEqual(x.re, y.re, relTol, absTol) && nearlyEqual(x.im, y.im, relTol, absTol)
 }

@@ -2,16 +2,15 @@ import { format } from '../../utils/string.js'
 import { typeOf } from '../../utils/is.js'
 import { escapeLatex } from '../../utils/latex.js'
 import { factory } from '../../utils/factory.js'
-
-type MathNode = any
+import type { MathNode } from './Node.js'
 
 const name = 'ConstantNode'
 const dependencies = [
   'Node', 'isBounded'
-] as const
+]
 
 export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, isBounded }: {
-  Node: any
+  Node: typeof MathNode
   isBounded: (value: any) => boolean
 }) => {
   class ConstantNode extends Node {
@@ -34,8 +33,7 @@ export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({
       this.value = value
     }
 
-    // @ts-expect-error - intentionally override Function.name
-    static readonly name = name
+    static name = name
     get type (): string { return name }
     get isConstantNode (): boolean { return true }
 

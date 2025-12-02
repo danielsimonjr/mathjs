@@ -1,12 +1,17 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 import { unaryPlusNumber } from '../../plain/number/index.js'
 import { safeNumberType } from '../../utils/number.js'
+import type { TypedFunction } from '../../core/function/typed.js'
+import type { MathJsConfig } from '../../core/create.js'
 
 const name = 'unaryPlus'
-const dependencies = ['typed', 'config', 'numeric'] as const
+const dependencies = ['typed', 'config', 'numeric']
 
-export const createUnaryPlus = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, numeric }: { typed: any; config: any; numeric: any }) => {
+export const createUnaryPlus: FactoryFunction<
+  { typed: TypedFunction; config: MathJsConfig; numeric: any },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, numeric }) => {
   /**
    * Unary plus operation.
    * Boolean values and strings will be converted to a number, numeric values will be returned as is.

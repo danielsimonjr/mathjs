@@ -2,9 +2,7 @@ import { isAccessorNode, isArrayNode, isConstantNode, isFunctionNode, isIndexNod
 import { getOperator } from '../../expression/operators.js'
 import { createUtil } from './simplify/util.js'
 import { factory } from '../../utils/factory.js'
-
-type MathNode = any
-type ExtendedNode = any
+import type { MathNode, OperatorNode, FunctionNode, ArrayNode, AccessorNode, IndexNode, ObjectNode, ConstantNode } from '../../utils/node.js'
 
 const name = 'simplifyCore'
 const dependencies = [
@@ -26,18 +24,18 @@ const dependencies = [
   'OperatorNode',
   'ParenthesisNode',
   'SymbolNode'
-] as const
+]
 
 export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
-  parse: _parse,
+  parse,
   equal,
   isZero,
-  add: _add,
-  subtract: _subtract,
-  multiply: _multiply,
-  divide: _divide,
-  pow: _pow,
+  add,
+  subtract,
+  multiply,
+  divide,
+  pow,
   AccessorNode,
   ArrayNode,
   ConstantNode,
@@ -45,7 +43,7 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
   IndexNode,
   ObjectNode,
   OperatorNode,
-  ParenthesisNode: _ParenthesisNode,
+  ParenthesisNode,
   SymbolNode
 }: {
   typed: any
@@ -123,18 +121,18 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
    *     Simplification options, as per simplify()
    * @return {Node} Returns expression with basic simplifications applied
    */
-  function _simplifyCore (nodeToSimplify: ExtendedNode, options: any = {}): ExtendedNode {
+  function _simplifyCore (nodeToSimplify: MathNode, options: any = {}): MathNode {
     const context = options ? options.context : undefined
     if (hasProperty(nodeToSimplify, 'trivial', context)) {
       // This node does nothing if it has only one argument, so if so,
       // return that argument simplified
-      if (isFunctionNode(nodeToSimplify) && nodeToSimplify.args && nodeToSimplify.args.length === 1) {
+      if (isFunctionNode(nodeToSimplify) && nodeToSimplify.args.length === 1) {
         return _simplifyCore(nodeToSimplify.args[0], options)
       }
       // For other node types, we try the generic methods
-      let simpChild: ExtendedNode | false = false
+      let simpChild: MathNode | false = false
       let childCount = 0
-      nodeToSimplify.forEach((c: ExtendedNode) => {
+      nodeToSimplify.forEach((c: MathNode) => {
         ++childCount
         if (childCount === 1) {
           simpChild = _simplifyCore(c, options)
@@ -144,24 +142,23 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
         return simpChild
       }
     }
-    let node: ExtendedNode = nodeToSimplify
+    let node: MathNode = nodeToSimplify
     if (isFunctionNode(node)) {
-      const op = getOperator(node.name!)
+      const op = getOperator(node.name)
       if (op) {
         // Replace FunctionNode with a new OperatorNode
-        if (node.args!.length > 2 && hasProperty(node as any, 'associative', context)) {
+        if (node.args.length > 2 && hasProperty(node, 'associative', context)) {
           // unflatten into binary operations since that's what simplifyCore handles
-          while (node.args!.length > 2) {
-            const last = node.args!.pop()!
-            const seclast = node.args!.pop()!
-            node.args!.push(new OperatorNode(op, node.name!, [last, seclast]))
+          while (node.args.length > 2) {
+            const last = node.args.pop()!
+            const seclast = node.args.pop()!
+            node.args.push(new OperatorNode(op, node.name, [last, seclast]))
           }
         }
-        node = new OperatorNode(op, node.name!, node.args!)
+        node = new OperatorNode(op, node.name, node.args)
       } else {
         return new FunctionNode(
-          _simplifyCore(node.fn as any), node.args.map((n: MathNode) => _simplifyCore(n, options)))
-          _simplifyCore(node.fn as any), node.args!.map((n: ExtendedNode) => _simplifyCore(n, options)))
+          _simplifyCore((node as any).fn as any), node.args.map((n: MathNode) => _simplifyCore(n, options)))
       }
     }
     if (isOperatorNode(node) && node.isUnary()) {
@@ -194,7 +191,7 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
           }
         }
       }
-      if (finish) return new OperatorNode(node.op, node.fn, [a0])
+      if (finish) return new OperatorNode(node.op, (node as any).fn, [a0])
     }
     if (isOperatorNode(node) && node.isBinary()) {
       const a0 = _simplifyCore(node.args[0], options)
@@ -223,7 +220,7 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
         if (isConstantNode(a1) && isZero(a1.value)) {
           return a0
         }
-        return new OperatorNode(node.op, node.fn, [a0, a1])
+        return new OperatorNode(node.op, (node as any).fn, [a0, a1])
       }
       if (node.op === '*') {
         if (isConstantNode(a0)) {
@@ -240,10 +237,10 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
             return a0
           }
           if (isCommutative(node, context)) {
-            return new OperatorNode(node.op, node.fn, [a1, a0], node.implicit) // constants on left
+            return new OperatorNode(node.op, (node as any).fn, [a1, a0], (node as any).implicit) // constants on left
           }
         }
-        return new OperatorNode(node.op, node.fn, [a0, a1], node.implicit)
+        return new OperatorNode(node.op, (node as any).fn, [a0, a1], (node as any).implicit)
       }
       if (node.op === '/') {
         if (isConstantNode(a0) && isZero(a0.value)) {
@@ -252,7 +249,7 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
         if (isConstantNode(a1) && equal(a1.value, 1)) {
           return a0
         }
-        return new OperatorNode(node.op, node.fn, [a0, a1])
+        return new OperatorNode(node.op, (node as any).fn, [a0, a1])
       }
       if (node.op === '^') {
         if (isConstantNode(a1)) {
@@ -298,11 +295,11 @@ export const createSimplifyCore = /* #__PURE__ */ factory(name, dependencies, ({
           }
         }
       }
-      return new OperatorNode(node.op, node.fn, [a0, a1])
+      return new OperatorNode(node.op, (node as any).fn, [a0, a1])
     }
     if (isOperatorNode(node)) {
       return new OperatorNode(
-        node.op, node.fn, node.args.map((a: MathNode) => _simplifyCore(a, options)))
+        node.op, (node as any).fn, node.args.map((a: MathNode) => _simplifyCore(a, options)))
     }
     if (isArrayNode(node)) {
       return new ArrayNode(node.items.map((n: MathNode) => _simplifyCore(n, options)))

@@ -3,9 +3,19 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { gammaG, gammaNumber, gammaP } from '../../plain/number/index.js'
 
 const name = 'gamma'
-const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', 'Complex'] as const
+const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', 'Complex']
 
-export const createGamma = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, multiplyScalar, pow, BigNumber, Complex }: any) => {
+export const createGamma: FactoryFunction<
+  {
+    typed: TypedFunction
+    config: any
+    multiplyScalar: TypedFunction
+    pow: TypedFunction
+    BigNumber: any
+    Complex: any
+  },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, multiplyScalar, pow, BigNumber, Complex }) => {
   /**
    * Compute the gamma function of a value using Lanczos approximation for
    * small values, and an extended Stirling approximation for large values.
@@ -101,7 +111,7 @@ export const createGamma = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       return new BigNumber([1, 1, 2, 6, 24, 120, 720, 5040][n])
     }
 
-    const precision = config.precision + (Math.log(n.toNumber()) | 0)
+    const precision = config.precision + (Math.log((n as any).toNumber()) | 0)
     const Big = BigNumber.clone({ precision })
 
     if (n % 2 === 1) {
@@ -110,7 +120,7 @@ export const createGamma = /* #__PURE__ */ factory(name, dependencies, ({ typed,
 
     let p = n
     let prod = new Big(n)
-    let sum = n.toNumber()
+    let sum = (n as any).toNumber()
 
     while (p > 2) {
       p -= 2

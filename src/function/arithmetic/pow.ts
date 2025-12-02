@@ -114,7 +114,7 @@ export const createPow = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
     },
 
     'BigNumber, BigNumber': function (x: BigNumber, y: BigNumber): BigNumber | Complex {
-      if (y.isInteger() || (x as any).gte(0) || config.predictable) {
+      if (y.isInteger() || x >= 0 || config.predictable) {
         return x.pow(y)
       } else {
         return new Complex((x as any).toNumber(), 0).pow((y as any).toNumber(), 0)
@@ -123,7 +123,7 @@ export const createPow = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
 
     'bigint, bigint': (x: bigint, y: bigint): bigint => x ** y,
 
-    'Fraction, Fraction': function (x: Fraction, y: Fraction): Fraction | number | Complex {
+    'Fraction, Fraction': function (x: Fraction, y: Fraction): Fraction | number {
       const result = x.pow(y)
 
       if (result != null) {

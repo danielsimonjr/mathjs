@@ -1,6 +1,6 @@
 import { flatten, generalize, identify } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-import type { MathArray, Matrix } from '../../types.js'
+import type { MathArray, Matrix } from '../../../types/index.js'
 
 const name = 'setDifference'
 const dependencies = ['typed', 'size', 'subset', 'compareNatural', 'Index', 'DenseMatrix']
@@ -33,7 +33,7 @@ export const createSetDifference = /* #__PURE__ */ factory(name, dependencies, (
       if (subset(size(a1), new Index(0)) === 0) { // empty-anything=empty
         result = []
       } else if (subset(size(a2), new Index(0)) === 0) { // anything-empty=anything
-        return flatten((a1 as any).toArray())
+        return flatten(a1.toArray())
       } else {
         const b1 = identify(flatten(Array.isArray(a1) ? a1 : a1.toArray()).sort(compareNatural))
         const b2 = identify(flatten(Array.isArray(a2) ? a2 : a2.toArray()).sort(compareNatural))

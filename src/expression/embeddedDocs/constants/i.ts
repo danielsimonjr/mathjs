@@ -10,5 +10,5 @@ export const iDocs = {
     'i * i',
     'sqrt(-1)'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

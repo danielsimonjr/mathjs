@@ -5,12 +5,12 @@ import { isInteger } from '../../utils/number.js'
 import { format } from '../../utils/string.js'
 import { clone } from '../../utils/object.js'
 import { resize as arrayResize } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'resize'
-const dependencies = ['config', 'matrix'] as const
+const dependencies = ['config', 'matrix']
 
-export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ config, matrix }: { config: any; matrix: any }) => {
+export const createResize: FactoryFunction<'config' | 'matrix', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ config, matrix }) => {
   /**
    * Resize a matrix
    *
@@ -50,14 +50,14 @@ export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ confi
     if (isBigNumber(size[0])) {
       // convert bignumbers to numbers
       size = size.map(function (value: any) {
-        return !isBigNumber(value) ? value : value.toNumber()
+        return !isBigNumber(value) ? value : (value as any).toNumber()
       })
     }
 
     // check x is a Matrix
     if (isMatrix(x)) {
       // use optimized matrix implementation, return copy
-      return (x as any).resize(size, defaultValue, true)
+      return x.resize(size, defaultValue, true)
     }
 
     if (typeof x === 'string') {
@@ -109,7 +109,7 @@ export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ confi
     const len = size[0]
     if (typeof len !== 'number' || !isInteger(len)) {
       throw new TypeError('Invalid size, must contain positive integers ' +
-          '(size: ' + format(size) + ')')
+          '(size: ' + format(size, {}) + ')')
     }
 
     if (str.length > len) {

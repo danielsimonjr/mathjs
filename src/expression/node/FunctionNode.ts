@@ -7,28 +7,16 @@ import { factory } from '../../utils/factory.js'
 import { defaultTemplate, latexFunctions } from '../../utils/latex.js'
 import type { MathNode } from './Node.js'
 
-// Extended Node interface with runtime properties
-interface ExtendedNode {
-  name?: string
-  toTex?: (options?: any) => string
-  optionalChaining?: boolean
-  object?: ExtendedNode
-  index?: ExtendedNode
-  args?: ExtendedNode[]
-  fn?: ExtendedNode
-  [key: string]: any
-}
-
 const name = 'FunctionNode'
 const dependencies = [
   'math',
   'Node',
   'SymbolNode'
-] as const
+]
 
 export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({ math, Node, SymbolNode }: {
   math: any
-  Node: any
+  Node: typeof MathNode
   SymbolNode: any
 }) => {
   /* format to fixed length */
@@ -50,7 +38,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
     const regex = /\$(?:\{([a-z_][a-z_0-9]*)(?:\[([0-9]+)\])?\}|\$)/gi
 
     let inputPos = 0 // position in the input string
-    let match: RegExpExecArray | null
+    let match
     while ((match = regex.exec(template)) !== null) { // go through all matches
       // add everything in front of the match to the LaTeX string
       latex += template.substring(inputPos, match.index)
@@ -133,18 +121,17 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
         throw new TypeError('optional flag, if specified, must be boolean')
       }
 
-      this.fn = fn as MathNode
+      this.fn = fn
       this.args = args || []
       this.optional = !!optional
     }
 
     // readonly property name
     get name (): string {
-      return (this.fn as any).name || ''
+      return this.fn.name || ''
     }
 
-    // @ts-expect-error - intentionally override Function.name
-    static readonly name = name
+    static name = name
     get type (): string { return name }
     get isFunctionNode (): boolean { return true }
 
@@ -285,7 +272,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
             return undefined
           }
 
-          const fn: any = getSafeMethod(object, prop)
+          const fn = getSafeMethod(object, prop)
 
           if (fn?.rawArgs) {
             // "Raw" evaluation
@@ -297,7 +284,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
           }
         }
       } else {
-        // node.fn.isAccessorNode && !node.fn.index.isObjectProperty()
+        // (node as any).fn.isAccessorNode && !(node as any).fn.index.isObjectProperty()
         // we have to dynamically determine whether the function has the
         // rawArgs property
         const fnExpr = this.fn.toString()
@@ -331,10 +318,10 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-      callback(this.fn, 'fn', this)
+      callback(this.fn, 'fn', this as any)
 
       for (let i = 0; i < this.args.length; i++) {
-        callback(this.args[i], 'args[' + i + ']', this)
+        callback(this.args[i], 'args[' + i + ']', this as any)
       }
     }
 
@@ -345,10 +332,10 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @returns {FunctionNode} Returns a transformed copy of the node
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): FunctionNode {
-      const fn = this._ifNode(callback(this.fn, 'fn', this))
+      const fn = this._ifNode(callback(this.fn, 'fn', this as any))
       const args: MathNode[] = []
       for (let i = 0; i < this.args.length; i++) {
-        args[i] = this._ifNode(callback(this.args[i], 'args[' + i + ']', this))
+        args[i] = this._ifNode(callback(this.args[i], 'args[' + i + ']', this as any))
       }
       return new FunctionNode(fn, args)
     }

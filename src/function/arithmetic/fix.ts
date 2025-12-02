@@ -1,13 +1,17 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
 import { deepMap } from '../../utils/collection.js'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 
 const name = 'fix'
-const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix'] as const
+const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix']
 
-export const createFixNumber = /* #__PURE__ */ factory(
-  name, ['typed', 'ceil', 'floor'] as const, ({ typed, ceil, floor }: { typed: any, ceil: any, floor: any }) => {
+export const createFixNumber: FactoryFunction<
+  { typed: TypedFunction, ceil: any, floor: any },
+  TypedFunction
+> = /* #__PURE__ */ factory(
+  name, ['typed', 'ceil', 'floor'] as const, ({ typed, ceil, floor }) => {
     return typed(name, {
       number: function (x: number): number {
         return (x > 0) ? floor(x) : ceil(x)
@@ -20,7 +24,10 @@ export const createFixNumber = /* #__PURE__ */ factory(
   }
 )
 
-export const createFix = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex, matrix, ceil, floor, equalScalar, zeros, DenseMatrix }: { typed: any, Complex: any, matrix: any, ceil: any, floor: any, equalScalar: any, zeros: any, DenseMatrix: any }) => {
+export const createFix: FactoryFunction<
+  { typed: TypedFunction, Complex: any, matrix: any, ceil: any, floor: any, equalScalar: any, zeros: any, DenseMatrix: any },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex, matrix, ceil, floor, equalScalar, zeros, DenseMatrix }) => {
   const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
   const matAlgo14xDs = createMatAlgo14xDs({ typed })
 
@@ -89,7 +96,7 @@ export const createFix = /* #__PURE__ */ factory(name, dependencies, ({ typed, C
     },
 
     'Complex, BigNumber': function (x: any, bn: any): any {
-      const n = bn.toNumber()
+      const n = (bn as any).toNumber()
       return new Complex(
         (x.re > 0) ? floor(x.re, n) : ceil(x.re, n),
         (x.im > 0) ? floor(x.im, n) : ceil(x.im, n)
@@ -121,7 +128,7 @@ export const createFix = /* #__PURE__ */ factory(name, dependencies, ({ typed, C
       return unit.multiply(self(valueless, n))
     }),
 
-    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, n.toNumber(), unit)),
+    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, (n as any).toNumber(), unit)),
 
     'Array | Matrix, number | BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => {
       // deep map collection, skip zeros since fix(0) = 0

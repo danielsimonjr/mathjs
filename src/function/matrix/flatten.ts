@@ -2,7 +2,7 @@ import { flatten as flattenArray } from '../../utils/array.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'flatten'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createFlatten: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

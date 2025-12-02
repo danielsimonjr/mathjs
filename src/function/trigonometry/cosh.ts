@@ -1,10 +1,11 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
 import { cosh as coshNumber } from '../../utils/number.js'
 
 const name = 'cosh'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
-export const createCosh = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
+export const createCosh: FactoryFunction<'cosh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
    * Calculate the hyperbolic cosine of a value,
    * defined as `cosh(x) = 1/2 * (exp(x) + exp(-x))`.
@@ -29,6 +30,6 @@ export const createCosh = /* #__PURE__ */ factory(name, dependencies, ({ typed }
    */
   return typed(name, {
     number: coshNumber,
-    'Complex | BigNumber': (x: any) => x.cosh()
-  })
+    'Complex | BigNumber': x => x.cosh()
+  }) as TypedFunction
 })

@@ -496,10 +496,10 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
 
       // Transform back into original array coordinates
       const correction = multiply(inv(R), C)
-      solutions = solutions.map((v: any) => multiply(correction, v))
+      solutions = solutions.map(v => multiply(correction, v))
 
       vectors.push(
-        ...solutions.map((v: any) => ({ value: lambda, vector: flatten(v) })))
+        ...solutions.map(v => ({ value: lambda, vector: flatten(v) })))
     }
 
     return vectors

@@ -10,5 +10,5 @@ export const distanceDocs = {
     'distance([0,0], [4,4])',
     'distance([[0,0], [4,4]])'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

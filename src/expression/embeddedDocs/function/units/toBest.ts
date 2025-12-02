@@ -14,5 +14,5 @@ export const toBestDocs = {
     'toBest(unit(10, "m"), "cm")',
     'toBest(unit(10, "m"), "mm,km", {offset: 1.5})'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

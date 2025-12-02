@@ -5,7 +5,7 @@ const name = 'leafCount'
 const dependencies = [
   'parse',
   'typed'
-] as const
+]
 
 export const createLeafCount = /* #__PURE__ */ factory(name, dependencies, ({
   parse,

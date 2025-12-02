@@ -1,19 +1,23 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'kldivergence'
-const dependencies = ['typed', 'matrix', 'divide', 'sum', 'multiply', 'map', 'dotDivide', 'log', 'isNumeric'] as const
+const dependencies = ['typed', 'matrix', 'divide', 'sum', 'multiply', 'map', 'dotDivide', 'log', 'isNumeric']
 
-export const createKldivergence = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divide, sum, multiply, map, dotDivide, log, isNumeric }: {
-  typed: any
-  matrix: any
-  divide: any
-  sum: any
-  multiply: any
-  map: any
-  dotDivide: any
-  log: any
-  isNumeric: any
-}) => {
+export const createKldivergence: FactoryFunction<
+  {
+    typed: TypedFunction
+    matrix: TypedFunction
+    divide: TypedFunction
+    sum: TypedFunction
+    multiply: TypedFunction
+    map: TypedFunction
+    dotDivide: TypedFunction
+    log: TypedFunction
+    isNumeric: TypedFunction
+  },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divide, sum, multiply, map, dotDivide, log, isNumeric }) => {
   /**
      * Calculate the Kullback-Leibler (KL) divergence  between two distributions
      *
@@ -66,22 +70,18 @@ export const createKldivergence = /* #__PURE__ */ factory(name, dependencies, ({
 
     // Before calculation, apply normalization
     const sumq = sum(q)
-    if ((sumq as any) === 0) {
+    if (sumq === 0) {
       throw new Error('Sum of elements in first object must be non zero')
     }
 
     const sump = sum(p)
-    if ((sump as any) === 0) {
+    if (sump === 0) {
       throw new Error('Sum of elements in second object must be non zero')
     }
-    const qnorm = divide(q, sum(q))
-    const pnorm = divide(p, sum(p))
+    const qnorm = (divide as any)(q, (sum as any)(q))
+    const pnorm = (divide as any)(p, (sum as any)(p))
 
-    const result = sum(multiply(qnorm, map(dotDivide(qnorm, pnorm), (x: any) => log(x))))
-    const qnorm = divide(q, sum(q))
-    const pnorm = divide(p, sum(p))
-
-    const result = sum(multiply(qnorm, map(dotDivide(qnorm, pnorm), (x: any) => log(x))))
+    const result = (sum as any)((multiply as any)(qnorm, (map as any)((dotDivide as any)(qnorm, pnorm), (x: any) => (log as any)(x))))
     if (isNumeric(result)) {
       return result
     } else {

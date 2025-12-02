@@ -1,16 +1,15 @@
 import { isBigNumber, isComplex, isNode, isUnit, typeOf } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 import { getPrecedence } from '../operators.js'
-
-type MathNode = any
+import type { MathNode } from './Node.js'
 
 const name = 'ConditionalNode'
 const dependencies = [
   'Node'
-] as const
+]
 
 export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: {
-  Node: any
+  Node: typeof MathNode
 }) => {
   /**
    * Test whether a condition is met
@@ -26,7 +25,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
 
     if (condition) {
       if (isBigNumber(condition)) {
-        return !(condition as any).isZero()
+        return !condition.isZero()
       }
 
       if (isComplex(condition)) {
@@ -71,8 +70,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
       this.falseExpr = falseExpr
     }
 
-    // @ts-expect-error - intentionally override Function.name
-    static readonly name = name
+    static name = name
     get type (): string { return name }
     get isConditionalNode (): boolean { return true }
 
@@ -106,9 +104,9 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-      callback(this.condition, 'condition', this)
-      callback(this.trueExpr, 'trueExpr', this)
-      callback(this.falseExpr, 'falseExpr', this)
+      callback(this.condition, 'condition', this as any)
+      callback(this.trueExpr, 'trueExpr', this as any)
+      callback(this.falseExpr, 'falseExpr', this as any)
     }
 
     /**
@@ -119,9 +117,9 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): ConditionalNode {
       return new ConditionalNode(
-        (this as any)._ifNode(callback(this.condition, 'condition', this as any)),
-        (this as any)._ifNode(callback(this.trueExpr, 'trueExpr', this as any)),
-        (this as any)._ifNode(callback(this.falseExpr, 'falseExpr', this as any))
+        this._ifNode(callback(this.condition, 'condition', this as any)),
+        this._ifNode(callback(this.trueExpr, 'trueExpr', this as any)),
+        this._ifNode(callback(this.falseExpr, 'falseExpr', this as any))
       )
     }
 
@@ -142,7 +140,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
       const parenthesis =
           (options && options.parenthesis) ? options.parenthesis : 'keep'
       const precedence =
-          getPrecedence(this, parenthesis, options && options.implicit)
+          getPrecedence(this, parenthesis, options && options.implicit, undefined)
 
       // Enclose Arguments in parentheses if they are an OperatorNode
       // or have lower or equal precedence
@@ -150,7 +148,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
       // purely based on aesthetics and readability
       let condition = this.condition.toString(options)
       const conditionPrecedence =
-          getPrecedence(this.condition, parenthesis, options && options.implicit)
+          getPrecedence(this.condition, parenthesis, options && options.implicit, undefined)
       if ((parenthesis === 'all') ||
           (this.condition.type === 'OperatorNode') ||
           ((conditionPrecedence !== null) &&
@@ -160,7 +158,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
 
       let trueExpr = this.trueExpr.toString(options)
       const truePrecedence =
-          getPrecedence(this.trueExpr, parenthesis, options && options.implicit)
+          getPrecedence(this.trueExpr, parenthesis, options && options.implicit, undefined)
       if ((parenthesis === 'all') ||
           (this.trueExpr.type === 'OperatorNode') ||
           ((truePrecedence !== null) && (truePrecedence <= precedence))) {
@@ -169,7 +167,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
 
       let falseExpr = this.falseExpr.toString(options)
       const falsePrecedence =
-          getPrecedence(this.falseExpr, parenthesis, options && options.implicit)
+          getPrecedence(this.falseExpr, parenthesis, options && options.implicit, undefined)
       if ((parenthesis === 'all') ||
           (this.falseExpr.type === 'OperatorNode') ||
           ((falsePrecedence !== null) && (falsePrecedence <= precedence))) {
@@ -217,7 +215,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
       const parenthesis =
           (options && options.parenthesis) ? options.parenthesis : 'keep'
       const precedence =
-          getPrecedence(this, parenthesis, options && options.implicit)
+          getPrecedence(this, parenthesis, options && options.implicit, undefined)
 
       // Enclose Arguments in parentheses if they are an OperatorNode
       // or have lower or equal precedence
@@ -225,7 +223,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
       // purely based on aesthetics and readability
       let condition = this.condition.toHTML(options)
       const conditionPrecedence =
-          getPrecedence(this.condition, parenthesis, options && options.implicit)
+          getPrecedence(this.condition, parenthesis, options && options.implicit, undefined)
       if ((parenthesis === 'all') ||
           (this.condition.type === 'OperatorNode') ||
           ((conditionPrecedence !== null) &&
@@ -238,7 +236,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
 
       let trueExpr = this.trueExpr.toHTML(options)
       const truePrecedence =
-          getPrecedence(this.trueExpr, parenthesis, options && options.implicit)
+          getPrecedence(this.trueExpr, parenthesis, options && options.implicit, undefined)
       if ((parenthesis === 'all') ||
           (this.trueExpr.type === 'OperatorNode') ||
           ((truePrecedence !== null) && (truePrecedence <= precedence))) {
@@ -250,7 +248,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
 
       let falseExpr = this.falseExpr.toHTML(options)
       const falsePrecedence =
-          getPrecedence(this.falseExpr, parenthesis, options && options.implicit)
+          getPrecedence(this.falseExpr, parenthesis, options && options.implicit, undefined)
       if ((parenthesis === 'all') ||
           (this.falseExpr.type === 'OperatorNode') ||
           ((falsePrecedence !== null) && (falsePrecedence <= precedence))) {

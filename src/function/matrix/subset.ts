@@ -6,7 +6,7 @@ import { DimensionError } from '../../error/DimensionError.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'subset'
-const dependencies = ['typed', 'matrix', 'zeros', 'add'] as const
+const dependencies = ['typed', 'matrix', 'zeros', 'add']
 
 export const createSubset: FactoryFunction<'typed' | 'matrix' | 'zeros' | 'add', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, zeros, add }) => {
   /**
@@ -148,16 +148,16 @@ function _getSubstring (str: string, index: any): string {
   if (isEmptyIndex(index)) { return '' }
   validateIndexSourceSize(Array.from(str), index)
 
-  if ((index as any).size().length !== 1) {
-    throw new DimensionError((index as any).size().length, 1)
+  if (index.size().length !== 1) {
+    throw new DimensionError(index.size().length, 1)
   }
 
   // validate whether the range is out of range
   const strLen = str.length
-  validateIndex((index as any).min()[0], strLen)
-  validateIndex((index as any).max()[0], strLen)
+  validateIndex(index.min()[0], strLen)
+  validateIndex(index.max()[0], strLen)
 
-  const range = (index as any).dimension(0)
+  const range = index.dimension(0)
 
   let substr = ''
   function callback (v: number): void {

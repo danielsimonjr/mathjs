@@ -5,7 +5,7 @@ import { toSymbol } from '../../utils/latex.js'
 
 // Type definitions
 interface Node {
-  clone(): Node
+  clone: () => Node
 }
 
 type CompileFunction = (scope: any, args: Record<string, any>, context: any) => any

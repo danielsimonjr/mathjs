@@ -2,7 +2,17 @@ import { isNode, isSymbolNode } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 import { getPrecedence } from '../operators.js'
 
-type MathNode = any
+// Type definitions
+interface Node {
+  _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
+  filter: (callback: (node: Node) => boolean) => Node[]
+  toString: (options?: StringOptions) => string
+  toHTML: (options?: StringOptions) => string
+  toTex: (options?: StringOptions) => string
+  isSymbolNode?: boolean
+  name?: string
+}
+
 type CompileFunction = (scope: any, args: Record<string, any>, context: any) => any
 
 interface StringOptions {
@@ -17,12 +27,16 @@ interface Parens {
   end: boolean
 }
 
+interface Dependencies {
+  Node: new (...args: any[]) => Node
+}
+
 const name = 'RangeNode'
 const dependencies = [
   'Node'
 ]
 
-export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: { Node: any }) => {
+export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: Dependencies) => {
   /**
    * Calculate the necessary parentheses
    * @param {Node} node
@@ -32,20 +46,20 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
    * @private
    */
   function calculateNecessaryParentheses (node: RangeNode, parenthesis: string, implicit: string): Parens {
-    const precedence = getPrecedence(node as any, parenthesis, implicit)
+    const precedence = getPrecedence(node as any, parenthesis, implicit, undefined)
     const parens: Parens = { start: false, end: false }
 
-    const startPrecedence = getPrecedence(node.start as any, parenthesis, implicit)
+    const startPrecedence = getPrecedence(node.start as any, parenthesis, implicit, undefined)
     parens.start = ((startPrecedence !== null) && (startPrecedence <= precedence)) ||
       (parenthesis === 'all')
 
     if (node.step) {
-      const stepPrecedence = getPrecedence(node.step as any, parenthesis, implicit)
+      const stepPrecedence = getPrecedence(node.step as any, parenthesis, implicit, undefined)
       parens.step = ((stepPrecedence !== null) && (stepPrecedence <= precedence)) ||
         (parenthesis === 'all')
     }
 
-    const endPrecedence = getPrecedence(node.end as any, parenthesis, implicit)
+    const endPrecedence = getPrecedence(node.end as any, parenthesis, implicit, undefined)
     parens.end = ((endPrecedence !== null) && (endPrecedence <= precedence)) ||
       (parenthesis === 'all')
 
@@ -53,9 +67,9 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
   }
 
   class RangeNode extends Node {
-    start: MathNode
-    end: MathNode
-    step: MathNode | null
+    start: Node
+    end: Node
+    step: Node | null
 
     /**
      * @constructor RangeNode
@@ -78,8 +92,7 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
       this.step = step || null // optional step
     }
 
-    // @ts-expect-error - intentionally override Function.name
-    static readonly name = name
+    static name = name
     get type (): string { return name }
     get isRangeNode (): boolean { return true }
 
@@ -155,9 +168,9 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      */
     map (callback: (child: Node, path: string, parent: RangeNode) => Node): RangeNode {
       return new RangeNode(
-        (this as any)._ifNode(callback(this.start, 'start', this)),
-        (this as any)._ifNode(callback(this.end, 'end', this)),
-        this.step ? (this as any)._ifNode(callback(this.step, 'step', this)) : undefined
+        this._ifNode(callback(this.start, 'start', this)),
+        this._ifNode(callback(this.end, 'end', this)),
+        this.step ? this._ifNode(callback(this.step, 'step', this)) : undefined
       )
     }
 

@@ -80,7 +80,7 @@ export const createProd = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
   function _prod (array: any[] | Matrix): any {
     let prod: any
 
-    deepForEach(array as any, function (value: any) {
+    deepForEach(array, function (value: any) {
       try {
         prod = (prod === undefined) ? value : multiplyScalar(prod, value)
       } catch (err) {
@@ -90,7 +90,7 @@ export const createProd = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
 
     // make sure returning numeric value: parse a string into a numeric value
     if (typeof prod === 'string') {
-      prod = numeric(prod, safeNumberType(prod, config as any))
+      prod = numeric(prod, safeNumberType(prod, config))
     }
 
     if (prod === undefined) {

@@ -98,7 +98,7 @@ export const createSqrtm = /* #__PURE__ */ factory(name, dependencies, ({ typed,
             return map(A, sqrt)
           } else {
             throw new RangeError('Matrix must be square ' +
-            '(size: ' + format(sizeArray) + ')')
+            '(size: ' + format(sizeArray, {}) + ')')
           }
 
         case 2:
@@ -110,13 +110,13 @@ export const createSqrtm = /* #__PURE__ */ factory(name, dependencies, ({ typed,
             return _denmanBeavers(A)
           } else {
             throw new RangeError('Matrix must be square ' +
-              '(size: ' + format(sizeArray) + ')')
+              '(size: ' + format(sizeArray, {}) + ')')
           }
         }
         default:
           // Multi dimensional array
           throw new RangeError('Matrix must be at most two dimensional ' +
-          '(size: ' + format(sizeArray) + ')')
+          '(size: ' + format(sizeArray, {}) + ')')
       }
     }
   })

@@ -8,5 +8,5 @@ export const kldivergenceDocs = {
   examples: [
     'kldivergence([0.7,0.5,0.4], [0.2,0.9,0.5])'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

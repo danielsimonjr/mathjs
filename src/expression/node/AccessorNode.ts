@@ -18,11 +18,11 @@ const name = 'AccessorNode'
 const dependencies = [
   'subset',
   'Node'
-] as const
+]
 
 export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, Node }: {
   subset: any
-  Node: any
+  Node: typeof MathNode
 }) => {
   const access = accessFactory({ subset })
 
@@ -81,12 +81,11 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
           ? this.index.getObjectProperty()
           : ''
       } else {
-        return (this.object as any).name || ''
+        return this.object.name || ''
       }
     }
 
-    // @ts-expect-error - intentionally override Function.name
-    static readonly name = name
+    static name = name
     get type (): string { return name }
     get isAccessorNode (): boolean { return true }
 
@@ -154,8 +153,8 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @param {function(child: Node, path: string, parent: Node)} callback
      */
     forEach (callback: (child: MathNode, path: string, parent: MathNode) => void): void {
-      callback(this.object, 'object', this)
-      callback(this.index, 'index', this)
+      callback(this.object, 'object', this as any)
+      callback(this.index, 'index', this as any)
     }
 
     /**
@@ -166,8 +165,8 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
      */
     map (callback: (child: MathNode, path: string, parent: MathNode) => MathNode): AccessorNode {
       return new AccessorNode(
-        (this as any)._ifNode(callback(this.object, 'object', this as any)),
-        (this as any)._ifNode(callback(this.index, 'index', this as any)),
+        this._ifNode(callback(this.object, 'object', this as any)),
+        this._ifNode(callback(this.index, 'index', this as any)),
         this.optionalChaining
       )
     }

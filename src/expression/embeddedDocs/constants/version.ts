@@ -8,5 +8,5 @@ export const versionDocs = {
   examples: [
     'version'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

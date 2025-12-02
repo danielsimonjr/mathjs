@@ -122,7 +122,7 @@ export const createMatAlgo02xDS0 = /* #__PURE__ */ factory(
         // convert 0 to the same datatype
         zero = typed.convert(0, dt)
         // callback
-        cf = typed.find(callback, [dt, dt])
+        cf = typed.find(callback, [dt, dt]) as any as any
       }
 
       // result (SparseMatrix)

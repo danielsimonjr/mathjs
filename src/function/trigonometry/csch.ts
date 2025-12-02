@@ -1,10 +1,13 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
+import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
+import type { Complex } from '../../type/complex/Complex.js'
 import { cschNumber } from '../../plain/number/index.js'
 
 const name = 'csch'
-const dependencies = ['typed', 'BigNumber'] as const
+const dependencies = ['typed', 'BigNumber']
 
-export const createCsch = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
+export const createCsch: FactoryFunction<'csch', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
   /**
    * Calculate the hyperbolic cosecant of a value,
    * defined as `csch(x) = 1 / sinh(x)`.
@@ -31,7 +34,7 @@ export const createCsch = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
    */
   return typed(name, {
     number: cschNumber,
-    Complex: (x: any) => x.csch(),
-    BigNumber: (x: any) => new BigNumber(1).div(x.sinh())
-  })
+    Complex: (x: Complex) => x.csch(),
+    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.sinh())
+  }) as TypedFunction
 })

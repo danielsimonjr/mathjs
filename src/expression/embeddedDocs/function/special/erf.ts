@@ -10,5 +10,5 @@ export const erfDocs = {
     'erf(-0.5)',
     'erf(4)'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

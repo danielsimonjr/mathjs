@@ -37,20 +37,20 @@ export const createFilterTransform = /* #__PURE__ */ factory(name, dependencies,
    * so you can do something like 'filter([3, -2, 5], x > 0)'.
    */
   function filterTransform(args: Node[], math: any, scope: any): any {
-    const filter = createFilter({ typed }) as any
-    const transformCallback = createTransformCallback({ typed }) as any
+    const filter = createFilter({ typed })
+    const transformCallback = createTransformCallback({ typed })
 
     if (args.length === 0) {
       return filter()
     }
-    let x: any = args[0]
+    let x = args[0]
 
     if (args.length === 1) {
       return filter(x)
     }
 
     const N = args.length - 1
-    let callback: any = args[N]
+    let callback = args[N]
 
     if (x) {
       x = _compileAndEvaluate(x, scope)
@@ -59,7 +59,7 @@ export const createFilterTransform = /* #__PURE__ */ factory(name, dependencies,
     if (callback) {
       if (isSymbolNode(callback) || isFunctionAssignmentNode(callback)) {
         // a function pointer, like filter([3, -2, 5], myTestFunction)
-        callback = _compileAndEvaluate(callback as any, scope)
+        callback = _compileAndEvaluate(callback, scope)
       } else {
         // an expression like filter([3, -2, 5], x > 0)
         callback = compileInlineExpression(callback, math, scope)

@@ -15,7 +15,7 @@ const dependencies = [
   'sqrt',
   'smaller',
   'isPositive'
-] as const
+]
 
 export const createHypot = /* #__PURE__ */ factory(name, dependencies, ({ typed, abs, addScalar, divideScalar, multiplyScalar, sqrt, smaller, isPositive }: any): TypedFunction => {
   /**

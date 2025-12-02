@@ -1,11 +1,13 @@
 import { factory } from '../../../utils/factory.js'
 import { deepMap } from '../../../utils/collection.js'
+import type { MathCollection } from '../../../types.js'
+import type Fraction from 'fraction.js'
+import type { TypedFunction } from '../../../core/function/typed.js'
 
 const name = 'fraction'
-const dependencies = ['typed', 'Fraction']
+const dependencies = ['typed', 'Fraction'] as const
 
-export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Fraction }): TypedFunction => {
-export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typed, Fraction }: { typed: any, Fraction: any }): any => {
+export const createFraction = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Fraction }): TypedFunction => {
   /**
    * Create a fraction or convert a value to a fraction.
    *
@@ -44,7 +46,7 @@ export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typ
    * @return {Fraction | Array | Matrix} Returns a fraction
    */
   return typed('fraction', {
-    number: function (x: number): any {
+    number: function (x: number): Fraction {
       if (!Number.isFinite(x) || isNaN(x)) {
         throw new Error(x + ' cannot be represented as a fraction')
       }
@@ -52,45 +54,45 @@ export const createFraction = /* #__PURE__ */ factory(name, dependencies, ({ typ
       return new Fraction(x)
     },
 
-    string: function (x: string): any {
+    string: function (x: string): Fraction {
       return new Fraction(x)
     },
 
-    'number, number': function (numerator: number, denominator: number): any {
+    'number, number': function (numerator: number, denominator: number): Fraction {
       return new Fraction(numerator, denominator)
     },
 
-    'bigint, bigint': function (numerator: bigint, denominator: bigint): any {
+    'bigint, bigint': function (numerator: bigint, denominator: bigint): Fraction {
       return new Fraction(numerator, denominator)
     },
 
-    null: function (x: null): any {
+    null: function (x: null): Fraction {
       return new Fraction(0)
     },
 
-    BigNumber: function (x: any): any {
+    BigNumber: function (x: any): Fraction {
       return new Fraction(x.toString())
     },
 
-    bigint: function (x: bigint): any {
+    bigint: function (x: bigint): Fraction {
       return new Fraction(x.toString())
     },
 
-    Fraction: function (x: any): any {
+    Fraction: function (x: Fraction): Fraction {
       return x // fractions are immutable
     },
 
-    Unit: typed.referToSelf((self: any) => (x: any): any => {
+    Unit: typed.referToSelf(self => (x: any): any => {
       const clone = x.clone()
       clone.value = self(x.value)
       return clone
     }),
 
-    Object: function (x: any): any {
+    Object: function (x: any): Fraction {
       return new Fraction(x)
     },
 
-    'Array | Matrix': typed.referToSelf((self: any) => (x: any): any => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf(self => (x: MathCollection): MathCollection => deepMap(x, self))
   })
 })
 

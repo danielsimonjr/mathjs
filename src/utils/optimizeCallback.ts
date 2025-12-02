@@ -36,7 +36,7 @@ export function optimizeCallback(
   name: string,
   isUnary?: boolean
 ): OptimizedCallback {
-  if (typed.isTypedFunction(callback)) {
+  if ((typed as any).isTypedFunction(callback)) {
     let numberOfArguments: number | undefined
     if (isUnary) {
       numberOfArguments = 1
@@ -125,7 +125,7 @@ function _findNumberOfArgumentsTyped(
   const testArgs = [value, index, array]
   for (let i = 3; i > 0; i--) {
     const args = testArgs.slice(0, i)
-    if ((typed as any).resolve(callback, args) !== null) {
+    if (typed.resolve(callback, args) !== null) {
       return i
     }
   }

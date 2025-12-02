@@ -1,7 +1,7 @@
 import { errorTransform } from '../../transform/utils/errorTransform.js'
 import { getSafeProperty } from '../../../utils/customs.js'
 
-export function accessFactory ({ subset }: { subset: any }): any {
+export function accessFactory ({ subset }) {
   /**
    * Retrieve part of an object:
    *
@@ -13,7 +13,7 @@ export function accessFactory ({ subset }: { subset: any }): any {
    * @param {Index} index
    * @return {Object | Array | Matrix | string} Returns the subset
    */
-  return function access (object: any, index: any): any {
+  return function access (object, index) {
     try {
       if (Array.isArray(object)) {
         return subset(object, index)

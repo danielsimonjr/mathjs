@@ -1,11 +1,11 @@
 import { flatten } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
-import type { MathArray, Matrix, MathNumericType } from '../../types.js'
+import type { MathArray, Matrix, MathNumericType } from '../../../types/index.js'
 
 const name = 'setUnion'
 const dependencies = ['typed', 'size', 'concat', 'subset', 'setIntersect', 'setSymDifference', 'Index']
 
-export const createSetUnion = /* #__PURE__ */ factory(name, dependencies, ({ typed, size, concat, subset, setIntersect, setSymDifference, Index }: { typed: any, size: any, concat: any, subset: any, setIntersect: any, setSymDifference: any, Index: any }) => {
+export const createSetUnion = /* #__PURE__ */ factory(name, dependencies, ({ typed, size, concat, subset, setIntersect, setSymDifference, Index }) => {
   /**
    * Create the union of two (multi)sets.
    * Multi-dimension arrays will be converted to single-dimension arrays before the operation.
@@ -28,7 +28,7 @@ export const createSetUnion = /* #__PURE__ */ factory(name, dependencies, ({ typ
    * @return {Array | Matrix}    The union of two (multi)sets
    */
   return typed(name, {
-    'Array | Matrix, Array | Matrix': function (a1: any, a2: any): any[] {
+    'Array | Matrix, Array | Matrix': function (a1: MathArray | Matrix, a2: MathArray | Matrix): MathNumericType[] {
       if (subset(size(a1), new Index(0)) === 0) { // if any of them is empty, return the other one
         return flatten(a2)
       } else if (subset(size(a2), new Index(0)) === 0) {

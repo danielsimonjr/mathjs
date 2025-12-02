@@ -1,5 +1,5 @@
 import { factory } from '../../utils/factory.js'
-import type { Matrix, Complex } from '../../types.js'
+import type { Matrix, Complex } from '../../types/index.js'
 
 const name = 'freqz'
 
@@ -10,7 +10,7 @@ const dependencies = [
   'Complex',
   'divide',
   'matrix'
-] as const
+]
 
 /**
  * Frequency response result

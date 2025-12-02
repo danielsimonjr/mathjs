@@ -7,7 +7,7 @@ const dependencies = [
   'sylvester',
   'multiply',
   'transpose'
-] as const
+]
 
 export const createLyap = /* #__PURE__ */ factory(name, dependencies, (
   {

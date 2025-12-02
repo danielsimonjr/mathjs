@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 import { csCumsum } from './csCumsum.js'
-import { factory } from '../../../utils/factory.js'
+import { factory, FactoryFunction } from '../../../utils/factory.js'
 
 const name = 'csSymperm'
-const dependencies = ['conj', 'SparseMatrix']
+const dependencies = ['conj', 'SparseMatrix'] as const
 
-export const createCsSymperm: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ conj, SparseMatrix }) => {
-export const createCsSymperm = /* #__PURE__ */ factory(name, dependencies, ({ conj, SparseMatrix }: { conj: any; SparseMatrix: any }) => {
+export const createCsSymperm: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ conj, SparseMatrix }) => {
   /**
    * Computes the symmetric permutation of matrix A accessing only
    * the upper triangular part of A.
@@ -30,7 +29,7 @@ export const createCsSymperm = /* #__PURE__ */ factory(name, dependencies, ({ co
     // columns
     const n = asize[1]
     // C matrix arrays
-    const cvalues: any[] | null = values && avalues ? [] : null
+    const cvalues = values && avalues ? [] : null
     const cindex: number[] = [] // (nz)
     const cptr: number[] = [] // (n + 1)
     // variables

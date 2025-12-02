@@ -12,5 +12,5 @@ export const configDocs = {
     'config({number: "Fraction"})',
     '1/3 + 1/4'
   ],
-  seealso: [] as any[]
+  seealso: []
 }

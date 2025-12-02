@@ -15,7 +15,7 @@ const dependencies = [
   'typeOf',
   'im',
   're'
-] as const
+]
 
 export const createPolynomialRoot = /* #__PURE__ */ factory(name, dependencies, ({
   typed,

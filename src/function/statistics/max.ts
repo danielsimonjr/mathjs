@@ -67,7 +67,7 @@ export const createMax = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
 
     // max([a, b, c, d, ...], dim)
     'Array | Matrix, number | BigNumber': function (array: any[] | Matrix, dim: number | any): any {
-      return reduce(array as any, dim.valueOf(), _largest)
+      return reduce(array, dim.valueOf(), _largest)
     },
 
     // max(a, b, c, d, ...)
@@ -104,7 +104,7 @@ export const createMax = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
   function _max (array: any[] | Matrix): any {
     let res: any
 
-    deepForEach(array as any, function (value: any) {
+    deepForEach(array, function (value: any) {
       try {
         if (mathIsNaN(value)) {
           res = value
@@ -122,7 +122,7 @@ export const createMax = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
 
     // make sure returning numeric value: parse a string into a numeric value
     if (typeof res === 'string') {
-      res = numeric(res, safeNumberType(res, config as any))
+      res = numeric(res, safeNumberType(res, config))
     }
 
     return res

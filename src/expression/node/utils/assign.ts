@@ -1,7 +1,7 @@
 import { errorTransform } from '../../transform/utils/errorTransform.js'
 import { setSafeProperty } from '../../../utils/customs.js'
 
-export function assignFactory ({ subset, matrix }: { subset: any, matrix: any }) {
+export function assignFactory ({ subset, matrix }) {
   /**
    * Replace part of an object:
    *
@@ -16,13 +16,13 @@ export function assignFactory ({ subset, matrix }: { subset: any, matrix: any })
    *                                            except in case of a string
    */
   // TODO: change assign to return the value instead of the object
-  return function assign (object: any, index: any, value: any): any {
+  return function assign (object, index, value) {
     try {
       if (Array.isArray(object)) {
         const result = matrix(object).subset(index, value).valueOf()
 
         // shallow copy all (updated) items into the original array
-        result.forEach((item: any, index: number) => {
+        result.forEach((item, index) => {
           object[index] = item
         })
 

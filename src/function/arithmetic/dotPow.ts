@@ -17,7 +17,7 @@ const dependencies = [
   'DenseMatrix',
   'concat',
   'SparseMatrix'
-] as const
+]
 
 export const createDotPow = /* #__PURE__ */ factory(name, dependencies, ({ typed, equalScalar, matrix, pow, DenseMatrix, concat, SparseMatrix }: any): TypedFunction => {
   const matAlgo03xDSf = createMatAlgo03xDSf({ typed })

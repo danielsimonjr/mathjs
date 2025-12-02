@@ -60,7 +60,7 @@ export const createExpm = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
 
       if (size.length !== 2 || size[0] !== size[1]) {
         throw new RangeError('Matrix must be square ' +
-          '(size: ' + format(size) + ')')
+          '(size: ' + format(size, {}) + ')')
       }
 
       const n = size[0]

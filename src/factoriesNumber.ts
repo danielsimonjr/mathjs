@@ -74,6 +74,8 @@ import {
 import { factory } from './utils/factory.js'
 import { noIndex, noMatrix, noSubset } from './utils/noop.js'
 
+import { TypedFunction } from '../../types.js';
+
 // ----------------------------------------------------------------------------
 // classes and functions
 
@@ -334,10 +336,10 @@ export { createReviver } from './json/reviver.js'
 export { createReplacer } from './json/replacer.js'
 
 // helper functions to create a factory function for a function which only needs typed-function
-function createNumberFactory (name: string, fn: any): any {
-  return factory(name, ['typed'], ({ typed }: { typed: any }) => typed(fn))
+function createNumberFactory (name, fn) {
+  return factory(name, ['typed'], ({ typed }) => typed(fn))
 }
-function createNumberOptionalSecondArgFactory (name: string, fn: any): any {
+function createNumberOptionalSecondArgFactory (name, fn) {
   return factory(
-    name, ['typed'], ({ typed }: { typed: any }) => typed({ number: fn, 'number,number': fn }))
+    name, ['typed'], ({ typed }) => typed({ number: fn, 'number,number': fn }))
 }

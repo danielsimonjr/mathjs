@@ -4,7 +4,7 @@ import { factory } from '../../utils/factory.js'
 const name = 'isZero'
 const dependencies = ['typed', 'equalScalar']
 
-export const createIsZero = /* #__PURE__ */ factory(name, dependencies, ({ typed, equalScalar }: { typed: any, equalScalar: any }) => {
+export const createIsZero = /* #__PURE__ */ factory(name, dependencies, ({ typed, equalScalar }) => {
   /**
    * Test whether a value is zero.
    * The function can check for zero for types `number`, `BigNumber`, `Fraction`,
@@ -43,9 +43,9 @@ export const createIsZero = /* #__PURE__ */ factory(name, dependencies, ({ typed
 
     bigint: (x: bigint): boolean => x === 0n,
 
-    Unit: typed.referToSelf((self: any) =>
-      (x: any) => typed.find(self, x.valueType())(x.value)),
+    Unit: typed.referToSelf(self =>
+      x => typed.find(self, x.valueType())(x.value)),
 
-    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
   })
 })

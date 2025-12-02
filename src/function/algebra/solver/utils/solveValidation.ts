@@ -16,21 +16,21 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
     const mSize = m.size()
 
     if (mSize.length !== 2) {
-      throw new RangeError('Matrix must be two dimensional (size: ' + format(mSize) + ')')
+      throw new RangeError('Matrix must be two dimensional (size: ' + format(mSize, {}) + ')')
     }
 
     const rows = mSize[0]
     const columns = mSize[1]
 
     if (rows !== columns) {
-      throw new RangeError('Matrix must be square (size: ' + format(mSize) + ')')
+      throw new RangeError('Matrix must be square (size: ' + format(mSize, {}) + ')')
     }
 
     let data: any[] = []
 
     if (isMatrix(b)) {
-      const bSize = (b as any).size()
-      const bdata = (b as any)._data
+      const bSize = b.size()
+      const bdata = b._data
 
       // 1-dim vector
       if (bSize.length === 1) {
@@ -45,7 +45,7 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
         return new DenseMatrix({
           data,
           size: [rows, 1],
-          datatype: (b as any)._datatype
+          datatype: b._datatype
         })
       }
 
@@ -66,7 +66,7 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
             return new DenseMatrix({
               data,
               size: [rows, 1],
-              datatype: (b as any)._datatype
+              datatype: b._datatype
             })
           }
 
@@ -76,10 +76,9 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
         if (isSparseMatrix(b)) {
           for (let i = 0; i < rows; i++) { data[i] = [0] }
 
-          const bSparse = b as any
-          const values = bSparse._values
-          const index = bSparse._index
-          const ptr = bSparse._ptr
+          const values = b._values
+          const index = b._index
+          const ptr = b._ptr
 
           for (let k1 = ptr[1], k = ptr[0]; k < k1; k++) {
             const i = index[k]
@@ -89,7 +88,7 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
           return new DenseMatrix({
             data,
             size: [rows, 1],
-            datatype: bSparse._datatype
+            datatype: b._datatype
           })
         }
       }

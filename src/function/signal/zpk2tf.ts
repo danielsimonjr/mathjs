@@ -1,5 +1,5 @@
 import { factory } from '../../utils/factory.js'
-import type { Matrix, Complex } from '../../types.js'
+import type { Matrix, Complex } from '../../types/index.js'
 
 const name = 'zpk2tf'
 
@@ -9,7 +9,7 @@ const dependencies = [
   'multiply',
   'Complex',
   'number'
-] as const
+]
 
 /**
  * Transfer function representation [numerator, denominator]

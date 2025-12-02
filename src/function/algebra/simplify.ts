@@ -24,7 +24,7 @@ const dependencies = [
   'ParenthesisNode',
   'SymbolNode',
   'replacer'
-] as const
+]
 
 type SimplifyRule = string | { s?: string; l?: string; r?: string; repeat?: boolean; assuming?: any; imposeContext?: any; evaluate?: any; expanded?: any; expandedNC1?: any; expandedNC2?: any } | Function
 type SimplifyOptions = { consoleDebug?: boolean; context?: any; exactFractions?: boolean; fractionsLimit?: number }
@@ -556,15 +556,14 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       if (debug) console.log('Working on: ', str)
       for (let i = 0; i < rules.length; i++) {
         let rulestr = ''
-        const rule = rules[i]
-        if (typeof rule === 'function') {
-          res = (rule as Function)(res, options)
-          if (debug) rulestr = (rule as Function).name
+        if (typeof rules[i] === 'function') {
+          res = rules[i](res, options)
+          if (debug) rulestr = rules[i].name
         } else {
           flatten(res as any, options.context)
-          res = applyRule(res, rule, options.context)
+          res = applyRule(res, rules[i], options.context)
           if (debug) {
-            rulestr = `${(rule as any).l.toString()} -> ${(rule as any).r.toString()}`
+            rulestr = `${rules[i].l.toString()} -> ${rules[i].r.toString()}`
           }
         }
         if (debug) {
@@ -655,9 +654,9 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       if ((res as AccessorNode).object) {
         newObj = applyRule((res as AccessorNode).object, rule, context)
       }
-      let newIndex: any = (res as AccessorNode).index
+      let newIndex = (res as AccessorNode).index
       if ((res as AccessorNode).index) {
-        newIndex = applyRule((res as AccessorNode).index, rule, context) as any
+        newIndex = applyRule((res as AccessorNode).index, rule, context)
       }
       if (newObj !== (res as AccessorNode).object || newIndex !== (res as AccessorNode).index) {
         res = new AccessorNode(newObj, newIndex)
@@ -873,11 +872,11 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       (rule instanceof FunctionNode && node instanceof FunctionNode)) {
       // If the rule is an OperatorNode or a FunctionNode, then node must match exactly
       if (rule instanceof OperatorNode) {
-        if ((rule as OperatorNode).op !== (node as OperatorNode).op || (rule as OperatorNode).fn !== (node as OperatorNode).fn) {
+        if (rule.op !== (node as OperatorNode).op || rule.fn !== (node as OperatorNode).fn) {
           return []
         }
       } else if (rule instanceof FunctionNode) {
-        if ((rule as any).name !== (node as any).name) {
+        if (rule.name !== (node as FunctionNode).name) {
           return []
         }
       }
@@ -1068,7 +1067,7 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
           return false
         }
       } else if (p instanceof FunctionNode) {
-        if ((p as any).name !== (q as any).name) {
+        if ((p as FunctionNode).name !== (q as FunctionNode).name) {
           return false
         }
       }

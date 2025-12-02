@@ -1,10 +1,14 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
+import type { MathJsConfig } from '../../core/config.js'
+import type { Complex } from '../../type/complex/Complex.js'
+import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 import { asechNumber } from '../../plain/number/index.js'
 
 const name = 'asech'
-const dependencies = ['typed', 'config', 'Complex', 'BigNumber'] as const
+const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
 
-export const createAsech = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex, BigNumber }: { typed: any; config: any; Complex: any; BigNumber: any }) => {
+export const createAsech: FactoryFunction<'asech', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex, BigNumber }) => {
   /**
    * Calculate the hyperbolic arcsecant of a value,
    * defined as `asech(x) = acosh(1/x) = ln(sqrt(1/x^2 - 1) + 1/x)`.
@@ -29,9 +33,9 @@ export const createAsech = /* #__PURE__ */ factory(name, dependencies, ({ typed,
    */
   return typed(name, {
     number: function (x: number) {
-      if ((x <= 1 && x >= -1) || config.predictable) {
+      if ((x <= 1 && x >= -1) || (config as MathJsConfig).predictable) {
         const xInv = 1 / x
-        if (xInv > 0 || config.predictable) {
+        if (xInv > 0 || (config as MathJsConfig).predictable) {
           return asechNumber(x)
         }
 
@@ -42,12 +46,12 @@ export const createAsech = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       return new Complex(x, 0).asech()
     },
 
-    Complex: function (x: any) {
+    Complex: function (x: Complex) {
       return x.asech()
     },
 
-    BigNumber: function (x: any) {
+    BigNumber: function (x: BigNumber) {
       return new BigNumber(1).div(x).acosh()
     }
-  })
+  }) as TypedFunction
 })

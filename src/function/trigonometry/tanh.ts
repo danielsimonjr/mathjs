@@ -1,10 +1,11 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
 import { tanh as _tanh } from '../../utils/number.js'
 
 const name = 'tanh'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
-export const createTanh = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
+export const createTanh: FactoryFunction<'tanh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
    * Calculate the hyperbolic tangent of a value,
    * defined as `tanh(x) = (exp(2 * x) - 1) / (exp(2 * x) + 1)`.
@@ -32,6 +33,6 @@ export const createTanh = /* #__PURE__ */ factory(name, dependencies, ({ typed }
    */
   return typed('tanh', {
     number: _tanh,
-    'Complex | BigNumber': (x: any) => x.tanh()
-  })
+    'Complex | BigNumber': x => x.tanh()
+  }) as TypedFunction
 })

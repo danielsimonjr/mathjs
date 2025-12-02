@@ -149,7 +149,7 @@ export const createPinv = /* #__PURE__ */ factory(name, dependencies, ({
         default:
           // multi dimensional array
           throw new RangeError('Matrix must be two dimensional ' +
-          '(size: ' + format(size) + ')')
+          '(size: ' + format(size, {}) + ')')
       }
     },
 

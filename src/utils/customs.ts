@@ -8,7 +8,7 @@ import { hasOwnProperty } from './object.js'
  * @param {string} prop
  * @return {*} Returns the property value when safe
  */
-function getSafeProperty (object: any, prop: string): any {
+function getSafeProperty (object, prop) {
   // only allow getting safe properties of a plain object
   if (isSafeProperty(object, prop)) {
     return object[prop]
@@ -31,7 +31,7 @@ function getSafeProperty (object: any, prop: string): any {
  * @return {*} Returns the value
  */
 // TODO: merge this function into access.js?
-function setSafeProperty (object: any, prop: string, value: any): any {
+function setSafeProperty (object, prop, value) {
   // only allow setting safe properties of a plain object
   if (isSafeProperty(object, prop)) {
     object[prop] = value
@@ -48,7 +48,7 @@ function setSafeProperty (object: any, prop: string, value: any): any {
  * @param {string} prop
  * @return {boolean} Returns true when safe
  */
-function isSafeProperty (object: any, prop: string): boolean {
+function isSafeProperty (object, prop) {
   if (!isPlainObject(object) && !Array.isArray(object)) {
     return false
   }
@@ -83,7 +83,7 @@ function isSafeProperty (object: any, prop: string): boolean {
  * @param {string} method
  * @return {function} Returns the method when valid
  */
-function getSafeMethod (object: any, method: string): Function {
+function getSafeMethod (object, method) {
   if (!isSafeMethod(object, method)) {
     throw new Error('No access to method "' + method + '"')
   }
@@ -98,7 +98,7 @@ function getSafeMethod (object: any, method: string): Function {
  * @param {string} method
  * @return {boolean} Returns true when safe, false otherwise
  */
-function isSafeMethod (object: any, method: string): boolean {
+function isSafeMethod (object, method) {
   if (object === null || object === undefined || typeof object[method] !== 'function') {
     return false
   }
@@ -133,7 +133,7 @@ function isSafeMethod (object: any, method: string): boolean {
   return true
 }
 
-function isPlainObject (object: any): boolean {
+function isPlainObject (object) {
   return typeof object === 'object' && object && object.constructor === Object
 }
 

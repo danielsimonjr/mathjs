@@ -18,7 +18,7 @@ const dependencies = [
   'matrix',
   'ctranspose',
   'eigs'
-] as const
+]
 
 export const createNorm = /* #__PURE__ */ factory(
   name,
@@ -90,7 +90,7 @@ export const createNorm = /* #__PURE__ */ factory(
 
       boolean: function (x: boolean): number {
         // norm(x) = abs(x)
-        return Math.abs(x ? 1 : 0)
+        return Math.abs(x)
       },
 
       Array: function (x: any) {

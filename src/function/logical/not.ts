@@ -5,8 +5,8 @@ import { notNumber } from '../../plain/number/index.js'
 // Type definitions
 interface TypedFunction<T = any> {
   (...args: any[]): T
-  referToSelf(fn: (self: any) => any): any
-  find(signatures: any, signature: string): any
+  referToSelf<U>(fn: (self: TypedFunction<U>) => TypedFunction<U>): TypedFunction<U>
+  find(signatures: any, signature: string): TypedFunction
 }
 
 interface Complex {
@@ -74,6 +74,6 @@ export const createNot = /* #__PURE__ */ factory(name, dependencies, ({ typed }:
 
     Unit: typed.referToSelf(self => (x: Unit): any => typed.find(self, x.valueType())(x.value)),
 
-    'Array | Matrix': typed.referToSelf(self => (x: any): any => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf(((self: any) => ((x: any): any => deepMap(x, self))) as any) as any
   })
 })

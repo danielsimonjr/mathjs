@@ -1,6 +1,6 @@
 import { factory } from '../../../utils/factory.js'
 
-import { TypedFunction } from '../../../types.js';
+import { TypedFunction } from '../../types.js';
 
 const name = 'chain'
 const dependencies = ['typed', 'Chain']

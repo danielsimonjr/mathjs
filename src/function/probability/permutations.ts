@@ -4,9 +4,12 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'permutations'
-const dependencies = ['typed', 'factorial'] as const
+const dependencies = ['typed', 'factorial']
 
-export const createPermutations = /* #__PURE__ */ factory(name, dependencies, ({ typed, factorial }: any) => {
+export const createPermutations: FactoryFunction<
+  { typed: TypedFunction; factorial: TypedFunction },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed, factorial }) => {
   /**
    * Compute the number of ways of obtaining an ordered subset of `k` elements
    * from a set of `n` elements.

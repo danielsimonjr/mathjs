@@ -1,8 +1,7 @@
 import { createMap } from '../../utils/map.js'
 import { isFunctionNode, isNode, isOperatorNode, isParenthesisNode, isSymbolNode } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
-
-type MathNode = any
+import type { MathNode, SymbolNode, OperatorNode, ParenthesisNode, FunctionNode } from '../../utils/node.js'
 
 const name = 'resolve'
 const dependencies = [
@@ -12,7 +11,7 @@ const dependencies = [
   'FunctionNode',
   'OperatorNode',
   'ParenthesisNode'
-] as const
+]
 
 export const createResolve = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
@@ -84,9 +83,9 @@ export const createResolve = /* #__PURE__ */ factory(name, dependencies, ({
       const args = node.args.map(function (arg: MathNode) {
         return _resolve(arg, scope, within)
       })
-      return new OperatorNode(node.op, node.fn, args, node.implicit)
+      return new OperatorNode(node.op, (node as any).fn, args, (node as any).implicit)
     } else if (isParenthesisNode(node)) {
-      return new ParenthesisNode(_resolve(node.content, scope, within))
+      return new ParenthesisNode(_resolve((node as any).content, scope, within))
     } else if (isFunctionNode(node)) {
       const args = node.args.map(function (arg: MathNode) {
         return _resolve(arg, scope, within)

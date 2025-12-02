@@ -19,21 +19,7 @@
 import { hasOwnProperty } from '../utils/object.js'
 import { isConstantNode, isParenthesisNode, rule2Node } from '../utils/is.js'
 
-// Type definitions for operator properties
-interface OperatorProperty {
-  op?: string
-  associativity?: 'left' | 'right'
-  associativeWith?: string[]
-  latexLeftParens?: boolean
-  latexRightParens?: boolean
-  latexParens?: boolean
-}
-
-interface PrecedenceLevel {
-  [key: string]: OperatorProperty
-}
-
-export const properties: PrecedenceLevel[] = [
+export const properties = [
   { // assignment
     AssignmentNode: {},
     FunctionAssignmentNode: {}
@@ -51,14 +37,14 @@ export const properties: PrecedenceLevel[] = [
     'OperatorNode:or': {
       op: 'or',
       associativity: 'left',
-      associativeWith: [] as any[]
+      associativeWith: []
     }
   },
   { // logical xor
     'OperatorNode:xor': {
       op: 'xor',
       associativity: 'left',
-      associativeWith: [] as any[]
+      associativeWith: []
     }
   },
   { // logical and
@@ -280,7 +266,7 @@ export const properties: PrecedenceLevel[] = [
  * @param {string} parenthesis
  * @return {Node}
  */
-function unwrapParen (_node: any, parenthesis: string): any {
+function unwrapParen (_node, parenthesis) {
   if (!parenthesis || parenthesis !== 'auto') return _node
   let node = _node
   while (isParenthesisNode(node)) node = (node as any).content
@@ -298,7 +284,7 @@ function unwrapParen (_node: any, parenthesis: string): any {
  * @param {Node} parent (for determining context for implicit multiplication)
  * @return {number | null}
  */
-export function getPrecedence (_node: any, parenthesis: string, implicit: string, parent: any): number | null {
+export function getPrecedence (_node, parenthesis, implicit, parent) {
   let node = _node
   if (parenthesis !== 'keep') {
     // ParenthesisNodes are only ignored when not in 'keep' mode
@@ -340,7 +326,7 @@ export function getPrecedence (_node: any, parenthesis: string, implicit: string
  * @return {string|null}
  * @throws {Error}
  */
-export function getAssociativity (_node: any, parenthesis: string): string | null {
+export function getAssociativity (_node, parenthesis) {
   let node = _node
   if (parenthesis !== 'keep') {
     // ParenthesisNodes are only ignored when not in 'keep' mode
@@ -379,7 +365,7 @@ export function getAssociativity (_node: any, parenthesis: string): string | nul
  * @param {string} parenthesis
  * @return {boolean | null}
  */
-export function isAssociativeWith (nodeA: any, nodeB: any, parenthesis: string): boolean | null {
+export function isAssociativeWith (nodeA, nodeB, parenthesis) {
   // ParenthesisNodes are only ignored when not in 'keep' mode
   const a = (parenthesis !== 'keep') ? nodeA.getContent() : nodeA
   const b = (parenthesis !== 'keep') ? nodeA.getContent() : nodeB
@@ -415,7 +401,7 @@ export function isAssociativeWith (nodeA: any, nodeB: any, parenthesis: string):
  * @param {string} Function name
  * @return {string | null} Associated operator symbol, if any
  */
-export function getOperator (fn: string): string | null {
+export function getOperator (fn) {
   const identifier = 'OperatorNode:' + fn
   for (const group of properties) {
     if (identifier in group) {

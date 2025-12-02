@@ -1,10 +1,14 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
+import type { MathJsConfig } from '../../core/config.js'
+import type { Complex } from '../../type/complex/Complex.js'
+import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 import { acoshNumber } from '../../plain/number/index.js'
 
 const name = 'acosh'
-const dependencies = ['typed', 'config', 'Complex'] as const
+const dependencies = ['typed', 'config', 'Complex']
 
-export const createAcosh = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }: { typed: any; config: any; Complex: any }) => {
+export const createAcosh: FactoryFunction<'acosh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }) => {
   /**
    * Calculate the hyperbolic arccos of a value,
    * defined as `acosh(x) = ln(sqrt(x^2 - 1) + x)`.
@@ -28,7 +32,7 @@ export const createAcosh = /* #__PURE__ */ factory(name, dependencies, ({ typed,
    */
   return typed(name, {
     number: function (x: number) {
-      if (x >= 1 || config.predictable) {
+      if (x >= 1 || (config as MathJsConfig).predictable) {
         return acoshNumber(x)
       }
       if (x <= -1) {
@@ -37,12 +41,12 @@ export const createAcosh = /* #__PURE__ */ factory(name, dependencies, ({ typed,
       return new Complex(x, 0).acosh()
     },
 
-    Complex: function (x: any) {
+    Complex: function (x: Complex) {
       return x.acosh()
     },
 
-    BigNumber: function (x: any) {
+    BigNumber: function (x: BigNumber) {
       return x.acosh()
     }
-  })
+  }) as TypedFunction
 })

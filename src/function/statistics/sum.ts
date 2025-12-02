@@ -79,7 +79,7 @@ export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
   function _sum (array: any[] | Matrix): any {
     let sum: any
 
-    deepForEach(array as any, function (value: any) {
+    deepForEach(array, function (value: any) {
       try {
         sum = (sum === undefined) ? value : add(sum, value)
       } catch (err) {
@@ -92,7 +92,7 @@ export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
       sum = numeric(0, config.number)
     }
     if (typeof sum === 'string') {
-      sum = numeric(sum, safeNumberType(sum, config as any))
+      sum = numeric(sum, safeNumberType(sum, config))
     }
 
     return sum
@@ -107,10 +107,10 @@ export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
    */
   function _nsumDim (array: any[] | Matrix, dim: number | any): any {
     try {
-      const sum = reduce(array as any, dim, add)
+      const sum = reduce(array, dim, add)
       return sum
     } catch (err) {
-      throw improveErrorMessage(err, 'sum')
+      throw improveErrorMessage(err, 'sum', undefined)
     }
   }
 })

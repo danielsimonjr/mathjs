@@ -1,7 +1,7 @@
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'count'
-const dependencies = ['typed', 'size', 'prod'] as const
+const dependencies = ['typed', 'size', 'prod']
 
 export const createCount: FactoryFunction<'typed' | 'size' | 'prod', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, size, prod }) => {
   /**

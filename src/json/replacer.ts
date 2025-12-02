@@ -1,7 +1,7 @@
 import { factory } from '../utils/factory.js'
 
 const name = 'replacer'
-const dependencies: string[] = []
+const dependencies = []
 
 export const createReplacer = /* #__PURE__ */ factory(name, dependencies, () => {
   /**
@@ -16,7 +16,7 @@ export const createReplacer = /* #__PURE__ */ factory(name, dependencies, () => 
    * @param {*} value
    * @returns {*} Returns the replaced object
    */
-  return function replacer (key: string, value: any): any {
+  return function replacer (key, value) {
     // the numeric values Infinitiy, -Infinity, and NaN cannot be serialized to JSON
     if (typeof value === 'number' && (!Number.isFinite(value) || isNaN(value))) {
       return {

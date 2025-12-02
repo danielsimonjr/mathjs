@@ -1,10 +1,14 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
+import type { MathJsConfig } from '../../core/config.js'
+import type { Complex } from '../../type/complex/Complex.js'
+import type { BigNumber } from '../../type/bigNumber/BigNumber.js'
 import { acscNumber } from '../../plain/number/index.js'
 
 const name = 'acsc'
-const dependencies = ['typed', 'config', 'Complex', 'BigNumber'] as const
+const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
 
-export const createAcsc = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex, BigNumber }: { typed: any; config: any; Complex: any; BigNumber: any }) => {
+export const createAcsc: FactoryFunction<'acsc', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex, BigNumber }) => {
   /**
    * Calculate the inverse cosecant of a value, defined as `acsc(x) = asin(1/x)`.
    *
@@ -30,18 +34,18 @@ export const createAcsc = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
    */
   return typed(name, {
     number: function (x: number) {
-      if (x <= -1 || x >= 1 || config.predictable) {
+      if (x <= -1 || x >= 1 || (config as MathJsConfig).predictable) {
         return acscNumber(x)
       }
       return new Complex(x, 0).acsc()
     },
 
-    Complex: function (x: any) {
+    Complex: function (x: Complex) {
       return x.acsc()
     },
 
-    BigNumber: function (x: any) {
+    BigNumber: function (x: BigNumber) {
       return new BigNumber(1).div(x).asin()
     }
-  })
+  }) as TypedFunction
 })

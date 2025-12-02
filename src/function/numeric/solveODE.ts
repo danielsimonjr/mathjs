@@ -1,11 +1,6 @@
 import { isUnit, isNumber, isBigNumber } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
-
-type MathNumericType = number | any
-type MathArray = any[]
-type Matrix = any
-type Unit = any
-type BigNumber = any
+import type { MathJsChain, MathNumericType, MathArray, Matrix, Unit, BigNumber } from '../../types/index.js'
 
 const name = 'solveODE'
 const dependencies = [
@@ -24,7 +19,7 @@ const dependencies = [
   'matrix',
   'bignumber',
   'unaryMinus'
-]
+] as const
 
 /**
  * Butcher Tableau structure for Runge-Kutta methods
@@ -63,8 +58,7 @@ interface ODESolution<T = any> {
  */
 type ForcingFunction = (t: MathNumericType, y: MathNumericType | MathArray) => MathNumericType | MathArray
 
-export const createSolveODE = /* #__PURE__ */ factory(name, dependencies, (
-export const createSolveODE = /* #__PURE__ */ factory(name, dependencies, (
+export const createSolveODE = /* #__PURE__ */ factory(name, dependencies as string[], (
   {
     typed,
     add,

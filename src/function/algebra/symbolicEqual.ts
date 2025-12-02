@@ -8,7 +8,7 @@ const dependencies = [
   'simplify',
   'typed',
   'OperatorNode'
-] as const
+]
 
 export const createSymbolicEqual = /* #__PURE__ */ factory(name, dependencies, ({
   parse,

@@ -8,7 +8,7 @@ interface BigNumber {
 }
 
 const name = 'Range'
-const dependencies: string[] = []
+const dependencies = []
 
 /**
  * Callback function for Range forEach operations

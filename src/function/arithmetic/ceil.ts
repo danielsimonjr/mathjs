@@ -1,6 +1,7 @@
 import Decimal from 'decimal.js'
-import { factory } from '../../utils/factory.js'
-import type { MathJsConfig } from '../../core/config.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
+import type { MathJsConfig } from '../../core/create.js'
 import { deepMap } from '../../utils/collection.js'
 import { isInteger, nearlyEqual } from '../../utils/number.js'
 import { nearlyEqual as bigNearlyEqual } from '../../utils/bignumber/nearlyEqual.js'
@@ -9,13 +10,15 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 
 const name = 'ceil'
-const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zeros', 'DenseMatrix'] as const
+const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zeros', 'DenseMatrix']
 
-// Cast Decimal to any for construction
-const bigTen = new (Decimal as any)(10)
+const bigTen = new Decimal(10)
 
-export const createCeilNumber = /* #__PURE__ */ factory(
-  name, ['typed', 'config', 'round'] as const, ({ typed, config, round }: { typed: any, config: MathJsConfig, round: any }) => {
+export const createCeilNumber: FactoryFunction<
+  { typed: TypedFunction, config: MathJsConfig, round: any },
+  TypedFunction
+> = /* #__PURE__ */ factory(
+  name, ['typed', 'config', 'round'] as const, ({ typed, config, round }) => {
     function _ceilNumber (x: number): number {
       // See ./floor.js _floorNumber for rationale here
       const c = Math.ceil(x)
@@ -48,7 +51,10 @@ export const createCeilNumber = /* #__PURE__ */ factory(
   }
 )
 
-export const createCeil = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, round, matrix, equalScalar, zeros, DenseMatrix }: { typed: any, config: MathJsConfig, round: any, matrix: any, equalScalar: any, zeros: any, DenseMatrix: any }) => {
+export const createCeil: FactoryFunction<
+  { typed: TypedFunction, config: MathJsConfig, round: any, matrix: any, equalScalar: any, zeros: any, DenseMatrix: any },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, round, matrix, equalScalar, zeros, DenseMatrix }) => {
   const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
   const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
   const matAlgo14xDs = createMatAlgo14xDs({ typed })
@@ -122,7 +128,7 @@ export const createCeil = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     },
 
     'Complex, BigNumber': function (x: any, n: any): any {
-      return x.ceil(n.toNumber())
+      return x.ceil((n as any).toNumber())
     },
 
     BigNumber: _bigCeil,
@@ -145,7 +151,7 @@ export const createCeil = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     },
 
     'Fraction, BigNumber': function (x: any, n: any): any {
-      return x.ceil(n.toNumber())
+      return x.ceil((n as any).toNumber())
     },
 
     'Unit, number, Unit': typed.referToSelf((self: any) => function (x: any, n: number, unit: any): any {
@@ -153,7 +159,7 @@ export const createCeil = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
       return unit.multiply(self(valueless, n))
     }),
 
-    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, n.toNumber(), unit)),
+    'Unit, BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => self(x, (n as any).toNumber(), unit)),
 
     'Array | Matrix, number | BigNumber, Unit': typed.referToSelf((self: any) => (x: any, n: any, unit: any): any => {
       // deep map collection, skip zeros since ceil(0) = 0

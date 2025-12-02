@@ -3,7 +3,7 @@ import { factory, FactoryFunction } from '../../utils/factory.js'
 import { deepForEach } from '../../utils/array.js'
 
 const name = 'forEach'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createForEach: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

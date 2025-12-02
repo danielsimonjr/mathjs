@@ -1,15 +1,15 @@
 import { factory } from '../../utils/factory.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
-import type { MathJsStatic } from '../../types.js'
+import type { MathJsStatic } from '../../../types/index.js'
 
 const name = 'to'
 const dependencies = [
   'typed',
   'matrix',
   'concat'
-] as const
+]
 
-export const createTo = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, concat }: MathJsStatic) => {
+export const createTo = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, concat }: any) => {
   const matrixAlgorithmSuite = createMatrixAlgorithmSuite({ typed, matrix, concat })
 
   /**
@@ -39,6 +39,6 @@ export const createTo = /* #__PURE__ */ factory(name, dependencies, ({ typed, ma
   return typed(
     name,
     { 'Unit, Unit | string': (x: any, unit: any) => x.to(unit) },
-    matrixAlgorithmSuite({ Ds: true } as any)
+    matrixAlgorithmSuite({ Ds: true })
   )
 })

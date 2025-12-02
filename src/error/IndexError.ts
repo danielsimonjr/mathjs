@@ -8,46 +8,32 @@
  * @param {number} [max]     Maximum index (excluded)
  * @extends RangeError
  */
-export class IndexError extends RangeError {
-  index: any
-  min: any
-  max: any
-
-  constructor (index: any, min?: any, max?: any) {
-    // Handle 2 or 3 argument forms
-    let actualMin: any
-    let actualMax: any
-
-    if (arguments.length < 3) {
-      actualMin = 0
-      actualMax = min
-    } else {
-      actualMin = min
-      actualMax = max
-    }
-
-    // Generate message
-    let message: string
-    if (actualMin !== undefined && index < actualMin) {
-      message = 'Index out of range (' + index + ' < ' + actualMin + ')'
-    } else if (actualMax !== undefined && index >= actualMax) {
-      message = 'Index out of range (' + index + ' > ' + (actualMax - 1) + ')'
-    } else {
-      message = 'Index out of range (' + index + ')'
-    }
-
-    super(message)
-
-    this.index = index
-    this.min = actualMin
-    this.max = actualMax
-    this.name = 'IndexError'
-
-    if ((Error as any).captureStackTrace) {
-      (Error as any).captureStackTrace(this, IndexError)
-    }
+export function IndexError (index, min, max) {
+  if (!(this instanceof IndexError)) {
+    throw new SyntaxError('Constructor must be called with the new operator')
   }
+
+  this.index = index
+  if (arguments.length < 3) {
+    this.min = 0
+    this.max = min
+  } else {
+    this.min = min
+    this.max = max
+  }
+
+  if (this.min !== undefined && this.index < this.min) {
+    this.message = 'Index out of range (' + this.index + ' < ' + this.min + ')'
+  } else if (this.max !== undefined && this.index >= this.max) {
+    this.message = 'Index out of range (' + this.index + ' > ' + (this.max - 1) + ')'
+  } else {
+    this.message = 'Index out of range (' + this.index + ')'
+  }
+
+  this.stack = (new Error()).stack
 }
 
-// Add static property for type checking
-(IndexError.prototype as any).isIndexError = true
+IndexError.prototype = new RangeError()
+IndexError.prototype.constructor = RangeError
+IndexError.prototype.name = 'IndexError'
+IndexError.prototype.isIndexError = true

@@ -1,5 +1,6 @@
 import { factory } from '../utils/factory.js'
 import { deepMap } from '../utils/collection.js'
+import type Decimal from 'decimal.js'
 
 const name = 'boolean'
 const dependencies = ['typed']
@@ -51,7 +52,7 @@ export const createBoolean = /* #__PURE__ */ factory(name, dependencies, ({ type
       return false
     },
 
-    BigNumber: function (x: any): boolean {
+    BigNumber: function (x: Decimal): boolean {
       return !x.isZero()
     },
 

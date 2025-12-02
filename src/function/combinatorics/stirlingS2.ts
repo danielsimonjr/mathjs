@@ -1,4 +1,5 @@
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
+import type { TypedFunction } from '../../core/function/typed.js'
 import { isNumber } from '../../utils/is.js'
 
 const name = 'stirlingS2'
@@ -16,23 +17,42 @@ const dependencies = [
   'number',
   '?bignumber',
   'larger'
-] as const
+]
 
-export const createStirlingS2 = /* #__PURE__ */ factory(name, dependencies, ({
-  typed,
-  addScalar,
-  subtractScalar,
-  multiplyScalar,
-  divideScalar,
-  pow,
-  factorial,
-  combinations,
-  isNegative,
-  isInteger,
-  number,
-  bignumber,
-  larger
-}: any) => {
+export const createStirlingS2: FactoryFunction<
+  {
+    typed: TypedFunction
+    addScalar: TypedFunction
+    subtractScalar: TypedFunction
+    multiplyScalar: TypedFunction
+    divideScalar: TypedFunction
+    pow: TypedFunction
+    factorial: TypedFunction
+    combinations: TypedFunction
+    isNegative: TypedFunction
+    isInteger: TypedFunction
+    number: TypedFunction
+    bignumber?: TypedFunction
+    larger: TypedFunction
+  },
+  TypedFunction
+> = /* #__PURE__ */ factory(name, dependencies, (
+  {
+    typed,
+    addScalar,
+    subtractScalar,
+    multiplyScalar,
+    divideScalar,
+    pow,
+    factorial,
+    combinations,
+    isNegative,
+    isInteger,
+    number,
+    bignumber,
+    larger
+  }
+) => {
   const smallCache: any[][] = []
   const bigCache: any[][] = []
   /**
@@ -64,7 +84,7 @@ export const createStirlingS2 = /* #__PURE__ */ factory(name, dependencies, ({
    * @return {Number | BigNumber}     S(n,k)
    */
   return typed(name, {
-    'number | BigNumber, number | BigNumber': function (n: number | any, k: number | any): number | any {
+    'number | BigNumber, number | BigNumber': function (n: any, k: any): any {
       if (!isInteger(n) || isNegative(n) || !isInteger(k) || isNegative(k)) {
         throw new TypeError('Non-negative integer value expected in function stirlingS2')
       } else if (larger(k, n)) {

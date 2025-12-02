@@ -7,7 +7,7 @@ import { format as formatBigNumber } from './bignumber/formatter.js'
  * @param {string} text
  * @param {string} search
  */
-export function endsWith (text: any, search: any) {
+export function endsWith (text, search) {
   const start = text.length - search.length
   const end = text.length
   return (text.substring(start, end) === search)
@@ -51,8 +51,8 @@ export function endsWith (text: any, search: any) {
  *     have been more, they are deleted and replaced by an ellipsis).
  * @return {string} str
  */
-export function format (value: any, options?: any): string {
-  const result: string = _format(value, options)
+export function format (value, options) {
+  const result = _format(value, options)
   if (options && typeof options === 'object' && 'truncate' in options &&
       result.length > options.truncate) {
     return result.substring(0, options.truncate - 3) + '...'
@@ -60,7 +60,7 @@ export function format (value: any, options?: any): string {
   return result
 }
 
-function _format (value: any, options?: any): string {
+function _format (value, options) {
   if (typeof value === 'number') {
     return formatNumber(value, options)
   }
@@ -117,13 +117,13 @@ function _format (value: any, options?: any): string {
  * @param {*} value
  * @return {string}
  */
-export function stringify (value: any): string {
+export function stringify (value) {
   const text = String(value)
   let escaped = ''
   let i = 0
   while (i < text.length) {
     const c = text.charAt(i)
-    escaped += (c in controlCharacters) ? (controlCharacters as any)[c] : c
+    escaped += (c in controlCharacters) ? controlCharacters[c] : c
     i++
   }
 
@@ -145,7 +145,7 @@ const controlCharacters = {
  * @param {*} value
  * @return {string}
  */
-export function escape (value: any): string {
+export function escape (value) {
   let text = String(value)
   text = text.replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
@@ -166,7 +166,7 @@ export function escape (value: any): string {
  *                                                options.
  * @returns {string} str
  */
-function formatArray (array: any, options?: any): string {
+function formatArray (array, options) {
   if (Array.isArray(array)) {
     let str = '['
     const len = array.length
@@ -188,7 +188,7 @@ function formatArray (array: any, options?: any): string {
  * @param {*} value
  * @return {boolean}
  */
-function looksLikeFraction (value: any): boolean {
+function looksLikeFraction (value) {
   return (value &&
       typeof value === 'object' &&
       typeof value.s === 'bigint' &&
@@ -202,7 +202,7 @@ function looksLikeFraction (value: any): boolean {
  * @param {string} y
  * @returns {number}
  */
-export function compareText (x: any, y: any): number {
+export function compareText (x, y) {
   // we don't want to convert numbers to string, only accept string input
   if (!isString(x)) {
     throw new TypeError('Unexpected type of argument in function compareText ' +

@@ -1,30 +1,26 @@
 import Complex from 'complex.js'
 import { format } from '../../utils/number.js'
 import { isNumber, isUnit } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
+import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'Complex'
-const dependencies = [] as const
-const dependencies: string[] = []
+const dependencies = []
 
-// Cast Complex to any for extending with custom properties
-const ComplexClass = Complex as any
-
-export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, () => {
+export const createComplexClass: FactoryFunction<never, typeof name> = /* #__PURE__ */ factory(name, dependencies, () => {
   /**
    * Attach type information
    */
-  Object.defineProperty(ComplexClass, 'name', { value: 'Complex' })
-  ComplexClass.prototype.constructor = ComplexClass
-  ComplexClass.prototype.type = 'Complex'
-  ComplexClass.prototype.isComplex = true
+  Object.defineProperty(Complex, 'name', { value: 'Complex' })
+  Complex.prototype.constructor = Complex
+  Complex.prototype.type = 'Complex'
+  Complex.prototype.isComplex = true
 
   /**
    * Get a JSON representation of the complex number
    * @returns {Object} Returns a JSON object structured as:
    *                   `{"mathjs": "Complex", "re": 2, "im": 3}`
    */
-  ComplexClass.prototype.toJSON = function (this: any) {
+  Complex.prototype.toJSON = function (this: any) {
     return {
       mathjs: 'Complex',
       re: this.re,
@@ -37,7 +33,7 @@ export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, ()
    * The angle phi will be set in the interval of [-pi, pi].
    * @return {{r: number, phi: number}} Returns and object with properties r and phi.
    */
-  ComplexClass.prototype.toPolar = function (this: any) {
+  Complex.prototype.toPolar = function (this: any) {
     return {
       r: this.abs(),
       phi: this.arg()
@@ -53,7 +49,7 @@ export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, ()
    *                                                options.
    * @return {string} str
    */
-  ComplexClass.prototype.format = function (this: any, options?: any) {
+  Complex.prototype.format = function (this: any, options?: any) {
     let str = ''
     let im = this.im
     let re = this.re
@@ -114,13 +110,13 @@ export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, ()
    * @param {*} args...
    * @return {Complex}
    */
-  ComplexClass.fromPolar = function (args: any) {
+  Complex.fromPolar = function (args: any) {
     switch (arguments.length) {
       case 1:
       {
         const arg = arguments[0]
         if (typeof arg === 'object') {
-          return ComplexClass(arg)
+          return Complex(arg)
         } else {
           throw new TypeError('Input has to be an object with r and phi keys.')
         }
@@ -130,13 +126,13 @@ export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, ()
         const r = arguments[0]
         let phi = arguments[1]
         if (isNumber(r)) {
-          if (isUnit(phi) && (phi as any).hasBase('ANGLE')) {
+          if (isUnit(phi) && phi.hasBase('ANGLE')) {
             // convert unit to a number in radians
-            phi = (phi as any).toNumber('rad')
+            phi = phi.toNumber('rad')
           }
 
           if (isNumber(phi)) {
-            return new ComplexClass({ r, phi })
+            return new Complex({ r, phi })
           }
 
           throw new TypeError('Phi is not a number nor an angle unit.')
@@ -150,7 +146,7 @@ export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, ()
     }
   }
 
-  ComplexClass.prototype.valueOf = ComplexClass.prototype.toString
+  Complex.prototype.valueOf = Complex.prototype.toString
 
   /**
    * Create a Complex number from a JSON object
@@ -160,8 +156,8 @@ export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, ()
    *                       for `re` and `im` are 0.
    * @return {Complex} Returns a new Complex number
    */
-  ComplexClass.fromJSON = function (json: any) {
-    return new ComplexClass(json)
+  Complex.fromJSON = function (json: any) {
+    return new Complex(json)
   }
 
   /**
@@ -179,7 +175,7 @@ export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, ()
    * @params {Complex} b
    * @returns {number} Returns the comparison result: -1, 0, or 1
    */
-  ComplexClass.compare = function (a: any, b: any): number {
+  Complex.compare = function (a: any, b: any): number {
     if (a.re > b.re) { return 1 }
     if (a.re < b.re) { return -1 }
 
@@ -189,5 +185,5 @@ export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, ()
     return 0
   }
 
-  return ComplexClass
+  return Complex
 }, { isClass: true })

@@ -2,6 +2,17 @@ import { compareText as _compareText } from '../../utils/string.js'
 import { factory } from '../../utils/factory.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
 
+// Type definitions
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+}
+
+interface Dependencies {
+  typed: TypedFunction
+  matrix: any
+  concat: TypedFunction
+}
+
 const name = 'compareText'
 const dependencies = [
   'typed',
@@ -9,9 +20,9 @@ const dependencies = [
   'concat'
 ]
 
-;(_compareText as any).signature = 'any, any'
+_compareText.signature = 'any, any'
 
-export const createCompareText = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, concat }: { typed: any; matrix: any; concat: any }) => {
+export const createCompareText = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, concat }: Dependencies) => {
   const matrixAlgorithmSuite = createMatrixAlgorithmSuite({ typed, matrix, concat })
 
   /**
@@ -45,9 +56,9 @@ export const createCompareText = /* #__PURE__ */ factory(name, dependencies, ({ 
   return typed(name, _compareText, matrixAlgorithmSuite({
     elop: _compareText,
     Ds: true
-  } as any))
+  }))
 })
 
 export const createCompareTextNumber = /* #__PURE__ */ factory(
-  name, ['typed'], ({ typed }: { typed: TypedFunction }) => typed(name, _compareText)
+  name, ['typed'], ({ typed }: any) => typed(name, _compareText)
 )

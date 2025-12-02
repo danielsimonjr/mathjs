@@ -5,7 +5,7 @@ import { isNaNNumber } from '../../plain/number/index.js'
 const name = 'isNaN'
 const dependencies = ['typed']
 
-export const createIsNaN = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
+export const createIsNaN = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
    * Test whether a value is NaN (not a number).
    * The function supports types `number`, `BigNumber`, `Fraction`, `Unit` and `Complex`.
@@ -58,6 +58,6 @@ export const createIsNaN = /* #__PURE__ */ factory(name, dependencies, ({ typed 
       return Number.isNaN(x.value)
     },
 
-    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
   })
 })

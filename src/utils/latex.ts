@@ -1,6 +1,5 @@
 /* eslint no-template-curly-in-string: "off" */
 
-// @ts-ignore - no type declarations for escape-latex
 import escapeLatexLib from 'escape-latex'
 import { hasOwnProperty } from './object.js'
 
@@ -110,7 +109,7 @@ export const latexOperators = {
   or: '\\vee'
 }
 
-export const latexFunctions: Record<string, any> = {
+export const latexFunctions = {
   // arithmetic
   abs: { 1: '\\left|${args[0]}\\right|' },
   add: { 2: `\\left(\${args[0]}${latexOperators.add}\${args[1]}\\right)` },
@@ -142,14 +141,14 @@ export const latexFunctions: Record<string, any> = {
   multiply: { 2: `\\left(\${args[0]}${latexOperators.multiply}\${args[1]}\\right)` },
   norm: {
     1: '\\left\\|${args[0]}\\right\\|',
-    2: undefined as any // use default template
+    2: undefined // use default template
   },
   nthRoot: { 2: '\\sqrt[${args[1]}]{${args[0]}}' },
   nthRoots: { 2: '\\{y : y^${args[1]} = {${args[0]}}\\}' },
   pow: { 2: `\\left(\${args[0]}\\right)${latexOperators.pow}{\${args[1]}}` },
   round: {
     1: '\\left\\lfloor${args[0]}\\right\\rceil',
-    2: undefined as any // use default template
+    2: undefined // use default template
   },
   sign: { 1: '\\mathrm{${name}}\\left(${args[0]}\\right)' },
   sqrt: { 1: '\\sqrt{${args[0]}}' },
@@ -250,7 +249,7 @@ export const latexFunctions: Record<string, any> = {
   to: { 2: `\\left(\${args[0]}${latexOperators.to}\${args[1]}\\right)` },
 
   // utils
-  numeric: function (node: any, _options?: any): string {
+  numeric: function (node, options) {
     // Not sure if this is strictly right but should work correctly for the vast majority of use cases.
     return node.args[0].toTex()
   },
@@ -300,24 +299,24 @@ const latexUnits = {
   deg: '^\\circ'
 }
 
-export function escapeLatex (string: string): string {
+export function escapeLatex (string) {
   return escapeLatexLib(string, { preserveFormatting: true })
 }
 
 // @param {string} name
 // @param {boolean} isUnit
-export function toSymbol (name: string, isUnit?: boolean): string {
+export function toSymbol (name, isUnit) {
   isUnit = typeof isUnit === 'undefined' ? false : isUnit
   if (isUnit) {
     if (hasOwnProperty(latexUnits, name)) {
-      return (latexUnits as any)[name]
+      return latexUnits[name]
     }
 
     return '\\mathrm{' + escapeLatex(name) + '}'
   }
 
   if (hasOwnProperty(latexSymbols, name)) {
-    return (latexSymbols as any)[name]
+    return latexSymbols[name]
   }
 
   return escapeLatex(name)

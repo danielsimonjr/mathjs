@@ -3,8 +3,6 @@
  * Supports both Node.js (worker_threads) and browser (Web Workers)
  */
 
-declare const process: { versions?: { node?: string } } | undefined
-
 interface WorkerTask<T = any, R = any> {
   id: string
   data: T
@@ -56,7 +54,6 @@ export class WorkerPool {
 
     if (this.isNode) {
       // Node.js worker_threads
-      // @ts-ignore - worker_threads is a Node.js module
       const { Worker: NodeWorker } = await import('worker_threads')
       worker = new NodeWorker(this.workerScript) as any
     } else {

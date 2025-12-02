@@ -1,9 +1,6 @@
 import Decimal from 'decimal.js'
 import { factory } from '../../utils/factory.js'
 
-// Re-export BigNumber type for TypeScript
-export type { BigNumber } from '../../../types/index.js'
-
 const name = 'BigNumber'
 const dependencies = ['?on', 'config']
 

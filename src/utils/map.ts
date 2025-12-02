@@ -11,14 +11,11 @@ import { isMap, isObject } from './is.js'
  */
 export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
   wrappedObject: Record<string, V>
-  readonly [Symbol.toStringTag]: string = 'ObjectWrappingMap';
-
-  [Symbol.iterator](): IterableIterator<[K, V]> {
-    return this.entries()
-  }
+  readonly [Symbol.toStringTag]: string = 'ObjectWrappingMap'
 
   constructor(object: Record<string, V>) {
     this.wrappedObject = object
+    this[Symbol.iterator] = this.entries
   }
 
   keys(): IterableIterator<K> {
@@ -52,7 +49,7 @@ export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
 
   forEach(callback: (value: V, key: K, map: Map<K, V>) => void): void {
     for (const key of this.keys()) {
-      callback(this.get(key)!, key, this)
+      callback(this.get(key)!, key, this as any)
     }
   }
 
@@ -93,11 +90,7 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
   a: Map<K, V>
   b: Map<K, V>
   bKeys: Set<K>
-  readonly [Symbol.toStringTag]: string = 'PartitionedMap';
-
-  [Symbol.iterator](): IterableIterator<[K, V]> {
-    return this.entries()
-  }
+  readonly [Symbol.toStringTag]: string = 'PartitionedMap'
 
   /**
    * @param a - Primary map
@@ -108,6 +101,8 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
     this.a = a
     this.b = b
     this.bKeys = bKeys
+
+    this[Symbol.iterator] = this.entries
   }
 
   get(key: K): V | undefined {
@@ -148,7 +143,7 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
 
   forEach(callback: (value: V, key: K, map: Map<K, V>) => void): void {
     for (const key of this.keys()) {
-      callback(this.get(key)!, key, this)
+      callback(this.get(key)!, key, this as any)
     }
   }
 

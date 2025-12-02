@@ -7,7 +7,7 @@ import { nearlyEqual } from '../../utils/number.js'
 const name = 'isNegative'
 const dependencies = ['typed', 'config']
 
-export const createIsNegative = /* #__PURE__ */ factory(name, dependencies, ({ typed, config }: { typed: any, config: any }) => {
+export const createIsNegative = /* #__PURE__ */ factory(name, dependencies, ({ typed, config }) => {
   /**
    * Test whether a value is negative: smaller than zero.
    * The function supports types `number`, `BigNumber`, `Fraction`, and `Unit`.
@@ -48,9 +48,9 @@ export const createIsNegative = /* #__PURE__ */ factory(name, dependencies, ({ t
 
     Fraction: (x: any): boolean => x.s < 0n, // It's enough to decide on the sign
 
-    Unit: typed.referToSelf((self: any) =>
-      (x: any) => typed.find(self, x.valueType())(x.value)),
+    Unit: typed.referToSelf(self =>
+      x => typed.find(self, x.valueType())(x.value)),
 
-    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
   })
 })

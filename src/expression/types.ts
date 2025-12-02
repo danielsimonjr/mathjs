@@ -1,7 +1,7 @@
 // Type definitions for expression module
-// Re-export from types.ts
+// Re-export from types/index.d.ts
 
 export type {
   TypedFunction,
   TypedFunctionConstructor
-} from '../types.js'
+} from '../../types/index.js'

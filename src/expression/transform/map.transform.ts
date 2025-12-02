@@ -35,8 +35,8 @@ export const createMapTransform = /* #__PURE__ */ factory(name, dependencies, ({
    *
    * This transform creates a one-based index instead of a zero-based index
    */
-  const map = createMap({ typed }) as any
-  const transformCallback = createTransformCallback({ typed }) as any
+  const map = createMap({ typed })
+  const transformCallback = createTransformCallback({ typed })
 
   function mapTransform(args: Node[], math: any, scope: any): any {
     if (args.length === 0) {
@@ -47,14 +47,14 @@ export const createMapTransform = /* #__PURE__ */ factory(name, dependencies, ({
       return map(args[0])
     }
     const N = args.length - 1
-    let X: any[] = args.slice(0, N)
-    let callback: any = args[N]
+    let X = args.slice(0, N)
+    let callback = args[N]
     X = X.map(arg => _compileAndEvaluate(arg, scope))
 
     if (callback) {
       if (isSymbolNode(callback) || isFunctionAssignmentNode(callback)) {
         // a function pointer, like filter([3, -2, 5], myTestFunction)
-        callback = _compileAndEvaluate(callback as any, scope)
+        callback = _compileAndEvaluate(callback, scope)
       } else {
         // an expression like filter([3, -2, 5], x > 0)
         callback = compileInlineExpression(callback, math, scope)

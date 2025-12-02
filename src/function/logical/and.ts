@@ -6,6 +6,42 @@ import { factory } from '../../utils/factory.js'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
 import { andNumber } from '../../plain/number/index.js'
 
+// Type definitions
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+  referToSelf<U>(fn: (self: TypedFunction<U>) => TypedFunction<U>): TypedFunction<U>
+  find(signatures: any, signature: string): TypedFunction
+}
+
+interface Complex {
+  re: number
+  im: number
+}
+
+interface BigNumber {
+  isZero(): boolean
+  isNaN(): boolean
+}
+
+interface Unit {
+  value: any
+  valueType?(): string
+}
+
+interface Matrix {
+  size(): number[]
+  storage(): string
+}
+
+interface Dependencies {
+  typed: TypedFunction
+  matrix: any
+  equalScalar: any
+  zeros: any
+  not: any
+  concat: any
+}
+
 const name = 'and'
 const dependencies = [
   'typed',
@@ -16,7 +52,7 @@ const dependencies = [
   'concat'
 ]
 
-export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, zeros, not, concat }: { typed: any, matrix: any, equalScalar: any, zeros: any, not: any, concat: any }) => {
+export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, zeros, not, concat }: Dependencies) => {
   const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
   const matAlgo06xS0S0 = createMatAlgo06xS0S0({ typed, equalScalar })
   const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
@@ -56,65 +92,61 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
     {
       'number, number': andNumber,
 
-      'Complex, Complex': function (x: any, y: any): boolean {
+      'Complex, Complex': function (x: Complex, y: Complex): boolean {
         return (x.re !== 0 || x.im !== 0) && (y.re !== 0 || y.im !== 0)
       },
 
-      'BigNumber, BigNumber': function (x: any, y: any): boolean {
+      'BigNumber, BigNumber': function (x: BigNumber, y: BigNumber): boolean {
         return !x.isZero() && !y.isZero() && !x.isNaN() && !y.isNaN()
       },
 
       'bigint, bigint': andNumber,
 
-      'Unit, Unit': typed.referToSelf((self: any) =>
-        (x: any, y: any): any => self(x.value || 0, y.value || 0)),
+      'Unit, Unit': typed.referToSelf(self =>
+        (x: Unit, y: Unit): any => self(x.value || 0, y.value || 0)),
 
-      'SparseMatrix, any': typed.referToSelf((self: any) => (x: any, y: any): any => {
+      'SparseMatrix, any': typed.referToSelf(self => (x: Matrix, y: any): any => {
         // check scalar
         if (not(y)) {
           // return zero matrix
           return zeros(x.size(), x.storage())
         }
-        return matAlgo11xS0s(x, y, self, false)
-        return matAlgo11xS0s(x, y, self, false)
+        return matAlgo11xS0s(x as any, y, self, false)
       }),
 
-      'DenseMatrix, any': typed.referToSelf((self: any) => (x: any, y: any): any => {
+      'DenseMatrix, any': typed.referToSelf(self => (x: Matrix, y: any): any => {
         // check scalar
         if (not(y)) {
           // return zero matrix
           return zeros(x.size(), x.storage())
         }
-        return matAlgo14xDs(x, y, self, false)
-        return matAlgo14xDs(x, y, self, false)
+        return matAlgo14xDs(x as any, y, self, false)
       }),
 
-      'any, SparseMatrix': typed.referToSelf((self: any) => (x: any, y: any): any => {
+      'any, SparseMatrix': typed.referToSelf(self => (x: any, y: Matrix): any => {
         // check scalar
         if (not(x)) {
           // return zero matrix
-          return zeros(y.size(), y.storage())
+          return zeros(x.size(), x.storage())
         }
-        return matAlgo11xS0s(y, x, self, true)
-        return matAlgo11xS0s(y, x, self, true)
+        return matAlgo11xS0s(y as any, x, self, true)
       }),
 
-      'any, DenseMatrix': typed.referToSelf((self: any) => (x: any, y: any): any => {
+      'any, DenseMatrix': typed.referToSelf(self => (x: any, y: Matrix): any => {
         // check scalar
         if (not(x)) {
           // return zero matrix
-          return zeros(y.size(), y.storage())
+          return zeros(x.size(), x.storage())
         }
-        return matAlgo14xDs(y, x, self, true)
-        return matAlgo14xDs(y, x, self, true)
+        return matAlgo14xDs(y as any, x, self, true)
       }),
 
-      'Array, any': typed.referToSelf((self: any) => (x: any[], y: any): any => {
+      'Array, any': typed.referToSelf(self => (x: any[], y: any): any => {
         // use matrix implementation
         return self(matrix(x), y).valueOf()
       }),
 
-      'any, Array': typed.referToSelf((self: any) => (x: any, y: any[]): any => {
+      'any, Array': typed.referToSelf(self => (x: any, y: any[]): any => {
         // use matrix implementation
         return self(x, matrix(y)).valueOf()
       })

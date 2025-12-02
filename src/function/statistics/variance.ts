@@ -129,7 +129,7 @@ export const createVariance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     }
 
     // calculate the mean and number of elements
-    deepForEach(array as any, function (value: any) {
+    deepForEach(array, function (value: any) {
       try {
         sum = sum === undefined ? value : add(sum, value)
         num++
@@ -143,7 +143,7 @@ export const createVariance = /* #__PURE__ */ factory(name, dependencies, ({ typ
 
     // calculate the variance
     sum = undefined
-    deepForEach(array as any, function (value: any) {
+    deepForEach(array, function (value: any) {
       const diff = subtract(value, mean)
       sum = sum === undefined ? multiply(diff, diff) : add(sum, multiply(diff, diff))
     })
@@ -161,7 +161,7 @@ export const createVariance = /* #__PURE__ */ factory(name, dependencies, ({ typ
 
       case 'unbiased':
       {
-        const zero = isBigNumber(sum) ? (sum as any).mul(0) : 0
+        const zero = isBigNumber(sum) ? sum.mul(0) : 0
         return (num === 1) ? zero : divide(sum, num - 1)
       }
 

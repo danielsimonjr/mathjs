@@ -8,7 +8,7 @@ import { isInteger, normalizeFormatOptions } from '../number.js'
  * @param {number} size
  * @returns {string}
  */
-function formatBigNumberToBase (n: any, base: number, size: number | undefined): string {
+function formatBigNumberToBase (n, base, size) {
   const BigNumberCtor = n.constructor
   const big2 = new BigNumberCtor(2)
   let suffix = ''
@@ -119,7 +119,7 @@ function formatBigNumberToBase (n: any, base: number, size: number | undefined):
  * @param {Object | Function | number | BigNumber} [options]
  * @return {string} str The formatted value
  */
-export function format (value: any, options: any): string {
+export function format (value, options) {
   if (typeof options === 'function') {
     // handle format(value, fn)
     return options(value)
@@ -192,7 +192,7 @@ export function format (value: any, options: any): string {
  * @param {BigNumber} value
  * @param {number} [precision]        Optional number of significant figures to return.
  */
-export function toEngineering (value: any, precision: number | undefined): string {
+export function toEngineering (value, precision) {
   // find nearest lower multiple of 3 for exponent
   const e = value.e
   const newExp = e % 3 === 0 ? e : (e < 0 ? (e - 3) - (e % 3) : e - (e % 3))
@@ -217,7 +217,7 @@ export function toEngineering (value: any, precision: number | undefined): strin
  *                              is used.
  * @returns {string} str
  */
-export function toExponential (value: any, precision: number | undefined): string {
+export function toExponential (value, precision) {
   if (precision !== undefined) {
     return value.toExponential(precision - 1) // Note the offset of one
   } else {
@@ -231,11 +231,11 @@ export function toExponential (value: any, precision: number | undefined): strin
  * @param {number} [precision=undefined] Optional number of decimals after the
  *                                       decimal point. Undefined by default.
  */
-export function toFixed (value: any, precision: number | undefined): string {
+export function toFixed (value, precision) {
   return value.toFixed(precision)
 }
 
-function _toNumberOrDefault (value: any, defaultValue: number): number {
+function _toNumberOrDefault (value, defaultValue) {
   if (isNumber(value)) {
     return value
   } else if (isBigNumber(value)) {

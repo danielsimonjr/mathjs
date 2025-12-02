@@ -1,12 +1,37 @@
-// @ts-ignore - no type declarations for javascript-natural-sort
 import naturalSort from 'javascript-natural-sort'
 import { isDenseMatrix, isSparseMatrix, typeOf } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 
 // Type definitions
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+  signatures: Record<string, Function>
+}
+
 interface Complex {
   re: number
   im: number
+}
+
+interface Unit {
+  equalBase(other: Unit): boolean
+  value: any
+  valueType(): string
+  formatUnits(): any[]
+}
+
+interface SparseMatrix {
+  toJSON(): { values: any[] }
+  toArray(): any[]
+}
+
+interface DenseMatrix {
+  toJSON(): { data: any[] }
+}
+
+interface Dependencies {
+  typed: TypedFunction
+  compare: TypedFunction
 }
 
 const name = 'compareNatural'
@@ -15,7 +40,7 @@ const dependencies = [
   'compare'
 ]
 
-export const createCompareNatural = /* #__PURE__ */ factory(name, dependencies, ({ typed, compare }: { typed: any, compare: any }) => {
+export const createCompareNatural = /* #__PURE__ */ factory(name, dependencies, ({ typed, compare }: Dependencies) => {
   const compareBooleans = compare.signatures['boolean,boolean']
 
   /**
@@ -167,23 +192,23 @@ export const createCompareNatural = /* #__PURE__ */ factory(name, dependencies, 
    */
   function compareMatricesAndArrays (compareNatural: (x: any, y: any) => number, x: any, y: any): number {
     if (isSparseMatrix(x) && isSparseMatrix(y)) {
-      return compareArrays(compareNatural, (x as any).toJSON().values, (y as any).toJSON().values)
+      return compareArrays(compareNatural, x.toJSON().values, y.toJSON().values)
     }
     if (isSparseMatrix(x)) {
       // note: convert to array is expensive
-      return compareMatricesAndArrays(compareNatural, (x as any).toArray(), y)
+      return compareMatricesAndArrays(compareNatural, x.toArray(), y)
     }
     if (isSparseMatrix(y)) {
       // note: convert to array is expensive
-      return compareMatricesAndArrays(compareNatural, x, (y as any).toArray())
+      return compareMatricesAndArrays(compareNatural, x, y.toArray())
     }
 
     // convert DenseArray into Array
     if (isDenseMatrix(x)) {
-      return compareMatricesAndArrays(compareNatural, (x as any).toJSON().data, y)
+      return compareMatricesAndArrays(compareNatural, x.toJSON().data, y)
     }
     if (isDenseMatrix(y)) {
-      return compareMatricesAndArrays(compareNatural, x, (y as any).toJSON().data)
+      return compareMatricesAndArrays(compareNatural, x, y.toJSON().data)
     }
 
     // convert scalars to array

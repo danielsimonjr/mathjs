@@ -3,7 +3,7 @@ import type { TypedFunction } from '../../core/function/typed.js'
 import { expm1Number } from '../../plain/number/index.js'
 
 const name = 'expm1'
-const dependencies = ['typed', 'Complex'] as const
+const dependencies = ['typed', 'Complex']
 
 export const createExpm1: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex }: { typed: TypedFunction; Complex: any }): any => {
   /**

@@ -44,6 +44,6 @@ export const createBigNumberTau = memoize(function (BigNumber) {
  * @return {number} precision
  * @private
  */
-function hasher (args: any[]): string {
-  return String(args[0].precision)
+function hasher (args) {
+  return args[0].precision
 }

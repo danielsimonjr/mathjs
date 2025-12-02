@@ -3,7 +3,7 @@ import { filter, filterRegExp } from '../../utils/array.js'
 import { factory, FactoryFunction } from '../../utils/factory.js'
 
 const name = 'filter'
-const dependencies = ['typed'] as const
+const dependencies = ['typed']
 
 export const createFilter: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**

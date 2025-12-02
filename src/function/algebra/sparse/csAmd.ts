@@ -1,7 +1,7 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { factory } from '../../../utils/factory.js'
+import { factory, FactoryFunction } from '../../../utils/factory.js'
 import { csFkeep } from './csFkeep.js'
 import { csFlip } from './csFlip.js'
 import { csTdfs } from './csTdfs.js'
@@ -11,10 +11,9 @@ const dependencies = [
   'add',
   'multiply',
   'transpose'
-]
+] as const
 
-export const createCsAmd: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ add, multiply, transpose }) => {
-export const createCsAmd = /* #__PURE__ */ factory(name, dependencies, ({ add, multiply, transpose }: { add: any; multiply: any; transpose: any }) => {
+export const createCsAmd: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ add, multiply, transpose }) => {
   /**
    * Approximate minimum degree ordering. The minimum degree algorithm is a widely used
    * heuristic for finding a permutation P so that P*A*P' has fewer nonzeros in its factorization

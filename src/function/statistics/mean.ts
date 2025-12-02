@@ -79,7 +79,7 @@ export const createMean = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
    */
   function _nmeanDim (array: any[] | Matrix, dim: number | any): any {
     try {
-      const sum = reduce(array as any, dim, add)
+      const sum = reduce(array, dim, add)
       const s = Array.isArray(array) ? arraySize(array) : array.size()
       return divide(sum, s[dim])
     } catch (err) {
@@ -97,7 +97,7 @@ export const createMean = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     let sum: any
     let num = 0
 
-    deepForEach(array as any, function (value: any) {
+    deepForEach(array, function (value: any) {
       try {
         sum = sum === undefined ? value : add(sum, value)
         num++

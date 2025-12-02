@@ -1,12 +1,12 @@
 import { factory, FactoryFunction } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/config.js'
+import type { MathJsConfig } from '../../core/create.js'
 import { xgcdNumber } from '../../plain/number/index.js'
 
 type Dependencies = 'typed' | 'config' | 'matrix' | 'BigNumber'
 
 const name = 'xgcd'
-const dependencies = ['typed', 'config', 'matrix', 'BigNumber'] as const
+const dependencies = ['typed', 'config', 'matrix', 'BigNumber']
 
 export const createXgcd = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, matrix, BigNumber }: any): TypedFunction => {
   /**

@@ -4,7 +4,7 @@ import { factory } from '../../utils/factory.js'
 const name = 'isPrime'
 const dependencies = ['typed']
 
-export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
+export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
   /**
    * Test whether a value is prime: has no divisors other than itself and one.
    * The function supports type `number`, `bignumber`.
@@ -68,7 +68,7 @@ export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ type
       if (n.lte(3)) return n.gt(1)
       if (n.mod(2).eq(0) || n.mod(3).eq(0)) return false
       if (n.lt(Math.pow(2, 32))) {
-        const x = n.toNumber()
+        const x = (n as any).toNumber()
         for (let i = 5; i * i <= x; i += 6) {
           if (x % i === 0 || x % (i + 2) === 0) {
             return false
@@ -106,7 +106,7 @@ export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ type
       if (n.lt('3317044064679887385961981')) {
         bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41].filter(x => x < n)
       } else {
-        const max = Math.min(n.toNumber() - 2, Math.floor(2 * Math.pow(n.toFixed(0).length * Math.log(10), 2)))
+        const max = Math.min((n as any).toNumber() - 2, Math.floor(2 * Math.pow(n.toFixed(0).length * Math.log(10), 2)))
         bases = []
         for (let i = 2; i <= max; i += 1) {
           bases.push(max)
@@ -126,6 +126,6 @@ export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ type
       return true
     },
 
-    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf(self => x => deepMap(x, self))
   })
 })
