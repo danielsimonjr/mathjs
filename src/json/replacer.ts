@@ -16,7 +16,7 @@ export const createReplacer = /* #__PURE__ */ factory(name, dependencies, () => 
    * @param {*} value
    * @returns {*} Returns the replaced object
    */
-  return function replacer (key, value) {
+  return function replacer (key: any, value: any) {
     // the numeric values Infinitiy, -Infinity, and NaN cannot be serialized to JSON
     if (typeof value === 'number' && (!Number.isFinite(value) || isNaN(value))) {
       return {

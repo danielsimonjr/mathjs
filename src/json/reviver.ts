@@ -16,7 +16,7 @@ export const createReviver = /* #__PURE__ */ factory(name, dependencies, ({
    * @param {*} value
    * @returns {*} Returns the revived object
    */
-  return function reviver (key, value) {
+  return function reviver (key: any, value: any) {
     const constructor = classes[value && value.mathjs]
 
     if (constructor && typeof constructor.fromJSON === 'function') {

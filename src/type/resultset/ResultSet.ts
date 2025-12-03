@@ -10,7 +10,7 @@ export const createResultSet = /* #__PURE__ */ factory(name, dependencies, () =>
    * @param {Array} entries
    * @constructor ResultSet
    */
-  function ResultSet (entries) {
+  function ResultSet (entries: any) {
     if (!(this instanceof ResultSet)) {
       throw new SyntaxError('Constructor must be called with the new operator')
     }
@@ -62,7 +62,7 @@ export const createResultSet = /* #__PURE__ */ factory(name, dependencies, () =>
    *                       `{"mathjs": "ResultSet", "entries": [...]}`
    * @return {ResultSet}
    */
-  ResultSet.fromJSON = function (json) {
+  ResultSet.fromJSON = function (json: any) {
     return new ResultSet(json.entries)
   }
 

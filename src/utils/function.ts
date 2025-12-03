@@ -17,7 +17,7 @@ import { lruQueue } from './lruQueue.js'
  *    unlimited (default)
  * @return {function}                       Returns the memoized function
  */
-export function memoize (fn, { hasher, limit } = {}) {
+export function memoize (fn: any, { hasher, limit }: { hasher?: any, limit?: any } = {}) {
   limit = limit == null ? Number.POSITIVE_INFINITY : limit
   hasher = hasher == null ? JSON.stringify : hasher
 
@@ -61,7 +61,7 @@ export function memoize (fn, { hasher, limit } = {}) {
  * @param {function(a: *, b: *) : boolean} isEqual
  * @returns {function}
  */
-export function memoizeCompare (fn, isEqual) {
+export function memoizeCompare (fn: any, isEqual: any) {
   const memoize = function memoize () {
     const args = []
     for (let i = 0; i < arguments.length; i++) {

@@ -14,7 +14,7 @@
  * nearlyEqual(1.0, 1.009, undefined, 0.02);       // true
  * nearlyEqual(0.000000001, 0.0, undefined, 1e-8); // true
  */
-export function nearlyEqual (a, b, relTol = 1e-9, absTol = 0) {
+export function nearlyEqual (a: any, b: any, relTol = 1e-9, absTol = 0) {
   if (relTol <= 0) {
     throw new Error('Relative tolerance must be greater than 0')
   }
