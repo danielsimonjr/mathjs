@@ -1,25 +1,34 @@
-import Fraction from 'fraction.js'
+import FractionJS from 'fraction.js'
 import { factory } from '../../utils/factory.js'
 import type { FactoryFunctionMap } from '../../../types/index.js'
 
-const name = 'Fraction'
-const dependencies: [] = []
+// The Fraction type that we work with internally
+type FractionType = InstanceType<typeof FractionJS>
 
-export const createFractionClass = /* #__PURE__ */ factory(name, dependencies, (): typeof Fraction => {
+// Re-export Fraction type for use in other modules
+export type Fraction = FractionType
+
+// Use the imported Fraction class internally - cast to any for runtime manipulation
+const Fraction = FractionJS as any
+
+const name = 'Fraction'
+const dependencies: string[] = []
+
+export const createFractionClass = /* #__PURE__ */ factory(name, dependencies, () => {
   /**
    * Attach type information
    */
   Object.defineProperty(Fraction, 'name', { value: 'Fraction' })
   Fraction.prototype.constructor = Fraction
-  ;(Fraction.prototype as any).type = 'Fraction'
-  ;(Fraction.prototype as any).isFraction = true
+  Fraction.prototype.type = 'Fraction'
+  Fraction.prototype.isFraction = true
 
   /**
    * Get a JSON representation of a Fraction containing type information
    * @returns {Object} Returns a JSON object structured as:
    *                   `{"mathjs": "Fraction", "n": "3", "d": "8"}`
    */
-  Fraction.prototype.toJSON = function (this: Fraction): { mathjs: string; n: string; d: string } {
+  Fraction.prototype.toJSON = function (this: any): { mathjs: string; n: string; d: string } {
     return {
       mathjs: 'Fraction',
       n: String(this.s * this.n),
@@ -33,7 +42,7 @@ export const createFractionClass = /* #__PURE__ */ factory(name, dependencies, (
    *                       `{"mathjs": "Fraction", "n": "3", "d": "8"}`
    * @return {BigNumber}
    */
-  Fraction.fromJSON = function (json: { mathjs: string; n: string; d: string }): Fraction {
+  Fraction.fromJSON = function (json: { mathjs: string; n: string; d: string }): any {
     return new Fraction(json)
   }
 

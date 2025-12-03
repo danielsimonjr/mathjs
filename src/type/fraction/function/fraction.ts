@@ -1,7 +1,7 @@
 import { factory } from '../../../utils/factory.js'
 import { deepMap } from '../../../utils/collection.js'
 import type { MathCollection } from '../../../types.js'
-import type Fraction from 'fraction.js'
+import type { Fraction } from '../Fraction.js'
 import type { TypedFunction } from '../../../core/function/typed.js'
 
 const name = 'fraction'
