@@ -13,7 +13,7 @@ export function accessFactory ({ subset }) {
    * @param {Index} index
    * @return {Object | Array | Matrix | string} Returns the subset
    */
-  return function access (object, index) {
+  return function access (object: any, index: any) {
     try {
       if (Array.isArray(object)) {
         return subset(object, index)

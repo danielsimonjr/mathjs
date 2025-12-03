@@ -5,7 +5,7 @@ import { IndexError } from '../../../error/IndexError.ts'
  * @param {Error} err
  * @returns {Error | IndexError} Returns the transformed error
  */
-export function errorTransform (err) {
+export function errorTransform (err: any) {
   if (err && err.isIndexError) {
     return new IndexError(
       err.index + 1,

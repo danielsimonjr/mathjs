@@ -16,13 +16,13 @@ export function assignFactory ({ subset, matrix }) {
    *                                            except in case of a string
    */
   // TODO: change assign to return the value instead of the object
-  return function assign (object, index, value) {
+  return function assign (object: any, index: any, value: any) {
     try {
       if (Array.isArray(object)) {
         const result = matrix(object).subset(index, value).valueOf()
 
         // shallow copy all (updated) items into the original array
-        result.forEach((item, index) => {
+        result.forEach((item: any, index: any) => {
           object[index] = item
         })
 

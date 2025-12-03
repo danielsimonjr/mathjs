@@ -9,9 +9,9 @@ import { PartitionedMap } from '../../../utils/map.js'
  * @return {function} Returns a function with one argument which fills in the
  *                    undefined variable (like "x") and evaluates the expression
  */
-export function compileInlineExpression (expression, math, scope) {
+export function compileInlineExpression (expression: any, math: any, scope: any) {
   // find an undefined symbol
-  const symbol = expression.filter(function (node) {
+  const symbol = expression.filter(function (node: any) {
     return isSymbolNode(node) &&
         !(node.name in math) &&
         !(scope.has(node.name))
@@ -26,7 +26,7 @@ export function compileInlineExpression (expression, math, scope) {
   const argsScope = new Map()
   const subScope = new PartitionedMap(scope, argsScope, new Set([name]))
   const eq = expression.compile()
-  return function inlineExpression (x) {
+  return function inlineExpression (x: any) {
     argsScope.set(name, x)
     return eq.evaluate(subScope)
   }
