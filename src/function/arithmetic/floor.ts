@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/create.js'
 import { deepMap } from '../../utils/collection.js'
@@ -58,10 +58,7 @@ export const createFloorNumber: FactoryFunction<
   }
 )
 
-export const createFloor: FactoryFunction<
-  { typed: TypedFunction, config: MathJsConfig, round: any, matrix: any, equalScalar: any, zeros: any, DenseMatrix: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, round, matrix, equalScalar, zeros, DenseMatrix }) => {
+export const createFloor = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, round, matrix, equalScalar, zeros, DenseMatrix }: { typed: any, config: any, round: any, matrix: any, equalScalar: any, zeros: any, DenseMatrix: any }) => {
   const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
   const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
   const matAlgo14xDs = createMatAlgo14xDs({ typed })

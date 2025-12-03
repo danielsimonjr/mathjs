@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.js'
 import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.js'
@@ -105,4 +105,4 @@ export const createLcm = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
     }
     return prod.div(a).abs()
   }
-}) as FactoryFunction<Dependencies, TypedFunction>
+}) as any

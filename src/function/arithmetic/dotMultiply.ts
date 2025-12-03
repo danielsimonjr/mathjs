@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.js'
 import { createMatAlgo09xS0Sf } from '../../type/matrix/utils/matAlgo09xS0Sf.js'
@@ -54,4 +54,4 @@ export const createDotMultiply = /* #__PURE__ */ factory(name, dependencies, ({ 
     DS: matAlgo02xDS0,
     Ss: matAlgo11xS0s
   }))
-}) as FactoryFunction<Dependencies, TypedFunction>
+}) as any

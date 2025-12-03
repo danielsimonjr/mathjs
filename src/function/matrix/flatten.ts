@@ -4,7 +4,7 @@ import { factory } from '../../utils/factory.js'
 const name = 'flatten'
 const dependencies = ['typed']
 
-export const createFlatten: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createFlatten = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Flatten a multidimensional matrix into a single dimensional matrix.
    * A new matrix is returned, the original matrix is left untouched.

@@ -1,14 +1,11 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import { cubeNumber } from '../../plain/number/index.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'cube'
 const dependencies = ['typed']
 
-export const createCube: FactoryFunction<
-  { typed: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createCube = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Compute the cube of a value, `x * x * x`.
    * To avoid confusion with `pow(M,3)`, this function does not apply to matrices.

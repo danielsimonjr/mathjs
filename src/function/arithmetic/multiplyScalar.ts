@@ -1,14 +1,11 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import { multiplyNumber } from '../../plain/number/index.js'
 
 const name = 'multiplyScalar'
 const dependencies = ['typed']
 
-export const createMultiplyScalar: FactoryFunction<
-  { typed: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createMultiplyScalar = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Multiply two scalar values, `x * y`.
    * This function is meant for internal use: it is used by the public function

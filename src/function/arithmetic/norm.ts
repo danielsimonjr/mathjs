@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 type Dependencies = 'typed' | 'abs' | 'add' | 'pow' | 'conj' | 'sqrt' | 'multiply' | 'equalScalar' | 'larger' | 'smaller' | 'matrix' | 'ctranspose' | 'eigs'
@@ -313,4 +313,4 @@ export const createNorm = /* #__PURE__ */ factory(
       }
     }
   }
-) as FactoryFunction<Dependencies, TypedFunction>
+) as any

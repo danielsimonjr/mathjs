@@ -1,7 +1,7 @@
 import ComplexJS from 'complex.js'
 import { format } from '../../utils/number.js'
 import { isNumber, isUnit } from '../../utils/is.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 
 // Re-export Complex type for use in other modules
 export type Complex = ComplexJS

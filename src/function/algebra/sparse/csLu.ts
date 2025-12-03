@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 
-import { factory, FactoryFunction } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.js'
 import { createCsSpsolve } from './csSpsolve.js'
 
 const name = 'csLu'
@@ -16,7 +16,7 @@ const dependencies = [
   'SparseMatrix'
 ] as const
 
-export const createCsLu: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }) => {
+export const createCsLu = /* #__PURE__ */ factory(name, dependencies, ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }: { abs: any, divideScalar: any, multiply: any, subtract: any, larger: any, largerEq: any, SparseMatrix: any }) => {
   const csSpsolve = createCsSpsolve({ divideScalar, multiply, subtract })
 
   /**

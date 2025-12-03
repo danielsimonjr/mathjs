@@ -10,7 +10,7 @@ import { factory } from '../../utils/factory.js'
 const name = 'resize'
 const dependencies = ['config', 'matrix']
 
-export const createResize: FactoryFunction<'config' | 'matrix', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ config, matrix }) => {
+export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ config, matrix }: { config: any, matrix: any }) => {
   /**
    * Resize a matrix
    *

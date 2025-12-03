@@ -1,14 +1,11 @@
 import { deepMap } from '../../utils/collection.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'factorial'
 const dependencies = ['typed', 'gamma']
 
-export const createFactorial: FactoryFunction<
-  { typed: TypedFunction; gamma: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, gamma }) => {
+export const createFactorial = /* #__PURE__ */ factory(name, dependencies, ({ typed, gamma }: { typed: any, gamma: any }) => {
   /**
    * Compute the factorial of a value
    *

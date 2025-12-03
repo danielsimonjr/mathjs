@@ -1,13 +1,10 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'divideScalar'
 const dependencies = ['typed', 'numeric']
 
-export const createDivideScalar: FactoryFunction<
-  { typed: TypedFunction, numeric: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, numeric }) => {
+export const createDivideScalar = /* #__PURE__ */ factory(name, dependencies, ({ typed, numeric }: { typed: any, numeric: any }) => {
   /**
    * Divide two scalar values, `x / y`.
    * This function is meant for internal use: it is used by the public functions

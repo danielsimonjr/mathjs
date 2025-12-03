@@ -1,15 +1,12 @@
 import { isInteger } from '../../utils/number.js'
 import { product } from '../../utils/product.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'permutations'
 const dependencies = ['typed', 'factorial']
 
-export const createPermutations: FactoryFunction<
-  { typed: TypedFunction; factorial: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, factorial }) => {
+export const createPermutations = /* #__PURE__ */ factory(name, dependencies, ({ typed, factorial }: { typed: any, factorial: any }) => {
   /**
    * Compute the number of ways of obtaining an ordered subset of `k` elements
    * from a set of `n` elements.

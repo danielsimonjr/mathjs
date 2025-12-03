@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import { randomMatrix } from './util/randomMatrix.js'
 import { createRng } from './util/seededRNG.js'
@@ -7,10 +7,7 @@ import { isMatrix } from '../../utils/is.js'
 const name = 'randomInt'
 const dependencies = ['typed', 'config', 'log2', '?on']
 
-export const createRandomInt: FactoryFunction<
-  { typed: TypedFunction; config: any; log2: TypedFunction; on?: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, log2, on }) => {
+export const createRandomInt = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, log2, on }: { typed: any, config: any, log2: any, on: any }) => {
   // seeded pseudo random number generator
   let rng = createRng(config.randomSeed)
 

@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 import { csCumsum } from './csCumsum.js'
-import { factory, FactoryFunction } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.js'
 
 const name = 'csSymperm'
 const dependencies = ['conj', 'SparseMatrix'] as const
 
-export const createCsSymperm: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies as string[], ({ conj, SparseMatrix }) => {
+export const createCsSymperm = /* #__PURE__ */ factory(name, dependencies, ({ conj, SparseMatrix }: { conj: any, SparseMatrix: any }) => {
   /**
    * Computes the symmetric permutation of matrix A accessing only
    * the upper triangular part of A.

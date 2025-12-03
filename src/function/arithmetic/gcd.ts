@@ -1,5 +1,5 @@
 import { isInteger } from '../../utils/number.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/create.js'
 import { createMod } from './mod.js'
@@ -141,4 +141,4 @@ export const createGcd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
     }
     return a.lt(zero) ? a.neg() : a
   }
-}) as FactoryFunction<Dependencies, TypedFunction>
+}) as any

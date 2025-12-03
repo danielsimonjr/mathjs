@@ -1,14 +1,11 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import { combinationsNumber } from '../../plain/number/combinations.js'
 
 const name = 'combinations'
 const dependencies = ['typed']
 
-export const createCombinations: FactoryFunction<
-  { typed: TypedFunction },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createCombinations = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Compute the number of ways of picking `k` unordered outcomes from `n`
    * possibilities.

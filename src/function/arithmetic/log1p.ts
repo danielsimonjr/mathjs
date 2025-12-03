@@ -1,4 +1,4 @@
-import { factory, type FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/config.js'
 import { deepMap } from '../../utils/collection.js'

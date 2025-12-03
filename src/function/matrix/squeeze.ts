@@ -5,7 +5,7 @@ import { factory } from '../../utils/factory.js'
 const name = 'squeeze'
 const dependencies = ['typed']
 
-export const createSqueeze: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createSqueeze = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Squeeze a matrix, remove inner and outer singleton dimensions from a matrix.
    *

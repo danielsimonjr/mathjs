@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/create.js'
 import { xgcdNumber } from '../../plain/number/index.js'
@@ -97,4 +97,4 @@ export const createXgcd = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
     }
     return (config.matrix === 'Array') ? res : matrix(res)
   }
-}) as FactoryFunction<Dependencies, TypedFunction>
+}) as any

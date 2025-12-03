@@ -1,23 +1,10 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 
 const name = 'kldivergence'
 const dependencies = ['typed', 'matrix', 'divide', 'sum', 'multiply', 'map', 'dotDivide', 'log', 'isNumeric']
 
-export const createKldivergence: FactoryFunction<
-  {
-    typed: TypedFunction
-    matrix: TypedFunction
-    divide: TypedFunction
-    sum: TypedFunction
-    multiply: TypedFunction
-    map: TypedFunction
-    dotDivide: TypedFunction
-    log: TypedFunction
-    isNumeric: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divide, sum, multiply, map, dotDivide, log, isNumeric }) => {
+export const createKldivergence = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, divide, sum, multiply, map, dotDivide, log, isNumeric }: { typed: any, matrix: any, divide: any, sum: any, multiply: any, map: any, dotDivide: any, log: any, isNumeric: any }) => {
   /**
      * Calculate the Kullback-Leibler (KL) divergence  between two distributions
      *

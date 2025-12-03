@@ -5,7 +5,7 @@ import { deepForEach } from '../../utils/array.js'
 const name = 'forEach'
 const dependencies = ['typed']
 
-export const createForEach: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createForEach = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Iterate over all elements of a matrix/array, and executes the given callback function.
    *

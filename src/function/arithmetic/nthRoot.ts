@@ -1,4 +1,4 @@
-import { factory, type FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.js'
 import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.js'

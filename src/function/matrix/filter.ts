@@ -5,7 +5,7 @@ import { factory } from '../../utils/factory.js'
 const name = 'filter'
 const dependencies = ['typed']
 
-export const createFilter: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createFilter = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Filter the items in an array or one dimensional matrix.
    *
