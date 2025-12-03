@@ -16411,11 +16411,32 @@
     },
     "type/bignumber/BigNumber.js": {
       "path": "type/bignumber/BigNumber.js",
-      "imports": [],
-      "exports": [],
+      "imports": [
+        {
+          "source": "decimal.js",
+          "specifiers": [
+            {
+              "imported": "Decimal",
+              "local": "Decimal"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createBigNumberClass"
+      ],
       "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
+      "factoryName": "createBigNumberClass",
+      "isFactory": true
     },
     "type/bignumber/function/bignumber.js": {
       "path": "type/bignumber/function/bignumber.js",
@@ -18368,7 +18389,9 @@
     "plain/number": [
       "utils"
     ],
-    "type/bignumber": [],
+    "type/bignumber": [
+      "utils"
+    ],
     "type/bignumber/function": [
       "utils"
     ],
@@ -19386,6 +19409,10 @@
       "file": "function/utils/typeOf.js",
       "dependencies": []
     },
+    "createBigNumberClass": {
+      "file": "type/bignumber/BigNumber.js",
+      "dependencies": []
+    },
     "createBignumber": {
       "file": "type/bignumber/function/bignumber.js",
       "dependencies": []
@@ -19541,13 +19568,13 @@
   },
   "stats": {
     "totalFiles": 596,
-    "totalFunctions": 283,
-    "totalDependencies": 1199,
-    "avgDependenciesPerFile": "2.01",
+    "totalFunctions": 284,
+    "totalDependencies": 1201,
+    "avgDependenciesPerFile": "2.02",
     "mostDependedOn": [
       {
         "file": "utils/factory.js",
-        "count": 282
+        "count": 283
       },
       {
         "file": "utils/is.js",

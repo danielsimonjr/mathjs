@@ -1,19 +1,19 @@
 # Math.js Dependency Graph
 
-Generated: 2025-11-30T15:15:39.357Z
+Generated: 2025-12-02T23:43:47.607Z
 
 ## Statistics
 
 - **Total Files**: 596
-- **Total Factory Functions**: 283
-- **Total Dependencies**: 1199
-- **Average Dependencies per File**: 2.01
+- **Total Factory Functions**: 284
+- **Total Dependencies**: 1201
+- **Average Dependencies per File**: 2.02
 
 ## Most Depended-On Files
 
 | Rank | File | Dependents |
 |------|------|------------|
-| 1 | utils/factory.js | 282 |
+| 1 | utils/factory.js | 283 |
 | 2 | utils/is.js | 73 |
 | 3 | plain/number/index.js | 51 |
 | 4 | utils/number.js | 48 |
@@ -237,6 +237,11 @@ Depends on:
 - `utils/`
 
 ### `type/`
+
+Depends on:
+- `utils/`
+
+### `type/bignumber/`
 
 Depends on:
 - `utils/`
