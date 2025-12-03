@@ -336,10 +336,10 @@ export { createReviver } from './json/reviver.js'
 export { createReplacer } from './json/replacer.js'
 
 // helper functions to create a factory function for a function which only needs typed-function
-function createNumberFactory (name, fn) {
-  return factory(name, ['typed'], ({ typed }) => typed(fn))
+function createNumberFactory (name: any, fn: any) {
+  return factory(name, ['typed'], ({ typed }: { typed: any }) => typed(fn))
 }
-function createNumberOptionalSecondArgFactory (name, fn) {
+function createNumberOptionalSecondArgFactory (name: any, fn: any) {
   return factory(
-    name, ['typed'], ({ typed }) => typed({ number: fn, 'number,number': fn }))
+    name, ['typed'], ({ typed }: { typed: any }) => typed({ number: fn, 'number,number': fn }))
 }

@@ -1,7 +1,7 @@
 import { errorTransform } from '../../transform/utils/errorTransform.js'
 import { setSafeProperty } from '../../../utils/customs.js'
 
-export function assignFactory ({ subset, matrix }) {
+export function assignFactory ({ subset, matrix }: { subset: any, matrix: any }) {
   /**
    * Replace part of an object:
    *

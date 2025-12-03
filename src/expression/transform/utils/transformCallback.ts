@@ -19,7 +19,7 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
          * @param {number} numberOfArrays - The number of arrays to pass to the callback function.
          * @returns {*} - The transformed callback function.
          */
-  return function (callback, numberOfArrays) {
+  return function (callback: any, numberOfArrays: any) {
     if ((typed as any).isTypedFunction(callback)) {
       return _transformTypedCallbackFunction(callback, numberOfArrays)
     } else {
@@ -34,7 +34,7 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
        * @param {number} numberOfArrays - The number of arrays to pass to the callback function.
        * @returns {*} - The transformed callback function.
        */
-  function _transformTypedCallbackFunction (typedFunction, numberOfArrays) {
+  function _transformTypedCallbackFunction (typedFunction: any, numberOfArrays: any) {
     const signatures = Object.fromEntries(
       Object.entries(typedFunction.signatures)
         .map(([signature, callbackFunction]) => {
@@ -67,7 +67,7 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
      * @param {number} numberOfArrays - The number of arrays.
      * @returns {Function} The transformed callback function.
      */
-function _transformCallbackFunction (callbackFunction, numberOfCallbackInputs, numberOfArrays) {
+function _transformCallbackFunction (callbackFunction: any, numberOfCallbackInputs: any, numberOfArrays: any) {
   if (numberOfCallbackInputs === numberOfArrays) {
     return callbackFunction
   } else if (numberOfCallbackInputs === numberOfArrays + 1) {
@@ -94,6 +94,6 @@ function _transformCallbackFunction (callbackFunction, numberOfCallbackInputs, n
    * @param {Array} dims - The dimensions to transform.
    * @returns {Array} The transformed dimensions.
    */
-function _transformDims (dims) {
-  return dims.map(dim => dim + 1)
+function _transformDims (dims: any) {
+  return dims.map((dim: any) => dim + 1)
 }

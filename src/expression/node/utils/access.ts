@@ -1,7 +1,7 @@
 import { errorTransform } from '../../transform/utils/errorTransform.js'
 import { getSafeProperty } from '../../../utils/customs.js'
 
-export function accessFactory ({ subset }) {
+export function accessFactory ({ subset }: { subset: any }) {
   /**
    * Retrieve part of an object:
    *

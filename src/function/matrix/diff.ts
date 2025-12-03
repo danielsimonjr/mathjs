@@ -82,10 +82,10 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
         return _recursive(arr, dim)
       }
     },
-    'Array, BigNumber': typed.referTo('Array,number', selfAn =>
-      (arr, dim) => selfAn(arr, number(dim))),
-    'Matrix, BigNumber': typed.referTo('Matrix,number', selfMn =>
-      (arr, dim) => selfMn(arr, number(dim)))
+    'Array, BigNumber': typed.referTo('Array,number', (selfAn: any) =>
+      (arr: any, dim: any) => selfAn(arr, number(dim))),
+    'Matrix, BigNumber': typed.referTo('Matrix,number', (selfMn: any) =>
+      (arr: any, dim: any) => selfMn(arr, number(dim)))
   });
 
   /**
