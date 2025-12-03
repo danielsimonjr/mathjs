@@ -79,22 +79,22 @@ export const createMatrixFromFunction = /* #__PURE__ */ factory(name, dependenci
    * @return {Array | Matrix} Returns the created matrix
    */
   return typed(name, {
-    'Array | Matrix, function, string, string': function (size: any[] | Matrix, fn: function, format: string, datatype: string) {
+    'Array | Matrix, function, string, string': function (size: any[] | Matrix, fn: Function, format: string, datatype: string) {
       return _create(size, fn, format, datatype)
     },
-    'Array | Matrix, function, string': function (size: any[] | Matrix, fn: function, format: string) {
+    'Array | Matrix, function, string': function (size: any[] | Matrix, fn: Function, format: string) {
       return _create(size, fn, format, undefined)
     },
-    'Matrix, function': function(size: Matrix, fn: function): Matrix {
+    'Matrix, function': function(size: Matrix, fn: Function): Matrix {
       return _create(size, fn, 'dense', undefined)
     },
-    'Array, function': function(size: any[], fn: function): any[] {
+    'Array, function': function(size: any[], fn: Function): any[] {
       return _create(size, fn, 'dense', undefined).toArray()
     },
-    'Array | Matrix, string, function': function (size: any[] | Matrix, format: string, fn: function) {
+    'Array | Matrix, string, function': function (size: any[] | Matrix, format: string, fn: Function) {
       return _create(size, fn, format, undefined)
     },
-    'Array | Matrix, string, string, function': function (size: any[] | Matrix, format: string, datatype: string, fn: function) {
+    'Array | Matrix, string, string, function': function (size: any[] | Matrix, format: string, datatype: string, fn: Function) {
       return _create(size, fn, format, datatype)
     }
   });

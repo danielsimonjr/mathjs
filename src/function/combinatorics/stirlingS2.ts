@@ -19,24 +19,7 @@ const dependencies = [
   'larger'
 ]
 
-export const createStirlingS2: FactoryFunction<
-  {
-    typed: TypedFunction
-    addScalar: TypedFunction
-    subtractScalar: TypedFunction
-    multiplyScalar: TypedFunction
-    divideScalar: TypedFunction
-    pow: TypedFunction
-    factorial: TypedFunction
-    combinations: TypedFunction
-    isNegative: TypedFunction
-    isInteger: TypedFunction
-    number: TypedFunction
-    bignumber?: TypedFunction
-    larger: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, (
+export const createStirlingS2 = /* #__PURE__ */ factory(name, dependencies, (
   {
     typed,
     addScalar,
@@ -51,6 +34,20 @@ export const createStirlingS2: FactoryFunction<
     number,
     bignumber,
     larger
+  }: {
+    typed: any,
+    addScalar: any,
+    subtractScalar: any,
+    multiplyScalar: any,
+    divideScalar: any,
+    pow: any,
+    factorial: any,
+    combinations: any,
+    isNegative: any,
+    isInteger: any,
+    number: any,
+    bignumber?: any,
+    larger: any
   }
 ) => {
   const smallCache: any[][] = []

@@ -2,7 +2,7 @@ import { factory } from '../../utils/factory.js'
 import { isInteger } from '../../utils/number.js'
 import { isMatrix } from '../../utils/is.js'
 
-import { TypedFunction, Matrix } from '../../types.js';
+import { TypedFunction, Matrix, MatrixConstructor } from '../../types.js';
 
 const name = 'diff'
 const dependencies = ['typed', 'matrix', 'subtract', 'number']

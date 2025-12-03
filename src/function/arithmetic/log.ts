@@ -8,7 +8,7 @@ const name = 'log'
 const dependencies = ['config', 'typed', 'typeOf', 'divideScalar', 'Complex']
 const nlg16 = Math.log(16)
 
-export const createLog: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, typeOf, config, divideScalar, Complex }: { typed: TypedFunction; typeOf: any; config: MathJsConfig; divideScalar: any; Complex: any }): any => {
+export const createLog = /* #__PURE__ */ factory(name, dependencies, ({ typed, typeOf, config, divideScalar, Complex }: { typed: TypedFunction; typeOf: any; config: MathJsConfig; divideScalar: any; Complex: any }): any => {
   /**
    * Calculate the logarithm of a value.
    *

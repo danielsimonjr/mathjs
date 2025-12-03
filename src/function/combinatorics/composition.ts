@@ -12,18 +12,7 @@ const dependencies = [
   'larger'
 ]
 
-export const createComposition: FactoryFunction<
-  {
-    typed: TypedFunction
-    addScalar: TypedFunction
-    combinations: TypedFunction
-    isPositive: TypedFunction
-    isNegative: TypedFunction
-    isInteger: TypedFunction
-    larger: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, (
+export const createComposition = /* #__PURE__ */ factory(name, dependencies, (
   {
     typed,
     addScalar,
@@ -32,6 +21,14 @@ export const createComposition: FactoryFunction<
     isNegative,
     isInteger,
     larger
+  }: {
+    typed: any,
+    addScalar: any,
+    combinations: any,
+    isPositive: any,
+    isNegative: any,
+    isInteger: any,
+    larger: any
   }
 ) => {
   /**

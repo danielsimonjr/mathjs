@@ -4,7 +4,7 @@ import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 import { createMatAlgo13xDD } from '../../type/matrix/utils/matAlgo13xDD.js'
 import { DimensionError } from '../../error/DimensionError.js'
 
-import { TypedFunction, Matrix, SparseMatrix } from '../../types.js';
+import { TypedFunction, Matrix, SparseMatrix, MatrixConstructor, Complex, BigNumber, Fraction, Unit } from '../../types.js';
 
 const name = 'nullish'
 const dependencies = ['typed', 'matrix', 'size', 'flatten', 'deepEqual']

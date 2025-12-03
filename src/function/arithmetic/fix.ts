@@ -7,11 +7,8 @@ import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 const name = 'fix'
 const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix']
 
-export const createFixNumber: FactoryFunction<
-  { typed: TypedFunction, ceil: any, floor: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(
-  name, ['typed', 'ceil', 'floor'] as const, ({ typed, ceil, floor }) => {
+export const createFixNumber = /* #__PURE__ */ factory(
+  name, ['typed', 'ceil', 'floor'] as const, ({ typed, ceil, floor }: { typed: any, ceil: any, floor: any }) => {
     return typed(name, {
       number: function (x: number): number {
         return (x > 0) ? floor(x) : ceil(x)

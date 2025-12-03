@@ -14,11 +14,8 @@ const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zero
 
 const bigTen = new Decimal(10)
 
-export const createCeilNumber: FactoryFunction<
-  { typed: TypedFunction, config: MathJsConfig, round: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(
-  name, ['typed', 'config', 'round'] as const, ({ typed, config, round }) => {
+export const createCeilNumber = /* #__PURE__ */ factory(
+  name, ['typed', 'config', 'round'] as const, ({ typed, config, round }: { typed: any, config: any, round: any }) => {
     function _ceilNumber (x: number): number {
       // See ./floor.js _floorNumber for rationale here
       const c = Math.ceil(x)

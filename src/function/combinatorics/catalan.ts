@@ -12,18 +12,7 @@ const dependencies = [
   'isInteger'
 ]
 
-export const createCatalan: FactoryFunction<
-  {
-    typed: TypedFunction
-    addScalar: TypedFunction
-    divideScalar: TypedFunction
-    multiplyScalar: TypedFunction
-    combinations: TypedFunction
-    isNegative: TypedFunction
-    isInteger: TypedFunction
-  },
-  TypedFunction
-> = /* #__PURE__ */ factory(name, dependencies, (
+export const createCatalan = /* #__PURE__ */ factory(name, dependencies, (
   {
     typed,
     addScalar,
@@ -32,6 +21,14 @@ export const createCatalan: FactoryFunction<
     combinations,
     isNegative,
     isInteger
+  }: {
+    typed: any,
+    addScalar: any,
+    divideScalar: any,
+    multiplyScalar: any,
+    combinations: any,
+    isNegative: any,
+    isInteger: any
   }
 ) => {
   /**

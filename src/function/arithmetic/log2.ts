@@ -8,7 +8,7 @@ import type { MathJsConfig } from '../../core/config.js'
 const name = 'log2'
 const dependencies = ['typed', 'config', 'Complex']
 
-export const createLog2: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }: { typed: TypedFunction; config: MathJsConfig; Complex: any }): any => {
+export const createLog2 = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }: { typed: TypedFunction; config: MathJsConfig; Complex: any }): any => {
   /**
    * Calculate the 2-base of a value. This is the same as calculating `log(x, 2)`.
    *

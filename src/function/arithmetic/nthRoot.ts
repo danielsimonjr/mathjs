@@ -16,7 +16,7 @@ const dependencies = [
   'concat'
 ]
 
-export const createNthRoot: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, BigNumber, concat }: { typed: TypedFunction; matrix: any; equalScalar: any; BigNumber: any; concat: any }): any => {
+export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, BigNumber, concat }: { typed: TypedFunction; matrix: any; equalScalar: any; BigNumber: any; concat: any }): any => {
   const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
   const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
   const matAlgo06xS0S0 = createMatAlgo06xS0S0({ typed, equalScalar })
@@ -161,7 +161,7 @@ export const createNthRoot: FactoryFunction<typeof name, typeof dependencies> = 
   }
 })
 
-export const createNthRootNumber: FactoryFunction<'nthRoot', ['typed']> = /* #__PURE__ */ factory(name, ['typed'] as const, ({ typed }: any): any => {
+export const createNthRootNumber = /* #__PURE__ */ factory(name, ['typed'] as const, ({ typed }: { typed: any }): any => {
   return typed(name, {
     number: nthRootNumber,
     'number, number': nthRootNumber

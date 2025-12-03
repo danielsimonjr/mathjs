@@ -5,7 +5,7 @@ import { expNumber } from '../../plain/number/index.js'
 const name = 'exp'
 const dependencies = ['typed']
 
-export const createExp: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }: any): any => {
+export const createExp = /* #__PURE__ */ factory(name, dependencies, ({ typed }: any): any => {
   /**
    * Calculate the exponential of a value.
    * For matrices, if you want the matrix exponential of square matrix, use

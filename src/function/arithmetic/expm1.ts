@@ -5,7 +5,7 @@ import { expm1Number } from '../../plain/number/index.js'
 const name = 'expm1'
 const dependencies = ['typed', 'Complex']
 
-export const createExpm1: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex }: { typed: TypedFunction; Complex: any }): any => {
+export const createExpm1 = /* #__PURE__ */ factory(name, dependencies, ({ typed, Complex }: { typed: TypedFunction; Complex: any }): any => {
   /**
    * Calculate the value of subtracting 1 from the exponential value.
    * This function is more accurate than `math.exp(x)-1` when `x` is near 0

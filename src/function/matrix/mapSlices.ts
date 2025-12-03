@@ -55,7 +55,7 @@ export const createMapSlices = /* #__PURE__ */ factory(name, dependencies, (
    * @return {Array | Matrix} res    The residual matrix with the function mapped on the slices over some dimension.
    */
   return typed(name, {
-    'Array | Matrix, number | BigNumber, function': function (mat: any[] | Matrix, dim: number | BigNumber, callback: function) {
+    'Array | Matrix, number | BigNumber, function': function (mat: any[] | Matrix, dim: number | BigNumber, callback: Function) {
       if (!isInteger(dim)) {
         throw new TypeError('Integer number expected for dimension')
       }

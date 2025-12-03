@@ -14,11 +14,8 @@ const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zero
 
 const bigTen = new Decimal(10)
 
-export const createFloorNumber: FactoryFunction<
-  { typed: TypedFunction, config: MathJsConfig, round: any },
-  TypedFunction
-> = /* #__PURE__ */ factory(
-  name, ['typed', 'config', 'round'] as const, ({ typed, config, round }) => {
+export const createFloorNumber = /* #__PURE__ */ factory(
+  name, ['typed', 'config', 'round'] as const, ({ typed, config, round }: { typed: any, config: any, round: any }) => {
     function _floorNumber (x: number): number {
       // First, if the floor and the round are identical we can be
       // quite comfortable that is the best answer:

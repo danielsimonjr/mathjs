@@ -7,7 +7,7 @@ import { log1p as _log1p } from '../../utils/number.js'
 const name = 'log1p'
 const dependencies = ['typed', 'config', 'divideScalar', 'log', 'Complex']
 
-export const createLog1p: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, divideScalar, log, Complex }: { typed: TypedFunction; config: MathJsConfig; divideScalar: any; log: any; Complex: any }): any => {
+export const createLog1p = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, divideScalar, log, Complex }: { typed: TypedFunction; config: MathJsConfig; divideScalar: any; log: any; Complex: any }): any => {
   /**
    * Calculate the logarithm of a `value+1`.
    *

@@ -5,7 +5,7 @@ import type { MathJsConfig } from '../../core/config.js'
 const name = 'nthRoots'
 const dependencies = ['config', 'typed', 'divideScalar', 'Complex']
 
-export const createNthRoots: FactoryFunction<typeof name, typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, divideScalar, Complex }: { typed: TypedFunction; config: MathJsConfig; divideScalar: any; Complex: any }): any => {
+export const createNthRoots = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, divideScalar, Complex }: { typed: TypedFunction; config: MathJsConfig; divideScalar: any; Complex: any }): any => {
   /**
    * Each function here returns a real multiple of i as a Complex value.
    * @param  {number} val
