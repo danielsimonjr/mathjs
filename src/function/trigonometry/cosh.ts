@@ -32,6 +32,6 @@ export const createCosh = /* #__PURE__ */ factory(name, dependencies, ({ typed }
    */
   return typed(name, {
     number: coshNumber,
-    'Complex | BigNumber': x => x.cosh()
+    'Complex | BigNumber': (x: any) => x.cosh()
   }) as TypedFunction
 })

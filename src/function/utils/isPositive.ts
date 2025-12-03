@@ -54,6 +54,6 @@ export const createIsPositive = /* #__PURE__ */ factory(name, dependencies, ({ t
     Unit: typed.referToSelf((self: any) =>
       x => typed.find(self, x.valueType())(x.value)),
 
-    'Array | Matrix': typed.referToSelf((self: any) => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 })

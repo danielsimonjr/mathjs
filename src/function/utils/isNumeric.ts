@@ -46,6 +46,6 @@ export const createIsNumeric = /* #__PURE__ */ factory(name, dependencies, (
   return typed(name, {
     'number | BigNumber | bigint | Fraction | boolean': () => true,
     'Complex | Unit | string | null | undefined | Node': () => false,
-    'Array | Matrix': typed.referToSelf((self: any) => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 })

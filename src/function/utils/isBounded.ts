@@ -46,10 +46,10 @@ export const createIsBounded = /* #__PURE__ */ factory(name, dependencies, (
     'BigNumber | Complex': (x: BigNumber | Complex) => x.isFinite(),
     'bigint | Fraction': () => true,
     'null | undefined': () => false,
-    Unit: typed.referToSelf((self: any) => x => self(x.value)),
+    Unit: typed.referToSelf((self: any) => (x: any) => self(x.value)),
     'Array | Matrix': typed.referToSelf((self: any) => A => {
       if (!Array.isArray(A)) A = A.valueOf()
-      return A.every(entry => self(entry))
+      return A.every((entry: any) => self(entry))
     })
   });
 })

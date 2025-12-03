@@ -35,6 +35,6 @@ export const createTanh = /* #__PURE__ */ factory(name, dependencies, ({ typed }
    */
   return typed('tanh', {
     number: _tanh,
-    'Complex | BigNumber': x => x.tanh()
+    'Complex | BigNumber': (x: any) => x.tanh()
   }) as TypedFunction
 })

@@ -32,6 +32,6 @@ export const createSinh = /* #__PURE__ */ factory(name, dependencies, ({ typed }
    */
   return typed(name, {
     number: sinhNumber,
-    'Complex | BigNumber': x => x.sinh()
+    'Complex | BigNumber': (x: any) => x.sinh()
   }) as TypedFunction
 })

@@ -126,6 +126,6 @@ export const createIsPrime = /* #__PURE__ */ factory(name, dependencies, ({ type
       return true
     },
 
-    'Array | Matrix': typed.referToSelf((self: any) => x => deepMap(x, self))
+    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
   })
 })
