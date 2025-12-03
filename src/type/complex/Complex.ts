@@ -3,16 +3,19 @@ import { format } from '../../utils/number.js'
 import { isNumber, isUnit } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 
-// Re-export Complex type for use in other modules
-export type Complex = ComplexJS
+// The Complex type that we work with internally
+type ComplexType = typeof ComplexJS extends (new (...args: any[]) => infer T) ? T : any
 
-// Use the imported Complex class internally
-const Complex = ComplexJS
+// Re-export Complex type for use in other modules
+export type Complex = ComplexType
+
+// Use the imported Complex class internally - cast to any for runtime manipulation
+const Complex = ComplexJS as any
 
 const name = 'Complex'
-const dependencies = []
+const dependencies: string[] = []
 
-export const createComplexClass: FactoryFunction<never, typeof name> = /* #__PURE__ */ factory(name, dependencies, () => {
+export const createComplexClass = /* #__PURE__ */ factory(name, dependencies, () => {
   /**
    * Attach type information
    */
@@ -132,9 +135,9 @@ export const createComplexClass: FactoryFunction<never, typeof name> = /* #__PUR
         const r = arguments[0]
         let phi = arguments[1]
         if (isNumber(r)) {
-          if (isUnit(phi) && phi.hasBase('ANGLE')) {
+          if (isUnit(phi) && (phi as any).hasBase('ANGLE')) {
             // convert unit to a number in radians
-            phi = phi.toNumber('rad')
+            phi = (phi as any).toNumber('rad')
           }
 
           if (isNumber(phi)) {
