@@ -249,7 +249,7 @@ export const latexFunctions = {
   to: { 2: `\\left(\${args[0]}${latexOperators.to}\${args[1]}\\right)` },
 
   // utils
-  numeric: function (node, options) {
+  numeric: function (node: any, options: any) {
     // Not sure if this is strictly right but should work correctly for the vast majority of use cases.
     return node.args[0].toTex()
   },
@@ -299,13 +299,13 @@ const latexUnits = {
   deg: '^\\circ'
 }
 
-export function escapeLatex (string) {
+export function escapeLatex (string: any) {
   return escapeLatexLib(string, { preserveFormatting: true })
 }
 
 // @param {string} name
 // @param {boolean} isUnit
-export function toSymbol (name, isUnit) {
+export function toSymbol (name: any, isUnit: any) {
   isUnit = typeof isUnit === 'undefined' ? false : isUnit
   if (isUnit) {
     if (hasOwnProperty(latexUnits, name)) {
