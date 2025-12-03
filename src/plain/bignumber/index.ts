@@ -6,6 +6,6 @@ export * from './arithmetic.js'
 const BigNumber = Decimal.clone()
 BigNumber.prototype.isBigNumber = true
 
-export function bignumber (x) {
+export function bignumber (x: any) {
   return new BigNumber(x)
 }

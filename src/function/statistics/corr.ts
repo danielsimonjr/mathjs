@@ -65,7 +65,7 @@ export const createCorr = /* #__PURE__ */ factory(name, dependencies, (
    * @return {*} correlation coefficient
    * @private
    */
-  function _corr (A, B) {
+  function _corr (A: any, B: any) {
     const correlations = []
     if (Array.isArray(A[0]) && Array.isArray(B[0])) {
       if (A.length !== B.length) {
@@ -85,13 +85,13 @@ export const createCorr = /* #__PURE__ */ factory(name, dependencies, (
       return correlation(A, B)
     }
   }
-  function correlation (A, B) {
+  function correlation (A: any, B: any) {
     const n = A.length
     const sumX = sum(A)
     const sumY = sum(B)
-    const sumXY = A.reduce((acc, x, index) => add(acc, multiply(x, B[index])), 0)
-    const sumXSquare = sum(A.map(x => pow(x, 2)))
-    const sumYSquare = sum(B.map(y => pow(y, 2)))
+    const sumXY = A.reduce((acc: any, x: any, index: any) => add(acc, multiply(x, B[index])), 0)
+    const sumXSquare = sum(A.map((x: any) => pow(x, 2)))
+    const sumYSquare = sum(B.map((y: any) => pow(y, 2)))
     const numerator = subtract(multiply(n, sumXY), multiply(sumX, sumY))
     const denominator = sqrt(multiply(subtract(multiply(n, sumXSquare), pow(sumX, 2)), subtract(multiply(n, sumYSquare), pow(sumY, 2))))
     return divide(numerator, denominator)

@@ -96,7 +96,7 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {number} dim     Dimension
    * @return {Array}         resulting array
    */
-  function _recursive (arr, dim) {
+  function _recursive (arr: any, dim: any) {
     if (isMatrix(arr)) {
       arr = arr.toArray() // Makes sure arrays like [ matrix([0, 1]), matrix([1, 0]) ] are processed properly
     }
@@ -122,7 +122,7 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Array} arr      An array
    * @return {Array}         resulting array
    */
-  function _diff (arr) {
+  function _diff (arr: any) {
     const result = []
     const size = arr.length
     for (let i = 1; i < size; i++) {
@@ -138,7 +138,7 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Object} obj2    Second object
    * @return {Array}         resulting array
    */
-  function _ElementDiff (obj1, obj2) {
+  function _ElementDiff (obj1: any, obj2: any) {
     // Convert matrices to arrays
     if (isMatrix(obj1)) obj1 = obj1.toArray()
     if (isMatrix(obj2)) obj2 = obj2.toArray()
@@ -161,7 +161,7 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Array} arr2     Array 2
    * @return {Array}         resulting array
    */
-  function _ArrayDiff (arr1, arr2) {
+  function _ArrayDiff (arr1: any, arr2: any) {
     if (arr1.length !== arr2.length) {
       throw RangeError('Not all sub-arrays have the same length')
     }

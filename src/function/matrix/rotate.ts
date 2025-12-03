@@ -73,7 +73,7 @@ export const createRotate = /* #__PURE__ */ factory(name, dependencies, (
     }
   });
 
-  function _validateSize (v, expectedSize) {
+  function _validateSize (v: any, expectedSize: any) {
     const actualSize = Array.isArray(v) ? arraySize(v) : v.size()
     if (actualSize.length > 2) {
       throw new RangeError(`Vector must be of dimensions 1x${expectedSize}`)

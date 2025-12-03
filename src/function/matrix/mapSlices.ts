@@ -82,7 +82,7 @@ export const createMapSlices = /* #__PURE__ */ factory(name, dependencies, (
  * @returns {Array} ret
  * @private
  */
-function _mapSlices (mat, dim, callback) {
+function _mapSlices (mat: any, dim: any, callback: any) {
   let i, ret, tran
 
   if (dim <= 0) {
@@ -111,7 +111,7 @@ function _mapSlices (mat, dim, callback) {
  * @returns {Array} ret
  * @private
  */
-function _switch (mat) {
+function _switch (mat: any) {
   const I = mat.length
   const J = mat[0].length
   let i, j

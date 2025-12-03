@@ -10,7 +10,7 @@ import { typeOf } from '../../../utils/is.js'
  * @param {*} [value]
  * @return {Error}
  */
-export function improveErrorMessage (err, fnName, value) {
+export function improveErrorMessage (err: any, fnName: any, value: any) {
   // TODO: add information with the index (also needs transform in expression parser)
   let details
 

@@ -27,7 +27,8 @@
       "Bash(while read f)",
       "Bash(do sed -i 's|bigNumber/BigNumber|bignumber/BigNumber|g' \"$f\")",
       "Bash(done)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(timeout 60 npx tsc:*)"
     ],
     "deny": [],
     "ask": []

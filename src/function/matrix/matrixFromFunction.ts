@@ -99,7 +99,7 @@ export const createMatrixFromFunction = /* #__PURE__ */ factory(name, dependenci
     }
   });
 
-  function _create (size, fn, format, datatype) {
+  function _create (size: any, fn: any, format: any, datatype: any) {
     let m
     if (datatype !== undefined) {
       m = matrix(format, datatype)
@@ -108,7 +108,7 @@ export const createMatrixFromFunction = /* #__PURE__ */ factory(name, dependenci
     }
 
     m.resize(size)
-    m.forEach(function (_, index) {
+    m.forEach(function (_: any, index: any) {
       const val = fn(index)
       if (isZero(val)) return
       m.set(index, val)

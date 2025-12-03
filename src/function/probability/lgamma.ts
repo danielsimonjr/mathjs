@@ -76,7 +76,7 @@ export const createLgamma = /* #__PURE__ */ factory(name, dependencies, (
     }
   })
 
-  function lgammaComplex (n) {
+  function lgammaComplex (n: any) {
     const TWOPI = 6.2831853071795864769252842 // 2*pi
     const LOGPI = 1.1447298858494001741434262 // log(pi)
 
@@ -101,7 +101,7 @@ export const createLgamma = /* #__PURE__ */ factory(name, dependencies, (
     }
   }
 
-  function lgammaStirling (z) {
+  function lgammaStirling (z: any) {
     // formula ref in [2]
     // computation ref:
     // https://github.com/scipy/scipy/blob/v1.8.0/scipy/special/_loggamma.pxd#L101
@@ -135,7 +135,7 @@ export const createLgamma = /* #__PURE__ */ factory(name, dependencies, (
     return leftPart.add(rightPart)
   }
 
-  function lgammaRecurrence (z) {
+  function lgammaRecurrence (z: any) {
     // computation ref:
     // https://github.com/scipy/scipy/blob/v1.8.0/scipy/special/_loggamma.pxd#L78
 

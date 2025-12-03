@@ -2,11 +2,11 @@ import seedrandom from 'seedrandom'
 
 const singletonRandom = /* #__PURE__ */ seedrandom(Date.now())
 
-export function createRng (randomSeed) {
+export function createRng (randomSeed: any) {
   let random
 
   // create a new random generator with given seed
-  function setSeed (seed) {
+  function setSeed (seed: any) {
     random = seed === null ? singletonRandom : seedrandom(String(seed))
   }
 

@@ -20,7 +20,7 @@ export const createSort = /* #__PURE__ */ factory(name, dependencies, (
   }
 ): TypedFunction => {
   const compareAsc = compare
-  const compareDesc = (a, b) => -compare(a, b)
+  const compareDesc = (a: any, b: any) => -compare(a, b)
 
   /**
    * Sort the items in a matrix.
@@ -90,7 +90,7 @@ export const createSort = /* #__PURE__ */ factory(name, dependencies, (
    * @param {'asc' | 'desc' | 'natural'} order
    * @return {Function} Returns a _comparator function
    */
-  function _comparator (order) {
+  function _comparator (order: any) {
     if (order === 'asc') {
       return compareAsc
     } else if (order === 'desc') {
@@ -108,7 +108,7 @@ export const createSort = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Array} array
    * @private
    */
-  function _arrayIsVector (array) {
+  function _arrayIsVector (array: any) {
     if (size(array).length !== 1) {
       throw new Error('One dimensional array expected')
     }
@@ -120,7 +120,7 @@ export const createSort = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Matrix} matrix
    * @private
    */
-  function _matrixIsVector (matrix) {
+  function _matrixIsVector (matrix: any) {
     if (matrix.size().length !== 1) {
       throw new Error('One dimensional matrix expected')
     }

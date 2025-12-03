@@ -132,7 +132,7 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
    * @returns {Matrix}
    * @private
    */
-  function _rotationMatrix2x2 (theta, format) {
+  function _rotationMatrix2x2 (theta: any, format: any) {
     const Big = isBigNumber(theta)
 
     const minusOne = Big ? new BigNumber(-1) : -1
@@ -143,18 +143,18 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
     return _convertToFormat(data, format)
   }
 
-  function _validateVector (v) {
+  function _validateVector (v: any) {
     const size = v.size()
     if (size.length < 1 || size[0] !== 3) {
       throw new RangeError('Vector must be of dimensions 1x3')
     }
   }
 
-  function _mul (array) {
-    return array.reduce((p, curr) => multiplyScalar(p, curr))
+  function _mul (array: any) {
+    return array.reduce((p: any, curr: any) => multiplyScalar(p, curr))
   }
 
-  function _convertToFormat (data, format) {
+  function _convertToFormat (data: any, format: any) {
     if (format) {
       if (format === 'sparse') {
         return new SparseMatrix(data)
@@ -176,7 +176,7 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
    * @returns {Matrix}
    * @private
    */
-  function _rotationMatrix3x3 (theta, v, format) {
+  function _rotationMatrix3x3 (theta: any, v: any, format: any) {
     const normV = norm(v)
     if (normV === 0) {
       throw new RangeError('Rotation around zero vector')
