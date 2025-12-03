@@ -266,7 +266,7 @@ export const properties = [
  * @param {string} parenthesis
  * @return {Node}
  */
-function unwrapParen (_node, parenthesis) {
+function unwrapParen (_node: any, parenthesis: any) {
   if (!parenthesis || parenthesis !== 'auto') return _node
   let node = _node
   while (isParenthesisNode(node)) node = (node as any).content
@@ -284,7 +284,7 @@ function unwrapParen (_node, parenthesis) {
  * @param {Node} parent (for determining context for implicit multiplication)
  * @return {number | null}
  */
-export function getPrecedence (_node, parenthesis, implicit, parent) {
+export function getPrecedence (_node: any, parenthesis: any, implicit: any, parent: any) {
   let node = _node
   if (parenthesis !== 'keep') {
     // ParenthesisNodes are only ignored when not in 'keep' mode
@@ -326,7 +326,7 @@ export function getPrecedence (_node, parenthesis, implicit, parent) {
  * @return {string|null}
  * @throws {Error}
  */
-export function getAssociativity (_node, parenthesis) {
+export function getAssociativity (_node: any, parenthesis: any) {
   let node = _node
   if (parenthesis !== 'keep') {
     // ParenthesisNodes are only ignored when not in 'keep' mode
@@ -365,7 +365,7 @@ export function getAssociativity (_node, parenthesis) {
  * @param {string} parenthesis
  * @return {boolean | null}
  */
-export function isAssociativeWith (nodeA, nodeB, parenthesis) {
+export function isAssociativeWith (nodeA: any, nodeB: any, parenthesis: any) {
   // ParenthesisNodes are only ignored when not in 'keep' mode
   const a = (parenthesis !== 'keep') ? nodeA.getContent() : nodeA
   const b = (parenthesis !== 'keep') ? nodeA.getContent() : nodeB
@@ -401,7 +401,7 @@ export function isAssociativeWith (nodeA, nodeB, parenthesis) {
  * @param {string} Function name
  * @return {string | null} Associated operator symbol, if any
  */
-export function getOperator (fn) {
+export function getOperator (fn: any) {
   const identifier = 'OperatorNode:' + fn
   for (const group of properties) {
     if (identifier in group) {
