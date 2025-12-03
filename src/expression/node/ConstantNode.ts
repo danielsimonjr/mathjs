@@ -33,6 +33,7 @@ export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({
       this.value = value
     }
 
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
     get type (): string { return name }
     get isConstantNode (): boolean { return true }

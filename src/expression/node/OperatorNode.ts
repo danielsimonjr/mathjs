@@ -302,6 +302,7 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
       this.args = args || []
     }
 
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
     get type (): string { return name }
     get isOperatorNode (): boolean { return true }

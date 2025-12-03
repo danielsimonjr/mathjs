@@ -70,6 +70,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
       this.falseExpr = falseExpr
     }
 
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
     get type (): string { return name }
     get isConditionalNode (): boolean { return true }

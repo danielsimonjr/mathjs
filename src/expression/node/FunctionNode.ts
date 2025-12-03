@@ -131,6 +131,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
       return this.fn.name || ''
     }
 
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
     get type (): string { return name }
     get isFunctionNode (): boolean { return true }

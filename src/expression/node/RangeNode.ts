@@ -92,6 +92,7 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
       this.step = step || null // optional step
     }
 
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
     get type (): string { return name }
     get isRangeNode (): boolean { return true }

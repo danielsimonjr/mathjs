@@ -47,6 +47,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
       this.content = content
     }
 
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
     get type (): string { return name }
     get isParenthesisNode (): boolean { return true }

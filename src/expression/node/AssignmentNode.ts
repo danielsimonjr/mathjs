@@ -97,6 +97,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
     }
 
     // class name for typing purposes:
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
 
     // readonly property name

@@ -52,6 +52,7 @@ export const createObjectNode = /* #__PURE__ */ factory(name, dependencies, ({ N
       }
     }
 
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
     get type (): string { return name }
     get isObjectNode (): boolean { return true }

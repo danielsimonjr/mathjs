@@ -49,6 +49,7 @@ export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ Re
       })
     }
 
+    // @ts-expect-error: intentionally overriding Function.name
     static name = name
     get type (): string { return name }
     get isBlockNode (): boolean { return true }
