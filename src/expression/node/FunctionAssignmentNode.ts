@@ -21,7 +21,7 @@ interface ParamWithType {
 
 export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, dependencies, ({ typed, Node }: {
   typed: any
-  Node: typeof MathNode
+  Node: new (...args: any[]) => MathNode
 }) => {
   /**
    * Is parenthesis needed?

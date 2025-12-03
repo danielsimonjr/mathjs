@@ -16,7 +16,7 @@ const dependencies = [
 
 export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({ math, Node, SymbolNode }: {
   math: any
-  Node: typeof MathNode
+  Node: new (...args: any[]) => MathNode
   SymbolNode: any
 }) => {
   /* format to fixed length */

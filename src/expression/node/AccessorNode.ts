@@ -22,7 +22,7 @@ const dependencies = [
 
 export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, Node }: {
   subset: any
-  Node: typeof MathNode
+  Node: new (...args: any[]) => MathNode
 }) => {
   const access = accessFactory({ subset })
 

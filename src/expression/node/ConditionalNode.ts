@@ -9,7 +9,7 @@ const dependencies = [
 ]
 
 export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: {
-  Node: typeof MathNode
+  Node: new (...args: any[]) => MathNode
 }) => {
   /**
    * Test whether a condition is met

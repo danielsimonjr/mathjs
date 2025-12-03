@@ -9,7 +9,7 @@ const dependencies = [
 ]
 
 export const createArrayNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: {
-  Node: typeof MathNode
+  Node: new (...args: any[]) => MathNode
 }) => {
   class ArrayNode extends Node {
     items: MathNode[]

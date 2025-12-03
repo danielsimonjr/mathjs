@@ -16,7 +16,7 @@ const dependencies = [
 export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, ({ subset, matrix, Node }: {
   subset: any
   matrix: any
-  Node: typeof MathNode
+  Node: new (...args: any[]) => MathNode
 }) => {
   const access = accessFactory({ subset })
   const assign = assignFactory({ subset, matrix })

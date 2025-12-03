@@ -16,7 +16,7 @@ interface BlockItem {
 
 export const createBlockNode = /* #__PURE__ */ factory(name, dependencies, ({ ResultSet, Node }: {
   ResultSet: any
-  Node: typeof MathNode
+  Node: new (...args: any[]) => MathNode
 }) => {
   class BlockNode extends Node {
     blocks: BlockItem[]

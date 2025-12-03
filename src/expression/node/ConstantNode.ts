@@ -10,7 +10,7 @@ const dependencies = [
 ]
 
 export const createConstantNode = /* #__PURE__ */ factory(name, dependencies, ({ Node, isBounded }: {
-  Node: typeof MathNode
+  Node: new (...args: any[]) => MathNode
   isBounded: (value: any) => boolean
 }) => {
   class ConstantNode extends Node {
