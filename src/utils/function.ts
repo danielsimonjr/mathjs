@@ -17,13 +17,23 @@ import { lruQueue } from './lruQueue.js'
  *    unlimited (default)
  * @return {function}                       Returns the memoized function
  */
-export function memoize (fn: any, { hasher, limit }: { hasher?: any, limit?: any } = {}) {
+interface MemoizeCache {
+  values: Map<string, any>;
+  lru: ReturnType<typeof lruQueue>;
+}
+
+interface MemoizedFunction {
+  (...args: any[]): any;
+  cache?: MemoizeCache;
+}
+
+export function memoize (fn: any, { hasher, limit }: { hasher?: any, limit?: any } = {}): MemoizedFunction {
   limit = limit == null ? Number.POSITIVE_INFINITY : limit
   hasher = hasher == null ? JSON.stringify : hasher
 
-  return function memoize () {
-    if (typeof memoize.cache !== 'object') {
-      memoize.cache = {
+  const memoized: MemoizedFunction = function () {
+    if (typeof memoized.cache !== 'object') {
+      memoized.cache = {
         values: new Map(),
         lru: lruQueue(limit || Number.POSITIVE_INFINITY)
       }
@@ -34,17 +44,19 @@ export function memoize (fn: any, { hasher, limit }: { hasher?: any, limit?: any
     }
     const hash = hasher(args)
 
-    if (memoize.cache.values.has(hash)) {
-      memoize.cache.lru.hit(hash)
-      return memoize.cache.values.get(hash)
+    if (memoized.cache.values.has(hash)) {
+      memoized.cache.lru.hit(hash)
+      return memoized.cache.values.get(hash)
     }
 
     const newVal = fn.apply(fn, args)
-    memoize.cache.values.set(hash, newVal)
-    memoize.cache.values.delete(memoize.cache.lru.hit(hash))
+    memoized.cache.values.set(hash, newVal)
+    memoized.cache.values.delete(memoized.cache.lru.hit(hash))
 
     return newVal
   }
+
+  return memoized
 }
 
 /**

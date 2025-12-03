@@ -1,6 +1,6 @@
 import { isUnit, isNumber, isBigNumber } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
-import type { MathJsChain, MathNumericType, MathArray, Matrix, Unit, BigNumber } from '../../types/index.js'
+import type { MathNumericType, MathArray, Matrix, Unit, BigNumber } from '../../types.js'
 
 const name = 'solveODE'
 const dependencies = [
