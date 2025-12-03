@@ -74,7 +74,7 @@ import {
 import { factory } from './utils/factory.js'
 import { noIndex, noMatrix, noSubset } from './utils/noop.js'
 
-import { TypedFunction } from '../../types.js';
+import { TypedFunction } from './types.js';
 
 // ----------------------------------------------------------------------------
 // classes and functions
