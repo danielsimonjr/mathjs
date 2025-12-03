@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import { getArrayDataType } from '../../utils/array.js'
 import { typeOf } from '../../utils/is.js'
 

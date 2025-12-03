@@ -1,6 +1,6 @@
 import { optimizeCallback } from '../../utils/optimizeCallback.js'
 import { filter, filterRegExp } from '../../utils/array.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 
 const name = 'filter'
 const dependencies = ['typed']

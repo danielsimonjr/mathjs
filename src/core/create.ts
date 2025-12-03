@@ -50,7 +50,10 @@ import {
 } from '../utils/is.js'
 import { deepFlatten, isLegacyFactory } from '../utils/object.js'
 import * as emitter from './../utils/emitter.js'
-import { ConfigOptions, DEFAULT_CONFIG } from './config.js'
+import { ConfigOptions, DEFAULT_CONFIG, MathJsConfig } from './config.js'
+
+// Re-export MathJsConfig for backward compatibility
+export { MathJsConfig }
 import { configFactory } from './function/config.js'
 import { importFactory } from './function/import.js'
 

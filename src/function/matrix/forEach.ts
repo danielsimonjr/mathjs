@@ -1,5 +1,5 @@
 import { optimizeCallback } from '../../utils/optimizeCallback.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import { deepForEach } from '../../utils/array.js'
 
 const name = 'forEach'

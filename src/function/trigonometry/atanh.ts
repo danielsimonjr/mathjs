@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { MathJsConfig } from '../../core/config.js'
 import type { Complex } from '../../type/complex/Complex.js'
@@ -8,7 +8,11 @@ import { atanhNumber } from '../../plain/number/index.js'
 const name = 'atanh'
 const dependencies = ['typed', 'config', 'Complex']
 
-export const createAtanh: FactoryFunction<'atanh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }) => {
+export const createAtanh = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, Complex }: {
+  typed: TypedFunction
+  config: MathJsConfig
+  Complex: any
+}) => {
   /**
    * Calculate the hyperbolic arctangent of a value,
    * defined as `atanh(x) = ln((1 + x)/(1 - x)) / 2`.
@@ -33,7 +37,7 @@ export const createAtanh: FactoryFunction<'atanh', typeof dependencies> = /* #__
    */
   return typed(name, {
     number: function (x: number) {
-      if ((x <= 1 && x >= -1) || (config as MathJsConfig).predictable) {
+      if ((x <= 1 && x >= -1) || config.predictable) {
         return atanhNumber(x)
       }
       return new Complex(x, 0).atanh()

@@ -94,9 +94,12 @@ export interface TypedFunction extends Function {
   create: () => TypedFunction
   addTypes: (types: any[]) => void
   addConversions: (conversions: any[]) => void
+  addConversion: (conversion: any) => void
   clear: () => void
   onMismatch: (name: string, args: any[], signatures: any[]) => any
   createError: (name: string, args: any[], signatures: any[]) => Error
+  find: (fn: TypedFunction, signature: string | any[]) => ((...args: any[]) => any) | null
+  resolve: (fn: TypedFunction, args: any[]) => any
 }
 
 /**

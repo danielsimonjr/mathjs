@@ -1,10 +1,10 @@
 import { arraySize, squeeze } from '../../utils/array.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 
 const name = 'cross'
 const dependencies = ['typed', 'matrix', 'subtract', 'multiply']
 
-export const createCross: FactoryFunction<'typed' | 'matrix' | 'subtract' | 'multiply', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, subtract, multiply }) => {
+export const createCross = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, subtract, multiply }: { typed: any, matrix: any, subtract: any, multiply: any }) => {
   /**
    * Calculate the cross product for two vectors in three dimensional space.
    * The cross product of `A = [a1, a2, a3]` and `B = [b1, b2, b3]` is defined

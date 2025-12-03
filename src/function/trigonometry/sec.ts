@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { BigNumber } from '../../type/bignumber/BigNumber.js'
 import type { Complex } from '../../type/complex/Complex.js'
@@ -8,7 +8,10 @@ import { createTrigUnit } from './trigUnit.js'
 const name = 'sec'
 const dependencies = ['typed', 'BigNumber']
 
-export const createSec: FactoryFunction<'sec', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
+export const createSec = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: {
+  typed: TypedFunction
+  BigNumber: any
+}) => {
   const trigUnit = createTrigUnit({ typed })
 
   /**

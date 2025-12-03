@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { BigNumber } from '../../type/bignumber/BigNumber.js'
 import type { Complex } from '../../type/complex/Complex.js'
@@ -7,7 +7,10 @@ import { cothNumber } from '../../plain/number/index.js'
 const name = 'coth'
 const dependencies = ['typed', 'BigNumber']
 
-export const createCoth: FactoryFunction<'coth', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }) => {
+export const createCoth = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: {
+  typed: TypedFunction
+  BigNumber: any
+}) => {
   /**
    * Calculate the hyperbolic cotangent of a value,
    * defined as `coth(x) = 1 / tanh(x)`.

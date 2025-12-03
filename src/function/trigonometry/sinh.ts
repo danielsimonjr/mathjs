@@ -1,11 +1,13 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import { sinhNumber } from '../../plain/number/index.js'
 
 const name = 'sinh'
 const dependencies = ['typed']
 
-export const createSinh: FactoryFunction<'sinh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createSinh = /* #__PURE__ */ factory(name, dependencies, ({ typed }: {
+  typed: TypedFunction
+}) => {
   /**
    * Calculate the hyperbolic sine of a value,
    * defined as `sinh(x) = 1/2 * (exp(x) - exp(-x))`.

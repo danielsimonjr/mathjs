@@ -3,12 +3,12 @@ import { clone } from '../../utils/object.js'
 import { arraySize, concat as _concat } from '../../utils/array.js'
 import { IndexError } from '../../error/IndexError.js'
 import { DimensionError } from '../../error/DimensionError.js'
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 
 const name = 'concat'
 const dependencies = ['typed', 'matrix', 'isInteger']
 
-export const createConcat: FactoryFunction<'typed' | 'matrix' | 'isInteger', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, isInteger }) => {
+export const createConcat = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, isInteger }: { typed: any, matrix: any, isInteger: any }) => {
   /**
    * Concatenate two or more matrices.
    *

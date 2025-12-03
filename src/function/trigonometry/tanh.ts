@@ -1,11 +1,13 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import { tanh as _tanh } from '../../utils/number.js'
 
 const name = 'tanh'
 const dependencies = ['typed']
 
-export const createTanh: FactoryFunction<'tanh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createTanh = /* #__PURE__ */ factory(name, dependencies, ({ typed }: {
+  typed: TypedFunction
+}) => {
   /**
    * Calculate the hyperbolic tangent of a value,
    * defined as `tanh(x) = (exp(2 * x) - 1) / (exp(2 * x) + 1)`.

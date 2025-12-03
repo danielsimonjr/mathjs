@@ -1,10 +1,10 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import { deepMap } from '../../utils/collection.js'
 
 const name = 'im'
 const dependencies = ['typed']
 
-export const createIm: FactoryFunction<'typed', typeof name> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createIm = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
   /**
    * Get the imaginary part of a complex number.
    * For a complex number `a + bi`, the function returns `b`.

@@ -1,4 +1,4 @@
-import { factory, FactoryFunction } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.js'
 import type { TypedFunction } from '../../core/function/typed.js'
 import type { Complex } from '../../type/complex/Complex.js'
 import type { BigNumber } from '../../type/bignumber/BigNumber.js'
@@ -7,7 +7,9 @@ import { asinhNumber } from '../../plain/number/index.js'
 const name = 'asinh'
 const dependencies = ['typed']
 
-export const createAsinh: FactoryFunction<'asinh', typeof dependencies> = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
+export const createAsinh = /* #__PURE__ */ factory(name, dependencies, ({ typed }: {
+  typed: TypedFunction
+}) => {
   /**
    * Calculate the hyperbolic arcsine of a value,
    * defined as `asinh(x) = ln(x + sqrt(x^2 + 1))`.
