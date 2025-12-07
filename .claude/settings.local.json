@@ -34,7 +34,8 @@
       "mcp__memory-mcp__add_tags_to_multiple_entities",
       "Bash(git fetch:*)",
       "Bash(git stash push:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

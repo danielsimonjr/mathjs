@@ -6,8 +6,8 @@
       "mathjs": ["./types/index.d.ts"]
     },
     "moduleResolution": "nodenext",
-    "typeRoots": [],
-    "types": [],
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"],
     "lib": [
       "ES2020",
       "DOM"
