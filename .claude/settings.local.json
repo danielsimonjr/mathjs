@@ -28,7 +28,13 @@
       "Bash(do sed -i 's|bigNumber/BigNumber|bignumber/BigNumber|g' \"$f\")",
       "Bash(done)",
       "Bash(python3:*)",
-      "Bash(timeout 60 npx tsc:*)"
+      "Bash(timeout 60 npx tsc:*)",
+      "mcp__memory-mcp__create_relations",
+      "mcp__memory-mcp__set_importance",
+      "mcp__memory-mcp__add_tags_to_multiple_entities",
+      "Bash(git fetch:*)",
+      "Bash(git stash push:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

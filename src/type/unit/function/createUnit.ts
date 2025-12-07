@@ -1,5 +1,4 @@
 import { factory } from '../../../utils/factory.js'
-import type { MathJsStatic } from '../../../types.js'
 
 const name = 'createUnit'
 const dependencies = ['typed', 'Unit'] as const

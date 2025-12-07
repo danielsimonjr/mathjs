@@ -1,7 +1,13 @@
 // Type definitions for expression module
-// Re-export from types/index.d.ts
+// Re-export from internal types
 
 export type {
-  TypedFunction,
-  TypedFunctionConstructor
-} from '../../types/index.js'
+  TypedFunction
+} from '../core/function/typed.js'
+
+// TypedFunctionConstructor can be defined inline if needed
+export type TypedFunctionConstructor = {
+  (...args: any[]): TypedFunction
+  create: () => TypedFunctionConstructor
+  isTypedFunction: (fn: unknown) => boolean
+}
