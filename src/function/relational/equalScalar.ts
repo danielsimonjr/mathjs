@@ -5,6 +5,7 @@ import { complexEquals } from '../../utils/complex.js'
 import { createCompareUnits } from './compareUnits.js'
 
 import { TypedFunction, BigNumber, Complex, Fraction } from '../../types.js';
+import { ConfigOptions } from '../../core/config.js';
 
 const name = 'equalScalar'
 const dependencies = ['typed', 'config']
@@ -34,23 +35,23 @@ export const createEqualScalar = /* #__PURE__ */ factory(name, dependencies, (
       return x === y
     },
 
-    'number, number': function(x: number, y: number): number {
+    'number, number': function(x: number, y: number): boolean {
       return nearlyEqual(x, y, config.relTol, config.absTol)
     },
 
-    'BigNumber, BigNumber': function(x: BigNumber, y: BigNumber): BigNumber {
+    'BigNumber, BigNumber': function(x: BigNumber, y: BigNumber): boolean {
       return x.eq(y) || bigNearlyEqual(x, y, config.relTol, config.absTol)
     },
 
-    'bigint, bigint': function(x: bigint, y: bigint): bigint {
+    'bigint, bigint': function(x: bigint, y: bigint): boolean {
       return x === y
     },
 
-    'Fraction, Fraction': function(x: Fraction, y: Fraction): Fraction {
+    'Fraction, Fraction': function(x: Fraction, y: Fraction): boolean {
       return x.equals(y)
     },
 
-    'Complex, Complex': function(x: Complex, y: Complex): Complex {
+    'Complex, Complex': function(x: Complex, y: Complex): boolean {
       return complexEquals(x, y, config.relTol, config.absTol)
     }
   }, compareUnits);
@@ -66,7 +67,7 @@ export const createEqualScalarNumber = factory(name, ['typed', 'config'], (
   }
 ): TypedFunction => {
   return typed(name, {
-    'number, number': function(x: number, y: number): number {
+    'number, number': function(x: number, y: number): boolean {
       return nearlyEqual(x, y, config.relTol, config.absTol)
     }
   });

@@ -1,3 +1,4 @@
+// @ts-ignore - no type declarations available
 import naturalSort from 'javascript-natural-sort'
 import { isDenseMatrix, isSparseMatrix, typeOf } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
@@ -192,23 +193,23 @@ export const createCompareNatural = /* #__PURE__ */ factory(name, dependencies, 
    */
   function compareMatricesAndArrays (compareNatural: (x: any, y: any) => number, x: any, y: any): number {
     if (isSparseMatrix(x) && isSparseMatrix(y)) {
-      return compareArrays(compareNatural, x.toJSON().values, y.toJSON().values)
+      return compareArrays(compareNatural, (x as any).toJSON().values, (y as any).toJSON().values)
     }
     if (isSparseMatrix(x)) {
       // note: convert to array is expensive
-      return compareMatricesAndArrays(compareNatural, x.toArray(), y)
+      return compareMatricesAndArrays(compareNatural, (x as any).toArray(), y)
     }
     if (isSparseMatrix(y)) {
       // note: convert to array is expensive
-      return compareMatricesAndArrays(compareNatural, x, y.toArray())
+      return compareMatricesAndArrays(compareNatural, x, (y as any).toArray())
     }
 
     // convert DenseArray into Array
     if (isDenseMatrix(x)) {
-      return compareMatricesAndArrays(compareNatural, x.toJSON().data, y)
+      return compareMatricesAndArrays(compareNatural, (x as any).toJSON().data, y)
     }
     if (isDenseMatrix(y)) {
-      return compareMatricesAndArrays(compareNatural, x, y.toJSON().data)
+      return compareMatricesAndArrays(compareNatural, x, (y as any).toJSON().data)
     }
 
     // convert scalars to array
