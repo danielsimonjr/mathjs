@@ -1,7 +1,11 @@
 import { isBigNumber } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 
-import { TypedFunction, Matrix, BigNumber, Complex, Unit, MatrixConstructor } from '../../types.js';
+import { TypedFunction, Matrix, MatrixConstructor } from '../../types.js';
+import type { BigNumber } from 'decimal.js';
+import type ComplexJS from 'complex.js';
+type Complex = InstanceType<typeof ComplexJS>;
+import type { Unit } from '../../types.js';
 import type { ConfigOptions } from '../../core/config.js';
 
 const name = 'rotationMatrix'
@@ -41,10 +45,10 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
     addScalar: (a: number, b: number) => number;
     unaryMinus: (a: number) => number;
     norm: any;
-    BigNumber: typeof BigNumber;
+    BigNumber: any;
     matrix: MatrixConstructor;
-    DenseMatrix: typeof DenseMatrix;
-    SparseMatrix: typeof SparseMatrix;
+    DenseMatrix: any;
+    SparseMatrix: any;
     cos: any;
     sin: any;
   }

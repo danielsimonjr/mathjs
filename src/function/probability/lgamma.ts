@@ -19,7 +19,7 @@ export const createLgamma = /* #__PURE__ */ factory(name, dependencies, (
     Complex,
     typed
   }: {
-    Complex: typeof Complex;
+    Complex: any;
     typed: TypedFunction;
   }
 ): TypedFunction => {

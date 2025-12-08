@@ -1,7 +1,7 @@
 import { factory } from '../../utils/factory.js'
 import { isInteger } from '../../utils/number.js'
 
-import { TypedFunction, BigNumber, Fraction } from '../../types.js';
+import { TypedFunction } from '../../types.js';
 
 const name = 'bernoulli'
 const dependencies = [
@@ -17,10 +17,10 @@ export const createBernoulli = /* #__PURE__ */ factory(name, dependencies, (
     Fraction
   }: {
     typed: TypedFunction;
-    config: ConfigOptions;
+    config: any;
     number: any;
-    BigNumber: typeof BigNumber;
-    Fraction: typeof Fraction;
+    BigNumber: any;
+    Fraction: any;
   }
 ): TypedFunction => {
   /**

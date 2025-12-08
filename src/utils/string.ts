@@ -51,8 +51,8 @@ export function endsWith (text: any, search: any) {
  *     have been more, they are deleted and replaced by an ellipsis).
  * @return {string} str
  */
-export function format (value: any, options: any) {
-  const result = _format(value, options)
+export function format (value: any, options: any): string {
+  const result: string = _format(value, options)
   if (options && typeof options === 'object' && 'truncate' in options &&
       result.length > options.truncate) {
     return result.substring(0, options.truncate - 3) + '...'
@@ -60,7 +60,7 @@ export function format (value: any, options: any) {
   return result
 }
 
-function _format (value: any, options: any) {
+function _format (value: any, options: any): string {
   if (typeof value === 'number') {
     return formatNumber(value, options)
   }
