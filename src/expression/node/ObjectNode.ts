@@ -70,6 +70,7 @@ export const createObjectNode = /* #__PURE__ */ factory(name, dependencies, ({ N
      * @return {function} Returns a function which can be called like:
      *                        evalNode(scope: Object, args: Object, context: *)
      */
+    // @ts-expect-error: method signature matches MathNode interface
     _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
       const evalEntries: Record<string, CompileFunction> = {}
 

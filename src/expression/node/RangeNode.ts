@@ -124,6 +124,7 @@ export const createRangeNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      * @return {function} Returns a function which can be called like:
      *                        evalNode(scope: Object, args: Object, context: *)
      */
+    // @ts-expect-error: method signature matches MathNode interface
     _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
       const range = math.range
       const evalStart = this.start._compile(math, argNames)

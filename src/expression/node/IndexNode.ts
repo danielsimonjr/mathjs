@@ -85,6 +85,7 @@ export const createIndexNode = /* #__PURE__ */ factory(name, dependencies, ({ No
      * @return {function} Returns a function which can be called like:
      *                        evalNode(scope: Object, args: Object, context: *)
      */
+    // @ts-expect-error: method signature matches MathNode interface
     _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
       // TODO: implement support for bignumber (currently bignumbers are silently
       //       reduced to numbers when changing the value to zero-based)

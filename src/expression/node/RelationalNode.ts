@@ -86,6 +86,7 @@ export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, 
      * @return {function} Returns a function which can be called like:
      *                        evalNode(scope: Object, args: Object, context: *)
      */
+    // @ts-expect-error: method signature matches MathNode interface
     _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
       const self = this
 

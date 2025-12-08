@@ -140,6 +140,7 @@ export const createSymbolNode = /* #__PURE__ */ factory(name, dependencies, ({ m
      * Create a clone of this node, a shallow copy
      * @return {SymbolNode}
      */
+    // @ts-expect-error: clone returns SymbolNode which is compatible with MathNode
     clone (): SymbolNode {
       return new SymbolNode(this.name)
     }

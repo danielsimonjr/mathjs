@@ -65,6 +65,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
      * @return {function} Returns a function which can be called like:
      *                        evalNode(scope: Object, args: Object, context: *)
      */
+    // @ts-expect-error: method signature matches MathNode interface
     _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
       return this.content._compile(math, argNames)
     }
@@ -74,6 +75,7 @@ export const createParenthesisNode = /* #__PURE__ */ factory(name, dependencies,
      * @return {Node} content
      * @override
      **/
+    // @ts-expect-error: method signature matches MathNode interface
     getContent (): Node {
       return this.content.getContent()
     }

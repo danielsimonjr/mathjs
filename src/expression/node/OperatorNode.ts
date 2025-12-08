@@ -320,6 +320,7 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
      * @return {function} Returns a function which can be called like:
      *                        evalNode(scope: Object, args: Object, context: *)
      */
+    // @ts-expect-error: method signature matches MathNode interface
     _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
       // validate fn
       if (typeof this.fn !== 'string' || !isSafeMethod(math, this.fn)) {
@@ -727,6 +728,7 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
      * Get identifier.
      * @return {string}
      */
+    // @ts-expect-error: method signature matches MathNode interface
     getIdentifier (): string {
       return this.type + ':' + this.fn
     }
