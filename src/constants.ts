@@ -10,7 +10,7 @@ import { pi, tau, e, phi } from './plain/number/index.js'
 
 export const createTrue = /* #__PURE__ */ factory('true', [], () => true)
 export const createFalse = /* #__PURE__ */ factory('false', [], () => false)
-export const createNull = /* #__PURE__ */ factory('null', [], () => null)
+export const createNull = /* #__PURE__ */ factory('null', [], (): null => null)
 
 export const createInfinity = /* #__PURE__ */ recreateFactory(
   'Infinity',
