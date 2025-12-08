@@ -61,17 +61,17 @@ export const createResolve = /* #__PURE__ */ factory(name, dependencies, ({
       return node
     }
     if (isSymbolNode(node)) {
-      if (within.has(node.name)) {
+      if (within.has((node as any).name)) {
         const variables = Array.from(within).join(', ')
         throw new ReferenceError(
           `recursive loop of variable definitions among {${variables}}`
         )
       }
-      const value = scope.get(node.name)
+      const value = scope.get((node as any).name)
       if (isNode(value)) {
         const nextWithin = new Set(within)
-        nextWithin.add(node.name)
-        return _resolve(value, scope, nextWithin)
+        nextWithin.add((node as any).name)
+        return _resolve(value as MathNode, scope, nextWithin)
       } else if (typeof value === 'number') {
         return parse(String(value))
       } else if (value !== undefined) {
@@ -80,17 +80,17 @@ export const createResolve = /* #__PURE__ */ factory(name, dependencies, ({
         return node
       }
     } else if (isOperatorNode(node)) {
-      const args = node.args.map(function (arg: MathNode) {
+      const args = (node as any).args.map(function (arg: MathNode) {
         return _resolve(arg, scope, within)
       })
-      return new OperatorNode(node.op, (node as any).fn, args, (node as any).implicit)
+      return new OperatorNode((node as any).op, (node as any).fn, args, (node as any).implicit)
     } else if (isParenthesisNode(node)) {
       return new ParenthesisNode(_resolve((node as any).content, scope, within))
     } else if (isFunctionNode(node)) {
-      const args = node.args.map(function (arg: MathNode) {
+      const args = (node as any).args.map(function (arg: MathNode) {
         return _resolve(arg, scope, within)
       })
-      return new FunctionNode(node.name, args)
+      return new FunctionNode((node as any).name, args)
     }
 
     // Otherwise just recursively resolve any children (might also work
