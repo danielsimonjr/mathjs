@@ -66,7 +66,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
     compile (): CompiledExpression {
       const expr = this._compile(mathWithTransform, {})
       const args: Record<string, any> = {}
-      const context = null
+      const context: any = null
 
       function evaluate (scope?: Record<string, any>): any {
         const s = createMap(scope)
