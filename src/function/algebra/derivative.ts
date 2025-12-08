@@ -138,15 +138,15 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
   // NOTE: the optional "order" parameter here is currently unused
   const _derivTex = typed('_derivTex', {
     'Node, SymbolNode': function (expr: MathNode, x: SymbolNode): string {
-      if (isConstantNode(expr) && typeOf(expr.value) === 'string') {
-        return _derivTex(parse(expr.value).toString(), x.toString(), 1)
+      if (isConstantNode(expr) && typeOf((expr as any).value) === 'string') {
+        return _derivTex(parse((expr as any).value).toString(), x.toString(), 1)
       } else {
         return _derivTex(expr.toTex(), x.toString(), 1)
       }
     },
     'Node, ConstantNode': function (expr: MathNode, x: ConstantNode): string {
-      if (typeOf(x.value) === 'string') {
-        return _derivTex(expr, parse(x.value))
+      if (typeOf((x as any).value) === 'string') {
+        return _derivTex(expr, parse((x as any).value))
       } else {
         throw new Error("The second parameter to 'derivative' is a non-string constant")
       }
@@ -248,7 +248,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
       let negative = false // is output negative?
 
       let funcDerivative: MathNode | undefined
-      switch (node.name) {
+      switch ((node as any).name) {
         case 'cbrt':
           // d/dx(cbrt(x)) = 1 / (3x^(2/3))
           div = true
@@ -570,7 +570,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
           break
         case 'gamma': // Needs digamma function, d/dx(gamma(x)) = gamma(x)digamma(x)
         default:
-          throw new Error('Cannot process function "' + node.name + '" in derivative: ' +
+          throw new Error('Cannot process function "' + (node as any).name + '" in derivative: ' +
           'the function is not supported, undefined, or the number of arguments passed to it are not supported')
       }
 
@@ -689,7 +689,7 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
 
         if (isConst(arg0)) {
           // If is secretly constant; 0^f(x) = 1 (in JS), 1^f(x) = 1
-          if (isConstantNode(arg0) && (isZero(arg0.value) || equal(arg0.value, 1))) {
+          if (isConstantNode(arg0) && (isZero((arg0 as any).value) || equal((arg0 as any).value, 1))) {
             return createConstantNode(0)
           }
 
@@ -706,11 +706,11 @@ export const createDerivative = /* #__PURE__ */ factory(name, dependencies, ({
         if (isConst(arg1)) {
           if (isConstantNode(arg1)) {
             // If is secretly constant; f(x)^0 = 1 -> d/dx(1) = 0
-            if (isZero(arg1.value)) {
+            if (isZero((arg1 as any).value)) {
               return createConstantNode(0)
             }
             // Ignore exponent; f(x)^1 = f(x)
-            if (equal(arg1.value, 1)) {
+            if (equal((arg1 as any).value, 1)) {
               return _derivative(arg0, isConst)
             }
           }

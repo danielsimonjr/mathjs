@@ -557,13 +557,13 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       for (let i = 0; i < rules.length; i++) {
         let rulestr = ''
         if (typeof rules[i] === 'function') {
-          res = rules[i](res, options)
-          if (debug) rulestr = rules[i].name
+          res = (rules[i] as Function)(res, options)
+          if (debug) rulestr = (rules[i] as Function).name
         } else {
           flatten(res as any, options.context)
           res = applyRule(res, rules[i], options.context)
           if (debug) {
-            rulestr = `${rules[i].l.toString()} -> ${rules[i].r.toString()}`
+            rulestr = `${(rules[i] as any).l.toString()} -> ${(rules[i] as any).r.toString()}`
           }
         }
         if (debug) {
@@ -664,7 +664,7 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
     } else if (res instanceof IndexNode) {
       const newDims = mapRule((res as IndexNode).dimensions, rule, context)
       if (newDims !== (res as IndexNode).dimensions) {
-        res = new IndexNode(newDims!)
+        res = new IndexNode(newDims!) as MathNode
       }
     } else if (res instanceof ObjectNode) {
       let changed = false
@@ -872,11 +872,11 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       (rule instanceof FunctionNode && node instanceof FunctionNode)) {
       // If the rule is an OperatorNode or a FunctionNode, then node must match exactly
       if (rule instanceof OperatorNode) {
-        if (rule.op !== (node as OperatorNode).op || rule.fn !== (node as OperatorNode).fn) {
+        if ((rule as any).op !== (node as OperatorNode).op || (rule as any).fn !== (node as OperatorNode).fn) {
           return []
         }
       } else if (rule instanceof FunctionNode) {
-        if (rule.name !== (node as FunctionNode).name) {
+        if ((rule as any).name !== (node as any).name) {
           return []
         }
       }
@@ -1067,7 +1067,7 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
           return false
         }
       } else if (p instanceof FunctionNode) {
-        if ((p as FunctionNode).name !== (q as FunctionNode).name) {
+        if ((p as any).name !== (q as any).name) {
           return false
         }
       }

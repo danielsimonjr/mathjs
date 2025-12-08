@@ -69,11 +69,11 @@ export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ type
       Complex: complexErr,
       'Complex, number': complexErr,
 
-      Array: typed.referTo('DenseMatrix,number', (selfDn: any) =>
-        (x: any): any => selfDn(matrix(x), 2).valueOf()),
-      DenseMatrix: typed.referTo('DenseMatrix,number', (selfDn: any) =>
+      Array: (typed as any).referTo('DenseMatrix,number', (selfDn: any) =>
+        (x: any): any => selfDn((matrix as any)(x), 2).valueOf()),
+      DenseMatrix: (typed as any).referTo('DenseMatrix,number', (selfDn: any) =>
         (x: any): any => selfDn(x, 2)),
-      SparseMatrix: typed.referTo('SparseMatrix,number', (selfSn: any) =>
+      SparseMatrix: (typed as any).referTo('SparseMatrix,number', (selfSn: any) =>
         (x: any): any => selfSn(x, 2)),
 
       'SparseMatrix, SparseMatrix': typed.referToSelf((self: any) => (x: any, y: any): any => {
@@ -98,8 +98,8 @@ export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ type
         }
       }),
 
-      'Array, SparseMatrix': typed.referTo('DenseMatrix,SparseMatrix', (selfDS: any) =>
-        (x: any, y: any): any => selfDS(matrix(x), y)),
+      'Array, SparseMatrix': (typed as any).referTo('DenseMatrix,SparseMatrix', (selfDS: any) =>
+        (x: any, y: any): any => selfDS((matrix as any)(x), y)),
 
       'number | BigNumber, SparseMatrix': typed.referToSelf((self: any) => (x: any, y: any): any => {
         // density must be one (no zeros in matrix)

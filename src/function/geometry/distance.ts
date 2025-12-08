@@ -221,7 +221,8 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     if ((a as any).constructor !== Array) {
       a = _objectToArray(a as Record<string, MathNumericType>)
     }
-    return _isNumber(a[0]) && _isNumber(a[1])
+    const arr = a as MathNumericType[]
+    return _isNumber(arr[0]) && _isNumber(arr[1])
   }
 
   function _3d (a: MathNumericType[] | Record<string, MathNumericType>): boolean {
@@ -229,7 +230,8 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     if ((a as any).constructor !== Array) {
       a = _objectToArray(a as Record<string, MathNumericType>)
     }
-    return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2])
+    const arr = a as MathNumericType[]
+    return _isNumber(arr[0]) && _isNumber(arr[1]) && _isNumber(arr[2])
   }
 
   function _containsOnlyNumbers (a: MathNumericType[] | Record<string, MathNumericType>): boolean {
@@ -244,8 +246,9 @@ export const createDistance = /* #__PURE__ */ factory(name, dependencies, ({ typ
     if ((a as any).constructor !== Array) {
       a = _objectToArray(a as Record<string, MathNumericType>)
     }
-    return _isNumber(a[0]) && _isNumber(a[1]) && _isNumber(a[2]) &&
-      _isNumber(a[3]) && _isNumber(a[4]) && _isNumber(a[5])
+    const arr = a as MathNumericType[]
+    return _isNumber(arr[0]) && _isNumber(arr[1]) && _isNumber(arr[2]) &&
+      _isNumber(arr[3]) && _isNumber(arr[4]) && _isNumber(arr[5])
   }
 
   function _objectToArray (o: Record<string, MathNumericType>): MathNumericType[] {

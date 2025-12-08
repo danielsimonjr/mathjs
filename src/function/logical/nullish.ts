@@ -82,14 +82,14 @@ export const createNullish = /* #__PURE__ */ factory(
         // DenseMatrix-first handlers (no broadcasting between collections)
         'DenseMatrix, DenseMatrix': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo13xDD(x, y, self)),
         'DenseMatrix, SparseMatrix': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo03xDSf(x, y, self, false)),
-        'DenseMatrix, Array': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo13xDD(x, matrix(y), self)),
+        'DenseMatrix, Array': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo13xDD(x, (matrix as any)(y), self)),
         'DenseMatrix, any': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo14xDs(x, y, self, false)),
 
         // Array-first handlers (bridge via matrix() where needed)
-        'Array, Array': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo13xDD(matrix(x), matrix(y), self).valueOf()),
-        'Array, DenseMatrix': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo13xDD(matrix(x), y, self)),
-        'Array, SparseMatrix': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo03xDSf(matrix(x), y, self, false)),
-        'Array, any': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo14xDs(matrix(x), y, self, false).valueOf())
+        'Array, Array': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo13xDD((matrix as any)(x), (matrix as any)(y), self).valueOf()),
+        'Array, DenseMatrix': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo13xDD((matrix as any)(x), y, self)),
+        'Array, SparseMatrix': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo03xDSf((matrix as any)(x), y, self, false)),
+        'Array, any': typed.referToSelf((self: any) => (x: any, y: any) => matAlgo14xDs((matrix as any)(x), y, self, false).valueOf())
       }
     );
   }

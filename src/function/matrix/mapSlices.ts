@@ -60,15 +60,16 @@ export const createMapSlices = /* #__PURE__ */ factory(name, dependencies, (
         throw new TypeError('Integer number expected for dimension')
       }
 
-      const size = Array.isArray(mat) ? arraySize(mat) : mat.size()
-      if (dim < 0 || (dim >= size.length)) {
-        throw new IndexError(dim, 0, size.length) as any
+      const dimNum = typeof dim === 'number' ? dim : (dim as any).toNumber()
+      const size = Array.isArray(mat) ? arraySize(mat) : (mat as any).size()
+      if (dimNum < 0 || (dimNum >= size.length)) {
+        throw new IndexError(dimNum, 0, size.length) as any
       }
 
       if (isMatrix(mat)) {
-        return mat.create(_mapSlices(mat.valueOf(), dim, callback), mat.datatype())
+        return (mat as any).create(_mapSlices((mat as any).valueOf(), dimNum, callback), (mat as any).datatype())
       } else {
-        return _mapSlices(mat, dim, callback)
+        return _mapSlices(mat, dimNum, callback)
       }
     }
   });
@@ -82,7 +83,7 @@ export const createMapSlices = /* #__PURE__ */ factory(name, dependencies, (
  * @returns {Array} ret
  * @private
  */
-function _mapSlices (mat: any, dim: any, callback: any) {
+function _mapSlices (mat: any, dim: any, callback: any): any {
   let i, ret, tran
 
   if (dim <= 0) {

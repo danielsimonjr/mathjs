@@ -69,22 +69,22 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
   return typed(name, {
     'Array | Matrix': function (arr: any[] | Matrix) { // No dimension specified => assume dimension 0
       if (isMatrix(arr)) {
-        return matrix(_diff(arr.toArray()))
+        return (matrix as any)(_diff((arr as any).toArray()))
       } else {
         return _diff(arr)
       }
     },
-    'Array | Matrix, number': function(arr: any[] | Matrix, dim: number): number {
+    'Array | Matrix, number': function(arr: any[] | Matrix, dim: number): any {
       if (!isInteger(dim)) throw new RangeError('Dimension must be a whole number')
       if (isMatrix(arr)) {
-        return matrix(_recursive(arr.toArray(), dim))
+        return (matrix as any)(_recursive((arr as any).toArray(), dim))
       } else {
         return _recursive(arr, dim)
       }
     },
-    'Array, BigNumber': typed.referTo('Array,number', (selfAn: any) =>
+    'Array, BigNumber': (typed as any).referTo('Array,number', (selfAn: any) =>
       (arr: any, dim: any) => selfAn(arr, number(dim))),
-    'Matrix, BigNumber': typed.referTo('Matrix,number', (selfMn: any) =>
+    'Matrix, BigNumber': (typed as any).referTo('Matrix,number', (selfMn: any) =>
       (arr: any, dim: any) => selfMn(arr, number(dim)))
   });
 
@@ -96,15 +96,15 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {number} dim     Dimension
    * @return {Array}         resulting array
    */
-  function _recursive (arr: any, dim: any) {
+  function _recursive (arr: any, dim: any): any[] {
     if (isMatrix(arr)) {
-      arr = arr.toArray() // Makes sure arrays like [ matrix([0, 1]), matrix([1, 0]) ] are processed properly
+      arr = (arr as any).toArray() // Makes sure arrays like [ matrix([0, 1]), matrix([1, 0]) ] are processed properly
     }
     if (!Array.isArray(arr)) {
       throw RangeError('Array/Matrix does not have that many dimensions')
     }
     if (dim > 0) {
-      const result = []
+      const result: any[] = []
       arr.forEach(element => {
         result.push(_recursive(element, dim - 1))
       })
@@ -138,10 +138,10 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Object} obj2    Second object
    * @return {Array}         resulting array
    */
-  function _ElementDiff (obj1: any, obj2: any) {
+  function _ElementDiff (obj1: any, obj2: any): any {
     // Convert matrices to arrays
-    if (isMatrix(obj1)) obj1 = obj1.toArray()
-    if (isMatrix(obj2)) obj2 = obj2.toArray()
+    if (isMatrix(obj1)) obj1 = (obj1 as any).toArray()
+    if (isMatrix(obj2)) obj2 = (obj2 as any).toArray()
 
     const obj1IsArray = Array.isArray(obj1)
     const obj2IsArray = Array.isArray(obj2)
@@ -161,7 +161,7 @@ export const createDiff = /* #__PURE__ */ factory(name, dependencies, (
    * @param {Array} arr2     Array 2
    * @return {Array}         resulting array
    */
-  function _ArrayDiff (arr1: any, arr2: any) {
+  function _ArrayDiff (arr1: any, arr2: any): any[] {
     if (arr1.length !== arr2.length) {
       throw RangeError('Not all sub-arrays have the same length')
     }

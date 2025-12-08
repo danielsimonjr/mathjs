@@ -27,14 +27,14 @@ export const createBigNumberClass = /* #__PURE__ */ factory(name, dependencies, 
   on?: (event: string, callback: (curr: any, prev: any) => void) => void
   config: { precision: number }
 }) => {
-  const BigNumber = Decimal.clone({ precision: config.precision, modulo: Decimal.EUCLID }) as BigNumberClass
-  BigNumber.prototype = Object.create(BigNumber.prototype)
+  const BigNumber = (Decimal as any).clone({ precision: config.precision, modulo: (Decimal as any).EUCLID }) as BigNumberClass
+  ;(BigNumber as any).prototype = Object.create((BigNumber as any).prototype)
 
   /**
    * Attach type information
    */
-  BigNumber.prototype.type = 'BigNumber'
-  BigNumber.prototype.isBigNumber = true
+  ;(BigNumber as any).prototype.type = 'BigNumber'
+  ;(BigNumber as any).prototype.isBigNumber = true
 
   /**
    * Get a JSON representation of a BigNumber containing
@@ -42,7 +42,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(name, dependencies, 
    * @returns {Object} Returns a JSON object structured as:
    *                   `{"mathjs": "BigNumber", "value": "0.2"}`
    */
-  BigNumber.prototype.toJSON = function (this: DecimalType): BigNumberJSON {
+  ;(BigNumber as any).prototype.toJSON = function (this: DecimalType): BigNumberJSON {
     return {
       mathjs: 'BigNumber',
       value: this.toString()
@@ -55,15 +55,15 @@ export const createBigNumberClass = /* #__PURE__ */ factory(name, dependencies, 
    *                       `{"mathjs": "BigNumber", "value": "0.2"}`
    * @return {BigNumber}
    */
-  BigNumber.fromJSON = function (json: BigNumberJSON): DecimalType {
-    return new BigNumber(json.value)
+  ;(BigNumber as any).fromJSON = function (json: BigNumberJSON): DecimalType {
+    return new (BigNumber as any)(json.value)
   }
 
   if (on) {
     // listen for changed in the configuration, automatically apply changed precision
     on('config', function (curr, prev) {
       if (curr.precision !== prev.precision) {
-        BigNumber.config({ precision: curr.precision })
+        ;(BigNumber as any).config({ precision: curr.precision })
       }
     })
   }
