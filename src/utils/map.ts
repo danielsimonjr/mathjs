@@ -15,9 +15,10 @@ export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
 
   constructor(object: Record<string, V>) {
     this.wrappedObject = object
-    this[Symbol.iterator] = this.entries
+    ;(this as any)[Symbol.iterator] = this.entries
   }
 
+  // @ts-expect-error: Implementation is compatible but TS can't infer it
   keys(): IterableIterator<K> {
     return Object.keys(this.wrappedObject)
       .filter(key => this.has(key as K))
@@ -37,10 +38,12 @@ export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
     return isSafeProperty(this.wrappedObject, key as string) && (key as string) in this.wrappedObject
   }
 
+  // @ts-expect-error: Implementation is compatible but TS can't infer it
   entries(): IterableIterator<[K, V]> {
     return mapIterator(this.keys(), key => [key, this.get(key)!]) as IterableIterator<[K, V]>
   }
 
+  // @ts-expect-error: Implementation is compatible but TS can't infer it
   *values(): IterableIterator<V> {
     for (const key of this.keys()) {
       yield this.get(key)!
@@ -102,7 +105,7 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
     this.b = b
     this.bKeys = bKeys
 
-    this[Symbol.iterator] = this.entries
+    ;(this as any)[Symbol.iterator] = this.entries
   }
 
   get(key: K): V | undefined {
@@ -124,6 +127,7 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
     return this.b.has(key) || this.a.has(key)
   }
 
+  // @ts-expect-error: Implementation is compatible but TS can't infer it
   keys(): IterableIterator<K> {
     return new Set([
       ...this.a.keys(),
@@ -131,12 +135,14 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
     ])[Symbol.iterator]()
   }
 
+  // @ts-expect-error: Implementation is compatible but TS can't infer it
   *values(): IterableIterator<V> {
     for (const key of this.keys()) {
       yield this.get(key)!
     }
   }
 
+  // @ts-expect-error: Implementation is compatible but TS can't infer it
   entries(): IterableIterator<[K, V]> {
     return mapIterator(this.keys(), key => [key, this.get(key)!]) as IterableIterator<[K, V]>
   }
