@@ -1,7 +1,7 @@
 import { factory } from '../../utils/factory.js'
 
 const name = 'ResultSet'
-const dependencies = []
+const dependencies: string[] = []
 
 export const createResultSet = /* #__PURE__ */ factory(name, dependencies, () => {
   /**
@@ -10,7 +10,7 @@ export const createResultSet = /* #__PURE__ */ factory(name, dependencies, () =>
    * @param {Array} entries
    * @constructor ResultSet
    */
-  function ResultSet (entries: any) {
+  function ResultSet (this: any, entries: any) {
     if (!(this instanceof ResultSet)) {
       throw new SyntaxError('Constructor must be called with the new operator')
     }
@@ -63,7 +63,7 @@ export const createResultSet = /* #__PURE__ */ factory(name, dependencies, () =>
    * @return {ResultSet}
    */
   ResultSet.fromJSON = function (json: any) {
-    return new ResultSet(json.entries)
+    return new (ResultSet as any)(json.entries)
   }
 
   return ResultSet

@@ -1,11 +1,7 @@
 import { isBigNumber } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 
-import { TypedFunction, Matrix, MatrixConstructor } from '../../types.js';
-import type { BigNumber } from 'decimal.js';
-import type ComplexJS from 'complex.js';
-type Complex = InstanceType<typeof ComplexJS>;
-import type { Unit } from '../../types.js';
+import { TypedFunction, Matrix, MatrixConstructor, BigNumber, Complex, Unit } from '../../types.js';
 import type { ConfigOptions } from '../../core/config.js';
 
 const name = 'rotationMatrix'
@@ -88,11 +84,11 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
 
   return typed(name, {
     '': function () {
-      return (config.matrix === 'Matrix') ? matrix([]) : []
+      return (config.matrix === 'Matrix') ? (matrix as any)([]) : []
     },
 
     string: function (format: string) {
-      return matrix(format)
+      return (matrix as any)(format)
     },
 
     'number | BigNumber | Complex | Unit': function (theta: number | BigNumber | Complex | Unit) {
@@ -104,7 +100,7 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
     },
 
     'number | BigNumber | Complex | Unit, Array': function(theta: number | BigNumber | Complex | Unit, v: any[]): any[] {
-      const matrixV = matrix(v)
+      const matrixV = (matrix as any)(v)
       _validateVector(matrixV)
       return _rotationMatrix3x3(theta, matrixV, undefined)
     },
@@ -116,7 +112,7 @@ export const createRotationMatrix = /* #__PURE__ */ factory(name, dependencies, 
     },
 
     'number | BigNumber | Complex | Unit, Array, string': function(theta: number | BigNumber | Complex | Unit, v: any[], format: string): any[] {
-      const matrixV = matrix(v)
+      const matrixV = (matrix as any)(v)
       _validateVector(matrixV)
       return _rotationMatrix3x3(theta, matrixV, format)
     },

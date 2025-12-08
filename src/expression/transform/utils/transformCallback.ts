@@ -11,7 +11,7 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
   }: {
     typed: TypedFunction;
   }
-): TypedFunction => {
+): any => {
   /**
          * Transforms the given callback function based on its type and number of arrays.
          *
@@ -19,7 +19,7 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
          * @param {number} numberOfArrays - The number of arrays to pass to the callback function.
          * @returns {*} - The transformed callback function.
          */
-  return function (callback: any, numberOfArrays: any) {
+  return function (callback: any, numberOfArrays: any): any {
     if ((typed as any).isTypedFunction(callback)) {
       return _transformTypedCallbackFunction(callback, numberOfArrays)
     } else {
@@ -34,10 +34,10 @@ export const createTransformCallback = /* #__PURE__ */ factory(name, dependencie
        * @param {number} numberOfArrays - The number of arrays to pass to the callback function.
        * @returns {*} - The transformed callback function.
        */
-  function _transformTypedCallbackFunction (typedFunction: any, numberOfArrays: any) {
-    const signatures = Object.fromEntries(
+  function _transformTypedCallbackFunction (typedFunction: any, numberOfArrays: any): any {
+    const signatures: Record<string, any> = Object.fromEntries(
       Object.entries(typedFunction.signatures)
-        .map(([signature, callbackFunction]) => {
+        .map(([signature, callbackFunction]): [string, any] => {
           const numberOfCallbackInputs = signature.split(',').length
           if ((typed as any).isTypedFunction(callbackFunction)) {
             return [signature, _transformTypedCallbackFunction(callbackFunction, numberOfArrays)]
@@ -71,13 +71,13 @@ function _transformCallbackFunction (callbackFunction: any, numberOfCallbackInpu
   if (numberOfCallbackInputs === numberOfArrays) {
     return callbackFunction
   } else if (numberOfCallbackInputs === numberOfArrays + 1) {
-    return function (...args) {
+    return function (...args: any[]) {
       const vals = args.slice(0, numberOfArrays)
       const idx = _transformDims(args[numberOfArrays])
       return callbackFunction(...vals, idx)
     }
   } else if (numberOfCallbackInputs > numberOfArrays + 1) {
-    return function (...args) {
+    return function (...args: any[]) {
       const vals = args.slice(0, numberOfArrays)
       const idx = _transformDims(args[numberOfArrays])
       const rest = args.slice(numberOfArrays + 1)

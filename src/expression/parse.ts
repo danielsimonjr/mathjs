@@ -1638,16 +1638,16 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
           params = [row]
 
           // the rows of the matrix are separated by dot-comma's
-          while (state.token === ';') { // eslint-disable-line no-unmodified-loop-condition
+          while ((state.token as string) === ';') { // eslint-disable-line no-unmodified-loop-condition
             getToken(state)
 
-            if (state.token !== ']') {
+            if ((state.token as string) !== ']') {
               params[rows] = parseRow(state)
               rows++
             }
           }
 
-          if (state.token !== ']') {
+          if ((state.token as string) !== ']') {
             throw createSyntaxError(state, 'End of matrix ] expected')
           }
           closeParams(state)
@@ -1742,9 +1742,9 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
           properties[key] = parseAssignment(state)
         }
       }
-      while (state.token === ',') // eslint-disable-line no-unmodified-loop-condition
+      while ((state.token as string) === ',') // eslint-disable-line no-unmodified-loop-condition
 
-      if (state.token !== '}') {
+      if ((state.token as string) !== '}') {
         throw createSyntaxError(state, 'Comma , or bracket } expected after object value')
       }
       closeParams(state)
