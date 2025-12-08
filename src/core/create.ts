@@ -111,7 +111,7 @@ export interface MathJsInstance {
   import: (factories: any, options?: ImportOptions) => void
   create: (factories?: FactoriesInput, config?: Partial<ConfigOptions>) => MathJsInstance
   factory: typeof factory
-  typed: typeof typedFunction & { isTypedFunction?: typeof typedFunction.isTypedFunction }
+  typed: typeof typedFunction & { isTypedFunction?: (value: any) => boolean }
 
   // Error types
   ArgumentsError: typeof ArgumentsError
@@ -163,7 +163,7 @@ export interface ImportOptions {
  */
 interface LazyTyped extends Function {
   (...args: any[]): any
-  isTypedFunction?: typeof typedFunction.isTypedFunction
+  isTypedFunction?: (value: any) => boolean
 }
 
 /**
@@ -341,7 +341,7 @@ export function create(
   function lazyTyped(...args: any[]): any {
     return math.typed.apply(math.typed, args)
   }
-  ;(lazyTyped as LazyTyped).isTypedFunction = typedFunction.isTypedFunction
+  ;(lazyTyped as LazyTyped).isTypedFunction = (typedFunction as any).isTypedFunction
 
   const internalImport = importFactory(
     lazyTyped as any,
