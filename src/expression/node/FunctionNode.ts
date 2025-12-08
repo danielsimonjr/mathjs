@@ -60,12 +60,12 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
               break
             case 'object':
               if (isNode(property)) {
-                latex += property.toTex(options)
+                latex += (property as any).toTex(options)
               } else if (Array.isArray(property)) {
                 // make array of Nodes into comma separated list
                 latex += property.map(function (arg, index) {
                   if (isNode(arg)) {
-                    return arg.toTex(options)
+                    return (arg as any).toTex(options)
                   }
                   throw new TypeError('Template: ' + match[1] + '[' + index + '] is not a Node.')
                 }).join(',')
@@ -121,7 +121,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
         throw new TypeError('optional flag, if specified, must be boolean')
       }
 
-      this.fn = fn
+      this.fn = fn as MathNode
       this.args = args || []
       this.optional = !!optional
     }
@@ -485,8 +485,8 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
 
       let latexConverter: any
 
-      if (latexFunctions[this.name]) {
-        latexConverter = latexFunctions[this.name]
+      if ((latexFunctions as any)[this.name]) {
+        latexConverter = (latexFunctions as any)[this.name]
       }
 
       // toTex property on the function itself

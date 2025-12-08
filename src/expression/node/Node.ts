@@ -126,7 +126,7 @@ export const createNode = /* #__PURE__ */ factory(name, dependencies, ({ mathWit
       if (!isNode(node)) {
         throw new TypeError('Callback function must return a Node')
       }
-      return node
+      return node as Node
     }
 
     /**

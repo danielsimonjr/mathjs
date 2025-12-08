@@ -112,12 +112,12 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
               operandIdentifier = args[0].getContent().getIdentifier()
               rootIdentifier = root.getContent().getIdentifier()
             }
-            if (properties[precedence][rootIdentifier].latexLeftParens === false) {
+            if ((properties[precedence] as any)[rootIdentifier].latexLeftParens === false) {
               result = [false]
               break
             }
 
-            if (properties[operandPrecedence][operandIdentifier].latexParens === false) {
+            if ((properties[operandPrecedence] as any)[operandIdentifier].latexParens === false) {
               result = [false]
               break
             }
@@ -202,21 +202,21 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
             }
 
             if (lhsPrecedence !== null) {
-              if (properties[precedence][rootIdentifier].latexLeftParens === false) {
+              if ((properties[precedence] as any)[rootIdentifier].latexLeftParens === false) {
                 lhsParens = false
               }
 
-              if (properties[lhsPrecedence][lhsIdentifier].latexParens === false) {
+              if ((properties[lhsPrecedence] as any)[lhsIdentifier].latexParens === false) {
                 lhsParens = false
               }
             }
 
             if (rhsPrecedence !== null) {
-              if (properties[precedence][rootIdentifier].latexRightParens === false) {
+              if ((properties[precedence] as any)[rootIdentifier].latexRightParens === false) {
                 rhsParens = false
               }
 
-              if (properties[rhsPrecedence][rhsIdentifier].latexParens === false) {
+              if ((properties[rhsPrecedence] as any)[rhsIdentifier].latexParens === false) {
                 rhsParens = false
               }
             }

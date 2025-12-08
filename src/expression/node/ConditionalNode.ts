@@ -25,7 +25,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
 
     if (condition) {
       if (isBigNumber(condition)) {
-        return !condition.isZero()
+        return !(condition as any).isZero()
       }
 
       if (isComplex(condition)) {
@@ -33,7 +33,7 @@ export const createConditionalNode = /* #__PURE__ */ factory(name, dependencies,
       }
 
       if (isUnit(condition)) {
-        return !!condition.value
+        return !!(condition as any).value
       }
     }
 
