@@ -35,7 +35,9 @@
       "Bash(git fetch:*)",
       "Bash(git stash push:*)",
       "Bash(ls:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(timeout 120 npx tsc:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

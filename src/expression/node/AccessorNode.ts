@@ -81,7 +81,7 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
           ? this.index.getObjectProperty()
           : ''
       } else {
-        return this.object.name || ''
+        return (this.object as any).name || ''
       }
     }
 
@@ -108,7 +108,7 @@ export const createAccessorNode = /* #__PURE__ */ factory(name, dependencies, ({
       const evalIndex = this.index._compile(math, argNames)
 
       const optionalChaining = this.optionalChaining
-      const prevOptionalChaining = isAccessorNode(this.object) && this.object.optionalChaining
+      const prevOptionalChaining = isAccessorNode(this.object) && (this.object as any).optionalChaining
 
       if (this.index.isObjectProperty()) {
         const prop = this.index.getObjectProperty()

@@ -38,7 +38,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
     const regex = /\$(?:\{([a-z_][a-z_0-9]*)(?:\[([0-9]+)\])?\}|\$)/gi
 
     let inputPos = 0 // position in the input string
-    let match
+    let match: RegExpExecArray | null
     while ((match = regex.exec(template)) !== null) { // go through all matches
       // add everything in front of the match to the LaTeX string
       latex += template.substring(inputPos, match.index)
@@ -128,7 +128,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
 
     // readonly property name
     get name (): string {
-      return this.fn.name || ''
+      return (this.fn as any).name || ''
     }
 
     // @ts-expect-error: intentionally overriding Function.name
@@ -153,10 +153,10 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
       // compile arguments
       const evalArgs = this.args.map((arg) => arg._compile(math, argNames))
       const fromOptionalChaining = this.optional ||
-        (isAccessorNode(this.fn) && this.fn.optionalChaining)
+        (isAccessorNode(this.fn) && (this.fn as any).optionalChaining)
 
       if (isSymbolNode(this.fn)) {
-        const name = this.fn.name
+        const name = (this.fn as any).name
         if (!argNames[name]) {
           // we can statically determine whether the function
           // has the rawArgs property
@@ -254,14 +254,14 @@ export const createFunctionNode = /* #__PURE__ */ factory(name, dependencies, ({
         }
       } else if (
         isAccessorNode(this.fn) &&
-          isIndexNode(this.fn.index) &&
-          this.fn.index.isObjectProperty()
+          isIndexNode((this.fn as any).index) &&
+          (this.fn as any).index.isObjectProperty()
       ) {
         // execute the function with the right context:
         // the object of the AccessorNode
 
-        const evalObject = this.fn.object._compile(math, argNames)
-        const prop = this.fn.index.getObjectProperty()
+        const evalObject = (this.fn as any).object._compile(math, argNames)
+        const prop = (this.fn as any).index.getObjectProperty()
         const rawArgs = this.args
 
         return function evalFunctionNode (scope: any, args: any, context: any) {

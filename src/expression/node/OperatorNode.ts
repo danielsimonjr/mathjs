@@ -10,6 +10,7 @@ import { factory } from '../../utils/factory.js'
 // Type definitions
 interface Node {
   _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
+  _ifNode: (node: any) => Node
   filter: (callback: (node: Node) => boolean) => Node[]
   getContent: () => Node
   getIdentifier: () => string

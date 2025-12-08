@@ -7,6 +7,7 @@ import { escape } from '../../utils/string.js'
 // Type definitions
 interface Node {
   _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
+  _ifNode: (node: any) => Node
   filter: (callback: (node: Node) => boolean) => Node[]
   isSymbolNode?: boolean
   name?: string

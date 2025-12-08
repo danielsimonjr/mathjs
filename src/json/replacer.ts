@@ -1,7 +1,7 @@
 import { factory } from '../utils/factory.js'
 
 const name = 'replacer'
-const dependencies = []
+const dependencies: string[] = []
 
 export const createReplacer = /* #__PURE__ */ factory(name, dependencies, () => {
   /**

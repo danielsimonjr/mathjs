@@ -85,7 +85,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
       if (!isSymbolNode(object) && !isAccessorNode(object)) {
         throw new TypeError('SymbolNode or AccessorNode expected as "object"')
       }
-      if (isSymbolNode(object) && object.name === 'end') {
+      if (isSymbolNode(object) && (object as any).name === 'end') {
         throw new Error('Cannot assign to symbol "end"')
       }
       if (this.index && !isIndexNode(this.index)) { // index is optional
@@ -107,7 +107,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
           ? this.index.getObjectProperty()
           : ''
       } else {
-        return this.object.name || ''
+        return (this.object as any).name || ''
       }
     }
 
@@ -131,7 +131,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
       const evalObject = this.object._compile(math, argNames)
       const evalIndex = this.index ? this.index._compile(math, argNames) : null
       const evalValue = this.value._compile(math, argNames)
-      const name = this.object.name
+      const name = (this.object as any).name
 
       if (!this.index) {
         // apply a variable to the scope, for example `a=2`
@@ -171,10 +171,10 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
         // compile it ourselves here as we need the parent object of the
         // AccessorNode:
         // wee need to apply the updated object to parent object
-        const evalParentObject = this.object.object._compile(math, argNames)
+        const evalParentObject = (this.object as any).object._compile(math, argNames)
 
-        if (this.object.index.isObjectProperty()) {
-          const parentProp = this.object.index.getObjectProperty()
+        if ((this.object as any).index.isObjectProperty()) {
+          const parentProp = (this.object as any).index.getObjectProperty()
 
           return function evalAssignmentNode (scope: any, args: any, context: any) {
             const parent = evalParentObject(scope, args, context)
@@ -189,7 +189,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(name, dependencies, 
         } else {
           // if some parameters use the 'end' parameter, we need to calculate
           // the size
-          const evalParentIndex = this.object.index._compile(math, argNames)
+          const evalParentIndex = (this.object as any).index._compile(math, argNames)
 
           return function evalAssignmentNode (scope: any, args: any, context: any) {
             const parent = evalParentObject(scope, args, context)

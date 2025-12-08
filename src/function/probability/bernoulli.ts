@@ -50,9 +50,9 @@ export const createBernoulli = /* #__PURE__ */ factory(name, dependencies, (
    *    nth Bernoulli number, of a type corresponding to the argument n
    */
 
-  const numberCache = [undefined]
-  const fractionCache = [undefined]
-  let bigCache = [undefined]
+  const numberCache: any[] = [undefined]
+  const fractionCache: any[] = [undefined]
+  let bigCache: any[] = [undefined]
   let cachedPrecision = 50
   return typed(name, {
     number: (index: number) => _bernoulli(

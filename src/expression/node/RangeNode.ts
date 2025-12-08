@@ -5,6 +5,7 @@ import { getPrecedence } from '../operators.js'
 // Type definitions
 interface Node {
   _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
+  _ifNode: (node: any) => Node
   filter: (callback: (node: Node) => boolean) => Node[]
   toString: (options?: StringOptions) => string
   toHTML: (options?: StringOptions) => string

@@ -7,6 +7,7 @@ import { escape, stringify } from '../../utils/string.js'
 // Type definitions
 interface Node {
   _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
+  _ifNode: (node: any) => Node
   toString: (options?: StringOptions) => string
   toHTML: (options?: StringOptions) => string
   toTex: (options?: StringOptions) => string
