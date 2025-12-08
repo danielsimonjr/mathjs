@@ -37,102 +37,102 @@ export const properties = [
     'OperatorNode:or': {
       op: 'or',
       associativity: 'left',
-      associativeWith: [] as any[]
+      associativeWith: [] as any[] as any[]
     }
   },
   { // logical xor
     'OperatorNode:xor': {
       op: 'xor',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[] as any[]
     }
   },
   { // logical and
     'OperatorNode:and': {
       op: 'and',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // bitwise or
     'OperatorNode:bitOr': {
       op: '|',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // bitwise xor
     'OperatorNode:bitXor': {
       op: '^|',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // bitwise and
     'OperatorNode:bitAnd': {
       op: '&',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // relational operators
     'OperatorNode:equal': {
       op: '==',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     'OperatorNode:unequal': {
       op: '!=',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     'OperatorNode:smaller': {
       op: '<',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     'OperatorNode:larger': {
       op: '>',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     'OperatorNode:smallerEq': {
       op: '<=',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     'OperatorNode:largerEq': {
       op: '>=',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     RelationalNode: {
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // bitshift operators
     'OperatorNode:leftShift': {
       op: '<<',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     'OperatorNode:rightArithShift': {
       op: '>>',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     'OperatorNode:rightLogShift': {
       op: '>>>',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // unit conversion
     'OperatorNode:to': {
       op: 'to',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // range
@@ -147,7 +147,7 @@ export const properties = [
     'OperatorNode:subtract': {
       op: '-',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // multiply, divide, modulus
@@ -164,7 +164,7 @@ export const properties = [
     'OperatorNode:divide': {
       op: '/',
       associativity: 'left',
-      associativeWith: [],
+      associativeWith: [] as any[],
       latexLeftParens: false,
       latexRightParens: false,
       latexParens: false
@@ -185,12 +185,12 @@ export const properties = [
     'OperatorNode:dotDivide': {
       op: './',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     },
     'OperatorNode:mod': {
       op: 'mod',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // Repeat multiplication for implicit multiplication
@@ -226,7 +226,7 @@ export const properties = [
     'OperatorNode:pow': {
       op: '^',
       associativity: 'right',
-      associativeWith: [],
+      associativeWith: [] as any[],
       latexRightParens: false
       // the exponent doesn't need parentheses in
       // LaTeX because it's 2 dimensional
@@ -235,14 +235,14 @@ export const properties = [
     'OperatorNode:dotPow': {
       op: '.^',
       associativity: 'right',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // nullish coalescing
     'OperatorNode:nullish': {
       op: '??',
       associativity: 'left',
-      associativeWith: []
+      associativeWith: [] as any[]
     }
   },
   { // factorial
@@ -338,7 +338,7 @@ export function getAssociativity (_node: any, parenthesis: any) {
     // node isn't in the list
     return null
   }
-  const property = properties[index][identifier]
+  const property = (properties[index] as any)[identifier]
 
   if (hasOwnProperty(property, 'associativity')) {
     if (property.associativity === 'left') {
@@ -376,7 +376,7 @@ export function isAssociativeWith (nodeA: any, nodeB: any, parenthesis: any) {
     // node isn't in the list
     return null
   }
-  const property = properties[index][identifierA]
+  const property = (properties[index] as any)[identifierA]
 
   if (hasOwnProperty(property, 'associativeWith') &&
       (property.associativeWith instanceof Array)) {
@@ -405,7 +405,7 @@ export function getOperator (fn: any) {
   const identifier = 'OperatorNode:' + fn
   for (const group of properties) {
     if (identifier in group) {
-      return group[identifier].op
+      return (group as any)[identifier].op
     }
   }
   return null
