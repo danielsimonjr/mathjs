@@ -1628,11 +1628,11 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
       openParams(state)
       getToken(state)
 
-      if (state.token !== ']') {
+      if ((state.token as string) !== ']') {
         // this is a non-empty matrix
         const row = parseRow(state)
 
-        if (state.token === ';') {
+        if ((state.token as string) === ';') {
           // 2 dimensional array
           rows = 1
           params = [row]
@@ -1665,7 +1665,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
           array = new ArrayNode(params)
         } else {
           // 1 dimensional vector
-          if (state.token !== ']') {
+          if ((state.token as string) !== ']') {
             throw createSyntaxError(state, 'End of matrix ] expected')
           }
           closeParams(state)
@@ -1698,7 +1698,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
       getToken(state)
 
       // parse expression
-      if (state.token !== ']' && state.token !== ';') {
+      if ((state.token as string) !== ']' && (state.token as string) !== ';') {
         params[len] = parseAssignment(state)
         len++
       }
@@ -1721,9 +1721,9 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
       do {
         getToken(state)
 
-        if (state.token !== '}') {
+        if ((state.token as string) !== '}') {
           // parse key
-          if (state.token === '"' || state.token === "'") {
+          if ((state.token as string) === '"' || (state.token as string) === "'") {
             key = parseStringToken(state, state.token)
           } else if (state.tokenType === TOKENTYPE.SYMBOL || (state.tokenType === TOKENTYPE.DELIMITER && state.token in NAMED_DELIMITERS)) {
             key = state.token
@@ -1733,7 +1733,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
           }
 
           // parse key/value separator
-          if (state.token !== ':') {
+          if ((state.token as string) !== ':') {
             throw createSyntaxError(state, 'Colon : expected after object key')
           }
           getToken(state)
@@ -1799,7 +1799,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
 
       node = parseAssignment(state) // start again
 
-      if (state.token !== ')') {
+      if ((state.token as string) !== ')') {
         throw createSyntaxError(state, 'Parenthesis ) expected')
       }
       closeParams(state)
