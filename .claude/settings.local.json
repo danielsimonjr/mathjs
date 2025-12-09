@@ -52,7 +52,9 @@
       "Bash(then echo \"BOTH: $js\")",
       "Bash(else echo \"JS ONLY: $js\")",
       "Bash(while read js)",
-      "Bash(then echo \"$js\")"
+      "Bash(then echo \"$js\")",
+      "Bash(timeout 180 npx tsc:*)",
+      "Bash(LC_ALL=C timeout 180 npx tsc:*)"
     ],
     "deny": [],
     "ask": []

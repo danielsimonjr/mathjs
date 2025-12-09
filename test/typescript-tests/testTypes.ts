@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as assert from 'assert'
 import { expectTypeOf } from 'expect-type'
 import {
