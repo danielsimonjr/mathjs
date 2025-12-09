@@ -7,7 +7,7 @@ export type {
 
 // TypedFunctionConstructor can be defined inline if needed
 export type TypedFunctionConstructor = {
-  (...args: any[]): TypedFunction
+  (...args: any[]): any
   create: () => TypedFunctionConstructor
   isTypedFunction: (fn: unknown) => boolean
 }

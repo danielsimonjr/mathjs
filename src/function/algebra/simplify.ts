@@ -656,7 +656,7 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
       }
       let newIndex = (res as AccessorNode).index
       if ((res as AccessorNode).index) {
-        newIndex = applyRule((res as AccessorNode).index, rule, context)
+        newIndex = applyRule((res as AccessorNode).index, rule, context) as any
       }
       if (newObj !== (res as AccessorNode).object || newIndex !== (res as AccessorNode).index) {
         res = new AccessorNode(newObj, newIndex)

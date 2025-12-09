@@ -73,15 +73,15 @@ export function memoize (fn: any, { hasher, limit }: { hasher?: any, limit?: any
  * @param {function(a: *, b: *) : boolean} isEqual
  * @returns {function}
  */
-export function memoizeCompare (fn: any, isEqual: any) {
-  const memoize = function memoize () {
-    const args = []
+export function memoizeCompare (fn: any, isEqual: any): any {
+  const memoize: any = function memoize (): any {
+    const args: any[] = []
     for (let i = 0; i < arguments.length; i++) {
       args[i] = arguments[i]
     }
 
     for (let c = 0; c < memoize.cache.length; c++) {
-      const cached = memoize.cache[c]
+      const cached: any = memoize.cache[c]
 
       if (isEqual(args, cached.args)) {
         // TODO: move this cache entry to the top so recently used entries move up?
@@ -95,7 +95,7 @@ export function memoizeCompare (fn: any, isEqual: any) {
     return res
   }
 
-  ;(memoize as any).cache = []
+  memoize.cache = []
 
   return memoize
 }
