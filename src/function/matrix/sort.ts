@@ -14,7 +14,7 @@ export const createSort = /* #__PURE__ */ factory(name, dependencies, (
     compareNatural
   }: {
     typed: TypedFunction;
-    matrix: MatrixConstructor;
+    matrix: any;
     compare: any;
     compareNatural: (a: any, b: any) => number;
   }
@@ -64,14 +64,14 @@ export const createSort = /* #__PURE__ */ factory(name, dependencies, (
       return matrix(x.toArray().sort(compareAsc), x.storage())
     },
 
-    'Array, function': function(x: any[], _comparator: function): any[] {
+    'Array, function': function(x: any[], _comparator: Function): any[] {
       _arrayIsVector(x)
-      return x.sort(_comparator)
+      return x.sort(_comparator as any)
     },
 
-    'Matrix, function': function(x: Matrix, _comparator: function): Matrix {
+    'Matrix, function': function(x: Matrix, _comparator: Function): Matrix {
       _matrixIsVector(x)
-      return matrix(x.toArray().sort(_comparator), x.storage())
+      return matrix(x.toArray().sort(_comparator as any), x.storage())
     },
 
     'Array, string': function(x: any[], order: string): any[] {

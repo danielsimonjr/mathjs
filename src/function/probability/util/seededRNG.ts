@@ -1,9 +1,10 @@
+// @ts-expect-error - seedrandom has no type declarations
 import seedrandom from 'seedrandom'
 
 const singletonRandom = /* #__PURE__ */ seedrandom(Date.now())
 
 export function createRng (randomSeed: any) {
-  let random
+  let random: any
 
   // create a new random generator with given seed
   function setSeed (seed: any) {

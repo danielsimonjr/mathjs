@@ -10,11 +10,12 @@ export interface BigNumberJSON {
   value: string
 }
 
-export interface BigNumberClass extends Decimal.Constructor {
-  fromJSON(json: BigNumberJSON): DecimalType
+export interface BigNumberClass {
+  new(value: any): BigNumberInstance
+  fromJSON(json: BigNumberJSON): BigNumberInstance
 }
 
-export interface BigNumberInstance extends DecimalType {
+export interface BigNumberInstance {
   type: 'BigNumber'
   isBigNumber: true
   toJSON(): BigNumberJSON
