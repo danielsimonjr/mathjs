@@ -12,7 +12,7 @@ const dependencies = [
 
 type OperatorContext = Record<string, Record<string, boolean>>
 
-export const createUtil = /* #__PURE__ */ factory(name, dependencies as string[], ({ FunctionNode, OperatorNode, SymbolNode }: {
+export const createUtil = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({ FunctionNode, OperatorNode, SymbolNode }: {
   FunctionNode: any
   OperatorNode: any
   SymbolNode: any
@@ -48,9 +48,9 @@ export const createUtil = /* #__PURE__ */ factory(name, dependencies as string[]
     if (typeof nodeOrName === 'string') {
       name = nodeOrName
     } else if (isOperatorNode(nodeOrName)) {
-      name = nodeOrName.fn.toString()
+      name = (nodeOrName as any).fn.toString()
     } else if (isFunctionNode(nodeOrName)) {
-      name = nodeOrName.name
+      name = (nodeOrName as any).name
     } else if (isParenthesisNode(nodeOrName)) {
       name = 'paren'
     }
@@ -130,7 +130,7 @@ export const createUtil = /* #__PURE__ */ factory(name, dependencies as string[]
       for (let i = 0; i < (node.args?.length ?? 0); i++) {
         const child = node.args![i] as MathNode & { op?: string }
         if (isOperatorNode(child) && op === child.op) {
-          findChildren(child)
+          findChildren(child as MathNode & { args?: MathNode[]; op?: string })
         } else {
           children.push(child)
         }

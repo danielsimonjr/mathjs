@@ -67,7 +67,7 @@ export const createMin = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
 
     // min([a, b, c, d, ...], dim)
     'Array | Matrix, number | BigNumber': function (array: any[] | Matrix, dim: number | any): any {
-      return reduce(array, dim.valueOf(), _smallest)
+      return reduce(array as any, dim.valueOf(), _smallest)
     },
 
     // min(a, b, c, d, ...)
@@ -104,7 +104,7 @@ export const createMin = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
   function _min (array: any[] | Matrix): any {
     let min: any
 
-    deepForEach(array, function (value: any) {
+    deepForEach(array as any, function (value: any) {
       try {
         if (mathIsNaN(value)) {
           min = value
@@ -122,7 +122,7 @@ export const createMin = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
 
     // make sure returning numeric value: parse a string into a numeric value
     if (typeof min === 'string') {
-      min = numeric(min, safeNumberType(min, config))
+      min = numeric(min, safeNumberType(min, config as any))
     }
 
     return min

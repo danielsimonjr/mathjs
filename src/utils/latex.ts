@@ -1,5 +1,6 @@
 /* eslint no-template-curly-in-string: "off" */
 
+// @ts-expect-error - escape-latex has no type declarations
 import escapeLatexLib from 'escape-latex'
 import { hasOwnProperty } from './object.js'
 
@@ -309,14 +310,14 @@ export function toSymbol (name: any, isUnit: any) {
   isUnit = typeof isUnit === 'undefined' ? false : isUnit
   if (isUnit) {
     if (hasOwnProperty(latexUnits, name)) {
-      return latexUnits[name]
+      return (latexUnits as Record<string, string>)[name]
     }
 
     return '\\mathrm{' + escapeLatex(name) + '}'
   }
 
   if (hasOwnProperty(latexSymbols, name)) {
-    return latexSymbols[name]
+    return (latexSymbols as Record<string, string>)[name]
   }
 
   return escapeLatex(name)

@@ -7,7 +7,7 @@ import type { TypedFunction } from '../../../core/function/typed.js'
 const name = 'fraction'
 const dependencies = ['typed', 'Fraction'] as const
 
-export const createFraction = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Fraction }): TypedFunction => {
+export const createFraction = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({ typed, Fraction }): TypedFunction => {
   /**
    * Create a fraction or convert a value to a fraction.
    *
@@ -92,7 +92,7 @@ export const createFraction = /* #__PURE__ */ factory(name, dependencies as stri
       return new Fraction(x)
     },
 
-    'Array | Matrix': typed.referToSelf((self: any) => (x: MathCollection): MathCollection => deepMap(x, self))
+    'Array | Matrix': (typed as any).referToSelf((self: any) => (x: MathCollection): MathCollection => deepMap(x as any, self) as MathCollection)
   })
 })
 

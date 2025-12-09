@@ -35,9 +35,9 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
     }
 
     if (isChain(value)) {
-      this.value = value.value
+      (this as any).value = (value as any).value
     } else {
-      this.value = value
+      (this as any).value = value
     }
   }
 
@@ -186,6 +186,7 @@ export const createChainClass = /* #__PURE__ */ factory(name, dependencies, ({ o
     }
   }
 
+  // @ts-expect-error - TypeScript spuriously reports this as "not callable"
   const excludedNames: Record<string, boolean> = {
     expression: true,
     docs: true,
