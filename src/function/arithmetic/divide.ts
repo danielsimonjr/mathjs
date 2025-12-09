@@ -110,11 +110,11 @@ export const createDivide = /* #__PURE__ */ factory(name, dependencies, ({ typed
     },
 
     'DenseMatrix, any': function (x: DenseMatrix, y: any): DenseMatrix {
-      return matAlgo14xDs(x as any, y, divideScalar, false) as DenseMatrix
+      return matAlgo14xDs(x as any, y, divideScalar, false) as unknown as DenseMatrix
     },
 
     'SparseMatrix, any': function (x: SparseMatrix, y: any): SparseMatrix {
-      return matAlgo11xS0s(x as any, y, divideScalar, false) as SparseMatrix
+      return matAlgo11xS0s(x as any, y, divideScalar, false) as unknown as SparseMatrix
     },
 
     'Array, any': function (x: any[], y: any): any[] {

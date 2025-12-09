@@ -57,7 +57,7 @@ export const createColumn = /* #__PURE__ */ factory(name, dependencies, ({ typed
     'Matrix, number': _column,
 
     'Array, number': function (value: any[], column: number): any[] {
-      return _column(matrix(clone(value)), column).valueOf()
+      return _column(matrix(clone(value)), column).valueOf() as any[]
     }
   })
 
@@ -69,18 +69,18 @@ export const createColumn = /* #__PURE__ */ factory(name, dependencies, ({ typed
    */
   function _column (value: Matrix, column: number): Matrix {
     // check dimensions
-    if (value.size().length !== 2) {
+    if ((value as any).size().length !== 2) {
       throw new Error('Only two dimensional matrix is supported')
     }
 
-    validateIndex(column, value.size()[1])
+    validateIndex(column, (value as any).size()[1])
 
-    const rowRange = range(0, value.size()[0])
+    const rowRange = range(0, (value as any).size()[0])
     const index = new Index(rowRange, [column])
-    const result = value.subset(index)
+    const result = (value as any).subset(index)
     // once config.legacySubset just return result
     return isMatrix(result)
-      ? result
+      ? result as Matrix
       : matrix([[result]])
   }
 })
