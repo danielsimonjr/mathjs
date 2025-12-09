@@ -1,13 +1,13 @@
 # Math.js Dependency Graph
 
-Generated: 2025-12-02T23:43:47.607Z
+Generated: 2025-12-09T05:05:00.986Z
 
 ## Statistics
 
-- **Total Files**: 596
+- **Total Files**: 578
 - **Total Factory Functions**: 284
 - **Total Dependencies**: 1201
-- **Average Dependencies per File**: 2.02
+- **Average Dependencies per File**: 2.08
 
 ## Most Depended-On Files
 

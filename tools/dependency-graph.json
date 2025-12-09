@@ -5509,142 +5509,6 @@
       "factoryName": "createParser",
       "isFactory": true
     },
-    "expression/Help.js": {
-      "path": "expression/Help.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/AccessorNode.js": {
-      "path": "expression/node/AccessorNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/ArrayNode.js": {
-      "path": "expression/node/ArrayNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/AssignmentNode.js": {
-      "path": "expression/node/AssignmentNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/BlockNode.js": {
-      "path": "expression/node/BlockNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/ConditionalNode.js": {
-      "path": "expression/node/ConditionalNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/ConstantNode.js": {
-      "path": "expression/node/ConstantNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/FunctionAssignmentNode.js": {
-      "path": "expression/node/FunctionAssignmentNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/FunctionNode.js": {
-      "path": "expression/node/FunctionNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/IndexNode.js": {
-      "path": "expression/node/IndexNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/Node.js": {
-      "path": "expression/node/Node.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/ObjectNode.js": {
-      "path": "expression/node/ObjectNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/OperatorNode.js": {
-      "path": "expression/node/OperatorNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/ParenthesisNode.js": {
-      "path": "expression/node/ParenthesisNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/RangeNode.js": {
-      "path": "expression/node/RangeNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/RelationalNode.js": {
-      "path": "expression/node/RelationalNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
-    "expression/node/SymbolNode.js": {
-      "path": "expression/node/SymbolNode.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
     "expression/parse.js": {
       "path": "expression/parse.js",
       "imports": [
@@ -17880,14 +17744,6 @@
       "factoryName": "createUnitFunction",
       "isFactory": true
     },
-    "type/unit/Unit.js": {
-      "path": "type/unit/Unit.js",
-      "imports": [],
-      "exports": [],
-      "factoryDependencies": [],
-      "factoryName": null,
-      "isFactory": false
-    },
     "utils/array.js": {
       "path": "utils/array.js",
       "imports": [
@@ -18285,7 +18141,6 @@
     "expression": [
       "utils"
     ],
-    "expression/node": [],
     "expression/transform": [
       "function/bitwise",
       "function/logical",
@@ -18425,7 +18280,6 @@
     "type/unit/function": [
       "utils"
     ],
-    "type/unit": [],
     "utils": []
   },
   "functions": {
@@ -19567,10 +19421,10 @@
     }
   },
   "stats": {
-    "totalFiles": 596,
+    "totalFiles": 578,
     "totalFunctions": 284,
     "totalDependencies": 1201,
-    "avgDependenciesPerFile": "2.02",
+    "avgDependenciesPerFile": "2.08",
     "mostDependedOn": [
       {
         "file": "utils/factory.js",
