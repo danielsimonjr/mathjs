@@ -107,7 +107,7 @@ export const createMod = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
       'number, number': _modNumber,
 
       'BigNumber, BigNumber': function (x: BigNumber, y: BigNumber): BigNumber {
-        return y.isZero() ? x : x.sub(y.mul(floor(x.div(y))))
+        return (y as any).isZero() ? x : (x as any).sub((y as any).mul(floor((x as any).div(y))))
       },
 
       'bigint, bigint': function (x: bigint, y: bigint): bigint {

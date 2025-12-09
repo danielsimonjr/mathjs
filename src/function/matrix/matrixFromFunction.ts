@@ -12,7 +12,7 @@ export const createMatrixFromFunction = /* #__PURE__ */ factory(name, dependenci
     isZero
   }: {
     typed: TypedFunction;
-    matrix: MatrixConstructor;
+    matrix: any;
     isZero: (value: any) => boolean;
   }
 ): TypedFunction => {

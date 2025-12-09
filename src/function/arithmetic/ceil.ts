@@ -12,7 +12,7 @@ import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
 const name = 'ceil'
 const dependencies = ['typed', 'config', 'round', 'matrix', 'equalScalar', 'zeros', 'DenseMatrix']
 
-const bigTen = new Decimal(10)
+const bigTen = new (Decimal as any)(10)
 
 export const createCeilNumber = /* #__PURE__ */ factory(
   name, ['typed', 'config', 'round'] as const, ({ typed, config, round }: { typed: any, config: any, round: any }) => {

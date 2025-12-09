@@ -38,7 +38,7 @@ export const createMapSlicesTransform = /* #__PURE__ */ factory(name, dependenci
       if (isNumber(dim)) {
         args[1] = dim - 1
       } else if (isBigNumber(dim)) {
-        args[1] = (dim as BigNumber).minus(1)
+        args[1] = (dim as any).minus(1)
       }
 
       try {

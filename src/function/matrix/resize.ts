@@ -57,7 +57,7 @@ export const createResize = /* #__PURE__ */ factory(name, dependencies, ({ confi
     // check x is a Matrix
     if (isMatrix(x)) {
       // use optimized matrix implementation, return copy
-      return x.resize(size, defaultValue, true)
+      return (x as any).resize(size, defaultValue, true)
     }
 
     if (typeof x === 'string') {

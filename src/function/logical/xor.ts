@@ -91,7 +91,7 @@ export const createXor = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
         return ((!x.isZero() && !x.isNaN()) !== (!y.isZero() && !y.isNaN()))
       },
 
-      'Unit, Unit': typed.referToSelf((self: any) =>
+      'Unit, Unit': (typed as any).referToSelf((self: any) =>
         (x: Unit, y: Unit): any => self(x.value || 0, y.value || 0))
     },
     matrixAlgorithmSuite({

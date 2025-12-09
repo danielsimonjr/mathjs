@@ -116,7 +116,7 @@ export const createNthRoot = /* #__PURE__ */ factory(name, dependencies, ({ type
       scalar: 'number | BigNumber',
       SD: matAlgo02xDS0,
       Ss: matAlgo11xS0s,
-      sS: false
+      sS: false as any
     }) as any)
   )
 

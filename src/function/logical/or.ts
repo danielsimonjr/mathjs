@@ -91,7 +91,7 @@ export const createOr = /* #__PURE__ */ factory(name, dependencies, ({ typed, ma
 
       'bigint, bigint': orNumber,
 
-      'Unit, Unit': typed.referToSelf((self: any) =>
+      'Unit, Unit': (typed as any).referToSelf((self: any) =>
         (x: Unit, y: Unit): any => self(x.value || 0, y.value || 0))
     },
     matrixAlgorithmSuite({

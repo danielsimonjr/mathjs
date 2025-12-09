@@ -185,7 +185,7 @@ export const createDiag = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
       // check we need to return a matrix
       if (format !== null) {
         // check we need to change matrix format
-        if (format !== dm.storage()) { return matrix(dm.valueOf(), format) }
+        if (format !== dm.storage()) { return matrix(dm.valueOf(), format as 'dense' | 'sparse') }
         return dm
       }
       return dm.valueOf() as any[]

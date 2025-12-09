@@ -9,7 +9,7 @@ const dependencies = [
   'transpose'
 ] as const
 
-export const createCsCounts = /* #__PURE__ */ factory(name, dependencies, ({ transpose }: { transpose: any }) => {
+export const createCsCounts = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({ transpose }: { transpose: any }) => {
   /**
    * Computes the column counts using the upper triangular part of A.
    * It transposes A internally, none of the input parameters are modified.
