@@ -1724,7 +1724,7 @@ export const createParse = /* #__PURE__ */ factory(name, dependencies as unknown
         if ((state.token as string) !== '}') {
           // parse key
           if ((state.token as string) === '"' || (state.token as string) === "'") {
-            key = parseStringToken(state, state.token)
+            key = parseStringToken(state, state.token as any)
           } else if (state.tokenType === TOKENTYPE.SYMBOL || (state.tokenType === TOKENTYPE.DELIMITER && state.token in NAMED_DELIMITERS)) {
             key = state.token
             getToken(state)

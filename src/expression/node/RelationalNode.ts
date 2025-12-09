@@ -246,7 +246,7 @@ export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, 
 
       let ret = paramStrings[0]
       for (let i = 0; i < this.conditionals.length; i++) {
-        ret += latexOperators[this.conditionals[i]] + paramStrings[i + 1]
+        ret += (latexOperators as Record<string, string>)[this.conditionals[i]] + paramStrings[i + 1]
       }
 
       return ret

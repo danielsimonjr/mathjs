@@ -68,7 +68,7 @@ export const createSize = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
       // scalar
       return (config.matrix === 'Array')
         ? []
-        : matrix ? matrix([], 'dense', 'number') as any[] | Matrix : noMatrix()
+        : matrix ? matrix([], 'dense', 'number') as any[] | Matrix : noMatrix() as never
     }
   })
 })

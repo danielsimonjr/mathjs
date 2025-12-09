@@ -50,7 +50,7 @@ export const createFilterTransform = /* #__PURE__ */ factory(name, dependencies,
     }
 
     const N = args.length - 1
-    let callback = args[N]
+    let callback: any = args[N]
 
     if (x) {
       x = _compileAndEvaluate(x, scope)
@@ -59,7 +59,7 @@ export const createFilterTransform = /* #__PURE__ */ factory(name, dependencies,
     if (callback) {
       if (isSymbolNode(callback) || isFunctionAssignmentNode(callback)) {
         // a function pointer, like filter([3, -2, 5], myTestFunction)
-        callback = _compileAndEvaluate(callback, scope)
+        callback = _compileAndEvaluate(callback as unknown as Node, scope)
       } else {
         // an expression like filter([3, -2, 5], x > 0)
         callback = compileInlineExpression(callback, math, scope)

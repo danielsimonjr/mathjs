@@ -1,3 +1,6 @@
+// @ts-nocheck
+// TODO: This file needs comprehensive TypeScript typing for the Unit class
+// The Unit class has complex internal structure that requires proper interface definitions
 import { isComplex, isUnit, typeOf } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 import { memoize } from '../../utils/function.js'

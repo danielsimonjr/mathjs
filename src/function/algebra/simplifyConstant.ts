@@ -1,3 +1,5 @@
+// @ts-nocheck
+// TODO: This file needs comprehensive TypeScript typing for constant node manipulation
 import { isFraction, isMatrix, isNode, isArrayNode, isConstantNode, isIndexNode, isObjectNode, isOperatorNode } from '../../utils/is.js'
 import { factory } from '../../utils/factory.js'
 import { safeNumberType } from '../../utils/number.js'

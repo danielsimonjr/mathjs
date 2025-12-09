@@ -638,7 +638,7 @@ export const createOperatorNode = /* #__PURE__ */ factory(name, dependencies, ({
       const parens =
           calculateNecessaryParentheses(this, parenthesis, implicit, args, true)
 
-      let op = latexOperators[this.fn]
+      let op = (latexOperators as Record<string, string>)[this.fn]
       op = typeof op === 'undefined' ? this.op : op // fall back to using this.op
 
       if (args.length === 1) { // unary operators

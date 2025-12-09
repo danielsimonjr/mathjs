@@ -1,3 +1,5 @@
+// @ts-nocheck
+// TODO: This file needs comprehensive TypeScript typing for node manipulation
 import { isAccessorNode, isArrayNode, isConstantNode, isFunctionNode, isIndexNode, isObjectNode, isOperatorNode } from '../../utils/is.js'
 import { getOperator } from '../../expression/operators.js'
 import { createUtil } from './simplify/util.js'

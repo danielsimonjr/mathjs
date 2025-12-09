@@ -6,7 +6,7 @@ export function dimToZeroBase (dim: any) {
   if (isNumber(dim)) {
     return dim - 1
   } else if (isBigNumber(dim)) {
-    return dim.minus(1)
+    return (dim as any).minus(1)
   } else {
     return dim
   }

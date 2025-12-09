@@ -48,13 +48,13 @@ export const createMapTransform = /* #__PURE__ */ factory(name, dependencies, ({
     }
     const N = args.length - 1
     let X = args.slice(0, N)
-    let callback = args[N]
+    let callback: any = args[N]
     X = X.map(arg => _compileAndEvaluate(arg, scope))
 
     if (callback) {
       if (isSymbolNode(callback) || isFunctionAssignmentNode(callback)) {
         // a function pointer, like filter([3, -2, 5], myTestFunction)
-        callback = _compileAndEvaluate(callback, scope)
+        callback = _compileAndEvaluate(callback as unknown as Node, scope)
       } else {
         // an expression like filter([3, -2, 5], x > 0)
         callback = compileInlineExpression(callback, math, scope)
