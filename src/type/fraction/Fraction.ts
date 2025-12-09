@@ -2,8 +2,8 @@ import FractionJS from 'fraction.js'
 import { factory } from '../../utils/factory.js'
 import type { FactoryFunctionMap } from '../../../types/index.js'
 
-// The Fraction type that we work with internally
-type FractionType = InstanceType<typeof FractionJS>
+// The Fraction type that we work with internally - use any since FractionJS has complex types
+type FractionType = any
 
 // Re-export Fraction type for use in other modules
 export type Fraction = FractionType

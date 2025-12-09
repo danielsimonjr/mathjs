@@ -39,6 +39,6 @@ export const createCsc = /* #__PURE__ */ factory(name, dependencies, ({ typed, B
   return typed(name, {
     number: cscNumber,
     Complex: (x: Complex) => x.csc(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.sin())
+    BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).sin())
   }, trigUnit) as TypedFunction
 })

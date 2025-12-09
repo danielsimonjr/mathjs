@@ -8,7 +8,7 @@ const dependencies = ['typed', 'BigNumber']
 
 export const createBignumber = /* #__PURE__ */ factory(name, dependencies, ({ typed, BigNumber }: {
   typed: any
-  BigNumber: Decimal_.Constructor
+  BigNumber: any
 }) => {
   /**
    * Create a BigNumber, which can store numbers with arbitrary precision.

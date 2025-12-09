@@ -40,7 +40,7 @@ export const createAsinh = /* #__PURE__ */ factory(name, dependencies, ({ typed 
     },
 
     BigNumber: function (x: BigNumber) {
-      return x.asinh()
+      return (x as any).asinh()
     }
   }) as TypedFunction
 })

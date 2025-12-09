@@ -123,7 +123,7 @@ export function stringify (value: any) {
   let i = 0
   while (i < text.length) {
     const c = text.charAt(i)
-    escaped += (c in controlCharacters) ? controlCharacters[c] : c
+    escaped += (c in controlCharacters) ? (controlCharacters as Record<string, string>)[c] : c
     i++
   }
 

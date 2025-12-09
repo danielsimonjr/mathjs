@@ -38,6 +38,6 @@ export const createCoth = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
   return typed(name, {
     number: cothNumber,
     Complex: (x: Complex) => x.coth(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.tanh())
+    BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).tanh())
   }) as TypedFunction
 })

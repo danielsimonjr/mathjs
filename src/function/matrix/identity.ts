@@ -98,7 +98,7 @@ export const createIdentity = /* #__PURE__ */ factory(name, dependencies, ({ typ
     },
 
     string: function (format: string): Matrix {
-      return matrix(format)
+      return (matrix as any)(format)
     },
 
     'number | BigNumber': function (rows: number | BigNumber): any[][] | Matrix {
@@ -136,7 +136,7 @@ export const createIdentity = /* #__PURE__ */ factory(name, dependencies, ({ typ
 
   function _identityVector(size: number[], format?: string): any[] | any[][] | Matrix {
     switch (size.length) {
-      case 0: return format ? matrix(format) : []
+      case 0: return format ? (matrix as any)(format) : []
       case 1: return _identity(size[0], size[0], format)
       case 2: return _identity(size[0], size[1], format)
       default: throw new Error('Vector containing two values expected')

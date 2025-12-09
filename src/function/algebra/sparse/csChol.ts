@@ -19,7 +19,7 @@ const dependencies = [
   'SparseMatrix'
 ] as const
 
-export const createCsChol = /* #__PURE__ */ factory(name, dependencies as string[], (
+export const createCsChol = /* #__PURE__ */ factory(name, dependencies as unknown as string[], (
   {
     divideScalar,
     sqrt,

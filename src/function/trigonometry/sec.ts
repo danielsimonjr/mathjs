@@ -39,6 +39,6 @@ export const createSec = /* #__PURE__ */ factory(name, dependencies, ({ typed, B
   return typed(name, {
     number: secNumber,
     Complex: (x: Complex) => x.sec(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.cos())
+    BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).cos())
   }, trigUnit) as TypedFunction
 })

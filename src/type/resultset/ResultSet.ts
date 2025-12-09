@@ -15,7 +15,7 @@ export const createResultSet = /* #__PURE__ */ factory(name, dependencies, () =>
       throw new SyntaxError('Constructor must be called with the new operator')
     }
 
-    this.entries = entries || []
+    ;(this as any).entries = entries || []
   }
 
   /**

@@ -130,8 +130,8 @@ export class WasmLoader {
         },
         seed: () => Date.now()
       },
-      Math: Math,
-      Date: Date
+      Math: Math as any,
+      Date: Date as any
     }
   }
 

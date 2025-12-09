@@ -95,7 +95,7 @@ export function memoizeCompare (fn: any, isEqual: any) {
     return res
   }
 
-  memoize.cache = []
+  ;(memoize as any).cache = []
 
   return memoize
 }

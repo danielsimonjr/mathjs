@@ -48,7 +48,7 @@ export const createAtanh = /* #__PURE__ */ factory(name, dependencies, ({ typed,
     },
 
     BigNumber: function (x: BigNumber) {
-      return x.atanh()
+      return (x as any).atanh()
     }
   }) as TypedFunction
 })

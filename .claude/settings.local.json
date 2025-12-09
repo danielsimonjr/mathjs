@@ -37,7 +37,8 @@
       "Bash(ls:*)",
       "Bash(npm install:*)",
       "Bash(timeout 120 npx tsc:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(awk:*)"
     ],
     "deny": [],
     "ask": []

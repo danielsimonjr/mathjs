@@ -58,7 +58,7 @@ interface ODESolution<T = any> {
  */
 type ForcingFunction = (t: MathNumericType, y: MathNumericType | MathArray) => MathNumericType | MathArray
 
-export const createSolveODE = /* #__PURE__ */ factory(name, dependencies as string[], (
+export const createSolveODE = /* #__PURE__ */ factory(name, dependencies as unknown as string[], (
   {
     typed,
     add,
@@ -214,7 +214,7 @@ export const createSolveODE = /* #__PURE__ */ factory(name, dependencies as stri
         const TE = max(
           abs(
             map(multiply(deltaB, k), (X: any) =>
-              isUnit(X) ? X.value : X
+              isUnit(X) ? (X as any).value : X
             )
           )
         )

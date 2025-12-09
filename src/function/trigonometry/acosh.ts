@@ -50,7 +50,7 @@ export const createAcosh = /* #__PURE__ */ factory(name, dependencies, ({ typed,
     },
 
     BigNumber: function (x: BigNumber) {
-      return x.acosh()
+      return (x as any).acosh()
     }
   }) as TypedFunction
 })

@@ -3,7 +3,7 @@ import { factory } from '../../../utils/factory.js'
 const name = 'createUnit'
 const dependencies = ['typed', 'Unit'] as const
 
-export const createCreateUnit = /* #__PURE__ */ factory(name, dependencies as string[], ({ typed, Unit }: any) => {
+export const createCreateUnit = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({ typed, Unit }: any) => {
   /**
    * Create a user-defined unit and register it with the Unit type.
    *

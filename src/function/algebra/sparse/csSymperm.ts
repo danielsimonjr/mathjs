@@ -7,7 +7,7 @@ import { factory } from '../../../utils/factory.js'
 const name = 'csSymperm'
 const dependencies = ['conj', 'SparseMatrix'] as const
 
-export const createCsSymperm = /* #__PURE__ */ factory(name, dependencies, ({ conj, SparseMatrix }: { conj: any, SparseMatrix: any }) => {
+export const createCsSymperm = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({ conj, SparseMatrix }: { conj: any, SparseMatrix: any }) => {
   /**
    * Computes the symmetric permutation of matrix A accessing only
    * the upper triangular part of A.
@@ -29,7 +29,7 @@ export const createCsSymperm = /* #__PURE__ */ factory(name, dependencies, ({ co
     // columns
     const n = asize[1]
     // C matrix arrays
-    const cvalues = values && avalues ? [] : null
+    const cvalues: any[] | null = values && avalues ? [] : null
     const cindex: number[] = [] // (nz)
     const cptr: number[] = [] // (n + 1)
     // variables

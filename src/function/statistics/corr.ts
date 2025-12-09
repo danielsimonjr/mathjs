@@ -18,7 +18,7 @@ export const createCorr = /* #__PURE__ */ factory(name, dependencies, (
     divide
   }: {
     typed: TypedFunction;
-    matrix: MatrixConstructor;
+    matrix: any;
     sqrt: any;
     sum: any;
     add: any;

@@ -20,7 +20,7 @@ const dependencies = [
   'concat'
 ]
 
-_compareText.signature = 'any, any'
+;(_compareText as any).signature = 'any, any'
 
 export const createCompareText = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, concat }: Dependencies) => {
   const matrixAlgorithmSuite = createMatrixAlgorithmSuite({ typed, matrix, concat })
@@ -55,7 +55,7 @@ export const createCompareText = /* #__PURE__ */ factory(name, dependencies, ({ 
    */
   return typed(name, _compareText, matrixAlgorithmSuite({
     elop: _compareText,
-    Ds: true
+    Ds: true as any
   }))
 })
 

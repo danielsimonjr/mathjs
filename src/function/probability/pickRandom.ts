@@ -97,9 +97,9 @@ export const createPickRandom = /* #__PURE__ */ factory(name, dependencies, ({ t
     }
 
     const createMatrix = isMatrix(possibles)
-      ? possibles.create
+      ? (possibles as any).create
       : isMatrix(weights)
-        ? weights.create
+        ? (weights as any).create
         : null
 
     possibles = possibles.valueOf() // get Array

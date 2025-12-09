@@ -38,6 +38,6 @@ export const createSech = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
   return typed(name, {
     number: sechNumber,
     Complex: (x: Complex) => x.sech(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.cosh())
+    BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).cosh())
   }) as TypedFunction
 })

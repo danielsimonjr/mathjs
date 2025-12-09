@@ -38,6 +38,6 @@ export const createCsch = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
   return typed(name, {
     number: cschNumber,
     Complex: (x: Complex) => x.csch(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.sinh())
+    BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).sinh())
   }) as TypedFunction
 })

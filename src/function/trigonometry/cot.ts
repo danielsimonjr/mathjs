@@ -39,6 +39,6 @@ export const createCot = /* #__PURE__ */ factory(name, dependencies, ({ typed, B
   return typed(name, {
     number: cotNumber,
     Complex: (x: Complex) => x.cot(),
-    BigNumber: (x: BigNumber) => new BigNumber(1).div(x.tan())
+    BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).tan())
   }, trigUnit) as TypedFunction
 })

@@ -16,7 +16,7 @@ const dependencies = [
   'SparseMatrix'
 ] as const
 
-export const createCsLu = /* #__PURE__ */ factory(name, dependencies, ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }: { abs: any, divideScalar: any, multiply: any, subtract: any, larger: any, largerEq: any, SparseMatrix: any }) => {
+export const createCsLu = /* #__PURE__ */ factory(name, dependencies as unknown as string[], ({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix }: { abs: any, divideScalar: any, multiply: any, subtract: any, larger: any, largerEq: any, SparseMatrix: any }) => {
   const csSpsolve = createCsSpsolve({ divideScalar, multiply, subtract })
 
   /**
