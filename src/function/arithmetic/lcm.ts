@@ -1,10 +1,10 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.js'
-import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.js'
-import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.js'
-import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
-import { lcmNumber } from '../../plain/number/index.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.ts'
+import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.ts'
+import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
+import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
+import { lcmNumber } from '../../plain/number/index.ts'
 
 type Dependencies = 'typed' | 'matrix' | 'equalScalar' | 'concat'
 

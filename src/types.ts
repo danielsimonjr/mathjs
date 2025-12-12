@@ -2,9 +2,9 @@
 // This file provides types needed by various source files
 
 // Re-export from local TypeScript definitions
-export type { TypedFunction } from './core/function/typed.js'
-export type { MathJsConfig, ConfigOptions } from './core/config.js'
-export type { MathJsInstance } from './core/create.js'
+export type { TypedFunction } from './core/function/typed.ts'
+export type { MathJsConfig, ConfigOptions } from './core/config.ts'
+export type { MathJsInstance } from './core/create.ts'
 
 // Re-export from the types declaration file for external types
 export type {

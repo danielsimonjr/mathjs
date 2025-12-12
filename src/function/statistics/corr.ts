@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.ts'
 
-import { TypedFunction, Matrix } from '../../types.js';
+import { TypedFunction, Matrix } from '../../types.ts';
 
 const name = 'corr'
 const dependencies = ['typed', 'matrix', 'mean', 'sqrt', 'sum', 'add', 'subtract', 'multiply', 'pow', 'divide']

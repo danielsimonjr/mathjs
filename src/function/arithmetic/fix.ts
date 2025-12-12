@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { deepMap } from '../../utils/collection.js'
-import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
-import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { deepMap } from '../../utils/collection.ts'
+import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
+import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
 
 const name = 'fix'
 const dependencies = ['typed', 'Complex', 'matrix', 'ceil', 'floor', 'equalScalar', 'zeros', 'DenseMatrix']

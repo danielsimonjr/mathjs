@@ -1,9 +1,9 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { csMarked } from './csMarked.js'
-import { csMark } from './csMark.js'
-import { csUnflip } from './csUnflip.js'
+import { csMarked } from './csMarked.ts'
+import { csMark } from './csMark.ts'
+import { csUnflip } from './csUnflip.ts'
 
 /**
  * Depth-first search computes the nonzero pattern xi of the directed graph G (Matrix) starting

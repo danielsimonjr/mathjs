@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import { createTrigUnit } from './trigUnit.js'
+import { factory } from '../../utils/factory.ts'
+import { createTrigUnit } from './trigUnit.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

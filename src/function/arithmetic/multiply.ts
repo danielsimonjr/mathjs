@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import { isMatrix } from '../../utils/is.js'
-import { arraySize } from '../../utils/array.js'
-import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.js'
-import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
+import { factory } from '../../utils/factory.ts'
+import { isMatrix } from '../../utils/is.ts'
+import { arraySize } from '../../utils/array.ts'
+import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
+import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
 
 // Type definitions for better WASM integration and type safety
 type MathNumericType = number | bigint

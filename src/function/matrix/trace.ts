@@ -1,6 +1,6 @@
-import { clone } from '../../utils/object.js'
-import { format } from '../../utils/string.js'
-import { factory } from '../../utils/factory.js'
+import { clone } from '../../utils/object.ts'
+import { format } from '../../utils/string.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import { isMatrix } from '../../utils/is.js'
+import { factory } from '../../utils/factory.ts'
+import { isMatrix } from '../../utils/is.ts'
 
 // Type definitions for better WASM integration and type safety
 interface TypedFunction<T = any> {

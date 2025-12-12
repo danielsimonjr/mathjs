@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import type { MathNumericType } from '../../types.js'
+import { factory } from '../../utils/factory.ts'
+import type { MathNumericType } from '../../types.ts'
 
 const name = 'intersect'
 const dependencies = [

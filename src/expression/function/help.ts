@@ -1,7 +1,7 @@
-import { factory } from '../../utils/factory.js'
-import { getSafeProperty } from '../../utils/customs.js'
-import { embeddedDocs } from '../embeddedDocs/embeddedDocs.js'
-import { hasOwnProperty } from '../../utils/object.js'
+import { factory } from '../../utils/factory.ts'
+import { getSafeProperty } from '../../utils/customs.ts'
+import { embeddedDocs } from '../embeddedDocs/embeddedDocs.ts'
+import { hasOwnProperty } from '../../utils/object.ts'
 
 const name = 'help'
 const dependencies = ['typed', 'mathWithTransform', 'Help']

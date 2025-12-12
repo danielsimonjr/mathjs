@@ -1,6 +1,6 @@
-import { typeOf } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { noBignumber, noFraction } from '../../utils/noop.js'
+import { typeOf } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { noBignumber, noFraction } from '../../utils/noop.ts'
 
 const name = 'numeric'
 const dependencies = ['number', '?bignumber', '?fraction']

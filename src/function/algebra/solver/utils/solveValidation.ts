@@ -1,6 +1,6 @@
-import { isArray, isMatrix, isDenseMatrix, isSparseMatrix } from '../../../../utils/is.js'
-import { arraySize } from '../../../../utils/array.js'
-import { format } from '../../../../utils/string.js'
+import { isArray, isMatrix, isDenseMatrix, isSparseMatrix } from '../../../../utils/is.ts'
+import { arraySize } from '../../../../utils/array.ts'
+import { format } from '../../../../utils/string.ts'
 
 export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
   /**

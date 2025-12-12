@@ -1,7 +1,7 @@
-import { isInteger } from '../../utils/number.js'
-import { product } from '../../utils/product.js'
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { isInteger } from '../../utils/number.ts'
+import { product } from '../../utils/product.ts'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 const name = 'permutations'
 const dependencies = ['typed', 'factorial']

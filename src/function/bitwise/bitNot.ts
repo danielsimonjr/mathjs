@@ -1,9 +1,9 @@
-import { bitNotBigNumber } from '../../utils/bignumber/bitwise.js'
-import { deepMap } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
-import { bitNotNumber } from '../../plain/number/index.js'
+import { bitNotBigNumber } from '../../utils/bignumber/bitwise.ts'
+import { deepMap } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
+import { bitNotNumber } from '../../plain/number/index.ts'
 import type { MathJsChain } from '../../../types/index.js'
-import type { BigNumber } from '../../type/bignumber/BigNumber.js'
+import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 
 const name = 'bitNot'
 const dependencies = ['typed']

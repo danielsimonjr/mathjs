@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import { typeOf as _typeOf } from '../../utils/is.js'
+import { factory } from '../../utils/factory.ts'
+import { typeOf as _typeOf } from '../../utils/is.ts'
 
 const name = 'typeOf'
 const dependencies = ['typed']

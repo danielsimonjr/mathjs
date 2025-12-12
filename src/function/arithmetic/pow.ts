@@ -1,7 +1,7 @@
-import { factory } from '../../utils/factory.js'
-import { isInteger } from '../../utils/number.js'
-import { arraySize as size } from '../../utils/array.js'
-import { powNumber } from '../../plain/number/index.js'
+import { factory } from '../../utils/factory.ts'
+import { isInteger } from '../../utils/number.ts'
+import { arraySize as size } from '../../utils/array.ts'
+import { powNumber } from '../../plain/number/index.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

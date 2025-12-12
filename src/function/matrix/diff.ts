@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import { isInteger } from '../../utils/number.js'
-import { isMatrix } from '../../utils/is.js'
+import { factory } from '../../utils/factory.ts'
+import { isInteger } from '../../utils/number.ts'
+import { isMatrix } from '../../utils/is.ts'
 
-import { TypedFunction, Matrix, MatrixConstructor } from '../../types.js';
+import { TypedFunction, Matrix, MatrixConstructor } from '../../types.ts';
 
 const name = 'diff'
 const dependencies = ['typed', 'matrix', 'subtract', 'number']

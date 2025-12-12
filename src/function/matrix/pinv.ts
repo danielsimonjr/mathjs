@@ -1,8 +1,8 @@
-import { isMatrix } from '../../utils/is.js'
-import { arraySize } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
-import { format } from '../../utils/string.js'
-import { clone } from '../../utils/object.js'
+import { isMatrix } from '../../utils/is.ts'
+import { arraySize } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
+import { format } from '../../utils/string.ts'
+import { clone } from '../../utils/object.ts'
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]

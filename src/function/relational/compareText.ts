@@ -1,6 +1,6 @@
-import { compareText as _compareText } from '../../utils/string.js'
-import { factory } from '../../utils/factory.js'
-import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
+import { compareText as _compareText } from '../../utils/string.ts'
+import { factory } from '../../utils/factory.ts'
+import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

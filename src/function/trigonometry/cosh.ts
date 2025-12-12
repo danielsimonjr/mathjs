@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { cosh as coshNumber } from '../../utils/number.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { cosh as coshNumber } from '../../utils/number.ts'
 
 const name = 'cosh'
 const dependencies = ['typed']

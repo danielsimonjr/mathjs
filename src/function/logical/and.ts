@@ -1,10 +1,10 @@
-import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.js'
-import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.js'
-import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.js'
-import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.js'
-import { factory } from '../../utils/factory.js'
-import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
-import { andNumber } from '../../plain/number/index.js'
+import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.ts'
+import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
+import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
+import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.ts'
+import { factory } from '../../utils/factory.ts'
+import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
+import { andNumber } from '../../plain/number/index.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

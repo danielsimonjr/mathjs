@@ -8,11 +8,11 @@ import {
   isObjectNode,
   isParenthesisNode,
   isSymbolNode
-} from '../../utils/is.js'
-import { getSafeProperty } from '../../utils/customs.js'
-import { factory } from '../../utils/factory.js'
-import { accessFactory } from './utils/access.js'
-import type { MathNode } from './Node.js'
+} from '../../utils/is.ts'
+import { getSafeProperty } from '../../utils/customs.ts'
+import { factory } from '../../utils/factory.ts'
+import { accessFactory } from './utils/access.ts'
+import type { MathNode } from './Node.ts'
 
 const name = 'AccessorNode'
 const dependencies = [

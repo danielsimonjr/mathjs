@@ -12,7 +12,7 @@
 //   for security reasons, so these functions are not exposed in the expression
 //   parser.
 
-import { ObjectWrappingMap } from './map.js'
+import { ObjectWrappingMap } from './map.ts'
 
 // Type interfaces for math.js types
 export interface BigNumber {

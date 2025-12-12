@@ -1,5 +1,5 @@
-import { arraySize as size } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { arraySize as size } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface Matrix {

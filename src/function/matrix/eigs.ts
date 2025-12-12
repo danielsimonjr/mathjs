@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import { format } from '../../utils/string.js'
-import { createComplexEigs } from './eigs/complexEigs.js'
-import { createRealSymmetric } from './eigs/realSymmetric.js'
-import { typeOf, isNumber, isBigNumber, isComplex, isFraction } from '../../utils/is.js'
+import { factory } from '../../utils/factory.ts'
+import { format } from '../../utils/string.ts'
+import { createComplexEigs } from './eigs/complexEigs.ts'
+import { createRealSymmetric } from './eigs/realSymmetric.ts'
+import { typeOf, isNumber, isBigNumber, isComplex, isFraction } from '../../utils/is.ts'
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]

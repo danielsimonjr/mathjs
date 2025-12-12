@@ -1,7 +1,7 @@
-import { isArrayNode, isNode } from '../../utils/is.js'
-import { map } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
-import type { MathNode } from './Node.js'
+import { isArrayNode, isNode } from '../../utils/is.ts'
+import { map } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
+import type { MathNode } from './Node.ts'
 
 const name = 'ArrayNode'
 const dependencies = [

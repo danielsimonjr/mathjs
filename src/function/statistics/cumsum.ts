@@ -1,9 +1,9 @@
-import { containsCollections } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
-import { _switch } from '../../utils/switch.js'
-import { improveErrorMessage } from './utils/improveErrorMessage.js'
-import { arraySize } from '../../utils/array.js'
-import { IndexError } from '../../error/IndexError.js'
+import { containsCollections } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
+import { _switch } from '../../utils/switch.ts'
+import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import { arraySize } from '../../utils/array.ts'
+import { IndexError } from '../../error/IndexError.ts'
 
 // Type definitions for statistical operations
 interface TypedFunction<T = any> {

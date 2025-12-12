@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.ts'
 
-import { TypedFunction, MatrixConstructor } from '../../types.js';
+import { TypedFunction, MatrixConstructor } from '../../types.ts';
 
 export const createUseMatrixForArrayScalar = /* #__PURE__ */ factory('useMatrixForArrayScalar', ['typed', 'matrix'], ({
   typed,

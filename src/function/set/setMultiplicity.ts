@@ -1,5 +1,5 @@
-import { flatten } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { flatten } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 import type { MathArray, Matrix, MathNumericType } from '../../../types/index.js'
 
 const name = 'setMultiplicity'

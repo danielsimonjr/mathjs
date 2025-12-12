@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { gammaG, gammaNumber, gammaP } from '../../plain/number/index.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { gammaG, gammaNumber, gammaP } from '../../plain/number/index.ts'
 
 const name = 'gamma'
 const dependencies = ['typed', 'config', 'multiplyScalar', 'pow', 'BigNumber', 'Complex']

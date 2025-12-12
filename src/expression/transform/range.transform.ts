@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import { createRange } from '../../function/matrix/range.js'
+import { factory } from '../../utils/factory.ts'
+import { createRange } from '../../function/matrix/range.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

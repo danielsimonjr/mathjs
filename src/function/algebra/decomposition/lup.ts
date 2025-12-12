@@ -1,5 +1,5 @@
-import { clone } from '../../../utils/object.js'
-import { factory } from '../../../utils/factory.js'
+import { clone } from '../../../utils/object.ts'
+import { factory } from '../../../utils/factory.ts'
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]

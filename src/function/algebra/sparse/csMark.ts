@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 
-import { csFlip } from './csFlip.js'
+import { csFlip } from './csFlip.ts'
 
 /**
  * Marks the node at w[j]

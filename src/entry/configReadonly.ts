@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from '../core/config.js'
-import { MATRIX_OPTIONS, NUMBER_OPTIONS } from '../core/function/config.js'
+import { DEFAULT_CONFIG } from '../core/config.ts'
+import { MATRIX_OPTIONS, NUMBER_OPTIONS } from '../core/function/config.ts'
 
 // create a read-only version of config
 export const config = function (options: any) {

@@ -1,7 +1,7 @@
-import { isBigNumber } from '../../utils/is.js'
-import { isInteger } from '../../utils/number.js'
-import { resize } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { isBigNumber } from '../../utils/is.ts'
+import { isInteger } from '../../utils/number.ts'
+import { resize } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

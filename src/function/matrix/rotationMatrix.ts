@@ -1,8 +1,8 @@
-import { isBigNumber } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
+import { isBigNumber } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
 
-import { TypedFunction, Matrix, MatrixConstructor, BigNumber, Complex, Unit } from '../../types.js';
-import type { ConfigOptions } from '../../core/config.js';
+import { TypedFunction, Matrix, MatrixConstructor, BigNumber, Complex, Unit } from '../../types.ts';
+import type { ConfigOptions } from '../../core/config.ts';
 
 const name = 'rotationMatrix'
 const dependencies = [

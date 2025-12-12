@@ -1,7 +1,7 @@
-import { escape } from '../../utils/string.js'
-import { getSafeProperty } from '../../utils/customs.js'
-import { factory } from '../../utils/factory.js'
-import { toSymbol } from '../../utils/latex.js'
+import { escape } from '../../utils/string.ts'
+import { getSafeProperty } from '../../utils/customs.ts'
+import { factory } from '../../utils/factory.ts'
+import { toSymbol } from '../../utils/latex.ts'
 
 // Type definitions
 interface Node {

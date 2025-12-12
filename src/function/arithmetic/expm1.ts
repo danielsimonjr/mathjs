@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { expm1Number } from '../../plain/number/index.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { expm1Number } from '../../plain/number/index.ts'
 
 const name = 'expm1'
 const dependencies = ['typed', 'Complex']

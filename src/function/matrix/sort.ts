@@ -1,7 +1,7 @@
-import { arraySize as size } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { arraySize as size } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
-import { TypedFunction, Matrix } from '../../types.js';
+import { TypedFunction, Matrix } from '../../types.ts';
 
 const name = 'sort'
 const dependencies = ['typed', 'matrix', 'compare', 'compareNatural']

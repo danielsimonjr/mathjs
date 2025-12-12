@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import { isBigNumber, isComplex, isFraction } from '../../utils/is.js'
-import { cbrtNumber } from '../../plain/number/index.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/create.js'
+import { factory } from '../../utils/factory.ts'
+import { isBigNumber, isComplex, isFraction } from '../../utils/is.ts'
+import { cbrtNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/create.ts'
 
 const name = 'cbrt'
 const dependencies = [

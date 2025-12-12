@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js'
 
-export * from './arithmetic.js'
+export * from './arithmetic.ts'
 
 // TODO: this is ugly. Instead, be able to pass your own isBigNumber function to typed?
 const BigNumber = (Decimal as any).clone()

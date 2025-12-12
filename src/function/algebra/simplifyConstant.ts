@@ -1,11 +1,11 @@
 // @ts-nocheck
 // TODO: This file needs comprehensive TypeScript typing for constant node manipulation
-import { isFraction, isMatrix, isNode, isArrayNode, isConstantNode, isIndexNode, isObjectNode, isOperatorNode } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { safeNumberType } from '../../utils/number.js'
-import { createUtil } from './simplify/util.js'
-import { noBignumber, noFraction } from '../../utils/noop.js'
-import type { MathNode, ConstantNode, ArrayNode, AccessorNode, IndexNode, ObjectNode, OperatorNode, FunctionNode, ParenthesisNode } from '../../utils/node.js'
+import { isFraction, isMatrix, isNode, isArrayNode, isConstantNode, isIndexNode, isObjectNode, isOperatorNode } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { safeNumberType } from '../../utils/number.ts'
+import { createUtil } from './simplify/util.ts'
+import { noBignumber, noFraction } from '../../utils/noop.ts'
+import type { MathNode, ConstantNode, ArrayNode, AccessorNode, IndexNode, ObjectNode, OperatorNode, FunctionNode, ParenthesisNode } from '../../utils/node.ts'
 
 const name = 'simplifyConstant'
 const dependencies = [

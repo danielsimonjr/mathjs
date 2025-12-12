@@ -1,8 +1,8 @@
-import { factory } from '../../../utils/factory.js'
-import { deepMap } from '../../../utils/collection.js'
-import type { MathCollection } from '../../../types.js'
-import type { Fraction } from '../Fraction.js'
-import type { TypedFunction } from '../../../core/function/typed.js'
+import { factory } from '../../../utils/factory.ts'
+import { deepMap } from '../../../utils/collection.ts'
+import type { MathCollection } from '../../../types.ts'
+import type { Fraction } from '../Fraction.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
 
 const name = 'fraction'
 const dependencies = ['typed', 'Fraction'] as const

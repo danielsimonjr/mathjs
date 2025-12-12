@@ -1,5 +1,5 @@
-import { deepMap } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
+import { deepMap } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
 import type { MathArray, Matrix } from '../../../types/index.js'
 
 const name = 'compile'

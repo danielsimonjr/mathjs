@@ -1,7 +1,7 @@
-import { deepForEach } from '../../utils/collection.js'
-import { isBigNumber } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { improveErrorMessage } from './utils/improveErrorMessage.js'
+import { deepForEach } from '../../utils/collection.ts'
+import { isBigNumber } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { improveErrorMessage } from './utils/improveErrorMessage.ts'
 
 // Type definitions for statistical operations
 interface TypedFunction<T = any> {

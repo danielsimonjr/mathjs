@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 
-import { csMarked } from './csMarked.js'
-import { csMark } from './csMark.js'
-import { csDfs } from './csDfs.js'
+import { csMarked } from './csMarked.ts'
+import { csMark } from './csMark.ts'
+import { csDfs } from './csDfs.ts'
 
 /**
  * The csReach function computes X = Reach(B), where B is the nonzero pattern of the n-by-1

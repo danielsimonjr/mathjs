@@ -1,9 +1,9 @@
-import { isBigNumber, isMatrix, isNumber } from '../../utils/is.js'
-import { clone } from '../../utils/object.js'
-import { arraySize, concat as _concat } from '../../utils/array.js'
-import { IndexError } from '../../error/IndexError.js'
-import { DimensionError } from '../../error/DimensionError.js'
-import { factory } from '../../utils/factory.js'
+import { isBigNumber, isMatrix, isNumber } from '../../utils/is.ts'
+import { clone } from '../../utils/object.ts'
+import { arraySize, concat as _concat } from '../../utils/array.ts'
+import { IndexError } from '../../error/IndexError.ts'
+import { DimensionError } from '../../error/DimensionError.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'concat'
 const dependencies = ['typed', 'matrix', 'isInteger']

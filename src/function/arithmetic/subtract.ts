@@ -1,10 +1,10 @@
-import { factory } from '../../utils/factory.js'
-import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.js'
-import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.js'
-import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.js'
-import { createMatAlgo10xSids } from '../../type/matrix/utils/matAlgo10xSids.js'
-import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
-import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
+import { factory } from '../../utils/factory.ts'
+import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.ts'
+import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.ts'
+import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.ts'
+import { createMatAlgo10xSids } from '../../type/matrix/utils/matAlgo10xSids.ts'
+import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
+import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 
 // Type definitions for better WASM integration and type safety
 interface TypedFunction<T = any> {

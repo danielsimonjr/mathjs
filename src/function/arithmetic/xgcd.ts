@@ -1,7 +1,7 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/create.js'
-import { xgcdNumber } from '../../plain/number/index.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/create.ts'
+import { xgcdNumber } from '../../plain/number/index.ts'
 
 type Dependencies = 'typed' | 'config' | 'matrix' | 'BigNumber'
 

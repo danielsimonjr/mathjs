@@ -1,6 +1,6 @@
-import { optimizeCallback } from '../../utils/optimizeCallback.js'
-import { arraySize, broadcastSizes, broadcastTo, get, deepMap } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { optimizeCallback } from '../../utils/optimizeCallback.ts'
+import { arraySize, broadcastSizes, broadcastTo, get, deepMap } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'map'
 const dependencies = ['typed']

@@ -1,7 +1,7 @@
-import { isInteger } from '../../../utils/number.js'
-import { factory } from '../../../utils/factory.js'
-import { createCsSqr } from '../sparse/csSqr.js'
-import { createCsLu } from '../sparse/csLu.js'
+import { isInteger } from '../../../utils/number.ts'
+import { factory } from '../../../utils/factory.ts'
+import { createCsSqr } from '../sparse/csSqr.ts'
+import { createCsLu } from '../sparse/csLu.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

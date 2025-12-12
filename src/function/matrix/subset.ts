@@ -1,9 +1,9 @@
-import { isIndex } from '../../utils/is.js'
-import { clone } from '../../utils/object.js'
-import { isEmptyIndex, validateIndex, validateIndexSourceSize } from '../../utils/array.js'
-import { getSafeProperty, setSafeProperty } from '../../utils/customs.js'
-import { DimensionError } from '../../error/DimensionError.js'
-import { factory } from '../../utils/factory.js'
+import { isIndex } from '../../utils/is.ts'
+import { clone } from '../../utils/object.ts'
+import { isEmptyIndex, validateIndex, validateIndexSourceSize } from '../../utils/array.ts'
+import { getSafeProperty, setSafeProperty } from '../../utils/customs.ts'
+import { DimensionError } from '../../error/DimensionError.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'subset'
 const dependencies = ['typed', 'matrix', 'zeros', 'add']

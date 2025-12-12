@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/config.js'
-import { promoteLogarithm } from '../../utils/bigint.js'
-import { logNumber } from '../../plain/number/index.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/config.ts'
+import { promoteLogarithm } from '../../utils/bigint.ts'
+import { logNumber } from '../../plain/number/index.ts'
 
 const name = 'log'
 const dependencies = ['config', 'typed', 'typeOf', 'divideScalar', 'Complex']

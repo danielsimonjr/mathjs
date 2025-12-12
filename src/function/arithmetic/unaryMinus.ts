@@ -1,7 +1,7 @@
-import { factory } from '../../utils/factory.js'
-import { deepMap } from '../../utils/collection.js'
-import { unaryMinusNumber } from '../../plain/number/index.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.ts'
+import { deepMap } from '../../utils/collection.ts'
+import { unaryMinusNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 const name = 'unaryMinus'
 const dependencies = ['typed']

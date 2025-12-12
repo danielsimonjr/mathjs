@@ -5,11 +5,11 @@
 // [1] Hare, "Computing the Principal Branch of log-Gamma", Journal of Algorithms, 1997.
 // [2] https://math.stackexchange.com/questions/1338753/how-do-i-calculate-values-for-gamma-function-with-complex-arguments
 
-import { lgammaNumber, lnSqrt2PI } from '../../plain/number/index.js'
-import { factory } from '../../utils/factory.js'
-import { copysign } from '../../utils/number.js'
+import { lgammaNumber, lnSqrt2PI } from '../../plain/number/index.ts'
+import { factory } from '../../utils/factory.ts'
+import { copysign } from '../../utils/number.ts'
 
-import { TypedFunction } from '../../types.js';
+import { TypedFunction } from '../../types.ts';
 
 const name = 'lgamma'
 const dependencies = ['Complex', 'typed']

@@ -1,6 +1,6 @@
-import { deepForEach } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { deepForEach } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 const name = 'multinomial'
 const dependencies = ['typed', 'add', 'divide', 'multiply', 'factorial', 'isInteger', 'isPositive']

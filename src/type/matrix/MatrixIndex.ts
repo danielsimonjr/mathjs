@@ -1,7 +1,7 @@
-import { isArray, isMatrix, isRange, isNumber, isString } from '../../utils/is.js'
-import { clone } from '../../utils/object.js'
-import { isInteger } from '../../utils/number.js'
-import { factory } from '../../utils/factory.js'
+import { isArray, isMatrix, isRange, isNumber, isString } from '../../utils/is.ts'
+import { clone } from '../../utils/object.ts'
+import { isInteger } from '../../utils/number.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'Index'
 const dependencies = ['ImmutableDenseMatrix', 'getMatrixDataType']

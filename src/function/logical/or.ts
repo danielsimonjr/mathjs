@@ -1,9 +1,9 @@
-import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.js'
-import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
-import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.js'
-import { factory } from '../../utils/factory.js'
-import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
-import { orNumber } from '../../plain/number/index.js'
+import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.ts'
+import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
+import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.ts'
+import { factory } from '../../utils/factory.ts'
+import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
+import { orNumber } from '../../plain/number/index.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { Complex } from '../../type/complex/Complex.js'
-import type { BigNumber } from '../../type/bignumber/BigNumber.js'
-import { asinhNumber } from '../../plain/number/index.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { Complex } from '../../type/complex/Complex.ts'
+import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
+import { asinhNumber } from '../../plain/number/index.ts'
 
 const name = 'asinh'
 const dependencies = ['typed']

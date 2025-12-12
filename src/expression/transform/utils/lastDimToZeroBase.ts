@@ -1,5 +1,5 @@
-import { isCollection } from '../../../utils/is.js'
-import { dimToZeroBase, isNumberOrBigNumber } from './dimToZeroBase.js'
+import { isCollection } from '../../../utils/is.ts'
+import { dimToZeroBase, isNumberOrBigNumber } from './dimToZeroBase.ts'
 /**
  * Change last argument dim from one-based to zero-based.
  */

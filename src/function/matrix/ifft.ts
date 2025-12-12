@@ -1,6 +1,6 @@
-import { arraySize } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
-import { isMatrix } from '../../utils/is.js'
+import { arraySize } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
+import { isMatrix } from '../../utils/is.ts'
 
 // Type definitions for FFT operations
 type ComplexNumber = { re: number; im: number } | number

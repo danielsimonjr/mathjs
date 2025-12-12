@@ -1,9 +1,9 @@
-import { isInteger } from './number.js'
-import { isNumber, isBigNumber, isArray, isString, BigNumber, Index, Matrix } from './is.js'
-import { format } from './string.js'
-import { DimensionError } from '../error/DimensionError.js'
-import { IndexError } from '../error/IndexError.js'
-import { deepStrictEqual } from './object.js'
+import { isInteger } from './number.ts'
+import { isNumber, isBigNumber, isArray, isString, BigNumber, Index, Matrix } from './is.ts'
+import { format } from './string.ts'
+import { DimensionError } from '../error/DimensionError.ts'
+import { IndexError } from '../error/IndexError.ts'
+import { deepStrictEqual } from './object.ts'
 
 // Type definitions
 export type NestedArray<T> = T | NestedArray<T>[]

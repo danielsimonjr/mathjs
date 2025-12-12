@@ -1,9 +1,9 @@
-import { isBigNumber, isComplex, isFraction, isMatrix, isObject, isUnit } from '../../utils/is.js'
-import { isFactory, stripOptionalNotation } from '../../utils/factory.js'
-import { hasOwnProperty, lazy } from '../../utils/object.js'
-import { ArgumentsError } from '../../error/ArgumentsError.js'
+import { isBigNumber, isComplex, isFraction, isMatrix, isObject, isUnit } from '../../utils/is.ts'
+import { isFactory, stripOptionalNotation } from '../../utils/factory.ts'
+import { hasOwnProperty, lazy } from '../../utils/object.ts'
+import { ArgumentsError } from '../../error/ArgumentsError.ts'
 
-import { TypedFunction } from '../../types.js';
+import { TypedFunction } from '../../types.ts';
 
 export function importFactory (typed: any, load: any, math: any, importedFactories: any) {
   /**

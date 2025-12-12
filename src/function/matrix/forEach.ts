@@ -1,6 +1,6 @@
-import { optimizeCallback } from '../../utils/optimizeCallback.js'
-import { factory } from '../../utils/factory.js'
-import { deepForEach } from '../../utils/array.js'
+import { optimizeCallback } from '../../utils/optimizeCallback.ts'
+import { factory } from '../../utils/factory.ts'
+import { deepForEach } from '../../utils/array.ts'
 
 const name = 'forEach'
 const dependencies = ['typed']

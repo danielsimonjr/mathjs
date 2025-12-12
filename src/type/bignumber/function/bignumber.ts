@@ -1,5 +1,5 @@
-import { factory } from '../../../utils/factory.js'
-import { deepMap } from '../../../utils/collection.js'
+import { factory } from '../../../utils/factory.ts'
+import { deepMap } from '../../../utils/collection.ts'
 import type { Decimal } from 'decimal.js'
 import type Decimal_ from 'decimal.js'
 

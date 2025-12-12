@@ -6,9 +6,9 @@
  * into ES5 code under /lib and can be used straight by node.js
  */
 import assert from 'assert'
-import * as allIsFunctions from './is.js'
-import { create } from '../core/create.js'
-import { endsWith } from './string.js'
+import * as allIsFunctions from './is.ts'
+import { create } from '../core/create.ts'
+import { endsWith } from './string.ts'
 
 type TypeName = string
 

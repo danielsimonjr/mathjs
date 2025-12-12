@@ -1,8 +1,8 @@
-import { flatten } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { isMatrix, isNumber } from '../../utils/is.js'
-import { createRng } from './util/seededRNG.js'
+import { flatten } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { isMatrix, isNumber } from '../../utils/is.ts'
+import { createRng } from './util/seededRNG.ts'
 
 const name = 'pickRandom'
 const dependencies = ['typed', 'config', '?on']

@@ -1,5 +1,5 @@
-import { factory } from '../../../utils/factory.js'
-import { clone } from '../../../utils/object.js'
+import { factory } from '../../../utils/factory.ts'
+import { clone } from '../../../utils/object.ts'
 
 // Type definitions
 type DataType = string | undefined

@@ -1,6 +1,6 @@
-import { isInteger } from '../../utils/number.js'
-import { factory } from '../../utils/factory.js'
-import type { MathNode, ConstantNode, SymbolNode, OperatorNode, ParenthesisNode } from '../../utils/node.js'
+import { isInteger } from '../../utils/number.ts'
+import { factory } from '../../utils/factory.ts'
+import type { MathNode, ConstantNode, SymbolNode, OperatorNode, ParenthesisNode } from '../../utils/node.ts'
 
 const name = 'rationalize'
 const dependencies = [

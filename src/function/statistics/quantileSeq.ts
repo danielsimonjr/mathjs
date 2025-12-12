@@ -1,6 +1,6 @@
-import { isNumber } from '../../utils/is.js'
-import { flatten } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { isNumber } from '../../utils/is.ts'
+import { flatten } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions for statistical operations
 interface TypedFunction<T = any> {

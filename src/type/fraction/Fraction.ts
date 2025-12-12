@@ -1,5 +1,5 @@
 import FractionJS from 'fraction.js'
-import { factory } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.ts'
 import type { FactoryFunctionMap } from '../../../types/index.js'
 
 // The Fraction type that we work with internally - use any since FractionJS has complex types

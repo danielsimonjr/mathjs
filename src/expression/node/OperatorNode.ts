@@ -1,11 +1,11 @@
-import { isNode, isConstantNode, isOperatorNode, isParenthesisNode } from '../../utils/is.js'
-import { map } from '../../utils/array.js'
-import { createSubScope } from '../../utils/scope.js'
-import { escape } from '../../utils/string.js'
-import { getSafeProperty, isSafeMethod } from '../../utils/customs.js'
-import { getAssociativity, getPrecedence, isAssociativeWith, properties } from '../operators.js'
-import { latexOperators } from '../../utils/latex.js'
-import { factory } from '../../utils/factory.js'
+import { isNode, isConstantNode, isOperatorNode, isParenthesisNode } from '../../utils/is.ts'
+import { map } from '../../utils/array.ts'
+import { createSubScope } from '../../utils/scope.ts'
+import { escape } from '../../utils/string.ts'
+import { getSafeProperty, isSafeMethod } from '../../utils/customs.ts'
+import { getAssociativity, getPrecedence, isAssociativeWith, properties } from '../operators.ts'
+import { latexOperators } from '../../utils/latex.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface Node {

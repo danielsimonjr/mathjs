@@ -1,10 +1,10 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { factory } from '../../../utils/factory.js'
-import { csFkeep } from './csFkeep.js'
-import { csFlip } from './csFlip.js'
-import { csTdfs } from './csTdfs.js'
+import { factory } from '../../../utils/factory.ts'
+import { csFkeep } from './csFkeep.ts'
+import { csFlip } from './csFlip.ts'
+import { csTdfs } from './csTdfs.ts'
 
 const name = 'csAmd'
 const dependencies = [

@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import { isFunctionAssignmentNode, isSymbolNode } from '../../utils/is.js'
-import { createMap } from '../../function/matrix/map.js'
-import { compileInlineExpression } from './utils/compileInlineExpression.js'
-import { createTransformCallback } from './utils/transformCallback.js'
+import { factory } from '../../utils/factory.ts'
+import { isFunctionAssignmentNode, isSymbolNode } from '../../utils/is.ts'
+import { createMap } from '../../function/matrix/map.ts'
+import { compileInlineExpression } from './utils/compileInlineExpression.ts'
+import { createTransformCallback } from './utils/transformCallback.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

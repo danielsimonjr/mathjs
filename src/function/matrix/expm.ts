@@ -1,6 +1,6 @@
-import { isSparseMatrix } from '../../utils/is.js'
-import { format } from '../../utils/string.js'
-import { factory } from '../../utils/factory.js'
+import { isSparseMatrix } from '../../utils/is.ts'
+import { format } from '../../utils/string.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface Matrix {

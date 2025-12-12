@@ -1,9 +1,9 @@
-import { log2Number } from '../../plain/number/index.js'
-import { promoteLogarithm } from '../../utils/bigint.js'
-import { deepMap } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/config.js'
+import { log2Number } from '../../plain/number/index.ts'
+import { promoteLogarithm } from '../../utils/bigint.ts'
+import { deepMap } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/config.ts'
 
 const name = 'log2'
 const dependencies = ['typed', 'config', 'Complex']

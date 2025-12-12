@@ -1,6 +1,6 @@
-import { arraySize } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
-import { noMatrix } from '../../utils/noop.js'
+import { arraySize } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
+import { noMatrix } from '../../utils/noop.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {
