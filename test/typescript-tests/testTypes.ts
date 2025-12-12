@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as assert from 'assert'
 import { expectTypeOf } from 'expect-type'
 import {
@@ -15,6 +14,7 @@ import {
   create,
   divideDependencies,
   EvalFunction,
+  evaluate,
   factory,
   formatDependencies,
   Fraction,
@@ -24,6 +24,7 @@ import {
   Help,
   Index,
   IndexNode,
+  isResultSet,
   isSymbolNode,
   LUDecomposition,
   MapLike,
@@ -39,6 +40,7 @@ import {
   MathType,
   Matrix,
   Node,
+  nullishDependencies,
   ObjectNode,
   OperatorNode,
   OperatorNodeFn,
@@ -51,8 +53,6 @@ import {
   SLUDecomposition,
   SymbolNode,
   Unit,
-  evaluate,
-  isResultSet,
   UnitPrefix
 } from 'mathjs'
 
@@ -2648,12 +2648,13 @@ Factory Test
   }
 
   // Create just the functions we need
-  const { fraction, add, divide, format } = create(
+  const { fraction, add, divide, format, nullish } = create(
     {
       fractionDependencies,
       addDependencies,
       divideDependencies,
-      formatDependencies
+      formatDependencies,
+      nullishDependencies
     },
     config
   )
@@ -2668,6 +2669,9 @@ Factory Test
   assert.strictEqual(format(255, { notation: 'bin' }), '0b11111111')
   assert.strictEqual(format(255, { notation: 'hex' }), '0xff')
   assert.strictEqual(format(255, { notation: 'oct' }), '0o377')
+  assert.strictEqual(nullish(null, 42), 42)
+  assert.strictEqual(nullish(undefined, 'foo'), 'foo')
+  assert.strictEqual(nullish(0, 42), 0)
 }
 
 /**
