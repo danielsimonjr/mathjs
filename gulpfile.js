@@ -6,7 +6,6 @@ import { deleteAsync } from 'del'
 import log from 'fancy-log'
 import webpack from 'webpack'
 import babel from 'gulp-babel'
-import gulpTypescript from 'gulp-typescript'
 import { mkdirp } from 'mkdirp'
 import { cleanup, iteratePath }  from './tools/docgenerator.js'
 import { generateEntryFiles } from './tools/entryGenerator.js'
@@ -25,8 +24,6 @@ const COMPILE_DIR = path.join(__dirname, '/lib')
 const COMPILE_BROWSER = `${COMPILE_DIR}/browser`
 const COMPILE_CJS = `${COMPILE_DIR}/cjs`
 const COMPILE_ESM = `${COMPILE_DIR}/esm` // es modules
-const COMPILE_TS = `${COMPILE_DIR}/typescript`
-const COMPILE_WASM = `${COMPILE_DIR}/wasm`
 const COMPILE_ENTRY_LIB = `${COMPILE_CJS}/entry`
 
 const FILE = 'math.js'
@@ -176,34 +173,6 @@ function compileEntryFiles () {
     .pipe(gulp.dest(COMPILE_ENTRY_LIB))
 }
 
-function compileTypeScript () {
-  const tsProject = gulpTypescript.createProject('tsconfig.build.json')
-  return gulp.src('src/**/*.ts')
-    .pipe(tsProject())
-    .pipe(gulp.dest(COMPILE_TS))
-}
-
-function compileWasm (done) {
-  const { exec } = require('child_process')
-
-  // Create WASM output directory
-  mkdirp.sync(COMPILE_WASM)
-
-  // Compile WASM using AssemblyScript
-  exec('npm run build:wasm', (error, stdout, stderr) => {
-    if (error) {
-      log(`WASM compilation error: ${error.message}`)
-      done(error)
-      return
-    }
-    if (stderr) {
-      log(`WASM compilation stderr: ${stderr}`)
-    }
-    log('WASM compiled successfully')
-    done()
-  })
-}
-
 function writeCompiledHeader (cb) {
   fs.writeFileSync(COMPILED_HEADER, createBanner())
   cb()
@@ -301,20 +270,7 @@ gulp.task('default', gulp.series(
   compileCommonJs,
   compileEntryFiles,
   compileESModules, // Must be after generateEntryFilesCallback
-  compileTypeScript,
-  compileWasm,
   writeCompiledHeader,
   bundle,
   generateDocs
-))
-
-gulp.task('compile', gulp.series(
-  updateVersionFile,
-  generateEntryFilesCallback,
-  gulp.parallel(
-    compileCommonJs,
-    compileESModules,
-    compileTypeScript
-  ),
-  compileEntryFiles
 ))
