@@ -1,5 +1,5 @@
-import Decimal from 'decimal.js'
-import type { Decimal as DecimalType } from 'decimal.js'
+import { Decimal } from '../local/Decimal.ts'
+import type { Decimal as DecimalType } from '../local/Decimal.ts'
 import { factory } from '../../utils/factory.ts'
 
 const name = 'BigNumber'

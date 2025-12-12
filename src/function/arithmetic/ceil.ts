@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js'
+import { Decimal } from '../../type/local/Decimal.ts'
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { MathJsConfig } from '../../core/create.ts'

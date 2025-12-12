@@ -1,4 +1,4 @@
-import ComplexJS from 'complex.js'
+import { Complex as ComplexJS } from '../local/Complex.ts'
 import { format } from '../../utils/number.ts'
 import { isNumber, isUnit } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'

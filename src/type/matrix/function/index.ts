@@ -1,6 +1,6 @@
 import { isBigNumber, isMatrix, isArray } from '../../../utils/is.ts'
 import { factory } from '../../../utils/factory.ts'
-import type { Decimal } from 'decimal.js'
+import type { Decimal } from '../../local/Decimal.ts'
 
 const name = 'index'
 const dependencies = ['typed', 'Index']

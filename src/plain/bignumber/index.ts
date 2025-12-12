@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js'
+import { Decimal } from '../../type/local/Decimal.ts'
 
 export * from './arithmetic.ts'
 
