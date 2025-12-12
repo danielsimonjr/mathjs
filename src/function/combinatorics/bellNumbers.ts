@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 const name = 'bellNumbers'
 const dependencies = ['typed', 'addScalar', 'isNegative', 'isInteger', 'stirlingS2']

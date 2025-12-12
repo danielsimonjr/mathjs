@@ -1,6 +1,6 @@
-import { createNullish } from '../../function/logical/nullish.js'
-import { factory } from '../../utils/factory.js'
-import { isCollection } from '../../utils/is.js'
+import { createNullish } from '../../function/logical/nullish.ts'
+import { factory } from '../../utils/factory.ts'
+import { isCollection } from '../../utils/is.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

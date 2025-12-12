@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import { isCollection } from '../../utils/is.js'
+import { factory } from '../../utils/factory.ts'
+import { isCollection } from '../../utils/is.ts'
 
 // Type definitions for statistical operations
 interface TypedFunction<T = any> {

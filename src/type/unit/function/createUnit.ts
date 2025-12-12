@@ -1,4 +1,4 @@
-import { factory } from '../../../utils/factory.js'
+import { factory } from '../../../utils/factory.ts'
 
 const name = 'createUnit'
 const dependencies = ['typed', 'Unit'] as const

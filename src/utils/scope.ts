@@ -1,4 +1,4 @@
-import { ObjectWrappingMap, PartitionedMap } from './map.js'
+import { ObjectWrappingMap, PartitionedMap } from './map.ts'
 
 /**
  * Create a new scope which can access the parent scope,

@@ -1,5 +1,5 @@
-import { isBigNumber, isMatrix, isArray } from '../../../utils/is.js'
-import { factory } from '../../../utils/factory.js'
+import { isBigNumber, isMatrix, isArray } from '../../../utils/is.ts'
+import { factory } from '../../../utils/factory.ts'
 import type { Decimal } from 'decimal.js'
 
 const name = 'index'

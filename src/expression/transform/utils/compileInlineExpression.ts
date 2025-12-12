@@ -1,5 +1,5 @@
-import { isSymbolNode } from '../../../utils/is.js'
-import { PartitionedMap } from '../../../utils/map.js'
+import { isSymbolNode } from '../../../utils/is.ts'
+import { PartitionedMap } from '../../../utils/map.ts'
 
 /**
  * Compile an inline expression like "x > 0"

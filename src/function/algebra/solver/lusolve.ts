@@ -1,7 +1,7 @@
-import { isArray, isMatrix } from '../../../utils/is.js'
-import { factory } from '../../../utils/factory.js'
-import { createSolveValidation } from './utils/solveValidation.js'
-import { csIpvec } from '../sparse/csIpvec.js'
+import { isArray, isMatrix } from '../../../utils/is.ts'
+import { factory } from '../../../utils/factory.ts'
+import { createSolveValidation } from './utils/solveValidation.ts'
+import { csIpvec } from '../sparse/csIpvec.ts'
 
 // Type definitions
 type MatrixData = any[][]

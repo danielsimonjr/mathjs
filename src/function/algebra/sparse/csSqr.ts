@@ -1,12 +1,12 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { csPermute } from './csPermute.js'
-import { csPost } from './csPost.js'
-import { csEtree } from './csEtree.js'
-import { createCsAmd } from './csAmd.js'
-import { createCsCounts } from './csCounts.js'
-import { factory } from '../../../utils/factory.js'
+import { csPermute } from './csPermute.ts'
+import { csPost } from './csPost.ts'
+import { csEtree } from './csEtree.ts'
+import { createCsAmd } from './csAmd.ts'
+import { createCsCounts } from './csCounts.ts'
+import { factory } from '../../../utils/factory.ts'
 
 const name = 'csSqr'
 const dependencies = [

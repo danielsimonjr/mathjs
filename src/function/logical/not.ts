@@ -1,6 +1,6 @@
-import { deepMap } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
-import { notNumber } from '../../plain/number/index.js'
+import { deepMap } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
+import { notNumber } from '../../plain/number/index.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

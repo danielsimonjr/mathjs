@@ -1,6 +1,6 @@
-import { isArray, isMatrix, isString, typeOf } from '../../utils/is.js'
-import { clone } from '../../utils/object.js'
-import { factory } from '../../utils/factory.js'
+import { isArray, isMatrix, isString, typeOf } from '../../utils/is.ts'
+import { clone } from '../../utils/object.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'ImmutableDenseMatrix'
 const dependencies = [

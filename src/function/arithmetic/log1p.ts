@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/config.js'
-import { deepMap } from '../../utils/collection.js'
-import { log1p as _log1p } from '../../utils/number.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/config.ts'
+import { deepMap } from '../../utils/collection.ts'
+import { log1p as _log1p } from '../../utils/number.ts'
 
 const name = 'log1p'
 const dependencies = ['typed', 'config', 'divideScalar', 'log', 'Complex']

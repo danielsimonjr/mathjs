@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import { squareNumber } from '../../plain/number/index.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { factory } from '../../utils/factory.ts'
+import { squareNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 const name = 'square'
 const dependencies = ['typed']

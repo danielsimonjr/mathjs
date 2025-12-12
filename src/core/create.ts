@@ -1,8 +1,8 @@
 import typedFunction from 'typed-function'
-import { ArgumentsError } from '../error/ArgumentsError.js'
-import { DimensionError } from '../error/DimensionError.js'
-import { IndexError } from '../error/IndexError.js'
-import { factory, isFactory, FactoryFunction, LegacyFactory } from '../utils/factory.js'
+import { ArgumentsError } from '../error/ArgumentsError.ts'
+import { DimensionError } from '../error/DimensionError.ts'
+import { IndexError } from '../error/IndexError.ts'
+import { factory, isFactory, FactoryFunction, LegacyFactory } from '../utils/factory.ts'
 import {
   isAccessorNode,
   isArray,
@@ -47,15 +47,15 @@ import {
   isSymbolNode,
   isUndefined,
   isUnit
-} from '../utils/is.js'
-import { deepFlatten, isLegacyFactory } from '../utils/object.js'
-import * as emitter from './../utils/emitter.js'
-import { ConfigOptions, DEFAULT_CONFIG, MathJsConfig } from './config.js'
+} from '../utils/is.ts'
+import { deepFlatten, isLegacyFactory } from '../utils/object.ts'
+import * as emitter from './../utils/emitter.ts'
+import { ConfigOptions, DEFAULT_CONFIG, MathJsConfig } from './config.ts'
 
 // Re-export MathJsConfig for backward compatibility
 export { MathJsConfig }
-import { configFactory } from './function/config.js'
-import { importFactory } from './function/import.js'
+import { configFactory } from './function/config.ts'
+import { importFactory } from './function/import.ts'
 
 /**
  * Type for the mathjs instance

@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import { errorTransform } from './utils/errorTransform.js'
-import { createSubset } from '../../function/matrix/subset.js'
+import { factory } from '../../utils/factory.ts'
+import { errorTransform } from './utils/errorTransform.ts'
+import { createSubset } from '../../function/matrix/subset.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

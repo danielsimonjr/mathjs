@@ -1,4 +1,4 @@
-import { isInteger } from '../../utils/number.js'
+import { isInteger } from '../../utils/number.ts'
 
 const n1 = 'number'
 

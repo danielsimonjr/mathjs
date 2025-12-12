@@ -1,11 +1,11 @@
-import { factory } from '../../utils/factory.js'
-import { createFloor } from './floor.js'
-import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.js'
-import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.js'
-import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.js'
-import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.js'
-import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
-import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
+import { factory } from '../../utils/factory.ts'
+import { createFloor } from './floor.ts'
+import { createMatAlgo02xDS0 } from '../../type/matrix/utils/matAlgo02xDS0.ts'
+import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.ts'
+import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.ts'
+import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
+import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
+import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

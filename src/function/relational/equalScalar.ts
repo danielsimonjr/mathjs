@@ -1,11 +1,11 @@
-import { nearlyEqual as bigNearlyEqual } from '../../utils/bignumber/nearlyEqual.js'
-import { nearlyEqual } from '../../utils/number.js'
-import { factory } from '../../utils/factory.js'
-import { complexEquals } from '../../utils/complex.js'
-import { createCompareUnits } from './compareUnits.js'
+import { nearlyEqual as bigNearlyEqual } from '../../utils/bignumber/nearlyEqual.ts'
+import { nearlyEqual } from '../../utils/number.ts'
+import { factory } from '../../utils/factory.ts'
+import { complexEquals } from '../../utils/complex.ts'
+import { createCompareUnits } from './compareUnits.ts'
 
-import { TypedFunction, BigNumber, Complex, Fraction } from '../../types.js';
-import { ConfigOptions } from '../../core/config.js';
+import { TypedFunction, BigNumber, Complex, Fraction } from '../../types.ts';
+import { ConfigOptions } from '../../core/config.ts';
 
 const name = 'equalScalar'
 const dependencies = ['typed', 'config']

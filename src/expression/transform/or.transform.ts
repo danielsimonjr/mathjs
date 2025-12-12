@@ -1,6 +1,6 @@
-import { createOr } from '../../function/logical/or.js'
-import { factory } from '../../utils/factory.js'
-import { isCollection } from '../../utils/is.js'
+import { createOr } from '../../function/logical/or.ts'
+import { factory } from '../../utils/factory.ts'
+import { isCollection } from '../../utils/is.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

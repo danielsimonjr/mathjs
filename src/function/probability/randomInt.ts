@@ -1,8 +1,8 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { randomMatrix } from './util/randomMatrix.js'
-import { createRng } from './util/seededRNG.js'
-import { isMatrix } from '../../utils/is.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { randomMatrix } from './util/randomMatrix.ts'
+import { createRng } from './util/seededRNG.ts'
+import { isMatrix } from '../../utils/is.ts'
 
 const name = 'randomInt'
 const dependencies = ['typed', 'config', 'log2', '?on']

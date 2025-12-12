@@ -1,9 +1,9 @@
-import { factory } from '../../utils/factory.js'
-import { arraySize } from '../../utils/array.js'
-import { isMatrix } from '../../utils/is.js'
-import { IndexError } from '../../error/IndexError.js'
+import { factory } from '../../utils/factory.ts'
+import { arraySize } from '../../utils/array.ts'
+import { isMatrix } from '../../utils/is.ts'
+import { IndexError } from '../../error/IndexError.ts'
 
-import { TypedFunction, Matrix, BigNumber } from '../../types.js';
+import { TypedFunction, Matrix, BigNumber } from '../../types.ts';
 
 const name = 'mapSlices'
 const dependencies = ['typed', 'isInteger']

@@ -1,6 +1,6 @@
-import { isMatrix } from '../../utils/is.js'
-import { isInteger } from '../../utils/number.js'
-import { factory } from '../../utils/factory.js'
+import { isMatrix } from '../../utils/is.ts'
+import { isInteger } from '../../utils/number.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface Matrix {

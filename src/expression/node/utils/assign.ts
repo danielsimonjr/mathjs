@@ -1,5 +1,5 @@
-import { errorTransform } from '../../transform/utils/errorTransform.js'
-import { setSafeProperty } from '../../../utils/customs.js'
+import { errorTransform } from '../../transform/utils/errorTransform.ts'
+import { setSafeProperty } from '../../../utils/customs.ts'
 
 export function assignFactory ({ subset, matrix }: { subset: any, matrix: any }) {
   /**

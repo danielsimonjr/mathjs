@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import { deepMap } from '../../utils/collection.js'
-import { absNumber } from '../../plain/number/index.js'
+import { factory } from '../../utils/factory.ts'
+import { deepMap } from '../../utils/collection.ts'
+import { absNumber } from '../../plain/number/index.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

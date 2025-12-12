@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import type { MathNode } from '../../utils/node.js'
+import { factory } from '../../utils/factory.ts'
+import type { MathNode } from '../../utils/node.ts'
 
 const name = 'leafCount'
 const dependencies = [

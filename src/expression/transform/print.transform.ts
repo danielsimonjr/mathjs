@@ -1,6 +1,6 @@
-import { createPrint } from '../../function/string/print.js'
-import { factory } from '../../utils/factory.js'
-import { printTemplate } from '../../utils/print.js'
+import { createPrint } from '../../function/string/print.ts'
+import { factory } from '../../utils/factory.ts'
+import { printTemplate } from '../../utils/print.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

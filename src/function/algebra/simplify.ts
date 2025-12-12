@@ -1,10 +1,10 @@
-import { isParenthesisNode } from '../../utils/is.js'
-import { isConstantNode, isVariableNode, isNumericNode, isConstantExpression } from './simplify/wildcards.js'
-import { factory } from '../../utils/factory.js'
-import { createUtil } from './simplify/util.js'
-import { hasOwnProperty } from '../../utils/object.js'
-import { createEmptyMap, createMap } from '../../utils/map.js'
-import type { MathNode, SymbolNode, ConstantNode, OperatorNode, FunctionNode, ParenthesisNode, ArrayNode, AccessorNode, IndexNode, ObjectNode } from '../../utils/node.js'
+import { isParenthesisNode } from '../../utils/is.ts'
+import { isConstantNode, isVariableNode, isNumericNode, isConstantExpression } from './simplify/wildcards.ts'
+import { factory } from '../../utils/factory.ts'
+import { createUtil } from './simplify/util.ts'
+import { hasOwnProperty } from '../../utils/object.ts'
+import { createEmptyMap, createMap } from '../../utils/map.ts'
+import type { MathNode, SymbolNode, ConstantNode, OperatorNode, FunctionNode, ParenthesisNode, ArrayNode, AccessorNode, IndexNode, ObjectNode } from '../../utils/node.ts'
 
 const name = 'simplify'
 const dependencies = [

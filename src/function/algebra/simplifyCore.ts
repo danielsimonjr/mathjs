@@ -1,10 +1,10 @@
 // @ts-nocheck
 // TODO: This file needs comprehensive TypeScript typing for node manipulation
-import { isAccessorNode, isArrayNode, isConstantNode, isFunctionNode, isIndexNode, isObjectNode, isOperatorNode } from '../../utils/is.js'
-import { getOperator } from '../../expression/operators.js'
-import { createUtil } from './simplify/util.js'
-import { factory } from '../../utils/factory.js'
-import type { MathNode, OperatorNode, FunctionNode, ArrayNode, AccessorNode, IndexNode, ObjectNode, ConstantNode } from '../../utils/node.js'
+import { isAccessorNode, isArrayNode, isConstantNode, isFunctionNode, isIndexNode, isObjectNode, isOperatorNode } from '../../utils/is.ts'
+import { getOperator } from '../../expression/operators.ts'
+import { createUtil } from './simplify/util.ts'
+import { factory } from '../../utils/factory.ts'
+import type { MathNode, OperatorNode, FunctionNode, ArrayNode, AccessorNode, IndexNode, ObjectNode, ConstantNode } from '../../utils/node.ts'
 
 const name = 'simplifyCore'
 const dependencies = [

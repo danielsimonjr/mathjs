@@ -1,12 +1,12 @@
 // deno-lint-ignore-file no-this-alias
-import { isArray, isBigNumber, isCollection, isIndex, isMatrix, isNumber, isString, typeOf } from '../../utils/is.js'
-import { arraySize, getArrayDataType, processSizesWildcard, reshape, resize, unsqueeze, validate, validateIndex, broadcastTo, get } from '../../utils/array.js'
-import { format } from '../../utils/string.js'
-import { isInteger } from '../../utils/number.js'
-import { clone, deepStrictEqual } from '../../utils/object.js'
-import { DimensionError } from '../../error/DimensionError.js'
-import { factory } from '../../utils/factory.js'
-import { optimizeCallback } from '../../utils/optimizeCallback.js'
+import { isArray, isBigNumber, isCollection, isIndex, isMatrix, isNumber, isString, typeOf } from '../../utils/is.ts'
+import { arraySize, getArrayDataType, processSizesWildcard, reshape, resize, unsqueeze, validate, validateIndex, broadcastTo, get } from '../../utils/array.ts'
+import { format } from '../../utils/string.ts'
+import { isInteger } from '../../utils/number.ts'
+import { clone, deepStrictEqual } from '../../utils/object.ts'
+import { DimensionError } from '../../error/DimensionError.ts'
+import { factory } from '../../utils/factory.ts'
+import { optimizeCallback } from '../../utils/optimizeCallback.ts'
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]

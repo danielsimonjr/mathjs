@@ -1,12 +1,12 @@
 // @ts-nocheck
 // TODO: This file needs comprehensive TypeScript typing for the Unit class
 // The Unit class has complex internal structure that requires proper interface definitions
-import { isComplex, isUnit, typeOf } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { memoize } from '../../utils/function.js'
-import { endsWith } from '../../utils/string.js'
-import { clone, hasOwnProperty } from '../../utils/object.js'
-import { createBigNumberPi as createPi } from '../../utils/bignumber/constants.js'
+import { isComplex, isUnit, typeOf } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { memoize } from '../../utils/function.ts'
+import { endsWith } from '../../utils/string.ts'
+import { clone, hasOwnProperty } from '../../utils/object.ts'
+import { createBigNumberPi as createPi } from '../../utils/bignumber/constants.ts'
 import type { MathJsStatic } from '../../../types/index.js'
 
 const name = 'Unit'

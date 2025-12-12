@@ -1,9 +1,9 @@
-import { factory } from '../../utils/factory.js'
-import { deepMap } from '../../utils/collection.js'
-import { unaryPlusNumber } from '../../plain/number/index.js'
-import { safeNumberType } from '../../utils/number.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/create.js'
+import { factory } from '../../utils/factory.ts'
+import { deepMap } from '../../utils/collection.ts'
+import { unaryPlusNumber } from '../../plain/number/index.ts'
+import { safeNumberType } from '../../utils/number.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/create.ts'
 
 const name = 'unaryPlus'
 const dependencies = ['typed', 'config', 'numeric']

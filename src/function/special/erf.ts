@@ -1,8 +1,8 @@
 /* eslint-disable no-loss-of-precision */
 
-import { deepMap } from '../../utils/collection.js'
-import { sign } from '../../utils/number.js'
-import { factory } from '../../utils/factory.js'
+import { deepMap } from '../../utils/collection.ts'
+import { sign } from '../../utils/number.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'erf'
 const dependencies = [

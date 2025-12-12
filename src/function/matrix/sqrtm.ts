@@ -1,7 +1,7 @@
-import { isMatrix } from '../../utils/is.js'
-import { format } from '../../utils/string.js'
-import { arraySize } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { isMatrix } from '../../utils/is.ts'
+import { format } from '../../utils/string.ts'
+import { arraySize } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface Matrix {

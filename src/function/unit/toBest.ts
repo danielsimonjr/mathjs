@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.ts'
 
-import { TypedFunction, Unit } from '../../types.js';
+import { TypedFunction, Unit } from '../../types.ts';
 
 const name = 'toBest'
 const dependencies = ['typed']

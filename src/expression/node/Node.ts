@@ -1,9 +1,9 @@
-import { isNode } from '../../utils/is.js'
+import { isNode } from '../../utils/is.ts'
 
-import { keywords } from '../keywords.js'
-import { deepStrictEqual } from '../../utils/object.js'
-import { factory } from '../../utils/factory.js'
-import { createMap } from '../../utils/map.js'
+import { keywords } from '../keywords.ts'
+import { deepStrictEqual } from '../../utils/object.ts'
+import { factory } from '../../utils/factory.ts'
+import { createMap } from '../../utils/map.ts'
 
 // Type definitions
 type Scope = Map<string, any>

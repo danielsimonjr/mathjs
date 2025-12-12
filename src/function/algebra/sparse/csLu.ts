@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 
-import { factory } from '../../../utils/factory.js'
-import { createCsSpsolve } from './csSpsolve.js'
+import { factory } from '../../../utils/factory.ts'
+import { createCsSpsolve } from './csSpsolve.ts'
 
 const name = 'csLu'
 const dependencies = [

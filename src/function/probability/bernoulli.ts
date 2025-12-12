@@ -1,7 +1,7 @@
-import { factory } from '../../utils/factory.js'
-import { isInteger } from '../../utils/number.js'
+import { factory } from '../../utils/factory.ts'
+import { isInteger } from '../../utils/number.ts'
 
-import { TypedFunction } from '../../types.js';
+import { TypedFunction } from '../../types.ts';
 
 const name = 'bernoulli'
 const dependencies = [

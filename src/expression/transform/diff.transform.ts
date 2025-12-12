@@ -1,7 +1,7 @@
-import { factory } from '../../utils/factory.js'
-import { errorTransform } from './utils/errorTransform.js'
-import { createDiff } from '../../function/matrix/diff.js'
-import { lastDimToZeroBase } from './utils/lastDimToZeroBase.js'
+import { factory } from '../../utils/factory.ts'
+import { errorTransform } from './utils/errorTransform.ts'
+import { createDiff } from '../../function/matrix/diff.ts'
+import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

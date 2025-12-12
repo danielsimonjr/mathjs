@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/config.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/config.ts'
 
 const name = 'nthRoots'
 const dependencies = ['config', 'typed', 'divideScalar', 'Complex']

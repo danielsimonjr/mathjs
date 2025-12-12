@@ -1,8 +1,8 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { csMark } from './csMark.js'
-import { csMarked } from './csMarked.js'
+import { csMark } from './csMark.ts'
+import { csMarked } from './csMarked.ts'
 
 /**
  * Find nonzero pattern of Cholesky L(k,1:k-1) using etree and triu(A(:,k))

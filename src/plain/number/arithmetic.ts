@@ -1,4 +1,4 @@
-import { cbrt, expm1, isInteger, log10, log1p, log2, sign, toFixed } from '../../utils/number.js'
+import { cbrt, expm1, isInteger, log10, log1p, log2, sign, toFixed } from '../../utils/number.ts'
 
 const n1 = 'number'
 const n2 = 'number, number'

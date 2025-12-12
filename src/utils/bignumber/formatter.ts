@@ -1,5 +1,5 @@
-import { isBigNumber, isNumber } from '../is.js'
-import { isInteger, normalizeFormatOptions } from '../number.js'
+import { isBigNumber, isNumber } from '../is.ts'
+import { isInteger, normalizeFormatOptions } from '../number.ts'
 
 /**
  * Formats a BigNumber in a given base

@@ -1,8 +1,8 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { csReach } from './csReach.js'
-import { factory } from '../../../utils/factory.js'
+import { csReach } from './csReach.ts'
+import { factory } from '../../../utils/factory.ts'
 
 const name = 'csSpsolve'
 const dependencies = [

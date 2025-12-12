@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import { createQuantileSeq } from '../../function/statistics/quantileSeq.js'
-import { lastDimToZeroBase } from './utils/lastDimToZeroBase.js'
+import { factory } from '../../utils/factory.ts'
+import { createQuantileSeq } from '../../function/statistics/quantileSeq.ts'
+import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

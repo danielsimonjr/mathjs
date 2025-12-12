@@ -1,7 +1,7 @@
-import { containsCollections, deepForEach, reduce } from '../../utils/collection.js'
-import { arraySize } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
-import { improveErrorMessage } from './utils/improveErrorMessage.js'
+import { containsCollections, deepForEach, reduce } from '../../utils/collection.ts'
+import { arraySize } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
+import { improveErrorMessage } from './utils/improveErrorMessage.ts'
 
 // Type definitions for statistical operations
 interface TypedFunction<T = any> {

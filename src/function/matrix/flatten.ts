@@ -1,5 +1,5 @@
-import { flatten as flattenArray } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { flatten as flattenArray } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'flatten'
 const dependencies = ['typed']

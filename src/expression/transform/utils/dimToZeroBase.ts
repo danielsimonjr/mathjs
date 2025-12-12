@@ -1,4 +1,4 @@
-import { isNumber, isBigNumber } from '../../../utils/is.js'
+import { isNumber, isBigNumber } from '../../../utils/is.ts'
 /**
  * Change last argument dim from one-based to zero-based.
  */

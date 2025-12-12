@@ -1,6 +1,6 @@
-import { isNode, isSymbolNode } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { getPrecedence } from '../operators.js'
+import { isNode, isSymbolNode } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { getPrecedence } from '../operators.ts'
 
 // Type definitions
 interface Node {

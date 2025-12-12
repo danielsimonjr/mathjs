@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.ts'
 
-import { TypedFunction, BigNumber, Complex } from '../../types.js';
+import { TypedFunction, BigNumber, Complex } from '../../types.ts';
 
 const name = 'isBounded'
 const dependencies = ['typed']

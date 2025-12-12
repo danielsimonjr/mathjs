@@ -1,6 +1,6 @@
-import { isConstantNode, isFunctionNode, isOperatorNode, isParenthesisNode } from '../../../utils/is.js'
-export { isConstantNode, isSymbolNode as isVariableNode } from '../../../utils/is.js'
-import type { MathNode, ConstantNode, OperatorNode } from '../../../utils/node.js'
+import { isConstantNode, isFunctionNode, isOperatorNode, isParenthesisNode } from '../../../utils/is.ts'
+export { isConstantNode, isSymbolNode as isVariableNode } from '../../../utils/is.ts'
+import type { MathNode, ConstantNode, OperatorNode } from '../../../utils/node.ts'
 
 export function isNumericNode (x: MathNode): boolean {
   return isConstantNode(x) || (isOperatorNode(x) && (x as any).isUnary() && isConstantNode((x as any).args[0]))

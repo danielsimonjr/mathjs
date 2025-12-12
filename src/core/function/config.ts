@@ -1,5 +1,5 @@
-import { clone, deepExtend } from '../../utils/object.js'
-import { DEFAULT_CONFIG, MathJsConfig } from '../config.js'
+import { clone, deepExtend } from '../../utils/object.ts'
+import { DEFAULT_CONFIG, MathJsConfig } from '../config.ts'
 
 export const MATRIX_OPTIONS = ['Matrix', 'Array'] as const // valid values for option matrix
 export const NUMBER_OPTIONS = ['number', 'BigNumber', 'bigint', 'Fraction'] as const // valid values for option number

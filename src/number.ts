@@ -1,1 +1,1 @@
-export * from './entry/mainNumber.js'
+export * from './entry/mainNumber.ts'

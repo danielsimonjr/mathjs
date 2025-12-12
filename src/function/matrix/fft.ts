@@ -1,5 +1,5 @@
-import { arraySize } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { arraySize } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions for FFT operations
 type ComplexNumber = { re: number; im: number } | number

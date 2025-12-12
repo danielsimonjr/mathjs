@@ -1,4 +1,4 @@
-import { isBigNumber, isObject, BigNumber } from './is.js'
+import { isBigNumber, isObject, BigNumber } from './is.ts'
 
 /**
  * Clone an object

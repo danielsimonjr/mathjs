@@ -1,7 +1,7 @@
-import { errorTransform } from './utils/errorTransform.js'
-import { factory } from '../../utils/factory.js'
-import { createMapSlices } from '../../function/matrix/mapSlices.js'
-import { isBigNumber, isNumber } from '../../utils/is.js'
+import { errorTransform } from './utils/errorTransform.ts'
+import { factory } from '../../utils/factory.ts'
+import { createMapSlices } from '../../function/matrix/mapSlices.ts'
+import { isBigNumber, isNumber } from '../../utils/is.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

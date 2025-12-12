@@ -1,5 +1,5 @@
-import { factory } from '../../../utils/factory.js'
-import { createSolveValidation } from './utils/solveValidation.js'
+import { factory } from '../../../utils/factory.ts'
+import { createSolveValidation } from './utils/solveValidation.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

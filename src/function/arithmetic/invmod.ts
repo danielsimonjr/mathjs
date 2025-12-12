@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import type { MathJsConfig } from '../../core/create.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/create.ts'
 
 type Dependencies = 'typed' | 'config' | 'BigNumber' | 'xgcd' | 'equal' | 'smaller' | 'mod' | 'add' | 'isInteger'
 

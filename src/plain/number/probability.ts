@@ -1,7 +1,7 @@
 /* eslint-disable no-loss-of-precision */
 
-import { isInteger } from '../../utils/number.js'
-import { product } from '../../utils/product.js'
+import { isInteger } from '../../utils/number.ts'
+import { product } from '../../utils/product.ts'
 
 export function gammaNumber(n: number): number {
   let x: number

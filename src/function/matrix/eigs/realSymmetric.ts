@@ -1,4 +1,4 @@
-import { clone } from '../../../utils/object.js'
+import { clone } from '../../../utils/object.ts'
 
 // Type definitions
 interface EigenvectorResult {

@@ -1,7 +1,7 @@
 // Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
-import { csTdfs } from './csTdfs.js'
+import { csTdfs } from './csTdfs.ts'
 
 /**
  * Post order a tree of forest

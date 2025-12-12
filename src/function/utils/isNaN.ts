@@ -1,6 +1,6 @@
-import { deepMap } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
-import { isNaNNumber } from '../../plain/number/index.js'
+import { deepMap } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
+import { isNaNNumber } from '../../plain/number/index.ts'
 
 const name = 'isNaN'
 const dependencies = ['typed']

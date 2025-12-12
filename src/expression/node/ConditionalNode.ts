@@ -1,7 +1,7 @@
-import { isBigNumber, isComplex, isNode, isUnit, typeOf } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { getPrecedence } from '../operators.js'
-import type { MathNode } from './Node.js'
+import { isBigNumber, isComplex, isNode, isUnit, typeOf } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { getPrecedence } from '../operators.ts'
+import type { MathNode } from './Node.ts'
 
 const name = 'ConditionalNode'
 const dependencies = [

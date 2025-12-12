@@ -1,7 +1,7 @@
-import { isConstantNode, typeOf } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
-import { safeNumberType } from '../../utils/number.js'
-import type { MathNode, ConstantNode, SymbolNode, ParenthesisNode, FunctionNode, OperatorNode, FunctionAssignmentNode } from '../../utils/node.js'
+import { isConstantNode, typeOf } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
+import { safeNumberType } from '../../utils/number.ts'
+import type { MathNode, ConstantNode, SymbolNode, ParenthesisNode, FunctionNode, OperatorNode, FunctionAssignmentNode } from '../../utils/node.ts'
 
 const name = 'derivative'
 const dependencies = [

@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js'
 import type { Decimal as DecimalType } from 'decimal.js'
-import { factory } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'BigNumber'
 const dependencies = ['?on', 'config']

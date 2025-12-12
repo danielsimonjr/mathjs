@@ -1,1 +1,1 @@
-export * from './entry/mainAny.js'
+export * from './entry/mainAny.ts'

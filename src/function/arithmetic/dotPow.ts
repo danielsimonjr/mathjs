@@ -1,10 +1,10 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.js'
-import { createMatAlgo07xSSf } from '../../type/matrix/utils/matAlgo07xSSf.js'
-import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.js'
-import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.js'
-import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.ts'
+import { createMatAlgo07xSSf } from '../../type/matrix/utils/matAlgo07xSSf.ts'
+import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
+import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
+import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 
 type Dependencies = 'typed' | 'equalScalar' | 'matrix' | 'pow' | 'DenseMatrix' | 'concat' | 'SparseMatrix'
 

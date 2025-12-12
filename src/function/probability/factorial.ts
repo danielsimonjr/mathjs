@@ -1,6 +1,6 @@
-import { deepMap } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
+import { deepMap } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 const name = 'factorial'
 const dependencies = ['typed', 'gamma']

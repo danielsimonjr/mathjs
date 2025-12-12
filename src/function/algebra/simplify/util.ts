@@ -1,7 +1,7 @@
-import { isFunctionNode, isOperatorNode, isParenthesisNode } from '../../../utils/is.js'
-import { factory } from '../../../utils/factory.js'
-import { hasOwnProperty } from '../../../utils/object.js'
-import type { MathNode, FunctionNode, OperatorNode, SymbolNode } from '../../../utils/node.js'
+import { isFunctionNode, isOperatorNode, isParenthesisNode } from '../../../utils/is.ts'
+import { factory } from '../../../utils/factory.ts'
+import { hasOwnProperty } from '../../../utils/object.ts'
+import type { MathNode, FunctionNode, OperatorNode, SymbolNode } from '../../../utils/node.ts'
 
 const name = 'simplifyUtil'
 const dependencies = [

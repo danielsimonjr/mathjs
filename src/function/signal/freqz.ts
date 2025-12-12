@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import type { Matrix, Complex } from '../../types.js'
+import { factory } from '../../utils/factory.ts'
+import type { Matrix, Complex } from '../../types.ts'
 
 const name = 'freqz'
 

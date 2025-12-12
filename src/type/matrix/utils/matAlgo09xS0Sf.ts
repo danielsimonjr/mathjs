@@ -1,5 +1,5 @@
-import { factory } from '../../../utils/factory.js'
-import { DimensionError } from '../../../error/DimensionError.js'
+import { factory } from '../../../utils/factory.ts'
+import { DimensionError } from '../../../error/DimensionError.ts'
 
 // Type definitions
 type DataType = string | undefined

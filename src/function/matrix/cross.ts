@@ -1,5 +1,5 @@
-import { arraySize, squeeze } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { arraySize, squeeze } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'cross'
 const dependencies = ['typed', 'matrix', 'subtract', 'multiply']

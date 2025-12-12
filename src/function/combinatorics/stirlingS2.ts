@@ -1,6 +1,6 @@
-import { factory } from '../../utils/factory.js'
-import type { TypedFunction } from '../../core/function/typed.js'
-import { isNumber } from '../../utils/is.js'
+import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import { isNumber } from '../../utils/is.ts'
 
 const name = 'stirlingS2'
 const dependencies = [

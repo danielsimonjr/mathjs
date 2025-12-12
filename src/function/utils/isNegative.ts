@@ -1,8 +1,8 @@
-import { deepMap } from '../../utils/collection.js'
-import { factory } from '../../utils/factory.js'
-import { isNegativeNumber } from '../../plain/number/index.js'
-import { nearlyEqual as bigNearlyEqual } from '../../utils/bignumber/nearlyEqual.js'
-import { nearlyEqual } from '../../utils/number.js'
+import { deepMap } from '../../utils/collection.ts'
+import { factory } from '../../utils/factory.ts'
+import { isNegativeNumber } from '../../plain/number/index.ts'
+import { nearlyEqual as bigNearlyEqual } from '../../utils/bignumber/nearlyEqual.ts'
+import { nearlyEqual } from '../../utils/number.ts'
 
 const name = 'isNegative'
 const dependencies = ['typed', 'config']

@@ -1,6 +1,6 @@
-import { clone } from '../../utils/object.js'
-import { squeeze as arraySqueeze } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { clone } from '../../utils/object.ts'
+import { squeeze as arraySqueeze } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 
 const name = 'squeeze'
 const dependencies = ['typed']

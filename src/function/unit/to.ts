@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.js'
+import { factory } from '../../utils/factory.ts'
+import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import type { MathJsStatic } from '../../../types/index.js'
 
 const name = 'to'

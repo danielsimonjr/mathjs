@@ -1,5 +1,5 @@
-import { factory } from '../../utils/factory.js'
-import { noBignumber, noMatrix } from '../../utils/noop.js'
+import { factory } from '../../utils/factory.ts'
+import { noBignumber, noMatrix } from '../../utils/noop.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

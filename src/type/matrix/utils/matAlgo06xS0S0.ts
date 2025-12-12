@@ -1,6 +1,6 @@
-import { factory } from '../../../utils/factory.js'
-import { DimensionError } from '../../../error/DimensionError.js'
-import { scatter } from '../../../utils/collection.js'
+import { factory } from '../../../utils/factory.ts'
+import { DimensionError } from '../../../error/DimensionError.ts'
+import { scatter } from '../../../utils/collection.ts'
 
 // Type definitions
 type DataType = string | undefined

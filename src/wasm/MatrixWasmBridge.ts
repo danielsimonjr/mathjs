@@ -3,8 +3,8 @@
  * Provides high-performance matrix operations using WASM when available
  */
 
-import { wasmLoader, type WasmModule } from './WasmLoader.js'
-import { ParallelMatrix } from '../parallel/ParallelMatrix.js'
+import { wasmLoader, type WasmModule } from './WasmLoader.ts'
+import { ParallelMatrix } from '../parallel/ParallelMatrix.ts'
 
 export interface MatrixOptions {
   useWasm?: boolean

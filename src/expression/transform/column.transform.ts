@@ -1,7 +1,7 @@
-import { errorTransform } from './utils/errorTransform.js'
-import { factory } from '../../utils/factory.js'
-import { createColumn } from '../../function/matrix/column.js'
-import { isNumber } from '../../utils/is.js'
+import { errorTransform } from './utils/errorTransform.ts'
+import { factory } from '../../utils/factory.ts'
+import { createColumn } from '../../function/matrix/column.ts'
+import { isNumber } from '../../utils/is.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

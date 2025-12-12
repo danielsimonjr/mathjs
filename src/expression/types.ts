@@ -3,7 +3,7 @@
 
 export type {
   TypedFunction
-} from '../core/function/typed.js'
+} from '../core/function/typed.ts'
 
 // TypedFunctionConstructor can be defined inline if needed
 export type TypedFunctionConstructor = {

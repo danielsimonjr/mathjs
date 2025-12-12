@@ -1,7 +1,7 @@
-import { isCollection, isMatrix } from './is.js'
-import { IndexError } from '../error/IndexError.js'
-import { arraySize, deepMap as arrayDeepMap, deepForEach as arrayDeepForEach } from './array.js'
-import { _switch } from './switch.js'
+import { isCollection, isMatrix } from './is.ts'
+import { IndexError } from '../error/IndexError.ts'
+import { arraySize, deepMap as arrayDeepMap, deepForEach as arrayDeepForEach } from './array.ts'
+import { _switch } from './switch.ts'
 
 // Type definitions for Matrix interface
 interface Matrix {

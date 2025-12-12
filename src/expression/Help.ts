@@ -1,7 +1,7 @@
-import { isHelp } from '../utils/is.js'
-import { clone } from '../utils/object.js'
-import { format } from '../utils/string.js'
-import { factory } from '../utils/factory.js'
+import { isHelp } from '../utils/is.ts'
+import { clone } from '../utils/object.ts'
+import { format } from '../utils/string.ts'
+import { factory } from '../utils/factory.ts'
 
 const name = 'Help'
 const dependencies = ['evaluate']

@@ -1,7 +1,7 @@
-import { factory } from '../../utils/factory.js'
-import { errorTransform } from './utils/errorTransform.js'
-import { createMin } from '../../function/statistics/min.js'
-import { lastDimToZeroBase } from './utils/lastDimToZeroBase.js'
+import { factory } from '../../utils/factory.ts'
+import { errorTransform } from './utils/errorTransform.ts'
+import { createMin } from '../../function/statistics/min.ts'
+import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
 
 interface TypedFunction<T = any> {
   (...args: any[]): T

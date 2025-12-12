@@ -1,7 +1,7 @@
 // @ts-ignore - no type declarations available
 import naturalSort from 'javascript-natural-sort'
-import { isDenseMatrix, isSparseMatrix, typeOf } from '../../utils/is.js'
-import { factory } from '../../utils/factory.js'
+import { isDenseMatrix, isSparseMatrix, typeOf } from '../../utils/is.ts'
+import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {

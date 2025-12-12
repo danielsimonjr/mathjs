@@ -1,5 +1,5 @@
-import { flatten, generalize, identify } from '../../utils/array.js'
-import { factory } from '../../utils/factory.js'
+import { flatten, generalize, identify } from '../../utils/array.ts'
+import { factory } from '../../utils/factory.ts'
 import type { MathArray, Matrix } from '../../../types/index.js'
 
 const name = 'setIntersect'

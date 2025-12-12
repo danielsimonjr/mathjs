@@ -37,7 +37,7 @@
  */
 
 import typedFunction from 'typed-function'
-import { factory } from '../../utils/factory.js'
+import { factory } from '../../utils/factory.ts'
 import {
   isAccessorNode,
   isArray,
@@ -80,8 +80,8 @@ import {
   isSymbolNode,
   isUndefined,
   isUnit
-} from '../../utils/is.js'
-import { digits } from '../../utils/number.js'
+} from '../../utils/is.ts'
+import { digits } from '../../utils/number.ts'
 
 /**
  * Type definition for a typed function
