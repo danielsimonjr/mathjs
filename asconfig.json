@@ -10,11 +10,12 @@
       "converge": true,
       "noAssert": true,
       "runtime": "stub",
-      "importMemory": true,
+      "importMemory": false,
       "initialMemory": 256,
       "maximumMemory": 16384,
       "memoryBase": 0,
-      "exportRuntime": true
+      "exportRuntime": true,
+      "exportMemory": true
     },
     "debug": {
       "outFile": "lib/wasm/index.debug.wasm",

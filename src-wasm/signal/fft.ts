@@ -1,6 +1,8 @@
 /**
  * WASM-optimized Fast Fourier Transform (FFT)
  * Cooley-Tukey radix-2 decimation-in-time algorithm
+ *
+ * All functions return new arrays for proper WASM/JS interop
  */
 
 /**
@@ -9,14 +11,21 @@
  */
 
 /**
- * In-place FFT (Cooley-Tukey radix-2)
+ * FFT (Cooley-Tukey radix-2)
  * @param data - Complex data array [real0, imag0, real1, imag1, ...]
  * @param n - Number of complex samples (must be power of 2)
  * @param inverse - 1 for IFFT, 0 for FFT
+ * @returns Transformed complex data
  */
-export function fft(data: Float64Array, n: i32, inverse: i32): void {
+export function fft(data: Float64Array, n: i32, inverse: i32): Float64Array {
+  // Copy data
+  const result = new Float64Array(n << 1)
+  for (let i: i32 = 0; i < (n << 1); i++) {
+    result[i] = data[i]
+  }
+
   // Bit-reversal permutation
-  bitReverse(data, n)
+  bitReverse(result, n)
 
   // Cooley-Tukey decimation-in-time
   let size: i32 = 2
@@ -34,20 +43,20 @@ export function fft(data: Float64Array, n: i32, inverse: i32): void {
         const idx1: i32 = (i + j) << 1
         const idx2: i32 = (i + j + halfSize) << 1
 
-        const real1: f64 = data[idx1]
-        const imag1: f64 = data[idx1 + 1]
-        const real2: f64 = data[idx2]
-        const imag2: f64 = data[idx2 + 1]
+        const real1: f64 = result[idx1]
+        const imag1: f64 = result[idx1 + 1]
+        const real2: f64 = result[idx2]
+        const imag2: f64 = result[idx2 + 1]
 
-        // Complex multiplication: twiddle * data[idx2]
+        // Complex multiplication: twiddle * result[idx2]
         const tReal: f64 = real2 * cos - imag2 * sin
         const tImag: f64 = real2 * sin + imag2 * cos
 
         // Butterfly operation
-        data[idx1] = real1 + tReal
-        data[idx1 + 1] = imag1 + tImag
-        data[idx2] = real1 - tReal
-        data[idx2 + 1] = imag1 - tImag
+        result[idx1] = real1 + tReal
+        result[idx1 + 1] = imag1 + tImag
+        result[idx2] = real1 - tReal
+        result[idx2 + 1] = imag1 - tImag
 
         angle += step
       }
@@ -60,13 +69,15 @@ export function fft(data: Float64Array, n: i32, inverse: i32): void {
   if (inverse) {
     const scale: f64 = 1.0 / <f64>n
     for (let i: i32 = 0; i < n << 1; i++) {
-      data[i] *= scale
+      result[i] *= scale
     }
   }
+
+  return result
 }
 
 /**
- * Bit-reversal permutation for FFT
+ * Bit-reversal permutation for FFT (in-place)
  */
 function bitReverse(data: Float64Array, n: i32): void {
   let j: i32 = 0
@@ -101,31 +112,38 @@ function bitReverse(data: Float64Array, n: i32): void {
  * @param rows - Number of rows
  * @param cols - Number of columns
  * @param inverse - 1 for IFFT, 0 for FFT
+ * @returns Transformed 2D complex data
  */
 export function fft2d(
   data: Float64Array,
   rows: i32,
   cols: i32,
   inverse: i32
-): void {
+): Float64Array {
+  // Copy data
+  const result = new Float64Array(rows * cols * 2)
+  for (let i: i32 = 0; i < rows * cols * 2; i++) {
+    result[i] = data[i]
+  }
+
   // FFT on rows
   const rowData: Float64Array = new Float64Array(cols << 1)
   for (let i: i32 = 0; i < rows; i++) {
     // Extract row
     for (let j: i32 = 0; j < cols; j++) {
       const idx: i32 = (i * cols + j) << 1
-      rowData[j << 1] = data[idx]
-      rowData[(j << 1) + 1] = data[idx + 1]
+      rowData[j << 1] = result[idx]
+      rowData[(j << 1) + 1] = result[idx + 1]
     }
 
     // Transform row
-    fft(rowData, cols, inverse)
+    const transformedRow = fftInPlace(rowData, cols, inverse)
 
     // Write back
     for (let j: i32 = 0; j < cols; j++) {
       const idx: i32 = (i * cols + j) << 1
-      data[idx] = rowData[j << 1]
-      data[idx + 1] = rowData[(j << 1) + 1]
+      result[idx] = transformedRow[j << 1]
+      result[idx + 1] = transformedRow[(j << 1) + 1]
     }
   }
 
@@ -135,20 +153,76 @@ export function fft2d(
     // Extract column
     for (let i: i32 = 0; i < rows; i++) {
       const idx: i32 = (i * cols + j) << 1
-      colData[i << 1] = data[idx]
-      colData[(i << 1) + 1] = data[idx + 1]
+      colData[i << 1] = result[idx]
+      colData[(i << 1) + 1] = result[idx + 1]
     }
 
     // Transform column
-    fft(colData, rows, inverse)
+    const transformedCol = fftInPlace(colData, rows, inverse)
 
     // Write back
     for (let i: i32 = 0; i < rows; i++) {
       const idx: i32 = (i * cols + j) << 1
-      data[idx] = colData[i << 1]
-      data[idx + 1] = colData[(i << 1) + 1]
+      result[idx] = transformedCol[i << 1]
+      result[idx + 1] = transformedCol[(i << 1) + 1]
     }
   }
+
+  return result
+}
+
+/**
+ * Internal in-place FFT helper
+ */
+function fftInPlace(data: Float64Array, n: i32, inverse: i32): Float64Array {
+  // Bit-reversal permutation
+  bitReverse(data, n)
+
+  // Cooley-Tukey decimation-in-time
+  let size: i32 = 2
+  while (size <= n) {
+    const halfSize: i32 = size >> 1
+    const step: f64 = (inverse ? 1.0 : -1.0) * 2.0 * Math.PI / <f64>size
+
+    for (let i: i32 = 0; i < n; i += size) {
+      let angle: f64 = 0.0
+
+      for (let j: i32 = 0; j < halfSize; j++) {
+        const cos: f64 = Math.cos(angle)
+        const sin: f64 = Math.sin(angle)
+
+        const idx1: i32 = (i + j) << 1
+        const idx2: i32 = (i + j + halfSize) << 1
+
+        const real1: f64 = data[idx1]
+        const imag1: f64 = data[idx1 + 1]
+        const real2: f64 = data[idx2]
+        const imag2: f64 = data[idx2 + 1]
+
+        const tReal: f64 = real2 * cos - imag2 * sin
+        const tImag: f64 = real2 * sin + imag2 * cos
+
+        data[idx1] = real1 + tReal
+        data[idx1 + 1] = imag1 + tImag
+        data[idx2] = real1 - tReal
+        data[idx2 + 1] = imag1 - tImag
+
+        angle += step
+      }
+    }
+
+    size <<= 1
+  }
+
+  // Normalize for IFFT
+  if (inverse) {
+    const scale: f64 = 1.0 / <f64>n
+    for (let i: i32 = 0; i < n << 1; i++) {
+      data[i] *= scale
+    }
+  }
+
+  return data
 }
 
 /**
@@ -157,15 +231,14 @@ export function fft2d(
  * @param n - Length of signal
  * @param kernel - Convolution kernel (real)
  * @param m - Length of kernel
- * @param result - Output result (real)
+ * @returns Convolution result (real)
  */
 export function convolve(
   signal: Float64Array,
   n: i32,
   kernel: Float64Array,
-  m: i32,
-  result: Float64Array
-): void {
+  m: i32
+): Float64Array {
   // Find next power of 2
   const size: i32 = nextPowerOf2(n + m - 1)
 
@@ -181,65 +254,69 @@ export function convolve(
   }
 
   // Transform both signals
-  fft(signalComplex, size, 0)
-  fft(kernelComplex, size, 0)
+  const signalFFT = fft(signalComplex, size, 0)
+  const kernelFFT = fft(kernelComplex, size, 0)
 
   // Multiply in frequency domain
+  const productFFT = new Float64Array(size << 1)
   for (let i: i32 = 0; i < size; i++) {
     const idx: i32 = i << 1
-    const real1: f64 = signalComplex[idx]
-    const imag1: f64 = signalComplex[idx + 1]
-    const real2: f64 = kernelComplex[idx]
-    const imag2: f64 = kernelComplex[idx + 1]
+    const real1: f64 = signalFFT[idx]
+    const imag1: f64 = signalFFT[idx + 1]
+    const real2: f64 = kernelFFT[idx]
+    const imag2: f64 = kernelFFT[idx + 1]
 
-    signalComplex[idx] = real1 * real2 - imag1 * imag2
-    signalComplex[idx + 1] = real1 * imag2 + imag1 * real2
+    productFFT[idx] = real1 * real2 - imag1 * imag2
+    productFFT[idx + 1] = real1 * imag2 + imag1 * real2
   }
 
   // Inverse transform
-  fft(signalComplex, size, 1)
+  const convolved = fft(productFFT, size, 1)
 
   // Extract real part
+  const result = new Float64Array(n + m - 1)
   for (let i: i32 = 0; i < n + m - 1; i++) {
-    result[i] = signalComplex[i << 1]
+    result[i] = convolved[i << 1]
   }
+
+  return result
 }
 
 /**
  * Real FFT (for real-valued input, more efficient)
  * @param data - Real input data
  * @param n - Number of samples (must be power of 2)
- * @param result - Complex output [real0, imag0, ...]
+ * @returns Complex output [real0, imag0, ...]
  */
-export function rfft(data: Float64Array, n: i32, result: Float64Array): void {
+export function rfft(data: Float64Array, n: i32): Float64Array {
   // Convert to complex format
+  const complex = new Float64Array(n << 1)
   for (let i: i32 = 0; i < n; i++) {
-    result[i << 1] = data[i]
-    result[(i << 1) + 1] = 0.0
+    complex[i << 1] = data[i]
+    complex[(i << 1) + 1] = 0.0
   }
 
   // Perform complex FFT
-  fft(result, n, 0)
+  return fft(complex, n, 0)
 }
 
 /**
  * Inverse real FFT
+ * @param data - Complex input [real0, imag0, ...]
+ * @param n - Number of complex samples
+ * @returns Real output
  */
-export function irfft(data: Float64Array, n: i32, result: Float64Array): void {
-  const temp: Float64Array = new Float64Array(n << 1)
-
-  // Copy complex data
-  for (let i: i32 = 0; i < (n << 1); i++) {
-    temp[i] = data[i]
-  }
-
+export function irfft(data: Float64Array, n: i32): Float64Array {
   // Perform inverse FFT
-  fft(temp, n, 1)
+  const temp = fft(data, n, 1)
 
   // Extract real part
+  const result = new Float64Array(n)
   for (let i: i32 = 0; i < n; i++) {
     result[i] = temp[i << 1]
   }
+
+  return result
 }
 
 // Helper function: find next power of 2
