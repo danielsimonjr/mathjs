@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed - 2025-12-13
+
+**Dependency Updates**
+- **Replaced** `typed-function@4.2.1` with `@danielsimonjr/typed-function@5.0.0-alpha.1` - Enhanced typed-function with WASM acceleration support
+- **Added** `@danielsimonjr/workerpool@10.0.1` - Worker pool for parallel computing
+
+**Bug Fixes**
+- **Fixed** `matrixFromRows` and `matrixFromColumns` to properly handle mixed Array/Matrix arguments, returning arrays when any input is an array (as documented)
+- **Updated** webpack configuration to support WASM modules from `@danielsimonjr/typed-function`
+
+**Internal**
+- Refactored `src/parallel/WorkerPool.ts` to use `@danielsimonjr/workerpool`
+- Updated imports in `src/core/create.js`, `src/core/create.ts`, `src/core/function/typed.js`, `src/utils/optimizeCallback.js`, `src/utils/optimizeCallback.ts`, `tools/matrixmarket.ts`, and `test/benchmark/typed_function_overhead.js`
+
+---
+
 ### 🚀 Major Refactoring in Progress
 
 **TypeScript + WebAssembly + Parallel Computing Architecture**

@@ -1,4 +1,4 @@
-import typedFunction from 'typed-function'
+import typedFunction from '@danielsimonjr/typed-function'
 import { ArgumentsError } from '../error/ArgumentsError.ts'
 import { DimensionError } from '../error/DimensionError.ts'
 import { IndexError } from '../error/IndexError.ts'

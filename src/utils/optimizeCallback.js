@@ -1,4 +1,4 @@
-import typed from 'typed-function'
+import typed from '@danielsimonjr/typed-function'
 import { get, arraySize } from './array.js'
 import { typeOf as _typeOf } from './is.js'
 
