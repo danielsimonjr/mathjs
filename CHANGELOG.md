@@ -26,6 +26,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fixed** `src/parallel/ParallelMatrix.ts` to use `exec()` method instead of non-existent `execute()`
 - **Added** `nullish` function and `nullishDependencies` to TypeScript type definitions
 
+**Parallel Computing Refactoring**
+- **Refactored** `src/parallel/matrix.worker.ts` to use `@danielsimonjr/workerpool` worker API instead of raw Web Worker / worker_threads message-based API
+- **Added** comprehensive worker methods for parallel matrix operations:
+  - Chunk operations (SharedArrayBuffer): `matrixMultiplyChunk`, `matrixAddChunk`, `matrixTransposeChunk`, `dotProductChunk`, `sumChunk`, `matrixScaleChunk`, `matrixSubtractChunk`, `matrixElementMultiplyChunk`
+  - Full operations (non-shared memory): `matrixMultiply`, `matrixAdd`, `matrixTranspose`, `dotProduct`, `sum`, `mean`, `processChunk`, `matrixScale`, `matrixSubtract`, `matrixElementMultiply`
+- **Updated** `src/parallel/ParallelMatrix.ts` with new parallel operations: `subtract`, `scale`, `elementMultiply`, `dotProduct`, `sum`
+- **Added** `getStats()` method to `ParallelMatrix` for monitoring worker pool status
+- **Created** `src/parallel/index.ts` for clean module exports
+
 **Internal**
 - Refactored `src/parallel/WorkerPool.ts` to use `@danielsimonjr/workerpool`
 - Updated imports in `src/core/create.js`, `src/core/create.ts`, `src/core/function/typed.js`, `src/utils/optimizeCallback.js`, `src/utils/optimizeCallback.ts`, `tools/matrixmarket.ts`, and `test/benchmark/typed_function_overhead.js`

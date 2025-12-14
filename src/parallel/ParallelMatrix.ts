@@ -1,9 +1,10 @@
 /**
  * ParallelMatrix provides parallel/multicore operations for matrix computations
- * Uses SharedArrayBuffer for zero-copy data sharing between workers
+ * Uses @danielsimonjr/workerpool for cross-platform worker management
+ * Supports SharedArrayBuffer for zero-copy data sharing between workers
  */
 
-import { WorkerPool, WorkerPoolOptions } from './WorkerPool.ts'
+import { MathWorkerPool, WorkerPoolOptions } from './WorkerPool.js'
 
 export interface MatrixData {
   data: Float64Array | SharedArrayBuffer
@@ -19,15 +20,30 @@ export interface ParallelConfig {
   useSharedMemory?: boolean
 }
 
+// Determine the worker script path based on environment
+function getDefaultWorkerScript(): string {
+  // In production/compiled mode, use .js extension
+  // The TypeScript compiler will output .js files
+  try {
+    return new URL('./matrix.worker.js', import.meta.url).href
+  } catch {
+    // Fallback for environments where URL is not available
+    return './matrix.worker.js'
+  }
+}
+
 export class ParallelMatrix {
-  private static workerPool: WorkerPool | null = null
+  private static workerPool: MathWorkerPool | null = null
   private static config: Required<ParallelConfig> = {
     minSizeForParallel: 1000,
-    workerScript: new URL('./matrix.worker.js', import.meta.url).href,
+    workerScript: getDefaultWorkerScript(),
     maxWorkers: 0, // 0 means auto-detect
     useSharedMemory: typeof SharedArrayBuffer !== 'undefined'
   }
 
+  /**
+   * Configure parallel matrix operations
+   */
   public static configure(config: ParallelConfig): void {
     this.config = { ...this.config, ...config }
     if (this.workerPool) {
@@ -36,12 +52,15 @@ export class ParallelMatrix {
     }
   }
 
-  private static getWorkerPool(): WorkerPool {
+  /**
+   * Get or create the worker pool
+   */
+  private static getWorkerPool(): MathWorkerPool {
     if (!this.workerPool) {
       const options: WorkerPoolOptions = {
         maxWorkers: this.config.maxWorkers || undefined
       }
-      this.workerPool = new WorkerPool(
+      this.workerPool = new MathWorkerPool(
         this.config.workerScript,
         options
       )
@@ -90,7 +109,8 @@ export class ParallelMatrix {
     }
 
     const pool = this.getWorkerPool()
-    const workerCount = pool.workerCount
+    const stats = pool.stats()
+    const workerCount = stats.totalWorkers || 4
     const rowsPerWorker = Math.ceil(aRows / workerCount)
 
     // Convert to shared buffers for zero-copy transfer
@@ -110,7 +130,6 @@ export class ParallelMatrix {
       if (startRow >= aRows) break
 
       const task = pool.exec<void>('matrixMultiplyChunk', [{
-        operation: 'multiply',
         aData: aShared,
         aRows,
         aCols,
@@ -137,7 +156,7 @@ export class ParallelMatrix {
     aRows: number,
     aCols: number,
     bData: number[] | Float64Array,
-    bRows: number,
+    _bRows: number,
     bCols: number
   ): Float64Array {
     const result = new Float64Array(aRows * bCols)
@@ -172,7 +191,8 @@ export class ParallelMatrix {
     }
 
     const pool = this.getWorkerPool()
-    const workerCount = pool.workerCount
+    const stats = pool.stats()
+    const workerCount = stats.totalWorkers || 4
     const chunkSize = Math.ceil(size / workerCount)
 
     const aShared = this.toSharedBuffer(aData)
@@ -190,7 +210,155 @@ export class ParallelMatrix {
       if (start >= size) break
 
       const task = pool.exec<void>('matrixAddChunk', [{
-        operation: 'add',
+        aData: aShared,
+        bData: bShared,
+        start,
+        end,
+        resultData: result
+      }])
+
+      tasks.push(task)
+    }
+
+    await Promise.all(tasks)
+    return result
+  }
+
+  /**
+   * Parallel matrix subtraction: C = A - B
+   */
+  public static async subtract(
+    aData: number[] | Float64Array,
+    bData: number[] | Float64Array,
+    size: number
+  ): Promise<Float64Array> {
+    if (!this.shouldUseParallel(size)) {
+      const result = new Float64Array(size)
+      for (let i = 0; i < size; i++) {
+        result[i] = aData[i] - bData[i]
+      }
+      return result
+    }
+
+    const pool = this.getWorkerPool()
+    const stats = pool.stats()
+    const workerCount = stats.totalWorkers || 4
+    const chunkSize = Math.ceil(size / workerCount)
+
+    const aShared = this.toSharedBuffer(aData)
+    const bShared = this.toSharedBuffer(bData)
+    const resultBuffer = this.config.useSharedMemory
+      ? new SharedArrayBuffer(size * Float64Array.BYTES_PER_ELEMENT)
+      : new ArrayBuffer(size * Float64Array.BYTES_PER_ELEMENT)
+    const result = new Float64Array(resultBuffer)
+
+    const tasks: Promise<void>[] = []
+    for (let i = 0; i < workerCount; i++) {
+      const start = i * chunkSize
+      const end = Math.min(start + chunkSize, size)
+
+      if (start >= size) break
+
+      const task = pool.exec<void>('matrixSubtractChunk', [{
+        aData: aShared,
+        bData: bShared,
+        start,
+        end,
+        resultData: result
+      }])
+
+      tasks.push(task)
+    }
+
+    await Promise.all(tasks)
+    return result
+  }
+
+  /**
+   * Parallel matrix scaling: B = A * scalar
+   */
+  public static async scale(
+    data: number[] | Float64Array,
+    scalar: number,
+    size: number
+  ): Promise<Float64Array> {
+    if (!this.shouldUseParallel(size)) {
+      const result = new Float64Array(size)
+      for (let i = 0; i < size; i++) {
+        result[i] = data[i] * scalar
+      }
+      return result
+    }
+
+    const pool = this.getWorkerPool()
+    const stats = pool.stats()
+    const workerCount = stats.totalWorkers || 4
+    const chunkSize = Math.ceil(size / workerCount)
+
+    const dataShared = this.toSharedBuffer(data)
+    const resultBuffer = this.config.useSharedMemory
+      ? new SharedArrayBuffer(size * Float64Array.BYTES_PER_ELEMENT)
+      : new ArrayBuffer(size * Float64Array.BYTES_PER_ELEMENT)
+    const result = new Float64Array(resultBuffer)
+
+    const tasks: Promise<void>[] = []
+    for (let i = 0; i < workerCount; i++) {
+      const start = i * chunkSize
+      const end = Math.min(start + chunkSize, size)
+
+      if (start >= size) break
+
+      const task = pool.exec<void>('matrixScaleChunk', [{
+        data: dataShared,
+        scalar,
+        start,
+        end,
+        resultData: result
+      }])
+
+      tasks.push(task)
+    }
+
+    await Promise.all(tasks)
+    return result
+  }
+
+  /**
+   * Parallel element-wise multiplication (Hadamard product): C = A .* B
+   */
+  public static async elementMultiply(
+    aData: number[] | Float64Array,
+    bData: number[] | Float64Array,
+    size: number
+  ): Promise<Float64Array> {
+    if (!this.shouldUseParallel(size)) {
+      const result = new Float64Array(size)
+      for (let i = 0; i < size; i++) {
+        result[i] = aData[i] * bData[i]
+      }
+      return result
+    }
+
+    const pool = this.getWorkerPool()
+    const stats = pool.stats()
+    const workerCount = stats.totalWorkers || 4
+    const chunkSize = Math.ceil(size / workerCount)
+
+    const aShared = this.toSharedBuffer(aData)
+    const bShared = this.toSharedBuffer(bData)
+    const resultBuffer = this.config.useSharedMemory
+      ? new SharedArrayBuffer(size * Float64Array.BYTES_PER_ELEMENT)
+      : new ArrayBuffer(size * Float64Array.BYTES_PER_ELEMENT)
+    const result = new Float64Array(resultBuffer)
+
+    const tasks: Promise<void>[] = []
+    for (let i = 0; i < workerCount; i++) {
+      const start = i * chunkSize
+      const end = Math.min(start + chunkSize, size)
+
+      if (start >= size) break
+
+      const task = pool.exec<void>('matrixElementMultiplyChunk', [{
         aData: aShared,
         bData: bShared,
         start,
@@ -226,7 +394,8 @@ export class ParallelMatrix {
     }
 
     const pool = this.getWorkerPool()
-    const workerCount = pool.workerCount
+    const stats = pool.stats()
+    const workerCount = stats.totalWorkers || 4
     const rowsPerWorker = Math.ceil(rows / workerCount)
 
     const dataShared = this.toSharedBuffer(data)
@@ -243,7 +412,6 @@ export class ParallelMatrix {
       if (startRow >= rows) break
 
       const task = pool.exec<void>('matrixTransposeChunk', [{
-        operation: 'transpose',
         data: dataShared,
         rows,
         cols,
@@ -257,6 +425,101 @@ export class ParallelMatrix {
 
     await Promise.all(tasks)
     return result
+  }
+
+  /**
+   * Parallel dot product: result = sum(A .* B)
+   */
+  public static async dotProduct(
+    aData: number[] | Float64Array,
+    bData: number[] | Float64Array,
+    size: number
+  ): Promise<number> {
+    if (!this.shouldUseParallel(size)) {
+      let sum = 0
+      for (let i = 0; i < size; i++) {
+        sum += aData[i] * bData[i]
+      }
+      return sum
+    }
+
+    const pool = this.getWorkerPool()
+    const stats = pool.stats()
+    const workerCount = stats.totalWorkers || 4
+    const chunkSize = Math.ceil(size / workerCount)
+
+    const aShared = this.toSharedBuffer(aData)
+    const bShared = this.toSharedBuffer(bData)
+
+    const tasks: Promise<number>[] = []
+    for (let i = 0; i < workerCount; i++) {
+      const start = i * chunkSize
+      const end = Math.min(start + chunkSize, size)
+
+      if (start >= size) break
+
+      const task = pool.exec<number>('dotProductChunk', [{
+        aData: aShared,
+        bData: bShared,
+        start,
+        end
+      }])
+
+      tasks.push(task)
+    }
+
+    const partialSums = await Promise.all(tasks)
+    return partialSums.reduce((a, b) => a + b, 0)
+  }
+
+  /**
+   * Parallel sum: result = sum(A)
+   */
+  public static async sum(
+    data: number[] | Float64Array,
+    size: number
+  ): Promise<number> {
+    if (!this.shouldUseParallel(size)) {
+      let sum = 0
+      for (let i = 0; i < size; i++) {
+        sum += data[i]
+      }
+      return sum
+    }
+
+    const pool = this.getWorkerPool()
+    const stats = pool.stats()
+    const workerCount = stats.totalWorkers || 4
+    const chunkSize = Math.ceil(size / workerCount)
+
+    const dataShared = this.toSharedBuffer(data)
+
+    const tasks: Promise<number>[] = []
+    for (let i = 0; i < workerCount; i++) {
+      const start = i * chunkSize
+      const end = Math.min(start + chunkSize, size)
+
+      if (start >= size) break
+
+      const task = pool.exec<number>('sumChunk', [{
+        data: dataShared,
+        start,
+        end
+      }])
+
+      tasks.push(task)
+    }
+
+    const partialSums = await Promise.all(tasks)
+    return partialSums.reduce((a, b) => a + b, 0)
+  }
+
+  /**
+   * Get pool statistics
+   */
+  public static getStats(): { totalWorkers: number; busyWorkers: number; idleWorkers: number; pendingTasks: number } | null {
+    if (!this.workerPool) return null
+    return this.workerPool.stats()
   }
 
   /**
