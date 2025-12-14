@@ -17,12 +17,12 @@ import { lruQueue } from './lruQueue.ts'
  *    unlimited (default)
  * @return {function}                       Returns the memoized function
  */
-interface MemoizeCache {
+export interface MemoizeCache {
   values: Map<string, any>;
   lru: ReturnType<typeof lruQueue>;
 }
 
-interface MemoizedFunction {
+export interface MemoizedFunction {
   (...args: any[]): any;
   cache?: MemoizeCache;
 }

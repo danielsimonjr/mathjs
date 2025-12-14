@@ -271,6 +271,16 @@ gulp.task('clean', clean)
 
 gulp.task('docs', generateDocs)
 
+// Compile task - compiles JavaScript source files without bundling or docs
+gulp.task('compile', gulp.series(
+  updateVersionFile,
+  generateEntryFilesCallback,
+  compileCommonJs,
+  compileEntryFiles,
+  compileESModules,
+  writeCompiledHeader
+))
+
 // check whether any of the source files contains non-ascii characters
 gulp.task('validate:ascii', validateAscii)
 
