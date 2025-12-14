@@ -1,6 +1,7 @@
 {
   "phase": 1,
   "sprint": 1,
+  "globalSprintNumber": 1,
   "title": "Critical TypeScript Fixes - Core Type Exports & Critical Errors",
   "week": "Week 1",
   "effort": "2-3 hours",
