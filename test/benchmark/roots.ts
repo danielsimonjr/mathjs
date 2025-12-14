@@ -6,7 +6,7 @@ import { polynomialRoot } from '../../lib/esm/index.js'
 import { formatTaskResult } from './utils/formatTaskResult.js'
 
 const maxCoeff = 5
-function countRoots () {
+function countRoots() {
   let polys = 0
   let roots = 0
   for (let d = 0; d <= maxCoeff; ++d) {
@@ -28,11 +28,15 @@ console.log('polynomials (with coefficients <=', maxCoeff, ')')
 
 const results = []
 
-const bench = new Bench({ time: 100, iterations: 100 })
-  .add('count roots', function () {
+const bench = new Bench({ time: 100, iterations: 100 }).add(
+  'count roots',
+  function () {
     const res = countRoots()
     results.push(res)
-  })
+  }
+)
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()

@@ -29,21 +29,34 @@ interface Dependencies {
 }
 
 const name = 'and'
-const dependencies = ['typed', 'matrix', 'zeros', 'add', 'equalScalar', 'not', 'concat']
+const dependencies = [
+  'typed',
+  'matrix',
+  'zeros',
+  'add',
+  'equalScalar',
+  'not',
+  'concat'
+]
 
-export const createAndTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, zeros, not, concat }: Dependencies) => {
-  const and = createAnd({ typed, matrix, equalScalar, zeros, not, concat })
+export const createAndTransform = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, matrix, equalScalar, zeros, not, concat }: Dependencies) => {
+    const and = createAnd({ typed, matrix, equalScalar, zeros, not, concat })
 
-  function andTransform(args: Node[], math: any, scope: any): any {
-    const condition1 = args[0].compile().evaluate(scope)
-    if (!isCollection(condition1) && !and(condition1, true)) {
-      return false
+    function andTransform(args: Node[], math: any, scope: any): any {
+      const condition1 = args[0].compile().evaluate(scope)
+      if (!isCollection(condition1) && !and(condition1, true)) {
+        return false
+      }
+      const condition2 = args[1].compile().evaluate(scope)
+      return and(condition1, condition2)
     }
-    const condition2 = args[1].compile().evaluate(scope)
-    return and(condition1, condition2)
-  }
 
-  andTransform.rawArgs = true
+    andTransform.rawArgs = true
 
-  return andTransform as TransformFunction
-}, { isTransformFunction: true })
+    return andTransform as TransformFunction
+  },
+  { isTransformFunction: true }
+)

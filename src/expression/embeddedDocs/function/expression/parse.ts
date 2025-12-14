@@ -7,7 +7,8 @@ export const parseDocs = {
     'parse([expr1, expr2, expr3, ...])',
     'parse([expr1, expr2, expr3, ...], options)'
   ],
-  description: 'Parse an expression. Returns a node tree, which can be evaluated by invoking node.evaluate() or transformed into a functional object via node.compile().',
+  description:
+    'Parse an expression. Returns a node tree, which can be evaluated by invoking node.evaluate() or transformed into a functional object via node.compile().',
   examples: [
     'node1 = parse("sqrt(3^2 + 4^2)")',
     'node1.evaluate()',

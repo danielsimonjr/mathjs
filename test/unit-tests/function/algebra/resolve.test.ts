@@ -10,17 +10,10 @@ describe('resolve', function () {
   it('should substitute scoped constants', function () {
     const sumxy = math.parse('x+y')
     const collapsingScope = { x: math.parse('y'), y: math.parse('z') }
+    assert.strictEqual(math.resolve(sumxy, { x: 1 }).toString(), '1 + y') // direct
+    assert.strictEqual(math.resolve(sumxy, collapsingScope).toString(), 'z + z')
     assert.strictEqual(
-      math.resolve(sumxy, { x: 1 }).toString(),
-      '1 + y'
-    ) // direct
-    assert.strictEqual(
-      math.resolve(sumxy, collapsingScope).toString(),
-      'z + z'
-    )
-    assert.strictEqual(
-      math.resolve(
-        math.parse('[x,y,1,w]'), collapsingScope).toString(),
+      math.resolve(math.parse('[x,y,1,w]'), collapsingScope).toString(),
       '[z, z, 1, w]'
     )
     assert.strictEqual(
@@ -37,9 +30,15 @@ describe('resolve', function () {
     simplifyAndCompare('x+y', '3*x', { y: math.parse('x+x') })
     simplifyAndCompare('x+y', '6', { x: 2, y: math.parse('x+x') })
     simplifyAndCompare('x+(y+2-1-1)', '6', { x: 2, y: math.parse('x+x') }) // parentheses
-    simplifyAndCompare('log(x+y)', String(Math.log(6)), { x: 2, y: math.parse('x+x') }) // function
-    simplifyAndCompare('combinations( ceil(abs(sin(x)) * (y+3)), abs(x) )',
-      'combinations(ceil(0.9092974268256817 * (y + 3) ), 2)', { x: -2 })
+    simplifyAndCompare('log(x+y)', String(Math.log(6)), {
+      x: 2,
+      y: math.parse('x+x')
+    }) // function
+    simplifyAndCompare(
+      'combinations( ceil(abs(sin(x)) * (y+3)), abs(x) )',
+      'combinations(ceil(0.9092974268256817 * (y + 3) ), 2)',
+      { x: -2 }
+    )
 
     simplifyAndCompare('size(text)[1]', '11', { text: 'hello world' })
   })
@@ -49,18 +48,23 @@ describe('resolve', function () {
     assert.deepStrictEqual(math.resolve('x+y', { x: 1 }), math.parse('1 + y'))
     assert.deepStrictEqual(
       math.resolve('x + y', collapsingScope),
-      math.parse('z + z'))
+      math.parse('z + z')
+    )
     assert.deepStrictEqual(
       math.resolve('[x, y, 1, w]', collapsingScope),
-      math.parse('[z, z, 1, w]'))
+      math.parse('[z, z, 1, w]')
+    )
   })
 
   it('should substitute scoped constants from Map like scopes', function () {
     assert.strictEqual(
-      math.resolve(math.parse('x+y'), new Map([['x', 1]])).toString(), '1 + y'
+      math.resolve(math.parse('x+y'), new Map([['x', 1]])).toString(),
+      '1 + y'
     ) // direct
     assert.deepStrictEqual(
-      math.resolve('x+y', new Map([['x', 1]])), math.parse('1 + y'))
+      math.resolve('x+y', new Map([['x', 1]])),
+      math.parse('1 + y')
+    )
     simplifyAndCompare('x+y', 'x+y', new Map()) // operator
     simplifyAndCompare('x+y', 'y+1', new Map([['x', 1]]))
     simplifyAndCompare('x+y', 'y+1', new Map([['x', math.parse('1')]]))
@@ -94,13 +98,16 @@ describe('resolve', function () {
     const sumxy = math.parse('x+y')
     assert.throws(
       () => math.resolve(sumxy, { x: math.parse('x') }),
-      /ReferenceError.*\{x\}/)
+      /ReferenceError.*\{x\}/
+    )
     assert.throws(
-      () => math.resolve(sumxy, {
-        y: math.parse('3z'),
-        z: math.parse('1-x'),
-        x: math.parse('cos(y)')
-      }),
-      /ReferenceError.*\{x, y, z\}/)
+      () =>
+        math.resolve(sumxy, {
+          y: math.parse('3z'),
+          z: math.parse('1-x'),
+          x: math.parse('cos(y)')
+        }),
+      /ReferenceError.*\{x, y, z\}/
+    )
   })
 })

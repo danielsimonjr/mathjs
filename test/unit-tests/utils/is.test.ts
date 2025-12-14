@@ -1,7 +1,13 @@
 // @ts-nocheck
 import assert from 'assert'
 import math from '../../../src/defaultInstance.js'
-import { isBigInt, isBoolean, isNumber, isObject, isString } from '../../../src/utils/is.js'
+import {
+  isBigInt,
+  isBoolean,
+  isNumber,
+  isObject,
+  isString
+} from '../../../src/utils/is.js'
 
 const { bignumber, complex, fraction, matrix, parse } = math
 
@@ -15,7 +21,10 @@ describe('is', function () {
     assert.strictEqual(isObject(complex(2, 3)), false)
     assert.strictEqual(isObject(parse('2')), false)
     assert.strictEqual(isObject(/test/), false)
-    assert.strictEqual(isObject(function () {}), false)
+    assert.strictEqual(
+      isObject(function () {}),
+      false
+    )
     assert.strictEqual(isObject(2), false)
     assert.strictEqual(isObject(null), false)
     assert.strictEqual(isObject(undefined), false)
@@ -44,7 +53,7 @@ describe('is', function () {
 
   it('isNumber', function () {
     assert.strictEqual(isNumber(1), true)
-    assert.strictEqual(isNumber(2e+3), true)
+    assert.strictEqual(isNumber(2e3), true)
     assert.strictEqual(isNumber(Number(2.3)), true)
     assert.strictEqual(isNumber(NaN), true)
     assert.strictEqual(isNumber(-23), true)

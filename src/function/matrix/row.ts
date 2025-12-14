@@ -31,56 +31,58 @@ interface Dependencies {
 const name = 'row'
 const dependencies = ['typed', 'Index', 'matrix', 'range']
 
-export const createRow = /* #__PURE__ */ factory(name, dependencies, ({ typed, Index, matrix, range }: Dependencies) => {
-  /**
-   * Return a row from a Matrix.
-   *
-   * Syntax:
-   *
-   *     math.row(value, index)
-   *
-   * Example:
-   *
-   *     // get a row
-   *     const d = [[1, 2], [3, 4]]
-   *     math.row(d, 1) // returns [[3, 4]]
-   *
-   * See also:
-   *
-   *     column
-   *
-   * @param {Array | Matrix } value   An array or matrix
-   * @param {number} row              The index of the row
-   * @return {Array | Matrix}         The retrieved row
-   */
-  return typed(name, {
-    'Matrix, number': _row,
+export const createRow = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, Index, matrix, range }: Dependencies) => {
+    /**
+     * Return a row from a Matrix.
+     *
+     * Syntax:
+     *
+     *     math.row(value, index)
+     *
+     * Example:
+     *
+     *     // get a row
+     *     const d = [[1, 2], [3, 4]]
+     *     math.row(d, 1) // returns [[3, 4]]
+     *
+     * See also:
+     *
+     *     column
+     *
+     * @param {Array | Matrix } value   An array or matrix
+     * @param {number} row              The index of the row
+     * @return {Array | Matrix}         The retrieved row
+     */
+    return typed(name, {
+      'Matrix, number': _row,
 
-    'Array, number': function (value: any[], row: number): any[] {
-      return _row(matrix(clone(value)), row).valueOf() as any[]
+      'Array, number': function (value: any[], row: number): any[] {
+        return _row(matrix(clone(value)), row).valueOf() as any[]
+      }
+    })
+
+    /**
+     * Retrieve a row of a matrix
+     * @param {Matrix } value  A matrix
+     * @param {number} row     The index of the row
+     * @return {Matrix}        The retrieved row
+     */
+    function _row(value: Matrix, row: number): Matrix {
+      // check dimensions
+      if ((value as any).size().length !== 2) {
+        throw new Error('Only two dimensional matrix is supported')
+      }
+
+      validateIndex(row, (value as any).size()[0])
+
+      const columnRange = range(0, (value as any).size()[1])
+      const index = new Index([row], columnRange)
+      const result = (value as any).subset(index)
+      // once config.legacySubset just return result
+      return isMatrix(result) ? (result as Matrix) : matrix([[result]])
     }
-  })
-
-  /**
-   * Retrieve a row of a matrix
-   * @param {Matrix } value  A matrix
-   * @param {number} row     The index of the row
-   * @return {Matrix}        The retrieved row
-   */
-  function _row (value: Matrix, row: number): Matrix {
-    // check dimensions
-    if ((value as any).size().length !== 2) {
-      throw new Error('Only two dimensional matrix is supported')
-    }
-
-    validateIndex(row, (value as any).size()[0])
-
-    const columnRange = range(0, (value as any).size()[1])
-    const index = new Index([row], columnRange)
-    const result = (value as any).subset(index)
-    // once config.legacySubset just return result
-    return isMatrix(result)
-      ? result as Matrix
-      : matrix([[result]])
   }
-})
+)

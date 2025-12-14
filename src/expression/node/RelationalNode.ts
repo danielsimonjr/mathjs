@@ -6,14 +6,21 @@ import { factory } from '../../utils/factory.ts'
 
 // Type definitions
 interface Node {
-  _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
+  _compile: (
+    math: Record<string, any>,
+    argNames: Record<string, boolean>
+  ) => CompileFunction
   _ifNode: (node: any) => Node
   toString: (options?: StringOptions) => string
   toHTML: (options?: StringOptions) => string
   toTex: (options?: StringOptions) => string
 }
 
-type CompileFunction = (scope: any, args: Record<string, any>, context: any) => any
+type CompileFunction = (
+  scope: any,
+  args: Record<string, any>,
+  context: any
+) => any
 
 interface StringOptions {
   parenthesis?: 'keep' | 'auto' | 'all'
@@ -26,232 +33,304 @@ interface Dependencies {
 }
 
 const name = 'RelationalNode'
-const dependencies = [
-  'Node'
-]
+const dependencies = ['Node']
 
-export const createRelationalNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: Dependencies) => {
-  const operatorMap: Record<string, string> = {
-    equal: '==',
-    unequal: '!=',
-    smaller: '<',
-    larger: '>',
-    smallerEq: '<=',
-    largerEq: '>='
-  }
-
-  class RelationalNode extends Node {
-    conditionals: string[]
-    params: Node[]
-
-    /**
-     * A node representing a chained conditional expression, such as 'x > y > z'
-     *
-     * @param {String[]} conditionals
-     *     An array of conditional operators used to compare the parameters
-     * @param {Node[]} params
-     *     The parameters that will be compared
-     *
-     * @constructor RelationalNode
-     * @extends {Node}
-     */
-    constructor (conditionals: string[], params: Node[]) {
-      super()
-      if (!Array.isArray(conditionals)) { throw new TypeError('Parameter conditionals must be an array') }
-      if (!Array.isArray(params)) { throw new TypeError('Parameter params must be an array') }
-      if (conditionals.length !== params.length - 1) {
-        throw new TypeError(
-          'Parameter params must contain exactly one more element ' +
-            'than parameter conditionals')
-      }
-
-      this.conditionals = conditionals
-      this.params = params
+export const createRelationalNode = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ Node }: Dependencies) => {
+    const operatorMap: Record<string, string> = {
+      equal: '==',
+      unequal: '!=',
+      smaller: '<',
+      larger: '>',
+      smallerEq: '<=',
+      largerEq: '>='
     }
 
-    // @ts-expect-error: intentionally overriding Function.name
-    static name = name
-    get type (): string { return name }
-    get isRelationalNode (): boolean { return true }
+    class RelationalNode extends Node {
+      conditionals: string[]
+      params: Node[]
 
-    /**
-     * Compile a node into a JavaScript function.
-     * This basically pre-calculates as much as possible and only leaves open
-     * calculations which depend on a dynamic scope with variables.
-     * @param {Object} math     Math.js namespace with functions and constants.
-     * @param {Object} argNames An object with argument names as key and `true`
-     *                          as value. Used in the SymbolNode to optimize
-     *                          for arguments from user assigned functions
-     *                          (see FunctionAssignmentNode) or special symbols
-     *                          like `end` (see IndexNode).
-     * @return {function} Returns a function which can be called like:
-     *                        evalNode(scope: Object, args: Object, context: *)
-     */
-    // @ts-expect-error: method signature matches MathNode interface
-    _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
-      const self = this
-
-      const compiled = this.params.map((p: Node): CompileFunction => p._compile(math, argNames))
-
-      return function evalRelationalNode (scope: any, args: Record<string, any>, context: any): boolean {
-        let evalLhs: any
-        let evalRhs = compiled[0](scope, args, context)
-
-        for (let i = 0; i < self.conditionals.length; i++) {
-          evalLhs = evalRhs
-          evalRhs = compiled[i + 1](scope, args, context)
-          const condFn = getSafeProperty(math, self.conditionals[i])
-          if (!condFn(evalLhs, evalRhs)) {
-            return false
-          }
+      /**
+       * A node representing a chained conditional expression, such as 'x > y > z'
+       *
+       * @param {String[]} conditionals
+       *     An array of conditional operators used to compare the parameters
+       * @param {Node[]} params
+       *     The parameters that will be compared
+       *
+       * @constructor RelationalNode
+       * @extends {Node}
+       */
+      constructor(conditionals: string[], params: Node[]) {
+        super()
+        if (!Array.isArray(conditionals)) {
+          throw new TypeError('Parameter conditionals must be an array')
         }
+        if (!Array.isArray(params)) {
+          throw new TypeError('Parameter params must be an array')
+        }
+        if (conditionals.length !== params.length - 1) {
+          throw new TypeError(
+            'Parameter params must contain exactly one more element ' +
+              'than parameter conditionals'
+          )
+        }
+
+        this.conditionals = conditionals
+        this.params = params
+      }
+
+      // @ts-expect-error: intentionally overriding Function.name
+      static name = name
+      get type(): string {
+        return name
+      }
+      get isRelationalNode(): boolean {
         return true
       }
-    }
 
-    /**
-     * Execute a callback for each of the child nodes of this node
-     * @param {function(child: Node, path: string, parent: Node)} callback
-     */
-    forEach (callback: (child: Node, path: string, parent: RelationalNode) => void): void {
-      this.params.forEach((n: Node, i: number) => callback(n, 'params[' + i + ']', this), this)
-    }
+      /**
+       * Compile a node into a JavaScript function.
+       * This basically pre-calculates as much as possible and only leaves open
+       * calculations which depend on a dynamic scope with variables.
+       * @param {Object} math     Math.js namespace with functions and constants.
+       * @param {Object} argNames An object with argument names as key and `true`
+       *                          as value. Used in the SymbolNode to optimize
+       *                          for arguments from user assigned functions
+       *                          (see FunctionAssignmentNode) or special symbols
+       *                          like `end` (see IndexNode).
+       * @return {function} Returns a function which can be called like:
+       *                        evalNode(scope: Object, args: Object, context: *)
+       */
+      // @ts-expect-error: method signature matches MathNode interface
+      _compile(
+        math: Record<string, any>,
+        argNames: Record<string, boolean>
+      ): CompileFunction {
+        const self = this
 
-    /**
-     * Create a new RelationalNode whose children are the results of calling
-     * the provided callback function for each child of the original node.
-     * @param {function(child: Node, path: string, parent: Node): Node} callback
-     * @returns {RelationalNode} Returns a transformed copy of the node
-     */
-    map (callback: (child: Node, path: string, parent: RelationalNode) => Node): RelationalNode {
-      return new RelationalNode(
-        this.conditionals.slice(),
-        this.params.map(
-          (n: Node, i: number) => this._ifNode(callback(n, 'params[' + i + ']', this)), this))
-    }
+        const compiled = this.params.map(
+          (p: Node): CompileFunction => p._compile(math, argNames)
+        )
 
-    /**
-     * Create a clone of this node, a shallow copy
-     * @return {RelationalNode}
-     */
-    clone (): RelationalNode {
-      return new RelationalNode(this.conditionals, this.params)
-    }
+        return function evalRelationalNode(
+          scope: any,
+          args: Record<string, any>,
+          context: any
+        ): boolean {
+          let evalLhs: any
+          let evalRhs = compiled[0](scope, args, context)
 
-    /**
-     * Get string representation.
-     * @param {Object} options
-     * @return {string} str
-     */
-    _toString (options?: StringOptions): string {
-      const parenthesis =
-          (options && options.parenthesis) ? options.parenthesis : 'keep'
-      const precedence =
-          getPrecedence(this as any, parenthesis, options && options.implicit || 'hide', undefined)
-
-      const paramStrings = this.params.map(function (p: Node, index: number): string {
-        const paramPrecedence =
-            getPrecedence(p as any, parenthesis, options && options.implicit || 'hide', undefined)
-        return (parenthesis === 'all' ||
-                (paramPrecedence !== null && paramPrecedence <= precedence))
-          ? '(' + p.toString(options) + ')'
-          : p.toString(options)
-      })
-
-      let ret = paramStrings[0]
-      for (let i = 0; i < this.conditionals.length; i++) {
-        ret += ' ' + operatorMap[this.conditionals[i]]
-        ret += ' ' + paramStrings[i + 1]
+          for (let i = 0; i < self.conditionals.length; i++) {
+            evalLhs = evalRhs
+            evalRhs = compiled[i + 1](scope, args, context)
+            const condFn = getSafeProperty(math, self.conditionals[i])
+            if (!condFn(evalLhs, evalRhs)) {
+              return false
+            }
+          }
+          return true
+        }
       }
 
-      return ret
-    }
+      /**
+       * Execute a callback for each of the child nodes of this node
+       * @param {function(child: Node, path: string, parent: Node)} callback
+       */
+      forEach(
+        callback: (child: Node, path: string, parent: RelationalNode) => void
+      ): void {
+        this.params.forEach(
+          (n: Node, i: number) => callback(n, 'params[' + i + ']', this),
+          this
+        )
+      }
 
-    /**
-     * Get a JSON representation of the node
-     * @returns {Object}
-     */
-    toJSON (): Record<string, any> {
-      return {
-        mathjs: name,
-        conditionals: this.conditionals,
-        params: this.params
+      /**
+       * Create a new RelationalNode whose children are the results of calling
+       * the provided callback function for each child of the original node.
+       * @param {function(child: Node, path: string, parent: Node): Node} callback
+       * @returns {RelationalNode} Returns a transformed copy of the node
+       */
+      map(
+        callback: (child: Node, path: string, parent: RelationalNode) => Node
+      ): RelationalNode {
+        return new RelationalNode(
+          this.conditionals.slice(),
+          this.params.map(
+            (n: Node, i: number) =>
+              this._ifNode(callback(n, 'params[' + i + ']', this)),
+            this
+          )
+        )
+      }
+
+      /**
+       * Create a clone of this node, a shallow copy
+       * @return {RelationalNode}
+       */
+      clone(): RelationalNode {
+        return new RelationalNode(this.conditionals, this.params)
+      }
+
+      /**
+       * Get string representation.
+       * @param {Object} options
+       * @return {string} str
+       */
+      _toString(options?: StringOptions): string {
+        const parenthesis =
+          options && options.parenthesis ? options.parenthesis : 'keep'
+        const precedence = getPrecedence(
+          this as any,
+          parenthesis,
+          (options && options.implicit) || 'hide',
+          undefined
+        )
+
+        const paramStrings = this.params.map(function (
+          p: Node,
+          _index: number
+        ): string {
+          const paramPrecedence = getPrecedence(
+            p as any,
+            parenthesis,
+            (options && options.implicit) || 'hide',
+            undefined
+          )
+          return parenthesis === 'all' ||
+            (paramPrecedence !== null && paramPrecedence <= precedence)
+            ? '(' + p.toString(options) + ')'
+            : p.toString(options)
+        })
+
+        let ret = paramStrings[0]
+        for (let i = 0; i < this.conditionals.length; i++) {
+          ret += ' ' + operatorMap[this.conditionals[i]]
+          ret += ' ' + paramStrings[i + 1]
+        }
+
+        return ret
+      }
+
+      /**
+       * Get a JSON representation of the node
+       * @returns {Object}
+       */
+      toJSON(): Record<string, any> {
+        return {
+          mathjs: name,
+          conditionals: this.conditionals,
+          params: this.params
+        }
+      }
+
+      /**
+       * Instantiate a RelationalNode from its JSON representation
+       * @param {Object} json
+       *     An object structured like
+       *     `{"mathjs": "RelationalNode", "conditionals": ..., "params": ...}`,
+       *     where mathjs is optional
+       * @returns {RelationalNode}
+       */
+      static fromJSON(json: {
+        conditionals: string[]
+        params: Node[]
+      }): RelationalNode {
+        return new RelationalNode(json.conditionals, json.params)
+      }
+
+      /**
+       * Get HTML representation
+       * @param {Object} options
+       * @return {string} str
+       */
+      _toHTML(options?: StringOptions): string {
+        const parenthesis =
+          options && options.parenthesis ? options.parenthesis : 'keep'
+        const precedence = getPrecedence(
+          this as any,
+          parenthesis,
+          (options && options.implicit) || 'hide',
+          undefined
+        )
+
+        const paramStrings = this.params.map(function (
+          p: Node,
+          _index: number
+        ): string {
+          const paramPrecedence = getPrecedence(
+            p as any,
+            parenthesis,
+            (options && options.implicit) || 'hide',
+            undefined
+          )
+          return parenthesis === 'all' ||
+            (paramPrecedence !== null && paramPrecedence <= precedence)
+            ? '<span class="math-parenthesis math-round-parenthesis">(</span>' +
+                p.toHTML(options) +
+                '<span class="math-parenthesis math-round-parenthesis">)</span>'
+            : p.toHTML(options)
+        })
+
+        let ret = paramStrings[0]
+        for (let i = 0; i < this.conditionals.length; i++) {
+          ret +=
+            '<span class="math-operator math-binary-operator ' +
+            'math-explicit-binary-operator">' +
+            escape(operatorMap[this.conditionals[i]]) +
+            '</span>' +
+            paramStrings[i + 1]
+        }
+
+        return ret
+      }
+
+      /**
+       * Get LaTeX representation
+       * @param {Object} options
+       * @return {string} str
+       */
+      _toTex(options?: StringOptions): string {
+        const parenthesis =
+          options && options.parenthesis ? options.parenthesis : 'keep'
+        const precedence = getPrecedence(
+          this as any,
+          parenthesis,
+          (options && options.implicit) || 'hide',
+          undefined
+        )
+
+        const paramStrings = this.params.map(function (
+          p: Node,
+          _index: number
+        ): string {
+          const paramPrecedence = getPrecedence(
+            p as any,
+            parenthesis,
+            (options && options.implicit) || 'hide',
+            undefined
+          )
+          return parenthesis === 'all' ||
+            (paramPrecedence !== null && paramPrecedence <= precedence)
+            ? '\\left(' + p.toTex(options) + '\\right)'
+            : p.toTex(options)
+        })
+
+        let ret = paramStrings[0]
+        for (let i = 0; i < this.conditionals.length; i++) {
+          ret +=
+            (latexOperators as Record<string, string>)[this.conditionals[i]] +
+            paramStrings[i + 1]
+        }
+
+        return ret
       }
     }
 
-    /**
-     * Instantiate a RelationalNode from its JSON representation
-     * @param {Object} json
-     *     An object structured like
-     *     `{"mathjs": "RelationalNode", "conditionals": ..., "params": ...}`,
-     *     where mathjs is optional
-     * @returns {RelationalNode}
-     */
-    static fromJSON (json: { conditionals: string[], params: Node[] }): RelationalNode {
-      return new RelationalNode(json.conditionals, json.params)
-    }
-
-    /**
-     * Get HTML representation
-     * @param {Object} options
-     * @return {string} str
-     */
-    _toHTML (options?: StringOptions): string {
-      const parenthesis =
-          (options && options.parenthesis) ? options.parenthesis : 'keep'
-      const precedence =
-          getPrecedence(this as any, parenthesis, options && options.implicit || 'hide', undefined)
-
-      const paramStrings = this.params.map(function (p: Node, index: number): string {
-        const paramPrecedence =
-            getPrecedence(p as any, parenthesis, options && options.implicit || 'hide', undefined)
-        return (parenthesis === 'all' ||
-                (paramPrecedence !== null && paramPrecedence <= precedence))
-          ? ('<span class="math-parenthesis math-round-parenthesis">(</span>' +
-             p.toHTML(options) +
-             '<span class="math-parenthesis math-round-parenthesis">)</span>')
-          : p.toHTML(options)
-      })
-
-      let ret = paramStrings[0]
-      for (let i = 0; i < this.conditionals.length; i++) {
-        ret += '<span class="math-operator math-binary-operator ' +
-          'math-explicit-binary-operator">' +
-          escape(operatorMap[this.conditionals[i]]) + '</span>' +
-          paramStrings[i + 1]
-      }
-
-      return ret
-    }
-
-    /**
-     * Get LaTeX representation
-     * @param {Object} options
-     * @return {string} str
-     */
-    _toTex (options?: StringOptions): string {
-      const parenthesis =
-          (options && options.parenthesis) ? options.parenthesis : 'keep'
-      const precedence =
-          getPrecedence(this as any, parenthesis, options && options.implicit || 'hide', undefined)
-
-      const paramStrings = this.params.map(function (p: Node, index: number): string {
-        const paramPrecedence =
-            getPrecedence(p as any, parenthesis, options && options.implicit || 'hide', undefined)
-        return (parenthesis === 'all' ||
-                (paramPrecedence !== null && paramPrecedence <= precedence))
-          ? '\\left(' + p.toTex(options) + '\\right)'
-          : p.toTex(options)
-      })
-
-      let ret = paramStrings[0]
-      for (let i = 0; i < this.conditionals.length; i++) {
-        ret += (latexOperators as Record<string, string>)[this.conditionals[i]] + paramStrings[i + 1]
-      }
-
-      return ret
-    }
-  }
-
-  return RelationalNode
-}, { isClass: true, isNode: true })
+    return RelationalNode
+  },
+  { isClass: true, isNode: true }
+)

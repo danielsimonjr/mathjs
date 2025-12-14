@@ -2,7 +2,7 @@
  *  @param {number} n
  *  @returns {number} product of i to n
  */
-export function product (i: any, n: any): any {
+export function product(i: any, n: any): any {
   if (n < i) {
     return 1
   }

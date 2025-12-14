@@ -17,6 +17,17 @@ export const zerosDocs = {
     'zeros(size(a))'
   ],
   seealso: [
-    'concat', 'det', 'diag', 'identity', 'inv', 'ones', 'range', 'size', 'squeeze', 'subset', 'trace', 'transpose'
+    'concat',
+    'det',
+    'diag',
+    'identity',
+    'inv',
+    'ones',
+    'range',
+    'size',
+    'squeeze',
+    'subset',
+    'trace',
+    'transpose'
   ]
 }

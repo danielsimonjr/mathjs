@@ -2,7 +2,7 @@ import { isNumber, isBigNumber } from '../../../utils/is.ts'
 /**
  * Change last argument dim from one-based to zero-based.
  */
-export function dimToZeroBase (dim: any) {
+export function dimToZeroBase(dim: any) {
   if (isNumber(dim)) {
     return dim - 1
   } else if (isBigNumber(dim)) {
@@ -12,6 +12,6 @@ export function dimToZeroBase (dim: any) {
   }
 }
 
-export function isNumberOrBigNumber (n: any) {
+export function isNumberOrBigNumber(n: any) {
   return isNumber(n) || isBigNumber(n)
 }

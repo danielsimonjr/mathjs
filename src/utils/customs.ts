@@ -8,7 +8,7 @@ import { hasOwnProperty } from './object.ts'
  * @param {string} prop
  * @return {*} Returns the property value when safe
  */
-function getSafeProperty (object: any, prop: any) {
+function getSafeProperty(object: any, prop: any) {
   // only allow getting safe properties of a plain object
   if (isSafeProperty(object, prop)) {
     return object[prop]
@@ -31,7 +31,7 @@ function getSafeProperty (object: any, prop: any) {
  * @return {*} Returns the value
  */
 // TODO: merge this function into access.js?
-function setSafeProperty (object: any, prop: any, value: any) {
+function setSafeProperty(object: any, prop: any, value: any) {
   // only allow setting safe properties of a plain object
   if (isSafeProperty(object, prop)) {
     object[prop] = value
@@ -48,7 +48,7 @@ function setSafeProperty (object: any, prop: any, value: any) {
  * @param {string} prop
  * @return {boolean} Returns true when safe
  */
-function isSafeProperty (object: any, prop: any) {
+function isSafeProperty(object: any, prop: any) {
   if (!isPlainObject(object) && !Array.isArray(object)) {
     return false
   }
@@ -83,7 +83,7 @@ function isSafeProperty (object: any, prop: any) {
  * @param {string} method
  * @return {function} Returns the method when valid
  */
-function getSafeMethod (object: any, method: any) {
+function getSafeMethod(object: any, method: any) {
   if (!isSafeMethod(object, method)) {
     throw new Error('No access to method "' + method + '"')
   }
@@ -98,15 +98,22 @@ function getSafeMethod (object: any, method: any) {
  * @param {string} method
  * @return {boolean} Returns true when safe, false otherwise
  */
-function isSafeMethod (object: any, method: any) {
-  if (object === null || object === undefined || typeof object[method] !== 'function') {
+function isSafeMethod(object: any, method: any) {
+  if (
+    object === null ||
+    object === undefined ||
+    typeof object[method] !== 'function'
+  ) {
     return false
   }
   // UNSAFE: ghosted
   // e.g overridden toString
   // Note that IE10 doesn't support __proto__ and we can't do this check there.
-  if (hasOwnProperty(object, method) &&
-      (Object.getPrototypeOf && (method in Object.getPrototypeOf(object)))) {
+  if (
+    hasOwnProperty(object, method) &&
+    Object.getPrototypeOf &&
+    method in Object.getPrototypeOf(object)
+  ) {
     return false
   }
   // SAFE: whitelisted
@@ -133,7 +140,7 @@ function isSafeMethod (object: any, method: any) {
   return true
 }
 
-function isPlainObject (object: any) {
+function isPlainObject(object: any) {
   return typeof object === 'object' && object && object.constructor === Object
 }
 

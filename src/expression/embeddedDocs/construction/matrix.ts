@@ -8,8 +8,7 @@ export const matrixDocs = {
     'matrix("dense")',
     'matrix([...])'
   ],
-  description:
-      'Create a matrix.',
+  description: 'Create a matrix.',
   examples: [
     '[]',
     '[1, 2, 3]',
@@ -20,6 +19,13 @@ export const matrixDocs = {
     'matrix([3, 4; 5, 6], "sparse", "number")'
   ],
   seealso: [
-    'bignumber', 'boolean', 'complex', 'index', 'number', 'string', 'unit', 'sparse'
+    'bignumber',
+    'boolean',
+    'complex',
+    'index',
+    'number',
+    'string',
+    'unit',
+    'sparse'
   ]
 }

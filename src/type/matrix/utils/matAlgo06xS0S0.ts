@@ -40,7 +40,13 @@ const dependencies = ['typed', 'equalScalar']
 export const createMatAlgo06xS0S0 = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, equalScalar }: { typed: TypedFunction; equalScalar: EqualScalarFunction }) => {
+  ({
+    typed,
+    equalScalar
+  }: {
+    typed: TypedFunction
+    equalScalar: EqualScalarFunction
+  }) => {
     /**
      * Iterates over SparseMatrix A and SparseMatrix B nonzero items and invokes the callback function f(Aij, Bij).
      * Callback function invoked (Anz U Bnz) times, where Anz and Bnz are the nonzero elements in both matrices.
@@ -67,12 +73,14 @@ export const createMatAlgo06xS0S0 = /* #__PURE__ */ factory(
       // sparse matrix arrays
       const avalues: MatrixValue[] | undefined = a._values
       const asize: number[] = a._size
-      const adt: DataType = a._datatype || a._data === undefined ? a._datatype : a.getDataType()
+      const adt: DataType =
+        a._datatype || a._data === undefined ? a._datatype : a.getDataType()
 
       // sparse matrix arrays
       const bvalues: MatrixValue[] | undefined = b._values
       const bsize: number[] = b._size
-      const bdt: DataType = b._datatype || b._data === undefined ? b._datatype : b.getDataType()
+      const bdt: DataType =
+        b._datatype || b._data === undefined ? b._datatype : b.getDataType()
 
       // validate dimensions
       if (asize.length !== bsize.length) {
@@ -81,7 +89,13 @@ export const createMatAlgo06xS0S0 = /* #__PURE__ */ factory(
 
       // check rows & columns
       if (asize[0] !== bsize[0] || asize[1] !== bsize[1]) {
-        throw new RangeError('Dimension mismatch. Matrix A (' + asize + ') must match Matrix B (' + bsize + ')')
+        throw new RangeError(
+          'Dimension mismatch. Matrix A (' +
+            asize +
+            ') must match Matrix B (' +
+            bsize +
+            ')'
+        )
       }
 
       // rows & columns
@@ -110,7 +124,8 @@ export const createMatAlgo06xS0S0 = /* #__PURE__ */ factory(
       }
 
       // result arrays
-      const cvalues: MatrixValue[] | undefined = avalues && bvalues ? [] : undefined
+      const cvalues: MatrixValue[] | undefined =
+        avalues && bvalues ? [] : undefined
       const cindex: number[] = []
       const cptr: number[] = []
 

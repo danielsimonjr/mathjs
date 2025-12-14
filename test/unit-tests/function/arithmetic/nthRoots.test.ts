@@ -34,12 +34,7 @@ describe('nthRoots', function () {
     ])
   })
 
-  const twos = [
-    complex(2, 0),
-    complex(0, 2),
-    complex(-2, 0),
-    complex(0, -2)
-  ]
+  const twos = [complex(2, 0), complex(0, 2), complex(-2, 0), complex(0, -2)]
 
   it('should return pure roots without artifacts', function () {
     const roots = nthRoots(complex('16'), 4)

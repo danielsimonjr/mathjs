@@ -39,20 +39,30 @@ describe('invmod', function () {
   })
 
   it('should throw an error if b is zero', function () {
-    assert.throws(function () { invmod(1, 0) }, /Divisor must be non zero/)
+    assert.throws(function () {
+      invmod(1, 0)
+    }, /Divisor must be non zero/)
   })
 
   it('should throw an error if only one argument', function () {
-    assert.throws(function () { invmod(1) }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      invmod(1)
+    }, /TypeError: Too few arguments/)
   })
 
   it('should throw an error for non-integer numbers', function () {
-    assert.throws(function () { invmod(2, 4.1) }, /Parameters in function invmod must be integer numbers/)
-    assert.throws(function () { invmod(2.3, 4) }, /Parameters in function invmod must be integer numbers/)
+    assert.throws(function () {
+      invmod(2, 4.1)
+    }, /Parameters in function invmod must be integer numbers/)
+    assert.throws(function () {
+      invmod(2.3, 4)
+    }, /Parameters in function invmod must be integer numbers/)
   })
 
   it('should throw an error with complex numbers', function () {
-    assert.throws(function () { invmod(complex(1, 3), 2) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      invmod(complex(1, 3), 2)
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should convert strings to numbers', function () {
@@ -60,11 +70,15 @@ describe('invmod', function () {
     assert.strictEqual(invmod(7, '15'), 13)
     assert.strictEqual(invmod('7', 15), 13)
 
-    assert.throws(function () { invmod('a', 8) }, /Cannot convert "a" to a number/)
+    assert.throws(function () {
+      invmod('a', 8)
+    }, /Cannot convert "a" to a number/)
   })
 
   it('should throw an error with units', function () {
-    assert.throws(function () { invmod(math.unit('5cm'), 2) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      invmod(math.unit('5cm'), 2)
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should LaTeX invmod', function () {

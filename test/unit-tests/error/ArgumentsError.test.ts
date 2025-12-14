@@ -11,7 +11,10 @@ describe('ArgumentsError', function () {
     assert.strictEqual(err.count, 1)
     assert.strictEqual(err.min, 2)
     assert.strictEqual(err.max, undefined)
-    assert.strictEqual(err.toString(), 'ArgumentsError: Wrong number of arguments in function myfunction (1 provided, 2 expected)')
+    assert.strictEqual(
+      err.toString(),
+      'ArgumentsError: Wrong number of arguments in function myfunction (1 provided, 2 expected)'
+    )
   })
 
   it('should construct an ArgumentsError with max', function () {
@@ -22,7 +25,10 @@ describe('ArgumentsError', function () {
     assert.strictEqual(err.count, 1)
     assert.strictEqual(err.min, 2)
     assert.strictEqual(err.max, 3)
-    assert.strictEqual(err.toString(), 'ArgumentsError: Wrong number of arguments in function myfunction (1 provided, 2-3 expected)')
+    assert.strictEqual(
+      err.toString(),
+      'ArgumentsError: Wrong number of arguments in function myfunction (1 provided, 2-3 expected)'
+    )
   })
 
   it('should throw an error when operator new is missing', function () {

@@ -18,7 +18,7 @@ interface Matrix {
  *
  * @return {Matrix[]}      [ broadcastedA, broadcastedB ]
  */
-export function broadcast (A: Matrix, B: Matrix): [Matrix, Matrix] {
+export function broadcast(A: Matrix, B: Matrix): [Matrix, Matrix] {
   if (deepStrictEqual(A.size(), B.size())) {
     // If matrices have the same size return them
     return [A, B]
@@ -28,7 +28,7 @@ export function broadcast (A: Matrix, B: Matrix): [Matrix, Matrix] {
   const newSize = broadcastSizes(A.size(), B.size())
 
   // return the array with the two broadcasted matrices
-  return [A, B].map(M => _broadcastTo(M, newSize)) as [Matrix, Matrix]
+  return [A, B].map((M) => _broadcastTo(M, newSize)) as [Matrix, Matrix]
 }
 
 /**
@@ -39,7 +39,7 @@ export function broadcast (A: Matrix, B: Matrix): [Matrix, Matrix] {
  * @returns {Matrix} The broadcasted matrix.
  * @throws {Error} If the size parameter is not an array of numbers.
  */
-function _broadcastTo (M: Matrix, size: number[]): Matrix {
+function _broadcastTo(M: Matrix, size: number[]): Matrix {
   if (deepStrictEqual(M.size(), size)) {
     return M
   }

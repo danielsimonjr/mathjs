@@ -21,7 +21,14 @@ export interface NumberTypeConfig {
  * Format options for number formatting
  */
 export interface FormatOptions {
-  notation?: 'auto' | 'exponential' | 'fixed' | 'engineering' | 'bin' | 'oct' | 'hex'
+  notation?:
+    | 'auto'
+    | 'exponential'
+    | 'fixed'
+    | 'engineering'
+    | 'bin'
+    | 'oct'
+    | 'hex'
   precision?: number
   wordSize?: number
   lowerExp?: number
@@ -32,7 +39,14 @@ export interface FormatOptions {
  * Normalized format options
  */
 export interface NormalizedFormatOptions {
-  notation: 'auto' | 'exponential' | 'fixed' | 'engineering' | 'bin' | 'oct' | 'hex'
+  notation:
+    | 'auto'
+    | 'exponential'
+    | 'fixed'
+    | 'engineering'
+    | 'bin'
+    | 'oct'
+    | 'hex'
   precision: number | undefined
   wordSize: number | undefined
 }
@@ -183,7 +197,11 @@ export const expm1 =
  * @param size Optional word size for signed integer formatting
  * @returns The formatted string
  */
-function formatNumberToBase(n: number, base: 2 | 8 | 16, size?: number): string {
+function formatNumberToBase(
+  n: number,
+  base: 2 | 8 | 16,
+  size?: number
+): string {
   const prefixes: Record<number, string> = { 2: '0b', 8: '0o', 16: '0x' }
   const prefix = prefixes[base]
   let suffix = ''
@@ -195,7 +213,9 @@ function formatNumberToBase(n: number, base: 2 | 8 | 16, size?: number): string 
       throw new Error('size must be an integer')
     }
     if (n > 2 ** (size - 1) - 1 || n < -(2 ** (size - 1))) {
-      throw new Error(`Value must be in range [-2^${size - 1}, 2^${size - 1}-1]`)
+      throw new Error(
+        `Value must be in range [-2^${size - 1}, 2^${size - 1}-1]`
+      )
     }
     if (!isInteger(n)) {
       throw new Error('Value must be an integer')
@@ -398,7 +418,9 @@ export function normalizeFormatOptions(
         notation = options.notation
       }
     } else {
-      throw new Error('Unsupported type of options, number, BigNumber, or object expected')
+      throw new Error(
+        'Unsupported type of options, number, BigNumber, or object expected'
+      )
     }
   }
 
@@ -453,7 +475,10 @@ export function splitNumber(value: number | string): SplitValue {
  * @param precision Optional number of significant figures to return
  * @returns The formatted string
  */
-export function toEngineering(value: number | string, precision?: number): string {
+export function toEngineering(
+  value: number | string,
+  precision?: number
+): string {
   if (isNaN(value as number) || !isFinite(value as number)) {
     return String(value)
   }
@@ -553,7 +578,10 @@ export function toFixed(value: number | string, precision?: number): string {
  * @param precision Number of digits in formatted output
  * @returns The formatted string
  */
-export function toExponential(value: number | string, precision?: number): string {
+export function toExponential(
+  value: number | string,
+  precision?: number
+): string {
   if (isNaN(value as number) || !isFinite(value as number)) {
     return String(value)
   }
@@ -618,7 +646,12 @@ export function toPrecision(
     // append trailing zeros
     // TODO: simplify the next statement
     c = c.concat(
-      zeros(e - c.length + 1 + (precision && c.length < precision ? precision - c.length : 0))
+      zeros(
+        e -
+          c.length +
+          1 +
+          (precision && c.length < precision ? precision - c.length : 0)
+      )
     )
 
     // prepend zeros
@@ -707,8 +740,7 @@ export function digits(value: number): number {
   return value
     .toExponential()
     .replace(/e.*$/, '') // remove exponential notation
-    .replace(/^0\.?0*|\./, '') // remove decimal point and leading zeros
-    .length
+    .replace(/^0\.?0*|\./, '').length // remove decimal point and leading zeros
 }
 
 /**
@@ -756,7 +788,10 @@ export function nearlyEqual(
   }
 
   // abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
-  return Math.abs(a - b) <= Math.max(relTol * Math.max(Math.abs(a), Math.abs(b)), absTol)
+  return (
+    Math.abs(a - b) <=
+    Math.max(relTol * Math.max(Math.abs(a), Math.abs(b)), absTol)
+  )
 }
 
 /**

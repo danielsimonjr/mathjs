@@ -1,10 +1,7 @@
 export const importDocs = {
   name: 'import',
   category: 'Core',
-  syntax: [
-    'import(functions)',
-    'import(functions, options)'
-  ],
+  syntax: ['import(functions)', 'import(functions, options)'],
   description: 'Import functions or constants from an object.',
   examples: [
     'import({myFn: f(x)=x^2, myConstant: 32 })',

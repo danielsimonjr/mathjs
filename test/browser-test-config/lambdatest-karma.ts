@@ -81,9 +81,7 @@ module.exports = function (config) {
       }
     },
     reporters: ['spec'],
-    files: [
-      'test/browser-test-config/browser-tests.test.js'
-    ],
+    files: ['test/browser-test-config/browser-tests.test.js'],
     plugins: [
       'karma-webpack',
       'karma-mocha',

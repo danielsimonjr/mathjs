@@ -12,10 +12,11 @@ console.log('f(5, 6) = ' + f(5, 6))
 
 const bench = new Bench({ time: 100, iterations: 100 })
 let res = 0
-bench
-  .add('evaluate f(x, y)', function () {
-    res = f(-res, res) // make it dynamic, using res as argument
-  })
+bench.add('evaluate f(x, y)', function () {
+  res = f(-res, res) // make it dynamic, using res as argument
+})
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()

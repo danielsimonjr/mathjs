@@ -85,7 +85,10 @@ describe('fix', function () {
     assert.deepStrictEqual(fix(bignumber(1.381), bignumber(2)), bignumber(1.38))
     assert.deepStrictEqual(fix(bignumber(-1.31), bignumber(1)), bignumber(-1.3))
     assert.deepStrictEqual(fix(bignumber(-1.38), bignumber(1)), bignumber(-1.3))
-    assert.deepStrictEqual(fix(bignumber(math.pi), bignumber(6)), bignumber(3.141592))
+    assert.deepStrictEqual(
+      fix(bignumber(math.pi), bignumber(6)),
+      bignumber(3.141592)
+    )
   })
 
   it('should round complex numbers correctly', function () {
@@ -100,12 +103,21 @@ describe('fix', function () {
     assert.deepStrictEqual(fix(complex(0, 0), 5), complex(0, 0))
     assert.deepStrictEqual(fix(complex(1.335, 2.835), 2), complex(1.33, 2.83))
     assert.deepStrictEqual(fix(math.i, 5), complex(0, 1))
-    assert.deepStrictEqual(fix(complex(-1.335, -1.835), 2), complex(-1.33, -1.83))
+    assert.deepStrictEqual(
+      fix(complex(-1.335, -1.835), 2),
+      complex(-1.33, -1.83)
+    )
 
     assert.deepStrictEqual(fix(complex(0, 0), bignumber(5)), complex(0, 0))
-    assert.deepStrictEqual(fix(complex(1.335, 2.835), bignumber(2)), complex(1.33, 2.83))
+    assert.deepStrictEqual(
+      fix(complex(1.335, 2.835), bignumber(2)),
+      complex(1.33, 2.83)
+    )
     assert.deepStrictEqual(fix(math.i, bignumber(5)), complex(0, 1))
-    assert.deepStrictEqual(fix(complex(-1.335, -1.835), bignumber(2)), complex(-1.33, -1.83))
+    assert.deepStrictEqual(
+      fix(complex(-1.335, -1.835), bignumber(2)),
+      complex(-1.33, -1.83)
+    )
   })
 
   it('should round fractions correctly', function () {
@@ -165,8 +177,14 @@ describe('fix', function () {
     assert.deepStrictEqual(fix(bignumber(-7.999999999999999)), bignumber(-8))
     assert.deepStrictEqual(fix(bignumber(30000.000000000004)), bignumber(30000))
     assert.deepStrictEqual(fix(bignumber(799999.9999999999)), bignumber(800000))
-    assert.deepStrictEqual(fix(bignumber(-30000.000000000004)), bignumber(-30000))
-    assert.deepStrictEqual(fix(bignumber(-799999.9999999999)), bignumber(-800000))
+    assert.deepStrictEqual(
+      fix(bignumber(-30000.000000000004)),
+      bignumber(-30000)
+    )
+    assert.deepStrictEqual(
+      fix(bignumber(-799999.9999999999)),
+      bignumber(-800000)
+    )
   })
 
   it('should gracefully handle round-off errors with given number of decimals', function () {
@@ -182,40 +200,92 @@ describe('fix', function () {
 
   it('should fix units', function () {
     assert.deepStrictEqual(fix(unit('5.99 inch'), unit('inch')), unit('5 inch'))
-    assert.deepStrictEqual(fix(unit('3.12345 cm'), 3, unit('cm')), unit('3.123 cm'))
+    assert.deepStrictEqual(
+      fix(unit('3.12345 cm'), 3, unit('cm')),
+      unit('3.123 cm')
+    )
     assert.deepStrictEqual(fix(unit('3.12345 cm'), unit('cm')), unit('3 cm'))
     assert.deepStrictEqual(fix(unit('2 inch'), unit('cm')), unit('5 cm'))
     assert.deepStrictEqual(fix(unit('2 inch'), 1, unit('cm')), unit('5 cm'))
     assert.deepStrictEqual(fix(unit('-1.9 inch'), unit('cm')), unit('-4 cm'))
 
     // bignumber values
-    assert.deepStrictEqual(fix(unit('3.12345 cm'), bignumber(2), unit('cm')), unit('3.12 cm'))
-    assert.deepStrictEqual(fix(unit(bignumber('2'), 'inch'), unit('cm')), unit(bignumber('5'), 'cm'))
-    assert.deepStrictEqual(fix(unit(bignumber('2'), 'inch'), bignumber(1), unit('cm')), unit(bignumber('5.0'), 'cm'))
+    assert.deepStrictEqual(
+      fix(unit('3.12345 cm'), bignumber(2), unit('cm')),
+      unit('3.12 cm')
+    )
+    assert.deepStrictEqual(
+      fix(unit(bignumber('2'), 'inch'), unit('cm')),
+      unit(bignumber('5'), 'cm')
+    )
+    assert.deepStrictEqual(
+      fix(unit(bignumber('2'), 'inch'), bignumber(1), unit('cm')),
+      unit(bignumber('5.0'), 'cm')
+    )
 
     // first argument is a collection
-    assert.deepStrictEqual(fix([unit('2 inch'), unit('3 inch')], unit('cm')), [unit('5 cm'), unit('7 cm')])
-    assert.deepStrictEqual(fix(matrix([unit('2 inch'), unit('3 inch')]), unit('cm')), matrix([unit('5 cm'), unit('7 cm')]))
+    assert.deepStrictEqual(fix([unit('2 inch'), unit('3 inch')], unit('cm')), [
+      unit('5 cm'),
+      unit('7 cm')
+    ])
+    assert.deepStrictEqual(
+      fix(matrix([unit('2 inch'), unit('3 inch')]), unit('cm')),
+      matrix([unit('5 cm'), unit('7 cm')])
+    )
   })
 
   it('should throw an error if used with a unit without valueless unit', function () {
-    assert.throws(function () { fix(unit('5cm')) }, TypeError, 'Function fix(unit) not supported')
-    assert.throws(function () { fix(unit('5cm'), 2) }, TypeError, 'Function fix(unit) not supported')
-    assert.throws(function () { fix(unit('5cm'), bignumber(2)) }, TypeError, 'Function fix(unit) not supported')
+    assert.throws(
+      function () {
+        fix(unit('5cm'))
+      },
+      TypeError,
+      'Function fix(unit) not supported'
+    )
+    assert.throws(
+      function () {
+        fix(unit('5cm'), 2)
+      },
+      TypeError,
+      'Function fix(unit) not supported'
+    )
+    assert.throws(
+      function () {
+        fix(unit('5cm'), bignumber(2))
+      },
+      TypeError,
+      'Function fix(unit) not supported'
+    )
   })
 
   it('should throw an error if used with a unit with a second unit that is not valueless', function () {
-    assert.throws(function () { fix(unit('2 inch'), 1, unit('10 cm')) }, Error)
-    assert.throws(function () { fix(unit('2 inch'), unit('10 cm')) }, Error)
+    assert.throws(function () {
+      fix(unit('2 inch'), 1, unit('10 cm'))
+    }, Error)
+    assert.throws(function () {
+      fix(unit('2 inch'), unit('10 cm'))
+    }, Error)
   })
 
   it('should throw an error with a unit', function () {
-    assert.throws(function () { fix(unit('5cm')) }, TypeError, 'Function fix(unit) not supported')
+    assert.throws(
+      function () {
+        fix(unit('5cm'))
+      },
+      TypeError,
+      'Function fix(unit) not supported'
+    )
   })
 
   it('should throw an error on unit as parameter', function () {
     // unit
-    assert.throws(function () { fix(unit('5cm')) }, TypeError, 'Function fix(unit) not supported')
+    assert.throws(
+      function () {
+        fix(unit('5cm'))
+      },
+      TypeError,
+      'Function fix(unit) not supported'
+    )
   })
 
   it('should convert a string to a number', function () {
@@ -228,38 +298,79 @@ describe('fix', function () {
   it('should correctly round all values of a matrix element-wise', function () {
     // matrix, array, range
     assert.deepStrictEqual(fix([1.2, 3.4, 5.6, 7.8, 10.0]), [1, 3, 5, 7, 10])
-    assert.deepStrictEqual(fix(matrix([1.2, 3.4, 5.6, 7.8, 10.0])), matrix([1, 3, 5, 7, 10]))
+    assert.deepStrictEqual(
+      fix(matrix([1.2, 3.4, 5.6, 7.8, 10.0])),
+      matrix([1, 3, 5, 7, 10])
+    )
   })
 
   it('should round all values of a matrix element-wise with a given number of decimals', function () {
-    assert.deepStrictEqual(fix([1.234, 3.456, 5.678, 7.891, 10.01], 2), [1.23, 3.45, 5.67, 7.89, 10.01])
-    assert.deepStrictEqual(fix(matrix([1.234, 3.456, 5.678, 7.891, 10.01]), 2), matrix([1.23, 3.45, 5.67, 7.89, 10.01]))
+    assert.deepStrictEqual(
+      fix([1.234, 3.456, 5.678, 7.891, 10.01], 2),
+      [1.23, 3.45, 5.67, 7.89, 10.01]
+    )
+    assert.deepStrictEqual(
+      fix(matrix([1.234, 3.456, 5.678, 7.891, 10.01]), 2),
+      matrix([1.23, 3.45, 5.67, 7.89, 10.01])
+    )
 
-    assert.deepStrictEqual(fix([1.234, 3.456, 5.678, 7.891, 10.01], bignumber(2)), bignumber([1.23, 3.45, 5.67, 7.89, 10.01]))
-    assert.deepStrictEqual(fix(matrix([1.234, 3.456, 5.678, 7.891, 10.01]), bignumber(2)), matrix(bignumber([1.23, 3.45, 5.67, 7.89, 10.01])))
+    assert.deepStrictEqual(
+      fix([1.234, 3.456, 5.678, 7.891, 10.01], bignumber(2)),
+      bignumber([1.23, 3.45, 5.67, 7.89, 10.01])
+    )
+    assert.deepStrictEqual(
+      fix(matrix([1.234, 3.456, 5.678, 7.891, 10.01]), bignumber(2)),
+      matrix(bignumber([1.23, 3.45, 5.67, 7.89, 10.01]))
+    )
   })
 
   it('should round correctly with decimals provided in an array', function () {
-    assert.deepStrictEqual(fix(1.234567, [0, 1, 2, 3, 4]), [1, 1.2, 1.23, 1.234, 1.2345])
-    assert.deepStrictEqual(fix(bignumber(math.pi), [0, 1, 2, 3, 4]), bignumber([3, 3.1, 3.14, 3.141, 3.1415]))
-    assert.deepStrictEqual(fix(complex(1.335, 2.835), [1, 2]), [complex(1.3, 2.8), complex(1.33, 2.83)])
+    assert.deepStrictEqual(
+      fix(1.234567, [0, 1, 2, 3, 4]),
+      [1, 1.2, 1.23, 1.234, 1.2345]
+    )
+    assert.deepStrictEqual(
+      fix(bignumber(math.pi), [0, 1, 2, 3, 4]),
+      bignumber([3, 3.1, 3.14, 3.141, 3.1415])
+    )
+    assert.deepStrictEqual(fix(complex(1.335, 2.835), [1, 2]), [
+      complex(1.3, 2.8),
+      complex(1.33, 2.83)
+    ])
   })
 
   it('should round correctly with decimals provided in a matrix', function () {
-    assert.deepStrictEqual(fix(1.234567, matrix([0, 1, 2, 3, 4])), matrix([1, 1.2, 1.23, 1.234, 1.2345]))
+    assert.deepStrictEqual(
+      fix(1.234567, matrix([0, 1, 2, 3, 4])),
+      matrix([1, 1.2, 1.23, 1.234, 1.2345])
+    )
     assert.deepStrictEqual(fix(0, matrix([0, 2, 4])), matrix([0, 0, 0]))
-    assert.deepStrictEqual(fix(bignumber(math.pi), sparse([0, 1, 2, 3, 4])), matrix(bignumber([[3], [3.1], [3.14], [3.141], [3.1415]])))
-    assert.deepStrictEqual(fix(complex(1.335, 2.835), matrix([1, 2])), matrix([complex(1.3, 2.8), complex(1.33, 2.83)]))
+    assert.deepStrictEqual(
+      fix(bignumber(math.pi), sparse([0, 1, 2, 3, 4])),
+      matrix(bignumber([[3], [3.1], [3.14], [3.141], [3.1415]]))
+    )
+    assert.deepStrictEqual(
+      fix(complex(1.335, 2.835), matrix([1, 2])),
+      matrix([complex(1.3, 2.8), complex(1.33, 2.83)])
+    )
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { fix() }, /TypeError: Too few arguments/)
-    assert.throws(function () { fix(1, 2, 3) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      fix()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      fix(1, 2, 3)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () { fix(null) }, /TypeError: Unexpected type of argument/)
-    assert.throws(function () { fix(1, null) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      fix(null)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      fix(1, null)
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should LaTeX fix', function () {

@@ -58,8 +58,12 @@ describe('asin', function () {
     const bigmath61 = bigmath.create({ number: 'BigNumber', precision: 61 })
 
     const arg4 = bigmath61.bignumber(0.00000001)
-    assert.deepStrictEqual(bigmath61.asin(arg4),
-      bigmath61.bignumber('1.00000000000000001666666666666666741666666666666671130952381e-8'))
+    assert.deepStrictEqual(
+      bigmath61.asin(arg4),
+      bigmath61.bignumber(
+        '1.00000000000000001666666666666666741666666666666671130952381e-8'
+      )
+    )
     assert.deepStrictEqual(arg4, bigmath61.bignumber(0.00000001))
   })
 
@@ -74,21 +78,44 @@ describe('asin', function () {
   it('should be the inverse function of bignumber sin', function () {
     // More Newton's method test cases
     const bigmath61 = bigmath.create({ number: 'BigNumber', precision: 61 })
-    assert.deepStrictEqual(asinBig(bigmath61.sin(bigmath61.bignumber(-2))),
-      bigmath61.bignumber('-1.141592653589793238462643383279502884197169399375105820974945'))
+    assert.deepStrictEqual(
+      asinBig(bigmath61.sin(bigmath61.bignumber(-2))),
+      bigmath61.bignumber(
+        '-1.141592653589793238462643383279502884197169399375105820974945'
+      )
+    )
     // Wolfram:            -1.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132
-    assert.deepStrictEqual(asinBig(bigmath61.sin(bigmath61.bignumber(-0.5))), bigmath61.bignumber('-0.5'))
-    assert.deepStrictEqual(asinBig(bigmath61.sin(bigmath61.bignumber(-0.1))), bigmath61.bignumber('-0.1'))
-    assert.deepStrictEqual(asinBig(bigmath61.sin(bigmath61.bignumber(0.1))), bigmath61.bignumber('0.1'))
-    assert.deepStrictEqual(asinBig(bigmath61.sin(bigmath61.bignumber(0.5))), bigmath61.bignumber('0.5'))
-    assert.deepStrictEqual(asinBig(bigmath61.sin(bigmath61.bignumber(2))),
-      bigmath61.bignumber('1.141592653589793238462643383279502884197169399375105820974945'))
+    assert.deepStrictEqual(
+      asinBig(bigmath61.sin(bigmath61.bignumber(-0.5))),
+      bigmath61.bignumber('-0.5')
+    )
+    assert.deepStrictEqual(
+      asinBig(bigmath61.sin(bigmath61.bignumber(-0.1))),
+      bigmath61.bignumber('-0.1')
+    )
+    assert.deepStrictEqual(
+      asinBig(bigmath61.sin(bigmath61.bignumber(0.1))),
+      bigmath61.bignumber('0.1')
+    )
+    assert.deepStrictEqual(
+      asinBig(bigmath61.sin(bigmath61.bignumber(0.5))),
+      bigmath61.bignumber('0.5')
+    )
+    assert.deepStrictEqual(
+      asinBig(bigmath61.sin(bigmath61.bignumber(2))),
+      bigmath61.bignumber(
+        '1.141592653589793238462643383279502884197169399375105820974945'
+      )
+    )
 
     // Full decimal Taylor test cases
     assert.deepStrictEqual(asinBig(bigmath.sin(Big(0))), Big(0))
     assert.deepStrictEqual(asinBig(bigmath.sin(Big(0.1))), Big(0.1))
     assert.deepStrictEqual(asinBig(bigmath.sin(Big(0.5))), Big(0.5))
-    assert.deepStrictEqual(asinBig(bigmath.sin(Big(2))), Big('1.1415926535897932385'))
+    assert.deepStrictEqual(
+      asinBig(bigmath.sin(Big(2))),
+      Big('1.1415926535897932385')
+    )
 
     assert.deepStrictEqual(asinBig(biggermath.sin(Big(-1))), Big('-1'))
 
@@ -104,17 +131,26 @@ describe('asin', function () {
     approxDeepEqual(asin(complex('-2+3i')), complex(-re, im))
     approxDeepEqual(asin(complex('-2-3i')), complex(-re, -im))
     approxDeepEqual(asin(complex('i')), complex(0, 0.881373587019543))
-    approxDeepEqual(asin(complex('1')), complex(1.57079632679490, 0))
-    approxDeepEqual(asin(complex('1+i')), complex(0.666239432492515, 1.061275061905036))
+    approxDeepEqual(asin(complex('1')), complex(1.5707963267949, 0))
+    approxDeepEqual(
+      asin(complex('1+i')),
+      complex(0.666239432492515, 1.061275061905036)
+    )
   })
 
   it('should throw an error if called with a unit', function () {
-    assert.throws(function () { asin(unit('45deg')) })
-    assert.throws(function () { asin(unit('5 celsius')) })
+    assert.throws(function () {
+      asin(unit('45deg'))
+    })
+    assert.throws(function () {
+      asin(unit('5 celsius'))
+    })
   })
 
   it('should throw an error if called with a string', function () {
-    assert.throws(function () { asin('string') })
+    assert.throws(function () {
+      asin('string')
+    })
   })
 
   it('should not operate on arrays and matrices', function () {
@@ -123,16 +159,21 @@ describe('asin', function () {
     // note: the results of asin(2) and asin(3) differs in octave
     // the next tests are verified with mathematica
     const asin123 = [
-      1.57079632679490,
-      complex(1.57079632679490, -1.31695789692482),
-      complex(1.57079632679490, -1.76274717403909)]
+      1.5707963267949,
+      complex(1.5707963267949, -1.31695789692482),
+      complex(1.5707963267949, -1.76274717403909)
+    ]
     approxDeepEqual(math.map([1, 2, 3], asin), asin123)
     approxDeepEqual(math.map(matrix([1, 2, 3]), asin), matrix(asin123))
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { asin() }, /TypeError: Too few arguments/)
-    assert.throws(function () { asin(1, 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      asin()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      asin(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should LaTeX asin', function () {

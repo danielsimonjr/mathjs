@@ -2,7 +2,12 @@ import typedFunction from '@danielsimonjr/typed-function'
 import { ArgumentsError } from '../error/ArgumentsError.ts'
 import { DimensionError } from '../error/DimensionError.ts'
 import { IndexError } from '../error/IndexError.ts'
-import { factory, isFactory, FactoryFunction, LegacyFactory } from '../utils/factory.ts'
+import {
+  factory,
+  isFactory,
+  FactoryFunction,
+  LegacyFactory
+} from '../utils/factory.ts'
 import {
   isAccessorNode,
   isArray,
@@ -109,7 +114,10 @@ export interface MathJsInstance {
   // Core functions
   config: (config?: Partial<ConfigOptions>) => ConfigOptions
   import: (factories: any, options?: ImportOptions) => void
-  create: (factories?: FactoriesInput, config?: Partial<ConfigOptions>) => MathJsInstance
+  create: (
+    factories?: FactoriesInput,
+    config?: Partial<ConfigOptions>
+  ) => MathJsInstance
   factory: typeof factory
   typed: typeof typedFunction & { isTypedFunction?: (value: any) => boolean }
 
@@ -212,7 +220,11 @@ export function create(
   factories?: FactoriesInput,
   config?: Partial<ConfigOptions>
 ): MathJsInstance {
-  const configInternal: ConfigOptions = Object.assign({}, DEFAULT_CONFIG, config)
+  const configInternal: ConfigOptions = Object.assign(
+    {},
+    DEFAULT_CONFIG,
+    config
+  )
 
   // simple test for ES5 support
   if (typeof Object.create !== 'function') {
@@ -319,7 +331,13 @@ export function create(
       // doesn't yet exist
       if (factory.math === true) {
         // pass with math namespace
-        instance = factory.factory(math.type, configInternal, load, math.typed, math)
+        instance = factory.factory(
+          math.type,
+          configInternal,
+          load,
+          math.typed,
+          math
+        )
       } else {
         instance = factory.factory(math.type, configInternal, load, math.typed)
       }
@@ -341,7 +359,9 @@ export function create(
   function lazyTyped(...args: any[]): any {
     return math.typed.apply(math.typed, args)
   }
-  ;(lazyTyped as LazyTyped).isTypedFunction = (typedFunction as any).isTypedFunction
+  ;(lazyTyped as LazyTyped).isTypedFunction = (
+    typedFunction as any
+  ).isTypedFunction
 
   const internalImport = importFactory(
     lazyTyped as any,
@@ -354,7 +374,7 @@ export function create(
   // listen for changes in config, import all functions again when changed
   // TODO: move this listener into the import function?
   math.on('config', () => {
-    Object.values(importedFactories).forEach(factory => {
+    Object.values(importedFactories).forEach((factory) => {
       if (factory && factory.meta && factory.meta.recreateOnConfigChange) {
         // FIXME: only re-create when the current instance is the same as was initially created
         // FIXME: delete the functions/constants before importing them again?

@@ -25,8 +25,16 @@ const bignumber = math.bignumber
 const number = math.number
 
 describe('solveODE', function () {
-  function f (t, y) { return subtract(y, t) }
-  function exactSol (T, y0) { return add(dotMultiply(subtract(y0, 1), map(transpose([T]), exp)), transpose([T]), 1) } // this is only valid for y' = y - t
+  function f(t, y) {
+    return subtract(y, t)
+  }
+  function exactSol(T, y0) {
+    return add(
+      dotMultiply(subtract(y0, 1), map(transpose([T]), exp)),
+      transpose([T]),
+      1
+    )
+  } // this is only valid for y' = y - t
   const tspan = [0, 4]
   const y0 = [1.5, 2]
 
@@ -91,11 +99,22 @@ describe('solveODE', function () {
     approxDeepEqual(sol.y, exactSol(sol.t, y0), tol)
     const seconds = unit('s')
     const meters = unit('m')
-    function fWithUnits (t, y) { return subtract(divide(y, seconds), multiply(t, divide(meters, multiply(seconds, seconds)))) }
+    function fWithUnits(t, y) {
+      return subtract(
+        divide(y, seconds),
+        multiply(t, divide(meters, multiply(seconds, seconds)))
+      )
+    }
     const tspanWithUnits = multiply(tspan, seconds)
     const y0withUnits = multiply(y0, meters)
-    const solU = solveODE(fWithUnits, tspanWithUnits, y0withUnits, { minStep: unit(0, 's') })
-    approxDeepEqual(divide(solU.y, meters), exactSol(divide(solU.t, seconds), y0), tol)
+    const solU = solveODE(fWithUnits, tspanWithUnits, y0withUnits, {
+      minStep: unit(0, 's')
+    })
+    approxDeepEqual(
+      divide(solU.y, meters),
+      exactSol(divide(solU.t, seconds), y0),
+      tol
+    )
   })
 
   it('should throw an error if the maxStep is not positive', function () {
@@ -118,25 +137,34 @@ describe('solveODE', function () {
       solveODE(f, tspan, y0, { firstStep: unit(1, 's') })
     }, /Inconsistent type of "t" dependant variables/)
     assert.throws(function () {
-      solveODE(f, [unit(tspan[0], 's'), unit(tspan[1], 's')], y0, { maxStep: unit(2, 's'), firstStep: 1 })
+      solveODE(f, [unit(tspan[0], 's'), unit(tspan[1], 's')], y0, {
+        maxStep: unit(2, 's'),
+        firstStep: 1
+      })
     }, /Inconsistent type of "t" dependant variables/)
     assert.throws(function () {
       solveODE(f, tspan, y0, { firstStep: unit(1, 's') })
     }, /Inconsistent type of "t" dependant variables/)
     assert.throws(function () {
-      solveODE(f, [unit(tspan[0], 's'), unit(tspan[1], 's')], y0, { firstStep: 1 })
+      solveODE(f, [unit(tspan[0], 's'), unit(tspan[1], 's')], y0, {
+        firstStep: 1
+      })
     }, /Inconsistent type of "t" dependant variables/)
     assert.throws(function () {
       solveODE(f, tspan, y0, { maxStep: unit(1, 's') })
     }, /Inconsistent type of "t" dependant variables/)
     assert.throws(function () {
-      solveODE(f, [unit(tspan[0], 's'), unit(tspan[1], 's')], y0, { maxStep: 1 })
+      solveODE(f, [unit(tspan[0], 's'), unit(tspan[1], 's')], y0, {
+        maxStep: 1
+      })
     }, /Inconsistent type of "t" dependant variables/)
     assert.throws(function () {
       solveODE(f, tspan, y0, { minStep: unit(1, 's') })
     }, /Inconsistent type of "t" dependant variables/)
     assert.throws(function () {
-      solveODE(f, [unit(tspan[0], 's'), unit(tspan[1], 's')], y0, { minStep: 1 })
+      solveODE(f, [unit(tspan[0], 's'), unit(tspan[1], 's')], y0, {
+        minStep: 1
+      })
     }, /Inconsistent type of "t" dependant variables/)
   })
 
@@ -154,10 +182,7 @@ describe('solveODE', function () {
   it('should solve if the arguments are matrices', function () {
     const sol = solveODE(f, matrix(tspan), matrix(y0))
     approxDeepEqual(sol.y, matrix(exactSol(sol.t, y0)), tol)
-    assert.deepStrictEqual(
-      isMatrix(sol.t) && isMatrix(sol.y),
-      true
-    )
+    assert.deepStrictEqual(isMatrix(sol.t) && isMatrix(sol.y), true)
   })
 
   it('should solve if the arguments have bignumbers', function () {
@@ -173,17 +198,30 @@ describe('solveODE', function () {
 
   it('should solve when y0 is a scalar', function () {
     const sol = solveODE(f, tspan, y0[0])
-    approxDeepEqual(sol.y, exactSol(sol.t, [y0[0]]).map(x => x[0]), tol)
+    approxDeepEqual(
+      sol.y,
+      exactSol(sol.t, [y0[0]]).map((x) => x[0]),
+      tol
+    )
   })
 
   it('should solve with units', function () {
     const seconds = unit('s')
     const meters = unit('m')
-    function fWithUnits (t, y) { return subtract(divide(y, seconds), multiply(t, divide(meters, multiply(seconds, seconds)))) }
+    function fWithUnits(t, y) {
+      return subtract(
+        divide(y, seconds),
+        multiply(t, divide(meters, multiply(seconds, seconds)))
+      )
+    }
     const tspanWithUnits = multiply(tspan, seconds)
     const y0withUnits = multiply(y0, meters)
     const sol = solveODE(fWithUnits, tspanWithUnits, y0withUnits)
-    approxDeepEqual(divide(sol.y, meters), exactSol(divide(sol.t, seconds), y0), tol)
+    approxDeepEqual(
+      divide(sol.y, meters),
+      exactSol(divide(sol.t, seconds), y0),
+      tol
+    )
   })
 
   it('should solve close to the analytical solution with RK23 method', function () {
@@ -203,19 +241,13 @@ describe('solveODE', function () {
 
   it('should solve with few steps if a higher tolerance is specified', function () {
     const sol = solveODE(f, tspan, y0, { method: 'RK45', tol: 1e-2 })
-    assert.deepStrictEqual(
-      smallerEq(sol.y.length, 6),
-      true
-    )
+    assert.deepStrictEqual(smallerEq(sol.y.length, 6), true)
   })
 
   it('should respect maxStep', function () {
     const maxStep = 0.4
     const sol = solveODE(f, tspan, y0, { maxStep })
-    assert.deepStrictEqual(
-      smallerEq(max(diff(sol.t)), maxStep),
-      true
-    )
+    assert.deepStrictEqual(smallerEq(max(diff(sol.t)), maxStep), true)
   })
 
   it('should respect minStep', function () {
@@ -231,9 +263,6 @@ describe('solveODE', function () {
   it('should respect first step', function () {
     const firstStep = 0.1
     const sol = solveODE(f, tspan, y0, { firstStep })
-    assert.deepStrictEqual(
-      subtract(sol.t[1], sol.t[0]),
-      firstStep
-    )
+    assert.deepStrictEqual(subtract(sol.t[1], sol.t[0]), firstStep)
   })
 })

@@ -45,7 +45,7 @@
     "@babel/register": "7.28.3",
     "@types/assert": "1.5.11",
     "@types/mocha": "10.0.10",
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.10.4",
     "@typescript-eslint/eslint-plugin": "8.46.3",
     "@typescript-eslint/parser": "8.46.3",
     "assemblyscript": "^0.28.9",

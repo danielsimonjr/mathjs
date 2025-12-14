@@ -3,7 +3,11 @@ import Emitter from 'tiny-emitter'
 export interface EmitterMixin {
   on: (event: string, callback: (...args: any[]) => void, context?: any) => void
   off: (event: string, callback?: (...args: any[]) => void) => void
-  once: (event: string, callback: (...args: any[]) => void, context?: any) => void
+  once: (
+    event: string,
+    callback: (...args: any[]) => void,
+    context?: any
+  ) => void
   emit: (event: string, ...args: any[]) => void
 }
 

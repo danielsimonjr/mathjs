@@ -28,14 +28,38 @@ describe('ones', function () {
   })
 
   it('should create a 2D matrix with ones', function () {
-    assert.deepStrictEqual(ones(2, 3), matrix([[1, 1, 1], [1, 1, 1]]))
-    assert.deepStrictEqual(ones(3, 2), matrix([[1, 1], [1, 1], [1, 1]]))
-    assert.deepStrictEqual(ones([3, 2]), [[1, 1], [1, 1], [1, 1]])
+    assert.deepStrictEqual(
+      ones(2, 3),
+      matrix([
+        [1, 1, 1],
+        [1, 1, 1]
+      ])
+    )
+    assert.deepStrictEqual(
+      ones(3, 2),
+      matrix([
+        [1, 1],
+        [1, 1],
+        [1, 1]
+      ])
+    )
+    assert.deepStrictEqual(ones([3, 2]), [
+      [1, 1],
+      [1, 1],
+      [1, 1]
+    ])
   })
 
   it('should create a matrix with ones from a matrix', function () {
     assert.deepStrictEqual(ones(matrix([3])), matrix([1, 1, 1]))
-    assert.deepStrictEqual(ones(matrix([3, 2])), matrix([[1, 1], [1, 1], [1, 1]]))
+    assert.deepStrictEqual(
+      ones(matrix([3, 2])),
+      matrix([
+        [1, 1],
+        [1, 1],
+        [1, 1]
+      ])
+    )
   })
 
   it('should create a matrix with bignumber ones', function () {
@@ -66,10 +90,28 @@ describe('ones', function () {
   // TODO: test setting `matrix`
 
   it('should create a matrix with ones with the same size as original matrix', function () {
-    const a = matrix([[1, 2, 3], [4, 5, 6]])
-    assert.deepStrictEqual(ones(size(a)), [[1, 1, 1], [1, 1, 1]])
-    assert.deepStrictEqual(ones(matrix(size(a))), matrix([[1, 1, 1], [1, 1, 1]]))
-    assert.deepStrictEqual(ones(size(a), 'dense'), matrix([[1, 1, 1], [1, 1, 1]]))
+    const a = matrix([
+      [1, 2, 3],
+      [4, 5, 6]
+    ])
+    assert.deepStrictEqual(ones(size(a)), [
+      [1, 1, 1],
+      [1, 1, 1]
+    ])
+    assert.deepStrictEqual(
+      ones(matrix(size(a))),
+      matrix([
+        [1, 1, 1],
+        [1, 1, 1]
+      ])
+    )
+    assert.deepStrictEqual(
+      ones(size(a), 'dense'),
+      matrix([
+        [1, 1, 1],
+        [1, 1, 1]
+      ])
+    )
   })
 
   // TODO: test with invalid inputs

@@ -1,9 +1,7 @@
 export const cosDocs = {
   name: 'cos',
   category: 'Trigonometry',
-  syntax: [
-    'cos(x)'
-  ],
+  syntax: ['cos(x)'],
   description: 'Compute the cosine of x in radians.',
   examples: [
     'cos(2)',
@@ -12,9 +10,5 @@ export const cosDocs = {
     'cos(60 deg)',
     'sin(0.2)^2 + cos(0.2)^2'
   ],
-  seealso: [
-    'acos',
-    'sin',
-    'tan'
-  ]
+  seealso: ['acos', 'sin', 'tan']
 }

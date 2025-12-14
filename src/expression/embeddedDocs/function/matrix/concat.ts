@@ -1,11 +1,9 @@
 export const concatDocs = {
   name: 'concat',
   category: 'Matrix',
-  syntax: [
-    'concat(A, B, C, ...)',
-    'concat(A, B, C, ..., dim)'
-  ],
-  description: 'Concatenate matrices. By default, the matrices are concatenated by the last dimension. The dimension on which to concatenate can be provided as last argument.',
+  syntax: ['concat(A, B, C, ...)', 'concat(A, B, C, ..., dim)'],
+  description:
+    'Concatenate matrices. By default, the matrices are concatenated by the last dimension. The dimension on which to concatenate can be provided as last argument.',
   examples: [
     'A = [1, 2; 5, 6]',
     'B = [3, 4; 7, 8]',
@@ -14,6 +12,17 @@ export const concatDocs = {
     'concat(A, B, 2)'
   ],
   seealso: [
-    'det', 'diag', 'identity', 'inv', 'ones', 'range', 'size', 'squeeze', 'subset', 'trace', 'transpose', 'zeros'
+    'det',
+    'diag',
+    'identity',
+    'inv',
+    'ones',
+    'range',
+    'size',
+    'squeeze',
+    'subset',
+    'trace',
+    'transpose',
+    'zeros'
   ]
 }

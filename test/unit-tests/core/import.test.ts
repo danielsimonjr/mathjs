@@ -7,19 +7,23 @@ import { create } from '../../../src/core/create.js'
 import { hasOwnProperty } from '../../../src/utils/object.js'
 
 const multiplyTestFactory = factory('multiplyTest', [], () => {
-  return function multiply (a, b) {
+  return function multiply(a, b) {
     return a * b
   }
 })
 
-const cubeTestFactory = factory('cubeTest', ['multiplyTest'], ({ multiplyTest }) => {
-  return function cube (a) {
-    return multiplyTest(a, multiplyTest(a, a))
+const cubeTestFactory = factory(
+  'cubeTest',
+  ['multiplyTest'],
+  ({ multiplyTest }) => {
+    return function cube(a) {
+      return multiplyTest(a, multiplyTest(a, a))
+    }
   }
-})
+)
 
 const nestedFactory = factory('tools.misc.nested', [], () => {
-  return function nested () {
+  return function nested() {
     return 'nested'
   }
 })
@@ -29,12 +33,15 @@ describe('import', function () {
 
   beforeEach(function () {
     math = mathjs.create()
-    math.import({
-      myvalue: 42,
-      hello: function (name) {
-        return 'hello, ' + name + '!'
-      }
-    }, { override: true })
+    math.import(
+      {
+        myvalue: 42,
+        hello: function (name) {
+          return 'hello, ' + name + '!'
+        }
+      },
+      { override: true }
+    )
   })
 
   afterEach(function () {
@@ -47,19 +54,23 @@ describe('import', function () {
   })
 
   it('should not override existing functions', function () {
-    assert.throws(function () { math.import({ myvalue: 10 }) },
-      /Error: Cannot import "myvalue": already exists/)
+    assert.throws(function () {
+      math.import({ myvalue: 10 })
+    }, /Error: Cannot import "myvalue": already exists/)
     assert.strictEqual(math.myvalue, 42)
   })
 
   it('should not override existing units', function () {
-    assert.throws(function () { math.import({ meter: 10 }) },
-      /Error: Cannot import "meter": already exists/)
+    assert.throws(function () {
+      math.import({ meter: 10 })
+    }, /Error: Cannot import "meter": already exists/)
     assert.deepStrictEqual(math.evaluate('1 meter'), math.unit('1 meter'))
   })
 
   it('should allow importing the same function twice if it is strictly equal', function () {
-    function foo () { return 'bar' }
+    function foo() {
+      return 'bar'
+    }
 
     math.import({
       object1: {
@@ -74,8 +85,12 @@ describe('import', function () {
   })
 
   it('should not allow importing the same function twice if it is not strictly equal', function () {
-    function foo1 () { return 'bar' }
-    function foo2 () { return 'bar' }
+    function foo1() {
+      return 'bar'
+    }
+    function foo2() {
+      return 'bar'
+    }
 
     assert.throws(function () {
       math.import({
@@ -117,10 +132,13 @@ describe('import', function () {
     return array.length
   }
 
-  it('shouldn\'t wrap custom functions by default', function () {
+  it("shouldn't wrap custom functions by default", function () {
     math.import({ getSizeNotWrapped: getSize })
     assert.strictEqual(math.getSizeNotWrapped([1, 2, 3]), 3)
-    assert.strictEqual(math.getSizeNotWrapped(math.matrix([1, 2, 3])), undefined)
+    assert.strictEqual(
+      math.getSizeNotWrapped(math.matrix([1, 2, 3])),
+      undefined
+    )
   })
 
   it('should wrap custom functions if wrap = true', function () {
@@ -130,32 +148,46 @@ describe('import', function () {
   })
 
   it('wrapped imported functions should accept undefined and null', function () {
-    math.import({
-      testIsNull: function (obj) {
-        return obj === null
-      }
-    }, { wrap: true })
+    math.import(
+      {
+        testIsNull: function (obj) {
+          return obj === null
+        }
+      },
+      { wrap: true }
+    )
     assert.strictEqual(math.testIsNull(null), true)
     assert.strictEqual(math.testIsNull(0), false)
 
-    math.import({
-      testIsUndefined: function (obj) {
-        return obj === undefined
-      }
-    }, { wrap: true })
+    math.import(
+      {
+        testIsUndefined: function (obj) {
+          return obj === undefined
+        }
+      },
+      { wrap: true }
+    )
     assert.strictEqual(math.testIsUndefined(undefined), true)
     assert.strictEqual(math.testIsUndefined(0), false)
     assert.strictEqual(math.testIsUndefined(null), false)
   })
 
   it('should throw an error in case of wrong number of arguments', function () {
-    assert.throws(function () { math.import() }, /ArgumentsError/)
-    assert.throws(function () { math.import('', {}, 3) }, /ArgumentsError/)
+    assert.throws(function () {
+      math.import()
+    }, /ArgumentsError/)
+    assert.throws(function () {
+      math.import('', {}, 3)
+    }, /ArgumentsError/)
   })
 
   it('should throw an error in case of wrong type of arguments', function () {
-    assert.throws(function () { math.import(2) }, /TypeError: Factory, Object, or Array expected/)
-    assert.throws(function () { math.import(function () {}) }, /TypeError: Factory, Object, or Array expected/)
+    assert.throws(function () {
+      math.import(2)
+    }, /TypeError: Factory, Object, or Array expected/)
+    assert.throws(function () {
+      math.import(function () {})
+    }, /TypeError: Factory, Object, or Array expected/)
   })
 
   it('should ignore properties on Object', function () {
@@ -199,7 +231,10 @@ describe('import', function () {
       })
     })
 
-    assert.deepStrictEqual(Object.keys(math.foo.signatures).sort(), ['number', 'string'])
+    assert.deepStrictEqual(Object.keys(math.foo.signatures).sort(), [
+      'number',
+      'string'
+    ])
     assert.strictEqual(math.foo(2), 'foo(number)')
     assert.strictEqual(math.foo('bar'), 'foo(string)')
     assert.throws(function () {
@@ -218,13 +253,16 @@ describe('import', function () {
 
     assert.strictEqual(math.foo(new Date()), 'foo(Date)')
 
-    math.import({
-      foo: math.typed('foo', {
-        string: function (x) {
-          return 'foo(string)'
-        }
-      })
-    }, { override: true })
+    math.import(
+      {
+        foo: math.typed('foo', {
+          string: function (x) {
+            return 'foo(string)'
+          }
+        })
+      },
+      { override: true }
+    )
 
     assert.deepStrictEqual(Object.keys(math.foo.signatures).sort(), ['string'])
     assert.strictEqual(math.foo('bar'), 'foo(string)')
@@ -242,11 +280,11 @@ describe('import', function () {
   })
 
   it('should import a function with transform', function () {
-    function foo (text) {
+    function foo(text) {
       return text.toLowerCase()
     }
 
-    foo.transform = function foo (text) {
+    foo.transform = function foo(text) {
       return text.toUpperCase()
     }
 
@@ -259,7 +297,7 @@ describe('import', function () {
   })
 
   it('should override a function with transform for one without', function () {
-    function mean () {
+    function mean() {
       return 'test'
     }
 
@@ -387,6 +425,9 @@ describe('import', function () {
 
   it('should LaTeX import', function () {
     const expression = math.parse('import(object)')
-    assert.strictEqual(expression.toTex(), '\\mathrm{import}\\left( object\\right)')
+    assert.strictEqual(
+      expression.toTex(),
+      '\\mathrm{import}\\left( object\\right)'
+    )
   })
 })

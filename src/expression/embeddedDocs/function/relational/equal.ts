@@ -1,12 +1,9 @@
 export const equalDocs = {
   name: 'equal',
   category: 'Relational',
-  syntax: [
-    'x == y',
-    'equal(x, y)'
-  ],
+  syntax: ['x == y', 'equal(x, y)'],
   description:
-      'Check equality of two values. Returns true if the values are equal, and false if not.',
+    'Check equality of two values. Returns true if the values are equal, and false if not.',
   examples: [
     '2+2 == 3',
     '2+2 == 4',
@@ -16,6 +13,13 @@ export const equalDocs = {
     '50cm == 0.5m'
   ],
   seealso: [
-    'unequal', 'smaller', 'larger', 'smallerEq', 'largerEq', 'compare', 'deepEqual', 'equalText'
+    'unequal',
+    'smaller',
+    'larger',
+    'smallerEq',
+    'largerEq',
+    'compare',
+    'deepEqual',
+    'equalText'
   ]
 }

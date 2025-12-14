@@ -21,7 +21,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Load WASM module
-async function loadWasm() {
+async function loadWasm () {
   const wasmPath = join(__dirname, '../../lib/wasm/index.js')
   const wasmUrl = new URL(`file:///${wasmPath.replace(/\\/g, '/')}`)
   const wasm = await import(wasmUrl.href)
@@ -81,7 +81,7 @@ const manualTypeCheck = {
 // 3. typed-function wrapper (same pattern as Math.js)
 const typedFunctions = {
   abs: typed('abs', {
-    'number': (x) => Math.abs(x)
+    number: (x) => Math.abs(x)
   }),
   add: typed('add', {
     'number, number': (x, y) => x + y
@@ -90,10 +90,10 @@ const typedFunctions = {
     'number, number': (x, y) => x * y
   }),
   sin: typed('sin', {
-    'number': (x) => Math.sin(x)
+    number: (x) => Math.sin(x)
   }),
   factorial: typed('factorial', {
-    'number': (n) => {
+    number: (n) => {
       let result = 1
       for (let i = 2; i <= n; i++) result *= i
       return result
@@ -117,7 +117,7 @@ const typedMultiSig = {
   })
 }
 
-async function runBenchmarks() {
+async function runBenchmarks () {
   console.log('Loading WASM module...')
   const wasm = await loadWasm()
   console.log('WASM module loaded\n')
@@ -153,7 +153,7 @@ async function runBenchmarks() {
   console.log('\n--- BINARY add(x, y) - Two Values ---\n')
 
   const binaryBench = new Bench({ time: 100, iterations: 10000 })
-  const x = 123.456, y = 789.012
+  const x = 123.456; const y = 789.012
 
   binaryBench.add('Pure JS x + y', () => pureJS.add(x, y))
   binaryBench.add('Manual typeof check', () => manualTypeCheck.add(x, y))

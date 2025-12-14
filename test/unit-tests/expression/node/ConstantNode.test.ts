@@ -30,7 +30,9 @@ describe('ConstantNode', function () {
   })
 
   it('should throw an error when calling without new operator', function () {
-    assert.throws(function () { ConstantNode(3) }, TypeError)
+    assert.throws(function () {
+      ConstantNode(3)
+    }, TypeError)
   })
 
   it('should compile a ConstantNode', function () {
@@ -65,19 +67,45 @@ describe('ConstantNode', function () {
 
   it('should find a ConstantNode', function () {
     const a = new ConstantNode(2)
-    assert.deepStrictEqual(a.filter(function (node) { return node instanceof ConstantNode }), [a])
-    assert.deepStrictEqual(a.filter(function (node) { return node instanceof SymbolNode }), [])
+    assert.deepStrictEqual(
+      a.filter(function (node) {
+        return node instanceof ConstantNode
+      }),
+      [a]
+    )
+    assert.deepStrictEqual(
+      a.filter(function (node) {
+        return node instanceof SymbolNode
+      }),
+      []
+    )
   })
 
   it('should leave quotes in strings as is (no escaping)', function () {
-    assert.strictEqual(new ConstantNode('"+foo+"').compile().evaluate(), '"+foo+"')
-    assert.strictEqual(new ConstantNode('\\"escaped\\"').compile().evaluate(), '\\"escaped\\"')
+    assert.strictEqual(
+      new ConstantNode('"+foo+"').compile().evaluate(),
+      '"+foo+"'
+    )
+    assert.strictEqual(
+      new ConstantNode('\\"escaped\\"').compile().evaluate(),
+      '\\"escaped\\"'
+    )
   })
 
   it('should find a ConstantNode', function () {
     const a = new ConstantNode(2)
-    assert.deepStrictEqual(a.filter(function (node) { return node instanceof ConstantNode }), [a])
-    assert.deepStrictEqual(a.filter(function (node) { return node instanceof SymbolNode }), [])
+    assert.deepStrictEqual(
+      a.filter(function (node) {
+        return node instanceof ConstantNode
+      }),
+      [a]
+    )
+    assert.deepStrictEqual(
+      a.filter(function (node) {
+        return node instanceof SymbolNode
+      }),
+      []
+    )
   })
 
   it('should run forEach on a ConstantNode', function () {
@@ -141,10 +169,19 @@ describe('ConstantNode', function () {
     assert.strictEqual(new ConstantNode(3).toString(), '3')
     assert.deepStrictEqual(new ConstantNode(3).toString(), '3')
     assert.deepStrictEqual(new ConstantNode(3n).toString(), '3')
-    assert.deepStrictEqual(new ConstantNode(math.bignumber('1e500')).toString(), '1e+500')
-    assert.deepStrictEqual(new ConstantNode(math.fraction(2, 3)).toString(), '2/3')
+    assert.deepStrictEqual(
+      new ConstantNode(math.bignumber('1e500')).toString(),
+      '1e+500'
+    )
+    assert.deepStrictEqual(
+      new ConstantNode(math.fraction(2, 3)).toString(),
+      '2/3'
+    )
     assert.strictEqual(new ConstantNode('hi').toString(), '"hi"')
-    assert.strictEqual(new ConstantNode('with " double quote').toString(), '"with \\" double quote"')
+    assert.strictEqual(
+      new ConstantNode('with " double quote').toString(),
+      '"with \\" double quote"'
+    )
     assert.strictEqual(new ConstantNode(true).toString(), 'true')
     assert.strictEqual(new ConstantNode(false).toString(), 'false')
     assert.strictEqual(new ConstantNode(undefined).toString(), 'undefined')
@@ -196,11 +233,22 @@ describe('ConstantNode', function () {
     assert.deepStrictEqual(new ConstantNode(3).toTex(), '3')
     assert.deepStrictEqual(new ConstantNode(42n).toTex(), '42')
     assert.deepStrictEqual(new ConstantNode(math.bignumber('3')).toTex(), '3')
-    assert.deepStrictEqual(new ConstantNode(math.bignumber('1.3e7')).toTex(), '1.3\\cdot10^{+7}')
-    assert.deepStrictEqual(new ConstantNode(math.bignumber('1e500')).toTex(), '1\\cdot10^{+500}')
-    assert.deepStrictEqual(new ConstantNode(math.bignumber('1e-500')).toTex(), '1\\cdot10^{-500}')
-    assert.deepStrictEqual(new ConstantNode(math.bignumber('12345678901234567890')).toTex(),
-      '1.234567890123456789\\cdot10^{+19}')
+    assert.deepStrictEqual(
+      new ConstantNode(math.bignumber('1.3e7')).toTex(),
+      '1.3\\cdot10^{+7}'
+    )
+    assert.deepStrictEqual(
+      new ConstantNode(math.bignumber('1e500')).toTex(),
+      '1\\cdot10^{+500}'
+    )
+    assert.deepStrictEqual(
+      new ConstantNode(math.bignumber('1e-500')).toTex(),
+      '1\\cdot10^{-500}'
+    )
+    assert.deepStrictEqual(
+      new ConstantNode(math.bignumber('12345678901234567890')).toTex(),
+      '1.234567890123456789\\cdot10^{+19}'
+    )
     assert.strictEqual(new ConstantNode('hi').toTex(), '\\mathtt{"hi"}')
     assert.strictEqual(new ConstantNode(true).toTex(), 'true')
     assert.strictEqual(new ConstantNode(false).toTex(), 'false')
@@ -211,8 +259,14 @@ describe('ConstantNode', function () {
   it('should LaTeX a ConstantNode with value Infinity', function () {
     assert.strictEqual(new ConstantNode(Infinity).toTex(), '\\infty')
     assert.strictEqual(new ConstantNode(-Infinity).toTex(), '-\\infty')
-    assert.strictEqual(new ConstantNode(math.bignumber('Infinity')).toTex(), '\\infty')
-    assert.strictEqual(new ConstantNode(math.bignumber('-Infinity')).toTex(), '-\\infty')
+    assert.strictEqual(
+      new ConstantNode(math.bignumber('Infinity')).toTex(),
+      '\\infty'
+    )
+    assert.strictEqual(
+      new ConstantNode(math.bignumber('-Infinity')).toTex(),
+      '-\\infty'
+    )
   })
 
   it('should LaTeX a ConstantNode in exponential notation', function () {
@@ -230,7 +284,10 @@ describe('ConstantNode', function () {
 
     const n = new ConstantNode(1)
 
-    assert.strictEqual(n.toTex({ handler: customFunction }), 'const\\left(1\\right)')
+    assert.strictEqual(
+      n.toTex({ handler: customFunction }),
+      'const\\left(1\\right)'
+    )
   })
 
   it('should LaTeX a ConstantNode with a fraction', function () {
@@ -244,6 +301,9 @@ describe('ConstantNode', function () {
   it('should escape strings in toTex', function () {
     const n = new ConstantNode('space tab\tunderscore_bla$/')
 
-    assert.strictEqual(n.toTex(), '\\mathtt{"space~tab\\textbackslash{}tunderscore\\_bla\\$/"}')
+    assert.strictEqual(
+      n.toTex(),
+      '\\mathtt{"space~tab\\textbackslash{}tunderscore\\_bla\\$/"}'
+    )
   })
 })

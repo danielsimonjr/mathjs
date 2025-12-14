@@ -6,7 +6,7 @@ import * as loader from '@assemblyscript/loader'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-async function test() {
+async function test () {
   const wasmPath = join(__dirname, '../../lib/wasm/index.wasm')
   const wasmBuffer = await readFile(wasmPath)
 
@@ -102,7 +102,6 @@ async function test() {
           } catch (e) {
             // skip
           }
-
         } catch (e) {
           console.log(`typeId ${typeId}: ${e.message}`)
         }
@@ -117,8 +116,8 @@ async function test() {
   if (exports.multiplyDense && exports.__newArray) {
     try {
       // 2x2 matrix multiply test
-      const aData = [1, 2, 3, 4]  // [[1,2],[3,4]]
-      const bData = [5, 6, 7, 8]  // [[5,6],[7,8]]
+      const aData = [1, 2, 3, 4] // [[1,2],[3,4]]
+      const bData = [5, 6, 7, 8] // [[5,6],[7,8]]
 
       // Find the right type ID (from above test)
       for (let typeId = 1; typeId <= 10; typeId++) {
@@ -136,7 +135,7 @@ async function test() {
             const result = exports.__getFloat64Array(resultPtr)
 
             console.log(`2x2 matrix multiply result: [${Array.from(result).join(', ')}]`)
-            console.log(`Expected: [19, 22, 43, 50]`)  // [[1,2],[3,4]] * [[5,6],[7,8]]
+            console.log('Expected: [19, 22, 43, 50]') // [[1,2],[3,4]] * [[5,6],[7,8]]
 
             exports.__unpin(aPtr)
             exports.__unpin(bPtr)

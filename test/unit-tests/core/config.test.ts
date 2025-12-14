@@ -9,9 +9,14 @@ describe('config', function () {
 
     assert.strictEqual(math2.typeOf(math2.pi), 'number')
 
-    math2.import({
-      import: () => { throw new Error('Function import is disabled') }
-    }, { override: true })
+    math2.import(
+      {
+        import: () => {
+          throw new Error('Function import is disabled')
+        }
+      },
+      { override: true }
+    )
 
     math2.config({ number: 'BigNumber' })
 
@@ -26,7 +31,9 @@ describe('config', function () {
     const warnStub = sinon.stub(console, 'warn')
 
     // Set epsilon to throw a warning and set relTol and absTol
-    assert.doesNotThrow(function () { math2.config({ epsilon: 1e-5 }) })
+    assert.doesNotThrow(function () {
+      math2.config({ epsilon: 1e-5 })
+    })
 
     // Check if epsilon is set as relTol and absTol
     assert.strictEqual(math2.config().relTol, 1e-5)
@@ -45,7 +52,9 @@ describe('config', function () {
     const warnStub = sinon.stub(console, 'warn')
 
     // Set legacySubset to true and should throw a warning
-    assert.doesNotThrow(function () { math2.config({ legacySubset: true }) })
+    assert.doesNotThrow(function () {
+      math2.config({ legacySubset: true })
+    })
 
     // Check if legacySubset is set
     assert.strictEqual(math2.config().legacySubset, true)
@@ -54,7 +63,9 @@ describe('config', function () {
     assert.strictEqual(warnStub.callCount, 1)
 
     // Set legacySubset to false, should not throw a warning
-    assert.doesNotThrow(function () { math2.config({ legacySubset: false }) })
+    assert.doesNotThrow(function () {
+      math2.config({ legacySubset: false })
+    })
 
     // Validate that  if console.warn was not called again
     assert.strictEqual(warnStub.callCount, 1)

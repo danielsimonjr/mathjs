@@ -1,11 +1,9 @@
 export const sortDocs = {
   name: 'sort',
   category: 'Matrix',
-  syntax: [
-    'sort(x)',
-    'sort(x, compare)'
-  ],
-  description: 'Sort the items in a matrix. Compare can be a string "asc", "desc", "natural", or a custom sort function.',
+  syntax: ['sort(x)', 'sort(x, compare)'],
+  description:
+    'Sort the items in a matrix. Compare can be a string "asc", "desc", "natural", or a custom sort function.',
   examples: [
     'sort([5, 10, 1])',
     'sort(["C", "B", "A", "D"], "natural")',

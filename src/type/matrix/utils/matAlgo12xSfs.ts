@@ -11,7 +11,11 @@ interface TypedFunction {
 }
 
 interface DenseMatrixConstructor {
-  new(data: { data: MatrixData; size: number[]; datatype?: DataType }): DenseMatrix
+  new (data: {
+    data: MatrixData
+    size: number[]
+    datatype?: DataType
+  }): DenseMatrix
 }
 
 interface DenseMatrix {
@@ -33,104 +37,118 @@ type CallbackFunction = (a: any, b: any) => any
 const name = 'matAlgo12xSfs'
 const dependencies = ['typed', 'DenseMatrix']
 
-export const createMatAlgo12xSfs = /* #__PURE__ */ factory(name, dependencies, ({ typed, DenseMatrix }: {
-  typed: TypedFunction
-  DenseMatrix: DenseMatrixConstructor
-}) => {
-  /**
-   * Iterates over SparseMatrix S nonzero items and invokes the callback function f(Sij, b).
-   * Callback function invoked MxN times.
-   *
-   *
-   *          ┌  f(Sij, b)  ; S(i,j) !== 0
-   * C(i,j) = ┤
-   *          └  f(0, b)    ; otherwise
-   *
-   *
-   * @param {Matrix}   s                 The SparseMatrix instance (S)
-   * @param {Scalar}   b                 The Scalar value
-   * @param {Function} callback          The f(Aij,b) operation to invoke
-   * @param {boolean}  inverse           A true value indicates callback should be invoked f(b,Sij)
-   *
-   * @return {Matrix}                    DenseMatrix (C)
-   *
-   * https://github.com/josdejong/mathjs/pull/346#issuecomment-97626813
-   */
-  return function matAlgo12xSfs(s: SparseMatrix, b: any, callback: CallbackFunction, inverse: boolean): DenseMatrix {
-    // sparse matrix arrays
-    const avalues = s._values
-    const aindex = s._index
-    const aptr = s._ptr
-    const asize = s._size
-    const adt: DataType = s._datatype
+export const createMatAlgo12xSfs = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({
+    typed,
+    DenseMatrix
+  }: {
+    typed: TypedFunction
+    DenseMatrix: DenseMatrixConstructor
+  }) => {
+    /**
+     * Iterates over SparseMatrix S nonzero items and invokes the callback function f(Sij, b).
+     * Callback function invoked MxN times.
+     *
+     *
+     *          ┌  f(Sij, b)  ; S(i,j) !== 0
+     * C(i,j) = ┤
+     *          └  f(0, b)    ; otherwise
+     *
+     *
+     * @param {Matrix}   s                 The SparseMatrix instance (S)
+     * @param {Scalar}   b                 The Scalar value
+     * @param {Function} callback          The f(Aij,b) operation to invoke
+     * @param {boolean}  inverse           A true value indicates callback should be invoked f(b,Sij)
+     *
+     * @return {Matrix}                    DenseMatrix (C)
+     *
+     * https://github.com/josdejong/mathjs/pull/346#issuecomment-97626813
+     */
+    return function matAlgo12xSfs(
+      s: SparseMatrix,
+      b: any,
+      callback: CallbackFunction,
+      inverse: boolean
+    ): DenseMatrix {
+      // sparse matrix arrays
+      const avalues = s._values
+      const aindex = s._index
+      const aptr = s._ptr
+      const asize = s._size
+      const adt: DataType = s._datatype
 
-    // sparse matrix cannot be a Pattern matrix
-    if (!avalues) {
-      throw new Error('Cannot perform operation on Pattern Sparse Matrix and Scalar value')
-    }
+      // sparse matrix cannot be a Pattern matrix
+      if (!avalues) {
+        throw new Error(
+          'Cannot perform operation on Pattern Sparse Matrix and Scalar value'
+        )
+      }
 
-    // rows & columns
-    const rows = asize[0]
-    const columns = asize[1]
+      // rows & columns
+      const rows = asize[0]
+      const columns = asize[1]
 
-    // datatype
-    let dt: DataType
-    // callback signature to use
-    let cf: CallbackFunction = callback
-
-    // process data types
-    if (typeof adt === 'string') {
       // datatype
-      dt = adt
-      // convert b to the same datatype
-      b = typed.convert(b, dt)
-      // callback
-      cf = typed.find(callback, [dt, dt]) as any as any as CallbackFunction
-    }
+      let dt: DataType
+      // callback signature to use
+      let cf: CallbackFunction = callback
 
-    // result arrays
-    const cdata: MatrixData = []
-
-    // workspaces
-    const x: MatrixValue[] = []
-    // marks indicating we have a value in x for a given column
-    const w: number[] = []
-
-    // loop columns
-    for (let j = 0; j < columns; j++) {
-      // columns mark
-      const mark = j + 1
-      // values in j
-      for (let k0 = aptr[j], k1 = aptr[j + 1], k = k0; k < k1; k++) {
-        // row
-        const r = aindex[k]
-        // update workspace
-        x[r] = avalues[k]
-        w[r] = mark
+      // process data types
+      if (typeof adt === 'string') {
+        // datatype
+        dt = adt
+        // convert b to the same datatype
+        b = typed.convert(b, dt)
+        // callback
+        cf = typed.find(callback, [dt, dt]) as any as any as CallbackFunction
       }
-      // loop rows
-      for (let i = 0; i < rows; i++) {
-        // initialize C on first column
-        if (j === 0) {
-          // create row array
-          cdata[i] = []
+
+      // result arrays
+      const cdata: MatrixData = []
+
+      // workspaces
+      const x: MatrixValue[] = []
+      // marks indicating we have a value in x for a given column
+      const w: number[] = []
+
+      // loop columns
+      for (let j = 0; j < columns; j++) {
+        // columns mark
+        const mark = j + 1
+        // values in j
+        for (let k0 = aptr[j], k1 = aptr[j + 1], k = k0; k < k1; k++) {
+          // row
+          const r = aindex[k]
+          // update workspace
+          x[r] = avalues[k]
+          w[r] = mark
         }
-        // check sparse matrix has a value @ i,j
-        if (w[i] === mark) {
-          // invoke callback, update C
-          cdata[i][j] = inverse ? cf(b, x[i]) : cf(x[i], b)
-        } else {
-          // dense matrix value @ i, j
-          cdata[i][j] = inverse ? cf(b, 0) : cf(0, b)
+        // loop rows
+        for (let i = 0; i < rows; i++) {
+          // initialize C on first column
+          if (j === 0) {
+            // create row array
+            cdata[i] = []
+          }
+          // check sparse matrix has a value @ i,j
+          if (w[i] === mark) {
+            // invoke callback, update C
+            cdata[i][j] = inverse ? cf(b, x[i]) : cf(x[i], b)
+          } else {
+            // dense matrix value @ i, j
+            cdata[i][j] = inverse ? cf(b, 0) : cf(0, b)
+          }
         }
       }
-    }
 
-    // return dense matrix
-    return new DenseMatrix({
-      data: cdata,
-      size: [rows, columns],
-      datatype: dt
-    })
+      // return dense matrix
+      return new DenseMatrix({
+        data: cdata,
+        size: [rows, columns],
+        datatype: dt
+      })
+    }
   }
-})
+)

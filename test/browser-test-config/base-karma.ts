@@ -3,12 +3,9 @@ const webpack = require('webpack')
 
 module.exports = function (config) {
   return {
-
     basePath: '../..',
 
-    frameworks: [
-      'mocha'
-    ],
+    frameworks: ['mocha'],
 
     mochaReporter: {
       output: 'minimal'
@@ -17,9 +14,7 @@ module.exports = function (config) {
     reporters: ['mocha'],
 
     // list of files / patterns to load in the browser
-    files: [
-      'test/browser-test-config/browser-tests.test.js'
-    ],
+    files: ['test/browser-test-config/browser-tests.test.js'],
 
     plugins: [
       'karma-webpack',
@@ -87,6 +82,5 @@ module.exports = function (config) {
         ]
       }
     }
-
   }
 }

@@ -1,5 +1,12 @@
 import { isInteger } from './number.ts'
-import { isNumber, isBigNumber, isArray, isString, BigNumber, Index, Matrix } from './is.ts'
+import {
+  isNumber,
+  isBigNumber,
+  isArray,
+  isString,
+  Index,
+  Matrix
+} from './is.ts'
 import { format } from './string.ts'
 import { DimensionError } from '../error/DimensionError.ts'
 import { IndexError } from '../error/IndexError.ts'
@@ -78,7 +85,7 @@ function _validate(array: any[], size: number[], dim: number): void {
  * @throws DimensionError
  */
 export function validate(array: any, size: number[]): void {
-  const isScalar = (size.length === 0)
+  const isScalar = size.length === 0
   if (isScalar) {
     // scalar
     if (Array.isArray(array)) {
@@ -96,12 +103,19 @@ export function validate(array: any, size: number[]): void {
  * @param {Index} index  Index with the source information to validate
  * @throws DimensionError
  */
-export function validateIndexSourceSize(value: any[] | Matrix, index: Index): void {
-  const valueSize = (value as Matrix).isMatrix ? (value as Matrix)._size! : arraySize(value)
+export function validateIndexSourceSize(
+  value: any[] | Matrix,
+  index: Index
+): void {
+  const valueSize = (value as Matrix).isMatrix
+    ? (value as Matrix)._size!
+    : arraySize(value)
   const sourceSize = index._sourceSize!
   // checks if the source size is not null and matches the valueSize
   sourceSize.forEach((sourceDim, i) => {
-    if (sourceDim !== null && sourceDim !== valueSize[i]) { throw new DimensionError(sourceDim, valueSize[i]) }
+    if (sourceDim !== null && sourceDim !== valueSize[i]) {
+      throw new DimensionError(sourceDim, valueSize[i])
+    }
   })
 }
 
@@ -111,7 +125,10 @@ export function validateIndexSourceSize(value: any[] | Matrix, index: Index): vo
  * @param {number} index    Zero-based index
  * @param {number} [length] Length of the array
  */
-export function validateIndex(index: number | undefined, length?: number): void {
+export function validateIndex(
+  index: number | undefined,
+  length?: number
+): void {
   if (index !== undefined) {
     if (!isNumber(index) || !isInteger(index)) {
       throw new TypeError('Index must be an integer (value: ' + index + ')')
@@ -172,8 +189,12 @@ export function resize<T = any>(
   // check whether size contains positive integers
   size.forEach(function (value) {
     if (!isNumber(value) || !isInteger(value) || value < 0) {
-      throw new TypeError('Invalid size, must contain positive integers ' +
-        '(size: ' + format(size, {}) + ')')
+      throw new TypeError(
+        'Invalid size, must contain positive integers ' +
+          '(size: ' +
+          format(size, {}) +
+          ')'
+      )
     }
   })
 
@@ -184,7 +205,7 @@ export function resize<T = any>(
   }
 
   // recursively resize the array
-  const _defaultValue = (defaultValue !== undefined) ? defaultValue : 0
+  const _defaultValue = defaultValue !== undefined ? defaultValue : 0
   _resize(arr, size, 0, _defaultValue)
 
   return arr
@@ -199,7 +220,12 @@ export function resize<T = any>(
  *                              undefined by default.
  * @private
  */
-function _resize(array: any[], size: number[], dim: number, defaultValue: any): void {
+function _resize(
+  array: any[],
+  size: number[],
+  dim: number,
+  defaultValue: any
+): void {
   let i: number
   let elem: any
   const oldLen = array.length
@@ -260,7 +286,10 @@ function _resize(array: any[], size: number[], dim: number, defaultValue: any): 
  * @throws {DimensionError}       If the product of the new dimension sizes does
  *                                not equal that of the old ones
  */
-export function reshape<T = any>(array: NestedArray<T>, sizes: number[]): NestedArray<T> {
+export function reshape<T = any>(
+  array: NestedArray<T>,
+  sizes: number[]
+): NestedArray<T> {
   const flatArray = flatten(array, true) // since it has rectangular
   const currentLength = flatArray.length
 
@@ -275,22 +304,14 @@ export function reshape<T = any>(array: NestedArray<T>, sizes: number[]): Nested
   const processedSizes = processSizesWildcard(sizes, currentLength)
   const newLength = product(processedSizes)
   if (currentLength !== newLength) {
-    throw new DimensionError(
-      newLength,
-      currentLength,
-      '!='
-    )
+    throw new DimensionError(newLength, currentLength, '!=')
   }
 
   try {
     return _reshape(flatArray, processedSizes)
   } catch (e) {
     if (e instanceof DimensionError) {
-      throw new DimensionError(
-        newLength,
-        currentLength,
-        '!='
-      )
+      throw new DimensionError(newLength, currentLength, '!=')
     }
     throw e
   }
@@ -303,7 +324,10 @@ export function reshape<T = any>(array: NestedArray<T>, sizes: number[]): Nested
  * @throws {Error}                If more than one wildcard or unable to replace it.
  * @returns {number[]}      The sizes array with wildcard replaced.
  */
-export function processSizesWildcard(sizes: number[], currentLength: number): number[] {
+export function processSizesWildcard(
+  sizes: number[],
+  currentLength: number
+): number[] {
   const newLength = product(sizes)
   const processedSizes = sizes.slice()
   const WILDCARD = -1
@@ -321,7 +345,12 @@ export function processSizesWildcard(sizes: number[], currentLength: number): nu
     if (canReplaceWildcard) {
       processedSizes[wildCardIndex] = -currentLength / newLength
     } else {
-      throw new Error('Could not replace wildcard, since ' + currentLength + ' is no multiple of ' + (-newLength))
+      throw new Error(
+        'Could not replace wildcard, since ' +
+          currentLength +
+          ' is no multiple of ' +
+          -newLength
+      )
     }
   }
   return processedSizes
@@ -372,7 +401,10 @@ function _reshape<T>(array: T[], sizes: number[]): NestedArray<T> {
  * @param {Array} [size]
  * @returns {Array} returns the array itself
  */
-export function squeeze<T>(array: NestedArray<T>, size?: number[]): T | NestedArray<T> {
+export function squeeze<T>(
+  array: NestedArray<T>,
+  size?: number[]
+): T | NestedArray<T> {
   const s = size || arraySize(array)
 
   let arr: any = array
@@ -496,7 +528,10 @@ function _unsqueeze(array: any, dims: number, dim: number): any {
  * @param {boolean} isRectangular Optional. If the array is rectangular (not jagged)
  * @return {Array}        The flattened array (1 dimensional)
  */
-export function flatten<T>(array: NestedArray<T>, isRectangular: boolean = false): T[] {
+export function flatten<T>(
+  array: NestedArray<T>,
+  isRectangular: boolean = false
+): T[] {
   if (!Array.isArray(array)) {
     // if not an array, return as is
     return array as any
@@ -543,7 +578,10 @@ export function flatten<T>(array: NestedArray<T>, isRectangular: boolean = false
  * @param {Array} array
  * @param {function} callback
  */
-export function map<T, U>(array: T[], callback: (value: T, index: number, array: T[]) => U): U[] {
+export function map<T, U>(
+  array: T[],
+  callback: (value: T, index: number, array: T[]) => U
+): U[] {
   return Array.prototype.map.call(array, callback)
 }
 
@@ -552,7 +590,10 @@ export function map<T, U>(array: T[], callback: (value: T, index: number, array:
  * @param {Array} array
  * @param {function} callback
  */
-export function forEach<T>(array: T[], callback: (value: T, index: number, array: T[]) => void): void {
+export function forEach<T>(
+  array: T[],
+  callback: (value: T, index: number, array: T[]) => void
+): void {
   Array.prototype.forEach.call(array, callback)
 }
 
@@ -561,7 +602,10 @@ export function forEach<T>(array: T[], callback: (value: T, index: number, array
  * @param {Array} array
  * @param {function} callback
  */
-export function filter<T>(array: T[], callback: (value: T, index: number, array: T[]) => boolean): T[] {
+export function filter<T>(
+  array: T[],
+  callback: (value: T, index: number, array: T[]) => boolean
+): T[] {
   if (arraySize(array).length !== 1) {
     throw new Error('Only one dimensional matrices supported')
   }
@@ -581,7 +625,9 @@ export function filterRegExp(array: string[], regexp: RegExp): string[] {
     throw new Error('Only one dimensional matrices supported')
   }
 
-  return Array.prototype.filter.call(array, (entry: string) => regexp.test(entry))
+  return Array.prototype.filter.call(array, (entry: string) =>
+    regexp.test(entry)
+  )
 }
 
 /**
@@ -716,7 +762,12 @@ export function initial<T>(array: T[]): T[] {
  * @return {Array} c            The concatenated matrix
  * @private
  */
-function concatRecursive(a: any[], b: any[], concatDim: number, dim: number): any[] {
+function concatRecursive(
+  a: any[],
+  b: any[],
+  concatDim: number,
+  dim: number
+): any[] {
   if (dim < concatDim) {
     // recurse into next dimension
     if (a.length !== b.length) {
@@ -748,7 +799,9 @@ export function concat(...args: any[]): any[] {
     return arrays[0]
   }
   if (arrays.length > 1) {
-    return arrays.slice(1).reduce(function (A: any, B: any) { return concatRecursive(A, B, concatDim, 0) }, arrays[0])
+    return arrays.slice(1).reduce(function (A: any, B: any) {
+      return concatRecursive(A, B, concatDim, 0)
+    }, arrays[0])
   } else {
     throw new Error('Wrong number of arguments in function concat')
   }
@@ -790,7 +843,7 @@ export function checkBroadcastingRules(size: number[], toSize: number[]): void {
   const dim = size.length
   for (let j = 0; j < dim; j++) {
     const n = N - dim + j
-    if ((size[j] < toSize[n] && size[j] > 1) || (size[j] > toSize[n])) {
+    if ((size[j] < toSize[n] && size[j] > 1) || size[j] > toSize[n]) {
       throw new Error(
         `shape mismatch: mismatch is found in arg with shape (${size}) not possible to broadcast dimension ${dim} with size ${size[j]} to size ${toSize[n]}`
       )
@@ -804,7 +857,10 @@ export function checkBroadcastingRules(size: number[], toSize: number[]): void {
  * @param {number[]} toSize Size to broadcast the array
  * @returns {Array} The broadcasted array
  */
-export function broadcastTo<T>(array: NestedArray<T>, toSize: number[]): NestedArray<T> {
+export function broadcastTo<T>(
+  array: NestedArray<T>,
+  toSize: number[]
+): NestedArray<T> {
   let Asize = arraySize(array)
   if (deepStrictEqual(Asize, toSize)) {
     return array
@@ -836,17 +892,25 @@ export function broadcastTo<T>(array: NestedArray<T>, toSize: number[]): NestedA
  * @param  {...Array | any} arrays
  * @returns {Array[]} The broadcasted arrays
  */
-export function broadcastArrays<T>(...arrays: NestedArray<T>[]): NestedArray<T>[] {
+export function broadcastArrays<T>(
+  ...arrays: NestedArray<T>[]
+): NestedArray<T>[] {
   if (arrays.length === 0) {
-    throw new Error('Insufficient number of arguments in function broadcastArrays')
+    throw new Error(
+      'Insufficient number of arguments in function broadcastArrays'
+    )
   }
   if (arrays.length === 1) {
     return arrays as any
   }
-  const sizes = arrays.map(function (array) { return arraySize(array) })
+  const sizes = arrays.map(function (array) {
+    return arraySize(array)
+  })
   const broadcastedSize = broadcastSizes(...sizes)
   const broadcastedArrays: NestedArray<T>[] = []
-  arrays.forEach(function (array) { broadcastedArrays.push(broadcastTo(array, broadcastedSize)) })
+  arrays.forEach(function (array) {
+    broadcastedArrays.push(broadcastTo(array, broadcastedSize))
+  })
   return broadcastedArrays
 }
 
@@ -866,22 +930,28 @@ export function stretch<T>(
 }
 
 /**
-* Retrieves a single element from an array given an index.
-*
-* @param {Array} array - The array from which to retrieve the value.
-* @param {Array<number>} index - An array of indices specifying the position of the desired element in each dimension.
-* @returns {*} - The value at the specified position in the array.
-*
-* @example
-* const arr = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]];
-* const index = [1, 0, 1];
-* console.log(get(arr, index)); // 6
-*/
+ * Retrieves a single element from an array given an index.
+ *
+ * @param {Array} array - The array from which to retrieve the value.
+ * @param {Array<number>} index - An array of indices specifying the position of the desired element in each dimension.
+ * @returns {*} - The value at the specified position in the array.
+ *
+ * @example
+ * const arr = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]];
+ * const index = [1, 0, 1];
+ * console.log(get(arr, index)); // 6
+ */
 export function get<T>(array: NestedArray<T>, index: number[]): T {
-  if (!Array.isArray(array)) { throw new Error('Array expected') }
+  if (!Array.isArray(array)) {
+    throw new Error('Array expected')
+  }
   const size = arraySize(array)
-  if (index.length !== size.length) { throw new DimensionError(index.length, size.length) }
-  for (let x = 0; x < index.length; x++) { validateIndex(index[x], size[x]) }
+  if (index.length !== size.length) {
+    throw new DimensionError(index.length, size.length)
+  }
+  for (let x = 0; x < index.length; x++) {
+    validateIndex(index[x], size[x])
+  }
   return index.reduce((acc: any, curr) => acc[curr], array)
 }
 
@@ -898,7 +968,9 @@ export function get<T>(array: NestedArray<T>, index: number[]): T {
  */
 export function deepMap<T, U>(
   array: NestedArray<T>,
-  callback: ((value: T, index: number[], array: NestedArray<T>) => U) | ((value: T) => U),
+  callback:
+    | ((value: T, index: number[], array: NestedArray<T>) => U)
+    | ((value: T) => U),
   skipIndex: boolean = false
 ): NestedArray<U> {
   if ((array as any).length === 0) {
@@ -952,7 +1024,9 @@ export function deepMap<T, U>(
  */
 export function deepForEach<T>(
   array: NestedArray<T>,
-  callback: ((value: T, index: number[], array: NestedArray<T>) => void) | ((value: T) => void),
+  callback:
+    | ((value: T, index: number[], array: NestedArray<T>) => void)
+    | ((value: T) => void),
   skipIndex: boolean = false
 ): void {
   if ((array as any).length === 0) {
@@ -974,7 +1048,7 @@ export function deepForEach<T>(
         recursiveForEachWithIndex(value[i], depth + 1)
       }
     } else {
-      (callback as any)(value, index.slice(0, depth), array)
+      ;(callback as any)(value, index.slice(0, depth), array)
     }
   }
 
@@ -985,7 +1059,7 @@ export function deepForEach<T>(
         recursiveForEach(value[i])
       }
     } else {
-      (callback as any)(value)
+      ;(callback as any)(value)
     }
   }
 }

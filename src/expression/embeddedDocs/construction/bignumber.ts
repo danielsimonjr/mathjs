@@ -1,11 +1,8 @@
 export const bignumberDocs = {
   name: 'bignumber',
   category: 'Construction',
-  syntax: [
-    'bignumber(x)'
-  ],
-  description:
-      'Create a big number from a number or string.',
+  syntax: ['bignumber(x)'],
+  description: 'Create a big number from a number or string.',
   examples: [
     '0.1 + 0.2',
     'bignumber(0.1) + bignumber(0.2)',
@@ -14,6 +11,13 @@ export const bignumberDocs = {
     'bignumber([0.1, 0.2, 0.3])'
   ],
   seealso: [
-    'boolean', 'bigint', 'complex', 'fraction', 'index', 'matrix', 'string', 'unit'
+    'boolean',
+    'bigint',
+    'complex',
+    'fraction',
+    'index',
+    'matrix',
+    'string',
+    'unit'
   ]
 }

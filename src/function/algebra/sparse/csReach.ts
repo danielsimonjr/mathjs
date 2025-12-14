@@ -20,7 +20,13 @@ import { csDfs } from './csDfs.ts'
  *
  * @return {Number}                 The index for the nonzero pattern
  */
-export function csReach (g: any, b: any, k: number, xi: number[], pinv: number[] | null): number {
+export function csReach(
+  g: any,
+  b: any,
+  k: number,
+  xi: number[],
+  pinv: number[] | null
+): number {
   // g arrays
   const gptr = g._ptr
   const gsize = g._size

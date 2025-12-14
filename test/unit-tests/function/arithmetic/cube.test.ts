@@ -52,24 +52,47 @@ describe('cube', function () {
   })
 
   it('should throw an error with strings', function () {
-    assert.throws(function () { cube('text') })
+    assert.throws(function () {
+      cube('text')
+    })
   })
 
-  it('should throw an error if there\'s wrong number of args', function () {
-    assert.throws(function () { cube() }, /TypeError: Too few arguments/)
-    assert.throws(function () { cube(1, 2) }, /TypeError: Too many arguments/)
+  it("should throw an error if there's wrong number of args", function () {
+    assert.throws(function () {
+      cube()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      cube(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () { cube(null) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      cube(null)
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should not operate on a matrix, array or range', function () {
     assert.throws(() => cube([2, 3, 4, 5]), TypeError)
     assert.throws(() => cube(matrix([2, 3, 4, 5])), TypeError)
     assert.deepStrictEqual(math.map([2, 3, 4, 5], cube), [8, 27, 64, 125])
-    assert.deepStrictEqual(math.map(matrix([2, 3, 4, 5]), cube), matrix([8, 27, 64, 125]))
-    assert.deepStrictEqual(math.map(matrix([[1, 2], [3, 4]]), cube), matrix([[1, 8], [27, 64]]))
+    assert.deepStrictEqual(
+      math.map(matrix([2, 3, 4, 5]), cube),
+      matrix([8, 27, 64, 125])
+    )
+    assert.deepStrictEqual(
+      math.map(
+        matrix([
+          [1, 2],
+          [3, 4]
+        ]),
+        cube
+      ),
+      matrix([
+        [1, 8],
+        [27, 64]
+      ])
+    )
   })
 
   it('should LaTeX cube', function () {

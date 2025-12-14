@@ -1,4 +1,12 @@
-import { acosh, asinh, atanh, cosh, sign, sinh, tanh } from '../../utils/number.ts'
+import {
+  acosh,
+  asinh,
+  atanh,
+  cosh,
+  sign,
+  sinh,
+  tanh
+} from '../../utils/number.ts'
 
 const n1 = 'number'
 const n2 = 'number, number'

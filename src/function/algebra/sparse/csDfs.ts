@@ -19,7 +19,13 @@ import { csUnflip } from './csUnflip.ts'
  *
  * @return {Number}                 New value of top
  */
-export function csDfs (j: number, g: any, top: number, xi: number[], pinv: number[] | null): number {
+export function csDfs(
+  j: number,
+  g: any,
+  top: number,
+  xi: number[],
+  pinv: number[] | null
+): number {
   // g arrays
   const index = g._index
   const ptr = g._ptr
@@ -48,11 +54,17 @@ export function csDfs (j: number, g: any, top: number, xi: number[], pinv: numbe
     // node j done if no unvisited neighbors
     let done = 1
     // examine all neighbors of j, stack (last n entries in xi)
-    for (p = xi[n + head], p2 = jnew < 0 ? 0 : csUnflip(ptr[jnew + 1]); p < p2; p++) {
+    for (
+      p = xi[n + head], p2 = jnew < 0 ? 0 : csUnflip(ptr[jnew + 1]);
+      p < p2;
+      p++
+    ) {
       // consider neighbor node i
       i = index[p]
       // check we have visited node i, skip it
-      if (csMarked(ptr, i)) { continue }
+      if (csMarked(ptr, i)) {
+        continue
+      }
       // pause depth-first search of node j, update stack (last n entries in xi)
       xi[n + head] = p
       // start dfs at node i

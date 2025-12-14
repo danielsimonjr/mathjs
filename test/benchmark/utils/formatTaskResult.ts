@@ -8,8 +8,8 @@ const varianceWidth = 8
  * @param {import('tinybench').Task} task
  * @return {string}
  */
-export function formatTaskResult (bench, task) {
-  const nameWidth = Math.max(...bench.tasks.map(task => task.name.length)) + 1
+export function formatTaskResult(bench, task) {
+  const nameWidth = Math.max(...bench.tasks.map((task) => task.name.length)) + 1
 
   const name = task.name
   const { variance, mean } = task.result.latency
@@ -19,13 +19,13 @@ export function formatTaskResult (bench, task) {
   return `${padRight(name, nameWidth)} ${padLeft(meanStr, durationWidth)} ${padLeft(varianceStr, varianceWidth)}`
 }
 
-function padRight (text, len, char = ' ') {
+function padRight(text, len, char = ' ') {
   const add = Math.max(len - text.length, 0)
 
   return text + char.repeat(add)
 }
 
-function padLeft (text, len, char = ' ') {
+function padLeft(text, len, char = ' ') {
   const add = Math.max(len - text.length, 0)
 
   return char.repeat(add) + text

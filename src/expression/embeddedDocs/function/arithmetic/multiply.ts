@@ -1,10 +1,7 @@
 export const multiplyDocs = {
   name: 'multiply',
   category: 'Operators',
-  syntax: [
-    'x * y',
-    'multiply(x, y)'
-  ],
+  syntax: ['x * y', 'multiply(x, y)'],
   description: 'multiply two values.',
   examples: [
     'a = 2.1 * 3.4',
@@ -13,7 +10,5 @@ export const multiplyDocs = {
     '2 * (3 + 4)',
     '3 * 2.1 km'
   ],
-  seealso: [
-    'divide'
-  ]
+  seealso: ['divide']
 }

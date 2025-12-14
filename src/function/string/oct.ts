@@ -40,13 +40,20 @@ const dependencies = ['typed', 'format']
  * @return {string}         The formatted value
  */
 
-export const createOct = /* #__PURE__ */ factory(name, dependencies, ({ typed, format }: Dependencies): TypedFunction => {
-  return typed(name, {
-    'number | BigNumber': function (n: number | bigint): string {
-      return format(n, { notation: 'oct' })
-    },
-    'number | BigNumber, number | BigNumber': function (n: number | bigint, wordSize: number | bigint): string {
-      return format(n, { notation: 'oct', wordSize })
-    }
-  })
-})
+export const createOct = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, format }: Dependencies): TypedFunction => {
+    return typed(name, {
+      'number | BigNumber': function (n: number | bigint): string {
+        return format(n, { notation: 'oct' })
+      },
+      'number | BigNumber, number | BigNumber': function (
+        n: number | bigint,
+        wordSize: number | bigint
+      ): string {
+        return format(n, { notation: 'oct', wordSize })
+      }
+    })
+  }
+)

@@ -17,14 +17,14 @@ console.log(`Node.js: ${process.version}`)
 // =============================================================================
 
 class PersistentWorkerPool {
-  constructor(numWorkers = 4) {
+  constructor (numWorkers = 4) {
     this.workers = []
     this.available = []
     this.pending = []
     this.ready = this.init(numWorkers)
   }
 
-  async init(numWorkers) {
+  async init (numWorkers) {
     const workerCode = `
       import { parentPort } from 'worker_threads'
 
@@ -69,7 +69,7 @@ class PersistentWorkerPool {
     console.log(`Worker pool ready with ${numWorkers} workers`)
   }
 
-  async exec(task, data) {
+  async exec (task, data) {
     await this.ready
 
     const worker = this.available.pop()
@@ -98,7 +98,7 @@ class PersistentWorkerPool {
     })
   }
 
-  async dotProduct(a, b, size) {
+  async dotProduct (a, b, size) {
     const numWorkers = this.workers.length
     const chunkSize = Math.ceil(size / numWorkers)
 
@@ -128,7 +128,7 @@ class PersistentWorkerPool {
     return total
   }
 
-  async sum(arr) {
+  async sum (arr) {
     const size = arr.length
     const numWorkers = this.workers.length
     const chunkSize = Math.ceil(size / numWorkers)
@@ -156,7 +156,7 @@ class PersistentWorkerPool {
     return total
   }
 
-  async terminate() {
+  async terminate () {
     for (const worker of this.workers) {
       worker.terminate()
     }
@@ -167,7 +167,7 @@ class PersistentWorkerPool {
 // Pure JavaScript
 // =============================================================================
 
-function jsDotProduct(a, b, size) {
+function jsDotProduct (a, b, size) {
   let sum = 0
   for (let i = 0; i < size; i++) {
     sum += a[i] * b[i]
@@ -175,7 +175,7 @@ function jsDotProduct(a, b, size) {
   return sum
 }
 
-function jsSum(arr) {
+function jsSum (arr) {
   let total = 0
   for (let i = 0; i < arr.length; i++) {
     total += arr[i]
@@ -187,7 +187,7 @@ function jsSum(arr) {
 // Benchmark
 // =============================================================================
 
-function generateVector(size) {
+function generateVector (size) {
   const data = new Float64Array(size)
   for (let i = 0; i < size; i++) {
     data[i] = Math.random() * 100
@@ -195,7 +195,7 @@ function generateVector(size) {
   return data
 }
 
-async function benchmark(name, fn, warmupRuns = 5, benchRuns = 20) {
+async function benchmark (name, fn, warmupRuns = 5, benchRuns = 20) {
   // Warmup
   for (let i = 0; i < warmupRuns; i++) {
     await fn()
@@ -220,7 +220,7 @@ async function benchmark(name, fn, warmupRuns = 5, benchRuns = 20) {
 // Main
 // =============================================================================
 
-async function main() {
+async function main () {
   console.log('\n' + '='.repeat(80))
   console.log('PERSISTENT WORKER POOL BENCHMARK')
   console.log('Workers created ONCE, reused for all operations')
@@ -248,7 +248,7 @@ async function main() {
     const poolResult = await benchmark('Persistent Pool (SharedArrayBuffer)', () => pool.dotProduct(a, b, size))
 
     const speedup = poolResult.opsPerSec / jsResult.opsPerSec
-    console.log(`  Speedup: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1/speedup).toFixed(2) + 'x slower'}`)
+    console.log(`  Speedup: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`)
   }
 
   // ==========================================================================
@@ -268,7 +268,7 @@ async function main() {
     const poolResult = await benchmark('Persistent Pool (SharedArrayBuffer)', () => pool.sum(arr))
 
     const speedup = poolResult.opsPerSec / jsResult.opsPerSec
-    console.log(`  Speedup: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1/speedup).toFixed(2) + 'x slower'}`)
+    console.log(`  Speedup: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`)
   }
 
   // Cleanup

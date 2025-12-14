@@ -1,4 +1,13 @@
-import { cbrt, expm1, isInteger, log10, log1p, log2, sign, toFixed } from '../../utils/number.ts'
+import {
+  cbrt,
+  expm1,
+  isInteger,
+  log10,
+  log1p,
+  log2,
+  sign,
+  toFixed
+} from '../../utils/number.ts'
 
 const n1 = 'number'
 const n2 = 'number, number'
@@ -76,7 +85,7 @@ export function gcdNumber(a: number, b: number): number {
     a = b
     b = r
   }
-  return (a < 0) ? -a : a
+  return a < 0 ? -a : a
 }
 gcdNumber.signature = n2
 
@@ -115,7 +124,9 @@ lcmNumber.signature = n2
  * @returns Logarithm
  */
 export function logNumber(x: number, y?: number): number {
-  if (y) { return Math.log(x) / Math.log(y) }
+  if (y) {
+    return Math.log(x) / Math.log(y)
+  }
   return Math.log(x)
 }
 
@@ -160,7 +171,7 @@ export function modNumber(x: number, y: number): number {
   // We don't use JavaScript's % operator here as this doesn't work
   // correctly for x < 0 and x === 0
   // see https://en.wikipedia.org/wiki/Modulo_operation
-  return (y === 0) ? x : x - y * Math.floor(x / y)
+  return y === 0 ? x : x - y * Math.floor(x / y)
 }
 modNumber.signature = n2
 
@@ -180,7 +191,7 @@ export function nthRootNumber(a: number, root: number = 2): number {
   if (root === 0) {
     throw new Error('Root must be non-zero')
   }
-  if (a < 0 && (Math.abs(root) % 2 !== 1)) {
+  if (a < 0 && Math.abs(root) % 2 !== 1) {
     throw new Error('Root must be odd when a is negative.')
   }
 
@@ -293,8 +304,7 @@ xgcdNumber.signature = n2
 export function powNumber(x: number, y: number): number {
   // x^Infinity === 0 if -1 < x < 1
   // A real number 0 is returned instead of complex(0)
-  if ((x * x < 1 && y === Infinity) ||
-    (x * x > 1 && y === -Infinity)) {
+  if ((x * x < 1 && y === Infinity) || (x * x > 1 && y === -Infinity)) {
     return 0
   }
 
@@ -311,7 +321,9 @@ powNumber.signature = n2
  */
 export function roundNumber(value: number, decimals: number = 0): number {
   if (!isInteger(decimals) || decimals < 0 || decimals > 15) {
-    throw new Error('Number of decimals in function round must be an integer from 0 to 15 inclusive')
+    throw new Error(
+      'Number of decimals in function round must be an integer from 0 to 15 inclusive'
+    )
   }
   return parseFloat(toFixed(value, decimals))
 }

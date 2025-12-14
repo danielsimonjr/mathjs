@@ -41,7 +41,9 @@ export function optimizeCallback(
     if (isUnary) {
       numberOfArguments = 1
     } else {
-      const size = (array as Matrix).isMatrix ? (array as Matrix).size() : arraySize(array as any[])
+      const size = (array as Matrix).isMatrix
+        ? (array as Matrix).size()
+        : arraySize(array as any[])
 
       // Check the size of the last dimension to see if the array/matrix is empty
       const isEmpty = size.length ? size[size.length - 1] === 0 : true
@@ -52,32 +54,67 @@ export function optimizeCallback(
       }
 
       const firstIndex = size.map(() => 0)
-      const firstValue = (array as Matrix).isMatrix ? (array as Matrix).get(firstIndex) : get(array as any[], firstIndex)
-      numberOfArguments = _findNumberOfArgumentsTyped(callback as TypedFunction, firstValue, firstIndex, array)
+      const firstValue = (array as Matrix).isMatrix
+        ? (array as Matrix).get(firstIndex)
+        : get(array as any[], firstIndex)
+      numberOfArguments = _findNumberOfArgumentsTyped(
+        callback as TypedFunction,
+        firstValue,
+        firstIndex,
+        array
+      )
     }
     let fastCallback: Function
-    if ((array as Matrix).isMatrix && ((array as Matrix).dataType !== 'mixed' && (array as Matrix).dataType !== undefined)) {
-      const singleSignature = _findSingleSignatureWithArity(callback as TypedFunction, numberOfArguments!)
-      fastCallback = (singleSignature !== undefined) ? singleSignature : callback
+    if (
+      (array as Matrix).isMatrix &&
+      (array as Matrix).dataType !== 'mixed' &&
+      (array as Matrix).dataType !== undefined
+    ) {
+      const singleSignature = _findSingleSignatureWithArity(
+        callback as TypedFunction,
+        numberOfArguments!
+      )
+      fastCallback = singleSignature !== undefined ? singleSignature : callback
     } else {
       fastCallback = callback
     }
     if (numberOfArguments! >= 1 && numberOfArguments! <= 3) {
       return {
         isUnary: numberOfArguments === 1,
-        fn: (...args: any[]) => _tryFunctionWithArgs(fastCallback, args.slice(0, numberOfArguments), name, (callback as TypedFunction).name)
+        fn: (...args: any[]) =>
+          _tryFunctionWithArgs(
+            fastCallback,
+            args.slice(0, numberOfArguments),
+            name,
+            (callback as TypedFunction).name
+          )
       }
     }
-    return { isUnary: false, fn: (...args: any[]) => _tryFunctionWithArgs(fastCallback, args, name, (callback as TypedFunction).name) }
+    return {
+      isUnary: false,
+      fn: (...args: any[]) =>
+        _tryFunctionWithArgs(
+          fastCallback,
+          args,
+          name,
+          (callback as TypedFunction).name
+        )
+    }
   }
   if (isUnary === undefined) {
-    return { isUnary: _findIfCallbackIsUnary(callback), fn: callback as (...args: any[]) => any }
+    return {
+      isUnary: _findIfCallbackIsUnary(callback),
+      fn: callback as (...args: any[]) => any
+    }
   } else {
     return { isUnary, fn: callback as (...args: any[]) => any }
   }
 }
 
-function _findSingleSignatureWithArity(callback: TypedFunction, arity: number): Function | undefined {
+function _findSingleSignatureWithArity(
+  callback: TypedFunction,
+  arity: number
+): Function | undefined {
   const matchingFunctions: Function[] = []
   Object.entries(callback.signatures).forEach(([signature, func]) => {
     if (signature.split(',').length === arity) {
@@ -140,7 +177,12 @@ function _findNumberOfArgumentsTyped(
  * @returns Returns the return value of the invoked signature
  * @throws Throws an error when no matching signature was found
  */
-function _tryFunctionWithArgs(func: Function, args: any[], mappingFnName: string, callbackName: string): any {
+function _tryFunctionWithArgs(
+  func: Function,
+  args: any[],
+  mappingFnName: string,
+  callbackName: string
+): any {
   try {
     return func(...args)
   } catch (err) {
@@ -157,18 +199,31 @@ function _tryFunctionWithArgs(func: Function, args: any[], mappingFnName: string
  * @param callbackName - The name of the callback function.
  * @throws Throws a detailed TypeError with enriched error message.
  */
-function _createCallbackError(err: Error, args: any[], mappingFnName: string, callbackName: string): never {
+function _createCallbackError(
+  err: Error,
+  args: any[],
+  mappingFnName: string,
+  callbackName: string
+): never {
   // Enrich the error message so the user understands that it took place inside the callback function
   if (err instanceof TypeError && (err as any).data?.category === 'wrongType') {
     const argsDesc: string[] = []
     argsDesc.push(`value: ${_typeOf(args[0])}`)
-    if (args.length >= 2) { argsDesc.push(`index: ${_typeOf(args[1])}`) }
-    if (args.length >= 3) { argsDesc.push(`array: ${_typeOf(args[2])}`) }
+    if (args.length >= 2) {
+      argsDesc.push(`index: ${_typeOf(args[1])}`)
+    }
+    if (args.length >= 3) {
+      argsDesc.push(`array: ${_typeOf(args[2])}`)
+    }
 
-    throw new TypeError(`Function ${mappingFnName} cannot apply callback arguments ` +
-      `${callbackName}(${argsDesc.join(', ')}) at index ${JSON.stringify(args[1])}`)
+    throw new TypeError(
+      `Function ${mappingFnName} cannot apply callback arguments ` +
+        `${callbackName}(${argsDesc.join(', ')}) at index ${JSON.stringify(args[1])}`
+    )
   } else {
-    throw new TypeError(`Function ${mappingFnName} cannot apply callback arguments ` +
-      `to function ${callbackName}: ${err.message}`)
+    throw new TypeError(
+      `Function ${mappingFnName} cannot apply callback arguments ` +
+        `to function ${callbackName}: ${err.message}`
+    )
   }
 }

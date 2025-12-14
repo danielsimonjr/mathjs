@@ -13,7 +13,15 @@
  * @param {Array}   post            The post ordering array
  * @param {Number}  stack           The index offset within the workspace for the stack array
  */
-export function csTdfs (j: number, k: number, w: number[], head: number, next: number, post: number[], stack: number): number {
+export function csTdfs(
+  j: number,
+  k: number,
+  w: number[],
+  head: number,
+  next: number,
+  post: number[],
+  stack: number
+): number {
   // variables
   let top = 0
   // place j on the stack

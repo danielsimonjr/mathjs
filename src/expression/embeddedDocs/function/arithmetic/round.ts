@@ -8,7 +8,7 @@ export const roundDocs = {
     'round(unit, n, valuelessUnit)'
   ],
   description:
-      'round a value towards the nearest integer.If x is complex, both real and imaginary part are rounded towards the nearest integer. When n is specified, the value is rounded to n decimals.',
+    'round a value towards the nearest integer.If x is complex, both real and imaginary part are rounded towards the nearest integer. When n is specified, the value is rounded to n decimals.',
   examples: [
     'round(3.2)',
     'round(3.8)',

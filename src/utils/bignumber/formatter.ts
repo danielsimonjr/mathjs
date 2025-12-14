@@ -8,7 +8,7 @@ import { isInteger, normalizeFormatOptions } from '../number.ts'
  * @param {number} size
  * @returns {string}
  */
-function formatBigNumberToBase (n: any, base: any, size: any) {
+function formatBigNumberToBase(n: any, base: any, size: any) {
   const BigNumberCtor = n.constructor
   const big2 = new BigNumberCtor(2)
   let suffix = ''
@@ -19,8 +19,13 @@ function formatBigNumberToBase (n: any, base: any, size: any) {
     if (!isInteger(size)) {
       throw new Error('size must be an integer')
     }
-    if (n.greaterThan(big2.pow(size - 1).sub(1)) || n.lessThan(big2.pow(size - 1).mul(-1))) {
-      throw new Error(`Value must be in range [-2^${size - 1}, 2^${size - 1}-1]`)
+    if (
+      n.greaterThan(big2.pow(size - 1).sub(1)) ||
+      n.lessThan(big2.pow(size - 1).mul(-1))
+    ) {
+      throw new Error(
+        `Value must be in range [-2^${size - 1}, 2^${size - 1}-1]`
+      )
     }
     if (!n.isInteger()) {
       throw new Error('Value must be an integer')
@@ -31,10 +36,14 @@ function formatBigNumberToBase (n: any, base: any, size: any) {
     suffix = `i${size}`
   }
   switch (base) {
-    case 2: return `${n.toBinary()}${suffix}`
-    case 8: return `${n.toOctal()}${suffix}`
-    case 16: return `${n.toHexadecimal()}${suffix}`
-    default: throw new Error(`Base ${base} not supported `)
+    case 2:
+      return `${n.toBinary()}${suffix}`
+    case 8:
+      return `${n.toOctal()}${suffix}`
+    case 16:
+      return `${n.toHexadecimal()}${suffix}`
+    default:
+      throw new Error(`Base ${base} not supported `)
   }
 }
 
@@ -119,7 +128,7 @@ function formatBigNumberToBase (n: any, base: any, size: any) {
  * @param {Object | Function | number | BigNumber} [options]
  * @return {string} str The formatted value
  */
-export function format (value: any, options: any) {
+export function format(value: any, options: any) {
   if (typeof options === 'function') {
     // handle format(value, fn)
     return options(value)
@@ -127,7 +136,7 @@ export function format (value: any, options: any) {
 
   // handle special cases
   if (!value.isFinite()) {
-    return value.isNaN() ? 'NaN' : (value.gt(0) ? 'Infinity' : '-Infinity')
+    return value.isNaN() ? 'NaN' : value.gt(0) ? 'Infinity' : '-Infinity'
   }
 
   const { notation, precision, wordSize } = normalizeFormatOptions(options)
@@ -152,8 +161,7 @@ export function format (value: any, options: any) {
     case 'hex':
       return formatBigNumberToBase(value, 16, wordSize)
 
-    case 'auto':
-    {
+    case 'auto': {
       // determine lower and upper bound for exponential notation.
       // TODO: implement support for upper and lower to be BigNumbers themselves
       const lowerExp = _toNumberOrDefault(options?.lowerExp, -3)
@@ -178,12 +186,16 @@ export function format (value: any, options: any) {
       return str.replace(/((\.\d*?)(0+))($|e)/, function () {
         const digits = arguments[2]
         const e = arguments[4]
-        return (digits !== '.') ? digits + e : e
+        return digits !== '.' ? digits + e : e
       })
     }
     default:
-      throw new Error('Unknown notation "' + notation + '". ' +
-          'Choose "auto", "exponential", "fixed", "bin", "oct", or "hex.')
+      throw new Error(
+        'Unknown notation "' +
+          notation +
+          '". ' +
+          'Choose "auto", "exponential", "fixed", "bin", "oct", or "hex.'
+      )
   }
 }
 
@@ -192,10 +204,10 @@ export function format (value: any, options: any) {
  * @param {BigNumber} value
  * @param {number} [precision]        Optional number of significant figures to return.
  */
-export function toEngineering (value: any, precision: any) {
+export function toEngineering(value: any, precision: any) {
   // find nearest lower multiple of 3 for exponent
   const e = value.e
-  const newExp = e % 3 === 0 ? e : (e < 0 ? (e - 3) - (e % 3) : e - (e % 3))
+  const newExp = e % 3 === 0 ? e : e < 0 ? e - 3 - (e % 3) : e - (e % 3)
 
   // find difference in exponents, and calculate the value without exponent
   const valueWithoutExp = value.mul(Math.pow(10, -newExp))
@@ -217,7 +229,7 @@ export function toEngineering (value: any, precision: any) {
  *                              is used.
  * @returns {string} str
  */
-export function toExponential (value: any, precision: any) {
+export function toExponential(value: any, precision: any) {
   if (precision !== undefined) {
     return value.toExponential(precision - 1) // Note the offset of one
   } else {
@@ -231,11 +243,11 @@ export function toExponential (value: any, precision: any) {
  * @param {number} [precision=undefined] Optional number of decimals after the
  *                                       decimal point. Undefined by default.
  */
-export function toFixed (value: any, precision: any) {
+export function toFixed(value: any, precision: any) {
   return value.toFixed(precision)
 }
 
-function _toNumberOrDefault (value: any, defaultValue: any) {
+function _toNumberOrDefault(value: any, defaultValue: any) {
   if (isNumber(value)) {
     return value
   } else if (isBigNumber(value)) {

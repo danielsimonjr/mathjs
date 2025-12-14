@@ -1,9 +1,7 @@
 export const isBoundedDocs = {
   name: 'isBounded',
   category: 'Utils',
-  syntax: [
-    'isBounded(x)'
-  ],
+  syntax: ['isBounded(x)'],
   description: 'Test whether a value or its entries are bounded.',
   examples: [
     'isBounded(Infinity)',

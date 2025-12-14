@@ -39,7 +39,13 @@ const dependencies = ['typed', 'equalScalar']
 export const createMatAlgo08xS0Sid = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, equalScalar }: { typed: TypedFunction; equalScalar: EqualScalarFunction }) => {
+  ({
+    typed,
+    equalScalar
+  }: {
+    typed: TypedFunction
+    equalScalar: EqualScalarFunction
+  }) => {
     /**
      * Iterates over SparseMatrix A and SparseMatrix B nonzero items and invokes the callback function f(Aij, Bij).
      * Callback function invoked MAX(NNZA, NNZB) times
@@ -68,14 +74,16 @@ export const createMatAlgo08xS0Sid = /* #__PURE__ */ factory(
       const aindex: number[] = a._index
       const aptr: number[] = a._ptr
       const asize: number[] = a._size
-      const adt: DataType = a._datatype || a._data === undefined ? a._datatype : a.getDataType()
+      const adt: DataType =
+        a._datatype || a._data === undefined ? a._datatype : a.getDataType()
 
       // sparse matrix arrays
       const bvalues: MatrixValue[] | undefined = b._values
       const bindex: number[] = b._index
       const bptr: number[] = b._ptr
       const bsize: number[] = b._size
-      const bdt: DataType = b._datatype || b._data === undefined ? b._datatype : b.getDataType()
+      const bdt: DataType =
+        b._datatype || b._data === undefined ? b._datatype : b.getDataType()
 
       // validate dimensions
       if (asize.length !== bsize.length) {
@@ -84,7 +92,13 @@ export const createMatAlgo08xS0Sid = /* #__PURE__ */ factory(
 
       // check rows & columns
       if (asize[0] !== bsize[0] || asize[1] !== bsize[1]) {
-        throw new RangeError('Dimension mismatch. Matrix A (' + asize + ') must match Matrix B (' + bsize + ')')
+        throw new RangeError(
+          'Dimension mismatch. Matrix A (' +
+            asize +
+            ') must match Matrix B (' +
+            bsize +
+            ')'
+        )
       }
 
       // sparse matrix cannot be a Pattern matrix

@@ -19,34 +19,67 @@ describe('ParenthesisNode', function () {
 
   it('should throw an error when calling without new operator', function () {
     const a = new ConstantNode(1)
-    assert.throws(function () { ParenthesisNode(a) }, TypeError)
+    assert.throws(function () {
+      ParenthesisNode(a)
+    }, TypeError)
   })
 
   it('should throw an error when calling with wrong arguments', function () {
-    assert.throws(function () { console.log(new ParenthesisNode()) }, TypeError)
-    assert.throws(function () { console.log(new ParenthesisNode(2)) }, TypeError)
+    assert.throws(function () {
+      console.log(new ParenthesisNode())
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new ParenthesisNode(2))
+    }, TypeError)
   })
 
   it('should compile a ParenthesisNode', function () {
     const a = new ConstantNode(1)
     const n = new ParenthesisNode(a)
 
-    assert.strictEqual(n.compile().evaluate.toString(), a.compile().evaluate.toString())
+    assert.strictEqual(
+      n.compile().evaluate.toString(),
+      a.compile().evaluate.toString()
+    )
   })
 
   it('should filter a ParenthesisNode', function () {
     const a = new ConstantNode(1)
     const n = new ParenthesisNode(a)
 
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof ParenthesisNode }), [n])
-    assert.deepStrictEqual(n.filter(function (node) { return node.content instanceof ConstantNode }), [n])
-    assert.deepStrictEqual(n.filter(function (node) {
-      return (typeof node.content !== 'undefined') && (node.content.value === 1)
-    }), [n])
-    assert.deepStrictEqual(n.filter(function (node) {
-      return (typeof node.content !== 'undefined') && (node.content.type === 'ConstantNode')
-    }), [n])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof ConstantNode }), [a])
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof ParenthesisNode
+      }),
+      [n]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node.content instanceof ConstantNode
+      }),
+      [n]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return typeof node.content !== 'undefined' && node.content.value === 1
+      }),
+      [n]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return (
+          typeof node.content !== 'undefined' &&
+          node.content.type === 'ConstantNode'
+        )
+      }),
+      [n]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof ConstantNode
+      }),
+      [a]
+    )
   })
 
   it('should run forEach on a ParenthesisNode', function () {
@@ -89,7 +122,9 @@ describe('ParenthesisNode', function () {
     const b = new ParenthesisNode(c2)
 
     const c = a.transform(function (node) {
-      return node instanceof ParenthesisNode && node.content.value === 1 ? b : node
+      return node instanceof ParenthesisNode && node.content.value === 1
+        ? b
+        : node
     })
     assert.deepStrictEqual(c, b)
 
@@ -176,7 +211,10 @@ describe('ParenthesisNode', function () {
     const c = new math.ConstantNode(1)
     const n = new math.ParenthesisNode(c)
 
-    assert.strictEqual(n.toHTML({ handler: customFunction }), '[<span class="math-number">1</span>]')
+    assert.strictEqual(
+      n.toHTML({ handler: customFunction }),
+      '[<span class="math-number">1</span>]'
+    )
   })
 
   it('toJSON and fromJSON', function () {

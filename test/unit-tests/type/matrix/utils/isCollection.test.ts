@@ -11,7 +11,13 @@ describe('isCollection', function () {
   })
 
   it('should return true for nested arrays', function () {
-    assert.strictEqual(isCollection([[1, 2], [3, [4, 5]]]), true)
+    assert.strictEqual(
+      isCollection([
+        [1, 2],
+        [3, [4, 5]]
+      ]),
+      true
+    )
   })
 
   it('should return true for empty arrays', function () {
@@ -19,12 +25,18 @@ describe('isCollection', function () {
   })
 
   it('should return true for DenseMatrix instances', function () {
-    const matrix = new DenseMatrix([[1, 2], [3, 4]])
+    const matrix = new DenseMatrix([
+      [1, 2],
+      [3, 4]
+    ])
     assert.strictEqual(isCollection(matrix), true)
   })
 
   it('should return true for SparseMatrix instances', function () {
-    const matrix = math.sparse([[1, 2], [3, 4]])
+    const matrix = math.sparse([
+      [1, 2],
+      [3, 4]
+    ])
     assert.strictEqual(isCollection(matrix), true)
   })
 

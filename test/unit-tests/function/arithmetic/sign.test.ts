@@ -42,7 +42,10 @@ describe('sign', function () {
   })
 
   it('should calculate the sign of a complex value', function () {
-    approxDeepEqual(math.sign(math.complex(2, -3)), math.complex(0.554700196225229, -0.832050294337844))
+    approxDeepEqual(
+      math.sign(math.complex(2, -3)),
+      math.complex(0.554700196225229, -0.832050294337844)
+    )
   })
 
   it('should calculate the sign of a unit', function () {
@@ -60,12 +63,24 @@ describe('sign', function () {
      assert.strictEqual(math.sign(math.unit('-263.15 degC')), 1)
     */
 
-    assert.deepStrictEqual(math.sign(math.unit(bignumber(5), 'cm')), bignumber(1))
-    assert.deepStrictEqual(math.sign(math.unit(bignumber(-5), 'cm')), bignumber(-1))
+    assert.deepStrictEqual(
+      math.sign(math.unit(bignumber(5), 'cm')),
+      bignumber(1)
+    )
+    assert.deepStrictEqual(
+      math.sign(math.unit(bignumber(-5), 'cm')),
+      bignumber(-1)
+    )
     assert.deepStrictEqual(math.sign(math.unit(fraction(5), 'cm')), fraction(1))
-    assert.deepStrictEqual(math.sign(math.unit(fraction(-5), 'cm')), fraction(-1))
+    assert.deepStrictEqual(
+      math.sign(math.unit(fraction(-5), 'cm')),
+      fraction(-1)
+    )
 
-    assert.deepStrictEqual(math.sign(math.unit(complex(3, 4), 'mi')), complex(0.6, 0.8))
+    assert.deepStrictEqual(
+      math.sign(math.unit(complex(3, 4), 'mi')),
+      complex(0.6, 0.8)
+    )
   })
 
   it('should throw an error on a valueless unit or a unit with offset', function () {
@@ -74,7 +89,9 @@ describe('sign', function () {
   })
 
   it('should throw an error when used with a string', function () {
-    assert.throws(function () { math.sign('hello world') })
+    assert.throws(function () {
+      math.sign('hello world')
+    })
   })
 
   it('should return a matrix of the signs of each elements in the given array', function () {
@@ -82,16 +99,25 @@ describe('sign', function () {
   })
 
   it('should return a matrix of the signs of each elements in the given matrix', function () {
-    assert.deepStrictEqual(math.sign(math.matrix([-2, -1, 0, 1, 2])), math.matrix([-1, -1, 0, 1, 1]))
+    assert.deepStrictEqual(
+      math.sign(math.matrix([-2, -1, 0, 1, 2])),
+      math.matrix([-1, -1, 0, 1, 1])
+    )
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { math.sign() }, /TypeError: Too few arguments/)
-    assert.throws(function () { math.sign(1, 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      math.sign()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      math.sign(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () { math.sign(null) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      math.sign(null)
+    }, /TypeError: Unexpected type of argument/)
   })
 
   describe('sign(0) should return 0', function () {
@@ -109,7 +135,9 @@ describe('sign', function () {
   })
 
   it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () { math.sign(null) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      math.sign(null)
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should LaTeX sign', function () {

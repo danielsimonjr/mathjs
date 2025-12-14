@@ -6,14 +6,21 @@ import { escape, stringify } from '../../utils/string.ts'
 
 // Type definitions
 interface Node {
-  _compile: (math: Record<string, any>, argNames: Record<string, boolean>) => CompileFunction
+  _compile: (
+    math: Record<string, any>,
+    argNames: Record<string, boolean>
+  ) => CompileFunction
   _ifNode: (node: any) => Node
   toString: (options?: StringOptions) => string
   toHTML: (options?: StringOptions) => string
   toTex: (options?: StringOptions) => string
 }
 
-type CompileFunction = (scope: any, args: Record<string, any>, context: any) => any
+type CompileFunction = (
+  scope: any,
+  args: Record<string, any>,
+  context: any
+) => any
 
 interface StringOptions {
   [key: string]: any
@@ -24,207 +31,247 @@ interface Dependencies {
 }
 
 const name = 'ObjectNode'
-const dependencies = [
-  'Node'
-]
+const dependencies = ['Node']
 
-export const createObjectNode = /* #__PURE__ */ factory(name, dependencies, ({ Node }: Dependencies) => {
-  class ObjectNode extends Node {
-    properties: Record<string, Node>
+export const createObjectNode = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ Node }: Dependencies) => {
+    class ObjectNode extends Node {
+      properties: Record<string, Node>
 
-    /**
-     * @constructor ObjectNode
-     * @extends {Node}
-     * Holds an object with keys/values
-     * @param {Object.<string, Node>} [properties]   object with key/value pairs
-     */
-    constructor (properties?: Record<string, Node>) {
-      super()
-      this.properties = properties || {}
+      /**
+       * @constructor ObjectNode
+       * @extends {Node}
+       * Holds an object with keys/values
+       * @param {Object.<string, Node>} [properties]   object with key/value pairs
+       */
+      constructor(properties?: Record<string, Node>) {
+        super()
+        this.properties = properties || {}
 
-      // validate input
-      if (properties) {
-        if (!(typeof properties === 'object') ||
+        // validate input
+        if (properties) {
+          if (
+            !(typeof properties === 'object') ||
             !Object.keys(properties).every(function (key: string): boolean {
               return isNode(properties[key])
-            })) {
-          throw new TypeError('Object containing Nodes expected')
-        }
-      }
-    }
-
-    // @ts-expect-error: intentionally overriding Function.name
-    static name = name
-    get type (): string { return name }
-    get isObjectNode (): boolean { return true }
-
-    /**
-     * Compile a node into a JavaScript function.
-     * This basically pre-calculates as much as possible and only leaves open
-     * calculations which depend on a dynamic scope with variables.
-     * @param {Object} math     Math.js namespace with functions and constants.
-     * @param {Object} argNames An object with argument names as key and `true`
-     *                          as value. Used in the SymbolNode to optimize
-     *                          for arguments from user assigned functions
-     *                          (see FunctionAssignmentNode) or special symbols
-     *                          like `end` (see IndexNode).
-     * @return {function} Returns a function which can be called like:
-     *                        evalNode(scope: Object, args: Object, context: *)
-     */
-    // @ts-expect-error: method signature matches MathNode interface
-    _compile (math: Record<string, any>, argNames: Record<string, boolean>): CompileFunction {
-      const evalEntries: Record<string, CompileFunction> = {}
-
-      for (const key in this.properties) {
-        if (hasOwnProperty(this.properties, key)) {
-          // we stringify/parse the key here to resolve unicode characters,
-          // so you cannot create a key like {"co\\u006Estructor": null}
-          const stringifiedKey = stringify(key)
-          const parsedKey = JSON.parse(stringifiedKey)
-          const prop = getSafeProperty(this.properties, key)
-
-          evalEntries[parsedKey] = prop._compile(math, argNames)
+            })
+          ) {
+            throw new TypeError('Object containing Nodes expected')
+          }
         }
       }
 
-      return function evalObjectNode (scope: any, args: Record<string, any>, context: any): Record<string, any> {
-        const obj: Record<string, any> = {}
+      // @ts-expect-error: intentionally overriding Function.name
+      static name = name
+      get type(): string {
+        return name
+      }
+      get isObjectNode(): boolean {
+        return true
+      }
 
-        for (const key in evalEntries) {
-          if (hasOwnProperty(evalEntries, key)) {
-            obj[key] = evalEntries[key](scope, args, context)
+      /**
+       * Compile a node into a JavaScript function.
+       * This basically pre-calculates as much as possible and only leaves open
+       * calculations which depend on a dynamic scope with variables.
+       * @param {Object} math     Math.js namespace with functions and constants.
+       * @param {Object} argNames An object with argument names as key and `true`
+       *                          as value. Used in the SymbolNode to optimize
+       *                          for arguments from user assigned functions
+       *                          (see FunctionAssignmentNode) or special symbols
+       *                          like `end` (see IndexNode).
+       * @return {function} Returns a function which can be called like:
+       *                        evalNode(scope: Object, args: Object, context: *)
+       */
+      // @ts-expect-error: method signature matches MathNode interface
+      _compile(
+        math: Record<string, any>,
+        argNames: Record<string, boolean>
+      ): CompileFunction {
+        const evalEntries: Record<string, CompileFunction> = {}
+
+        for (const key in this.properties) {
+          if (hasOwnProperty(this.properties, key)) {
+            // we stringify/parse the key here to resolve unicode characters,
+            // so you cannot create a key like {"co\\u006Estructor": null}
+            const stringifiedKey = stringify(key)
+            const parsedKey = JSON.parse(stringifiedKey)
+            const prop = getSafeProperty(this.properties, key)
+
+            evalEntries[parsedKey] = prop._compile(math, argNames)
           }
         }
 
-        return obj
-      }
-    }
+        return function evalObjectNode(
+          scope: any,
+          args: Record<string, any>,
+          context: any
+        ): Record<string, any> {
+          const obj: Record<string, any> = {}
 
-    /**
-     * Execute a callback for each of the child nodes of this node
-     * @param {function(child: Node, path: string, parent: Node)} callback
-     */
-    forEach (callback: (child: Node, path: string, parent: ObjectNode) => void): void {
-      for (const key in this.properties) {
-        if (hasOwnProperty(this.properties, key)) {
-          callback(
-            this.properties[key], 'properties[' + stringify(key) + ']', this)
+          for (const key in evalEntries) {
+            if (hasOwnProperty(evalEntries, key)) {
+              obj[key] = evalEntries[key](scope, args, context)
+            }
+          }
+
+          return obj
         }
       }
-    }
 
-    /**
-     * Create a new ObjectNode whose children are the results of calling
-     * the provided callback function for each child of the original node.
-     * @param {function(child: Node, path: string, parent: Node): Node} callback
-     * @returns {ObjectNode} Returns a transformed copy of the node
-     */
-    map (callback: (child: Node, path: string, parent: ObjectNode) => Node): ObjectNode {
-      const properties: Record<string, Node> = {}
-      for (const key in this.properties) {
-        if (hasOwnProperty(this.properties, key)) {
-          properties[key] = this._ifNode(
+      /**
+       * Execute a callback for each of the child nodes of this node
+       * @param {function(child: Node, path: string, parent: Node)} callback
+       */
+      forEach(
+        callback: (child: Node, path: string, parent: ObjectNode) => void
+      ): void {
+        for (const key in this.properties) {
+          if (hasOwnProperty(this.properties, key)) {
             callback(
-              this.properties[key], 'properties[' + stringify(key) + ']', this))
+              this.properties[key],
+              'properties[' + stringify(key) + ']',
+              this
+            )
+          }
         }
       }
-      return new ObjectNode(properties)
-    }
 
-    /**
-     * Create a clone of this node, a shallow copy
-     * @return {ObjectNode}
-     */
-    clone (): ObjectNode {
-      const properties: Record<string, Node> = {}
-      for (const key in this.properties) {
-        if (hasOwnProperty(this.properties, key)) {
-          properties[key] = this.properties[key]
+      /**
+       * Create a new ObjectNode whose children are the results of calling
+       * the provided callback function for each child of the original node.
+       * @param {function(child: Node, path: string, parent: Node): Node} callback
+       * @returns {ObjectNode} Returns a transformed copy of the node
+       */
+      map(
+        callback: (child: Node, path: string, parent: ObjectNode) => Node
+      ): ObjectNode {
+        const properties: Record<string, Node> = {}
+        for (const key in this.properties) {
+          if (hasOwnProperty(this.properties, key)) {
+            properties[key] = this._ifNode(
+              callback(
+                this.properties[key],
+                'properties[' + stringify(key) + ']',
+                this
+              )
+            )
+          }
+        }
+        return new ObjectNode(properties)
+      }
+
+      /**
+       * Create a clone of this node, a shallow copy
+       * @return {ObjectNode}
+       */
+      clone(): ObjectNode {
+        const properties: Record<string, Node> = {}
+        for (const key in this.properties) {
+          if (hasOwnProperty(this.properties, key)) {
+            properties[key] = this.properties[key]
+          }
+        }
+        return new ObjectNode(properties)
+      }
+
+      /**
+       * Get string representation
+       * @param {Object} options
+       * @return {string} str
+       * @override
+       */
+      _toString(options?: StringOptions): string {
+        const entries: string[] = []
+        for (const key in this.properties) {
+          if (hasOwnProperty(this.properties, key)) {
+            entries.push(
+              stringify(key) + ': ' + this.properties[key].toString(options)
+            )
+          }
+        }
+        return '{' + entries.join(', ') + '}'
+      }
+
+      /**
+       * Get a JSON representation of the node
+       * @returns {Object}
+       */
+      toJSON(): Record<string, any> {
+        return {
+          mathjs: name,
+          properties: this.properties
         }
       }
-      return new ObjectNode(properties)
-    }
 
-    /**
-     * Get string representation
-     * @param {Object} options
-     * @return {string} str
-     * @override
-     */
-    _toString (options?: StringOptions): string {
-      const entries: string[] = []
-      for (const key in this.properties) {
-        if (hasOwnProperty(this.properties, key)) {
-          entries.push(
-            stringify(key) + ': ' + this.properties[key].toString(options))
+      /**
+       * Instantiate an OperatorNode from its JSON representation
+       * @param {Object} json  An object structured like
+       *                       `{"mathjs": "ObjectNode", "properties": {...}}`,
+       *                       where mathjs is optional
+       * @returns {ObjectNode}
+       */
+      static fromJSON(json: { properties: Record<string, Node> }): ObjectNode {
+        return new ObjectNode(json.properties)
+      }
+
+      /**
+       * Get HTML representation
+       * @param {Object} options
+       * @return {string} str
+       * @override
+       */
+      _toHTML(options?: StringOptions): string {
+        const entries: string[] = []
+        for (const key in this.properties) {
+          if (hasOwnProperty(this.properties, key)) {
+            entries.push(
+              '<span class="math-symbol math-property">' +
+                escape(key) +
+                '</span>' +
+                '<span class="math-operator math-assignment-operator ' +
+                'math-property-assignment-operator math-binary-operator">' +
+                ':</span>' +
+                this.properties[key].toHTML(options)
+            )
+          }
         }
+        return (
+          '<span class="math-parenthesis math-curly-parenthesis">{</span>' +
+          entries.join('<span class="math-separator">,</span>') +
+          '<span class="math-parenthesis math-curly-parenthesis">}</span>'
+        )
       }
-      return '{' + entries.join(', ') + '}'
-    }
 
-    /**
-     * Get a JSON representation of the node
-     * @returns {Object}
-     */
-    toJSON (): Record<string, any> {
-      return {
-        mathjs: name,
-        properties: this.properties
-      }
-    }
-
-    /**
-     * Instantiate an OperatorNode from its JSON representation
-     * @param {Object} json  An object structured like
-     *                       `{"mathjs": "ObjectNode", "properties": {...}}`,
-     *                       where mathjs is optional
-     * @returns {ObjectNode}
-     */
-    static fromJSON (json: { properties: Record<string, Node> }): ObjectNode {
-      return new ObjectNode(json.properties)
-    }
-
-    /**
-     * Get HTML representation
-     * @param {Object} options
-     * @return {string} str
-     * @override
-     */
-    _toHTML (options?: StringOptions): string {
-      const entries: string[] = []
-      for (const key in this.properties) {
-        if (hasOwnProperty(this.properties, key)) {
-          entries.push(
-            '<span class="math-symbol math-property">' + escape(key) + '</span>' +
-              '<span class="math-operator math-assignment-operator ' +
-              'math-property-assignment-operator math-binary-operator">' +
-              ':</span>' + this.properties[key].toHTML(options))
+      /**
+       * Get LaTeX representation
+       * @param {Object} options
+       * @return {string} str
+       */
+      _toTex(options?: StringOptions): string {
+        const entries: string[] = []
+        for (const key in this.properties) {
+          if (hasOwnProperty(this.properties, key)) {
+            entries.push(
+              '\\mathbf{' +
+                key +
+                ':} & ' +
+                this.properties[key].toTex(options) +
+                '\\\\'
+            )
+          }
         }
-      }
-      return '<span class="math-parenthesis math-curly-parenthesis">{</span>' +
-        entries.join('<span class="math-separator">,</span>') +
-        '<span class="math-parenthesis math-curly-parenthesis">}</span>'
-    }
-
-    /**
-     * Get LaTeX representation
-     * @param {Object} options
-     * @return {string} str
-     */
-    _toTex (options?: StringOptions): string {
-      const entries: string[] = []
-      for (const key in this.properties) {
-        if (hasOwnProperty(this.properties, key)) {
-          entries.push(
-            '\\mathbf{' + key + ':} & ' +
-              this.properties[key].toTex(options) + '\\\\')
-        }
-      }
-      const tex = '\\left\\{\\begin{array}{ll}' + entries.join('\n') +
+        const tex =
+          '\\left\\{\\begin{array}{ll}' +
+          entries.join('\n') +
           '\\end{array}\\right\\}'
-      return tex
+        return tex
+      }
     }
-  }
 
-  return ObjectNode
-}, { isClass: true, isNode: true })
+    return ObjectNode
+  },
+  { isClass: true, isNode: true }
+)

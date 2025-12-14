@@ -3,7 +3,7 @@ import { pickShallow } from './object.ts'
 /**
  * Type for a factory function that creates instances
  */
-export interface FactoryFunction<TDeps = any, TResult = any> {
+export interface FactoryFunction<_TDeps = any, TResult = any> {
   (scope: Record<string, any>): TResult
   isFactory: true
   fn: string
@@ -89,7 +89,10 @@ export function factory<TDeps extends Record<string, any> = any, TResult = any>(
     // we only pass the requested dependencies to the factory function
     // to prevent functions to rely on dependencies that are not explicitly
     // requested.
-    const deps = pickShallow(scope, dependencies.map(stripOptionalNotation)) as TDeps
+    const deps = pickShallow(
+      scope,
+      dependencies.map(stripOptionalNotation)
+    ) as TDeps
 
     assertDependencies(name, dependencies, scope)
 
@@ -117,7 +120,7 @@ export function sortFactories(
 ): Array<FactoryFunction | LegacyFactory> {
   const factoriesByName: Record<string, FactoryFunction | LegacyFactory> = {}
 
-  factories.forEach(factory => {
+  factories.forEach((factory) => {
     const name = isFactory(factory) ? factory.fn : factory.name
     factoriesByName[name] = factory
   })
@@ -133,10 +136,12 @@ export function sortFactories(
         return true
       }
 
-      if (factory.dependencies.some(d => {
-        const depFactory = factoriesByName[d]
-        return depFactory && containsDependency(depFactory, dependency)
-      })) {
+      if (
+        factory.dependencies.some((d) => {
+          const depFactory = factoriesByName[d]
+          return depFactory && containsDependency(depFactory, dependency)
+        })
+      ) {
         return true
       }
     }
@@ -148,7 +153,10 @@ export function sortFactories(
 
   function addFactory(factory: FactoryFunction | LegacyFactory): void {
     let index = 0
-    while (index < sorted.length && !containsDependency(sorted[index], factory)) {
+    while (
+      index < sorted.length &&
+      !containsDependency(sorted[index], factory)
+    ) {
       index++
     }
 
@@ -156,14 +164,10 @@ export function sortFactories(
   }
 
   // sort regular factory functions
-  factories
-    .filter(isFactory)
-    .forEach(addFactory)
+  factories.filter(isFactory).forEach(addFactory)
 
   // sort legacy factory functions AFTER the regular factory functions
-  factories
-    .filter(factory => !isFactory(factory))
-    .forEach(addFactory)
+  factories.filter((factory) => !isFactory(factory)).forEach(addFactory)
 
   return sorted
 }
@@ -173,7 +177,7 @@ export function create(
   factories: Array<FactoryFunction | LegacyFactory>,
   scope: Record<string, any> = {}
 ): Record<string, any> {
-  sortFactories(factories).forEach(factory => {
+  sortFactories(factories).forEach((factory) => {
     if (isFactory(factory)) {
       factory(scope)
     }
@@ -212,19 +216,19 @@ export function assertDependencies(
   scope: Record<string, any>
 ): void {
   const allDefined = dependencies
-    .filter(dependency => !isOptionalDependency(dependency)) // filter optionals
-    .every(dependency => scope[dependency] !== undefined)
+    .filter((dependency) => !isOptionalDependency(dependency)) // filter optionals
+    .every((dependency) => scope[dependency] !== undefined)
 
   if (!allDefined) {
     const missingDependencies = dependencies.filter(
-      dependency => scope[dependency] === undefined
+      (dependency) => scope[dependency] === undefined
     )
 
     // TODO: create a custom error class for this, a MathjsError or something like that
     throw new Error(
       `Cannot create function "${name}", ` +
         `some dependencies are missing: ${missingDependencies
-          .map(d => `"${d}"`)
+          .map((d) => `"${d}"`)
           .join(', ')}.`
     )
   }

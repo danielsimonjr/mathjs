@@ -10,24 +10,33 @@ import { typeOf } from '../../../utils/is.ts'
  * @param {*} [value]
  * @return {Error}
  */
-export function improveErrorMessage (err: any, fnName: any, value: any) {
+export function improveErrorMessage(err: any, fnName: any, value: any) {
   // TODO: add information with the index (also needs transform in expression parser)
   let details
 
   if (String(err).includes('Unexpected type')) {
-    details = arguments.length > 2
-      ? ' (type: ' + typeOf(value) + ', value: ' + JSON.stringify(value) + ')'
-      : ' (type: ' + err.data.actual + ')'
+    details =
+      arguments.length > 2
+        ? ' (type: ' + typeOf(value) + ', value: ' + JSON.stringify(value) + ')'
+        : ' (type: ' + err.data.actual + ')'
 
-    return new TypeError('Cannot calculate ' + fnName + ', unexpected type of argument' + details)
+    return new TypeError(
+      'Cannot calculate ' + fnName + ', unexpected type of argument' + details
+    )
   }
 
   if (String(err).includes('complex numbers')) {
-    details = arguments.length > 2
-      ? ' (type: ' + typeOf(value) + ', value: ' + JSON.stringify(value) + ')'
-      : ''
+    details =
+      arguments.length > 2
+        ? ' (type: ' + typeOf(value) + ', value: ' + JSON.stringify(value) + ')'
+        : ''
 
-    return new TypeError('Cannot calculate ' + fnName + ', no ordering relation is defined for complex numbers' + details)
+    return new TypeError(
+      'Cannot calculate ' +
+        fnName +
+        ', no ordering relation is defined for complex numbers' +
+        details
+    )
   }
 
   return err

@@ -17,27 +17,44 @@ describe('evaluate', function () {
   it('should evaluate a list of expressions', function () {
     assert.deepStrictEqual(math.evaluate(['1+2', '3+4', '5+6']), [3, 7, 11])
     assert.deepStrictEqual(math.evaluate(['a=3', 'b=4', 'a*b']), [3, 4, 12])
-    assert.deepStrictEqual(math.evaluate(math.matrix(['a=3', 'b=4', 'a*b'])), math.matrix([3, 4, 12]))
+    assert.deepStrictEqual(
+      math.evaluate(math.matrix(['a=3', 'b=4', 'a*b'])),
+      math.matrix([3, 4, 12])
+    )
     assert.deepStrictEqual(math.evaluate(['a=3', 'b=4', 'a*b']), [3, 4, 12])
   })
 
   it('should evaluate a series of expressions', function () {
-    assert.deepStrictEqual(math.evaluate('a=3\nb=4\na*b'), new ResultSet([3, 4, 12]))
-    assert.deepStrictEqual(math.evaluate('f(x) = a * x; a=2; f(4)'), new ResultSet([8]))
+    assert.deepStrictEqual(
+      math.evaluate('a=3\nb=4\na*b'),
+      new ResultSet([3, 4, 12])
+    )
+    assert.deepStrictEqual(
+      math.evaluate('f(x) = a * x; a=2; f(4)'),
+      new ResultSet([8])
+    )
     assert.deepStrictEqual(math.evaluate('b = 43; b * 4'), new ResultSet([172]))
   })
 
   it('should throw an error if wrong number of arguments', function () {
-    assert.throws(function () { math.evaluate() }, /TypeError: Too few arguments/)
-    assert.throws(function () { math.evaluate('', {}, 3) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      math.evaluate()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      math.evaluate('', {}, 3)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should throw an error with a unit', function () {
-    assert.throws(function () { math.evaluate(new Unit(5, 'cm')) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      math.evaluate(new Unit(5, 'cm'))
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should throw an error with a complex number', function () {
-    assert.throws(function () { math.evaluate(new Complex(2, 3)) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      math.evaluate(new Complex(2, 3))
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should evaluate a boolean', function () {
@@ -52,7 +69,10 @@ describe('evaluate', function () {
     }
     assert.deepStrictEqual(math.evaluate('a*b', scope), 12)
     assert.deepStrictEqual(math.evaluate('c=5', scope), 5)
-    assert.deepStrictEqual(math.format(math.evaluate('f(x) = x^a', scope)), 'f(x)')
+    assert.deepStrictEqual(
+      math.format(math.evaluate('f(x) = x^a', scope)),
+      'f(x)'
+    )
 
     assert.deepStrictEqual(Object.keys(scope).length, 4)
     assert.deepStrictEqual(scope.a, 3)
@@ -83,7 +103,10 @@ describe('evaluate', function () {
     const expr2 = math.parse('evaluate(expr,scope)')
 
     assert.strictEqual(expr1.toTex(), '\\mathrm{evaluate}\\left( expr\\right)')
-    assert.strictEqual(expr2.toTex(), '\\mathrm{evaluate}\\left( expr, scope\\right)')
+    assert.strictEqual(
+      expr2.toTex(),
+      '\\mathrm{evaluate}\\left( expr, scope\\right)'
+    )
   })
 
   describe('nullish coalescing operator', function () {
@@ -99,8 +122,14 @@ describe('evaluate', function () {
 
     it('should handle nullish coalescing with variables', function () {
       const scope1 = {}
-      assert.throws(() => math.evaluate('x ?? 42', scope1), /Undefined symbol x/)
-      assert.throws(() => math.evaluate('nullish(x, 42)', scope1), /Undefined symbol x/)
+      assert.throws(
+        () => math.evaluate('x ?? 42', scope1),
+        /Undefined symbol x/
+      )
+      assert.throws(
+        () => math.evaluate('nullish(x, 42)', scope1),
+        /Undefined symbol x/
+      )
 
       const scope2 = { x: null }
       assert.strictEqual(math.evaluate('x ?? 42', scope2), 42)
@@ -143,9 +172,18 @@ describe('evaluate', function () {
       assert.strictEqual(math.evaluate('true xor null ?? 42'), false) // true xor (null ?? 42)
 
       // Parentheses can override precedence
-      assert.throws(() => math.evaluate('(1 + null) ?? 2'), /TypeError: Unexpected type of argument/)
-      assert.throws(() => math.evaluate('(2 * null) ?? 3'), /TypeError: Unexpected type of argument/)
-      assert.throws(() => math.evaluate('(2 ^ null) ?? 3'), /TypeError: Unexpected type of argument/)
+      assert.throws(
+        () => math.evaluate('(1 + null) ?? 2'),
+        /TypeError: Unexpected type of argument/
+      )
+      assert.throws(
+        () => math.evaluate('(2 * null) ?? 3'),
+        /TypeError: Unexpected type of argument/
+      )
+      assert.throws(
+        () => math.evaluate('(2 ^ null) ?? 3'),
+        /TypeError: Unexpected type of argument/
+      )
       assert.strictEqual(math.evaluate('2 * (null ?? 3)'), 6)
     })
 
@@ -185,26 +223,59 @@ describe('evaluate', function () {
 
     it('should handle nullish coalescing with matrices and arrays as operands', function () {
       // Test arrays as operands
-      assert.deepStrictEqual(math.evaluate('null ?? [1, 2, 3]'), math.matrix([1, 2, 3]))
-      assert.deepStrictEqual(math.evaluate('[1, 2] ?? [3, 4]'), math.matrix([1, 2])) // Neither 1 nor 2 is nullish
-      assert.deepStrictEqual(math.evaluate('undefined ?? [5, 6]'), math.matrix([5, 6]))
-      assert.deepStrictEqual(math.evaluate('[null, null] ?? [7, 8]'), math.matrix([7, 8])) // Both null elements are nullish, so use [7, 8]
+      assert.deepStrictEqual(
+        math.evaluate('null ?? [1, 2, 3]'),
+        math.matrix([1, 2, 3])
+      )
+      assert.deepStrictEqual(
+        math.evaluate('[1, 2] ?? [3, 4]'),
+        math.matrix([1, 2])
+      ) // Neither 1 nor 2 is nullish
+      assert.deepStrictEqual(
+        math.evaluate('undefined ?? [5, 6]'),
+        math.matrix([5, 6])
+      )
+      assert.deepStrictEqual(
+        math.evaluate('[null, null] ?? [7, 8]'),
+        math.matrix([7, 8])
+      ) // Both null elements are nullish, so use [7, 8]
 
       // Test matrices as operands
       const matrix1 = math.matrix([1, 2])
       assert.deepStrictEqual(math.evaluate('null ?? matrix([1, 2])'), matrix1)
-      assert.deepStrictEqual(math.evaluate('matrix([1, 2]) ?? matrix([3, 4])'), matrix1) // Neither 1 nor 2 is nullish
-      assert.deepStrictEqual(math.evaluate('undefined ?? matrix([5, 6])'), math.matrix([5, 6]))
+      assert.deepStrictEqual(
+        math.evaluate('matrix([1, 2]) ?? matrix([3, 4])'),
+        matrix1
+      ) // Neither 1 nor 2 is nullish
+      assert.deepStrictEqual(
+        math.evaluate('undefined ?? matrix([5, 6])'),
+        math.matrix([5, 6])
+      )
 
       // Test mixed arrays and matrices
       assert.deepStrictEqual(math.evaluate('null ?? matrix([1, 2])'), matrix1)
-      assert.deepStrictEqual(math.evaluate('[1, 2] ?? matrix([3, 4])'), math.matrix([1, 2]))
-      assert.deepStrictEqual(math.evaluate('[null, 5] ?? 42'), math.matrix([42, 5]))
-      assert.deepStrictEqual(math.evaluate('[null, 5] ?? [1, 2]'), math.matrix([1, 5]))
+      assert.deepStrictEqual(
+        math.evaluate('[1, 2] ?? matrix([3, 4])'),
+        math.matrix([1, 2])
+      )
+      assert.deepStrictEqual(
+        math.evaluate('[null, 5] ?? 42'),
+        math.matrix([42, 5])
+      )
+      assert.deepStrictEqual(
+        math.evaluate('[null, 5] ?? [1, 2]'),
+        math.matrix([1, 5])
+      )
 
       // Test arrays/matrices containing expressions
-      assert.deepStrictEqual(math.evaluate(['null ?? 1', '2 ?? null', 'null ?? null ?? 3']), [1, 2, 3])
-      assert.deepStrictEqual(math.evaluate(math.matrix(['null ?? 1', '2 ?? null'])), math.matrix([1, 2]))
+      assert.deepStrictEqual(
+        math.evaluate(['null ?? 1', '2 ?? null', 'null ?? null ?? 3']),
+        [1, 2, 3]
+      )
+      assert.deepStrictEqual(
+        math.evaluate(math.matrix(['null ?? 1', '2 ?? null'])),
+        math.matrix([1, 2])
+      )
 
       // Test shape mismatch with empty array
       assert.throws(() => math.evaluate('[] ?? [7, 8]'), /RangeError/)
@@ -213,23 +284,46 @@ describe('evaluate', function () {
 
     it('should handle nullish coalescing with function calls', function () {
       const scope = {
-        getValue: function () { return null },
-        getDefault: function () { return 42 }
+        getValue: function () {
+          return null
+        },
+        getDefault: function () {
+          return 42
+        }
       }
       assert.strictEqual(math.evaluate('getValue() ?? getDefault()', scope), 42)
 
       const scope2 = {
-        getValue: function () { return 10 },
-        getDefault: function () { return 42 }
+        getValue: function () {
+          return 10
+        },
+        getDefault: function () {
+          return 42
+        }
       }
-      assert.strictEqual(math.evaluate('getValue() ?? getDefault()', scope2), 10)
+      assert.strictEqual(
+        math.evaluate('getValue() ?? getDefault()', scope2),
+        10
+      )
     })
 
     it('should handle nullish function with arrays', function () {
-      assert.deepStrictEqual(math.evaluate('nullish(null, [1, 2, 3])'), math.matrix([1, 2, 3]))
-      assert.deepStrictEqual(math.evaluate('nullish([1, 2], [3, 4])'), math.matrix([1, 2]))
-      assert.deepStrictEqual(math.evaluate('nullish([null, 5], 42)'), math.matrix([42, 5]))
-      assert.deepStrictEqual(math.evaluate('nullish([null, 5], [1, 2])'), math.matrix([1, 5]))
+      assert.deepStrictEqual(
+        math.evaluate('nullish(null, [1, 2, 3])'),
+        math.matrix([1, 2, 3])
+      )
+      assert.deepStrictEqual(
+        math.evaluate('nullish([1, 2], [3, 4])'),
+        math.matrix([1, 2])
+      )
+      assert.deepStrictEqual(
+        math.evaluate('nullish([null, 5], 42)'),
+        math.matrix([42, 5])
+      )
+      assert.deepStrictEqual(
+        math.evaluate('nullish([null, 5], [1, 2])'),
+        math.matrix([1, 5])
+      )
     })
 
     it('should handle nullish coalescing with conditional expressions and correct precedence', function () {
@@ -245,7 +339,9 @@ describe('evaluate', function () {
     it('should short-circuit evaluation of the right-hand side when left is not nullish', function () {
       // RHS throws if evaluated; must not be called
       const scope = {
-        boom: function () { throw new Error('RHS evaluated unexpectedly') }
+        boom: function () {
+          throw new Error('RHS evaluated unexpectedly')
+        }
       }
       assert.strictEqual(math.evaluate('5 ?? boom()', scope), 5)
       assert.strictEqual(math.evaluate('0 ?? boom()', scope), 0)
@@ -258,7 +354,10 @@ describe('evaluate', function () {
     it('should evaluate the right-hand side when left is nullish', function () {
       let count = 0
       const scope = {
-        inc: function () { count++; return 7 }
+        inc: function () {
+          count++
+          return 7
+        }
       }
       assert.strictEqual(math.evaluate('null ?? inc()', scope), 7)
       assert.strictEqual(count, 1)

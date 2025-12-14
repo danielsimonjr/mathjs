@@ -1,10 +1,9 @@
 export const hasNumericValueDocs = {
   name: 'hasNumericValue',
   category: 'Utils',
-  syntax: [
-    'hasNumericValue(x)'
-  ],
-  description: 'Test whether a value is an numeric value. ' +
+  syntax: ['hasNumericValue(x)'],
+  description:
+    'Test whether a value is an numeric value. ' +
     'In case of a string, true is returned if the string contains a numeric value.',
   examples: [
     'hasNumericValue(2)',
@@ -16,5 +15,12 @@ export const hasNumericValueDocs = {
     'hasNumericValue(2 + 3i)',
     'hasNumericValue([2.3, "foo", false])'
   ],
-  seealso: ['isInteger', 'isZero', 'isNegative', 'isPositive', 'isNaN', 'isNumeric']
+  seealso: [
+    'isInteger',
+    'isZero',
+    'isNegative',
+    'isPositive',
+    'isNaN',
+    'isNumeric'
+  ]
 }

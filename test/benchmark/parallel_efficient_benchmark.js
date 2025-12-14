@@ -24,7 +24,7 @@ console.log(`Node.js: ${process.version}`)
 // Pure JavaScript (Baseline)
 // =============================================================================
 
-function jsMatrixMultiply(a, aRows, aCols, b, bRows, bCols) {
+function jsMatrixMultiply (a, aRows, aCols, b, bRows, bCols) {
   const result = new Float64Array(aRows * bCols)
   for (let i = 0; i < aRows; i++) {
     for (let j = 0; j < bCols; j++) {
@@ -38,7 +38,7 @@ function jsMatrixMultiply(a, aRows, aCols, b, bRows, bCols) {
   return result
 }
 
-function jsDotProduct(a, b, size) {
+function jsDotProduct (a, b, size) {
   let sum = 0
   for (let i = 0; i < size; i++) {
     sum += a[i] * b[i]
@@ -46,7 +46,7 @@ function jsDotProduct(a, b, size) {
   return sum
 }
 
-function jsSum(arr) {
+function jsSum (arr) {
   let total = 0
   for (let i = 0; i < arr.length; i++) {
     total += arr[i]
@@ -58,7 +58,7 @@ function jsSum(arr) {
 // Parallel with SharedArrayBuffer (Zero-Copy)
 // =============================================================================
 
-async function parallelDotProductShared(a, b, size) {
+async function parallelDotProductShared (a, b, size) {
   const numWorkers = Math.min(NUM_CPUS, 4)
   const chunkSize = Math.ceil(size / numWorkers)
 
@@ -67,7 +67,7 @@ async function parallelDotProductShared(a, b, size) {
   const sharedB = new SharedArrayBuffer(size * Float64Array.BYTES_PER_ELEMENT)
   const viewA = new Float64Array(sharedA)
   const viewB = new Float64Array(sharedB)
-  viewA.set(a)  // One-time copy into shared memory
+  viewA.set(a) // One-time copy into shared memory
   viewB.set(b)
 
   // Shared result accumulator
@@ -120,7 +120,7 @@ async function parallelDotProductShared(a, b, size) {
 // Parallel with Transferable ArrayBuffer
 // =============================================================================
 
-async function parallelDotProductTransfer(a, b, size) {
+async function parallelDotProductTransfer (a, b, size) {
   const numWorkers = Math.min(NUM_CPUS, 4)
   const chunkSize = Math.ceil(size / numWorkers)
 
@@ -175,7 +175,7 @@ async function parallelDotProductTransfer(a, b, size) {
 // Parallel Sum with SharedArrayBuffer
 // =============================================================================
 
-async function parallelSumShared(arr) {
+async function parallelSumShared (arr) {
   const size = arr.length
   const numWorkers = Math.min(NUM_CPUS, 4)
   const chunkSize = Math.ceil(size / numWorkers)
@@ -231,7 +231,7 @@ async function parallelSumShared(arr) {
 // Test Data
 // =============================================================================
 
-function generateVector(size) {
+function generateVector (size) {
   const data = new Float64Array(size)
   for (let i = 0; i < size; i++) {
     data[i] = Math.random() * 100
@@ -243,7 +243,7 @@ function generateVector(size) {
 // Benchmark Runner
 // =============================================================================
 
-async function benchmark(name, fn, warmupRuns = 3, benchRuns = 10) {
+async function benchmark (name, fn, warmupRuns = 3, benchRuns = 10) {
   // Warmup
   for (let i = 0; i < warmupRuns; i++) {
     await fn()
@@ -271,7 +271,7 @@ async function benchmark(name, fn, warmupRuns = 3, benchRuns = 10) {
 // Main
 // =============================================================================
 
-async function main() {
+async function main () {
   console.log('\n' + '='.repeat(90))
   console.log('EFFICIENT PARALLEL BENCHMARK')
   console.log('Comparing: JS vs SharedArrayBuffer vs Transferable ArrayBuffer')
@@ -311,11 +311,11 @@ async function main() {
     console.log('\n  Speedups vs Pure JS:')
     if (sharedResult) {
       const speedup = sharedResult.opsPerSec / jsResult.opsPerSec
-      console.log(`    SharedArrayBuffer: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1/speedup).toFixed(2) + 'x slower'}`)
+      console.log(`    SharedArrayBuffer: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`)
     }
     if (transferResult) {
       const speedup = transferResult.opsPerSec / jsResult.opsPerSec
-      console.log(`    Transferable: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1/speedup).toFixed(2) + 'x slower'}`)
+      console.log(`    Transferable: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`)
     }
   }
 
@@ -341,7 +341,7 @@ async function main() {
 
     if (sharedResult) {
       const speedup = sharedResult.opsPerSec / jsResult.opsPerSec
-      console.log(`\n  Speedup: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1/speedup).toFixed(2) + 'x slower'}`)
+      console.log(`\n  Speedup: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`)
     }
   }
 

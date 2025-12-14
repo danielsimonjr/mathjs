@@ -8,8 +8,26 @@ const matrix = math.matrix
 
 describe('size', function () {
   it('should calculate the size of an array', function () {
-    assert.deepStrictEqual(size([[1, 2, 3], [4, 5, 6]]), [2, 3])
-    assert.deepStrictEqual(size([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]), [2, 2, 2])
+    assert.deepStrictEqual(
+      size([
+        [1, 2, 3],
+        [4, 5, 6]
+      ]),
+      [2, 3]
+    )
+    assert.deepStrictEqual(
+      size([
+        [
+          [1, 2],
+          [3, 4]
+        ],
+        [
+          [5, 6],
+          [7, 8]
+        ]
+      ]),
+      [2, 2, 2]
+    )
     assert.deepStrictEqual(size([1, 2, 3]), [3])
     assert.deepStrictEqual(size([[1], [2], [3]]), [3, 1])
     assert.deepStrictEqual(size([100]), [1])
@@ -23,13 +41,32 @@ describe('size', function () {
 
   it('should calculate the size of a DenseMatrix', function () {
     assert.deepStrictEqual(size(matrix()), [0])
-    assert.deepStrictEqual(size(matrix([[1, 2, 3], [4, 5, 6]])), [2, 3])
+    assert.deepStrictEqual(
+      size(
+        matrix([
+          [1, 2, 3],
+          [4, 5, 6]
+        ])
+      ),
+      [2, 3]
+    )
     assert.deepStrictEqual(size(matrix([[], []])), [2, 0])
   })
 
   it('should calculate the size of a SparseMatrix', function () {
     assert.deepStrictEqual(size(matrix('sparse')), [0, 0])
-    assert.deepStrictEqual(size(matrix([[1, 2, 3], [4, 5, 6]], 'sparse')), [2, 3])
+    assert.deepStrictEqual(
+      size(
+        matrix(
+          [
+            [1, 2, 3],
+            [4, 5, 6]
+          ],
+          'sparse'
+        )
+      ),
+      [2, 3]
+    )
     assert.deepStrictEqual(size(matrix([[], []], 'sparse')), [2, 0])
   })
 
@@ -59,12 +96,18 @@ describe('size', function () {
   })
 
   it('should throw an error if called with an invalid number of arguments', function () {
-    assert.throws(function () { size() }, /TypeError: Too few arguments/)
-    assert.throws(function () { size(1, 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      size()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      size(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should throw an error if called with invalid type of arguments', function () {
-    assert.throws(function () { size(new Date()) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      size(new Date())
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should LaTeX size', function () {

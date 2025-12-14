@@ -15,7 +15,7 @@
  *
  * @return                          The number of nonzero elements in the matrix
  */
-export function csFkeep<T> (
+export function csFkeep<T>(
   a: any,
   callback: (row: number, col: number, value: T, state: any) => boolean,
   other: any
@@ -41,7 +41,9 @@ export function csFkeep<T> (
         // keep A(i,j)
         aindex[nz] = aindex[p]
         // check we need to process values (pattern only)
-        if (avalues) { avalues[nz] = avalues[p] }
+        if (avalues) {
+          avalues[nz] = avalues[p]
+        }
         // increment nonzero items
         nz++
       }
@@ -52,7 +54,9 @@ export function csFkeep<T> (
   // trim arrays
   aindex.splice(nz, aindex.length - nz)
   // check we need to process values (pattern only)
-  if (avalues) { avalues.splice(nz, avalues.length - nz) }
+  if (avalues) {
+    avalues.splice(nz, avalues.length - nz)
+  }
   // return number of nonzero items
   return nz
 }

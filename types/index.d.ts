@@ -1913,10 +1913,7 @@ export interface MathJsInstance extends MathJsFactory {
    * @returns Returns y when x is null or undefined, otherwise returns x
    */
   nullish<T, U>(x: T, y: U): T | U
-  nullish(
-    x: MathCollection,
-    y: MathCollection
-  ): MathCollection
+  nullish(x: MathCollection, y: MathCollection): MathCollection
 
   /**
    * Logical xor. Test whether one and only one value is defined with a
@@ -6023,10 +6020,7 @@ export interface MathJsChain<TValue> {
    * For matrices, the function is evaluated element wise.
    * @param y Fallback value
    */
-  nullish<T, U>(
-    this: MathJsChain<T>,
-    y: U
-  ): MathJsChain<T | U>
+  nullish<T, U>(this: MathJsChain<T>, y: U): MathJsChain<T | U>
 
   /**
    * Logical xor. Test whether one and only one value is defined with a

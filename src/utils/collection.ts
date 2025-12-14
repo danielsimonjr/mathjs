@@ -1,12 +1,24 @@
 import { isCollection, isMatrix } from './is.ts'
 import { IndexError } from '../error/IndexError.ts'
-import { arraySize, deepMap as arrayDeepMap, deepForEach as arrayDeepForEach } from './array.ts'
+import {
+  arraySize,
+  deepMap as arrayDeepMap,
+  deepForEach as arrayDeepForEach
+} from './array.ts'
 import { _switch } from './switch.ts'
 
 // Type definitions for Matrix interface
 interface Matrix {
-  forEach(callback: (value: any) => void, skipZeros: boolean, recurse: boolean): void
-  map(callback: (value: any) => any, skipZeros: boolean, recurse: boolean): Matrix
+  forEach(
+    callback: (value: any) => void,
+    skipZeros: boolean,
+    recurse: boolean
+  ): void
+  map(
+    callback: (value: any) => any,
+    skipZeros: boolean,
+    recurse: boolean
+  ): Matrix
   size(): number[]
   valueOf(): any[]
   create(data: any[], datatype?: string): Matrix
@@ -40,9 +52,12 @@ export function containsCollections(array: any[]): boolean {
  * @param array - Array or Matrix to iterate over
  * @param callback - The callback method is invoked with one parameter: the current element in the array
  */
-export function deepForEach(array: any[] | Matrix, callback: (value: any) => void): void {
+export function deepForEach(
+  array: any[] | Matrix,
+  callback: (value: any) => void
+): void {
   if (isMatrix(array)) {
-    (array as Matrix).forEach(x => callback(x), false, true)
+    ;(array as Matrix).forEach((x) => callback(x), false, true)
   } else {
     arrayDeepForEach(array as any[], callback, true)
   }
@@ -67,14 +82,14 @@ export function deepMap(
 ): any[] | Matrix {
   if (!skipZeros) {
     if (isMatrix(array)) {
-      return (array as Matrix).map(x => callback(x), false, true)
+      return (array as Matrix).map((x) => callback(x), false, true)
     } else {
       return arrayDeepMap(array as any[], callback, true)
     }
   }
-  const skipZerosCallback = (x: any): any => x === 0 ? x : callback(x)
+  const skipZerosCallback = (x: any): any => (x === 0 ? x : callback(x))
   if (isMatrix(array)) {
-    return (array as Matrix).map(x => skipZerosCallback(x), false, true)
+    return (array as Matrix).map((x) => skipZerosCallback(x), false, true)
   } else {
     return arrayDeepMap(array as any[], skipZerosCallback, true)
   }
@@ -95,13 +110,16 @@ export function reduce(
   callback: (acc: any, val: any) => any
 ): any[] | Matrix {
   const size = Array.isArray(mat) ? arraySize(mat) : (mat as Matrix).size()
-  if (dim < 0 || (dim >= size.length)) {
+  if (dim < 0 || dim >= size.length) {
     // TODO: would be more clear when throwing a DimensionError here
     throw new IndexError(dim, 0, size.length) as any
   }
 
   if (isMatrix(mat)) {
-    return (mat as Matrix).create(_reduce((mat as Matrix).valueOf(), dim, callback), (mat as Matrix).datatype())
+    return (mat as Matrix).create(
+      _reduce((mat as Matrix).valueOf(), dim, callback),
+      (mat as Matrix).datatype()
+    )
   } else {
     return _reduce(mat as any[], dim, callback)
   }
@@ -115,7 +133,11 @@ export function reduce(
  * @returns Reduced result
  * @private
  */
-function _reduce(mat: any[], dim: number, callback: (acc: any, val: any) => any): any {
+function _reduce(
+  mat: any[],
+  dim: number,
+  callback: (acc: any, val: any) => any
+): any {
   let i: number
   let ret: any[]
   let val: any

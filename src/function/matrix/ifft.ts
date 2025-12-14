@@ -4,7 +4,6 @@ import { isMatrix } from '../../utils/is.ts'
 
 // Type definitions for FFT operations
 type ComplexNumber = { re: number; im: number } | number
-type ComplexArray = ComplexNumber[]
 type ComplexArrayND = ComplexNumber[] | ComplexArrayND[]
 
 interface TypedFunction<T = any> {
@@ -35,42 +34,41 @@ interface Dependencies {
 }
 
 const name = 'ifft'
-const dependencies = [
-  'typed',
-  'fft',
-  'dotDivide',
-  'conj'
-]
+const dependencies = ['typed', 'fft', 'dotDivide', 'conj']
 
-export const createIfft = /* #__PURE__ */ factory(name, dependencies, ({
-  typed,
-  fft,
-  dotDivide,
-  conj
-}: Dependencies) => {
-  /**
-   * Calculate N-dimensional inverse Fourier transform
-   *
-   * Syntax:
-   *
-   *     math.ifft(arr)
-   *
-   * Examples:
-   *
-   *    math.ifft([[2, 2], [0, 0]]) // returns [[{re:1, im:0}, {re:0, im:0}], [{re:1, im:0}, {re:0, im:0}]]
-   *
-   * See Also:
-   *
-   *      fft
-   *
-   * @param {Array | Matrix} arr    An array or matrix
-   * @return {Array | Matrix}       N-dimensional inverse Fourier transformation of the array
-   */
-  return typed(name, {
-    'Array | Matrix': function (arr: ComplexArrayND | Matrix): ComplexArrayND | Matrix {
-      const size = isMatrix(arr) ? (arr as Matrix).size() : arraySize(arr)
-      const totalSize = size.reduce((acc: number, curr: number) => acc * curr, 1)
-      return dotDivide(conj(fft(conj(arr))), totalSize)
-    }
-  })
-})
+export const createIfft = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, fft, dotDivide, conj }: Dependencies) => {
+    /**
+     * Calculate N-dimensional inverse Fourier transform
+     *
+     * Syntax:
+     *
+     *     math.ifft(arr)
+     *
+     * Examples:
+     *
+     *    math.ifft([[2, 2], [0, 0]]) // returns [[{re:1, im:0}, {re:0, im:0}], [{re:1, im:0}, {re:0, im:0}]]
+     *
+     * See Also:
+     *
+     *      fft
+     *
+     * @param {Array | Matrix} arr    An array or matrix
+     * @return {Array | Matrix}       N-dimensional inverse Fourier transformation of the array
+     */
+    return typed(name, {
+      'Array | Matrix': function (
+        arr: ComplexArrayND | Matrix
+      ): ComplexArrayND | Matrix {
+        const size = isMatrix(arr) ? (arr as Matrix).size() : arraySize(arr)
+        const totalSize = size.reduce(
+          (acc: number, curr: number) => acc * curr,
+          1
+        )
+        return dotDivide(conj(fft(conj(arr))), totalSize)
+      }
+    })
+  }
+)

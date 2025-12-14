@@ -29,46 +29,56 @@ interface Dependencies {
 const name = 'size'
 const dependencies = ['typed', 'config', '?matrix']
 
-export const createSize = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, matrix }: Dependencies) => {
-  /**
-   * Calculate the size of a matrix or scalar.
-   *
-   * Syntax:
-   *
-   *     math.size(x)
-   *
-   * Examples:
-   *
-   *     math.size(2.3)                       // returns []
-   *     math.size('hello world')             // returns [11]
-   *
-   *     const A = [[1, 2, 3], [4, 5, 6]]
-   *     math.size(A)                         // returns [2, 3]
-   *     math.size(math.range(1,6).toArray()) // returns [5]
-   *
-   * See also:
-   *
-   *     count, resize, squeeze, subset
-   *
-   * @param {boolean | number | Complex | Unit | string | Array | Matrix} x  A matrix
-   * @return {Array | Matrix} A vector with size of `x`.
-   */
-  return typed(name, {
-    Matrix: function (x: Matrix): Matrix {
-      return x.create(x.size(), 'number')
-    },
+export const createSize = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, config, matrix }: Dependencies) => {
+    /**
+     * Calculate the size of a matrix or scalar.
+     *
+     * Syntax:
+     *
+     *     math.size(x)
+     *
+     * Examples:
+     *
+     *     math.size(2.3)                       // returns []
+     *     math.size('hello world')             // returns [11]
+     *
+     *     const A = [[1, 2, 3], [4, 5, 6]]
+     *     math.size(A)                         // returns [2, 3]
+     *     math.size(math.range(1,6).toArray()) // returns [5]
+     *
+     * See also:
+     *
+     *     count, resize, squeeze, subset
+     *
+     * @param {boolean | number | Complex | Unit | string | Array | Matrix} x  A matrix
+     * @return {Array | Matrix} A vector with size of `x`.
+     */
+    return typed(name, {
+      Matrix: function (x: Matrix): Matrix {
+        return x.create(x.size(), 'number')
+      },
 
-    Array: arraySize,
+      Array: arraySize,
 
-    string: function (x: string): number[] | Matrix {
-      return (config.matrix === 'Array') ? [x.length] : matrix!([x.length], 'dense', 'number')
-    },
+      string: function (x: string): number[] | Matrix {
+        return config.matrix === 'Array'
+          ? [x.length]
+          : matrix!([x.length], 'dense', 'number')
+      },
 
-    'number | Complex | BigNumber | Unit | boolean | null': function (x: any): any[] | Matrix {
-      // scalar
-      return (config.matrix === 'Array')
-        ? []
-        : matrix ? matrix([], 'dense', 'number') as any[] | Matrix : noMatrix() as never
-    }
-  })
-})
+      'number | Complex | BigNumber | Unit | boolean | null': function (
+        _x: any
+      ): any[] | Matrix {
+        // scalar
+        return config.matrix === 'Array'
+          ? []
+          : matrix
+            ? (matrix([], 'dense', 'number') as any[] | Matrix)
+            : (noMatrix() as never)
+      }
+    })
+  }
+)

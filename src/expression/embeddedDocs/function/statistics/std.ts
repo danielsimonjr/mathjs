@@ -8,7 +8,8 @@ export const stdDocs = {
     'std(A, normalization)',
     'std(A, dimension, normalization)'
   ],
-  description: 'Compute the standard deviation of all values, defined as std(A) = sqrt(variance(A)). Optional parameter normalization can be "unbiased" (default), "uncorrected", or "biased".',
+  description:
+    'Compute the standard deviation of all values, defined as std(A) = sqrt(variance(A)). Optional parameter normalization can be "unbiased" (default), "uncorrected", or "biased".',
   examples: [
     'std(2, 4, 6)',
     'std([2, 4, 6, 8])',
@@ -16,13 +17,5 @@ export const stdDocs = {
     'std([2, 4, 6, 8], "biased")',
     'std([1, 2, 3; 4, 5, 6])'
   ],
-  seealso: [
-    'max',
-    'mean',
-    'min',
-    'median',
-    'prod',
-    'sum',
-    'variance'
-  ]
+  seealso: ['max', 'mean', 'min', 'median', 'prod', 'sum', 'variance']
 }

@@ -47,7 +47,13 @@ const dependencies = ['typed', 'equalScalar']
 export const createMatAlgo02xDS0 = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, equalScalar }: { typed: TypedFunction; equalScalar: EqualScalarFunction }) => {
+  ({
+    typed,
+    equalScalar
+  }: {
+    typed: TypedFunction
+    equalScalar: EqualScalarFunction
+  }) => {
     /**
      * Iterates over SparseMatrix nonzero items and invokes the callback function f(Dij, Sij).
      * Callback function invoked NNZ times (number of nonzero items in SparseMatrix).
@@ -83,7 +89,10 @@ export const createMatAlgo02xDS0 = /* #__PURE__ */ factory(
       const bindex: number[] = sparseMatrix._index
       const bptr: number[] = sparseMatrix._ptr
       const bsize: number[] = sparseMatrix._size
-      const bdt: DataType = sparseMatrix._datatype || sparseMatrix._data === undefined ? sparseMatrix._datatype : sparseMatrix.getDataType()
+      const bdt: DataType =
+        sparseMatrix._datatype || sparseMatrix._data === undefined
+          ? sparseMatrix._datatype
+          : sparseMatrix.getDataType()
 
       // validate dimensions
       if (asize.length !== bsize.length) {
@@ -92,12 +101,20 @@ export const createMatAlgo02xDS0 = /* #__PURE__ */ factory(
 
       // check rows & columns
       if (asize[0] !== bsize[0] || asize[1] !== bsize[1]) {
-        throw new RangeError('Dimension mismatch. Matrix A (' + asize + ') must match Matrix B (' + bsize + ')')
+        throw new RangeError(
+          'Dimension mismatch. Matrix A (' +
+            asize +
+            ') must match Matrix B (' +
+            bsize +
+            ')'
+        )
       }
 
       // sparse matrix cannot be a Pattern matrix
       if (!bvalues) {
-        throw new Error('Cannot perform operation on Dense Matrix and Pattern Sparse Matrix')
+        throw new Error(
+          'Cannot perform operation on Dense Matrix and Pattern Sparse Matrix'
+        )
       }
 
       // rows & columns
@@ -139,7 +156,9 @@ export const createMatAlgo02xDS0 = /* #__PURE__ */ factory(
           // row
           const i: number = bindex[k]
           // update C(i,j)
-          const cij: MatrixValue = inverse ? cf(bvalues[k], adata[i][j]) : cf(adata[i][j], bvalues[k])
+          const cij: MatrixValue = inverse
+            ? cf(bvalues[k], adata[i][j])
+            : cf(adata[i][j], bvalues[k])
           // check for nonzero
           if (!eq(cij, zero)) {
             // push i & v
@@ -157,7 +176,10 @@ export const createMatAlgo02xDS0 = /* #__PURE__ */ factory(
         index: cindex,
         ptr: cptr,
         size: [rows, columns],
-        datatype: adt === denseMatrix._datatype && bdt === sparseMatrix._datatype ? dt : undefined
+        datatype:
+          adt === denseMatrix._datatype && bdt === sparseMatrix._datatype
+            ? dt
+            : undefined
       })
     }
   }

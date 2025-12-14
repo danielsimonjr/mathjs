@@ -1,9 +1,7 @@
 export const sinDocs = {
   name: 'sin',
   category: 'Trigonometry',
-  syntax: [
-    'sin(x)'
-  ],
+  syntax: ['sin(x)'],
   description: 'Compute the sine of x in radians.',
   examples: [
     'sin(2)',
@@ -12,9 +10,5 @@ export const sinDocs = {
     'sin(30 deg)',
     'sin(0.2)^2 + cos(0.2)^2'
   ],
-  seealso: [
-    'asin',
-    'cos',
-    'tan'
-  ]
+  seealso: ['asin', 'cos', 'tan']
 }

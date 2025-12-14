@@ -1,9 +1,7 @@
 export const isPositiveDocs = {
   name: 'isPositive',
   category: 'Utils',
-  syntax: [
-    'isPositive(x)'
-  ],
+  syntax: ['isPositive(x)'],
   description: 'Test whether a value is positive: larger than zero.',
   examples: [
     'isPositive(2)',

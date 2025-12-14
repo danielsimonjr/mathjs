@@ -22,11 +22,7 @@ export {
 } from './WorkerPool.js'
 
 // Parallel matrix operations
-export {
-  ParallelMatrix,
-  MatrixData,
-  ParallelConfig
-} from './ParallelMatrix.js'
+export { ParallelMatrix, MatrixData, ParallelConfig } from './ParallelMatrix.js'
 
 // Re-export types for convenience
 export type { WorkerPoolOptions as PoolOptions } from './WorkerPool.js'

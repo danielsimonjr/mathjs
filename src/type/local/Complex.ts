@@ -83,7 +83,7 @@ export class Complex {
   /** Static constant: one */
   static readonly ONE = new Complex(1, 0)
   /** Name for type checking */
-  static readonly name = 'Complex'
+  static readonly typeName = 'Complex'
 
   constructor(re?: number | string | Complex | ComplexLike, im?: number) {
     if (re === undefined || re === null) {

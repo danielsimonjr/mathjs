@@ -1,10 +1,9 @@
 export const numericDocs = {
   name: 'numeric',
   category: 'Utils',
-  syntax: [
-    'numeric(x)'
-  ],
-  description: 'Convert a numeric input to a specific numeric type: number, BigNumber, bigint, or Fraction.',
+  syntax: ['numeric(x)'],
+  description:
+    'Convert a numeric input to a specific numeric type: number, BigNumber, bigint, or Fraction.',
   examples: [
     'numeric("4")',
     'numeric("4", "number")',

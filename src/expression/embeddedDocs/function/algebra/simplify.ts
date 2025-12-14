@@ -1,10 +1,7 @@
 export const simplifyDocs = {
   name: 'simplify',
   category: 'Algebra',
-  syntax: [
-    'simplify(expr)',
-    'simplify(expr, rules)'
-  ],
+  syntax: ['simplify(expr)', 'simplify(expr, rules)'],
   description: 'Simplify an expression tree.',
   examples: [
     'simplify("3 + 2 / 4")',
@@ -14,6 +11,11 @@ export const simplifyDocs = {
     'simplified.evaluate({x: 2})'
   ],
   seealso: [
-    'simplifyCore', 'derivative', 'evaluate', 'parse', 'rationalize', 'resolve'
+    'simplifyCore',
+    'derivative',
+    'evaluate',
+    'parse',
+    'rationalize',
+    'resolve'
   ]
 }

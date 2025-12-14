@@ -9,7 +9,7 @@
  * @param {Array}   c               The Sparse Matrix ptr array
  * @param {Number}  n               The number of columns
  */
-export function csCumsum (ptr: number[], c: number[], n: number): number {
+export function csCumsum(ptr: number[], c: number[], n: number): number {
   // variables
   let i
   let nz = 0

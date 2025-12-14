@@ -43,6 +43,9 @@ describe('parse', function () {
 
   it('should LaTeX parse', function () {
     const expression = math.parse('parse(expr,options)')
-    assert.strictEqual(expression.toTex(), '\\mathrm{parse}\\left( expr, options\\right)')
+    assert.strictEqual(
+      expression.toTex(),
+      '\\mathrm{parse}\\left( expr, options\\right)'
+    )
   })
 })

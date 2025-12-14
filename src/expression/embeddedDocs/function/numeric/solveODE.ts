@@ -1,10 +1,7 @@
 export const solveODEDocs = {
   name: 'solveODE',
   category: 'Numeric',
-  syntax: [
-    'solveODE(func, tspan, y0)',
-    'solveODE(func, tspan, y0, options)'
-  ],
+  syntax: ['solveODE(func, tspan, y0)', 'solveODE(func, tspan, y0, options)'],
   description: 'Numerical Integration of Ordinary Differential Equations.',
   examples: [
     'f(t,y) = y',

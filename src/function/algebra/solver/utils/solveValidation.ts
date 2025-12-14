@@ -1,8 +1,13 @@
-import { isArray, isMatrix, isDenseMatrix, isSparseMatrix } from '../../../../utils/is.ts'
+import {
+  isArray,
+  isMatrix,
+  isDenseMatrix,
+  isSparseMatrix
+} from '../../../../utils/is.ts'
 import { arraySize } from '../../../../utils/array.ts'
 import { format } from '../../../../utils/string.ts'
 
-export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
+export function createSolveValidation({ DenseMatrix }: { DenseMatrix: any }) {
   /**
    * Validates matrix and column vector b for backward/forward substitution algorithms.
    *
@@ -12,18 +17,22 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
    *
    * @return {DenseMatrix}        Dense column vector b
    */
-  return function solveValidation (m: any, b: any, copy?: boolean): any {
+  return function solveValidation(m: any, b: any, copy?: boolean): any {
     const mSize = m.size()
 
     if (mSize.length !== 2) {
-      throw new RangeError('Matrix must be two dimensional (size: ' + format(mSize, {}) + ')')
+      throw new RangeError(
+        'Matrix must be two dimensional (size: ' + format(mSize, {}) + ')'
+      )
     }
 
     const rows = mSize[0]
     const columns = mSize[1]
 
     if (rows !== columns) {
-      throw new RangeError('Matrix must be square (size: ' + format(mSize, {}) + ')')
+      throw new RangeError(
+        'Matrix must be square (size: ' + format(mSize, {}) + ')'
+      )
     }
 
     let data: any[] = []
@@ -35,7 +44,9 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
       // 1-dim vector
       if (bSize.length === 1) {
         if (bSize[0] !== rows) {
-          throw new RangeError('Dimension mismatch. Matrix columns must match vector length.')
+          throw new RangeError(
+            'Dimension mismatch. Matrix columns must match vector length.'
+          )
         }
 
         for (let i = 0; i < rows; i++) {
@@ -52,7 +63,9 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
       // 2-dim column
       if (bSize.length === 2) {
         if (bSize[0] !== rows || bSize[1] !== 1) {
-          throw new RangeError('Dimension mismatch. Matrix columns must match vector length.')
+          throw new RangeError(
+            'Dimension mismatch. Matrix columns must match vector length.'
+          )
         }
 
         if (isDenseMatrix(b)) {
@@ -74,7 +87,9 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
         }
 
         if (isSparseMatrix(b)) {
-          for (let i = 0; i < rows; i++) { data[i] = [0] }
+          for (let i = 0; i < rows; i++) {
+            data[i] = [0]
+          }
 
           const values = (b as any)._values
           const index = (b as any)._index
@@ -93,7 +108,9 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
         }
       }
 
-      throw new RangeError('Dimension mismatch. The right side has to be either 1- or 2-dimensional vector.')
+      throw new RangeError(
+        'Dimension mismatch. The right side has to be either 1- or 2-dimensional vector.'
+      )
     }
 
     if (isArray(b)) {
@@ -101,7 +118,9 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
 
       if (bsize.length === 1) {
         if (bsize[0] !== rows) {
-          throw new RangeError('Dimension mismatch. Matrix columns must match vector length.')
+          throw new RangeError(
+            'Dimension mismatch. Matrix columns must match vector length.'
+          )
         }
 
         for (let i = 0; i < rows; i++) {
@@ -116,7 +135,9 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
 
       if (bsize.length === 2) {
         if (bsize[0] !== rows || bsize[1] !== 1) {
-          throw new RangeError('Dimension mismatch. Matrix columns must match vector length.')
+          throw new RangeError(
+            'Dimension mismatch. Matrix columns must match vector length.'
+          )
         }
 
         for (let i = 0; i < rows; i++) {
@@ -129,7 +150,9 @@ export function createSolveValidation ({ DenseMatrix }: { DenseMatrix: any }) {
         })
       }
 
-      throw new RangeError('Dimension mismatch. The right side has to be either 1- or 2-dimensional vector.')
+      throw new RangeError(
+        'Dimension mismatch. The right side has to be either 1- or 2-dimensional vector.'
+      )
     }
   }
 }

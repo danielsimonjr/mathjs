@@ -18,16 +18,19 @@ import { lruQueue } from './lruQueue.ts'
  * @return {function}                       Returns the memoized function
  */
 export interface MemoizeCache {
-  values: Map<string, any>;
-  lru: ReturnType<typeof lruQueue>;
+  values: Map<string, any>
+  lru: ReturnType<typeof lruQueue>
 }
 
 export interface MemoizedFunction {
-  (...args: any[]): any;
-  cache?: MemoizeCache;
+  (...args: any[]): any
+  cache?: MemoizeCache
 }
 
-export function memoize (fn: any, { hasher, limit }: { hasher?: any, limit?: any } = {}): MemoizedFunction {
+export function memoize(
+  fn: any,
+  { hasher, limit }: { hasher?: any; limit?: any } = {}
+): MemoizedFunction {
   limit = limit == null ? Number.POSITIVE_INFINITY : limit
   hasher = hasher == null ? JSON.stringify : hasher
 
@@ -73,8 +76,8 @@ export function memoize (fn: any, { hasher, limit }: { hasher?: any, limit?: any
  * @param {function(a: *, b: *) : boolean} isEqual
  * @returns {function}
  */
-export function memoizeCompare (fn: any, isEqual: any): any {
-  const memoize: any = function memoize (): any {
+export function memoizeCompare(fn: any, isEqual: any): any {
+  const memoize: any = function memoize(): any {
     const args: any[] = []
     for (let i = 0; i < arguments.length; i++) {
       args[i] = arguments[i]

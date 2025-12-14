@@ -48,7 +48,30 @@ interface Dependencies {
 
 type DataType = 'number' | 'BigNumber' | 'Complex'
 
-export function createComplexEigs ({ addScalar, subtract, flatten, multiply, multiplyScalar, divideScalar, sqrt, abs, bignumber, diag, size, reshape, inv, qr, usolve, usolveAll, equal, complex, larger, smaller, matrixFromColumns, dot }: Dependencies) {
+export function createComplexEigs({
+  addScalar,
+  subtract,
+  flatten,
+  multiply,
+  multiplyScalar,
+  divideScalar,
+  sqrt,
+  abs,
+  bignumber,
+  diag,
+  size,
+  reshape,
+  inv,
+  qr,
+  usolve,
+  usolveAll,
+  equal,
+  complex,
+  larger,
+  smaller,
+  matrixFromColumns: _matrixFromColumns,
+  dot
+}: Dependencies) {
   /**
    * @param {any[][]} arr the matrix to find eigenvalues of
    * @param {number} N size of the matrix
@@ -58,7 +81,13 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    *
    * @returns {{ values: any[], eigenvectors?: EigenvectorResult[] }}
    */
-  function complexEigs (arr: any[][], N: number, prec: number | any, type: DataType, findVectors: boolean = true): ComplexEigsResult {
+  function complexEigs(
+    arr: any[][],
+    N: number,
+    prec: number | any,
+    type: DataType,
+    findVectors: boolean = true
+  ): ComplexEigsResult {
     // TODO check if any row/col are zero except the diagonal
 
     // make sure corresponding rows and columns have similar magnitude
@@ -82,7 +111,13 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
     // still true that original A = R^-1 arr R)
 
     // find eigenvalues
-    const { values, C } = iterateUntilTriangular(arr, N, prec, type, findVectors)
+    const { values, C } = iterateUntilTriangular(
+      arr,
+      N,
+      prec,
+      type,
+      findVectors
+    )
 
     // values is the list of eigenvalues, C is the column
     // transformation matrix that transforms arr, the hessenberg
@@ -106,7 +141,13 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @param {boolean} findVectors
    * @returns {any[][] | null}
    */
-  function balance (arr: any[][], N: number, prec: number | any, type: DataType, findVectors: boolean): any[][] | null {
+  function balance(
+    arr: any[][],
+    N: number,
+    prec: number | any,
+    type: DataType,
+    findVectors: boolean
+  ): any[][] | null {
     const big = type === 'BigNumber'
     const cplx = type === 'Complex'
 
@@ -165,7 +206,10 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
 
           // check whether balancing is needed
           // condition = (c + rowNorm) / f < 0.95 * (colNorm + rowNorm)
-          const condition = smaller(divideScalar(addScalar(c, rowNorm), f), multiplyScalar(addScalar(colNorm, rowNorm), 0.95))
+          const condition = smaller(
+            divideScalar(addScalar(c, rowNorm), f),
+            multiplyScalar(addScalar(colNorm, rowNorm), 0.95)
+          )
 
           // apply balancing similarity transformation
           if (condition) {
@@ -204,13 +248,22 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @param {boolean} findVectors
    * @param {any[][] | null} R the row transformation matrix that will be modified
    */
-  function reduceToHessenberg (arr: any[][], N: number, prec: number | any, type: DataType, findVectors: boolean, R: any[][] | null): void {
+  function reduceToHessenberg(
+    arr: any[][],
+    N: number,
+    prec: number | any,
+    type: DataType,
+    findVectors: boolean,
+    R: any[][] | null
+  ): void {
     const big = type === 'BigNumber'
     const cplx = type === 'Complex'
 
     const zero = big ? bignumber(0) : cplx ? complex(0) : 0
 
-    if (big) { prec = bignumber(prec) }
+    if (big) {
+      prec = bignumber(prec)
+    }
 
     for (let i = 0; i < N - 2; i++) {
       // Find the largest subdiag element in the i-th col
@@ -285,13 +338,21 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @see Press, Wiliams: Numerical recipes in Fortran 77
    * @see https://en.wikipedia.org/wiki/QR_algorithm
    */
-  function iterateUntilTriangular (A: any[][], N: number, prec: number | any, type: DataType, findVectors: boolean): TriangularResult {
+  function iterateUntilTriangular(
+    A: any[][],
+    N: number,
+    prec: number | any,
+    type: DataType,
+    findVectors: boolean
+  ): TriangularResult {
     const big = type === 'BigNumber'
     const cplx = type === 'Complex'
 
     const one = big ? bignumber(1) : cplx ? complex(1) : 1
 
-    if (big) { prec = bignumber(prec) }
+    if (big) {
+      prec = bignumber(prec)
+    }
 
     // The Francis Algorithm
     // The core idea of this algorithm is that doing successive
@@ -315,10 +376,14 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
     const Sdiag: any[][] = []
 
     // N×N matrix describing the overall transformation done during the QR algorithm
-    let Qtotal: any[][] | undefined = findVectors ? diag(Array(N).fill(one)) : undefined
+    let Qtotal: any[][] | undefined = findVectors
+      ? diag(Array(N).fill(one))
+      : undefined
 
     // nxn matrix describing the QR transformations done since last convergence
-    let Qpartial: any[][] | undefined = findVectors ? diag(Array(n).fill(one)) : undefined
+    let Qpartial: any[][] | undefined = findVectors
+      ? diag(Array(n).fill(one))
+      : undefined
 
     // last eigenvalue converged before this many steps
     let lastConvergenceBefore = 0
@@ -377,22 +442,31 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
           arr[i].pop()
         }
 
-      // The rightmost diagonal 2x2 block converged
+        // The rightmost diagonal 2x2 block converged
       } else if (n === 2 || smaller(abs(arr[n - 2][n - 3]), prec)) {
         lastConvergenceBefore = 0
         const ll = eigenvalues2x2(
-          arr[n - 2][n - 2], arr[n - 2][n - 1],
-          arr[n - 1][n - 2], arr[n - 1][n - 1]
+          arr[n - 2][n - 2],
+          arr[n - 2][n - 1],
+          arr[n - 1][n - 2],
+          arr[n - 1][n - 1]
         )
         lambdas.push(...ll)
 
         // keep track of transformations
         if (findVectors) {
-          Sdiag.unshift(jordanBase2x2(
-            arr[n - 2][n - 2], arr[n - 2][n - 1],
-            arr[n - 1][n - 2], arr[n - 1][n - 1],
-            ll[0], ll[1], prec, type
-          ))
+          Sdiag.unshift(
+            jordanBase2x2(
+              arr[n - 2][n - 2],
+              arr[n - 2][n - 1],
+              arr[n - 1][n - 2],
+              arr[n - 1][n - 1],
+              ll[0],
+              ll[1],
+              prec,
+              type
+            )
+          )
           inflateMatrix(Qpartial!, N)
           Qtotal = multiply(Qtotal, Qpartial)
           if (n > 2) {
@@ -420,7 +494,10 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
 
     // the algorithm didn't converge
     if (lastConvergenceBefore > 100) {
-      const err: any = Error('The eigenvalues failed to converge. Only found these eigenvalues: ' + lambdas.join(', '))
+      const err: any = Error(
+        'The eigenvalues failed to converge. Only found these eigenvalues: ' +
+          lambdas.join(', ')
+      )
       err.values = lambdas
       err.vectors = []
       throw err
@@ -443,7 +520,15 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @param {'number'|'BigNumber'|'Complex'} type
    * @returns {EigenvectorResult[]} eigenvectors
    */
-  function findEigenvectors (A: any[][], N: number, C: any[][], R: any[][] | null, values: any[], prec: number | any, type: DataType): EigenvectorResult[] {
+  function findEigenvectors(
+    A: any[][],
+    N: number,
+    C: any[][],
+    R: any[][] | null,
+    values: any[],
+    prec: number | any,
+    type: DataType
+  ): EigenvectorResult[] {
     const Cinv = inv(C)
     const U = multiply(Cinv, A, C)
 
@@ -490,7 +575,9 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
       // was defective.
       while (solutions.length < multiplicities[i]) {
         const approxVec = inverseIterate(S, N, solutions, prec, type)
-        if (approxVec === null) { break } // no more vectors were found
+        if (approxVec === null) {
+          break
+        } // no more vectors were found
         solutions.push(approxVec)
       }
 
@@ -499,7 +586,8 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
       solutions = solutions.map((v: any) => multiply(correction, v))
 
       vectors.push(
-        ...solutions.map((v: any) => ({ value: lambda, vector: flatten(v) })))
+        ...solutions.map((v: any) => ({ value: lambda, vector: flatten(v) }))
+      )
     }
 
     return vectors
@@ -509,12 +597,15 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * Compute the eigenvalues of an 2x2 matrix
    * @return {[any, any]}
    */
-  function eigenvalues2x2 (a: any, b: any, c: any, d: any): [any, any] {
+  function eigenvalues2x2(a: any, b: any, c: any, d: any): [any, any] {
     // lambda_+- = 1/2 trA +- 1/2 sqrt( tr^2 A - 4 detA )
     const trA = addScalar(a, d)
     const detA = subtract(multiplyScalar(a, d), multiplyScalar(b, c))
     const x = multiplyScalar(trA, 0.5)
-    const y = multiplyScalar(sqrt(subtract(multiplyScalar(trA, trA), multiplyScalar(4, detA))), 0.5)
+    const y = multiplyScalar(
+      sqrt(subtract(multiplyScalar(trA, trA), multiplyScalar(4, detA))),
+      0.5
+    )
 
     return [addScalar(x, y), subtract(x, y)]
   }
@@ -526,7 +617,16 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @see https://math.berkeley.edu/~ogus/old/Math_54-05/webfoils/jordan.pdf
    * @see http://people.math.harvard.edu/~knill/teaching/math21b2004/exhibits/2dmatrices/index.html
    */
-  function jordanBase2x2 (a: any, b: any, c: any, d: any, l1: any, l2: any, prec: number | any, type: DataType): [[any, any], [any, any]] {
+  function jordanBase2x2(
+    a: any,
+    b: any,
+    c: any,
+    d: any,
+    l1: any,
+    l2: any,
+    prec: number | any,
+    type: DataType
+  ): [[any, any], [any, any]] {
     const big = type === 'BigNumber'
     const cplx = type === 'Complex'
 
@@ -536,13 +636,19 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
     // matrix is already upper triangular
     // return an identity matrix
     if (smaller(abs(c), prec)) {
-      return [[one, zero], [zero, one]]
+      return [
+        [one, zero],
+        [zero, one]
+      ]
     }
 
     // matrix is diagonalizable
     // return its eigenvectors as columns
     if (larger(abs(subtract(l1, l2)), prec)) {
-      return [[subtract(l1, d), subtract(l2, d)], [c, c]]
+      return [
+        [subtract(l1, d), subtract(l2, d)],
+        [c, c]
+      ]
     }
 
     // matrix is not diagonalizable
@@ -554,9 +660,15 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
     // col(N,2) != 0 implies  S = ( col(N,2), e_2 )
 
     if (smaller(abs(b), prec) && smaller(abs(nd), prec)) {
-      return [[na, one], [c, zero]]
+      return [
+        [na, one],
+        [c, zero]
+      ]
     } else {
-      return [[b, zero], [nd, one]]
+      return [
+        [b, zero],
+        [nd, one]
+      ]
     }
   }
 
@@ -564,7 +676,7 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * Enlarge the matrix from nxn to NxN, setting the new
    * elements to 1 on diagonal and 0 elsewhere
    */
-  function inflateMatrix (arr: any[][], N: number): any[][] {
+  function inflateMatrix(arr: any[][], N: number): any[][] {
     // add columns
     for (let i = 0; i < arr.length; i++) {
       arr[i].push(...Array(N - arr[i].length).fill(0))
@@ -584,7 +696,7 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @param {any[][] | any[][][]} arr array of matrices to be placed on the diagonal
    * @param {number} N the size of the resulting matrix
    */
-  function blockDiag (arr: any[][][], N: number): any[][] {
+  function blockDiag(arr: any[][][], N: number): any[][] {
     const M: any[][] = []
     for (let i = 0; i < N; i++) {
       M[i] = Array(N).fill(0)
@@ -614,7 +726,7 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @param {function(T, T): boolean} fn the equality function, first argument is an element of `arr`, the second is always `el`
    * @returns {number} the index of `el`, or -1 when it's not in `arr`
    */
-  function indexOf<T> (arr: T[], el: T, fn: (a: T, b: T) => boolean): number {
+  function indexOf<T>(arr: T[], el: T, fn: (a: T, b: T) => boolean): number {
     for (let i = 0; i < arr.length; i++) {
       if (fn(arr[i], el)) {
         return i
@@ -637,7 +749,13 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    *
    * @see Numerical Recipes for Fortran 77 – 11.7 Eigenvalues or Eigenvectors by Inverse Iteration
    */
-  function inverseIterate (A: any[][], N: number, orthog: any[][], prec: number | any, type: DataType): any[] | null {
+  function inverseIterate(
+    A: any[][],
+    N: number,
+    orthog: any[][],
+    prec: number | any,
+    type: DataType
+  ): any[] | null {
     const largeNum = type === 'BigNumber' ? bignumber(1000) : 1000
 
     let b: any // the vector
@@ -653,7 +771,9 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
         // was defective. But still make the full number of tries...
         continue
       }
-      if (larger(norm(b), largeNum)) { break }
+      if (larger(norm(b), largeNum)) {
+        break
+      }
     }
     if (i >= 5) {
       return null // couldn't find any orthogonal vector in the image
@@ -664,8 +784,12 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
     while (true) {
       const c = usolve(A, b)
 
-      if (smaller(norm(orthogonalComplement(b, [c])), prec)) { break }
-      if (++i >= 10) { return null }
+      if (smaller(norm(orthogonalComplement(b, [c])), prec)) {
+        break
+      }
+      if (++i >= 10) {
+        return null
+      }
 
       b = normalize(c, type)
     }
@@ -681,14 +805,24 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @param {'number'|'BigNumber'|'Complex'} type
    * @returns {any[]} random vector
    */
-  function randomOrthogonalVector (N: number, orthog: any[][], type: DataType): any[] {
+  function randomOrthogonalVector(
+    N: number,
+    orthog: any[][],
+    type: DataType
+  ): any[] {
     const big = type === 'BigNumber'
     const cplx = type === 'Complex'
 
     // generate random vector with the correct type
-    let v: any[] = Array(N).fill(0).map(_ => 2 * Math.random() - 1)
-    if (big) { v = v.map(n => bignumber(n)) }
-    if (cplx) { v = v.map(n => complex(n)) }
+    let v: any[] = Array(N)
+      .fill(0)
+      .map((_) => 2 * Math.random() - 1)
+    if (big) {
+      v = v.map((n) => bignumber(n))
+    }
+    if (cplx) {
+      v = v.map((n) => complex(n))
+    }
 
     // project to orthogonal complement
     v = orthogonalComplement(v, orthog)
@@ -700,7 +834,7 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
   /**
    * Project vector v to the orthogonal complement of an array of vectors
    */
-  function orthogonalComplement (v: any[], orthog: any[][]): any[] {
+  function orthogonalComplement(v: any[], orthog: any[][]): any[] {
     const vectorShape = size(v)
     for (let w of orthog) {
       w = reshape(w, vectorShape) // make sure this is just a vector computation
@@ -716,7 +850,7 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * We can't use math.norm because factory can't handle circular dependency.
    * Seriously, I'm really fed up with factory.
    */
-  function norm (v: any[]): any {
+  function norm(v: any[]): any {
     return abs(sqrt(dot(v, v)))
   }
 
@@ -727,7 +861,7 @@ export function createComplexEigs ({ addScalar, subtract, flatten, multiply, mul
    * @param {'number'|'BigNumber'|'Complex'} type
    * @returns {any[]} normalized vec
    */
-  function normalize (v: any[], type: DataType): any[] {
+  function normalize(v: any[], type: DataType): any[] {
     const big = type === 'BigNumber'
     const cplx = type === 'Complex'
     const one = big ? bignumber(1) : cplx ? complex(1) : 1

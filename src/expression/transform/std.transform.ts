@@ -24,18 +24,23 @@ const dependencies = ['typed', 'map', 'sqrt', 'variance']
  * This transform changed the `dim` parameter of function std
  * from one-based to zero based
  */
-export const createStdTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, map, sqrt, variance }: Dependencies) => {
-  const std = createStd({ typed, map, sqrt, variance })
+export const createStdTransform = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, map, sqrt, variance }: Dependencies) => {
+    const std = createStd({ typed, map, sqrt, variance })
 
-  return typed('std', {
-    '...any': function (args: any[]): any {
-      args = lastDimToZeroBase(args)
+    return typed('std', {
+      '...any': function (args: any[]): any {
+        args = lastDimToZeroBase(args)
 
-      try {
-        return std.apply(null, args)
-      } catch (err) {
-        throw errorTransform(err as Error)
+        try {
+          return std.apply(null, args)
+        } catch (err) {
+          throw errorTransform(err as Error)
+        }
       }
-    }
-  })
-}, { isTransformFunction: true })
+    })
+  },
+  { isTransformFunction: true }
+)
