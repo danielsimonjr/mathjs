@@ -1,6 +1,6 @@
 // @ts-nocheck
 import fs from 'node:fs'
-import typed from 'typed-function'
+import typed from '@danielsimonjr/typed-function'
 import { create, all } from '../lib/esm/index.js'
 
 const { Spa, DenseMatrix, SparseMatrix, FibonacciHeap } = create(all)

@@ -36,7 +36,7 @@
  * @returns {function} The created typed-function.
  */
 
-import typedFunction from 'typed-function'
+import typedFunction from '@danielsimonjr/typed-function'
 import { factory } from '../../utils/factory.js'
 import {
   isAccessorNode,

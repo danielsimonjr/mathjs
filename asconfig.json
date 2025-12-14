@@ -6,15 +6,16 @@
       "textFile": "lib/wasm/index.wat",
       "sourceMap": true,
       "optimizeLevel": 3,
-      "shrinkLevel": 2,
+      "shrinkLevel": 1,
       "converge": true,
-      "noAssert": true,
-      "runtime": "stub",
-      "importMemory": true,
+      "noAssert": false,
+      "runtime": "incremental",
+      "importMemory": false,
       "initialMemory": 256,
       "maximumMemory": 16384,
       "memoryBase": 0,
-      "exportRuntime": true
+      "exportRuntime": true,
+      "exportMemory": true
     },
     "debug": {
       "outFile": "lib/wasm/index.debug.wasm",

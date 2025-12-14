@@ -1,7 +1,7 @@
 import { factory } from '../../../utils/factory.ts'
 import { deepMap } from '../../../utils/collection.ts'
-import type { Decimal } from '../../local/Decimal.ts'
-import type { Decimal as Decimal_ } from '../../local/Decimal.ts'
+import type { Decimal } from 'decimal.js'
+import type Decimal_ from 'decimal.js'
 
 const name = 'bignumber'
 const dependencies = ['typed', 'BigNumber']

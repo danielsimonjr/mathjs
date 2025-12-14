@@ -5,17 +5,17 @@ import { deepStrictEqual } from '../../utils/object.ts'
 import { factory } from '../../utils/factory.ts'
 import { createMap } from '../../utils/map.ts'
 
-// Type definitions
-type Scope = Map<string, any>
+// Type definitions - exported for use by other node types
+export type Scope = Map<string, any>
 
-interface CompiledExpression {
+export interface CompiledExpression {
   evaluate: (scope?: Record<string, any>) => any
 }
 
-type CompileFunction = (scope: Scope, args: Record<string, any>, context: any) => any
+export type CompileFunction = (scope: Scope, args: Record<string, any>, context: any) => any
 
-interface StringOptions {
-  handler?: ((node: Node, options?: StringOptions) => string) | Record<string, (node: Node, options?: StringOptions) => string>
+export interface StringOptions {
+  handler?: ((node: any, options?: StringOptions) => string) | Record<string, (node: any, options?: StringOptions) => string>
   parenthesis?: 'keep' | 'auto' | 'all'
   implicit?: 'hide' | 'show'
   [key: string]: any

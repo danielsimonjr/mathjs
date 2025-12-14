@@ -6,9 +6,38 @@
  * - zpk2tf: Zero-pole-gain to transfer function conversion
  * - Filter coefficient operations
  *
- * These functions are critical for real-time signal processing,
- * control systems, and audio processing applications.
+ * All functions return new arrays for proper WASM/JS interop
  */
+
+/**
+ * Result of frequency response computation
+ */
+class FreqzResult {
+  hReal: Float64Array
+  hImag: Float64Array
+
+  constructor(hReal: Float64Array, hImag: Float64Array) {
+    this.hReal = hReal
+    this.hImag = hImag
+  }
+}
+
+/**
+ * Result of zpk2tf computation
+ */
+class TransferFunction {
+  numReal: Float64Array
+  numImag: Float64Array
+  denReal: Float64Array
+  denImag: Float64Array
+
+  constructor(numReal: Float64Array, numImag: Float64Array, denReal: Float64Array, denImag: Float64Array) {
+    this.numReal = numReal
+    this.numImag = numImag
+    this.denReal = denReal
+    this.denImag = denImag
+  }
+}
 
 /**
  * Compute frequency response of a digital filter
@@ -23,8 +52,7 @@
  * @param aLen - Length of a
  * @param w - Frequency points (radians/sample)
  * @param wLen - Number of frequency points
- * @param hReal - Output: real part of H(e^jw)
- * @param hImag - Output: imaginary part of H(e^jw)
+ * @returns Complex frequency response H(e^jw)
  */
 export function freqz(
   b: Float64Array,
@@ -32,10 +60,11 @@ export function freqz(
   a: Float64Array,
   aLen: i32,
   w: Float64Array,
-  wLen: i32,
-  hReal: Float64Array,
-  hImag: Float64Array
-): void {
+  wLen: i32
+): FreqzResult {
+  const hReal = new Float64Array(wLen)
+  const hImag = new Float64Array(wLen)
+
   // For each frequency point
   for (let i: i32 = 0; i < wLen; i++) {
     const omega: f64 = unchecked(w[i])
@@ -73,6 +102,22 @@ export function freqz(
     unchecked(hReal[i] = (numReal * denReal + numImag * denImag) / denMagSq)
     unchecked(hImag[i] = (numImag * denReal - numReal * denImag) / denMagSq)
   }
+
+  return new FreqzResult(hReal, hImag)
+}
+
+/**
+ * Get real part of frequency response
+ */
+export function getFreqzReal(result: FreqzResult): Float64Array {
+  return result.hReal
+}
+
+/**
+ * Get imaginary part of frequency response
+ */
+export function getFreqzImag(result: FreqzResult): Float64Array {
+  return result.hImag
 }
 
 /**
@@ -82,18 +127,18 @@ export function freqz(
  * @param a - Denominator coefficients
  * @param aLen - Length of a
  * @param n - Number of frequency points
- * @param hReal - Output: real part of H
- * @param hImag - Output: imaginary part of H
+ * @returns Complex frequency response
  */
 export function freqzUniform(
   b: Float64Array,
   bLen: i32,
   a: Float64Array,
   aLen: i32,
-  n: i32,
-  hReal: Float64Array,
-  hImag: Float64Array
-): void {
+  n: i32
+): FreqzResult {
+  const hReal = new Float64Array(n)
+  const hImag = new Float64Array(n)
+
   const dw: f64 = Math.PI / <f64>n
 
   for (let i: i32 = 0; i < n; i++) {
@@ -124,6 +169,21 @@ export function freqzUniform(
     unchecked(hReal[i] = (numReal * denReal + numImag * denImag) / denMagSq)
     unchecked(hImag[i] = (numImag * denReal - numReal * denImag) / denMagSq)
   }
+
+  return new FreqzResult(hReal, hImag)
+}
+
+/**
+ * Result of polynomial multiplication
+ */
+class PolyResult {
+  real: Float64Array
+  imag: Float64Array
+
+  constructor(real: Float64Array, imag: Float64Array) {
+    this.real = real
+    this.imag = imag
+  }
 }
 
 /**
@@ -140,8 +200,7 @@ export function freqzUniform(
  * @param bReal - Real part of second polynomial coefficients
  * @param bImag - Imaginary part of second polynomial coefficients
  * @param bLen - Length of b
- * @param cReal - Output: real part of product (length aLen + bLen - 1)
- * @param cImag - Output: imaginary part of product (length aLen + bLen - 1)
+ * @returns Product polynomial (length aLen + bLen - 1)
  */
 export function polyMultiply(
   aReal: Float64Array,
@@ -149,11 +208,11 @@ export function polyMultiply(
   aLen: i32,
   bReal: Float64Array,
   bImag: Float64Array,
-  bLen: i32,
-  cReal: Float64Array,
-  cImag: Float64Array
-): void {
+  bLen: i32
+): PolyResult {
   const cLen: i32 = aLen + bLen - 1
+  const cReal = new Float64Array(cLen)
+  const cImag = new Float64Array(cLen)
 
   // Initialize output to zero
   for (let i: i32 = 0; i < cLen; i++) {
@@ -177,6 +236,22 @@ export function polyMultiply(
       }
     }
   }
+
+  return new PolyResult(cReal, cImag)
+}
+
+/**
+ * Get real part of polynomial result
+ */
+export function getPolyReal(result: PolyResult): Float64Array {
+  return result.real
+}
+
+/**
+ * Get imaginary part of polynomial result
+ */
+export function getPolyImag(result: PolyResult): Float64Array {
+  return result.imag
 }
 
 /**
@@ -193,10 +268,7 @@ export function polyMultiply(
  * @param pImag - Imaginary parts of poles
  * @param pLen - Number of poles
  * @param k - Gain
- * @param numReal - Output: numerator real coefficients (length zLen + 1)
- * @param numImag - Output: numerator imaginary coefficients (length zLen + 1)
- * @param denReal - Output: denominator real coefficients (length pLen + 1)
- * @param denImag - Output: denominator imaginary coefficients (length pLen + 1)
+ * @returns Transfer function coefficients
  */
 export function zpk2tf(
   zReal: Float64Array,
@@ -205,18 +277,14 @@ export function zpk2tf(
   pReal: Float64Array,
   pImag: Float64Array,
   pLen: i32,
-  k: f64,
-  numReal: Float64Array,
-  numImag: Float64Array,
-  denReal: Float64Array,
-  denImag: Float64Array
-): void {
+  k: f64
+): TransferFunction {
   // Temporary buffers for polynomial multiplication
   const maxLen: i32 = zLen > pLen ? zLen : pLen
-  const tempReal1: Float64Array = new Float64Array(maxLen + 2)
-  const tempReal2: Float64Array = new Float64Array(maxLen + 2)
-  const tempImag1: Float64Array = new Float64Array(maxLen + 2)
-  const tempImag2: Float64Array = new Float64Array(maxLen + 2)
+  let tempReal1: Float64Array = new Float64Array(maxLen + 2)
+  let tempReal2: Float64Array
+  let tempImag1: Float64Array = new Float64Array(maxLen + 2)
+  let tempImag2: Float64Array
 
   // Build numerator from zeros
   // Start with polynomial "1"
@@ -236,22 +304,19 @@ export function zpk2tf(
     factorReal[1] = -zr
     factorImag[1] = -zi
 
-    polyMultiply(
+    const result = polyMultiplyInternal(
       tempReal1, tempImag1, numLen,
-      factorReal, factorImag, 2,
-      tempReal2, tempImag2
+      factorReal, factorImag, 2
     )
 
     numLen += 1
-
-    // Copy result back to temp1
-    for (let j: i32 = 0; j < numLen; j++) {
-      tempReal1[j] = tempReal2[j]
-      tempImag1[j] = tempImag2[j]
-    }
+    tempReal1 = result.real
+    tempImag1 = result.imag
   }
 
   // Apply gain and copy to output
+  const numReal = new Float64Array(numLen)
+  const numImag = new Float64Array(numLen)
   for (let i: i32 = 0; i < numLen; i++) {
     unchecked(numReal[i] = tempReal1[i] * k)
     unchecked(numImag[i] = tempImag1[i] * k)
@@ -259,6 +324,8 @@ export function zpk2tf(
 
   // Build denominator from poles
   // Start with polynomial "1"
+  tempReal1 = new Float64Array(maxLen + 2)
+  tempImag1 = new Float64Array(maxLen + 2)
   tempReal1[0] = 1.0
   tempImag1[0] = 0.0
   let denLen: i32 = 1
@@ -275,26 +342,86 @@ export function zpk2tf(
     factorReal[1] = -pr
     factorImag[1] = -pi
 
-    polyMultiply(
+    const result = polyMultiplyInternal(
       tempReal1, tempImag1, denLen,
-      factorReal, factorImag, 2,
-      tempReal2, tempImag2
+      factorReal, factorImag, 2
     )
 
     denLen += 1
-
-    // Copy result back to temp1
-    for (let j: i32 = 0; j < denLen; j++) {
-      tempReal1[j] = tempReal2[j]
-      tempImag1[j] = tempImag2[j]
-    }
+    tempReal1 = result.real
+    tempImag1 = result.imag
   }
 
   // Copy to output
+  const denReal = new Float64Array(denLen)
+  const denImag = new Float64Array(denLen)
   for (let i: i32 = 0; i < denLen; i++) {
     unchecked(denReal[i] = tempReal1[i])
     unchecked(denImag[i] = tempImag1[i])
   }
+
+  return new TransferFunction(numReal, numImag, denReal, denImag)
+}
+
+/**
+ * Internal polynomial multiply helper
+ */
+function polyMultiplyInternal(
+  aReal: Float64Array,
+  aImag: Float64Array,
+  aLen: i32,
+  bReal: Float64Array,
+  bImag: Float64Array,
+  bLen: i32
+): PolyResult {
+  const cLen: i32 = aLen + bLen - 1
+  const cReal = new Float64Array(cLen)
+  const cImag = new Float64Array(cLen)
+
+  for (let i: i32 = 0; i < cLen; i++) {
+    for (let j: i32 = 0; j < aLen; j++) {
+      const k: i32 = i - j
+      if (k >= 0 && k < bLen) {
+        const ar: f64 = unchecked(aReal[j])
+        const ai: f64 = unchecked(aImag[j])
+        const br: f64 = unchecked(bReal[k])
+        const bi: f64 = unchecked(bImag[k])
+
+        unchecked(cReal[i] += ar * br - ai * bi)
+        unchecked(cImag[i] += ar * bi + ai * br)
+      }
+    }
+  }
+
+  return new PolyResult(cReal, cImag)
+}
+
+/**
+ * Get transfer function numerator real part
+ */
+export function getTFNumReal(tf: TransferFunction): Float64Array {
+  return tf.numReal
+}
+
+/**
+ * Get transfer function numerator imaginary part
+ */
+export function getTFNumImag(tf: TransferFunction): Float64Array {
+  return tf.numImag
+}
+
+/**
+ * Get transfer function denominator real part
+ */
+export function getTFDenReal(tf: TransferFunction): Float64Array {
+  return tf.denReal
+}
+
+/**
+ * Get transfer function denominator imaginary part
+ */
+export function getTFDenImag(tf: TransferFunction): Float64Array {
+  return tf.denImag
 }
 
 /**
@@ -302,19 +429,22 @@ export function zpk2tf(
  * @param hReal - Real part of H
  * @param hImag - Imaginary part of H
  * @param n - Length
- * @param magnitude - Output: |H|
+ * @returns |H|
  */
 export function magnitude(
   hReal: Float64Array,
   hImag: Float64Array,
-  n: i32,
-  magnitude: Float64Array
-): void {
+  n: i32
+): Float64Array {
+  const result = new Float64Array(n)
+
   for (let i: i32 = 0; i < n; i++) {
     const re: f64 = unchecked(hReal[i])
     const im: f64 = unchecked(hImag[i])
-    unchecked(magnitude[i] = Math.sqrt(re * re + im * im))
+    unchecked(result[i] = Math.sqrt(re * re + im * im))
   }
+
+  return result
 }
 
 /**
@@ -322,14 +452,14 @@ export function magnitude(
  * @param hReal - Real part of H
  * @param hImag - Imaginary part of H
  * @param n - Length
- * @param magnitudeDb - Output: |H| in dB
+ * @returns |H| in dB
  */
 export function magnitudeDb(
   hReal: Float64Array,
   hImag: Float64Array,
-  n: i32,
-  magnitudeDb: Float64Array
-): void {
+  n: i32
+): Float64Array {
+  const result = new Float64Array(n)
   const log10Factor: f64 = 20.0 / Math.LN10
 
   for (let i: i32 = 0; i < n; i++) {
@@ -339,11 +469,13 @@ export function magnitudeDb(
 
     // Avoid log(0)
     if (mag > 1e-300) {
-      unchecked(magnitudeDb[i] = log10Factor * Math.log(mag))
+      unchecked(result[i] = log10Factor * Math.log(mag))
     } else {
-      unchecked(magnitudeDb[i] = -300.0) // Very small number in dB
+      unchecked(result[i] = -300.0) // Very small number in dB
     }
   }
+
+  return result
 }
 
 /**
@@ -351,42 +483,55 @@ export function magnitudeDb(
  * @param hReal - Real part of H
  * @param hImag - Imaginary part of H
  * @param n - Length
- * @param phase - Output: angle(H) in radians
+ * @returns angle(H) in radians
  */
 export function phase(
   hReal: Float64Array,
   hImag: Float64Array,
-  n: i32,
-  phase: Float64Array
-): void {
+  n: i32
+): Float64Array {
+  const result = new Float64Array(n)
+
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(phase[i] = Math.atan2(unchecked(hImag[i]), unchecked(hReal[i])))
+    unchecked(result[i] = Math.atan2(unchecked(hImag[i]), unchecked(hReal[i])))
   }
+
+  return result
 }
 
 /**
  * Unwrap phase to eliminate discontinuities
- * @param phase - Input/output phase (in radians)
+ * @param phaseIn - Input phase (in radians)
  * @param n - Length
+ * @returns Unwrapped phase
  */
-export function unwrapPhase(phase: Float64Array, n: i32): void {
-  if (n < 2) return
+export function unwrapPhase(phaseIn: Float64Array, n: i32): Float64Array {
+  const result = new Float64Array(n)
+
+  if (n < 1) return result
+
+  result[0] = phaseIn[0]
+
+  if (n < 2) return result
 
   const twoPi: f64 = 2.0 * Math.PI
 
   for (let i: i32 = 1; i < n; i++) {
-    let diff: f64 = unchecked(phase[i]) - unchecked(phase[i - 1])
+    result[i] = phaseIn[i]
+    let diff: f64 = result[i] - result[i - 1]
 
     // Wrap difference to [-pi, pi]
     while (diff > Math.PI) {
-      unchecked(phase[i] -= twoPi)
+      unchecked(result[i] -= twoPi)
       diff -= twoPi
     }
     while (diff < -Math.PI) {
-      unchecked(phase[i] += twoPi)
+      unchecked(result[i] += twoPi)
       diff += twoPi
     }
   }
+
+  return result
 }
 
 /**
@@ -397,33 +542,35 @@ export function unwrapPhase(phase: Float64Array, n: i32): void {
  * @param hImag - Imaginary part of H
  * @param w - Frequencies
  * @param n - Length
- * @param groupDelay - Output: group delay
+ * @returns Group delay
  */
 export function groupDelay(
   hReal: Float64Array,
   hImag: Float64Array,
   w: Float64Array,
-  n: i32,
-  groupDelay: Float64Array
-): void {
-  if (n < 2) return
+  n: i32
+): Float64Array {
+  const result = new Float64Array(n)
+
+  if (n < 2) return result
 
   // Compute phase
-  const phaseArray: Float64Array = new Float64Array(n)
-  phase(hReal, hImag, n, phaseArray)
+  const phaseArray = phase(hReal, hImag, n)
 
   // Unwrap phase
-  unwrapPhase(phaseArray, n)
+  const unwrappedPhase = unwrapPhase(phaseArray, n)
 
   // Compute negative derivative
   for (let i: i32 = 1; i < n - 1; i++) {
-    const dPhase: f64 = unchecked(phaseArray[i + 1]) - unchecked(phaseArray[i - 1])
+    const dPhase: f64 = unchecked(unwrappedPhase[i + 1]) - unchecked(unwrappedPhase[i - 1])
     const dw: f64 = unchecked(w[i + 1]) - unchecked(w[i - 1])
 
-    unchecked(groupDelay[i] = -dPhase / dw)
+    unchecked(result[i] = -dPhase / dw)
   }
 
   // Endpoints use one-sided differences
-  unchecked(groupDelay[0] = -(unchecked(phaseArray[1]) - unchecked(phaseArray[0])) / (unchecked(w[1]) - unchecked(w[0])))
-  unchecked(groupDelay[n - 1] = -(unchecked(phaseArray[n - 1]) - unchecked(phaseArray[n - 2])) / (unchecked(w[n - 1]) - unchecked(w[n - 2])))
+  unchecked(result[0] = -(unchecked(unwrappedPhase[1]) - unchecked(unwrappedPhase[0])) / (unchecked(w[1]) - unchecked(w[0])))
+  unchecked(result[n - 1] = -(unchecked(unwrappedPhase[n - 1]) - unchecked(unwrappedPhase[n - 2])) / (unchecked(w[n - 1]) - unchecked(w[n - 2])))
+
+  return result
 }

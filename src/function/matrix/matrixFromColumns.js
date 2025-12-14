@@ -27,11 +27,29 @@ export const createMatrixFromColumns = /* #__PURE__ */ factory(name, dependencie
    * @return { number[][] | Matrix } if at least one of the arguments is an array, an array will be returned
    */
   return typed(name, {
-    '...Array': function (arr) {
-      return _createArray(arr)
-    },
-    '...Matrix': function (arr) {
-      return matrix(_createArray(arr.map(m => m.toArray())))
+    // Single variadic handler for arrays, matrices, and mixed types
+    '...': function (arr) {
+      if (arr.length === 0) {
+        throw new TypeError('At least one column is needed to construct a matrix.')
+      }
+
+      // Check if all arguments are Matrix (none are plain arrays)
+      const allMatrix = arr.every(item => typeof item.toArray === 'function')
+      // Check if any argument is a plain array
+      const hasArray = arr.some(item => Array.isArray(item))
+
+      // Convert all to arrays for processing
+      const arrays = arr.map(item =>
+        typeof item.toArray === 'function' ? item.toArray() : item
+      )
+
+      const result = _createArray(arrays)
+
+      // Return Matrix only if all inputs were Matrix, otherwise return array
+      if (allMatrix && !hasArray) {
+        return matrix(result)
+      }
+      return result
     }
 
     // TODO implement this properly for SparseMatrix

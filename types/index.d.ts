@@ -1904,6 +1904,21 @@ export interface MathJsInstance extends MathJsFactory {
   ): boolean | MathCollection
 
   /**
+   * Nullish coalescing operator. Returns the right-hand side operand
+   * when the left-hand side operand is null or undefined, and otherwise
+   * returns the left-hand side operand. For matrices, the function is
+   * evaluated element wise.
+   * @param x First value to check
+   * @param y Fallback value
+   * @returns Returns y when x is null or undefined, otherwise returns x
+   */
+  nullish<T, U>(x: T, y: U): T | U
+  nullish(
+    x: MathCollection,
+    y: MathCollection
+  ): MathCollection
+
+  /**
    * Logical xor. Test whether one and only one value is defined with a
    * nonzero/nonempty value. For matrices, the function is evaluated
    * element wise.
@@ -4081,6 +4096,7 @@ export const {
   // logical dependencies
   andDependencies,
   notDependencies,
+  nullishDependencies,
   orDependencies,
   xorDependencies,
 
@@ -6000,6 +6016,17 @@ export interface MathJsChain<TValue> {
     >,
     y: number | BigNumber | bigint | Complex | Unit | MathCollection
   ): MathJsChain<boolean | MathCollection>
+
+  /**
+   * Nullish coalescing operator. Returns the fallback value when the
+   * chained value is null or undefined, otherwise returns the chained value.
+   * For matrices, the function is evaluated element wise.
+   * @param y Fallback value
+   */
+  nullish<T, U>(
+    this: MathJsChain<T>,
+    y: U
+  ): MathJsChain<T | U>
 
   /**
    * Logical xor. Test whether one and only one value is defined with a

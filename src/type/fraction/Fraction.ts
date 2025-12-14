@@ -1,4 +1,4 @@
-import { Fraction as FractionJS } from '../local/Fraction.ts'
+import FractionJS from 'fraction.js'
 import { factory } from '../../utils/factory.ts'
 import type { FactoryFunctionMap } from '../../../types/index.js'
 

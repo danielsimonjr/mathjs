@@ -1,67 +1,26 @@
 /**
- * Matrix Worker for parallel computation
- * Handles matrix operations in a separate thread
+ * Matrix Worker for parallel computation using @danielsimonjr/workerpool
+ * Handles matrix operations in separate threads
  */
 
-interface WorkerMessage {
-  id: string
-  type: 'task' | 'result' | 'error'
-  data?: any
-  error?: string
-}
-
-interface MatrixTask {
-  operation: 'multiply' | 'add' | 'transpose' | 'dot'
-  [key: string]: any
-}
-
-// Handle both Node.js worker_threads and browser Web Workers
-const isNode = typeof process !== 'undefined' && process.versions?.node !== undefined
-
-// Message handler
-function handleMessage(event: MessageEvent | any): void {
-  const message: WorkerMessage = isNode ? event : event.data
-
-  try {
-    const task: MatrixTask = message.data
-    let result: any
-
-    switch (task.operation) {
-      case 'multiply':
-        result = multiplyTask(task)
-        break
-      case 'add':
-        result = addTask(task)
-        break
-      case 'transpose':
-        result = transposeTask(task)
-        break
-      case 'dot':
-        result = dotProductTask(task)
-        break
-      default:
-        throw new Error(`Unknown operation: ${task.operation}`)
-    }
-
-    postMessage({
-      id: message.id,
-      type: 'result',
-      data: result
-    })
-  } catch (error) {
-    postMessage({
-      id: message.id,
-      type: 'error',
-      error: error instanceof Error ? error.message : String(error)
-    })
-  }
-}
+import workerpool from '@danielsimonjr/workerpool'
 
 /**
- * Matrix multiplication task: C[startRow:endRow] = A[startRow:endRow] * B
+ * Matrix multiplication chunk: C[startRow:endRow] = A[startRow:endRow] * B
+ * For use with SharedArrayBuffer - writes directly to resultData
  */
-function multiplyTask(task: any): void {
-  const { aData, aRows, aCols, bData, bRows, bCols, startRow, endRow, resultData } = task
+function matrixMultiplyChunk(params: {
+  aData: Float64Array | number[]
+  aRows: number
+  aCols: number
+  bData: Float64Array | number[]
+  bRows: number
+  bCols: number
+  startRow: number
+  endRow: number
+  resultData: Float64Array
+}): void {
+  const { aData, aCols, bData, bCols, startRow, endRow, resultData } = params
 
   for (let i = startRow; i < endRow; i++) {
     for (let j = 0; j < bCols; j++) {
@@ -72,63 +31,313 @@ function multiplyTask(task: any): void {
       resultData[i * bCols + j] = sum
     }
   }
-
-  // No return needed, data is written to shared resultData
-  return undefined
 }
 
 /**
- * Matrix addition task: C[start:end] = A[start:end] + B[start:end]
+ * Matrix multiplication returning result array (for non-shared memory)
  */
-function addTask(task: any): void {
-  const { aData, bData, start, end, resultData } = task
+function matrixMultiply(
+  a: number[],
+  aRows: number,
+  aCols: number,
+  b: number[],
+  bRows: number,
+  bCols: number
+): number[] {
+  const result = new Array(aRows * bCols)
+  for (let i = 0; i < aRows; i++) {
+    for (let j = 0; j < bCols; j++) {
+      let sum = 0
+      for (let k = 0; k < aCols; k++) {
+        sum += a[i * aCols + k] * b[k * bCols + j]
+      }
+      result[i * bCols + j] = sum
+    }
+  }
+  return result
+}
+
+/**
+ * Matrix addition chunk: C[start:end] = A[start:end] + B[start:end]
+ * For use with SharedArrayBuffer
+ */
+function matrixAddChunk(params: {
+  aData: Float64Array | number[]
+  bData: Float64Array | number[]
+  start: number
+  end: number
+  resultData: Float64Array
+}): void {
+  const { aData, bData, start, end, resultData } = params
 
   for (let i = start; i < end; i++) {
     resultData[i] = aData[i] + bData[i]
   }
-
-  return undefined
 }
 
 /**
- * Matrix transpose task: B[j*rows+i] = A[i*cols+j] for i in [startRow:endRow]
+ * Matrix addition returning result array (for non-shared memory)
  */
-function transposeTask(task: any): void {
-  const { data, rows, cols, startRow, endRow, resultData } = task
+function matrixAdd(a: number[], b: number[]): number[] {
+  const result = new Array(a.length)
+  for (let i = 0; i < a.length; i++) {
+    result[i] = a[i] + b[i]
+  }
+  return result
+}
+
+/**
+ * Matrix transpose chunk: B[j*rows+i] = A[i*cols+j] for i in [startRow:endRow]
+ * For use with SharedArrayBuffer
+ */
+function matrixTransposeChunk(params: {
+  data: Float64Array | number[]
+  rows: number
+  cols: number
+  startRow: number
+  endRow: number
+  resultData: Float64Array
+}): void {
+  const { data, rows, cols, startRow, endRow, resultData } = params
 
   for (let i = startRow; i < endRow; i++) {
     for (let j = 0; j < cols; j++) {
       resultData[j * rows + i] = data[i * cols + j]
     }
   }
-
-  return undefined
 }
 
 /**
- * Dot product task: sum(A[start:end] * B[start:end])
+ * Matrix transpose returning result array (for non-shared memory)
  */
-function dotProductTask(task: any): number {
-  const { aData, bData, start, end } = task
+function matrixTranspose(data: number[], rows: number, cols: number): number[] {
+  const result = new Array(rows * cols)
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[j * rows + i] = data[i * cols + j]
+    }
+  }
+  return result
+}
+
+/**
+ * Dot product of two vectors
+ */
+function dotProduct(a: number[], b: number[]): number {
+  let sum = 0
+  for (let i = 0; i < a.length; i++) {
+    sum += a[i] * b[i]
+  }
+  return sum
+}
+
+/**
+ * Dot product chunk for parallel processing
+ */
+function dotProductChunk(params: {
+  aData: Float64Array | number[]
+  bData: Float64Array | number[]
+  start: number
+  end: number
+}): number {
+  const { aData, bData, start, end } = params
 
   let sum = 0
   for (let i = start; i < end; i++) {
     sum += aData[i] * bData[i]
   }
-
   return sum
 }
 
-// Set up message listener based on environment
-if (isNode) {
-  // Node.js worker_threads
-  const { parentPort } = require('worker_threads')
-  if (parentPort) {
-    parentPort.on('message', handleMessage)
+/**
+ * Sum of array elements
+ */
+function sum(arr: number[]): number {
+  let total = 0
+  for (let i = 0; i < arr.length; i++) {
+    total += arr[i]
   }
-} else {
-  // Browser Web Worker
-  self.onmessage = handleMessage
+  return total
 }
 
-export {} // Make this a module
+/**
+ * Sum chunk for parallel processing
+ */
+function sumChunk(params: {
+  data: Float64Array | number[]
+  start: number
+  end: number
+}): number {
+  const { data, start, end } = params
+
+  let total = 0
+  for (let i = start; i < end; i++) {
+    total += data[i]
+  }
+  return total
+}
+
+/**
+ * Mean of array elements
+ */
+function mean(arr: number[]): number {
+  let total = 0
+  for (let i = 0; i < arr.length; i++) {
+    total += arr[i]
+  }
+  return total / arr.length
+}
+
+/**
+ * Process a chunk with a specified operation
+ */
+function processChunk(
+  data: number[],
+  operation: 'sum' | 'min' | 'max' | 'mean',
+  start: number,
+  end: number
+): number {
+  let result: number
+
+  switch (operation) {
+    case 'sum':
+      result = 0
+      for (let i = start; i < end; i++) result += data[i]
+      break
+    case 'min':
+      result = data[start]
+      for (let i = start + 1; i < end; i++) {
+        if (data[i] < result) result = data[i]
+      }
+      break
+    case 'max':
+      result = data[start]
+      for (let i = start + 1; i < end; i++) {
+        if (data[i] > result) result = data[i]
+      }
+      break
+    case 'mean':
+      result = 0
+      for (let i = start; i < end; i++) result += data[i]
+      result = result / (end - start)
+      break
+    default:
+      throw new Error(`Unknown operation: ${operation}`)
+  }
+
+  return result
+}
+
+/**
+ * Element-wise matrix scaling: B = A * scalar
+ */
+function matrixScale(data: number[], scalar: number): number[] {
+  const result = new Array(data.length)
+  for (let i = 0; i < data.length; i++) {
+    result[i] = data[i] * scalar
+  }
+  return result
+}
+
+/**
+ * Element-wise matrix scaling chunk (for SharedArrayBuffer)
+ */
+function matrixScaleChunk(params: {
+  data: Float64Array | number[]
+  scalar: number
+  start: number
+  end: number
+  resultData: Float64Array
+}): void {
+  const { data, scalar, start, end, resultData } = params
+
+  for (let i = start; i < end; i++) {
+    resultData[i] = data[i] * scalar
+  }
+}
+
+/**
+ * Element-wise subtraction: C = A - B
+ */
+function matrixSubtract(a: number[], b: number[]): number[] {
+  const result = new Array(a.length)
+  for (let i = 0; i < a.length; i++) {
+    result[i] = a[i] - b[i]
+  }
+  return result
+}
+
+/**
+ * Element-wise subtraction chunk (for SharedArrayBuffer)
+ */
+function matrixSubtractChunk(params: {
+  aData: Float64Array | number[]
+  bData: Float64Array | number[]
+  start: number
+  end: number
+  resultData: Float64Array
+}): void {
+  const { aData, bData, start, end, resultData } = params
+
+  for (let i = start; i < end; i++) {
+    resultData[i] = aData[i] - bData[i]
+  }
+}
+
+/**
+ * Element-wise multiplication (Hadamard product): C = A .* B
+ */
+function matrixElementMultiply(a: number[], b: number[]): number[] {
+  const result = new Array(a.length)
+  for (let i = 0; i < a.length; i++) {
+    result[i] = a[i] * b[i]
+  }
+  return result
+}
+
+/**
+ * Element-wise multiplication chunk (for SharedArrayBuffer)
+ */
+function matrixElementMultiplyChunk(params: {
+  aData: Float64Array | number[]
+  bData: Float64Array | number[]
+  start: number
+  end: number
+  resultData: Float64Array
+}): void {
+  const { aData, bData, start, end, resultData } = params
+
+  for (let i = start; i < end; i++) {
+    resultData[i] = aData[i] * bData[i]
+  }
+}
+
+// Worker methods type for workerpool
+type WorkerMethods = Record<string, (...args: any[]) => any>
+
+// Register all worker functions with workerpool
+const workerMethods: WorkerMethods = {
+  // Chunk operations (for SharedArrayBuffer parallel processing)
+  matrixMultiplyChunk,
+  matrixAddChunk,
+  matrixTransposeChunk,
+  dotProductChunk,
+  sumChunk,
+  matrixScaleChunk,
+  matrixSubtractChunk,
+  matrixElementMultiplyChunk,
+
+  // Full operations (for non-shared memory)
+  matrixMultiply,
+  matrixAdd,
+  matrixTranspose,
+  dotProduct,
+  sum,
+  mean,
+  processChunk,
+  matrixScale,
+  matrixSubtract,
+  matrixElementMultiply
+}
+
+workerpool.worker(workerMethods)

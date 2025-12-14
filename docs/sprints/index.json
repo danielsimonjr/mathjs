@@ -1,0 +1,135 @@
+{
+  "title": "MathJS Dual Build System - Corrective Action Plan Sprints",
+  "version": "1.0",
+  "createdDate": "2025-12-14",
+  "sourceDocument": "docs/CONSOLIDATED_CORRECTIVE_ACTION_PLAN.md",
+  "totalPhases": 5,
+  "totalSprints": 7,
+  "totalEstimatedEffort": "12-18 hours",
+  "phases": [
+    {
+      "phase": 1,
+      "title": "Critical TypeScript Fixes",
+      "description": "Fix critical type export issues and null safety problems that block TypeScript compilation",
+      "estimatedEffort": "4-6 hours",
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Core Type Exports & Critical Errors",
+          "file": "phase1-sprint1-critical-type-exports.json",
+          "taskCount": 5,
+          "effort": "2-3 hours",
+          "errorsCovered": ["TS4023", "TS2454", "TS2538", "TS4094"]
+        },
+        {
+          "sprint": 2,
+          "title": "Null Safety Issues",
+          "file": "phase1-sprint2-null-safety-fixes.json",
+          "taskCount": 5,
+          "effort": "2-3 hours",
+          "errorsCovered": ["TS18047"]
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "title": "Type Visibility & Assignment Fixes",
+      "description": "Fix type assignment errors and argument type mismatches for improved type safety",
+      "estimatedEffort": "2-3 hours",
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Type Visibility Fixes",
+          "file": "phase2-sprint1-type-visibility-fixes.json",
+          "taskCount": 5,
+          "effort": "2-3 hours",
+          "errorsCovered": ["TS2322", "TS2345", "TS2564"]
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "title": "Code Cleanup",
+      "description": "Clean up unused variables and imports to eliminate low-priority warnings",
+      "estimatedEffort": "3-5 hours",
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Unused Variables Cleanup",
+          "file": "phase3-sprint1-unused-variables-cleanup.json",
+          "taskCount": 5,
+          "effort": "2-3 hours",
+          "errorsCovered": ["TS6133"]
+        },
+        {
+          "sprint": 2,
+          "title": "Unused Imports Cleanup",
+          "file": "phase3-sprint2-unused-imports-cleanup.json",
+          "taskCount": 5,
+          "effort": "1-2 hours",
+          "errorsCovered": ["TS6196"]
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "title": "Build System Verification",
+      "description": "Verify complete build pipeline and ensure all output directories are correctly populated",
+      "estimatedEffort": "1-2 hours",
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Build Pipeline Verification",
+          "file": "phase4-sprint1-build-pipeline-verification.json",
+          "taskCount": 5,
+          "effort": "1-2 hours",
+          "errorsCovered": []
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "title": "Integration Testing",
+      "description": "Create and run integration tests for WASM and parallel computing features",
+      "estimatedEffort": "2-4 hours",
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "WASM & Parallel Computing Tests",
+          "file": "phase5-sprint1-integration-testing.json",
+          "taskCount": 5,
+          "effort": "2-4 hours",
+          "errorsCovered": []
+        }
+      ]
+    }
+  ],
+  "errorSummary": {
+    "critical": {
+      "TS4023": { "count": 20, "description": "Exported variable uses unexported type" },
+      "TS4094": { "count": 5, "description": "Private property on exported anonymous class" },
+      "TS2454": { "count": 4, "description": "Variable used before assignment" },
+      "TS2538": { "count": 3, "description": "Type cannot be used as index" }
+    },
+    "medium": {
+      "TS2322": { "count": 33, "description": "Type not assignable" },
+      "TS18047": { "count": 20, "description": "Value is possibly null" },
+      "TS2345": { "count": 6, "description": "Argument type mismatch" },
+      "TS2564": { "count": 3, "description": "Property not initialized" }
+    },
+    "low": {
+      "TS6133": { "count": 201, "description": "Declared but never read" },
+      "TS6196": { "count": 44, "description": "Declared but never used" }
+    }
+  },
+  "successCriteria": [
+    "npm run compile:ts produces 0 errors",
+    "npm run build completes without error",
+    "All lib/ subdirectories contain expected output",
+    "WASM binary is functional and loadable",
+    "All existing unit tests pass",
+    "WASM integration tests pass",
+    "Parallel computing tests pass",
+    "npm run lint passes with 0 warnings or documented exceptions"
+  ]
+}

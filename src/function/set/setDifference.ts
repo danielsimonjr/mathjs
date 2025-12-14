@@ -28,7 +28,7 @@ export const createSetDifference = /* #__PURE__ */ factory(name, dependencies, (
    * @return {Array | Matrix}    The difference of two (multi)sets
    */
   return typed(name, {
-    'Array | Matrix, Array | Matrix': function (a1: MathArray | Matrix, a2: MathArray | Matrix): MathArray | Matrix {
+    'Array | Matrix, Array | Matrix': function (a1: MathArray | Matrix, a2: MathArray | Matrix): any {
       let result
       if (subset(size(a1), new Index(0)) === 0) { // empty-anything=empty
         result = []

@@ -1,185 +1,254 @@
 /**
- * WorkerPool manages a pool of Web Workers for parallel computation
- * Supports both Node.js (worker_threads) and browser (Web Workers)
+ * WorkerPool - Wrapper around @danielsimonjr/workerpool for parallel computation
+ * Provides a unified API for both Node.js and browser environments
  */
 
-interface WorkerTask<T = any, R = any> {
-  id: string
-  data: T
-  resolve: (value: R) => void
-  reject: (error: Error) => void
-  transferables?: Transferable[]
+import workerpool, { PoolOptions } from '@danielsimonjr/workerpool'
+
+export interface WorkerPoolOptions {
+  minWorkers?: number | 'max'
+  maxWorkers?: number
+  workerType?: 'auto' | 'web' | 'process' | 'thread'
+  workerTerminateTimeout?: number
 }
 
-interface WorkerMessage<T = any> {
-  id: string
-  type: 'task' | 'result' | 'error'
-  data?: T
-  error?: string
+// Type alias for worker methods record
+type WorkerMethods = Record<string, (...args: any[]) => any>
+
+export interface PoolStats {
+  totalWorkers: number
+  busyWorkers: number
+  idleWorkers: number
+  pendingTasks: number
+  activeTasks: number
 }
 
-export class WorkerPool {
-  private workers: Worker[] = []
-  private availableWorkers: Worker[] = []
-  private taskQueue: WorkerTask[] = []
-  private activeTasks: Map<string, WorkerTask> = new Map()
-  private maxWorkers: number
-  private workerScript: string
-  private isNode: boolean
+/**
+ * MathWorkerPool - A worker pool for parallel math computations
+ * Uses @danielsimonjr/workerpool under the hood
+ */
+export class MathWorkerPool {
+  private pool: any  // workerpool.Pool type
+  private workerScript: string | null
 
-  constructor(workerScript: string, maxWorkers?: number) {
-    this.workerScript = workerScript
-    this.maxWorkers = maxWorkers || this.getOptimalWorkerCount()
-    this.isNode = typeof process !== 'undefined' && process.versions?.node !== undefined
-    this.initialize()
+  /**
+   * Create a new worker pool
+   * @param workerScript - Path to worker script (optional, uses inline workers if not provided)
+   * @param options - Pool configuration options
+   */
+  constructor(workerScript?: string, options?: WorkerPoolOptions) {
+    this.workerScript = workerScript || null
+
+    const poolOptions: PoolOptions = {
+      minWorkers: options?.minWorkers,
+      maxWorkers: options?.maxWorkers || this.getOptimalWorkerCount(),
+      workerType: options?.workerType || 'auto',
+      workerTerminateTimeout: options?.workerTerminateTimeout || 1000
+    }
+
+    if (this.workerScript) {
+      this.pool = workerpool.pool(this.workerScript, poolOptions)
+    } else {
+      this.pool = workerpool.pool(poolOptions)
+    }
   }
 
+  /**
+   * Get optimal worker count based on available CPUs
+   */
   private getOptimalWorkerCount(): number {
     if (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) {
       return Math.max(2, navigator.hardwareConcurrency - 1)
     }
-    return 4 // fallback
-  }
-
-  private async initialize(): Promise<void> {
-    for (let i = 0; i < this.maxWorkers; i++) {
-      const worker = await this.createWorker()
-      this.workers.push(worker)
-      this.availableWorkers.push(worker)
+    // Node.js
+    try {
+      const os = require('os')
+      return Math.max(2, os.cpus().length - 1)
+    } catch {
+      return 4 // fallback
     }
   }
 
-  private async createWorker(): Promise<Worker> {
-    let worker: Worker
-
-    if (this.isNode) {
-      // Node.js worker_threads
-      const { Worker: NodeWorker } = await import('worker_threads')
-      worker = new NodeWorker(this.workerScript) as any
-    } else {
-      // Browser Web Worker
-      worker = new Worker(this.workerScript, { type: 'module' })
+  /**
+   * Execute a function in a worker
+   * @param method - Function name or function to execute
+   * @param args - Arguments to pass to the function
+   * @returns Promise resolving to the result
+   */
+  async exec<T = any>(method: string | ((...args: any[]) => T), args?: any[]): Promise<T> {
+    if (typeof method === 'function') {
+      return this.pool.exec(method as (...args: any[]) => T, args || []) as Promise<T>
     }
-
-    worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
-      this.handleWorkerMessage(worker, event.data)
-    }
-
-    worker.onerror = (error: ErrorEvent) => {
-      this.handleWorkerError(worker, error)
-    }
-
-    return worker
+    return this.pool.exec(method, args || []) as Promise<T>
   }
 
-  private handleWorkerMessage(worker: Worker, message: WorkerMessage): void {
-    const task = this.activeTasks.get(message.id)
-    if (!task) return
-
-    this.activeTasks.delete(message.id)
-
-    if (message.type === 'result') {
-      task.resolve(message.data)
-    } else if (message.type === 'error') {
-      task.reject(new Error(message.error || 'Worker error'))
-    }
-
-    // Return worker to pool and process next task
-    this.availableWorkers.push(worker)
-    this.processQueue()
+  /**
+   * Execute a function on all workers in parallel
+   * @param method - Function to execute
+   * @param argsArray - Array of argument arrays, one per execution
+   * @returns Promise resolving to array of results
+   */
+  async map<T = any, R = any>(
+    method: string | ((arg: T) => R),
+    items: T[]
+  ): Promise<R[]> {
+    const promises = items.map(item =>
+      this.exec<R>(method as any, [item])
+    )
+    return Promise.all(promises)
   }
 
-  private handleWorkerError(worker: Worker, error: ErrorEvent): void {
-    console.error('Worker error:', error)
-    // Find and reject all tasks for this worker
-    for (const [id, task] of this.activeTasks) {
-      if (this.workers.includes(worker)) {
-        this.activeTasks.delete(id)
-        task.reject(new Error(`Worker error: ${error.message}`))
-      }
-    }
+  /**
+   * Execute multiple independent tasks in parallel
+   * @param tasks - Array of {method, args} objects
+   * @returns Promise resolving to array of results
+   */
+  async parallel<T = any>(
+    tasks: Array<{ method: string | ((...args: any[]) => T); args?: any[] }>
+  ): Promise<T[]> {
+    const promises = tasks.map(task =>
+      this.exec<T>(task.method, task.args)
+    )
+    return Promise.all(promises)
   }
 
-  private processQueue(): void {
-    while (this.taskQueue.length > 0 && this.availableWorkers.length > 0) {
-      const task = this.taskQueue.shift()!
-      const worker = this.availableWorkers.shift()!
-      this.executeTask(worker, task)
-    }
+  /**
+   * Create a proxy to call worker methods directly
+   * @returns Proxy object with worker methods
+   */
+  async proxy<T = any>(): Promise<T> {
+    const p = await this.pool.proxy()
+    return p as unknown as T
   }
 
-  private executeTask(worker: Worker, task: WorkerTask): void {
-    this.activeTasks.set(task.id, task)
-
-    const message: WorkerMessage = {
-      id: task.id,
-      type: 'task',
-      data: task.data
-    }
-
-    if (task.transferables && task.transferables.length > 0) {
-      worker.postMessage(message, task.transferables)
-    } else {
-      worker.postMessage(message)
+  /**
+   * Get pool statistics
+   */
+  stats(): PoolStats {
+    const s = this.pool.stats()
+    return {
+      totalWorkers: s.totalWorkers,
+      busyWorkers: s.busyWorkers,
+      idleWorkers: s.idleWorkers,
+      pendingTasks: s.pendingTasks,
+      activeTasks: s.activeTasks
     }
   }
 
-  public async execute<T = any, R = any>(
-    data: T,
-    transferables?: Transferable[]
-  ): Promise<R> {
-    return new Promise<R>((resolve, reject) => {
-      const task: WorkerTask<T, R> = {
-        id: this.generateTaskId(),
-        data,
-        resolve,
-        reject,
-        transferables
-      }
-
-      if (this.availableWorkers.length > 0) {
-        const worker = this.availableWorkers.shift()!
-        this.executeTask(worker, task)
-      } else {
-        this.taskQueue.push(task)
-      }
-    })
+  /**
+   * Terminate all workers and close the pool
+   * @param force - Force immediate termination
+   * @param timeout - Timeout in ms before force termination
+   */
+  async terminate(force?: boolean, timeout?: number): Promise<void> {
+    await this.pool.terminate(force, timeout)
   }
 
-  private generateTaskId(): string {
-    return `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  /**
+   * Check if pool has been terminated
+   */
+  get terminated(): boolean {
+    return this.pool.stats().totalWorkers === 0
   }
 
-  public async terminate(): Promise<void> {
-    // Cancel all pending tasks
-    for (const task of this.taskQueue) {
-      task.reject(new Error('WorkerPool terminated'))
-    }
-    this.taskQueue = []
-
-    // Cancel all active tasks
-    for (const task of this.activeTasks.values()) {
-      task.reject(new Error('WorkerPool terminated'))
-    }
-    this.activeTasks.clear()
-
-    // Terminate all workers
-    for (const worker of this.workers) {
-      worker.terminate()
-    }
-    this.workers = []
-    this.availableWorkers = []
+  /**
+   * Get number of active workers
+   */
+  get workerCount(): number {
+    return this.pool.stats().totalWorkers
   }
 
-  public get activeTaskCount(): number {
-    return this.activeTasks.size
+  /**
+   * Get number of pending tasks in queue
+   */
+  get pendingCount(): number {
+    return this.pool.stats().pendingTasks
   }
 
-  public get queuedTaskCount(): number {
-    return this.taskQueue.length
-  }
-
-  public get workerCount(): number {
-    return this.workers.length
+  /**
+   * Get number of currently executing tasks
+   */
+  get activeCount(): number {
+    return this.pool.stats().activeTasks
   }
 }
+
+/**
+ * Create a dedicated worker for math operations
+ */
+export function createMathWorker(): WorkerMethods {
+  return {
+    // Matrix operations
+    matrixMultiply: (a: number[], aRows: number, aCols: number,
+                     b: number[], bRows: number, bCols: number): number[] => {
+      const result = new Array(aRows * bCols)
+      for (let i = 0; i < aRows; i++) {
+        for (let j = 0; j < bCols; j++) {
+          let sum = 0
+          for (let k = 0; k < aCols; k++) {
+            sum += a[i * aCols + k] * b[k * bCols + j]
+          }
+          result[i * bCols + j] = sum
+        }
+      }
+      return result
+    },
+
+    matrixAdd: (a: number[], b: number[]): number[] => {
+      const result = new Array(a.length)
+      for (let i = 0; i < a.length; i++) {
+        result[i] = a[i] + b[i]
+      }
+      return result
+    },
+
+    dotProduct: (a: number[], b: number[]): number => {
+      let sum = 0
+      for (let i = 0; i < a.length; i++) {
+        sum += a[i] * b[i]
+      }
+      return sum
+    },
+
+    sum: (arr: number[]): number => {
+      let sum = 0
+      for (let i = 0; i < arr.length; i++) {
+        sum += arr[i]
+      }
+      return sum
+    },
+
+    mean: (arr: number[]): number => {
+      let sum = 0
+      for (let i = 0; i < arr.length; i++) {
+        sum += arr[i]
+      }
+      return sum / arr.length
+    },
+
+    // Chunk processing for large arrays
+    processChunk: (data: number[], operation: string, start: number, end: number): number => {
+      let result = 0
+      switch (operation) {
+        case 'sum':
+          for (let i = start; i < end; i++) result += data[i]
+          break
+        case 'min':
+          result = data[start]
+          for (let i = start + 1; i < end; i++) if (data[i] < result) result = data[i]
+          break
+        case 'max':
+          result = data[start]
+          for (let i = start + 1; i < end; i++) if (data[i] > result) result = data[i]
+          break
+      }
+      return result
+    }
+  }
+}
+
+// Export workerpool for direct access if needed
+export { workerpool }
+
+// Legacy export for backward compatibility
+export { MathWorkerPool as WorkerPool }

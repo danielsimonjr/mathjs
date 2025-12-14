@@ -1,6 +1,8 @@
 /**
  * WASM-optimized matrix multiplication using AssemblyScript
  * Compiled to WebAssembly for maximum performance
+ *
+ * All functions return new Float64Array instances for proper WASM/JS interop
  */
 
 /**
@@ -11,7 +13,7 @@
  * @param b - Matrix B data (flat array, row-major)
  * @param bRows - Number of rows in B
  * @param bCols - Number of columns in B
- * @param result - Result matrix C (pre-allocated, row-major)
+ * @returns Result matrix C (row-major)
  */
 export function multiplyDense(
   a: Float64Array,
@@ -19,9 +21,10 @@ export function multiplyDense(
   aCols: i32,
   b: Float64Array,
   bRows: i32,
-  bCols: i32,
-  result: Float64Array
-): void {
+  bCols: i32
+): Float64Array {
+  const result = new Float64Array(aRows * bCols)
+
   // Cache-friendly blocked matrix multiplication
   const blockSize: i32 = 64
 
@@ -49,6 +52,8 @@ export function multiplyDense(
       }
     }
   }
+
+  return result
 }
 
 /**
@@ -61,9 +66,10 @@ export function multiplyDenseSIMD(
   aCols: i32,
   b: Float64Array,
   bRows: i32,
-  bCols: i32,
-  result: Float64Array
-): void {
+  bCols: i32
+): Float64Array {
+  const result = new Float64Array(aRows * bCols)
+
   // SIMD implementation using v128 (AssemblyScript SIMD)
   // Process 2 f64 values at a time
 
@@ -91,6 +97,8 @@ export function multiplyDenseSIMD(
       result[i * bCols + j] = sum
     }
   }
+
+  return result
 }
 
 /**
@@ -100,9 +108,10 @@ export function multiplyVector(
   a: Float64Array,
   aRows: i32,
   aCols: i32,
-  x: Float64Array,
-  result: Float64Array
-): void {
+  x: Float64Array
+): Float64Array {
+  const result = new Float64Array(aRows)
+
   for (let i: i32 = 0; i < aRows; i++) {
     let sum: f64 = 0.0
 
@@ -112,6 +121,8 @@ export function multiplyVector(
 
     result[i] = sum
   }
+
+  return result
 }
 
 /**
@@ -120,9 +131,10 @@ export function multiplyVector(
 export function transpose(
   a: Float64Array,
   rows: i32,
-  cols: i32,
-  result: Float64Array
-): void {
+  cols: i32
+): Float64Array {
+  const result = new Float64Array(rows * cols)
+
   // Cache-friendly blocked transpose
   const blockSize: i32 = 32
 
@@ -139,34 +151,42 @@ export function transpose(
       }
     }
   }
+
+  return result
 }
 
 /**
- * Matrix addition: C = A + B
+ * Element-wise addition: C = A + B
  */
 export function add(
   a: Float64Array,
   b: Float64Array,
-  size: i32,
-  result: Float64Array
-): void {
+  size: i32
+): Float64Array {
+  const result = new Float64Array(size)
+
   for (let i: i32 = 0; i < size; i++) {
     result[i] = a[i] + b[i]
   }
+
+  return result
 }
 
 /**
- * Matrix subtraction: C = A - B
+ * Element-wise subtraction: C = A - B
  */
 export function subtract(
   a: Float64Array,
   b: Float64Array,
-  size: i32,
-  result: Float64Array
-): void {
+  size: i32
+): Float64Array {
+  const result = new Float64Array(size)
+
   for (let i: i32 = 0; i < size; i++) {
     result[i] = a[i] - b[i]
   }
+
+  return result
 }
 
 /**
@@ -175,12 +195,15 @@ export function subtract(
 export function scalarMultiply(
   a: Float64Array,
   scalar: f64,
-  size: i32,
-  result: Float64Array
-): void {
+  size: i32
+): Float64Array {
+  const result = new Float64Array(size)
+
   for (let i: i32 = 0; i < size; i++) {
     result[i] = a[i] * scalar
   }
+
+  return result
 }
 
 /**

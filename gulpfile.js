@@ -102,8 +102,33 @@ const webpackConfig = {
           loader: 'babel-loader',
           options: babelConfig
         }
+      },
+      {
+        // Handle WASM files from @danielsimonjr/typed-function
+        test: /\.wasm$/,
+        type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]'
+        }
       }
     ]
+  },
+  experiments: {
+    // Enable WASM support for typed-function package
+    asyncWebAssembly: true
+  },
+  resolve: {
+    alias: {
+      // Fix broken relative path in @danielsimonjr/typed-function package
+      // The bundled file references '../../../build/dispatch.wasm' which is wrong
+      // Map it to the correct location
+      '../../../build/dispatch.wasm': path.join(__dirname, 'node_modules/@danielsimonjr/typed-function/build/dispatch.wasm')
+    },
+    fallback: {
+      // Provide fallbacks for Node.js built-ins used by typed-function
+      url: false,
+      path: false
+    }
   },
   devtool: 'source-map',
   cache: true
@@ -245,6 +270,16 @@ gulp.task('browser', bundle)
 gulp.task('clean', clean)
 
 gulp.task('docs', generateDocs)
+
+// Compile task - compiles JavaScript source files without bundling or docs
+gulp.task('compile', gulp.series(
+  updateVersionFile,
+  generateEntryFilesCallback,
+  compileCommonJs,
+  compileEntryFiles,
+  compileESModules,
+  writeCompiledHeader
+))
 
 // check whether any of the source files contains non-ascii characters
 gulp.task('validate:ascii', validateAscii)

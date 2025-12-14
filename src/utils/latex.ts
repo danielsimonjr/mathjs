@@ -1,6 +1,6 @@
 /* eslint no-template-curly-in-string: "off" */
 
-// @ts-expect-error - escape-latex has no type declarations
+// @ts-ignore - escape-latex may not have type declarations
 import escapeLatexLib from 'escape-latex'
 import { hasOwnProperty } from './object.ts'
 

@@ -1,6 +1,6 @@
 import { factory } from '../utils/factory.ts'
 import { deepMap } from '../utils/collection.ts'
-import type { Decimal } from './local/Decimal.ts'
+import type { Decimal } from 'decimal.js'
 
 const name = 'boolean'
 const dependencies = ['typed']
