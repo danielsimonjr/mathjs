@@ -1,0 +1,88 @@
+{
+  "phase": 3,
+  "sprint": 2,
+  "title": "Code Cleanup - Unused Type Imports",
+  "week": "Week 2-3",
+  "effort": "1-2 hours",
+  "status": "pending",
+  "completedDate": "",
+  "description": "Fix TS6196 unused type import warnings by removing or converting to type-only imports.",
+  "tasks": [
+    {
+      "id": "3.2.1",
+      "category": "Code Cleanup",
+      "description": "Clean up unused imports in SymbolNode.ts - Remove or convert unused 'Unit' type import to type-only import if needed for type checking",
+      "estimatedHours": 0.25,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS6196",
+      "errorCount": 1,
+      "files": [
+        "src/expression/node/SymbolNode.ts"
+      ]
+    },
+    {
+      "id": "3.2.2",
+      "category": "Code Cleanup",
+      "description": "Clean up unused imports in concat.transform.ts and cumsum.transform.ts - Remove unused 'BigNumber' imports or convert to 'import type' syntax",
+      "estimatedHours": 0.25,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS6196",
+      "errorCount": 2,
+      "files": [
+        "src/expression/transform/concat.transform.ts",
+        "src/expression/transform/cumsum.transform.ts"
+      ]
+    },
+    {
+      "id": "3.2.3",
+      "category": "Code Cleanup",
+      "description": "Clean up unused imports in index.transform.ts - Remove or convert unused 'Range', 'BigNumber', 'Matrix' imports",
+      "estimatedHours": 0.25,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS6196",
+      "errorCount": 3,
+      "files": [
+        "src/expression/transform/index.transform.ts"
+      ]
+    },
+    {
+      "id": "3.2.4",
+      "category": "Code Cleanup",
+      "description": "Clean up unused imports in mapSlices.transform.ts - Remove unused 'BigNumber' import or convert to type-only import",
+      "estimatedHours": 0.25,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS6196",
+      "errorCount": 1,
+      "files": [
+        "src/expression/transform/mapSlices.transform.ts"
+      ]
+    },
+    {
+      "id": "3.2.5",
+      "category": "Code Cleanup",
+      "description": "Audit and fix remaining TS6196 errors - Search for any other unused type imports across the codebase and clean them up",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS6196",
+      "errorCount": 37,
+      "files": [
+        "src/"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All TS6196 errors resolved (44 occurrences)",
+    "Imports use 'import type' syntax where appropriate",
+    "No broken imports introduced",
+    "All tests still pass"
+  ],
+  "dependencies": [
+    "phase3-sprint1"
+  ],
+  "blockedBy": []
+}

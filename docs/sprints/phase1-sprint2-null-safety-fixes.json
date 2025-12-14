@@ -1,0 +1,90 @@
+{
+  "phase": 1,
+  "sprint": 2,
+  "title": "Critical TypeScript Fixes - Null Safety Issues",
+  "week": "Week 1",
+  "effort": "2-3 hours",
+  "status": "pending",
+  "completedDate": "",
+  "description": "Fix TS18047 null safety issues across expression node files. All instances involve 'precedence' variable that is possibly null.",
+  "tasks": [
+    {
+      "id": "1.2.1",
+      "category": "TypeScript",
+      "description": "Fix null safety in AssignmentNode.ts and FunctionAssignmentNode.ts - Add null checks for 'precedence' variable at AssignmentNode.ts:39 and FunctionAssignmentNode.ts:38",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS18047",
+      "errorCount": 2,
+      "files": [
+        "src/expression/node/AssignmentNode.ts",
+        "src/expression/node/FunctionAssignmentNode.ts"
+      ]
+    },
+    {
+      "id": "1.2.2",
+      "category": "TypeScript",
+      "description": "Fix null safety in ConditionalNode.ts - Add null checks for 'precedence' at lines 156, 165, 174, 231, 243, 255 using pattern: if (precedence !== null) or const safePrecedence = precedence ?? 0",
+      "estimatedHours": 0.75,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS18047",
+      "errorCount": 6,
+      "files": [
+        "src/expression/node/ConditionalNode.ts"
+      ]
+    },
+    {
+      "id": "1.2.3",
+      "category": "TypeScript",
+      "description": "Fix null safety in OperatorNode.ts - Add null checks for 'precedence' at lines 132, 160, 182, 240. May use non-null assertion if logically guaranteed, otherwise null check pattern",
+      "estimatedHours": 0.75,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS18047",
+      "errorCount": 4,
+      "files": [
+        "src/expression/node/OperatorNode.ts"
+      ]
+    },
+    {
+      "id": "1.2.4",
+      "category": "TypeScript",
+      "description": "Fix null safety in RangeNode.ts and RelationalNode.ts - Add null checks for 'precedence' at RangeNode:54,59,64 and RelationalNode:156,209,242",
+      "estimatedHours": 0.75,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS18047",
+      "errorCount": 6,
+      "files": [
+        "src/expression/node/RangeNode.ts",
+        "src/expression/node/RelationalNode.ts"
+      ]
+    },
+    {
+      "id": "1.2.5",
+      "category": "TypeScript",
+      "description": "Fix null safety in FunctionNode.ts and operators.ts - Add null check for 'match' at FunctionNode:70 and 'precedence' at operators.ts:313",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "completedDate": "",
+      "errorCode": "TS18047",
+      "errorCount": 2,
+      "files": [
+        "src/expression/node/FunctionNode.ts",
+        "src/expression/operators.ts"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All TS18047 errors resolved (20 occurrences)",
+    "No new TypeScript errors introduced",
+    "npm run compile:ts shows reduced error count",
+    "Null checks use consistent pattern throughout codebase"
+  ],
+  "dependencies": [
+    "phase1-sprint1"
+  ],
+  "blockedBy": []
+}
