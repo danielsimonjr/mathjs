@@ -1,0 +1,102 @@
+{
+  "phase": 4,
+  "sprint": 1,
+  "title": "Build System Verification",
+  "week": "Week 3",
+  "effort": "1-2 hours",
+  "status": "pending",
+  "completedDate": "",
+  "description": "Verify the complete build pipeline works correctly after TypeScript error fixes. Ensure all output directories are populated.",
+  "tasks": [
+    {
+      "id": "4.1.1",
+      "category": "Build System",
+      "description": "Clean and verify TypeScript compilation - Run 'npm run build:clean' followed by 'npm run compile:ts' and verify 0 errors output",
+      "estimatedHours": 0.25,
+      "status": "pending",
+      "completedDate": "",
+      "commands": [
+        "npm run build:clean",
+        "npm run compile:ts"
+      ],
+      "files": []
+    },
+    {
+      "id": "4.1.2",
+      "category": "Build System",
+      "description": "Verify full JavaScript compilation - Run 'npm run compile' and ensure ESM and CJS outputs are generated in lib/esm/ and lib/cjs/",
+      "estimatedHours": 0.25,
+      "status": "pending",
+      "completedDate": "",
+      "commands": [
+        "npm run compile",
+        "ls -la lib/esm/",
+        "ls -la lib/cjs/"
+      ],
+      "files": [
+        "lib/esm/",
+        "lib/cjs/"
+      ]
+    },
+    {
+      "id": "4.1.3",
+      "category": "Build System",
+      "description": "Verify WASM build - Run 'npm run build:wasm' and confirm lib/wasm/ contains index.wasm, index.wat, index.js, and index.d.ts",
+      "estimatedHours": 0.25,
+      "status": "pending",
+      "completedDate": "",
+      "commands": [
+        "npm run build:wasm",
+        "ls -la lib/wasm/"
+      ],
+      "files": [
+        "lib/wasm/index.wasm",
+        "lib/wasm/index.wat",
+        "lib/wasm/index.js",
+        "lib/wasm/index.d.ts"
+      ]
+    },
+    {
+      "id": "4.1.4",
+      "category": "Build System",
+      "description": "Run complete build and verify all outputs - Run 'npm run build' and verify lib/browser/ bundle is created, all directories populated",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "completedDate": "",
+      "commands": [
+        "npm run build",
+        "ls -la lib/browser/",
+        "ls -la lib/typescript/"
+      ],
+      "files": [
+        "lib/browser/",
+        "lib/typescript/"
+      ]
+    },
+    {
+      "id": "4.1.5",
+      "category": "Build System",
+      "description": "Review and update tsconfig.build.json if needed - If JavaScript output is required from tsc, change emitDeclarationOnly to false. Verify gulp pipeline expectations.",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "completedDate": "",
+      "files": [
+        "tsconfig.build.json",
+        "gulpfile.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "npm run compile:ts produces 0 errors",
+    "npm run build completes without errors",
+    "lib/esm/ directory contains JavaScript modules",
+    "lib/cjs/ directory contains CommonJS modules",
+    "lib/browser/ directory contains UMD bundle",
+    "lib/wasm/ directory contains WASM files",
+    "Package exports work correctly"
+  ],
+  "dependencies": [
+    "phase3-sprint2"
+  ],
+  "blockedBy": []
+}
