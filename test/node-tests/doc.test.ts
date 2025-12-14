@@ -74,7 +74,7 @@ function extractValue(spec) {
       // maybe it was an array with mathjs expressions in it
       try {
         value = math.evaluate(spec).toArray()
-      } catch (newError) {
+      } catch {
         value = spec
       }
     } else if (err instanceof SyntaxError || err instanceof ReferenceError) {

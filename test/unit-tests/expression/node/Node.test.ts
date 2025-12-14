@@ -57,7 +57,7 @@ describe('Node', function () {
   it('should transform a Node', function () {
     let a = new MyNode(2)
     let b = new MyNode(3)
-    let c = a.transform(function (node) {
+    let c = a.transform(function (_node) {
       return b
     })
     assert.deepStrictEqual(c, b)
@@ -74,8 +74,8 @@ describe('Node', function () {
   it('should transform a Node using a replacement function', function () {
     const a = new MyNode(2)
     const b = new MyNode(3)
-    const c = a.transform(function (node) {
-      assert.deepStrictEqual(node, a)
+    const c = a.transform(function (_node) {
+      assert.deepStrictEqual(_node, a)
       return b
     })
     assert.deepStrictEqual(c, b)
@@ -190,9 +190,9 @@ describe('Node', function () {
   })
 
   it('should ignore custom toString if it returns nothing', function () {
-    const callback1 = function (node, callback) {}
+    const callback1 = function (_node, _callback) {}
     const callback2 = {
-      bla: function (node, callbacks) {}
+      bla: function (_node, _callbacks) {}
     }
     const mymath = math.create()
     mymath.Node.prototype._toString = function () {
@@ -207,9 +207,9 @@ describe('Node', function () {
   })
 
   it('should ignore custom toTex if it returns nothing', function () {
-    const callback1 = function (node, callback) {}
+    const callback1 = function (_node, _callback) {}
     const callback2 = {
-      bla: function (node, callbacks) {}
+      bla: function (_node, _callbacks) {}
     }
     const mymath = math.create()
     mymath.Node.prototype._toTex = function () {

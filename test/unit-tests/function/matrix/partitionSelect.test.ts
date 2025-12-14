@@ -64,7 +64,7 @@ describe('partitionSelect', function () {
     const m = matrix([3, 2, 4, 6, -2, 5])
     partitionSelect(m, 3)
 
-    m.forEach(function (value, index, matrix) {
+    m.forEach(function (value, index, _matrix) {
       if (index[0] < 3) {
         assert.ok(value <= 4)
       } else if (index[0] === 3) {

@@ -54,7 +54,7 @@ function hasValidSeeAlso(name) {
   let seeAlso = []
   try {
     seeAlso = mathDocs.evaluate(`help("${name}")`).doc.seealso
-  } catch (err) {
+  } catch {
     return
   }
   if (seeAlso && seeAlso.length > 0) {

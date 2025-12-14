@@ -40,7 +40,7 @@ async function test () {
 
   // Write to memory
   const memoryView = new Float64Array(memory.buffer, ptr, values.length)
-  values.forEach((v, i) => memoryView[i] = v)
+  values.forEach((v, i) => { memoryView[i] = v })
   console.log('Wrote values to memory:', Array.from(memoryView))
 
   // Test 2: Try using type ID 4 with proper view
@@ -109,8 +109,8 @@ async function test () {
   // Write data
   const aView = new Float64Array(memory.buffer, aPtr, n)
   const bView = new Float64Array(memory.buffer, bPtr, n)
-  aValues.forEach((v, i) => aView[i] = v)
-  bValues.forEach((v, i) => bView[i] = v)
+  aValues.forEach((v, i) => { aView[i] = v })
+  bValues.forEach((v, i) => { bView[i] = v })
 
   console.log('A:', Array.from(aView))
   console.log('B:', Array.from(bView))
@@ -139,7 +139,7 @@ async function test () {
 
   if (abPtr % 8 === 0) {
     const abView = new Float64Array(memory.buffer, abPtr, n)
-    aValues.forEach((v, i) => abView[i] = v)
+    aValues.forEach((v, i) => { abView[i] = v })
     console.log('ArrayBuffer data:', Array.from(abView))
 
     // Try dotProduct with ArrayBuffer ptr

@@ -7,7 +7,7 @@ export class ArgumentsError extends Error {
   count: number
   min: number
   max: number | undefined
-  isArgumentsError: true = true
+  isArgumentsError = true as const
 
   /**
    * Create an ArgumentsError

@@ -9,13 +9,7 @@
  */
 
 import { Bench } from 'tinybench'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
-import { readFile } from 'fs/promises'
 import os from 'os'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 
 const NUM_CPUS = os.cpus().length
 console.log(`\nSystem: ${NUM_CPUS} CPUs available`)
