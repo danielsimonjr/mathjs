@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fixed** `matrixFromRows` and `matrixFromColumns` to properly handle mixed Array/Matrix arguments, returning arrays when any input is an array (as documented)
 - **Updated** webpack configuration to support WASM modules from `@danielsimonjr/typed-function`
 
+**TypeScript Fixes**
+- **Fixed** tsconfig to allow `.ts` extensions in imports with `allowImportingTsExtensions: true`
+- **Fixed** tsconfig.build.json with `emitDeclarationOnly: true` for declaration file generation
+- **Fixed** `src/parallel/WorkerPool.ts` to use correct `PoolOptions` type from workerpool
+- **Fixed** `src/parallel/ParallelMatrix.ts` to use `exec()` method instead of non-existent `execute()`
+- **Added** `nullish` function and `nullishDependencies` to TypeScript type definitions
+
 **Internal**
 - Refactored `src/parallel/WorkerPool.ts` to use `@danielsimonjr/workerpool`
 - Updated imports in `src/core/create.js`, `src/core/create.ts`, `src/core/function/typed.js`, `src/utils/optimizeCallback.js`, `src/utils/optimizeCallback.ts`, `tools/matrixmarket.ts`, and `test/benchmark/typed_function_overhead.js`

@@ -3,7 +3,7 @@
  * Uses SharedArrayBuffer for zero-copy data sharing between workers
  */
 
-import { WorkerPool } from './WorkerPool.ts'
+import { WorkerPool, WorkerPoolOptions } from './WorkerPool.ts'
 
 export interface MatrixData {
   data: Float64Array | SharedArrayBuffer
@@ -38,9 +38,12 @@ export class ParallelMatrix {
 
   private static getWorkerPool(): WorkerPool {
     if (!this.workerPool) {
+      const options: WorkerPoolOptions = {
+        maxWorkers: this.config.maxWorkers || undefined
+      }
       this.workerPool = new WorkerPool(
         this.config.workerScript,
-        this.config.maxWorkers || undefined
+        options
       )
     }
     return this.workerPool
@@ -106,7 +109,7 @@ export class ParallelMatrix {
 
       if (startRow >= aRows) break
 
-      const task = pool.execute({
+      const task = pool.exec<void>('matrixMultiplyChunk', [{
         operation: 'multiply',
         aData: aShared,
         aRows,
@@ -117,7 +120,7 @@ export class ParallelMatrix {
         startRow,
         endRow,
         resultData: result
-      })
+      }])
 
       tasks.push(task)
     }
@@ -186,14 +189,14 @@ export class ParallelMatrix {
 
       if (start >= size) break
 
-      const task = pool.execute({
+      const task = pool.exec<void>('matrixAddChunk', [{
         operation: 'add',
         aData: aShared,
         bData: bShared,
         start,
         end,
         resultData: result
-      })
+      }])
 
       tasks.push(task)
     }
@@ -239,7 +242,7 @@ export class ParallelMatrix {
 
       if (startRow >= rows) break
 
-      const task = pool.execute({
+      const task = pool.exec<void>('matrixTransposeChunk', [{
         operation: 'transpose',
         data: dataShared,
         rows,
@@ -247,7 +250,7 @@ export class ParallelMatrix {
         startRow,
         endRow,
         resultData: result
-      })
+      }])
 
       tasks.push(task)
     }

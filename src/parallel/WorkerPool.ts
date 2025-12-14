@@ -3,7 +3,7 @@
  * Provides a unified API for both Node.js and browser environments
  */
 
-import workerpool from '@danielsimonjr/workerpool'
+import workerpool, { PoolOptions } from '@danielsimonjr/workerpool'
 
 export interface WorkerPoolOptions {
   minWorkers?: number | 'max'
@@ -11,6 +11,9 @@ export interface WorkerPoolOptions {
   workerType?: 'auto' | 'web' | 'process' | 'thread'
   workerTerminateTimeout?: number
 }
+
+// Type alias for worker methods record
+type WorkerMethods = Record<string, (...args: any[]) => any>
 
 export interface PoolStats {
   totalWorkers: number
@@ -36,7 +39,7 @@ export class MathWorkerPool {
   constructor(workerScript?: string, options?: WorkerPoolOptions) {
     this.workerScript = workerScript || null
 
-    const poolOptions: workerpool.WorkerPoolOptions = {
+    const poolOptions: PoolOptions = {
       minWorkers: options?.minWorkers,
       maxWorkers: options?.maxWorkers || this.getOptimalWorkerCount(),
       workerType: options?.workerType || 'auto',
@@ -72,9 +75,9 @@ export class MathWorkerPool {
    * @param args - Arguments to pass to the function
    * @returns Promise resolving to the result
    */
-  async exec<T = any>(method: string | Function, args?: any[]): Promise<T> {
+  async exec<T = any>(method: string | ((...args: any[]) => T), args?: any[]): Promise<T> {
     if (typeof method === 'function') {
-      return this.pool.exec(method, args || []) as Promise<T>
+      return this.pool.exec(method as (...args: any[]) => T, args || []) as Promise<T>
     }
     return this.pool.exec(method, args || []) as Promise<T>
   }
@@ -101,7 +104,7 @@ export class MathWorkerPool {
    * @returns Promise resolving to array of results
    */
   async parallel<T = any>(
-    tasks: Array<{ method: string | Function; args?: any[] }>
+    tasks: Array<{ method: string | ((...args: any[]) => T); args?: any[] }>
   ): Promise<T[]> {
     const promises = tasks.map(task =>
       this.exec<T>(task.method, task.args)
@@ -113,8 +116,9 @@ export class MathWorkerPool {
    * Create a proxy to call worker methods directly
    * @returns Proxy object with worker methods
    */
-  proxy<T = any>(): Promise<T> {
-    return this.pool.proxy() as Promise<T>
+  async proxy<T = any>(): Promise<T> {
+    const p = await this.pool.proxy()
+    return p as unknown as T
   }
 
   /**
@@ -172,7 +176,7 @@ export class MathWorkerPool {
 /**
  * Create a dedicated worker for math operations
  */
-export function createMathWorker(): workerpool.WorkerMethods {
+export function createMathWorker(): WorkerMethods {
   return {
     // Matrix operations
     matrixMultiply: (a: number[], aRows: number, aCols: number,
