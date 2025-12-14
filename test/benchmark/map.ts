@@ -19,8 +19,8 @@ const columnMatrix = map(ones(10, 1, 'dense'), (_) => round(random(-5, 5), 2))
 const rowArray = rowMatrix.toArray()
 const columnArray = columnMatrix.toArray()
 const multiCallback = (value1, value2) => abs(value1 - value2)
-const multiCallback1 = (value1, value2, _index) => abs(value1 - value2)
-const multiCallback2 = (value1, value2, _index, _array1, _array2) =>
+const multiCallback1 = (value1, value2, index) => abs(value1 - value2)
+const multiCallback2 = (value1, value2, index, array1, array2) =>
   abs(value1 - value2)
 // console.log('data', array)
 // console.log('abs(data)', abs(array))npm run

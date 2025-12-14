@@ -59,7 +59,7 @@ describe('util.function', function () {
 
     it('should really return the cached result', function () {
       let a = 2
-      const f = function (_x) {
+      const f = function (x) {
         return a
       } // trick: no pure function
 
@@ -73,7 +73,7 @@ describe('util.function', function () {
 
   it('should limit the number of values stored', function () {
     let a = 1
-    const f = function (_x) {
+    const f = function (x) {
       a++
       return a
     } // trick: no pure function

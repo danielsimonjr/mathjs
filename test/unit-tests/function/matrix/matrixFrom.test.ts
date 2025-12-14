@@ -44,7 +44,7 @@ describe('matrixFrom...', function () {
     assert.deepStrictEqual(actual, expected)
 
     // a random vector
-    actual = math.matrixFromFunction([5], 'dense', (_i) => math.random())
+    actual = math.matrixFromFunction([5], 'dense', (i) => math.random())
     assert.deepStrictEqual(actual.size(), [5])
     let counter = 0
     for (const { value } of actual) {

@@ -256,7 +256,7 @@ describe('import', function () {
     math.import(
       {
         foo: math.typed('foo', {
-          string: function (_x) {
+          string: function (x) {
             return 'foo(string)'
           }
         })
