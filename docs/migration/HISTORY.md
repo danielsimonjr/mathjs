@@ -6,6 +6,19 @@
   Thanks @gwhitney.
 - Docs: fix #3565, update Matrix documentation (#3591). Thanks @orelbn.
 
+# 2025-12-13, 15.1.1 (fork: @danielsimonjr/mathjs)
+
+- Build: change WASM runtime from "stub" to "incremental" for proper garbage
+  collection support, fixing memory leak issues with repeated WASM function calls.
+- Build: update asconfig.json with noAssert=false and shrinkLevel=1 for better
+  debugging and stability.
+- Test: add comprehensive benchmark suite (full_comparison_benchmark.js) comparing
+  JavaScript vs WASM vs Parallel (JS) vs Hybrid WASM performance.
+- Test: add WASM diagnostic scripts (wasm_test.mjs, wasm_test2.mjs) for debugging
+  AssemblyScript loader integration.
+- Deps: integrate @danielsimonjr/typed-function and @danielsimonjr/workerpool
+  packages for enhanced WASM acceleration and parallel computing support.
+
 # 2025-11-05, 15.1.0
 
 - Feat: implement functions `isFinite` and `isBounded` (#3554, #3553). 
