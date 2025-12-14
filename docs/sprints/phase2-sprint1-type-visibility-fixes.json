@@ -1,10 +1,9 @@
 {
   "phase": 2,
   "sprint": 1,
-  "globalSprintNumber": 3,
   "title": "Type Visibility & Assignment Fixes",
   "week": "Week 2",
-  "effort": "4-5 hours",
+  "effort": "2-3 hours",
   "status": "pending",
   "completedDate": "",
   "description": "Fix TS2322 type assignment errors and TS2345 argument type mismatches. These are medium-severity issues affecting type safety.",

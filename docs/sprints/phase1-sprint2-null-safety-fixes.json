@@ -1,13 +1,12 @@
 {
   "phase": 1,
   "sprint": 2,
-  "globalSprintNumber": 2,
   "title": "Critical TypeScript Fixes - Null Safety Issues",
   "week": "Week 1",
   "effort": "2-3 hours",
   "status": "pending",
   "completedDate": "",
-  "description": "Fix TS18047 null safety issues across expression node files. Most instances involve 'precedence' variable that is possibly null, with one 'match' variable instance.",
+  "description": "Fix TS18047 null safety issues across expression node files. All instances involve 'precedence' variable that is possibly null.",
   "tasks": [
     {
       "id": "1.2.1",

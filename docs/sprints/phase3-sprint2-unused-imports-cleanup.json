@@ -1,7 +1,6 @@
 {
   "phase": 3,
   "sprint": 2,
-  "globalSprintNumber": 5,
   "title": "Code Cleanup - Unused Type Imports",
   "week": "Week 2-3",
   "effort": "1-2 hours",

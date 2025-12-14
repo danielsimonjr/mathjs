@@ -1,7 +1,6 @@
 {
   "phase": 5,
   "sprint": 1,
-  "globalSprintNumber": 7,
   "title": "Integration Testing - WASM & Parallel Computing",
   "week": "Week 3-4",
   "effort": "2-4 hours",
@@ -12,12 +11,12 @@
     {
       "id": "5.1.1",
       "category": "Testing",
-      "description": "Create WASM integration test file - Create test/unit-tests/wasm/wasm-integration.test.js with tests for WasmLoader initialization and basic WASM module loading",
+      "description": "Create WASM integration test file - Create test/wasm-integration.test.ts with tests for WasmLoader initialization and basic WASM module loading",
       "estimatedHours": 0.75,
       "status": "pending",
       "completedDate": "",
       "files": [
-        "test/unit-tests/wasm/wasm-integration.test.js"
+        "test/wasm-integration.test.ts"
       ]
     },
     {
@@ -28,18 +27,18 @@
       "status": "pending",
       "completedDate": "",
       "files": [
-        "test/unit-tests/wasm/wasm-integration.test.js"
+        "test/wasm-integration.test.ts"
       ]
     },
     {
       "id": "5.1.3",
       "category": "Testing",
-      "description": "Create parallel computing test file - Create test/unit-tests/parallel/parallel-integration.test.js with tests for WorkerPool initialization and basic worker communication",
+      "description": "Create parallel computing test file - Create test/parallel-integration.test.ts with tests for WorkerPool initialization and basic worker communication",
       "estimatedHours": 0.75,
       "status": "pending",
       "completedDate": "",
       "files": [
-        "test/unit-tests/parallel/parallel-integration.test.js"
+        "test/parallel-integration.test.ts"
       ]
     },
     {
@@ -50,7 +49,7 @@
       "status": "pending",
       "completedDate": "",
       "files": [
-        "test/unit-tests/parallel/parallel-integration.test.js"
+        "test/parallel-integration.test.ts"
       ]
     },
     {

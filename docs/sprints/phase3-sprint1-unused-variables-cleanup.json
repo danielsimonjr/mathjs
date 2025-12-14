@@ -1,7 +1,6 @@
 {
   "phase": 3,
   "sprint": 1,
-  "globalSprintNumber": 4,
   "title": "Code Cleanup - Unused Variables",
   "week": "Week 2",
   "effort": "2-3 hours",

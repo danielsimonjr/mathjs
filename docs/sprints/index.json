@@ -5,7 +5,7 @@
   "sourceDocument": "docs/CONSOLIDATED_CORRECTIVE_ACTION_PLAN.md",
   "totalPhases": 5,
   "totalSprints": 7,
-  "totalEstimatedEffort": "14-21 hours",
+  "totalEstimatedEffort": "12-18 hours",
   "phases": [
     {
       "phase": 1,
@@ -15,7 +15,6 @@
       "sprints": [
         {
           "sprint": 1,
-          "globalSprintNumber": 1,
           "title": "Core Type Exports & Critical Errors",
           "file": "phase1-sprint1-critical-type-exports.json",
           "taskCount": 5,
@@ -24,7 +23,6 @@
         },
         {
           "sprint": 2,
-          "globalSprintNumber": 2,
           "title": "Null Safety Issues",
           "file": "phase1-sprint2-null-safety-fixes.json",
           "taskCount": 5,
@@ -37,15 +35,14 @@
       "phase": 2,
       "title": "Type Visibility & Assignment Fixes",
       "description": "Fix type assignment errors and argument type mismatches for improved type safety",
-      "estimatedEffort": "4-5 hours",
+      "estimatedEffort": "2-3 hours",
       "sprints": [
         {
           "sprint": 1,
-          "globalSprintNumber": 3,
           "title": "Type Visibility Fixes",
           "file": "phase2-sprint1-type-visibility-fixes.json",
           "taskCount": 5,
-          "effort": "4-5 hours",
+          "effort": "2-3 hours",
           "errorsCovered": ["TS2322", "TS2345", "TS2564"]
         }
       ]
@@ -58,7 +55,6 @@
       "sprints": [
         {
           "sprint": 1,
-          "globalSprintNumber": 4,
           "title": "Unused Variables Cleanup",
           "file": "phase3-sprint1-unused-variables-cleanup.json",
           "taskCount": 5,
@@ -67,7 +63,6 @@
         },
         {
           "sprint": 2,
-          "globalSprintNumber": 5,
           "title": "Unused Imports Cleanup",
           "file": "phase3-sprint2-unused-imports-cleanup.json",
           "taskCount": 5,
@@ -84,7 +79,6 @@
       "sprints": [
         {
           "sprint": 1,
-          "globalSprintNumber": 6,
           "title": "Build Pipeline Verification",
           "file": "phase4-sprint1-build-pipeline-verification.json",
           "taskCount": 5,
@@ -101,7 +95,6 @@
       "sprints": [
         {
           "sprint": 1,
-          "globalSprintNumber": 7,
           "title": "WASM & Parallel Computing Tests",
           "file": "phase5-sprint1-integration-testing.json",
           "taskCount": 5,
