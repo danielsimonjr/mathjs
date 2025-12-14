@@ -20,7 +20,7 @@ describe('nthRoots', function () {
       complex({ r: 1, phi: (11 * Math.PI) / 6 })
     ]
 
-    roots.forEach(function (value, index, array) {
+    roots.forEach(function (value, index, _array) {
       assert.deepStrictEqual(value, roots1[index])
     })
   })
@@ -39,7 +39,7 @@ describe('nthRoots', function () {
   it('should return pure roots without artifacts', function () {
     const roots = nthRoots(complex('16'), 4)
 
-    roots.forEach(function (value, index, array) {
+    roots.forEach(function (value, index, _array) {
       assert.deepStrictEqual(value, twos[index])
     })
   })
@@ -47,7 +47,7 @@ describe('nthRoots', function () {
   it('should return roots for numeric arguments', function () {
     const roots = nthRoots(16, 4)
 
-    roots.forEach(function (value, index, array) {
+    roots.forEach(function (value, index, _array) {
       assert.deepStrictEqual(value, twos[index])
     })
   })
@@ -55,7 +55,7 @@ describe('nthRoots', function () {
   it('should return roots for string arguments', function () {
     const roots = nthRoots('16', 4)
 
-    roots.forEach(function (value, index, array) {
+    roots.forEach(function (value, index, _array) {
       assert.deepStrictEqual(value, twos[index])
     })
   })

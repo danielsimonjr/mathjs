@@ -156,7 +156,7 @@ describe('SymbolNode', function () {
 
   it('should stringify a SymbolNode with custom toString', function () {
     // Also checks if the custom functions get passed on to the children
-    const customFunction = function (node, options) {
+    const customFunction = function (node, _options) {
       if (node.type === 'SymbolNode') {
         return 'symbol(' + node.name + ')'
       }
@@ -169,7 +169,7 @@ describe('SymbolNode', function () {
 
   it('should stringify a SymbolNode with custom toHTML', function () {
     // Also checks if the custom functions get passed on to the children
-    const customFunction = function (node, options) {
+    const customFunction = function (node, _options) {
       if (node.type === 'SymbolNode') {
         return 'symbol(' + node.name + ')'
       }
@@ -201,7 +201,7 @@ describe('SymbolNode', function () {
 
   it('should LaTeX a SymbolNode with custom toTex', function () {
     // Also checks if the custom functions get passed on to the children
-    const customFunction = function (node, options) {
+    const customFunction = function (node, _options) {
       if (node.type === 'SymbolNode') {
         return 'symbol(' + node.name + ')'
       }

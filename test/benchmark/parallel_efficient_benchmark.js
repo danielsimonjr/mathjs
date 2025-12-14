@@ -8,13 +8,8 @@
  * 4. Inefficient workerpool (JSON serialization) for comparison
  */
 
-import { Worker, isMainThread, parentPort, workerData } from 'worker_threads'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { Worker } from 'worker_threads'
 import os from 'os'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 
 const NUM_CPUS = os.cpus().length
 console.log(`\nSystem: ${NUM_CPUS} CPUs available`)
@@ -24,6 +19,7 @@ console.log(`Node.js: ${process.version}`)
 // Pure JavaScript (Baseline)
 // =============================================================================
 
+// eslint-disable-next-line no-unused-vars
 function jsMatrixMultiply (a, aRows, aCols, b, bRows, bCols) {
   const result = new Float64Array(aRows * bCols)
   for (let i = 0; i < aRows; i++) {

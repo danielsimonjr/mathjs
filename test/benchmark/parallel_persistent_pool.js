@@ -65,7 +65,7 @@ class PersistentWorkerPool {
     }
 
     // Wait for workers to be ready
-    await new Promise(r => setTimeout(r, 100))
+    await new Promise(_resolve => setTimeout(_resolve, 100))
     console.log(`Worker pool ready with ${numWorkers} workers`)
   }
 

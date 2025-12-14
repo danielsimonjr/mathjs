@@ -217,7 +217,7 @@ describe('import', function () {
   it('should merge typed functions with the same name', function () {
     math.import({
       foo: math.typed('foo', {
-        number: function (x) {
+        number: function (_x) {
           return 'foo(number)'
         }
       })
@@ -225,7 +225,7 @@ describe('import', function () {
 
     math.import({
       foo: math.typed('foo', {
-        string: function (x) {
+        string: function (_x) {
           return 'foo(string)'
         }
       })
@@ -245,7 +245,7 @@ describe('import', function () {
   it('should override existing typed functions', function () {
     math.import({
       foo: math.typed('foo', {
-        Date: function (x) {
+        Date: function (_x) {
           return 'foo(Date)'
         }
       })
@@ -256,7 +256,7 @@ describe('import', function () {
     math.import(
       {
         foo: math.typed('foo', {
-          string: function (x) {
+          string: function (_x) {
             return 'foo(string)'
           }
         })

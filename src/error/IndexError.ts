@@ -6,7 +6,7 @@ export class IndexError extends RangeError {
   index: number
   min: number | undefined
   max: number | undefined
-  isIndexError: true = true
+  isIndexError = true as const
 
   /**
    * Create an IndexError

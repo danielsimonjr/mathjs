@@ -819,7 +819,7 @@ describe('simplify', function () {
     simplifyAndCompare('+x+abs(x)', '2*x', {}, positiveContext)
 
     const id = (x) => x
-    const sel = (x, y, z, w) => z
+    const sel = (_x, _y, z, _w) => z
     const zeroes = { x: 0, y: 0, z: 0, w: 0, n: 0, foo: id, myMultiArg: sel }
     const negones = {}
     const ones = {}
