@@ -41,11 +41,17 @@ interface SnapshotResult {
 
 export const validateTypeOf = allIsFunctions.typeOf
 
-export function validateBundle(expectedBundleStructure: BundleStructure, bundle: any): void {
+export function validateBundle(
+  expectedBundleStructure: BundleStructure,
+  bundle: any
+): void {
   const originalWarn = console.warn
 
   console.warn = function (...args: any[]): void {
-    if (args.join(' ').includes('is moved to') && args.join(' ').includes('Please use the new location instead')) {
+    if (
+      args.join(' ').includes('is moved to') &&
+      args.join(' ').includes('Please use the new location instead')
+    ) {
       // Ignore warnings like:
       // Warning: math.type.isNumber is moved to math.isNumber in v6.0.0. Please use the new location instead.
       return
@@ -58,22 +64,26 @@ export function validateBundle(expectedBundleStructure: BundleStructure, bundle:
     const issues: ValidationIssue[] = []
 
     // see whether all expected functions and objects are there
-    traverse(expectedBundleStructure, (expectedType: TypeName, path: (string | number)[]) => {
-      const actualValue = get(bundle, path)
-      const actualType = validateTypeOf(actualValue)
+    traverse(
+      expectedBundleStructure,
+      (expectedType: TypeName, path: (string | number)[]) => {
+        const actualValue = get(bundle, path)
+        const actualType = validateTypeOf(actualValue)
 
-      const message = (actualType === 'undefined')
-        ? 'Missing entry in bundle. ' +
-        `Path: ${JSON.stringify(path)}, expected type: ${expectedType}, actual type: ${actualType}`
-        : 'Unexpected entry type in bundle. ' +
-        `Path: ${JSON.stringify(path)}, expected type: ${expectedType}, actual type: ${actualType}`
+        const message =
+          actualType === 'undefined'
+            ? 'Missing entry in bundle. ' +
+              `Path: ${JSON.stringify(path)}, expected type: ${expectedType}, actual type: ${actualType}`
+            : 'Unexpected entry type in bundle. ' +
+              `Path: ${JSON.stringify(path)}, expected type: ${expectedType}, actual type: ${actualType}`
 
-      if (actualType !== expectedType) {
-        issues.push({ actualType, expectedType, message })
+        if (actualType !== expectedType) {
+          issues.push({ actualType, expectedType, message })
 
-        console.warn(message)
+          console.warn(message)
+        }
       }
-    })
+    )
 
     // see whether there are any functions or objects that shouldn't be there
     traverse(bundle, (actualValue: any, path: (string | number)[]) => {
@@ -90,12 +100,13 @@ export function validateBundle(expectedBundleStructure: BundleStructure, bundle:
         return
       }
 
-      const message = (expectedType === 'undefined')
-        ? 'Unknown entry in bundle. ' +
-        'Is there a new function added which is missing in this snapshot test? ' +
-        `Path: ${JSON.stringify(path)}, expected type: ${expectedType}, actual type: ${actualType}`
-        : 'Unexpected entry type in bundle. ' +
-        `Path: ${JSON.stringify(path)}, expected type: ${expectedType}, actual type: ${actualType}`
+      const message =
+        expectedType === 'undefined'
+          ? 'Unknown entry in bundle. ' +
+            'Is there a new function added which is missing in this snapshot test? ' +
+            `Path: ${JSON.stringify(path)}, expected type: ${expectedType}, actual type: ${actualType}`
+          : 'Unexpected entry type in bundle. ' +
+            `Path: ${JSON.stringify(path)}, expected type: ${expectedType}, actual type: ${actualType}`
 
       if (actualType !== expectedType) {
         issues.push({ actualType, expectedType, message })
@@ -123,7 +134,9 @@ export function validateBundle(expectedBundleStructure: BundleStructure, bundle:
  * @param factories - Object containing factory functions
  * @return Object with expectedInstanceStructure and expectedES6Structure
  */
-export function createSnapshotFromFactories(factories: Factories): SnapshotResult {
+export function createSnapshotFromFactories(
+  factories: Factories
+): SnapshotResult {
   const math = create(factories as any)
 
   const allFactoryFunctions: BundleStructure = {}
@@ -134,14 +147,14 @@ export function createSnapshotFromFactories(factories: Factories): SnapshotResul
   const allClasses: BundleStructure = {}
   const allNodeClasses: BundleStructure = {}
 
-  Object.keys(factories).forEach(factoryName => {
+  Object.keys(factories).forEach((factoryName) => {
     const factory = factories[factoryName]
     const name = factory.fn
     const isTransformFunction = factory.meta && factory.meta.isTransformFunction
-    const isClass = !isLowerCase(name[0]) && (validateTypeOf(math[name]) === 'function')
-    const dependenciesName = factory.fn +
-      (isTransformFunction ? 'Transform' : '') +
-      'Dependencies'
+    const isClass =
+      !isLowerCase(name[0]) && validateTypeOf(math[name]) === 'function'
+    const dependenciesName =
+      factory.fn + (isTransformFunction ? 'Transform' : '') + 'Dependencies'
     const former = factory.meta?.formerly ?? ''
 
     allFactoryFunctions[factoryName] = 'function'
@@ -169,11 +182,12 @@ export function createSnapshotFromFactories(factories: Factories): SnapshotResul
   })
 
   let embeddedDocs: BundleStructure = {}
-  Object.keys(factories).forEach(factoryName => {
+  Object.keys(factories).forEach((factoryName) => {
     const factory = factories[factoryName]
     const name = factory.fn
 
-    if (isLowerCase(factory.fn[0])) { // ignore class names starting with upper case
+    if (isLowerCase(factory.fn[0])) {
+      // ignore class names starting with upper case
       embeddedDocs[name] = 'Object'
     }
   })
@@ -194,7 +208,7 @@ export function createSnapshotFromFactories(factories: Factories): SnapshotResul
   ])
 
   const allTypeChecks: BundleStructure = {}
-  Object.keys(allIsFunctions).forEach(name => {
+  Object.keys(allIsFunctions).forEach((name) => {
     if (name.indexOf('is') === 0) {
       allTypeChecks[name] = 'function'
     }
@@ -228,9 +242,7 @@ export function createSnapshotFromFactories(factories: Factories): SnapshotResul
       mathWithTransform: {
         // note that we don't have classes here,
         // only functions and constants are allowed in the editor
-        ...exclude(allFunctionsConstants, [
-          'chain'
-        ]),
+        ...exclude(allFunctionsConstants, ['chain']),
         config: 'function'
       }
     }
@@ -280,9 +292,11 @@ function traverse(
     // special case for objects holding a collection of dependencies
     callback(obj, path)
   } else if (validateTypeOf(obj) === 'Array') {
-    obj.map((item: any, index: number) => traverse(item, callback, path.concat(index)))
+    obj.map((item: any, index: number) =>
+      traverse(item, callback, path.concat(index))
+    )
   } else if (validateTypeOf(obj) === 'Object') {
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       // FIXME: ugly to have these special cases
       // ignore special case of deprecated docs
       if (key === 'docs' && path.join('.') === 'expression') {
@@ -314,10 +328,13 @@ function get(object: any, path: (string | number)[]): any {
  * @param excludedProperties - Array of property names to exclude
  * @return Filtered object
  */
-function exclude(object: BundleStructure, excludedProperties: string[]): BundleStructure {
+function exclude(
+  object: BundleStructure,
+  excludedProperties: string[]
+): BundleStructure {
   const strippedObject = Object.assign({}, object)
 
-  excludedProperties.forEach(excludedProperty => {
+  excludedProperties.forEach((excludedProperty) => {
     delete strippedObject[excludedProperty]
   })
 

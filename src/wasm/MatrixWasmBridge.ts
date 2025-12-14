@@ -30,7 +30,10 @@ export class MatrixWasmBridge {
     try {
       this.wasmModule = await wasmLoader.load(wasmPath)
     } catch (error) {
-      console.warn('WASM initialization failed, falling back to JavaScript:', error)
+      console.warn(
+        'WASM initialization failed, falling back to JavaScript:',
+        error
+      )
       this.defaultOptions.useWasm = false
     }
   }
@@ -87,20 +90,30 @@ export class MatrixWasmBridge {
     // Allocate arrays in WASM memory
     const a = wasmLoader.allocateFloat64Array(aData)
     const b = wasmLoader.allocateFloat64Array(bData)
-    const result = wasmLoader.allocateFloat64Array(new Float64Array(aRows * bCols))
+    const result = wasmLoader.allocateFloat64Array(
+      new Float64Array(aRows * bCols)
+    )
 
     try {
       // Call WASM function
       if (useSIMD) {
         this.wasmModule.multiplyDenseSIMD(
-          a.ptr, aRows, aCols,
-          b.ptr, bRows, bCols,
+          a.ptr,
+          aRows,
+          aCols,
+          b.ptr,
+          bRows,
+          bCols,
           result.ptr
         )
       } else {
         this.wasmModule.multiplyDense(
-          a.ptr, aRows, aCols,
-          b.ptr, bRows, bCols,
+          a.ptr,
+          aRows,
+          aCols,
+          b.ptr,
+          bRows,
+          bCols,
           result.ptr
         )
       }

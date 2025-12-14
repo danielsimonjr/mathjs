@@ -38,7 +38,13 @@ const dependencies = ['typed', 'SparseMatrix']
 export const createMatAlgo07xSSf = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, SparseMatrix }: { typed: TypedFunction; SparseMatrix: SparseMatrixConstructor }) => {
+  ({
+    typed,
+    SparseMatrix
+  }: {
+    typed: TypedFunction
+    SparseMatrix: SparseMatrixConstructor
+  }) => {
     /**
      * Iterates over SparseMatrix A and SparseMatrix B items (zero and nonzero) and invokes the callback function f(Aij, Bij).
      * Callback function invoked MxN times.
@@ -60,16 +66,24 @@ export const createMatAlgo07xSSf = /* #__PURE__ */ factory(
     ): SparseMatrix {
       // sparse matrix arrays
       const asize: number[] = a._size
-      const adt: DataType = a._datatype || a._data === undefined ? a._datatype : a.getDataType()
+      const adt: DataType =
+        a._datatype || a._data === undefined ? a._datatype : a.getDataType()
       const bsize: number[] = b._size
-      const bdt: DataType = b._datatype || b._data === undefined ? b._datatype : b.getDataType()
+      const bdt: DataType =
+        b._datatype || b._data === undefined ? b._datatype : b.getDataType()
 
       // validate dimensions
       if (asize.length !== bsize.length) {
         throw new DimensionError(asize.length, bsize.length)
       }
       if (asize[0] !== bsize[0] || asize[1] !== bsize[1]) {
-        throw new RangeError('Dimension mismatch. Matrix A (' + asize + ') must match Matrix B (' + bsize + ')')
+        throw new RangeError(
+          'Dimension mismatch. Matrix A (' +
+            asize +
+            ') must match Matrix B (' +
+            bsize +
+            ')'
+        )
       }
 
       // rows & columns

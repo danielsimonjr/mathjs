@@ -8,9 +8,27 @@ import { createCsLu } from '../../../../../lib/esm/function/algebra/sparse/csLu.
 import { createCsSqr } from '../../../../../lib/esm/function/algebra/sparse/csSqr.js'
 
 const math = create(all)
-const { abs, add, divideScalar, multiply, subtract, larger, largerEq, transpose, SparseMatrix } = math
+const {
+  abs,
+  add,
+  divideScalar,
+  multiply,
+  subtract,
+  larger,
+  largerEq,
+  transpose,
+  SparseMatrix
+} = math
 
-const csLu = createCsLu({ abs, divideScalar, multiply, subtract, larger, largerEq, SparseMatrix })
+const csLu = createCsLu({
+  abs,
+  divideScalar,
+  multiply,
+  subtract,
+  larger,
+  largerEq,
+  SparseMatrix
+})
 const csSqr = createCsSqr({ add, multiply, transpose })
 
 describe('csLu', function () {
@@ -25,7 +43,10 @@ describe('csLu', function () {
         const r = csLu(m, s, 0.001)
 
         // verify
-        approxDeepEqual(csPermute(m, r.pinv, s.q, true).valueOf(), math.multiply(r.L, r.U).valueOf())
+        approxDeepEqual(
+          csPermute(m, r.pinv, s.q, true).valueOf(),
+          math.multiply(r.L, r.U).valueOf()
+        )
 
         // indicate test has completed
         done()
@@ -36,7 +57,7 @@ describe('csLu', function () {
       })
   })
 
-  it('should decompose matrix, 48 x 48, amd(A+A\') (order=1), full pivoting, matrix market', function (done) {
+  it("should decompose matrix, 48 x 48, amd(A+A') (order=1), full pivoting, matrix market", function (done) {
     // import matrix
     marketImport('tools/matrices/bcsstk01.mtx')
       .then(function (m) {
@@ -47,7 +68,10 @@ describe('csLu', function () {
         const r = csLu(m, s, 0.001)
 
         // verify
-        approxDeepEqual(csPermute(m, r.pinv, s.q, true).valueOf(), math.multiply(r.L, r.U).valueOf())
+        approxDeepEqual(
+          csPermute(m, r.pinv, s.q, true).valueOf(),
+          math.multiply(r.L, r.U).valueOf()
+        )
 
         // indicate test has completed
         done()
@@ -58,7 +82,7 @@ describe('csLu', function () {
       })
   })
 
-  it('should decompose matrix, 48 x 48, amd(A\'*A) (order=2), full pivoting, matrix market', function (done) {
+  it("should decompose matrix, 48 x 48, amd(A'*A) (order=2), full pivoting, matrix market", function (done) {
     // import matrix
     marketImport('tools/matrices/bcsstk01.mtx')
       .then(function (m) {
@@ -69,7 +93,10 @@ describe('csLu', function () {
         const r = csLu(m, s, 0.001)
 
         // verify
-        approxDeepEqual(csPermute(m, r.pinv, s.q, true).valueOf(), math.multiply(r.L, r.U).valueOf())
+        approxDeepEqual(
+          csPermute(m, r.pinv, s.q, true).valueOf(),
+          math.multiply(r.L, r.U).valueOf()
+        )
 
         // indicate test has completed
         done()
@@ -80,7 +107,7 @@ describe('csLu', function () {
       })
   })
 
-  it('should decompose matrix, 48 x 48, amd(A\'*A) (order=3), full pivoting, matrix market', function (done) {
+  it("should decompose matrix, 48 x 48, amd(A'*A) (order=3), full pivoting, matrix market", function (done) {
     // import matrix
     marketImport('tools/matrices/bcsstk01.mtx')
       .then(function (m) {
@@ -91,7 +118,10 @@ describe('csLu', function () {
         const r = csLu(m, s, 0.001)
 
         // verify
-        approxDeepEqual(csPermute(m, r.pinv, s.q, true).valueOf(), math.multiply(r.L, r.U).valueOf())
+        approxDeepEqual(
+          csPermute(m, r.pinv, s.q, true).valueOf(),
+          math.multiply(r.L, r.U).valueOf()
+        )
 
         // indicate test has completed
         done()

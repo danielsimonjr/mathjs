@@ -1,4 +1,4 @@
-import { isBigNumber, isObject, BigNumber } from './is.ts'
+import { isBigNumber, isObject } from './is.ts'
 
 /**
  * Clone an object
@@ -15,8 +15,14 @@ export function clone<T>(x: T): T {
   const type = typeof x
 
   // immutable primitive types
-  if (type === 'number' || type === 'bigint' || type === 'string' || type === 'boolean' ||
-      x === null || x === undefined) {
+  if (
+    type === 'number' ||
+    type === 'bigint' ||
+    type === 'string' ||
+    type === 'boolean' ||
+    x === null ||
+    x === undefined
+  ) {
     return x
   }
 
@@ -73,13 +79,13 @@ export function mapObject<T, U>(
  * @param {Object} b
  * @return {Object} a
  */
-export function extend<T extends Record<string, any>, U extends Record<string, any>>(
-  a: T,
-  b: U
-): T & U {
+export function extend<
+  T extends Record<string, any>,
+  U extends Record<string, any>
+>(a: T, b: U): T & U {
   for (const prop in b) {
     if (hasOwnProperty(b, prop)) {
-      (a as any)[prop] = b[prop]
+      ;(a as any)[prop] = b[prop]
     }
   }
   return a as T & U
@@ -91,7 +97,10 @@ export function extend<T extends Record<string, any>, U extends Record<string, a
  * @param {Object} b
  * @returns {Object}
  */
-export function deepExtend<T extends Record<string, any>>(a: T, b: Record<string, any>): T {
+export function deepExtend<T extends Record<string, any>>(
+  a: T,
+  b: Record<string, any>
+): T {
   // TODO: add support for Arrays to deepExtend
   if (Array.isArray(b)) {
     throw new TypeError('Arrays are not supported by deepExtend')
@@ -100,20 +109,24 @@ export function deepExtend<T extends Record<string, any>>(a: T, b: Record<string
   for (const prop in b) {
     // We check against prop not being in Object.prototype or Function.prototype
     // to prevent polluting for example Object.__proto__.
-    if (hasOwnProperty(b, prop) && !(prop in Object.prototype) && !(prop in Function.prototype)) {
+    if (
+      hasOwnProperty(b, prop) &&
+      !(prop in Object.prototype) &&
+      !(prop in Function.prototype)
+    ) {
       if (b[prop] && b[prop].constructor === Object) {
         if ((a as any)[prop] === undefined) {
-          (a as any)[prop] = {} as any
+          ;(a as any)[prop] = {} as any
         }
         if ((a as any)[prop] && (a as any)[prop].constructor === Object) {
           deepExtend((a as any)[prop], b[prop])
         } else {
-          (a as any)[prop] = b[prop]
+          ;(a as any)[prop] = b[prop]
         }
       } else if (Array.isArray(b[prop])) {
         throw new TypeError('Arrays are not supported by deepExtend')
       } else {
-        (a as any)[prop] = b[prop]
+        ;(a as any)[prop] = b[prop]
       }
     }
   }
@@ -148,7 +161,7 @@ export function deepStrictEqual(a: any, b: any): boolean {
     }
     return true
   } else if (typeof a === 'function') {
-    return (a === b)
+    return a === b
   } else if (a instanceof Object) {
     if (Array.isArray(b) || !(b instanceof Object)) {
       return false
@@ -168,7 +181,7 @@ export function deepStrictEqual(a: any, b: any): boolean {
     }
     return true
   } else {
-    return (a === b)
+    return a === b
   }
 }
 
@@ -177,7 +190,9 @@ export function deepStrictEqual(a: any, b: any): boolean {
  * @param {Object} nestedObject
  * @return {Object} Returns the flattened object
  */
-export function deepFlatten(nestedObject: Record<string, any>): Record<string, any> {
+export function deepFlatten(
+  nestedObject: Record<string, any>
+): Record<string, any> {
   const flattenedObject: Record<string, any> = {}
 
   _deepFlatten(nestedObject, flattenedObject)
@@ -210,10 +225,14 @@ export function canDefineProperty(): boolean {
   // test needed for broken IE8 implementation
   try {
     if (Object.defineProperty) {
-      Object.defineProperty({}, 'x', { get: function () { return null } })
+      Object.defineProperty({}, 'x', {
+        get: function () {
+          return null
+        }
+      })
       return true
     }
-  } catch (e) {}
+  } catch {}
 
   return false
 }
@@ -261,7 +280,10 @@ export function lazy<T>(
  * @param {string | string[]} path   A dot separated string like 'name.space'
  * @return {Object} Returns the object at the end of the path
  */
-export function traverse(object: Record<string, any>, path: string | string[]): Record<string, any> {
+export function traverse(
+  object: Record<string, any>,
+  path: string | string[]
+): Record<string, any> {
   if (path && typeof path === 'string') {
     return traverse(object, path.split('.'))
   }
@@ -349,7 +371,7 @@ export function set<T extends Record<string, any>>(
     if (isPath(path)) {
       return set(object, path.split('.'), value)
     } else {
-      (object as any)[path] = value
+      ;(object as any)[path] = value
       return object
     }
   }

@@ -49,8 +49,12 @@ describe('atan', function () {
 
     // Hit Newton's method case
     const bigmath61 = bigmath.create({ number: 'BigNumber', precision: 61 })
-    assert.deepStrictEqual(bigmath61.atan(bigmath61.bignumber(0.9)),
-      bigmath61.bignumber('0.7328151017865065916407920727342802519857556793582560863105069'))
+    assert.deepStrictEqual(
+      bigmath61.atan(bigmath61.bignumber(0.9)),
+      bigmath61.bignumber(
+        '0.7328151017865065916407920727342802519857556793582560863105069'
+      )
+    )
   })
 
   it('should be the inverse function of tan', function () {
@@ -67,8 +71,14 @@ describe('atan', function () {
     assert.deepStrictEqual(atanBig(bigmath.tan(Big(0))), Big(0))
     assert.deepStrictEqual(atanBig(bigmath.tan(Big(0.1))), Big(0.1))
     assert.deepStrictEqual(atanBig(bigmath.tan(Big(0.5))), Big(0.5))
-    assert.deepStrictEqual(atanBig(bigmath.tan(Big(2))), Big('-1.1415926535897932385'))
-    assert.deepStrictEqual(atanBig(bigmath.tan(bigmath.pi.div(2))).toString(), '-1.570796326794895205')
+    assert.deepStrictEqual(
+      atanBig(bigmath.tan(Big(2))),
+      Big('-1.1415926535897932385')
+    )
+    assert.deepStrictEqual(
+      atanBig(bigmath.tan(bigmath.pi.div(2))).toString(),
+      '-1.570796326794895205'
+    )
   })
 
   it('should return the arctan of a complex number', function () {
@@ -81,30 +91,43 @@ describe('atan', function () {
     approxDeepEqual(atan(complex('i')), complex(0, Infinity))
     approxDeepEqual(atan(complex('-i')), complex(0, -Infinity))
     approxDeepEqual(atan(complex('1')), complex(0.785398163397448, 0))
-    approxDeepEqual(atan(complex('1+i')), complex(1.017221967897851, 0.402359478108525))
+    approxDeepEqual(
+      atan(complex('1+i')),
+      complex(1.017221967897851, 0.402359478108525)
+    )
   })
 
   it('should throw an error if called with a unit', function () {
-    assert.throws(function () { atan(unit('45deg')) })
-    assert.throws(function () { atan(unit('5 celsius')) })
+    assert.throws(function () {
+      atan(unit('45deg'))
+    })
+    assert.throws(function () {
+      atan(unit('5 celsius'))
+    })
   })
 
   it('should throw an error if called with a string', function () {
-    assert.throws(function () { atan('string') })
+    assert.throws(function () {
+      atan('string')
+    })
   })
 
   it('should not operate on arrays and matrices', function () {
     assert.throws(() => atan([1, 2, 3]), TypeError)
     assert.throws(() => atan(matrix([1, 2, 3])), TypeError)
     // matrix, array, range
-    const atan123 = [0.785398163397448, 1.107148717794090, 1.249045772398254]
+    const atan123 = [0.785398163397448, 1.10714871779409, 1.249045772398254]
     approxDeepEqual(math.map([1, 2, 3], atan), atan123)
     approxDeepEqual(math.map(matrix([1, 2, 3]), atan), matrix(atan123))
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { atan() }, /TypeError: Too few arguments/)
-    assert.throws(function () { atan(1, 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      atan()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      atan(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should LaTeX atan', function () {

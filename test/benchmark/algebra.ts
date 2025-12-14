@@ -25,5 +25,7 @@ const bench = new Bench({ time: 100, iterations: 100 })
     results.push(res)
   })
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()

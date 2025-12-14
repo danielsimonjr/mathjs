@@ -1,8 +1,6 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
-type Dependencies = 'typed' | 'abs' | 'add' | 'pow' | 'conj' | 'sqrt' | 'multiply' | 'equalScalar' | 'larger' | 'smaller' | 'matrix' | 'ctranspose' | 'eigs'
-
 const name = 'norm'
 const dependencies = [
   'typed',
@@ -116,7 +114,7 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _vectorNormPlusInfinity (x: any): any {
+    function _vectorNormPlusInfinity(x: any): any {
       // norm(x, Infinity) = max(abs(x))
       let pinf = 0
       // skip zeros since abs(0) === 0
@@ -135,7 +133,7 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _vectorNormMinusInfinity (x: any): any {
+    function _vectorNormMinusInfinity(x: any): any {
       // norm(x, -Infinity) = min(abs(x))
       let ninf: any
       // skip zeros since abs(0) === 0
@@ -155,7 +153,7 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _vectorNorm (x: any, p: any): any {
+    function _vectorNorm(x: any, p: any): any {
       // check p
       if (p === Number.POSITIVE_INFINITY || p === 'inf') {
         return _vectorNormPlusInfinity(x)
@@ -189,10 +187,10 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _matrixNormFrobenius (x: any): any {
+    function _matrixNormFrobenius(x: any): any {
       // norm(x) = sqrt(sum(diag(x'x)))
       let fro = 0
-      x.forEach(function (value: any, index: any) {
+      x.forEach(function (value: any) {
         fro = add(fro, multiply(value, conj(value)))
       })
       return abs(sqrt(fro))
@@ -204,14 +202,13 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _matrixNormOne (x: any): any {
+    function _matrixNormOne(x: any): any {
       // norm(x) = the largest column sum
       const c: any[] = []
       // result
       let maxc = 0
       // skip zeros since abs(0) == 0
-      x.forEach(function (value: any, index: any[]) {
-        const j = index[1]
+      x.forEach(function (value: any, [, j]: any[]) {
         const cj = add(c[j] || 0, abs(value))
         if (larger(cj, maxc)) {
           maxc = cj
@@ -227,7 +224,7 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _matrixNormTwo (x: any): any {
+    function _matrixNormTwo(x: any): any {
       // norm(x) = sqrt( max eigenvalue of A*.A)
       const sizeX = x.size()
       if (sizeX[0] !== sizeX[1]) {
@@ -246,7 +243,7 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _matrixNormInfinity (x: any): any {
+    function _matrixNormInfinity(x: any): any {
       // norm(x) = the largest row sum
       const r: any[] = []
       // result
@@ -270,7 +267,7 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _matrixNorm (x: any, p: any): any {
+    function _matrixNorm(x: any, p: any): any {
       // check p
       if (p === 1) {
         return _matrixNormOne(x)
@@ -295,7 +292,7 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number} Returns the norm
      * @private
      */
-    function _norm (x: any, p: any): any {
+    function _norm(x: any, p: any): any {
       // size
       const sizeX = x.size()
 

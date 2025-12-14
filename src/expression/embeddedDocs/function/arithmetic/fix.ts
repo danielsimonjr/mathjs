@@ -8,7 +8,7 @@ export const fixDocs = {
     'fix(unit, n, valuelessUnit)'
   ],
   description:
-      'Round a value towards zero. If x is complex, both real and imaginary part are rounded towards zero.',
+    'Round a value towards zero. If x is complex, both real and imaginary part are rounded towards zero.',
   examples: [
     'fix(3.2)',
     'fix(3.8)',

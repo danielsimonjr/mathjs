@@ -6,36 +6,80 @@
 export interface WasmModule {
   // Matrix operations
   multiplyDense: (
-    aPtr: number, aRows: number, aCols: number,
-    bPtr: number, bRows: number, bCols: number,
+    aPtr: number,
+    aRows: number,
+    aCols: number,
+    bPtr: number,
+    bRows: number,
+    bCols: number,
     resultPtr: number
   ) => void
   multiplyDenseSIMD: (
-    aPtr: number, aRows: number, aCols: number,
-    bPtr: number, bRows: number, bCols: number,
+    aPtr: number,
+    aRows: number,
+    aCols: number,
+    bPtr: number,
+    bRows: number,
+    bCols: number,
     resultPtr: number
   ) => void
   multiplyVector: (
-    aPtr: number, aRows: number, aCols: number,
-    xPtr: number, resultPtr: number
+    aPtr: number,
+    aRows: number,
+    aCols: number,
+    xPtr: number,
+    resultPtr: number
   ) => void
-  transpose: (dataPtr: number, rows: number, cols: number, resultPtr: number) => void
+  transpose: (
+    dataPtr: number,
+    rows: number,
+    cols: number,
+    resultPtr: number
+  ) => void
   add: (aPtr: number, bPtr: number, size: number, resultPtr: number) => void
-  subtract: (aPtr: number, bPtr: number, size: number, resultPtr: number) => void
-  scalarMultiply: (aPtr: number, scalar: number, size: number, resultPtr: number) => void
+  subtract: (
+    aPtr: number,
+    bPtr: number,
+    size: number,
+    resultPtr: number
+  ) => void
+  scalarMultiply: (
+    aPtr: number,
+    scalar: number,
+    size: number,
+    resultPtr: number
+  ) => void
   dotProduct: (aPtr: number, bPtr: number, size: number) => number
 
   // Linear algebra
   luDecomposition: (aPtr: number, n: number, permPtr: number) => number
-  qrDecomposition: (aPtr: number, m: number, n: number, qPtr: number, rPtr: number) => void
+  qrDecomposition: (
+    aPtr: number,
+    m: number,
+    n: number,
+    qPtr: number,
+    rPtr: number
+  ) => void
   choleskyDecomposition: (aPtr: number, n: number, lPtr: number) => number
-  luSolve: (luPtr: number, n: number, permPtr: number, bPtr: number, xPtr: number) => void
+  luSolve: (
+    luPtr: number,
+    n: number,
+    permPtr: number,
+    bPtr: number,
+    xPtr: number
+  ) => void
   luDeterminant: (luPtr: number, n: number, permPtr: number) => number
 
   // Signal processing
   fft: (dataPtr: number, n: number, inverse: number) => void
   fft2d: (dataPtr: number, rows: number, cols: number, inverse: number) => void
-  convolve: (signalPtr: number, n: number, kernelPtr: number, m: number, resultPtr: number) => void
+  convolve: (
+    signalPtr: number,
+    n: number,
+    kernelPtr: number,
+    m: number,
+    resultPtr: number
+  ) => void
   rfft: (dataPtr: number, n: number, resultPtr: number) => void
   irfft: (dataPtr: number, n: number, resultPtr: number) => void
   isPowerOf2: (n: number) => number
@@ -55,7 +99,8 @@ export class WasmLoader {
   private isNode: boolean
 
   private constructor() {
-    this.isNode = typeof process !== 'undefined' && process.versions?.node !== undefined
+    this.isNode =
+      typeof process !== 'undefined' && process.versions?.node !== undefined
   }
 
   public static getInstance(): WasmLoader {
@@ -152,7 +197,10 @@ export class WasmLoader {
   /**
    * Allocate Float64Array in WASM memory
    */
-  public allocateFloat64Array(data: number[] | Float64Array): { ptr: number; array: Float64Array } {
+  public allocateFloat64Array(data: number[] | Float64Array): {
+    ptr: number
+    array: Float64Array
+  } {
     const module = this.wasmModule
     if (!module) throw new Error('WASM module not loaded')
 
@@ -172,7 +220,10 @@ export class WasmLoader {
   /**
    * Allocate Int32Array in WASM memory
    */
-  public allocateInt32Array(data: number[] | Int32Array): { ptr: number; array: Int32Array } {
+  public allocateInt32Array(data: number[] | Int32Array): {
+    ptr: number
+    array: Int32Array
+  } {
     const module = this.wasmModule
     if (!module) throw new Error('WASM module not loaded')
 

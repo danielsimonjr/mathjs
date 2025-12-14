@@ -7,10 +7,6 @@ interface TypedFunction<T = any> {
   (...args: any[]): T
 }
 
-interface BigNumber {
-  minus(x: number): BigNumber
-}
-
 interface Dependencies {
   typed: TypedFunction
   add: (...args: any[]) => any
@@ -27,26 +23,31 @@ interface Dependencies {
 const name = 'cumsum'
 const dependencies = ['typed', 'add', 'unaryPlus']
 
-export const createCumSumTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, add, unaryPlus }: Dependencies) => {
-  const cumsum = createCumSum({ typed, add, unaryPlus })
+export const createCumSumTransform = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, add, unaryPlus }: Dependencies) => {
+    const cumsum = createCumSum({ typed, add, unaryPlus })
 
-  return typed(name, {
-    '...any': function (args: any[]): any {
-      // change last argument dim from one-based to zero-based
-      if (args.length === 2 && isCollection(args[0])) {
-        const dim = args[1]
-        if (isNumber(dim)) {
-          args[1] = dim - 1
-        } else if (isBigNumber(dim)) {
-          args[1] = (dim as any).minus(1)
+    return typed(name, {
+      '...any': function (args: any[]): any {
+        // change last argument dim from one-based to zero-based
+        if (args.length === 2 && isCollection(args[0])) {
+          const dim = args[1]
+          if (isNumber(dim)) {
+            args[1] = dim - 1
+          } else if (isBigNumber(dim)) {
+            args[1] = (dim as any).minus(1)
+          }
+        }
+
+        try {
+          return cumsum.apply(null, args)
+        } catch (err) {
+          throw errorTransform(err as Error)
         }
       }
-
-      try {
-        return cumsum.apply(null, args)
-      } catch (err) {
-        throw errorTransform(err as Error)
-      }
-    }
-  })
-}, { isTransformFunction: true })
+    })
+  },
+  { isTransformFunction: true }
+)

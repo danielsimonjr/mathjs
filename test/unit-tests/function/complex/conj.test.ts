@@ -31,26 +31,50 @@ describe('conj', function () {
   })
 
   it('should calculate the conjugate of a units with complex, Fraction and BigNumber values', function () {
-    assert.strictEqual(conj(math.unit(math.complex('300+250i'), 'ohm')).toString(), '(300 - 250i) ohm')
-    assert.strictEqual(conj(math.unit(math.bignumber('0.3'), 'm/s')).toString(), '0.3 m / s')
-    assert.strictEqual(conj(math.unit(math.fraction('0.(285714)'), 'fahrenheit')).toString(), '2/7 fahrenheit')
-    assert.strictEqual(conj(math.unit(math.fraction(0.125), 'hp')).toString(), '1/8 hp')
+    assert.strictEqual(
+      conj(math.unit(math.complex('300+250i'), 'ohm')).toString(),
+      '(300 - 250i) ohm'
+    )
+    assert.strictEqual(
+      conj(math.unit(math.bignumber('0.3'), 'm/s')).toString(),
+      '0.3 m / s'
+    )
+    assert.strictEqual(
+      conj(math.unit(math.fraction('0.(285714)'), 'fahrenheit')).toString(),
+      '2/7 fahrenheit'
+    )
+    assert.strictEqual(
+      conj(math.unit(math.fraction(0.125), 'hp')).toString(),
+      '1/8 hp'
+    )
   })
 
   it('should calculate the conjugate for each element in a matrix', function () {
-    assert.strictEqual(math.format(conj([math.complex('2+3i'), math.complex('3-4i')])),
-      '[2 - 3i, 3 + 4i]')
-    assert.strictEqual(conj(math.matrix([math.complex('2+3i'), math.complex('3-4i')])).toString(),
-      '[2 - 3i, 3 + 4i]')
+    assert.strictEqual(
+      math.format(conj([math.complex('2+3i'), math.complex('3-4i')])),
+      '[2 - 3i, 3 + 4i]'
+    )
+    assert.strictEqual(
+      conj(
+        math.matrix([math.complex('2+3i'), math.complex('3-4i')])
+      ).toString(),
+      '[2 - 3i, 3 + 4i]'
+    )
   })
 
   it('should throw an error when called with an unsupported type of argument', function () {
-    assert.throws(function () { conj(new Date()) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      conj(new Date())
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { conj() }, /TypeError: Too few arguments/)
-    assert.throws(function () { conj(1, 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      conj()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      conj(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should LaTeX conj', function () {

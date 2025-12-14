@@ -16,7 +16,11 @@ const results = []
 
 const bench = new Bench({ time: 100, iterations: 100 })
   .add('ddf', function () {
-    const res = derivative(derivative(expr, parse('x'), { simplify: false }), parse('x'), { simplify: false })
+    const res = derivative(
+      derivative(expr, parse('x'), { simplify: false }),
+      parse('x'),
+      { simplify: false }
+    )
     results.splice(0, 1, res)
   })
   .add('df ', function () {
@@ -24,5 +28,7 @@ const bench = new Bench({ time: 100, iterations: 100 })
     results.splice(0, 1, res)
   })
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()

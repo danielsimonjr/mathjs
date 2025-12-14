@@ -1,9 +1,7 @@
 export const log10Docs = {
   name: 'log10',
   category: 'Arithmetic',
-  syntax: [
-    'log10(x)'
-  ],
+  syntax: ['log10(x)'],
   description: 'Compute the 10-base logarithm of a value.',
   examples: [
     'log10(0.00001)',
@@ -12,8 +10,5 @@ export const log10Docs = {
     'log(10000) / log(10)',
     'log(10000, 10)'
   ],
-  seealso: [
-    'exp',
-    'log'
-  ]
+  seealso: ['exp', 'log']
 }

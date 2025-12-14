@@ -44,91 +44,113 @@ interface Dependencies {
 const name = 'matrixFromRows'
 const dependencies = ['typed', 'matrix', 'flatten', 'size']
 
-export const createMatrixFromRows = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, flatten, size }: Dependencies) => {
-  /**
-   * Create a dense matrix from vectors as individual rows.
-   * If you pass column vectors, they will be transposed (but not conjugated!)
-   *
-   * Syntax:
-   *
-   *    math.matrixFromRows(...arr)
-   *    math.matrixFromRows(row1, row2)
-   *    math.matrixFromRows(row1, row2, row3)
-   *
-   * Examples:
-   *
-   *    math.matrixFromRows([1, 2, 3], [[4],[5],[6]])
-   *    math.matrixFromRows(...vectors)
-   *
-   * See also:
-   *
-   *    matrix, matrixFromColumns, matrixFromFunction, zeros
-   *
-   * @param {... Array | Matrix} rows  Multiple rows
-   * @return { number[][] | Matrix } if at least one of the arguments is an array, an array will be returned
-   */
-  return typed(name, {
-    // Single variadic handler for arrays, matrices, and mixed types
-    '...': function (arr: (any[] | Matrix)[]): any[][] | Matrix {
-      if (arr.length === 0) {
+export const createMatrixFromRows = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, matrix, flatten, size }: Dependencies) => {
+    /**
+     * Create a dense matrix from vectors as individual rows.
+     * If you pass column vectors, they will be transposed (but not conjugated!)
+     *
+     * Syntax:
+     *
+     *    math.matrixFromRows(...arr)
+     *    math.matrixFromRows(row1, row2)
+     *    math.matrixFromRows(row1, row2, row3)
+     *
+     * Examples:
+     *
+     *    math.matrixFromRows([1, 2, 3], [[4],[5],[6]])
+     *    math.matrixFromRows(...vectors)
+     *
+     * See also:
+     *
+     *    matrix, matrixFromColumns, matrixFromFunction, zeros
+     *
+     * @param {... Array | Matrix} rows  Multiple rows
+     * @return { number[][] | Matrix } if at least one of the arguments is an array, an array will be returned
+     */
+    return typed(name, {
+      // Single variadic handler for arrays, matrices, and mixed types
+      '...': function (arr: (any[] | Matrix)[]): any[][] | Matrix {
+        if (arr.length === 0) {
+          throw new TypeError(
+            'At least one row is needed to construct a matrix.'
+          )
+        }
+
+        // Check if all arguments are Matrix (none are plain arrays)
+        const allMatrix = arr.every(
+          (item) => typeof (item as any).toArray === 'function'
+        )
+        // Check if any argument is a plain array
+        const hasArray = arr.some((item) => Array.isArray(item))
+
+        // Convert all to arrays for processing
+        const arrays = arr.map((item) =>
+          typeof (item as any).toArray === 'function'
+            ? (item as Matrix).toArray()
+            : item
+        )
+
+        const result = _createArray(arrays)
+
+        // Return Matrix only if all inputs were Matrix, otherwise return array
+        if (allMatrix && !hasArray) {
+          return matrix(result)
+        }
+        return result
+      }
+
+      // TODO implement this properly for SparseMatrix
+    })
+
+    function _createArray(arr: any[]): any[][] {
+      if (arr.length === 0)
         throw new TypeError('At least one row is needed to construct a matrix.')
+      const N = checkVectorTypeAndReturnLength(arr[0])
+
+      const result: any[][] = []
+      for (const row of arr) {
+        const rowLength = checkVectorTypeAndReturnLength(row)
+
+        if (rowLength !== N) {
+          throw new TypeError(
+            'The vectors had different length: ' +
+              (N | 0) +
+              ' ≠ ' +
+              (rowLength | 0)
+          )
+        }
+
+        result.push(flatten(row))
       }
 
-      // Check if all arguments are Matrix (none are plain arrays)
-      const allMatrix = arr.every(item => typeof (item as any).toArray === 'function')
-      // Check if any argument is a plain array
-      const hasArray = arr.some(item => Array.isArray(item))
-
-      // Convert all to arrays for processing
-      const arrays = arr.map(item =>
-        typeof (item as any).toArray === 'function' ? (item as Matrix).toArray() : item
-      )
-
-      const result = _createArray(arrays)
-
-      // Return Matrix only if all inputs were Matrix, otherwise return array
-      if (allMatrix && !hasArray) {
-        return matrix(result)
-      }
       return result
     }
 
-    // TODO implement this properly for SparseMatrix
-  })
+    function checkVectorTypeAndReturnLength(vec: any): number {
+      const s = size(vec)
 
-  function _createArray (arr: any[]): any[][] {
-    if (arr.length === 0) throw new TypeError('At least one row is needed to construct a matrix.')
-    const N = checkVectorTypeAndReturnLength(arr[0])
-
-    const result: any[][] = []
-    for (const row of arr) {
-      const rowLength = checkVectorTypeAndReturnLength(row)
-
-      if (rowLength !== N) {
-        throw new TypeError('The vectors had different length: ' + (N | 0) + ' ≠ ' + (rowLength | 0))
-      }
-
-      result.push(flatten(row))
-    }
-
-    return result
-  }
-
-  function checkVectorTypeAndReturnLength (vec: any): number {
-    const s = size(vec)
-
-    if (s.length === 1) { // 1D vector
-      return s[0]
-    } else if (s.length === 2) { // 2D vector
-      if (s[0] === 1) { // row vector
-        return s[1]
-      } else if (s[1] === 1) { // col vector
+      if (s.length === 1) {
+        // 1D vector
         return s[0]
+      } else if (s.length === 2) {
+        // 2D vector
+        if (s[0] === 1) {
+          // row vector
+          return s[1]
+        } else if (s[1] === 1) {
+          // col vector
+          return s[0]
+        } else {
+          throw new TypeError('At least one of the arguments is not a vector.')
+        }
       } else {
-        throw new TypeError('At least one of the arguments is not a vector.')
+        throw new TypeError(
+          'Only one- or two-dimensional vectors are supported.'
+        )
       }
-    } else {
-      throw new TypeError('Only one- or two-dimensional vectors are supported.')
     }
   }
-})
+)

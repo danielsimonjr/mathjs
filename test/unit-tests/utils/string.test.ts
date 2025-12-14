@@ -19,7 +19,10 @@ describe('string', function () {
 
   it('should escape special HTML characters', function () {
     assert.strictEqual(escape('&<>"\''), '&amp;&lt;&gt;&quot;&#39;')
-    assert.strictEqual(escape('<script src="script.js?version=1.0&type=js">'), '&lt;script src=&quot;script.js?version=1.0&amp;type=js&quot;&gt;')
+    assert.strictEqual(
+      escape('<script src="script.js?version=1.0&type=js">'),
+      '&lt;script src=&quot;script.js?version=1.0&amp;type=js&quot;&gt;'
+    )
   })
 
   describe('format', function () {
@@ -48,14 +51,26 @@ describe('string', function () {
       assert.strictEqual(format(math.fraction(-0.125)), '-1/8')
     })
 
-    it('should format a fraction with option fraction=\'ratio\'', function () {
-      assert.strictEqual(format(math.fraction(1, 3), { fraction: 'ratio' }), '1/3')
-      assert.strictEqual(format(math.fraction(2, 6), { fraction: 'ratio' }), '1/3')
+    it("should format a fraction with option fraction='ratio'", function () {
+      assert.strictEqual(
+        format(math.fraction(1, 3), { fraction: 'ratio' }),
+        '1/3'
+      )
+      assert.strictEqual(
+        format(math.fraction(2, 6), { fraction: 'ratio' }),
+        '1/3'
+      )
     })
 
-    it('should format a fraction with option fraction=\'decimal\'', function () {
-      assert.strictEqual(format(math.fraction(1, 3), { fraction: 'decimal' }), '0.(3)')
-      assert.strictEqual(format(math.fraction(2, 6), { fraction: 'decimal' }), '0.(3)')
+    it("should format a fraction with option fraction='decimal'", function () {
+      assert.strictEqual(
+        format(math.fraction(1, 3), { fraction: 'decimal' }),
+        '0.(3)'
+      )
+      assert.strictEqual(
+        format(math.fraction(2, 6), { fraction: 'decimal' }),
+        '0.(3)'
+      )
     })
 
     it('should format a number with configuration', function () {
@@ -65,7 +80,13 @@ describe('string', function () {
 
     it('should format an array', function () {
       assert.strictEqual(format([1, 2, 3]), '[1, 2, 3]')
-      assert.strictEqual(format([[1, 2], [3, 4]]), '[[1, 2], [3, 4]]')
+      assert.strictEqual(
+        format([
+          [1, 2],
+          [3, 4]
+        ]),
+        '[[1, 2], [3, 4]]'
+      )
     })
 
     it('should format a string', function () {
@@ -73,7 +94,10 @@ describe('string', function () {
     })
 
     it('should format a string with escape characters', function () {
-      assert.strictEqual(format('with " double quote'), '"with \\" double quote"')
+      assert.strictEqual(
+        format('with " double quote'),
+        '"with \\" double quote"'
+      )
       assert.strictEqual(format('with \\ backslash'), '"with \\\\ backslash"')
       assert.strictEqual(format('with \b'), '"with \\b"')
       assert.strictEqual(format('with \f'), '"with \\f"')
@@ -93,8 +117,14 @@ describe('string', function () {
     })
 
     it('should format an object with escape characters', function () {
-      assert.strictEqual(format({ 'with " double quote': 42 }), '{"with \\" double quote": 42}')
-      assert.strictEqual(format({ 'with \\ backslash': 42 }), '{"with \\\\ backslash": 42}')
+      assert.strictEqual(
+        format({ 'with " double quote': 42 }),
+        '{"with \\" double quote": 42}'
+      )
+      assert.strictEqual(
+        format({ 'with \\ backslash': 42 }),
+        '{"with \\\\ backslash": 42}'
+      )
     })
 
     it('should format an object with its own format function', function () {
@@ -114,8 +144,15 @@ describe('string', function () {
     })
 
     it('should format a function', function () {
-      assert.strictEqual(format(function (a, b) { return a + b }), 'function')
-      const f = function (a, b) { return a + b }
+      assert.strictEqual(
+        format(function (a, b) {
+          return a + b
+        }),
+        'function'
+      )
+      const f = function (a, b) {
+        return a + b
+      }
       f.syntax = 'f(x, y)'
       assert.strictEqual(format(f), 'f(x, y)')
     })

@@ -6,7 +6,7 @@ import * as loader from '@assemblyscript/loader'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-async function test() {
+async function test () {
   const wasmPath = join(__dirname, '../../lib/wasm/index.wasm')
   const wasmBuffer = await readFile(wasmPath)
 
@@ -61,7 +61,7 @@ async function test() {
     // Try __getArrayView
     try {
       const view = exports.__getArrayView(arrPtr)
-      console.log('__getArrayView:', view.constructor.name, view ? `[${Array.from(view.slice(0,4)).join(', ')}] length=${view.length}` : 'null')
+      console.log('__getArrayView:', view.constructor.name, view ? `[${Array.from(view.slice(0, 4)).join(', ')}] length=${view.length}` : 'null')
     } catch (e) {
       console.log('__getArrayView error:', e.message)
     }

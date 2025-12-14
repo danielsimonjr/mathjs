@@ -20,7 +20,10 @@ describe('index', function () {
   })
 
   it('should create an index from bignumbers (downgrades to numbers)', function () {
-    const index = math.index(new Range(math.bignumber(2), math.bignumber(6)), math.bignumber(3))
+    const index = math.index(
+      new Range(math.bignumber(2), math.bignumber(6)),
+      math.bignumber(3)
+    )
     assert.ok(index instanceof math.Index)
     assert.deepStrictEqual(index._dimensions, [new Range(2, 6, 1), 3])
   })

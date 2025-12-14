@@ -31,10 +31,22 @@ describe('unequal', function () {
     // NaN
     assert.strictEqual(unequal(Number.NaN, Number.NaN), true)
     // Infinity
-    assert.strictEqual(unequal(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY), false)
-    assert.strictEqual(unequal(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY), false)
-    assert.strictEqual(unequal(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY), true)
-    assert.strictEqual(unequal(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY), true)
+    assert.strictEqual(
+      unequal(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
+      false
+    )
+    assert.strictEqual(
+      unequal(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY),
+      false
+    )
+    assert.strictEqual(
+      unequal(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY),
+      true
+    )
+    assert.strictEqual(
+      unequal(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY),
+      true
+    )
     assert.strictEqual(unequal(Number.POSITIVE_INFINITY, 2.0), true)
     assert.strictEqual(unequal(2.0, Number.POSITIVE_INFINITY), true)
     assert.strictEqual(unequal(Number.NEGATIVE_INFINITY, 2.0), true)
@@ -76,16 +88,24 @@ describe('unequal', function () {
     assert.deepStrictEqual(unequal(bignumber(2), 3), true)
     assert.deepStrictEqual(unequal(2, bignumber(2)), false)
 
-    assert.throws(function () { unequal(1 / 3, bignumber(1).div(3)) }, /TypeError: Cannot implicitly convert a number with >15 significant digits to BigNumber/)
-    assert.throws(function () { unequal(bignumber(1).div(3), 1 / 3) }, /TypeError: Cannot implicitly convert a number with >15 significant digits to BigNumber/)
+    assert.throws(function () {
+      unequal(1 / 3, bignumber(1).div(3))
+    }, /TypeError: Cannot implicitly convert a number with >15 significant digits to BigNumber/)
+    assert.throws(function () {
+      unequal(bignumber(1).div(3), 1 / 3)
+    }, /TypeError: Cannot implicitly convert a number with >15 significant digits to BigNumber/)
   })
 
   it('should compare mixed numbers and bigints', function () {
     assert.deepStrictEqual(unequal(2n, 3), true)
     assert.deepStrictEqual(unequal(2, 2n), false)
 
-    assert.throws(function () { unequal(123123123123123123123n, 1) }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
-    assert.throws(function () { unequal(1, 123123123123123123123n) }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
+    assert.throws(function () {
+      unequal(123123123123123123123n, 1)
+    }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
+    assert.throws(function () {
+      unequal(1, 123123123123123123123n)
+    }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
   })
 
   it('should compare mixed booleans and bignumbers', function () {
@@ -118,9 +138,18 @@ describe('unequal', function () {
   })
 
   it('should compare two fractions', function () {
-    assert.strictEqual(unequal(math.fraction(3), math.fraction(2)).valueOf(), true)
-    assert.strictEqual(unequal(math.fraction(2), math.fraction(3)).valueOf(), true)
-    assert.strictEqual(unequal(math.fraction(3), math.fraction(3)).valueOf(), false)
+    assert.strictEqual(
+      unequal(math.fraction(3), math.fraction(2)).valueOf(),
+      true
+    )
+    assert.strictEqual(
+      unequal(math.fraction(2), math.fraction(3)).valueOf(),
+      true
+    )
+    assert.strictEqual(
+      unequal(math.fraction(3), math.fraction(3)).valueOf(),
+      false
+    )
   })
 
   it('should compare mixed fractions and numbers', function () {
@@ -152,27 +181,49 @@ describe('unequal', function () {
   it('should apply configuration option relTol', function () {
     const mymath = math.create()
     assert.strictEqual(mymath.unequal(1, 0.991), true)
-    assert.strictEqual(mymath.unequal(mymath.bignumber(1), mymath.bignumber(0.991)), true)
-    assert.strictEqual(mymath.unequal(mymath.complex(1, 0), mymath.complex(0.991, 0)), true)
+    assert.strictEqual(
+      mymath.unequal(mymath.bignumber(1), mymath.bignumber(0.991)),
+      true
+    )
+    assert.strictEqual(
+      mymath.unequal(mymath.complex(1, 0), mymath.complex(0.991, 0)),
+      true
+    )
 
     mymath.config({ relTol: 1e-2 })
     assert.strictEqual(mymath.unequal(1, 0.991), false)
-    assert.strictEqual(mymath.unequal(mymath.bignumber(1), mymath.bignumber(0.991)), false)
-    assert.strictEqual(mymath.unequal(mymath.complex(1, 0), mymath.complex(0.991, 0)), false)
+    assert.strictEqual(
+      mymath.unequal(mymath.bignumber(1), mymath.bignumber(0.991)),
+      false
+    )
+    assert.strictEqual(
+      mymath.unequal(mymath.complex(1, 0), mymath.complex(0.991, 0)),
+      false
+    )
   })
 
   it('should throw an error when comparing numbers and units', function () {
-    assert.throws(function () { unequal(unit('100cm'), 22) })
-    assert.throws(function () { unequal(22, unit('100cm')) })
+    assert.throws(function () {
+      unequal(unit('100cm'), 22)
+    })
+    assert.throws(function () {
+      unequal(22, unit('100cm'))
+    })
   })
 
   it('should throw an error when comparing bignumbers and units', function () {
-    assert.throws(function () { unequal(unit('100cm'), bignumber(22)) })
-    assert.throws(function () { unequal(bignumber(22), unit('100cm')) })
+    assert.throws(function () {
+      unequal(unit('100cm'), bignumber(22))
+    })
+    assert.throws(function () {
+      unequal(bignumber(22), unit('100cm'))
+    })
   })
 
   it('should throw an error for two measures of different units', function () {
-    assert.throws(function () { unequal(math.unit(5, 'km'), math.unit(100, 'gram')) })
+    assert.throws(function () {
+      unequal(math.unit(5, 'km'), math.unit(100, 'gram'))
+    })
   })
 
   it('should compare two strings by their numerical value', function () {
@@ -180,7 +231,9 @@ describe('unequal', function () {
     assert.strictEqual(unequal('1000', '1e3'), false)
     assert.strictEqual(unequal('20', '1'), true)
 
-    assert.throws(function () { unequal('A', 'B') }, /Cannot convert "A" to a number/)
+    assert.throws(function () {
+      unequal('A', 'B')
+    }, /Cannot convert "A" to a number/)
   })
 
   describe('Array', function () {
@@ -190,71 +243,247 @@ describe('unequal', function () {
     })
 
     it('should compare array - array', function () {
-      assert.deepStrictEqual(unequal([[1, 2, 0], [-1, 0, 2]], [[1, -1, 0], [-1, 1, 0]]), [[false, true, false], [false, true, true]])
+      assert.deepStrictEqual(
+        unequal(
+          [
+            [1, 2, 0],
+            [-1, 0, 2]
+          ],
+          [
+            [1, -1, 0],
+            [-1, 1, 0]
+          ]
+        ),
+        [
+          [false, true, false],
+          [false, true, true]
+        ]
+      )
     })
 
     it('should compare broadcastable arrays', function () {
-      assert.deepStrictEqual(unequal([1, 2, 0], [[1], [0]]), [[false, true, true], [true, true, false]])
+      assert.deepStrictEqual(unequal([1, 2, 0], [[1], [0]]), [
+        [false, true, true],
+        [true, true, false]
+      ])
     })
 
     it('should compare array - dense matrix', function () {
-      assert.deepStrictEqual(unequal([[1, 2, 0], [-1, 0, 2]], matrix([[1, -1, 0], [-1, 1, 0]])), matrix([[false, true, false], [false, true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          [
+            [1, 2, 0],
+            [-1, 0, 2]
+          ],
+          matrix([
+            [1, -1, 0],
+            [-1, 1, 0]
+          ])
+        ),
+        matrix([
+          [false, true, false],
+          [false, true, true]
+        ])
+      )
     })
 
     it('should compare array - sparse matrix', function () {
-      assert.deepStrictEqual(unequal([[1, 2, 0], [-1, 0, 2]], sparse([[1, -1, 0], [-1, 1, 0]])), matrix([[false, true, false], [false, true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          [
+            [1, 2, 0],
+            [-1, 0, 2]
+          ],
+          sparse([
+            [1, -1, 0],
+            [-1, 1, 0]
+          ])
+        ),
+        matrix([
+          [false, true, false],
+          [false, true, true]
+        ])
+      )
     })
 
     it('should throw an error if arrays have different sizes', function () {
-      assert.throws(function () { unequal([1, 4, 5], [3, 4]) })
+      assert.throws(function () {
+        unequal([1, 4, 5], [3, 4])
+      })
     })
   })
 
   describe('DenseMatrix', function () {
     it('should compare dense matrix - scalar', function () {
-      assert.deepStrictEqual(unequal(2, matrix([1, 2, 3])), matrix([true, false, true]))
-      assert.deepStrictEqual(unequal(matrix([1, 2, 3]), 2), matrix([true, false, true]))
+      assert.deepStrictEqual(
+        unequal(2, matrix([1, 2, 3])),
+        matrix([true, false, true])
+      )
+      assert.deepStrictEqual(
+        unequal(matrix([1, 2, 3]), 2),
+        matrix([true, false, true])
+      )
     })
 
     it('should compare dense matrix - array', function () {
-      assert.deepStrictEqual(unequal(matrix([[1, 2, 0], [-1, 0, 2]]), [[1, -1, 0], [-1, 1, 0]]), matrix([[false, true, false], [false, true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          matrix([
+            [1, 2, 0],
+            [-1, 0, 2]
+          ]),
+          [
+            [1, -1, 0],
+            [-1, 1, 0]
+          ]
+        ),
+        matrix([
+          [false, true, false],
+          [false, true, true]
+        ])
+      )
     })
 
     it('should compare dense matrix - dense matrix', function () {
-      assert.deepStrictEqual(unequal(matrix([[1, 2, 0], [-1, 0, 2]]), matrix([[1, -1, 0], [-1, 1, 0]])), matrix([[false, true, false], [false, true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          matrix([
+            [1, 2, 0],
+            [-1, 0, 2]
+          ]),
+          matrix([
+            [1, -1, 0],
+            [-1, 1, 0]
+          ])
+        ),
+        matrix([
+          [false, true, false],
+          [false, true, true]
+        ])
+      )
     })
 
     it('should compare dense matrix - sparse matrix', function () {
-      assert.deepStrictEqual(unequal(matrix([[1, 2, 0], [-1, 0, 2]]), sparse([[1, -1, 0], [-1, 1, 0]])), matrix([[false, true, false], [false, true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          matrix([
+            [1, 2, 0],
+            [-1, 0, 2]
+          ]),
+          sparse([
+            [1, -1, 0],
+            [-1, 1, 0]
+          ])
+        ),
+        matrix([
+          [false, true, false],
+          [false, true, true]
+        ])
+      )
     })
   })
 
   describe('SparseMatrix', function () {
     it('should compare sparse matrix - scalar', function () {
-      assert.deepStrictEqual(unequal(2, sparse([[1, 2], [3, 4]])), matrix([[true, false], [true, true]]))
-      assert.deepStrictEqual(unequal(sparse([[1, 2], [3, 4]]), 2), matrix([[true, false], [true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          2,
+          sparse([
+            [1, 2],
+            [3, 4]
+          ])
+        ),
+        matrix([
+          [true, false],
+          [true, true]
+        ])
+      )
+      assert.deepStrictEqual(
+        unequal(
+          sparse([
+            [1, 2],
+            [3, 4]
+          ]),
+          2
+        ),
+        matrix([
+          [true, false],
+          [true, true]
+        ])
+      )
     })
 
     it('should compare sparse matrix - array', function () {
-      assert.deepStrictEqual(unequal(sparse([[1, 2, 0], [-1, 0, 2]]), [[1, -1, 0], [-1, 1, 0]]), matrix([[false, true, false], [false, true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          sparse([
+            [1, 2, 0],
+            [-1, 0, 2]
+          ]),
+          [
+            [1, -1, 0],
+            [-1, 1, 0]
+          ]
+        ),
+        matrix([
+          [false, true, false],
+          [false, true, true]
+        ])
+      )
     })
 
     it('should compare sparse matrix - dense matrix', function () {
-      assert.deepStrictEqual(unequal(sparse([[1, 2, 0], [-1, 0, 2]]), matrix([[1, -1, 0], [-1, 1, 0]])), matrix([[false, true, false], [false, true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          sparse([
+            [1, 2, 0],
+            [-1, 0, 2]
+          ]),
+          matrix([
+            [1, -1, 0],
+            [-1, 1, 0]
+          ])
+        ),
+        matrix([
+          [false, true, false],
+          [false, true, true]
+        ])
+      )
     })
 
     it('should compare sparse matrix - sparse matrix', function () {
-      assert.deepStrictEqual(unequal(sparse([[1, 2, 0], [-1, 0, 2]]), sparse([[1, -1, 0], [-1, 1, 0]])), sparse([[false, true, false], [false, true, true]]))
+      assert.deepStrictEqual(
+        unequal(
+          sparse([
+            [1, 2, 0],
+            [-1, 0, 2]
+          ]),
+          sparse([
+            [1, -1, 0],
+            [-1, 1, 0]
+          ])
+        ),
+        sparse([
+          [false, true, false],
+          [false, true, true]
+        ])
+      )
     })
   })
 
   it('should throw an error if matrices have different sizes', function () {
-    assert.throws(function () { unequal([1, 4, 5], [3, 4]) })
+    assert.throws(function () {
+      unequal([1, 4, 5], [3, 4])
+    })
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { unequal(1) }, /TypeError: Too few arguments/)
-    assert.throws(function () { unequal(1, 2, 3) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      unequal(1)
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      unequal(1, 2, 3)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should LaTeX unequal', function () {

@@ -10,7 +10,7 @@ import { csFlip } from './csFlip.ts'
  * @param {Array}   w               The array
  * @param {Number}  j               The array index
  */
-export function csMark (w: number[], j: number): void {
+export function csMark(w: number[], j: number): void {
   // mark w[j]
   w[j] = csFlip(w[j])
 }

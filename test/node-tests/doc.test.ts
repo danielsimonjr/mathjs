@@ -10,9 +10,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const math = create(all)
 const debug = process.argv.includes('--debug-docs')
 
-function extractExpectation (comment, optional = false) {
+function extractExpectation(comment, optional = false) {
   if (comment === '') return undefined
-  const returnsParts = comment.split('eturns').map(s => s.trim())
+  const returnsParts = comment.split('eturns').map((s) => s.trim())
   if (returnsParts.length > 1) return extractValue(returnsParts[1])
   const outputsParts = comment.split('utputs')
   if (outputsParts.length > 1) {
@@ -26,7 +26,7 @@ function extractExpectation (comment, optional = false) {
   return extractValue(comment)
 }
 
-function extractValue (spec) {
+function extractValue(spec) {
   // First check for a leading keyword:
   const words = spec.split(' ')
   // If the last word end in 'i' and the value is not labeled as complex,
@@ -57,7 +57,8 @@ function extractValue (spec) {
     const template = keywords[words[0]]
     const spot = template.indexOf('_')
     let filler = words.slice(1).join(' ')
-    if (words[0] === 'Complex') { // a bit of a hack here :(
+    if (words[0] === 'Complex') {
+      // a bit of a hack here :(
       filler = words.slice(1).join('')
     }
     spec = template.substring(0, spot) + filler + template.substr(spot + 1)
@@ -82,36 +83,76 @@ function extractValue (spec) {
       throw err
     }
   }
-  if (words[0] === 'Node') { // and even more :(
+  if (words[0] === 'Node') {
+    // and even more :(
     delete value.comment
   }
   return value
 }
 
-const ignoreFunctions = new Set([
-  'config'
-])
+const ignoreFunctions = new Set(['config'])
 
 const knownProblems = new Set([
-  'setUnion', 'unequal', 'equal', 'deepEqual', 'compareNatural', 'randomInt',
-  'random', 'pickRandom', 'kldivergence',
-  'parser', 'compile', 're', 'im',
-  'subset', 'squeeze', 'rotationMatrix',
-  'rotate', 'reshape', 'partitionSelect', 'matrixFromFunction',
-  'matrixFromColumns', 'getMatrixDataType', 'eigs', 'diff',
-  'nthRoots', 'nthRoot',
-  'mod', 'floor', 'fix', 'expm1', 'exp',
-  'ceil', 'cbrt', 'add', 'slu',
-  'rationalize', 'qr', 'lusolve', 'lup', 'derivative',
-  'symbolicEqual', 'schur', 'sylvester', 'freqz', 'round',
-  'import', 'typed',
-  'unit', 'sparse', 'matrix', 'index', 'bignumber', 'fraction', 'complex',
+  'setUnion',
+  'unequal',
+  'equal',
+  'deepEqual',
+  'compareNatural',
+  'randomInt',
+  'random',
+  'pickRandom',
+  'kldivergence',
+  'parser',
+  'compile',
+  're',
+  'im',
+  'subset',
+  'squeeze',
+  'rotationMatrix',
+  'rotate',
+  'reshape',
+  'partitionSelect',
+  'matrixFromFunction',
+  'matrixFromColumns',
+  'getMatrixDataType',
+  'eigs',
+  'diff',
+  'nthRoots',
+  'nthRoot',
+  'mod',
+  'floor',
+  'fix',
+  'expm1',
+  'exp',
+  'ceil',
+  'cbrt',
+  'add',
+  'slu',
+  'rationalize',
+  'qr',
+  'lusolve',
+  'lup',
+  'derivative',
+  'symbolicEqual',
+  'schur',
+  'sylvester',
+  'freqz',
+  'round',
+  'import',
+  'typed',
+  'unit',
+  'sparse',
+  'matrix',
+  'index',
+  'bignumber',
+  'fraction',
+  'complex',
   'parse'
 ])
 
 let issueCount = 0
 
-function maybeCheckExpectation (name, expected, expectedFrom, got, gotFrom) {
+function maybeCheckExpectation(name, expected, expectedFrom, got, gotFrom) {
   if (knownProblems.has(name)) {
     try {
       checkExpectation(expected, got)
@@ -119,7 +160,8 @@ function maybeCheckExpectation (name, expected, expectedFrom, got, gotFrom) {
       issueCount++
       if (debug) {
         console.log(
-          `PLEASE RESOLVE: '${gotFrom}' was supposed to '${expectedFrom}'`)
+          `PLEASE RESOLVE: '${gotFrom}' was supposed to '${expectedFrom}'`
+        )
         console.log('    but', err.toString())
       }
     }
@@ -128,7 +170,7 @@ function maybeCheckExpectation (name, expected, expectedFrom, got, gotFrom) {
   }
 }
 
-function checkExpectation (want, got) {
+function checkExpectation(want, got) {
   if (Array.isArray(want)) {
     if (!Array.isArray(got)) {
       got = want.valueOf()
@@ -151,7 +193,9 @@ function checkExpectation (want, got) {
   if (typeof want === 'number' && typeof got === 'number' && want !== got) {
     issueCount++
     if (debug) {
-      console.log(`  Note: return value ${got} not exactly as expected: ${want}`)
+      console.log(
+        `  Note: return value ${got} not exactly as expected: ${want}`
+      )
     }
     return approxEqual(got, want, 1e-9)
   }
@@ -175,9 +219,16 @@ function checkExpectation (want, got) {
 
 const OKundocumented = new Set([
   'apply', // deprecated backwards-compatibility synonym of mapSlices
-  'addScalar', 'subtractScalar', 'divideScalar', 'multiplyScalar', 'equalScalar',
-  'docs', 'FibonacciHeap',
-  'IndexError', 'DimensionError', 'ArgumentsError'
+  'addScalar',
+  'subtractScalar',
+  'divideScalar',
+  'multiplyScalar',
+  'equalScalar',
+  'docs',
+  'FibonacciHeap',
+  'IndexError',
+  'DimensionError',
+  'ArgumentsError'
 ])
 
 const knownUndocumented = new Set([
@@ -362,13 +413,14 @@ describe('Testing examples from (jsdoc) comments', function () {
 
   it("should cover all names (but doesn't yet)", function () {
     const documented = new Set(Object.keys(allDocs))
-    const badUndocumented = allNames.filter(name => {
-      return !(documented.has(name) ||
-               OKundocumented.has(name) ||
-               knownUndocumented.has(name) ||
-               name.substr(0, 1) === '_' ||
-               name.substr(-12) === 'Dependencies' ||
-               name.substr(0, 6) === 'create'
+    const badUndocumented = allNames.filter((name) => {
+      return !(
+        documented.has(name) ||
+        OKundocumented.has(name) ||
+        knownUndocumented.has(name) ||
+        name.substr(0, 1) === '_' ||
+        name.substr(-12) === 'Dependencies' ||
+        name.substr(0, 6) === 'create'
       )
     })
     assert.deepEqual(badUndocumented, [])
@@ -406,9 +458,11 @@ describe('Testing examples from (jsdoc) comments', function () {
                 continue
               }
               // Comment specifying a future value or the return of prior code
-              parts = parts.map(s => s.trim())
+              parts = parts.map((s) => s.trim())
               if (parts[0] !== '') {
-                if (accumulation) { accumulation += '\n' }
+                if (accumulation) {
+                  accumulation += '\n'
+                }
                 accumulation += parts[0]
               }
               if (accumulation !== '' && expectation === undefined) {
@@ -425,14 +479,21 @@ describe('Testing examples from (jsdoc) comments', function () {
                   value = err.toString()
                 }
                 maybeCheckExpectation(
-                  doc.name, expectation, expectationFrom, value, accumulation)
+                  doc.name,
+                  expectation,
+                  expectationFrom,
+                  value,
+                  accumulation
+                )
                 accumulation = ''
               }
               expectationFrom = parts[1]
               expectation = extractExpectation(expectationFrom, 'requireSignal')
             } else {
               if (line !== '') {
-                if (accumulation) { accumulation += '\n' }
+                if (accumulation) {
+                  accumulation += '\n'
+                }
                 accumulation += line
               }
             }
@@ -445,19 +506,26 @@ describe('Testing examples from (jsdoc) comments', function () {
   after(function () {
     if (debug) {
       if (knownProblems.size > 0) {
-        console.log(`\nWARNING: ${knownProblems.size} known errors converted ` +
-          'to PLEASE RESOLVE warnings.')
+        console.log(
+          `\nWARNING: ${knownProblems.size} known errors converted ` +
+            'to PLEASE RESOLVE warnings.'
+        )
       }
       if (knownUndocumented.size > 0) {
-        console.log(`\nWARNING: ${knownUndocumented.size} symbols in math are known to ` +
-          'be undocumented; PLEASE EXTEND the documentation.')
+        console.log(
+          `\nWARNING: ${knownUndocumented.size} symbols in math are known to ` +
+            'be undocumented; PLEASE EXTEND the documentation.'
+        )
       }
     }
 
     if (issueCount > 0) {
-      console.log(`\nWARNING: ${issueCount} issues found in the JSDoc comments.` + (!debug
-        ? ' Run the tests again with "npm run test:node -- --debug-docs" to see detailed information'
-        : ''))
+      console.log(
+        `\nWARNING: ${issueCount} issues found in the JSDoc comments.` +
+          (!debug
+            ? ' Run the tests again with "npm run test:node -- --debug-docs" to see detailed information'
+            : '')
+      )
     }
   })
 })

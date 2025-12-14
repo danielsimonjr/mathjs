@@ -38,13 +38,20 @@ const dependencies = ['typed', 'format']
  * @param {number | BigNumber} wordSize Optional word size (see `format`)
  * @return {string}         The formatted value
  */
-export const createHex = /* #__PURE__ */ factory(name, dependencies, ({ typed, format }: Dependencies): TypedFunction => {
-  return typed(name, {
-    'number | BigNumber': function (n: number | bigint): string {
-      return format(n, { notation: 'hex' })
-    },
-    'number | BigNumber, number | BigNumber': function (n: number | bigint, wordSize: number | bigint): string {
-      return format(n, { notation: 'hex', wordSize })
-    }
-  })
-})
+export const createHex = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, format }: Dependencies): TypedFunction => {
+    return typed(name, {
+      'number | BigNumber': function (n: number | bigint): string {
+        return format(n, { notation: 'hex' })
+      },
+      'number | BigNumber, number | BigNumber': function (
+        n: number | bigint,
+        wordSize: number | bigint
+      ): string {
+        return format(n, { notation: 'hex', wordSize })
+      }
+    })
+  }
+)

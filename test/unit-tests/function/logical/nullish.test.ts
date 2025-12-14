@@ -125,7 +125,10 @@ describe('nullish', function () {
     it('should throw on mismatched shapes', function () {
       assert.throws(() => nullish([1], [7, 8]), /Dimension mismatch/)
       assert.throws(() => nullish(matrix([1]), matrix([7, 8])), /RangeError/)
-      assert.throws(() => nullish(sparse([[1]]), matrix([7, 8])), /DimensionError/)
+      assert.throws(
+        () => nullish(sparse([[1]]), matrix([7, 8])),
+        /DimensionError/
+      )
     })
 
     it('should throw on mismatched shapes for sparse ?? dense', function () {
@@ -156,7 +159,10 @@ describe('nullish', function () {
 
     it('should throw on broadcastable but mismatched sizes', function () {
       assert.throws(() => nullish([1], [7, 8]), /Dimension mismatch/)
-      assert.throws(() => nullish(math.matrix([1]), math.matrix([7, 8])), /Dimension mismatch/)
+      assert.throws(
+        () => nullish(math.matrix([1]), math.matrix([7, 8])),
+        /Dimension mismatch/
+      )
     })
 
     it('should throw on mismatched shapes for sparse ?? array (no temp conversion)', function () {
@@ -189,19 +195,28 @@ describe('nullish', function () {
 
     it('Array, DenseMatrix -> Matrix', function () {
       const r = nullish([null, 2], math.matrix([7, 8]))
-      assert.strictEqual(!!(r && (r.isMatrix || r.isDenseMatrix || r.isSparseMatrix)), true)
+      assert.strictEqual(
+        !!(r && (r.isMatrix || r.isDenseMatrix || r.isSparseMatrix)),
+        true
+      )
       assert.deepStrictEqual(r.toArray(), [7, 2])
     })
 
     it('DenseMatrix, Array -> Matrix', function () {
       const r = nullish(math.matrix([null, 2]), [7, 8])
-      assert.strictEqual(!!(r && (r.isMatrix || r.isDenseMatrix || r.isSparseMatrix)), true)
+      assert.strictEqual(
+        !!(r && (r.isMatrix || r.isDenseMatrix || r.isSparseMatrix)),
+        true
+      )
       assert.deepStrictEqual(r.toArray(), [7, 2])
     })
 
     it('SparseMatrix, Array -> Matrix (left returned on match)', function () {
       const r = nullish(math.sparse([[1, 0]]), [[7, 8]])
-      assert.strictEqual(!!(r && (r.isMatrix || r.isDenseMatrix || r.isSparseMatrix)), true)
+      assert.strictEqual(
+        !!(r && (r.isMatrix || r.isDenseMatrix || r.isSparseMatrix)),
+        true
+      )
       assert.deepStrictEqual(r.toArray(), [[1, 0]])
     })
 

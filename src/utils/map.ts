@@ -21,7 +21,7 @@ export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
   // @ts-expect-error: Implementation is compatible but TS can't infer it
   keys(): IterableIterator<K> {
     return Object.keys(this.wrappedObject)
-      .filter(key => this.has(key as K))
+      .filter((key) => this.has(key as K))
       .values() as IterableIterator<K>
   }
 
@@ -35,12 +35,18 @@ export class ObjectWrappingMap<K = string, V = any> implements Map<K, V> {
   }
 
   has(key: K): boolean {
-    return isSafeProperty(this.wrappedObject, key as string) && (key as string) in this.wrappedObject
+    return (
+      isSafeProperty(this.wrappedObject, key as string) &&
+      (key as string) in this.wrappedObject
+    )
   }
 
   // @ts-expect-error: Implementation is compatible but TS can't infer it
   entries(): IterableIterator<[K, V]> {
-    return mapIterator(this.keys(), key => [key, this.get(key)!]) as IterableIterator<[K, V]>
+    return mapIterator(this.keys(), (key) => [
+      key,
+      this.get(key)!
+    ]) as IterableIterator<[K, V]>
   }
 
   // @ts-expect-error: Implementation is compatible but TS can't infer it
@@ -104,14 +110,11 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
     this.a = a
     this.b = b
     this.bKeys = bKeys
-
     ;(this as any)[Symbol.iterator] = this.entries
   }
 
   get(key: K): V | undefined {
-    return this.bKeys.has(key)
-      ? this.b.get(key)
-      : this.a.get(key)
+    return this.bKeys.has(key) ? this.b.get(key) : this.a.get(key)
   }
 
   set(key: K, value: V): this {
@@ -129,10 +132,7 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
 
   // @ts-expect-error: Implementation is compatible but TS can't infer it
   keys(): IterableIterator<K> {
-    return new Set([
-      ...this.a.keys(),
-      ...this.b.keys()
-    ])[Symbol.iterator]()
+    return new Set([...this.a.keys(), ...this.b.keys()])[Symbol.iterator]()
   }
 
   // @ts-expect-error: Implementation is compatible but TS can't infer it
@@ -144,7 +144,10 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
 
   // @ts-expect-error: Implementation is compatible but TS can't infer it
   entries(): IterableIterator<[K, V]> {
-    return mapIterator(this.keys(), key => [key, this.get(key)!]) as IterableIterator<[K, V]>
+    return mapIterator(this.keys(), (key) => [
+      key,
+      this.get(key)!
+    ]) as IterableIterator<[K, V]>
   }
 
   forEach(callback: (value: V, key: K, map: Map<K, V>) => void): void {
@@ -154,9 +157,7 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
   }
 
   delete(key: K): boolean {
-    return this.bKeys.has(key)
-      ? this.b.delete(key)
-      : this.a.delete(key)
+    return this.bKeys.has(key) ? this.b.delete(key) : this.a.delete(key)
   }
 
   clear(): void {
@@ -172,12 +173,15 @@ export class PartitionedMap<K = any, V = any> implements Map<K, V> {
 /**
  * Create a new iterator that maps over the provided iterator, applying a mapping function to each item
  */
-function mapIterator<T, U>(it: Iterator<T>, callback: (value: T) => U): Iterator<U> {
+function mapIterator<T, U>(
+  it: Iterator<T>,
+  callback: (value: T) => U
+): Iterator<U> {
   return {
     next: (): IteratorResult<U> => {
       const n = it.next()
       return n.done
-        ? n as IteratorResult<U>
+        ? (n as IteratorResult<U>)
         : {
             value: callback(n.value),
             done: false
@@ -201,7 +205,9 @@ export function createEmptyMap<K = any, V = any>(): Map<K, V> {
  * @param mapOrObject - Map or object to convert
  * @returns Map instance
  */
-export function createMap<K = any, V = any>(mapOrObject?: Map<K, V> | Record<string, V> | null): Map<K, V> {
+export function createMap<K = any, V = any>(
+  mapOrObject?: Map<K, V> | Record<string, V> | null
+): Map<K, V> {
   if (!mapOrObject) {
     return createEmptyMap<K, V>()
   }
@@ -209,7 +215,9 @@ export function createMap<K = any, V = any>(mapOrObject?: Map<K, V> | Record<str
     return mapOrObject as Map<K, V>
   }
   if (isObject(mapOrObject)) {
-    return new ObjectWrappingMap(mapOrObject as Record<string, V>) as unknown as Map<K, V>
+    return new ObjectWrappingMap(
+      mapOrObject as Record<string, V>
+    ) as unknown as Map<K, V>
   }
 
   throw new Error('createMap can create maps from objects or Maps')

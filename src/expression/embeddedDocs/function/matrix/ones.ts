@@ -18,6 +18,17 @@ export const onesDocs = {
     'ones(size(a))'
   ],
   seealso: [
-    'concat', 'det', 'diag', 'identity', 'inv', 'range', 'size', 'squeeze', 'subset', 'trace', 'transpose', 'zeros'
+    'concat',
+    'det',
+    'diag',
+    'identity',
+    'inv',
+    'range',
+    'size',
+    'squeeze',
+    'subset',
+    'trace',
+    'transpose',
+    'zeros'
   ]
 }

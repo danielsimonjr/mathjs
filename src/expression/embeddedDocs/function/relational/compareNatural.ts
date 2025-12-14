@@ -1,12 +1,10 @@
 export const compareNaturalDocs = {
   name: 'compareNatural',
   category: 'Relational',
-  syntax: [
-    'compareNatural(x, y)'
-  ],
+  syntax: ['compareNatural(x, y)'],
   description:
-      'Compare two values of any type in a deterministic, natural way. ' +
-      'Returns 1 when x > y, -1 when x < y, and 0 when x == y.',
+    'Compare two values of any type in a deterministic, natural way. ' +
+    'Returns 1 when x > y, -1 when x < y, and 0 when x == y.',
   examples: [
     'compareNatural(2, 3)',
     'compareNatural(3, 2)',
@@ -20,6 +18,12 @@ export const compareNaturalDocs = {
     'compareNatural({a: 2}, {a: 4})'
   ],
   seealso: [
-    'equal', 'unequal', 'smaller', 'smallerEq', 'largerEq', 'compare', 'compareText'
+    'equal',
+    'unequal',
+    'smaller',
+    'smallerEq',
+    'largerEq',
+    'compare',
+    'compareText'
   ]
 }

@@ -28,7 +28,7 @@ export interface DecimalConfig {
 }
 
 // Default configuration
-let globalConfig: Required<DecimalConfig> = {
+const globalConfig: Required<DecimalConfig> = {
   precision: 28,
   rounding: ROUND_HALF_UP,
   toExpNeg: -7,
@@ -65,7 +65,14 @@ export class Decimal {
     return globalConfig.precision
   }
 
-  constructor(value: number | string | bigint | Decimal | { n: bigint; d: bigint; s?: number }) {
+  constructor(
+    value:
+      | number
+      | string
+      | bigint
+      | Decimal
+      | { n: bigint; d: bigint; s?: number }
+  ) {
     if (value instanceof Decimal) {
       this.d = value.d ? [...value.d] : null
       this.e = value.e
@@ -74,9 +81,14 @@ export class Decimal {
     }
 
     // Handle Fraction-like objects
-    if (typeof value === 'object' && value !== null && 'n' in value && 'd' in value) {
+    if (
+      typeof value === 'object' &&
+      value !== null &&
+      'n' in value &&
+      'd' in value
+    ) {
       const frac = value as { n: bigint; d: bigint; s?: number }
-      const sign = frac.s !== undefined ? frac.s : (frac.n >= 0n ? 1 : -1)
+      const sign = frac.s !== undefined ? frac.s : frac.n >= 0n ? 1 : -1
       const num = frac.n < 0n ? -frac.n : frac.n
       const den = frac.d < 0n ? -frac.d : frac.d
 
@@ -112,7 +124,7 @@ export class Decimal {
       if (!Number.isFinite(value)) {
         this.d = null
         this.e = NaN
-        this.s = Number.isNaN(value) ? NaN : (value < 0 ? -1 : 1)
+        this.s = Number.isNaN(value) ? NaN : value < 0 ? -1 : 1
         return
       }
       value = value.toString()
@@ -132,11 +144,11 @@ export class Decimal {
     if (den === 0n) throw new Error('Division by zero')
     if (num === 0n) return '0'
 
-    const negative = (num < 0n) !== (den < 0n)
+    const negative = num < 0n !== den < 0n
     num = num < 0n ? -num : num
     const denAbs = den < 0n ? -den : den
 
-    let intPart = num / denAbs
+    const intPart = num / denAbs
     let remainder = num % denAbs
 
     if (remainder === 0n) {
@@ -157,7 +169,11 @@ export class Decimal {
     return (negative ? '-' : '') + result
   }
 
-  private static parseString(str: string): { d: number[] | null; e: number; s: number } {
+  private static parseString(str: string): {
+    d: number[] | null
+    e: number
+    s: number
+  } {
     str = str.trim().toLowerCase()
 
     // Handle special values
@@ -221,7 +237,7 @@ export class Decimal {
     }
 
     // Convert to digit array
-    const d = str.split('').map(c => parseInt(c, 10))
+    const d = str.split('').map((c) => parseInt(c, 10))
 
     // Adjust exponent based on number of digits
     exp += d.length - 1
@@ -233,7 +249,8 @@ export class Decimal {
    * Configure global settings
    */
   static config(options: DecimalConfig): typeof Decimal {
-    if (options.precision !== undefined) globalConfig.precision = options.precision
+    if (options.precision !== undefined)
+      globalConfig.precision = options.precision
     if (options.rounding !== undefined) globalConfig.rounding = options.rounding
     if (options.toExpNeg !== undefined) globalConfig.toExpNeg = options.toExpNeg
     if (options.toExpPos !== undefined) globalConfig.toExpPos = options.toExpPos
@@ -291,7 +308,10 @@ export class Decimal {
   /**
    * Two-argument arctangent
    */
-  static atan2(y: Decimal | number | string, x: Decimal | number | string): Decimal {
+  static atan2(
+    y: Decimal | number | string,
+    x: Decimal | number | string
+  ): Decimal {
     const yDec = new Decimal(y)
     const xDec = new Decimal(x)
     return new Decimal(Math.atan2(yDec.toNumber(), xDec.toNumber()))
@@ -317,7 +337,7 @@ export class Decimal {
     const s = coef < 0n ? -1 : 1
     coef = coef < 0n ? -coef : coef
     const str = coef.toString()
-    const d = str.split('').map(c => parseInt(c, 10))
+    const d = str.split('').map((c) => parseInt(c, 10))
     const result = new Decimal(0)
     result.d = d
     result.e = exp + d.length - 1
@@ -418,7 +438,7 @@ export class Decimal {
 
     const diff = thisCoef - bCoef
     const result = Decimal.fromBigInt(diff < 0n ? -diff : diff, minExp)
-    result.s = diff < 0n ? -this.s : (diff === 0n ? 0 : this.s)
+    result.s = diff < 0n ? -this.s : diff === 0n ? 0 : this.s
     return result
   }
 
@@ -547,7 +567,12 @@ export class Decimal {
     for (let i = 0; i < 50; i++) {
       const prev = x
       x = x.plus(this.div(x)).div(2)
-      if (x.minus(prev).abs().lt(new Decimal(`1e-${precision}`))) {
+      if (
+        x
+          .minus(prev)
+          .abs()
+          .lt(new Decimal(`1e-${precision}`))
+      ) {
         break
       }
     }
@@ -572,8 +597,16 @@ export class Decimal {
     for (let i = 0; i < 50; i++) {
       const prev = x
       // x = (2x + a/x^2) / 3
-      x = x.times(2).plus(abs.div(x.times(x))).div(3)
-      if (x.minus(prev).abs().lt(new Decimal(`1e-${precision}`))) {
+      x = x
+        .times(2)
+        .plus(abs.div(x.times(x)))
+        .div(3)
+      if (
+        x
+          .minus(prev)
+          .abs()
+          .lt(new Decimal(`1e-${precision}`))
+      ) {
         break
       }
     }
@@ -713,8 +746,8 @@ export class Decimal {
     const rm = roundingMode ?? globalConfig.rounding
 
     // Position in digit array where rounding occurs
-    const exp = this.e
-    const roundAt = places + 1
+    const _exp = this.e
+    const _roundAt = places + 1
 
     // Convert to string, apply rounding, convert back
     const str = this.toString()
@@ -740,7 +773,8 @@ export class Decimal {
 
     // Get the digit that determines rounding
     const roundDigit = parseInt(fracPart[places] || '0', 10)
-    const truncated = intPart + (places > 0 ? '.' + fracPart.slice(0, places) : '')
+    const truncated =
+      intPart + (places > 0 ? '.' + fracPart.slice(0, places) : '')
 
     let result = new Decimal(truncated)
     result.s = this.s
@@ -757,7 +791,12 @@ export class Decimal {
     return result
   }
 
-  private shouldRoundUp(digit: number, rm: number, places: number, fracPart: string): boolean {
+  private shouldRoundUp(
+    digit: number,
+    rm: number,
+    places: number,
+    fracPart: string
+  ): boolean {
     switch (rm) {
       case ROUND_UP:
         return digit > 0
@@ -775,7 +814,8 @@ export class Decimal {
         if (digit < 5) return false
         if (digit > 5) return true
         // Exactly 5 - check if preceding digit is odd
-        const preceding = places > 0 ? parseInt(fracPart[places - 1] || '0', 10) : 0
+        const preceding =
+          places > 0 ? parseInt(fracPart[places - 1] || '0', 10) : 0
         return preceding % 2 !== 0
       }
       case ROUND_HALF_CEIL:

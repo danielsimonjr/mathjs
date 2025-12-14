@@ -1,13 +1,32 @@
 // @ts-nocheck
 import { Bench } from 'tinybench'
-import { index, Range, subset, map, ones, random, round } from '../../lib/esm/index.js'
+import {
+  index,
+  Range,
+  subset,
+  map,
+  ones,
+  random,
+  round
+} from '../../lib/esm/index.js'
 import { formatTaskResult } from './utils/formatTaskResult.js'
 
-const matrix = map(ones(10, 10, 'dense'), _ => round(random(-5, 5), 2))
+const matrix = map(ones(10, 10, 'dense'), (_) => round(random(-5, 5), 2))
 const array = matrix.toArray()
-const bigMatrix = map(ones(150, 150, 'dense'), _ => round(random(-5, 5), 2))
-const bigArray = map(ones(150, 150, 'dense'), _ => round(random(-5, 5), 2))
-const arrayOfBooleans = [true, false, false, true, true, true, false, true, false, true]
+const bigMatrix = map(ones(150, 150, 'dense'), (_) => round(random(-5, 5), 2))
+const bigArray = map(ones(150, 150, 'dense'), (_) => round(random(-5, 5), 2))
+const arrayOfBooleans = [
+  true,
+  false,
+  false,
+  true,
+  true,
+  true,
+  false,
+  true,
+  false,
+  true
+]
 const fiveNumbers = [0, 1, 5, 7, 9]
 const twoNumbers = [4, 6]
 const range = new Range(2, 9, 3)
@@ -113,5 +132,7 @@ const bench = new Bench({ time: 100, iterations: 100 })
     subset(bigArray, index(fiveNumbers, bigRange))
   })
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()

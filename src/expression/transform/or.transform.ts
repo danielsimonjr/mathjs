@@ -30,19 +30,24 @@ interface Dependencies {
 const name = 'or'
 const dependencies = ['typed', 'matrix', 'equalScalar', 'DenseMatrix', 'concat']
 
-export const createOrTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, matrix, equalScalar, DenseMatrix, concat }: Dependencies) => {
-  const or = createOr({ typed, matrix, equalScalar, DenseMatrix, concat })
+export const createOrTransform = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, matrix, equalScalar, DenseMatrix, concat }: Dependencies) => {
+    const or = createOr({ typed, matrix, equalScalar, DenseMatrix, concat })
 
-  function orTransform(args: Node[], math: any, scope: any): any {
-    const condition1 = args[0].compile().evaluate(scope)
-    if (!isCollection(condition1) && or(condition1, false)) {
-      return true
+    function orTransform(args: Node[], math: any, scope: any): any {
+      const condition1 = args[0].compile().evaluate(scope)
+      if (!isCollection(condition1) && or(condition1, false)) {
+        return true
+      }
+      const condition2 = args[1].compile().evaluate(scope)
+      return or(condition1, condition2)
     }
-    const condition2 = args[1].compile().evaluate(scope)
-    return or(condition1, condition2)
-  }
 
-  orTransform.rawArgs = true
+    orTransform.rawArgs = true
 
-  return orTransform as TransformFunction
-}, { isTransformFunction: true })
+    return orTransform as TransformFunction
+  },
+  { isTransformFunction: true }
+)

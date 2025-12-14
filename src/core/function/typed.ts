@@ -90,7 +90,9 @@ export interface TypedFunction extends Function {
   (...args: any[]): any
   isTypedFunction?: (value: any) => boolean
   referToSelf: (callback: (self: any) => (...args: any[]) => any) => any
-  referTo: (...signatures: string[]) => (callback: (...refs: any[]) => (...args: any[]) => any) => any
+  referTo: (
+    ...signatures: string[]
+  ) => (callback: (...refs: any[]) => (...args: any[]) => any) => any
   create: () => TypedFunction
   addTypes: (types: any[]) => void
   addConversions: (conversions: any[]) => void
@@ -98,7 +100,10 @@ export interface TypedFunction extends Function {
   clear: () => void
   onMismatch: (name: string, args: any[], signatures: any[]) => any
   createError: (name: string, args: any[], signatures: any[]) => Error
-  find: (fn: TypedFunction, signature: string | any[]) => ((...args: any[]) => any) | null
+  find: (
+    fn: TypedFunction,
+    signature: string | any[]
+  ) => ((...args: any[]) => any) | null
   resolve: (fn: TypedFunction, args: any[]) => any
 }
 
@@ -135,7 +140,7 @@ type TypeDefinition = {
 }
 
 // returns a new instance of typed-function
-let _createTyped: (() => TypedFunction) = function (): TypedFunction {
+let _createTyped: () => TypedFunction = function (): TypedFunction {
   // initially, return the original instance of typed-function
   // consecutively, return a new instance from typed.create.
   _createTyped = typedFunction.create as unknown as () => TypedFunction
@@ -152,7 +157,12 @@ const dependencies = ['?BigNumber', '?Complex', '?DenseMatrix', '?Fraction']
 export const createTyped = /* #__PURE__ */ factory(
   'typed',
   dependencies,
-  function createTyped({ BigNumber, Complex, DenseMatrix, Fraction }: TypedDependencies) {
+  function createTyped({
+    BigNumber,
+    Complex,
+    DenseMatrix,
+    Fraction
+  }: TypedDependencies) {
     // TODO: typed-function must be able to silently ignore signatures with unknown data types
 
     // get a new instance of typed-function
@@ -177,7 +187,8 @@ export const createTyped = /* #__PURE__ */ factory(
       {
         name: 'identifier',
         // Using simpler regex for TS compatibility (original: /^\p{L}[\p{L}\d]*$/u)
-        test: (s: any): boolean => isString(s) && /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(s)
+        test: (s: any): boolean =>
+          isString(s) && /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(s)
       },
       { name: 'string', test: isString },
       { name: 'Chain', test: isChain },
@@ -302,7 +313,7 @@ export const createTyped = /* #__PURE__ */ factory(
       {
         from: 'Fraction',
         to: 'BigNumber',
-        convert: function (x: any) {
+        convert: function (_x: any) {
           throw new TypeError(
             'Cannot implicitly convert a Fraction to BigNumber or vice versa. ' +
               'Use function bignumber(x) to convert to BigNumber or fraction(x) to convert to Fraction.'
@@ -369,7 +380,7 @@ export const createTyped = /* #__PURE__ */ factory(
 
           try {
             return new BigNumber(x)
-          } catch (err) {
+          } catch {
             throw new Error('Cannot convert "' + x + '" to BigNumber')
           }
         }
@@ -380,7 +391,7 @@ export const createTyped = /* #__PURE__ */ factory(
         convert: function (x: string): bigint {
           try {
             return BigInt(x)
-          } catch (err) {
+          } catch {
             throw new Error('Cannot convert "' + x + '" to BigInt')
           }
         }
@@ -395,7 +406,7 @@ export const createTyped = /* #__PURE__ */ factory(
 
           try {
             return new Fraction(x)
-          } catch (err) {
+          } catch {
             throw new Error('Cannot convert "' + x + '" to Fraction')
           }
         }
@@ -410,7 +421,7 @@ export const createTyped = /* #__PURE__ */ factory(
 
           try {
             return new Complex(x)
-          } catch (err) {
+          } catch {
             throw new Error('Cannot convert "' + x + '" to Complex')
           }
         }

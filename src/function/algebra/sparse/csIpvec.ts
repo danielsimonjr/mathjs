@@ -10,7 +10,7 @@
  *
  * @return {Array}            The output vector x = P'b
  */
-export function csIpvec<T> (p: number[] | null, b: T[]): T[] {
+export function csIpvec<T>(p: number[] | null, b: T[]): T[] {
   // vars
   let k
   const n = b.length

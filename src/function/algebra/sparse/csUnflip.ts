@@ -8,7 +8,7 @@ import { csFlip } from './csFlip.ts'
  *
  * @param {Number}  i               The value to flip
  */
-export function csUnflip (i: number): number {
+export function csUnflip(i: number): number {
   // flip the value if it is negative
   return i < 0 ? csFlip(i) : i
 }

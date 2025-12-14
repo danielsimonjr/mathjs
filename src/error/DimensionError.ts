@@ -13,11 +13,18 @@ export class DimensionError extends RangeError {
    * @param expected - The expected size
    * @param relation - Optional relation between actual and expected size: '!=', '<', etc.
    */
-  constructor(actual: number | number[], expected: number | number[], relation?: string) {
-    const message = 'Dimension mismatch (' +
-      (Array.isArray(actual) ? ('[' + actual.join(', ') + ']') : actual) +
-      ' ' + (relation || '!=') + ' ' +
-      (Array.isArray(expected) ? ('[' + expected.join(', ') + ']') : expected) +
+  constructor(
+    actual: number | number[],
+    expected: number | number[],
+    relation?: string
+  ) {
+    const message =
+      'Dimension mismatch (' +
+      (Array.isArray(actual) ? '[' + actual.join(', ') + ']' : actual) +
+      ' ' +
+      (relation || '!=') +
+      ' ' +
+      (Array.isArray(expected) ? '[' + expected.join(', ') + ']' : expected) +
       ')'
 
     super(message)
@@ -29,7 +36,7 @@ export class DimensionError extends RangeError {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if ((Error as any).captureStackTrace) {
-      (Error as any).captureStackTrace(this, DimensionError)
+      ;(Error as any).captureStackTrace(this, DimensionError)
     }
   }
 }

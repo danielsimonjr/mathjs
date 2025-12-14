@@ -1,9 +1,7 @@
 export const countDocs = {
   name: 'count',
   category: 'Matrix',
-  syntax: [
-    'count(x)'
-  ],
+  syntax: ['count(x)'],
   description: 'Count the number of elements of a matrix, array or string.',
   examples: [
     'a = [1, 2; 3, 4; 5, 6]',
@@ -11,7 +9,5 @@ export const countDocs = {
     'size(a)',
     'count("hello world")'
   ],
-  seealso: [
-    'size'
-  ]
+  seealso: ['size']
 }

@@ -1,10 +1,9 @@
 export const parserDocs = {
   name: 'parser',
   category: 'Expression',
-  syntax: [
-    'parser()'
-  ],
-  description: 'Create a parser object that keeps a context of variables and their values, allowing the evaluation of expressions in that context.',
+  syntax: ['parser()'],
+  description:
+    'Create a parser object that keeps a context of variables and their values, allowing the evaluation of expressions in that context.',
   examples: [
     'myParser = parser()',
     'myParser.evaluate("sqrt(3^2 + 4^2)")',

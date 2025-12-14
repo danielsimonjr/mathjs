@@ -153,21 +153,30 @@ describe('typed', function () {
   })
 
   it('should test whether a value is a function', function () {
-    assert.strictEqual(math.isFunction(function () {}), true)
+    assert.strictEqual(
+      math.isFunction(function () {}),
+      true
+    )
     assert.strictEqual(math.isFunction(2), false)
     assert.strictEqual(math.isFunction(), false)
   })
 
   it('should test whether a value is a Date', function () {
     assert.strictEqual(math.isDate(new Date()), true)
-    assert.strictEqual(math.isDate(function () {}), false)
+    assert.strictEqual(
+      math.isDate(function () {}),
+      false
+    )
     assert.strictEqual(math.isDate(2), false)
     assert.strictEqual(math.isDate(), false)
   })
 
   it('should test whether a value is a RegExp', function () {
     assert.strictEqual(math.isRegExp(/test/), true)
-    assert.strictEqual(math.isRegExp(function () {}), false)
+    assert.strictEqual(
+      math.isRegExp(function () {}),
+      false
+    )
     assert.strictEqual(math.isRegExp(2), false)
     assert.strictEqual(math.isRegExp(), false)
   })
@@ -193,21 +202,37 @@ describe('typed', function () {
     assert.strictEqual(math.isMap({}), false)
     assert.strictEqual(math.isMap(new Map()), true)
     assert.strictEqual(math.isMap(new ObjectWrappingMap({})), true)
-    assert.strictEqual(math.isMap(new PartitionedMap(new Map(), new Map(), new Set(['x']))), true)
+    assert.strictEqual(
+      math.isMap(new PartitionedMap(new Map(), new Map(), new Set(['x']))),
+      true
+    )
   })
 
   it('should test whether a value is a PartitionedMap', function () {
     assert.strictEqual(math.isPartitionedMap({}), false)
     assert.strictEqual(math.isPartitionedMap(new Map()), false)
     assert.strictEqual(math.isPartitionedMap(new ObjectWrappingMap({})), false)
-    assert.strictEqual(math.isPartitionedMap(new PartitionedMap(new Map(), new Map(), new Set(['x']))), true)
+    assert.strictEqual(
+      math.isPartitionedMap(
+        new PartitionedMap(new Map(), new Map(), new Set(['x']))
+      ),
+      true
+    )
   })
 
   it('should test whether a value is an ObjectWrappingMap', function () {
     assert.strictEqual(math.isObjectWrappingMap({}), false)
     assert.strictEqual(math.isObjectWrappingMap(new Map()), false)
-    assert.strictEqual(math.isObjectWrappingMap(new ObjectWrappingMap({})), true)
-    assert.strictEqual(math.isObjectWrappingMap(new PartitionedMap(new Map(), new Map(), new Set(['x']))), false)
+    assert.strictEqual(
+      math.isObjectWrappingMap(new ObjectWrappingMap({})),
+      true
+    )
+    assert.strictEqual(
+      math.isObjectWrappingMap(
+        new PartitionedMap(new Map(), new Map(), new Set(['x']))
+      ),
+      false
+    )
   })
 
   it('should test whether a value is undefined', function () {
@@ -219,8 +244,14 @@ describe('typed', function () {
   })
 
   it('should test whether a value is an OperatorNode', function () {
-    assert.strictEqual(math.isOperatorNode(new math.OperatorNode('', '', [])), true)
-    assert.strictEqual(math.isOperatorNode(new math2.OperatorNode('', '', [])), true)
+    assert.strictEqual(
+      math.isOperatorNode(new math.OperatorNode('', '', [])),
+      true
+    )
+    assert.strictEqual(
+      math.isOperatorNode(new math2.OperatorNode('', '', [])),
+      true
+    )
     assert.strictEqual(math.isOperatorNode({ isOperatorNode: true }), false)
     assert.strictEqual(math.isOperatorNode(2), false)
     assert.strictEqual(math.isOperatorNode(), false)
@@ -243,25 +274,52 @@ describe('typed', function () {
   })
 
   it('should test whether a value is a ParenthesisNode', function () {
-    assert.strictEqual(math.isParenthesisNode(new math.ParenthesisNode(new math.SymbolNode(''))), true)
-    assert.strictEqual(math.isParenthesisNode(new math2.ParenthesisNode(new math2.SymbolNode(''))), true)
-    assert.strictEqual(math.isParenthesisNode({ isParenthesisNode: true }), false)
+    assert.strictEqual(
+      math.isParenthesisNode(new math.ParenthesisNode(new math.SymbolNode(''))),
+      true
+    )
+    assert.strictEqual(
+      math.isParenthesisNode(
+        new math2.ParenthesisNode(new math2.SymbolNode(''))
+      ),
+      true
+    )
+    assert.strictEqual(
+      math.isParenthesisNode({ isParenthesisNode: true }),
+      false
+    )
     assert.strictEqual(math.isParenthesisNode(2), false)
     assert.strictEqual(math.isParenthesisNode(), false)
   })
 
   it('should test whether a value is a FunctionNode', function () {
     assert.strictEqual(math.isFunctionNode(new math.FunctionNode('', [])), true)
-    assert.strictEqual(math.isFunctionNode(new math2.FunctionNode('', [])), true)
+    assert.strictEqual(
+      math.isFunctionNode(new math2.FunctionNode('', [])),
+      true
+    )
     assert.strictEqual(math.isFunctionNode({ isFunctionNode: true }), false)
     assert.strictEqual(math.isFunctionNode(2), false)
     assert.strictEqual(math.isFunctionNode(), false)
   })
 
   it('should test whether a value is a FunctionAssignmentNode', function () {
-    assert.strictEqual(math.isFunctionAssignmentNode(new math.FunctionAssignmentNode('', [], new math.SymbolNode(''))), true)
-    assert.strictEqual(math.isFunctionAssignmentNode(new math2.FunctionAssignmentNode('', [], new math2.SymbolNode(''))), true)
-    assert.strictEqual(math.isFunctionAssignmentNode({ isFunctionAssignmentNode: true }), false)
+    assert.strictEqual(
+      math.isFunctionAssignmentNode(
+        new math.FunctionAssignmentNode('', [], new math.SymbolNode(''))
+      ),
+      true
+    )
+    assert.strictEqual(
+      math.isFunctionAssignmentNode(
+        new math2.FunctionAssignmentNode('', [], new math2.SymbolNode(''))
+      ),
+      true
+    )
+    assert.strictEqual(
+      math.isFunctionAssignmentNode({ isFunctionAssignmentNode: true }),
+      false
+    )
     assert.strictEqual(math.isFunctionAssignmentNode(2), false)
     assert.strictEqual(math.isFunctionAssignmentNode(), false)
   })
@@ -279,8 +337,14 @@ describe('typed', function () {
     const i = new math.IndexNode([])
     const v = new math.ConstantNode(2)
 
-    assert.strictEqual(math.isAssignmentNode(new math.AssignmentNode(s, i, v)), true)
-    assert.strictEqual(math.isAssignmentNode(new math2.AssignmentNode(s, i, v)), true)
+    assert.strictEqual(
+      math.isAssignmentNode(new math.AssignmentNode(s, i, v)),
+      true
+    )
+    assert.strictEqual(
+      math.isAssignmentNode(new math2.AssignmentNode(s, i, v)),
+      true
+    )
     assert.strictEqual(math.isAssignmentNode({ isAssignmentNode: true }), false)
     assert.strictEqual(math.isAssignmentNode(2), false)
     assert.strictEqual(math.isAssignmentNode(), false)
@@ -290,8 +354,14 @@ describe('typed', function () {
     const a = new math.SymbolNode('a')
     const index = new math.IndexNode([new math.ConstantNode('b')])
 
-    assert.strictEqual(math.isAccessorNode(new math.AccessorNode(a, index)), true)
-    assert.strictEqual(math.isAccessorNode(new math2.AccessorNode(a, index)), true)
+    assert.strictEqual(
+      math.isAccessorNode(new math.AccessorNode(a, index)),
+      true
+    )
+    assert.strictEqual(
+      math.isAccessorNode(new math2.AccessorNode(a, index)),
+      true
+    )
     assert.strictEqual(math.isAccessorNode({ isAccessorNode: true }), false)
     assert.strictEqual(math.isAccessorNode(2), false)
     assert.strictEqual(math.isAccessorNode(), false)
@@ -318,9 +388,18 @@ describe('typed', function () {
     const t = new math.ConstantNode(1)
     const f = new math.ConstantNode(2)
 
-    assert.strictEqual(math.isConditionalNode(new math.ConditionalNode(c, t, f)), true)
-    assert.strictEqual(math.isConditionalNode(new math2.ConditionalNode(c, t, f)), true)
-    assert.strictEqual(math.isConditionalNode({ isConditionalNode: true }), false)
+    assert.strictEqual(
+      math.isConditionalNode(new math.ConditionalNode(c, t, f)),
+      true
+    )
+    assert.strictEqual(
+      math.isConditionalNode(new math2.ConditionalNode(c, t, f)),
+      true
+    )
+    assert.strictEqual(
+      math.isConditionalNode({ isConditionalNode: true }),
+      false
+    )
     assert.strictEqual(math.isConditionalNode(2), false)
     assert.strictEqual(math.isConditionalNode(), false)
   })
@@ -348,8 +427,14 @@ describe('typed', function () {
     const c = ''
     const p = new math.ConstantNode(1)
 
-    assert.strictEqual(math.isRelationalNode(new math.RelationalNode([c], [p, p])), true)
-    assert.strictEqual(math.isRelationalNode(new math2.RelationalNode([c], [p, p])), true)
+    assert.strictEqual(
+      math.isRelationalNode(new math.RelationalNode([c], [p, p])),
+      true
+    )
+    assert.strictEqual(
+      math.isRelationalNode(new math2.RelationalNode([c], [p, p])),
+      true
+    )
     assert.strictEqual(math.isRelationalNode({ isRelationalNode: true }), false)
     assert.strictEqual(math.isRelationalNode(2), false)
     assert.strictEqual(math.isRelationalNode(), false)
@@ -378,7 +463,10 @@ describe('typed', function () {
 
     assert.strictEqual(double(2), 4)
     assert.strictEqual(double(2n), 4)
-    assert.throws(() => double(12345678901234567890n), /value exceeds the max safe integer/)
+    assert.throws(
+      () => double(12345678901234567890n),
+      /value exceeds the max safe integer/
+    )
   })
 
   it('should convert a bigint to BigNumber', function () {
@@ -388,7 +476,10 @@ describe('typed', function () {
 
     assert.deepStrictEqual(double(math.bignumber(2)), math.bignumber(4))
     assert.deepStrictEqual(double(2n), math.bignumber(4))
-    assert.deepStrictEqual(double(12345678901234567890n), math.bignumber('24691357802469135780'))
+    assert.deepStrictEqual(
+      double(12345678901234567890n),
+      math.bignumber('24691357802469135780')
+    )
   })
 
   it('should convert a bigint to Fraction', function () {

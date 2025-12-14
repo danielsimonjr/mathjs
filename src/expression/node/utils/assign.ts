@@ -1,7 +1,13 @@
 import { errorTransform } from '../../transform/utils/errorTransform.ts'
 import { setSafeProperty } from '../../../utils/customs.ts'
 
-export function assignFactory ({ subset, matrix }: { subset: any, matrix: any }) {
+export function assignFactory({
+  subset,
+  matrix
+}: {
+  subset: any
+  matrix: any
+}) {
   /**
    * Replace part of an object:
    *
@@ -16,7 +22,7 @@ export function assignFactory ({ subset, matrix }: { subset: any, matrix: any })
    *                                            except in case of a string
    */
   // TODO: change assign to return the value instead of the object
-  return function assign (object: any, index: any, value: any) {
+  return function assign(object: any, index: any, value: any) {
     try {
       if (Array.isArray(object)) {
         const result = matrix(object).subset(index, value).valueOf()
@@ -27,7 +33,8 @@ export function assignFactory ({ subset, matrix }: { subset: any, matrix: any })
         })
 
         return object
-      } else if (object && typeof object.subset === 'function') { // Matrix
+      } else if (object && typeof object.subset === 'function') {
+        // Matrix
         return object.subset(index, value)
       } else if (typeof object === 'string') {
         // TODO: move setStringSubset into a separate util file, use that

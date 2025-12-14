@@ -31,7 +31,7 @@ describe('tree shaking', function () {
     cleanup()
   })
 
-  function cleanup () {
+  function cleanup() {
     deleteSync(path.join(__dirname, bundleName))
     deleteSync(path.join(__dirname, bundleLicenseName))
   }
@@ -70,21 +70,30 @@ describe('tree shaking', function () {
       assert.strictEqual(info.assets[0].name, bundleName)
       const size = info.assets[0].size
       const maxSize = 135000
-      assert(size < maxSize,
+      assert(
+        size < maxSize,
         'bundled size must be small enough ' +
-        '(actual size: ' + size + ' bytes, max size: ' + maxSize + ' bytes)')
+          '(actual size: ' +
+          size +
+          ' bytes, max size: ' +
+          maxSize +
+          ' bytes)'
+      )
 
       // Execute the bundle to test whether it actually works
-      cp.exec('node ' + path.join(__dirname, bundleName), function (err, result) {
-        if (err) {
-          done(err)
-          return
+      cp.exec(
+        'node ' + path.join(__dirname, bundleName),
+        function (err, result) {
+          if (err) {
+            done(err)
+            return
+          }
+
+          assert.strictEqual(result.replace(/\s/g, ''), '3')
+
+          done()
         }
-
-        assert.strictEqual(result.replace(/\s/g, ''), '3')
-
-        done()
-      })
+      )
     })
   })
 })

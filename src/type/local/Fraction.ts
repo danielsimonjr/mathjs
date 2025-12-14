@@ -49,9 +49,17 @@ function absBigint(x: bigint): bigint {
 /**
  * Parses a string or number into numerator and denominator bigints.
  */
-function parseValue(value: string | number | bigint): { n: bigint; d: bigint; s: number } {
+function parseValue(value: string | number | bigint): {
+  n: bigint
+  d: bigint
+  s: number
+} {
   if (typeof value === 'bigint') {
-    return { n: absBigint(value), d: 1n, s: value < 0n ? -1 : value === 0n ? 0 : 1 }
+    return {
+      n: absBigint(value),
+      d: 1n,
+      s: value < 0n ? -1 : value === 0n ? 0 : 1
+    }
   }
 
   if (typeof value === 'number') {
@@ -59,7 +67,11 @@ function parseValue(value: string | number | bigint): { n: bigint; d: bigint; s:
       throw new Error('Cannot convert non-finite number to Fraction')
     }
     if (Number.isInteger(value)) {
-      return { n: BigInt(Math.abs(value)), d: 1n, s: value < 0 ? -1 : value === 0 ? 0 : 1 }
+      return {
+        n: BigInt(Math.abs(value)),
+        d: 1n,
+        s: value < 0 ? -1 : value === 0 ? 0 : 1
+      }
     }
     // Convert decimal to fraction
     const str = value.toString()
@@ -92,7 +104,11 @@ function parseString(str: string): { n: bigint; d: bigint; s: number } {
     const num = BigInt(numStr.trim())
     const den = BigInt(denStr.trim())
     if (den === 0n) throw new Error('Division by zero')
-    return { n: absBigint(num), d: absBigint(den), s: sign * (num === 0n ? 0 : 1) }
+    return {
+      n: absBigint(num),
+      d: absBigint(den),
+      s: sign * (num === 0n ? 0 : 1)
+    }
   }
 
   // Handle scientific notation: "1.5e-3"
@@ -104,7 +120,11 @@ function parseString(str: string): { n: bigint; d: bigint; s: number } {
     if (exponent >= 0) {
       return { n: n * 10n ** BigInt(exponent), d, s: sign * (n === 0n ? 0 : 1) }
     } else {
-      return { n, d: d * 10n ** BigInt(-exponent), s: sign * (n === 0n ? 0 : 1) }
+      return {
+        n,
+        d: d * 10n ** BigInt(-exponent),
+        s: sign * (n === 0n ? 0 : 1)
+      }
     }
   }
 
@@ -151,8 +171,12 @@ export class Fraction {
 
     if (denominator !== undefined) {
       // Two-argument form: numerator, denominator
-      const num = typeof valueOrNumerator === 'bigint' ? valueOrNumerator : BigInt(valueOrNumerator as number)
-      const den = typeof denominator === 'bigint' ? denominator : BigInt(denominator)
+      const num =
+        typeof valueOrNumerator === 'bigint'
+          ? valueOrNumerator
+          : BigInt(valueOrNumerator as number)
+      const den =
+        typeof denominator === 'bigint' ? denominator : BigInt(denominator)
       if (den === 0n) throw new Error('Division by zero')
 
       const numSign = num < 0n ? -1 : num === 0n ? 0 : 1
@@ -173,10 +197,16 @@ export class Fraction {
     ) {
       // Object form: {n, d, s?}
       const obj = valueOrNumerator as FractionLike
-      n = typeof obj.n === 'bigint' ? absBigint(obj.n) : BigInt(Math.abs(Number(obj.n)))
-      d = typeof obj.d === 'bigint' ? absBigint(obj.d) : BigInt(Math.abs(Number(obj.d)))
+      n =
+        typeof obj.n === 'bigint'
+          ? absBigint(obj.n)
+          : BigInt(Math.abs(Number(obj.n)))
+      d =
+        typeof obj.d === 'bigint'
+          ? absBigint(obj.d)
+          : BigInt(Math.abs(Number(obj.d)))
       if (d === 0n) throw new Error('Division by zero')
-      s = obj.s !== undefined ? obj.s : (n === 0n ? 0 : 1)
+      s = obj.s !== undefined ? obj.s : n === 0n ? 0 : 1
     } else {
       // Parse value
       const parsed = parseValue(valueOrNumerator as number | string | bigint)
@@ -227,10 +257,7 @@ export class Fraction {
    */
   mul(other: Fraction | number | string | bigint): Fraction {
     const b = other instanceof Fraction ? other : new Fraction(other)
-    return new Fraction(
-      BigInt(this.s * b.s) * this.n * b.n,
-      this.d * b.d
-    )
+    return new Fraction(BigInt(this.s * b.s) * this.n * b.n, this.d * b.d)
   }
 
   /**
@@ -239,10 +266,7 @@ export class Fraction {
   div(other: Fraction | number | string | bigint): Fraction {
     const b = other instanceof Fraction ? other : new Fraction(other)
     if (b.n === 0n) throw new Error('Division by zero')
-    return new Fraction(
-      BigInt(this.s * b.s) * this.n * b.d,
-      this.d * b.n
-    )
+    return new Fraction(BigInt(this.s * b.s) * this.n * b.d, this.d * b.n)
   }
 
   /**
@@ -291,7 +315,7 @@ export class Fraction {
 
     if (e < 0) {
       // Invert for negative exponent
-      [n, d] = [d, n]
+      ;[n, d] = [d, n]
     }
 
     return new Fraction(BigInt(s) * n, d)
@@ -415,7 +439,7 @@ export class Fraction {
    * Convert to number
    */
   valueOf(): number {
-    return this.s * Number(this.n) / Number(this.d)
+    return (this.s * Number(this.n)) / Number(this.d)
   }
 
   /**

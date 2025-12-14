@@ -5,59 +5,65 @@ import { isNaNNumber } from '../../plain/number/index.ts'
 const name = 'isNaN'
 const dependencies = ['typed']
 
-export const createIsNaN = /* #__PURE__ */ factory(name, dependencies, ({ typed }) => {
-  /**
-   * Test whether a value is NaN (not a number).
-   * The function supports types `number`, `BigNumber`, `Fraction`, `Unit` and `Complex`.
-   *
-   * The function is evaluated element-wise in case of Array or Matrix input.
-   *
-   * Syntax:
-   *
-   *     math.isNaN(x)
-   *
-   * Examples:
-   *
-   *    math.isNaN(3)                     // returns false
-   *    math.isNaN(NaN)                   // returns true
-   *    math.isNaN(0)                     // returns false
-   *    math.isNaN(math.bignumber(NaN))   // returns true
-   *    math.isNaN(math.bignumber(0))     // returns false
-   *    math.isNaN(math.fraction(-2, 5))  // returns false
-   *    math.isNaN('-2')                  // returns false
-   *    math.isNaN([2, 0, -3, NaN])       // returns [false, false, false, true]
-   *
-   * See also:
-   *
-   *    isNumeric, isNegative, isPositive, isZero, isInteger, isFinite, isBounded
-   *
-   * @param {number | BigNumber | bigint | Fraction | Unit | Array | Matrix} x  Value to be tested
-   * @return {boolean}  Returns true when `x` is NaN.
-   *                    Throws an error in case of an unknown data type.
-   */
-  return typed(name, {
-    number: isNaNNumber,
+export const createIsNaN = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed }) => {
+    /**
+     * Test whether a value is NaN (not a number).
+     * The function supports types `number`, `BigNumber`, `Fraction`, `Unit` and `Complex`.
+     *
+     * The function is evaluated element-wise in case of Array or Matrix input.
+     *
+     * Syntax:
+     *
+     *     math.isNaN(x)
+     *
+     * Examples:
+     *
+     *    math.isNaN(3)                     // returns false
+     *    math.isNaN(NaN)                   // returns true
+     *    math.isNaN(0)                     // returns false
+     *    math.isNaN(math.bignumber(NaN))   // returns true
+     *    math.isNaN(math.bignumber(0))     // returns false
+     *    math.isNaN(math.fraction(-2, 5))  // returns false
+     *    math.isNaN('-2')                  // returns false
+     *    math.isNaN([2, 0, -3, NaN])       // returns [false, false, false, true]
+     *
+     * See also:
+     *
+     *    isNumeric, isNegative, isPositive, isZero, isInteger, isFinite, isBounded
+     *
+     * @param {number | BigNumber | bigint | Fraction | Unit | Array | Matrix} x  Value to be tested
+     * @return {boolean}  Returns true when `x` is NaN.
+     *                    Throws an error in case of an unknown data type.
+     */
+    return typed(name, {
+      number: isNaNNumber,
 
-    BigNumber: function (x: any): boolean {
-      return x.isNaN()
-    },
+      BigNumber: function (x: any): boolean {
+        return x.isNaN()
+      },
 
-    bigint: function (x: bigint): boolean {
-      return false
-    },
+      bigint: function (_x: bigint): boolean {
+        return false
+      },
 
-    Fraction: function (x: any): boolean {
-      return false
-    },
+      Fraction: function (_x: any): boolean {
+        return false
+      },
 
-    Complex: function (x: any): boolean {
-      return x.isNaN()
-    },
+      Complex: function (x: any): boolean {
+        return x.isNaN()
+      },
 
-    Unit: function (x: any): boolean {
-      return Number.isNaN(x.value)
-    },
+      Unit: function (x: any): boolean {
+        return Number.isNaN(x.value)
+      },
 
-    'Array | Matrix': typed.referToSelf((self: any) => (x: any) => deepMap(x, self))
-  })
-})
+      'Array | Matrix': typed.referToSelf(
+        (self: any) => (x: any) => deepMap(x, self)
+      )
+    })
+  }
+)

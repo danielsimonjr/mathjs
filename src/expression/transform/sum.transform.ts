@@ -24,18 +24,23 @@ interface Dependencies {
 const name = 'sum'
 const dependencies = ['typed', 'config', 'add', 'numeric']
 
-export const createSumTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, add, numeric }: Dependencies) => {
-  const sum = createSum({ typed, config, add, numeric })
+export const createSumTransform = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, config, add, numeric }: Dependencies) => {
+    const sum = createSum({ typed, config, add, numeric })
 
-  return typed(name, {
-    '...any': function (args: any[]): any {
-      args = lastDimToZeroBase(args)
+    return typed(name, {
+      '...any': function (args: any[]): any {
+        args = lastDimToZeroBase(args)
 
-      try {
-        return sum.apply(null, args)
-      } catch (err) {
-        throw errorTransform(err as Error)
+        try {
+          return sum.apply(null, args)
+        } catch (err) {
+          throw errorTransform(err as Error)
+        }
       }
-    }
-  })
-}, { isTransformFunction: true })
+    })
+  },
+  { isTransformFunction: true }
+)

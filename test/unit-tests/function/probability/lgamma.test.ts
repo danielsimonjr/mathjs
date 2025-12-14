@@ -7,10 +7,8 @@ import math from '../../../../src/defaultInstance.js'
 const lgamma = math.lgamma
 
 // https://www.scratchcode.io/how-to-detect-ie-browser-in-javascript/
-function isInternetExplorer () {
-  return typeof document !== 'undefined'
-    ? !!document.documentMode
-    : false
+function isInternetExplorer() {
+  return typeof document !== 'undefined' ? !!document.documentMode : false
 }
 
 // IE does have less precision for unclear reason, therefore this hack
@@ -36,20 +34,76 @@ describe('lgamma', function () {
   it('should calculate the lgamma of a positive numbers', function () {
     // computation reference: https://www.wolframalpha.com/input?i=LogGamma%5Bx%5D
 
-    approxEqual(lgamma(/**/ 0.000000001), /*  */ 20.7232658363691954921, EPSILON)
-    approxEqual(lgamma(/*   */ 0.000001), /*  */ 13.8155099807494316692, EPSILON)
-    approxEqual(lgamma(/*       */ 0.25), /*  */ 1.28802252469807745737, EPSILON)
-    approxEqual(lgamma(/*        */ 0.8), /*  */ 0.15205967839983758878, EPSILON)
-    approxEqual(lgamma(/*          */ 1), /*                       */ 0, EPSILON)
-    approxEqual(lgamma(/*        */ 1.5), /* */ -0.12078223763524522235, EPSILON)
-    approxEqual(lgamma(/*          */ 2), /*                       */ 0, EPSILON)
-    approxEqual(lgamma(/*        */ 2.5), /*  */ 0.28468287047291915963, EPSILON)
-    approxEqual(lgamma(/*       */ 12.5), /*  */ 18.7343475119364457016, EPSILON)
-    approxEqual(lgamma(/*      */ 125.5), /*  */ 479.457822363903399136, EPSILON)
-    approxEqual(lgamma(/*  */ 5555.5555), /*  */ 42344.1277925098161477, EPSILON)
-    approxEqual(lgamma(/*  */ 5000000.5), /*  */ 72124743.2709303972649, EPSILON)
-    approxEqual(lgamma(99999999999999.5), /*  */ 3123619130191632.64037, EPSILON)
-    approxEqual(lgamma(/*       */ 1e92), /**/ 2.1083782855545220293e94, EPSILON)
+    approxEqual(
+      lgamma(/**/ 0.000000001),
+      /*  */ 20.7232658363691954921,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*   */ 0.000001),
+      /*  */ 13.8155099807494316692,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*       */ 0.25),
+      /*  */ 1.28802252469807745737,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*        */ 0.8),
+      /*  */ 0.15205967839983758878,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*          */ 1),
+      /*                       */ 0,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*        */ 1.5),
+      /* */ -0.12078223763524522235,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*          */ 2),
+      /*                       */ 0,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*        */ 2.5),
+      /*  */ 0.28468287047291915963,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*       */ 12.5),
+      /*  */ 18.7343475119364457016,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*      */ 125.5),
+      /*  */ 479.457822363903399136,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*  */ 5555.5555),
+      /*  */ 42344.1277925098161477,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*  */ 5000000.5),
+      /*  */ 72124743.2709303972649,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(99999999999999.5),
+      /*  */ 3123619130191632.64037,
+      EPSILON
+    )
+    approxEqual(
+      lgamma(/*       */ 1e92),
+      /**/ 2.1083782855545220293e94,
+      EPSILON
+    )
   })
 
   it('should calculate the lgamma of an irrational number', function () {

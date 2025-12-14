@@ -5,36 +5,50 @@ import { memoize } from '../function.ts'
  * @param {function} BigNumber   BigNumber constructor
  * @returns {BigNumber} Returns e
  */
-export const createBigNumberE = memoize(function (BigNumber: any) {
-  return new (BigNumber as any)(1).exp()
-}, { hasher })
+export const createBigNumberE = memoize(
+  function (BigNumber: any) {
+    return new (BigNumber as any)(1).exp()
+  },
+  { hasher }
+)
 
 /**
  * Calculate BigNumber golden ratio, phi = (1+sqrt(5))/2
  * @param {function} BigNumber   BigNumber constructor
  * @returns {BigNumber} Returns phi
  */
-export const createBigNumberPhi = memoize(function (BigNumber: any) {
-  return new (BigNumber as any)(1).plus(new (BigNumber as any)(5).sqrt()).div(2)
-}, { hasher })
+export const createBigNumberPhi = memoize(
+  function (BigNumber: any) {
+    return new (BigNumber as any)(1)
+      .plus(new (BigNumber as any)(5).sqrt())
+      .div(2)
+  },
+  { hasher }
+)
 
 /**
  * Calculate BigNumber pi.
  * @param {function} BigNumber   BigNumber constructor
  * @returns {BigNumber} Returns pi
  */
-export const createBigNumberPi = memoize(function (BigNumber: any) {
-  return BigNumber.acos(-1)
-}, { hasher })
+export const createBigNumberPi = memoize(
+  function (BigNumber: any) {
+    return BigNumber.acos(-1)
+  },
+  { hasher }
+)
 
 /**
  * Calculate BigNumber tau, tau = 2 * pi
  * @param {function} BigNumber   BigNumber constructor
  * @returns {BigNumber} Returns tau
  */
-export const createBigNumberTau = memoize(function (BigNumber: any) {
-  return (createBigNumberPi as any)(BigNumber).times(2)
-}, { hasher })
+export const createBigNumberTau = memoize(
+  function (BigNumber: any) {
+    return (createBigNumberPi as any)(BigNumber).times(2)
+  },
+  { hasher }
+)
 
 /**
  * Create a hash for a BigNumber constructor function. The created has is
@@ -44,6 +58,6 @@ export const createBigNumberTau = memoize(function (BigNumber: any) {
  * @return {number} precision
  * @private
  */
-function hasher (args: any) {
+function hasher(args: any) {
   return args[0].precision
 }

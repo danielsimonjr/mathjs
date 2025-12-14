@@ -1,10 +1,7 @@
 export const addDocs = {
   name: 'add',
   category: 'Operators',
-  syntax: [
-    'x + y',
-    'add(x, y)'
-  ],
+  syntax: ['x + y', 'add(x, y)'],
   description: 'Add two values.',
   examples: [
     'a = 2.1 + 3.6',
@@ -13,7 +10,5 @@ export const addDocs = {
     '3 cm + 2 inch',
     '"2.3" + "4"'
   ],
-  seealso: [
-    'subtract'
-  ]
+  seealso: ['subtract']
 }

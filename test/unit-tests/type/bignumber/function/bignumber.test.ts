@@ -69,11 +69,17 @@ describe('bignumber', function () {
   it('should create a bignumber from a fraction', function () {
     const f = math.fraction(2, 3)
     const b = math.bignumber(f)
-    assert.strictEqual(b.toString(), '0.6666666666666666666666666666666666666666666666666666666666666667')
+    assert.strictEqual(
+      b.toString(),
+      '0.6666666666666666666666666666666666666666666666666666666666666667'
+    )
   })
 
   it('should create a bignumber from a bigint', function () {
-    assert.deepStrictEqual(math.bignumber(12345678901234567890n), new BigNumber('12345678901234567890'))
+    assert.deepStrictEqual(
+      math.bignumber(12345678901234567890n),
+      new BigNumber('12345678901234567890')
+    )
   })
 
   it('should convert the number value of a Unit to BigNumber', function () {
@@ -84,7 +90,9 @@ describe('bignumber', function () {
   })
 
   it('should convert the Fraction value of a Unit to BigNumber', function () {
-    const b = math.bignumber(math.unit(math.fraction(1, 2), 'cm')).toNumeric('cm')
+    const b = math
+      .bignumber(math.unit(math.fraction(1, 2), 'cm'))
+      .toNumeric('cm')
 
     assert.ok(b instanceof BigNumber)
     assert.strictEqual(b.valueOf(), '0.5')
@@ -111,11 +119,15 @@ describe('bignumber', function () {
   })
 
   it('should throw an error in case of unsupported type of argument', function () {
-    assert.throws(function () { math.bignumber(new Date()) }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      math.bignumber(new Date())
+    }, /TypeError: Unexpected type of argument/)
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { math.bignumber(1, 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      math.bignumber(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should LaTeX bignumber', function () {

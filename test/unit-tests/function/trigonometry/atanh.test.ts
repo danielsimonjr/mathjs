@@ -76,11 +76,26 @@ describe('atanh', function () {
   })
 
   it('should return the arctanh of a complex number', function () {
-    approxDeepEqual(atanh(complex('2+3i')), complex(0.1469466662255, 1.33897252229449))
-    approxDeepEqual(atanh(complex('2-3i')), complex(0.1469466662255, -1.33897252229449))
-    approxDeepEqual(atanh(complex('-2+3i')), complex(-0.1469466662255, 1.33897252229449))
-    approxDeepEqual(atanh(complex('-2-3i')), complex(-0.1469466662255, -1.33897252229449))
-    approxDeepEqual(atanh(complex('1+i')), complex(0.402359478108525, 1.01722196789785137))
+    approxDeepEqual(
+      atanh(complex('2+3i')),
+      complex(0.1469466662255, 1.33897252229449)
+    )
+    approxDeepEqual(
+      atanh(complex('2-3i')),
+      complex(0.1469466662255, -1.33897252229449)
+    )
+    approxDeepEqual(
+      atanh(complex('-2+3i')),
+      complex(-0.1469466662255, 1.33897252229449)
+    )
+    approxDeepEqual(
+      atanh(complex('-2-3i')),
+      complex(-0.1469466662255, -1.33897252229449)
+    )
+    approxDeepEqual(
+      atanh(complex('1+i')),
+      complex(0.402359478108525, 1.01722196789785137)
+    )
     approxDeepEqual(atanh(complex('i')), complex(0, pi / 4))
 
     approxDeepEqual(atanh(complex('2')), complex(0.54930614433405485, -pi / 2))
@@ -90,12 +105,18 @@ describe('atanh', function () {
   })
 
   it('should throw an error if called with a unit', function () {
-    assert.throws(function () { atanh(unit('45deg')) })
-    assert.throws(function () { atanh(unit('5 celsius')) })
+    assert.throws(function () {
+      atanh(unit('45deg'))
+    })
+    assert.throws(function () {
+      atanh(unit('5 celsius'))
+    })
   })
 
   it('should throw an error if called with a string', function () {
-    assert.throws(function () { atanh('string') })
+    assert.throws(function () {
+      atanh('string')
+    })
   })
 
   it('should not operate on arrays and matrices', function () {
@@ -103,12 +124,19 @@ describe('atanh', function () {
     assert.throws(() => atanh(matrix([-1, 0, 1])), TypeError)
     const atanh101 = [-Infinity, 0, Infinity]
     assert.deepStrictEqual(math.map([-1, 0, 1], atanh), atanh101)
-    assert.deepStrictEqual(math.map(matrix([-1, 0, 1]), atanh), matrix(atanh101))
+    assert.deepStrictEqual(
+      math.map(matrix([-1, 0, 1]), atanh),
+      matrix(atanh101)
+    )
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { atanh() }, /TypeError: Too few arguments/)
-    assert.throws(function () { atanh(1, 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      atanh()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      atanh(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should LaTeX atanh', function () {

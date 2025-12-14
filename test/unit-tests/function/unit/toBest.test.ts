@@ -4,7 +4,7 @@ import assert from 'assert'
 
 const Unit = math.create().Unit
 
-function assertUnit (actualUnit, expectedValue, expectedPrefix, expectedName) {
+function assertUnit(actualUnit, expectedValue, expectedPrefix, expectedName) {
   assert.equal(actualUnit.value, expectedValue)
   assert.equal(actualUnit.units[0].prefix.name, expectedPrefix)
   assert.equal(actualUnit.units[0].unit.name, expectedName)
@@ -29,11 +29,21 @@ describe('toBest', function () {
   })
 
   it('should return the best unit with valueless unit as parameter', function () {
-    assertUnit(new Unit(1000, 'cm').toBest([new Unit(null, 'km')]), 10, 'k', 'm')
+    assertUnit(
+      new Unit(1000, 'cm').toBest([new Unit(null, 'km')]),
+      10,
+      'k',
+      'm'
+    )
   })
 
   it('should return the best unit with given array and offset', function () {
-    assertUnit(new Unit(10, 'm').toBest(['mm', 'km'], { offset: 1.5 }), 10, 'm', 'm')
+    assertUnit(
+      new Unit(10, 'm').toBest(['mm', 'km'], { offset: 1.5 }),
+      10,
+      'm',
+      'm'
+    )
   })
 
   it('should handle negative values correctly', function () {
@@ -53,7 +63,10 @@ describe('toBest', function () {
   })
 
   it('should return the correct string representation', function () {
-    assert.equal(new Unit(2 / 3, 'cm').toBest().toString(), '0.6666666666666666 cm')
+    assert.equal(
+      new Unit(2 / 3, 'cm').toBest().toString(),
+      '0.6666666666666666 cm'
+    )
     assert.equal(new Unit(5, 'm').toBest(['cm', 'mm']).toString(), '500 cm')
     assert.equal(new Unit(1000, 'cm').toBest(['m', 'km']).toString(), '10 m')
   })

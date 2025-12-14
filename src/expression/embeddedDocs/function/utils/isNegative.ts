@@ -1,9 +1,7 @@
 export const isNegativeDocs = {
   name: 'isNegative',
   category: 'Utils',
-  syntax: [
-    'isNegative(x)'
-  ],
+  syntax: ['isNegative(x)'],
   description: 'Test whether a value is negative: smaller than zero.',
   examples: [
     'isNegative(2)',

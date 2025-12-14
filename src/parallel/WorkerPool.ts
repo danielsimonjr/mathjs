@@ -28,7 +28,7 @@ export interface PoolStats {
  * Uses @danielsimonjr/workerpool under the hood
  */
 export class MathWorkerPool {
-  private pool: any  // workerpool.Pool type
+  private pool: any // workerpool.Pool type
   private workerScript: string | null
 
   /**
@@ -75,9 +75,15 @@ export class MathWorkerPool {
    * @param args - Arguments to pass to the function
    * @returns Promise resolving to the result
    */
-  async exec<T = any>(method: string | ((...args: any[]) => T), args?: any[]): Promise<T> {
+  async exec<T = any>(
+    method: string | ((...args: any[]) => T),
+    args?: any[]
+  ): Promise<T> {
     if (typeof method === 'function') {
-      return this.pool.exec(method as (...args: any[]) => T, args || []) as Promise<T>
+      return this.pool.exec(
+        method as (...args: any[]) => T,
+        args || []
+      ) as Promise<T>
     }
     return this.pool.exec(method, args || []) as Promise<T>
   }
@@ -92,9 +98,7 @@ export class MathWorkerPool {
     method: string | ((arg: T) => R),
     items: T[]
   ): Promise<R[]> {
-    const promises = items.map(item =>
-      this.exec<R>(method as any, [item])
-    )
+    const promises = items.map((item) => this.exec<R>(method as any, [item]))
     return Promise.all(promises)
   }
 
@@ -106,9 +110,7 @@ export class MathWorkerPool {
   async parallel<T = any>(
     tasks: Array<{ method: string | ((...args: any[]) => T); args?: any[] }>
   ): Promise<T[]> {
-    const promises = tasks.map(task =>
-      this.exec<T>(task.method, task.args)
-    )
+    const promises = tasks.map((task) => this.exec<T>(task.method, task.args))
     return Promise.all(promises)
   }
 
@@ -179,8 +181,14 @@ export class MathWorkerPool {
 export function createMathWorker(): WorkerMethods {
   return {
     // Matrix operations
-    matrixMultiply: (a: number[], aRows: number, aCols: number,
-                     b: number[], bRows: number, bCols: number): number[] => {
+    matrixMultiply: (
+      a: number[],
+      aRows: number,
+      aCols: number,
+      b: number[],
+      bRows: number,
+      bCols: number
+    ): number[] => {
       const result = new Array(aRows * bCols)
       for (let i = 0; i < aRows; i++) {
         for (let j = 0; j < bCols; j++) {
@@ -227,7 +235,12 @@ export function createMathWorker(): WorkerMethods {
     },
 
     // Chunk processing for large arrays
-    processChunk: (data: number[], operation: string, start: number, end: number): number => {
+    processChunk: (
+      data: number[],
+      operation: string,
+      start: number,
+      end: number
+    ): number => {
       let result = 0
       switch (operation) {
         case 'sum':
@@ -235,11 +248,13 @@ export function createMathWorker(): WorkerMethods {
           break
         case 'min':
           result = data[start]
-          for (let i = start + 1; i < end; i++) if (data[i] < result) result = data[i]
+          for (let i = start + 1; i < end; i++)
+            if (data[i] < result) result = data[i]
           break
         case 'max':
           result = data[start]
-          for (let i = start + 1; i < end; i++) if (data[i] > result) result = data[i]
+          for (let i = start + 1; i < end; i++)
+            if (data[i] > result) result = data[i]
           break
       }
       return result

@@ -9,8 +9,13 @@ interface TypedFunction<T = any> {
   (...args: any[]): T
   find(func: any, signature: string[]): TypedFunction<T>
   convert(value: any, type: string): any
-  referTo<U>(signature: string, fn: (ref: TypedFunction<U>) => TypedFunction<U>): TypedFunction<U>
-  referToSelf<U>(fn: (self: TypedFunction<U>) => TypedFunction<U>): TypedFunction<U>
+  referTo<U>(
+    signature: string,
+    fn: (ref: TypedFunction<U>) => TypedFunction<U>
+  ): TypedFunction<U>
+  referToSelf<U>(
+    fn: (self: TypedFunction<U>) => TypedFunction<U>
+  ): TypedFunction<U>
 }
 
 interface MatrixData {
@@ -77,11 +82,23 @@ const dependencies = [
 export const createAdd = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, addScalar, equalScalar, DenseMatrix, SparseMatrix, concat }: Dependencies) => {
+  ({
+    typed,
+    matrix,
+    addScalar,
+    equalScalar,
+    DenseMatrix,
+    SparseMatrix: _SparseMatrix,
+    concat
+  }: Dependencies) => {
     const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
     const matAlgo04xSidSid = createMatAlgo04xSidSid({ typed, equalScalar })
     const matAlgo10xSids = createMatAlgo10xSids({ typed, DenseMatrix })
-    const matrixAlgorithmSuite = createMatrixAlgorithmSuite({ typed, matrix, concat })
+    const matrixAlgorithmSuite = createMatrixAlgorithmSuite({
+      typed,
+      matrix,
+      concat
+    })
     /**
      * Add two or more values, `x + y`.
      * For matrices, the function is evaluated element wise.
@@ -121,15 +138,18 @@ export const createAdd = /* #__PURE__ */ factory(
       {
         'any, any': addScalar,
 
-        'any, any, ...any': typed.referToSelf((self: TypedFunction): any => (x: any, y: any, rest: any[]) => {
-          let result = self(x, y)
+        'any, any, ...any': typed.referToSelf(
+          (self: TypedFunction): any =>
+            (x: any, y: any, rest: any[]) => {
+              let result = self(x, y)
 
-          for (let i = 0; i < rest.length; i++) {
-            result = self(result, rest[i])
-          }
+              for (let i = 0; i < rest.length; i++) {
+                result = self(result, rest[i])
+              }
 
-          return result
-        })
+              return result
+            }
+        )
       },
       matrixAlgorithmSuite({
         elop: addScalar,
@@ -138,4 +158,5 @@ export const createAdd = /* #__PURE__ */ factory(
         Ss: matAlgo10xSids
       })
     )
-  })
+  }
+)

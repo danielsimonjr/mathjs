@@ -1,12 +1,9 @@
 export const smallerDocs = {
   name: 'smaller',
   category: 'Relational',
-  syntax: [
-    'x < y',
-    'smaller(x, y)'
-  ],
+  syntax: ['x < y', 'smaller(x, y)'],
   description:
-      'Check if value x is smaller than value y. Returns true if x is smaller than y, and false if not. Comparing a value with NaN returns false.',
+    'Check if value x is smaller than value y. Returns true if x is smaller than y, and false if not. Comparing a value with NaN returns false.',
   examples: [
     '2 < 3',
     '5 < 2*2',
@@ -15,7 +12,5 @@ export const smallerDocs = {
     '(a < b)',
     '5 cm < 2 inch'
   ],
-  seealso: [
-    'equal', 'unequal', 'larger', 'smallerEq', 'largerEq', 'compare'
-  ]
+  seealso: ['equal', 'unequal', 'larger', 'smallerEq', 'largerEq', 'compare']
 }

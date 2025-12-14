@@ -23,7 +23,21 @@ interface Dependencies {
 }
 
 const name = 'quantileSeq'
-const dependencies = ['typed', 'bignumber', 'add', 'subtract', 'divide', 'multiply', 'partitionSelect', 'compare', 'isInteger', 'smaller', 'smallerEq', 'larger', 'mapSlices']
+const dependencies = [
+  'typed',
+  'bignumber',
+  'add',
+  'subtract',
+  'divide',
+  'multiply',
+  'partitionSelect',
+  'compare',
+  'isInteger',
+  'smaller',
+  'smallerEq',
+  'larger',
+  'mapSlices'
+]
 
 /**
  * Attach a transform function to math.quantileSeq
@@ -32,22 +46,73 @@ const dependencies = ['typed', 'bignumber', 'add', 'subtract', 'divide', 'multip
  * This transform changed the `dim` parameter of function std
  * from one-based to zero based
  */
-export const createQuantileSeqTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, bignumber, add, subtract, divide, multiply, partitionSelect, compare, isInteger, smaller, smallerEq, larger, mapSlices }: Dependencies) => {
-  const quantileSeq = createQuantileSeq({ typed, bignumber, add, subtract, divide, multiply, partitionSelect, compare, isInteger, smaller, smallerEq, larger, mapSlices })
+export const createQuantileSeqTransform = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({
+    typed,
+    bignumber,
+    add,
+    subtract,
+    divide,
+    multiply,
+    partitionSelect,
+    compare,
+    isInteger,
+    smaller,
+    smallerEq,
+    larger,
+    mapSlices
+  }: Dependencies) => {
+    const quantileSeq = createQuantileSeq({
+      typed,
+      bignumber,
+      add,
+      subtract,
+      divide,
+      multiply,
+      partitionSelect,
+      compare,
+      isInteger,
+      smaller,
+      smallerEq,
+      larger,
+      mapSlices
+    })
 
-  return typed('quantileSeq', {
-    'Array | Matrix, number | BigNumber': quantileSeq,
-    'Array | Matrix, number | BigNumber, number': (arr: any, prob: any, dim: number) => quantileSeq(arr, prob, dimToZeroBase(dim)),
-    'Array | Matrix, number | BigNumber, boolean': quantileSeq,
-    'Array | Matrix, number | BigNumber, boolean, number': (arr: any, prob: any, sorted: boolean, dim: number) => quantileSeq(arr, prob, sorted, dimToZeroBase(dim)),
-    'Array | Matrix, Array | Matrix': quantileSeq,
-    'Array | Matrix, Array | Matrix, number': (data: any, prob: any, dim: number) => quantileSeq(data, prob, dimToZeroBase(dim)),
-    'Array | Matrix, Array | Matrix, boolean': quantileSeq,
-    'Array | Matrix, Array | Matrix, boolean, number': (data: any, prob: any, sorted: boolean, dim: number) => quantileSeq(data, prob, sorted, dimToZeroBase(dim))
-  })
+    return typed('quantileSeq', {
+      'Array | Matrix, number | BigNumber': quantileSeq,
+      'Array | Matrix, number | BigNumber, number': (
+        arr: any,
+        prob: any,
+        dim: number
+      ) => quantileSeq(arr, prob, dimToZeroBase(dim)),
+      'Array | Matrix, number | BigNumber, boolean': quantileSeq,
+      'Array | Matrix, number | BigNumber, boolean, number': (
+        arr: any,
+        prob: any,
+        sorted: boolean,
+        dim: number
+      ) => quantileSeq(arr, prob, sorted, dimToZeroBase(dim)),
+      'Array | Matrix, Array | Matrix': quantileSeq,
+      'Array | Matrix, Array | Matrix, number': (
+        data: any,
+        prob: any,
+        dim: number
+      ) => quantileSeq(data, prob, dimToZeroBase(dim)),
+      'Array | Matrix, Array | Matrix, boolean': quantileSeq,
+      'Array | Matrix, Array | Matrix, boolean, number': (
+        data: any,
+        prob: any,
+        sorted: boolean,
+        dim: number
+      ) => quantileSeq(data, prob, sorted, dimToZeroBase(dim))
+    })
 
-  function dimToZeroBase(dim: number): any {
-    // TODO: find a better way, maybe lastDimToZeroBase could apply to more cases.
-    return lastDimToZeroBase([[], dim])[1]
-  }
-}, { isTransformFunction: true })
+    function dimToZeroBase(dim: number): any {
+      // TODO: find a better way, maybe lastDimToZeroBase could apply to more cases.
+      return lastDimToZeroBase([[], dim])[1]
+    }
+  },
+  { isTransformFunction: true }
+)

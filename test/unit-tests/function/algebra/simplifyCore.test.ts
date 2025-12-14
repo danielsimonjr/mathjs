@@ -56,7 +56,12 @@ describe('simplifyCore', function () {
   })
 
   it('should not alter order of multiplication when noncommutative', function () {
-    testSimplifyCore('5*x*3', '5 * x * 3', {}, { context: { multiply: { commutative: false } } })
+    testSimplifyCore(
+      '5*x*3',
+      '5 * x * 3',
+      {},
+      { context: { multiply: { commutative: false } } }
+    )
   })
 
   it('should remove any trivial function', function () {
@@ -75,9 +80,9 @@ describe('simplifyCore', function () {
 
   it('should convert +unaryMinus to subtract', function () {
     testSimplifyCore('x + -1', 'x - 1')
-    const result = math.simplify(
-      'x + y + a', [math.simplifyCore], { a: -1 }
-    ).toString()
+    const result = math
+      .simplify('x + y + a', [math.simplifyCore], { a: -1 })
+      .toString()
     assert.strictEqual(result, 'x + y - 1')
   })
 

@@ -16,6 +16,12 @@ export const fractionDocs = {
     'fraction([sqrt(9), sqrt(10), sqrt(11)])'
   ],
   seealso: [
-    'bignumber', 'boolean', 'complex', 'index', 'matrix', 'string', 'unit'
+    'bignumber',
+    'boolean',
+    'complex',
+    'index',
+    'matrix',
+    'string',
+    'unit'
   ]
 }

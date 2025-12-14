@@ -27,15 +27,27 @@ describe('RelationalNode', function () {
   })
 
   it('should throw an error when calling without new operator', function () {
-    assert.throws(function () { RelationalNode() }, TypeError)
+    assert.throws(function () {
+      RelationalNode()
+    }, TypeError)
   })
 
   it('should throw an error when creating without arguments', function () {
-    assert.throws(function () { console.log(new RelationalNode()) }, TypeError)
-    assert.throws(function () { console.log(new RelationalNode('smaller')) }, TypeError)
-    assert.throws(function () { console.log(new RelationalNode(['smaller'])) }, TypeError)
-    assert.throws(function () { console.log(new RelationalNode(['smaller'], one)) }, TypeError)
-    assert.throws(function () { console.log(new RelationalNode(['smaller'], [one])) }, TypeError)
+    assert.throws(function () {
+      console.log(new RelationalNode())
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RelationalNode('smaller'))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RelationalNode(['smaller']))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RelationalNode(['smaller'], one))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RelationalNode(['smaller'], [one]))
+    }, TypeError)
   })
 
   it('should evaluate a RelationalNode', function () {
@@ -52,9 +64,24 @@ describe('RelationalNode', function () {
   it('should filter a RelationalNode', function () {
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof RelationalNode }), [n])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof ConstantNode }), [one, two, three])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof ConstantNode && node.value === 2 }), [two])
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof RelationalNode
+      }),
+      [n]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof ConstantNode
+      }),
+      [one, two, three]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof ConstantNode && node.value === 2
+      }),
+      [two]
+    )
   })
 
   it('should run forEach on a RelationalNode', function () {
@@ -104,7 +131,9 @@ describe('RelationalNode', function () {
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
     assert.throws(function () {
-      n.map(function () { return undefined })
+      n.map(function () {
+        return undefined
+      })
     }, /Callback function must return a Node/)
   })
 
@@ -151,7 +180,10 @@ describe('RelationalNode', function () {
     const n1 = new RelationalNode(['smaller', 'smaller'], [one, two, three])
     const n2 = new RelationalNode(['smaller', 'smaller'], [one, two, three])
     const m = new RelationalNode(['smaller', 'larger'], [one, two, three])
-    const p = new RelationalNode(['smaller', 'smaller', 'larger'], [one, two, three, four])
+    const p = new RelationalNode(
+      ['smaller', 'smaller', 'larger'],
+      [one, two, three, four]
+    )
     const q = new RelationalNode(['smaller', 'smaller'], [two, two, two])
 
     assert.strictEqual(n1.equals(null), false)
@@ -184,18 +216,27 @@ describe('RelationalNode', function () {
     assert.strictEqual(result, true)
   })
 
-  it('should respect the \'all\' parenthesis option', function () {
-    assert.strictEqual(math.parse('a<b<c').toString({ parenthesis: 'all' }), '(a) < (b) < (c)')
+  it("should respect the 'all' parenthesis option", function () {
+    assert.strictEqual(
+      math.parse('a<b<c').toString({ parenthesis: 'all' }),
+      '(a) < (b) < (c)'
+    )
   })
 
   it('should stringify a RelationalNode', function () {
     const n1 = new RelationalNode(['smaller', 'smaller'], [one, two, three])
-    const n2 = new RelationalNode(['smaller', 'larger', 'smallerEq', 'largerEq', 'equal', 'unequal'], [one, three, two, three, two, two, one])
+    const n2 = new RelationalNode(
+      ['smaller', 'larger', 'smallerEq', 'largerEq', 'equal', 'unequal'],
+      [one, three, two, three, two, two, one]
+    )
     const n3 = math.parse('(1 < 2 < 3) == (6 > 5 > 4) != (1 > 2 > 3)')
 
     assert.strictEqual(n1.toString(), '1 < 2 < 3')
     assert.strictEqual(n2.toString(), '1 < 3 > 2 <= 3 >= 2 == 2 != 1')
-    assert.strictEqual(n3.toString(), '(1 < 2 < 3) == (6 > 5 > 4) != (1 > 2 > 3)')
+    assert.strictEqual(
+      n3.toString(),
+      '(1 < 2 < 3) == (6 > 5 > 4) != (1 > 2 > 3)'
+    )
   })
 
   it('should stringify a RelationalNode with custom toString', function () {
@@ -204,22 +245,36 @@ describe('RelationalNode', function () {
       if (node.type === 'RelationalNode') {
         let ret = node.params[0].toString(options)
         for (let i = 0; i < node.conditionals.length; i++) {
-          ret += ' ' + node.conditionals[i] + ' ' + node.params[i + 1].toString(options)
+          ret +=
+            ' ' +
+            node.conditionals[i] +
+            ' ' +
+            node.params[i + 1].toString(options)
         }
         return ret
       } else if (node.type === 'ConstantNode') {
         switch (node.value) {
-          case 1: return 'one'
-          case 2: return 'two'
-          case 3: return 'three'
-          default: return 'NaN'
+          case 1:
+            return 'one'
+          case 2:
+            return 'two'
+          case 3:
+            return 'three'
+          default:
+            return 'NaN'
         }
       }
     }
 
-    const n = new RelationalNode(['smaller', 'larger', 'smallerEq', 'largerEq', 'equal', 'unequal'], [one, three, two, three, two, two, one])
+    const n = new RelationalNode(
+      ['smaller', 'larger', 'smallerEq', 'largerEq', 'equal', 'unequal'],
+      [one, three, two, three, two, two, one]
+    )
 
-    assert.strictEqual(n.toString({ handler: customFunction }), 'one smaller three larger two smallerEq three largerEq two equal two unequal one')
+    assert.strictEqual(
+      n.toString({ handler: customFunction }),
+      'one smaller three larger two smallerEq three largerEq two equal two unequal one'
+    )
   })
 
   it('should stringify a RelationalNode with custom toHTML', function () {
@@ -228,22 +283,36 @@ describe('RelationalNode', function () {
       if (node.type === 'RelationalNode') {
         let ret = node.params[0].toHTML(options)
         for (let i = 0; i < node.conditionals.length; i++) {
-          ret += ' ' + node.conditionals[i] + ' ' + node.params[i + 1].toHTML(options)
+          ret +=
+            ' ' +
+            node.conditionals[i] +
+            ' ' +
+            node.params[i + 1].toHTML(options)
         }
         return ret
       } else if (node.type === 'ConstantNode') {
         switch (node.value) {
-          case 1: return 'one'
-          case 2: return 'two'
-          case 3: return 'three'
-          default: return 'NaN'
+          case 1:
+            return 'one'
+          case 2:
+            return 'two'
+          case 3:
+            return 'three'
+          default:
+            return 'NaN'
         }
       }
     }
 
-    const n = new RelationalNode(['smaller', 'larger', 'smallerEq', 'largerEq', 'equal', 'unequal'], [one, three, two, three, two, two, one])
+    const n = new RelationalNode(
+      ['smaller', 'larger', 'smallerEq', 'largerEq', 'equal', 'unequal'],
+      [one, three, two, three, two, two, one]
+    )
 
-    assert.strictEqual(n.toHTML({ handler: customFunction }), 'one smaller three larger two smallerEq three largerEq two equal two unequal one')
+    assert.strictEqual(
+      n.toHTML({ handler: customFunction }),
+      'one smaller three larger two smallerEq three largerEq two equal two unequal one'
+    )
   })
 
   it('toJSON and fromJSON', function () {
@@ -268,13 +337,19 @@ describe('RelationalNode', function () {
 
     assert.strictEqual(n.toTex(), '1< x<3')
     assert.strictEqual(math.parse('1<x<sqrt(1+2)').toTex(), '1< x<\\sqrt{1+2}')
-    assert.strictEqual(math.parse('(-1 < 4/2 < 3) == (3! > 2+3 > 4) != (1 > 2 > 1*3)').toTex(), '\\left(-1<\\frac{4}{2}<3\\right)=\\left(3!>2+3>4\\right)\\neq\\left(1>2>1\\cdot3\\right)')
+    assert.strictEqual(
+      math.parse('(-1 < 4/2 < 3) == (3! > 2+3 > 4) != (1 > 2 > 1*3)').toTex(),
+      '\\left(-1<\\frac{4}{2}<3\\right)=\\left(3!>2+3>4\\right)\\neq\\left(1>2>1\\cdot3\\right)'
+    )
   })
 
   it('should HTML a RelationalNode', function () {
     const x = new SymbolNode('x')
     const n = new RelationalNode(['smaller', 'smaller'], [one, x, three])
 
-    assert.strictEqual(n.toHTML(), '<span class="math-number">1</span><span class="math-operator math-binary-operator math-explicit-binary-operator">&lt;</span><span class="math-symbol">x</span><span class="math-operator math-binary-operator math-explicit-binary-operator">&lt;</span><span class="math-number">3</span>')
+    assert.strictEqual(
+      n.toHTML(),
+      '<span class="math-number">1</span><span class="math-operator math-binary-operator math-explicit-binary-operator">&lt;</span><span class="math-symbol">x</span><span class="math-operator math-binary-operator math-explicit-binary-operator">&lt;</span><span class="math-number">3</span>'
+    )
   })
 })

@@ -118,9 +118,15 @@ export const latexFunctions = {
   ceil: { 1: '\\left\\lceil${args[0]}\\right\\rceil' },
   cube: { 1: '\\left(${args[0]}\\right)^3' },
   divide: { 2: '\\frac{${args[0]}}{${args[1]}}' },
-  dotDivide: { 2: `\\left(\${args[0]}${latexOperators.dotDivide}\${args[1]}\\right)` },
-  dotMultiply: { 2: `\\left(\${args[0]}${latexOperators.dotMultiply}\${args[1]}\\right)` },
-  dotPow: { 2: `\\left(\${args[0]}${latexOperators.dotPow}\${args[1]}\\right)` },
+  dotDivide: {
+    2: `\\left(\${args[0]}${latexOperators.dotDivide}\${args[1]}\\right)`
+  },
+  dotMultiply: {
+    2: `\\left(\${args[0]}${latexOperators.dotMultiply}\${args[1]}\\right)`
+  },
+  dotPow: {
+    2: `\\left(\${args[0]}${latexOperators.dotPow}\${args[1]}\\right)`
+  },
   exp: { 1: '\\exp\\left(${args[0]}\\right)' },
   expm1: `\\left(e${latexOperators.pow}{\${args[0]}}-1\\right)`,
   fix: { 1: '\\mathrm{${name}}\\left(${args[0]}\\right)' },
@@ -139,7 +145,9 @@ export const latexFunctions = {
   },
   log2: '\\log_{2}\\left(${args[0]}\\right)',
   mod: { 2: `\\left(\${args[0]}${latexOperators.mod}\${args[1]}\\right)` },
-  multiply: { 2: `\\left(\${args[0]}${latexOperators.multiply}\${args[1]}\\right)` },
+  multiply: {
+    2: `\\left(\${args[0]}${latexOperators.multiply}\${args[1]}\\right)`
+  },
   norm: {
     1: '\\left\\|${args[0]}\\right\\|',
     2: undefined as any // use default template
@@ -154,18 +162,30 @@ export const latexFunctions = {
   sign: { 1: '\\mathrm{${name}}\\left(${args[0]}\\right)' },
   sqrt: { 1: '\\sqrt{${args[0]}}' },
   square: { 1: '\\left(${args[0]}\\right)^2' },
-  subtract: { 2: `\\left(\${args[0]}${latexOperators.subtract}\${args[1]}\\right)` },
+  subtract: {
+    2: `\\left(\${args[0]}${latexOperators.subtract}\${args[1]}\\right)`
+  },
   unaryMinus: { 1: `${latexOperators.unaryMinus}\\left(\${args[0]}\\right)` },
   unaryPlus: { 1: `${latexOperators.unaryPlus}\\left(\${args[0]}\\right)` },
 
   // bitwise
-  bitAnd: { 2: `\\left(\${args[0]}${latexOperators.bitAnd}\${args[1]}\\right)` },
+  bitAnd: {
+    2: `\\left(\${args[0]}${latexOperators.bitAnd}\${args[1]}\\right)`
+  },
   bitNot: { 1: latexOperators.bitNot + '\\left(${args[0]}\\right)' },
   bitOr: { 2: `\\left(\${args[0]}${latexOperators.bitOr}\${args[1]}\\right)` },
-  bitXor: { 2: `\\left(\${args[0]}${latexOperators.bitXor}\${args[1]}\\right)` },
-  leftShift: { 2: `\\left(\${args[0]}${latexOperators.leftShift}\${args[1]}\\right)` },
-  rightArithShift: { 2: `\\left(\${args[0]}${latexOperators.rightArithShift}\${args[1]}\\right)` },
-  rightLogShift: { 2: `\\left(\${args[0]}${latexOperators.rightLogShift}\${args[1]}\\right)` },
+  bitXor: {
+    2: `\\left(\${args[0]}${latexOperators.bitXor}\${args[1]}\\right)`
+  },
+  leftShift: {
+    2: `\\left(\${args[0]}${latexOperators.leftShift}\${args[1]}\\right)`
+  },
+  rightArithShift: {
+    2: `\\left(\${args[0]}${latexOperators.rightArithShift}\${args[1]}\\right)`
+  },
+  rightLogShift: {
+    2: `\\left(\${args[0]}${latexOperators.rightLogShift}\${args[1]}\\right)`
+  },
 
   // combinatorics
   bellNumbers: { 1: '\\mathrm{B}_{${args[0]}}' },
@@ -198,18 +218,30 @@ export const latexFunctions = {
 
   // probability
   combinations: { 2: '\\binom{${args[0]}}{${args[1]}}' },
-  combinationsWithRep: { 2: '\\left(\\!\\!{\\binom{${args[0]}}{${args[1]}}}\\!\\!\\right)' },
+  combinationsWithRep: {
+    2: '\\left(\\!\\!{\\binom{${args[0]}}{${args[1]}}}\\!\\!\\right)'
+  },
   factorial: { 1: `\\left(\${args[0]}\\right)${latexOperators.factorial}` },
   gamma: { 1: '\\Gamma\\left(${args[0]}\\right)' },
   lgamma: { 1: '\\ln\\Gamma\\left(${args[0]}\\right)' },
 
   // relational
   equal: { 2: `\\left(\${args[0]}${latexOperators.equal}\${args[1]}\\right)` },
-  larger: { 2: `\\left(\${args[0]}${latexOperators.larger}\${args[1]}\\right)` },
-  largerEq: { 2: `\\left(\${args[0]}${latexOperators.largerEq}\${args[1]}\\right)` },
-  smaller: { 2: `\\left(\${args[0]}${latexOperators.smaller}\${args[1]}\\right)` },
-  smallerEq: { 2: `\\left(\${args[0]}${latexOperators.smallerEq}\${args[1]}\\right)` },
-  unequal: { 2: `\\left(\${args[0]}${latexOperators.unequal}\${args[1]}\\right)` },
+  larger: {
+    2: `\\left(\${args[0]}${latexOperators.larger}\${args[1]}\\right)`
+  },
+  largerEq: {
+    2: `\\left(\${args[0]}${latexOperators.largerEq}\${args[1]}\\right)`
+  },
+  smaller: {
+    2: `\\left(\${args[0]}${latexOperators.smaller}\${args[1]}\\right)`
+  },
+  smallerEq: {
+    2: `\\left(\${args[0]}${latexOperators.smallerEq}\${args[1]}\\right)`
+  },
+  unequal: {
+    2: `\\left(\${args[0]}${latexOperators.unequal}\${args[1]}\\right)`
+  },
 
   // special
   erf: { 1: 'erf\\left(${args[0]}\\right)' },
@@ -250,7 +282,7 @@ export const latexFunctions = {
   to: { 2: `\\left(\${args[0]}${latexOperators.to}\${args[1]}\\right)` },
 
   // utils
-  numeric: function (node: any, options: any) {
+  numeric: function (node: any, _options: any) {
     // Not sure if this is strictly right but should work correctly for the vast majority of use cases.
     return node.args[0].toTex()
   },
@@ -291,7 +323,6 @@ export const latexFunctions = {
     1: '\\left(${args[0]}\\right)',
     2: '\\left(\\left(${args[0]}\\right)${args[1]}\\right)'
   }
-
 }
 
 export const defaultTemplate = '\\mathrm{${name}}\\left(${args}\\right)'
@@ -300,13 +331,13 @@ const latexUnits = {
   deg: '^\\circ'
 }
 
-export function escapeLatex (string: any) {
+export function escapeLatex(string: any) {
   return escapeLatexLib(string, { preserveFormatting: true })
 }
 
 // @param {string} name
 // @param {boolean} isUnit
-export function toSymbol (name: any, isUnit: any) {
+export function toSymbol(name: any, isUnit: any) {
   isUnit = typeof isUnit === 'undefined' ? false : isUnit
   if (isUnit) {
     if (hasOwnProperty(latexUnits, name)) {

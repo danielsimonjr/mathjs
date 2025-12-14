@@ -6,22 +6,37 @@ import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDo
 let mathDocs = math.create(math.all)
 const originalConfig = mathDocs.config()
 // Add names to the skipDocs array if they are not meant to have embedded docs
-const skipDocs = new Set(['import', 'addScalar', 'divideScalar', 'equalScalar', 'multiplyScalar',
-  'subtractScalar', 'apply', 'replacer', 'reviver'])
+const skipDocs = new Set([
+  'import',
+  'addScalar',
+  'divideScalar',
+  'equalScalar',
+  'multiplyScalar',
+  'subtractScalar',
+  'apply',
+  'replacer',
+  'reviver'
+])
 
 // Add names to skipExamples if their examples in the embedded docs contain acceptable errors
 const skipExamples = new Set([])
 
-const testDocs = new Set([
-  ...Object.keys(embeddedDocs),
-  ...Object.keys(math.expression.mathWithTransform)
-].filter(name => { return !skipDocs.has(name) }))
+const testDocs = new Set(
+  [
+    ...Object.keys(embeddedDocs),
+    ...Object.keys(math.expression.mathWithTransform)
+  ].filter((name) => {
+    return !skipDocs.has(name)
+  })
+)
 
-const testExamples = new Set([...testDocs].filter(name => {
-  return !skipExamples.has(name)
-}))
+const testExamples = new Set(
+  [...testDocs].filter((name) => {
+    return !skipExamples.has(name)
+  })
+)
 
-function runExamplesInDocs (name) {
+function runExamplesInDocs(name) {
   mathDocs.config(originalConfig)
   // every function should have doc.examples
   const examples = mathDocs.evaluate(`help("${name}")`).doc.examples
@@ -29,14 +44,13 @@ function runExamplesInDocs (name) {
     // validate if the examples run without errors
     mathDocs.evaluate(examples)
     return
-  } catch {
-  }
+  } catch {}
   // if they still have errors try with a new math instance
   mathDocs = math.create(math.all)
   mathDocs.evaluate(examples)
 }
 
-function hasValidSeeAlso (name) {
+function hasValidSeeAlso(name) {
   let seeAlso = []
   try {
     seeAlso = mathDocs.evaluate(`help("${name}")`).doc.seealso
@@ -44,13 +58,17 @@ function hasValidSeeAlso (name) {
     return
   }
   if (seeAlso && seeAlso.length > 0) {
-    seeAlso.forEach(see => {
+    seeAlso.forEach((see) => {
       if (testDocs.has(see)) {
         if (see === name) {
-          throw new Error(`See also name "${see}" should not be the same as "${name}" in docs for "${name}".`)
+          throw new Error(
+            `See also name "${see}" should not be the same as "${name}" in docs for "${name}".`
+          )
         }
       } else {
-        throw new Error(`See also with name "${see}" is not a valid documentation name used in docs for "${name}".`)
+        throw new Error(
+          `See also with name "${see}" is not a valid documentation name used in docs for "${name}".`
+        )
       }
     })
   }
@@ -70,8 +88,12 @@ describe('help', function () {
   })
 
   it('should throw an error on wrong number of arguments', function () {
-    assert.throws(function () { math.help() }, /TypeError: Too few arguments/)
-    assert.throws(function () { math.help('sin', 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      math.help()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      math.help('sin', 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should find help from a function name', function () {
@@ -106,19 +128,30 @@ describe('help', function () {
   })
 
   it('should not allow accessing unsafe properties ', function () {
-    assert.throws(function () { math.help('constructor') }, /No access/)
+    assert.throws(function () {
+      math.help('constructor')
+    }, /No access/)
   })
 
   it('should throw an error when no help is found', function () {
     // assert.throws(function () {math.help(undefined)}, /No documentation found/);
-    assert.throws(function () { math.help(new Date()) }, /No documentation found/)
-    assert.throws(function () { math.help('nonExistingFunction') }, /No documentation found/)
-    assert.throws(function () { math.help('addScalar') }, /No documentation found/)
+    assert.throws(function () {
+      math.help(new Date())
+    }, /No documentation found/)
+    assert.throws(function () {
+      math.help('nonExistingFunction')
+    }, /No documentation found/)
+    assert.throws(function () {
+      math.help('addScalar')
+    }, /No documentation found/)
   })
 
   it('should LaTeX help', function () {
     const expression = math.parse('help(parse)')
-    assert.strictEqual(expression.toTex(), '\\mathrm{help}\\left( parse\\right)')
+    assert.strictEqual(
+      expression.toTex(),
+      '\\mathrm{help}\\left( parse\\right)'
+    )
   })
 
   for (const name of testDocs) {

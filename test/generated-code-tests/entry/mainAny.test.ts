@@ -2,13 +2,30 @@
 import assert from 'assert'
 import * as mainAny from '../../../src/entry/mainAny.js'
 import * as factoriesAny from '../../../src/factoriesAny.js'
-import { createSnapshotFromFactories, validateBundle, validateTypeOf } from '../../../src/utils/snapshot.js'
-const { create, all, add, matrix, isObject, isMatrix, pi, speedOfLight, sqrt, evaluate, chain, reviver, Complex, addDependencies } = mainAny
-
+import {
+  createSnapshotFromFactories,
+  validateBundle,
+  validateTypeOf
+} from '../../../src/utils/snapshot.js'
 const {
-  expectedInstanceStructure,
-  expectedES6Structure
-} = createSnapshotFromFactories(factoriesAny)
+  create,
+  all,
+  add,
+  matrix,
+  isObject,
+  isMatrix,
+  pi,
+  speedOfLight,
+  sqrt,
+  evaluate,
+  chain,
+  reviver,
+  Complex,
+  addDependencies
+} = mainAny
+
+const { expectedInstanceStructure, expectedES6Structure } =
+  createSnapshotFromFactories(factoriesAny)
 
 describe('mainAny', function () {
   it('should export functions', function () {
@@ -49,9 +66,10 @@ describe('mainAny', function () {
 
   it('evaluate should contain all functions from mathWithTransform', function () {
     // snapshot testing
-    const mathWithTransform = expectedInstanceStructure.expression.mathWithTransform
+    const mathWithTransform =
+      expectedInstanceStructure.expression.mathWithTransform
 
-    Object.keys(mathWithTransform).forEach(key => {
+    Object.keys(mathWithTransform).forEach((key) => {
       if (key === 'not') {
         // operator, special case
         assert.strictEqual(evaluate('not true'), false)
@@ -59,18 +77,29 @@ describe('mainAny', function () {
         // TODO: special case, apply is not yet working in the expression parser due to security constraints
       } else {
         try {
-          assert.strictEqual(validateTypeOf(evaluate(key)), mathWithTransform[key], `Compare type of "${key}"`)
+          assert.strictEqual(
+            validateTypeOf(evaluate(key)),
+            mathWithTransform[key],
+            `Compare type of "${key}"`
+          )
         } catch (err) {
           console.error(err.toString())
-          assert.ok(false, `Missing or wrong type of entry in mathWithTransform: "${key}"`)
+          assert.ok(
+            false,
+            `Missing or wrong type of entry in mathWithTransform: "${key}"`
+          )
         }
       }
     })
   })
 
   it('evaluate should not contain classes', function () {
-    assert.throws(() => { evaluate('Complex') }, /Undefined symbol Complex/)
-    assert.throws(() => { evaluate('SymbolNode') }, /Undefined symbol SymbolNode/)
+    assert.throws(() => {
+      evaluate('Complex')
+    }, /Undefined symbol Complex/)
+    assert.throws(() => {
+      evaluate('SymbolNode')
+    }, /Undefined symbol SymbolNode/)
   })
 
   it('should export constants', function () {

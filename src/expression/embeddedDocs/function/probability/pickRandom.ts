@@ -8,8 +8,7 @@ export const pickRandomDocs = {
     'pickRandom(array, number, weights)',
     'pickRandom(array, weights, number)'
   ],
-  description:
-      'Pick a random entry from a given array.',
+  description: 'Pick a random entry from a given array.',
   examples: [
     'pickRandom(0:10)',
     'pickRandom([1, 3, 1, 6])',

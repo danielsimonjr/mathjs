@@ -5,7 +5,7 @@ import { formatTaskResult } from './utils/formatTaskResult.js'
 
 const results = []
 
-function bigFactorial (n) {
+function bigFactorial(n) {
   if (n.isZero()) {
     return new BigNumber(1) // 0! is per definition 1
   }
@@ -20,7 +20,7 @@ function bigFactorial (n) {
   return new BigNumber(res)
 }
 
-function betterFactorial (n) {
+function betterFactorial(n) {
   if (n < 8) {
     return new BigNumber([1, 1, 2, 6, 24, 120, 720, 5040][n])
   }
@@ -88,5 +88,7 @@ const bench = new Bench({ time: 100, iterations: 100 })
     results.push(res)
   })
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()

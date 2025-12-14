@@ -22,18 +22,29 @@ describe('isFinite', function () {
   })
 
   it('should test finiteness of an Array/Matrix elementwise', function () {
-    assert.deepStrictEqual(
-      isFinite([1n, 1, math.complex(1, 1)]), [true, true, true])
+    assert.deepStrictEqual(isFinite([1n, 1, math.complex(1, 1)]), [
+      true,
+      true,
+      true
+    ])
     assert.deepStrictEqual(
       isFinite(math.identity(3)),
-      math.matrix(
-        [[true, true, true], [true, true, true], [true, true, true]]))
+      math.matrix([
+        [true, true, true],
+        [true, true, true],
+        [true, true, true]
+      ])
+    )
 
-    assert.deepStrictEqual(
-      isFinite([0, 0, NaN, 0]), [true, true, false, true])
+    assert.deepStrictEqual(isFinite([0, 0, NaN, 0]), [true, true, false, true])
     const I = math.identity(2)
     I.set([1, 1], Infinity)
     assert.deepStrictEqual(
-      isFinite(I), math.matrix([[true, true], [true, false]]))
+      isFinite(I),
+      math.matrix([
+        [true, true],
+        [true, false]
+      ])
+    )
   })
 })

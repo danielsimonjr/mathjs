@@ -32,33 +32,48 @@ describe('FunctionNode', function () {
   it('should throw an error when calling without new operator', function () {
     const s = new SymbolNode('sqrt')
     const c = new ConstantNode(4)
-    assert.throws(function () { FunctionNode(s, [c]) }, TypeError)
+    assert.throws(function () {
+      FunctionNode(s, [c])
+    }, TypeError)
   })
 
   it('should throw an error when calling with wrong arguments', function () {
     const s = new SymbolNode('sqrt')
     const c = new ConstantNode(4)
-    assert.throws(function () { console.log(new FunctionNode(new Date(), [])) }, TypeError)
-    assert.throws(function () { console.log(new FunctionNode(s, [2, 3])) }, TypeError)
-    assert.throws(function () { console.log(new FunctionNode(s, [c, 3])) }, TypeError)
+    assert.throws(function () {
+      console.log(new FunctionNode(new Date(), []))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new FunctionNode(s, [2, 3]))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new FunctionNode(s, [c, 3]))
+    }, TypeError)
   })
 
   it('should get the name of a FunctionNode', function () {
     const n1 = new FunctionNode(new SymbolNode('sqrt'), [new ConstantNode(4)])
     assert.strictEqual(n1.name, 'sqrt')
 
-    const n = new AccessorNode(new SymbolNode('a'), new IndexNode([new ConstantNode('toString')]))
+    const n = new AccessorNode(
+      new SymbolNode('a'),
+      new IndexNode([new ConstantNode('toString')])
+    )
     const n2 = new FunctionNode(n, [new ConstantNode(4)])
     assert.strictEqual(n2.name, 'toString')
 
-    const n3 = new FunctionNode(new OperatorNode('+', 'add', []), [new ConstantNode(4)])
+    const n3 = new FunctionNode(new OperatorNode('+', 'add', []), [
+      new ConstantNode(4)
+    ])
     assert.strictEqual(n3.name, '')
   })
 
   it('should throw an error when evaluating an undefined function', function () {
     const scope = {}
     const s = new FunctionNode('foo', [])
-    assert.throws(function () { s.compile().evaluate(scope) }, /Error: Undefined function foo/)
+    assert.throws(function () {
+      s.compile().evaluate(scope)
+    }, /Error: Undefined function foo/)
   })
 
   it('should compile a FunctionNode', function () {
@@ -108,7 +123,7 @@ describe('FunctionNode', function () {
 
   it('should compile a FunctionNode with a raw function', function () {
     const mymath = math.create()
-    function myFunction (args, _math, _scope) {
+    function myFunction(args, _math, _scope) {
       assert.strictEqual(args.length, 2)
       assert(args[0] instanceof mymath.Node)
       assert(args[1] instanceof mymath.Node)
@@ -135,7 +150,7 @@ describe('FunctionNode', function () {
     }
 
     const mymath = math.create()
-    function myFunction (args, _math, _scope) {
+    function myFunction(args, _math, _scope) {
       assert.strictEqual(args.length, 2)
       assert(args[0] instanceof mymath.Node)
       assert(args[1] instanceof mymath.Node)
@@ -159,7 +174,7 @@ describe('FunctionNode', function () {
 
   it('should compile a FunctionNode with overloaded a raw function', function () {
     const mymath = math.create()
-    function myFunction (args, _math, _scope) {
+    function myFunction(args, _math, _scope) {
       assert.ok(false, 'should not be executed')
     }
     myFunction.rawArgs = true
@@ -190,11 +205,36 @@ describe('FunctionNode', function () {
     const c = new ConstantNode(1)
     const n = new FunctionNode(s, [b, c])
 
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof FunctionNode }), [n])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof RangeNode }), [])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof ConstantNode }), [b, c])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof ConstantNode && node.value === 2 }), [b])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof ConstantNode && node.value === 4 }), [])
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof FunctionNode
+      }),
+      [n]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof RangeNode
+      }),
+      []
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof ConstantNode
+      }),
+      [b, c]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof ConstantNode && node.value === 2
+      }),
+      [b]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof ConstantNode && node.value === 4
+      }),
+      []
+    )
   })
 
   it('should run forEach on a FunctionNode', function () {
@@ -261,7 +301,9 @@ describe('FunctionNode', function () {
     const f = new FunctionNode(s, [b])
 
     assert.throws(function () {
-      f.map(function () { return undefined })
+      f.map(function () {
+        return undefined
+      })
     }, /Callback function must return a Node/)
   })
 
@@ -378,10 +420,22 @@ describe('FunctionNode', function () {
   })
 
   it('test equality another Node', function () {
-    const a = new FunctionNode(new SymbolNode('add'), [new ConstantNode(2), new ConstantNode(3)])
-    const b = new FunctionNode(new SymbolNode('add'), [new ConstantNode(2), new ConstantNode(3)])
-    const c = new FunctionNode(new SymbolNode('subtract'), [new ConstantNode(2), new ConstantNode(3)])
-    const d = new FunctionNode(new SymbolNode('add'), [new ConstantNode(4), new ConstantNode(3)])
+    const a = new FunctionNode(new SymbolNode('add'), [
+      new ConstantNode(2),
+      new ConstantNode(3)
+    ])
+    const b = new FunctionNode(new SymbolNode('add'), [
+      new ConstantNode(2),
+      new ConstantNode(3)
+    ])
+    const c = new FunctionNode(new SymbolNode('subtract'), [
+      new ConstantNode(2),
+      new ConstantNode(3)
+    ])
+    const d = new FunctionNode(new SymbolNode('add'), [
+      new ConstantNode(4),
+      new ConstantNode(3)
+    ])
     const e = new SymbolNode('add')
 
     assert.strictEqual(a.equals(null), false)
@@ -441,8 +495,14 @@ describe('FunctionNode', function () {
     const n1 = new FunctionNode(new SymbolNode('add'), [a, b])
     const n2 = new FunctionNode(new SymbolNode('subtract'), [a, b])
 
-    assert.strictEqual(n1.toString({ handler: customFunction }), '[add](const(1, number), const(2, number), )')
-    assert.strictEqual(n2.toString({ handler: customFunction }), '[subtract](const(1, number), const(2, number), )')
+    assert.strictEqual(
+      n1.toString({ handler: customFunction }),
+      '[add](const(1, number), const(2, number), )'
+    )
+    assert.strictEqual(
+      n2.toString({ handler: customFunction }),
+      '[subtract](const(1, number), const(2, number), )'
+    )
   })
 
   it('should stringify a FunctionNode with custom toHTML', function () {
@@ -466,17 +526,27 @@ describe('FunctionNode', function () {
     const n1 = new FunctionNode(new SymbolNode('add'), [a, b])
     const n2 = new FunctionNode(new SymbolNode('subtract'), [a, b])
 
-    assert.strictEqual(n1.toHTML({ handler: customFunction }), '[add](const(1, number), const(2, number), )')
-    assert.strictEqual(n2.toHTML({ handler: customFunction }), '[subtract](const(1, number), const(2, number), )')
+    assert.strictEqual(
+      n1.toHTML({ handler: customFunction }),
+      '[add](const(1, number), const(2, number), )'
+    )
+    assert.strictEqual(
+      n2.toHTML({ handler: customFunction }),
+      '[subtract](const(1, number), const(2, number), )'
+    )
   })
 
   it('should stringify a FunctionNode with custom toString for a single function', function () {
     // Also checks if the custom functions get passed on to the children
     const customFunction = {
       add: function (node, options) {
-        return node.args[0].toString(options) +
-          ' ' + node.name + ' ' +
+        return (
+          node.args[0].toString(options) +
+          ' ' +
+          node.name +
+          ' ' +
           node.args[1].toString(options)
+        )
       }
     }
 
@@ -544,7 +614,13 @@ describe('FunctionNode', function () {
         latex += '\\right)'
         return latex
       } else if (node.type === 'ConstantNode') {
-        return 'const\\left(' + node.value + ', ' + math.typeOf(node.value) + '\\right)'
+        return (
+          'const\\left(' +
+          node.value +
+          ', ' +
+          math.typeOf(node.value) +
+          '\\right)'
+        )
       }
     }
 
@@ -554,17 +630,27 @@ describe('FunctionNode', function () {
     const n1 = new FunctionNode(new SymbolNode('add'), [a, b])
     const n2 = new FunctionNode(new SymbolNode('subtract'), [a, b])
 
-    assert.strictEqual(n1.toTex({ handler: customFunction }), '\\mbox{add}\\left(const\\left(1, number\\right), const\\left(2, number\\right), \\right)')
-    assert.strictEqual(n2.toTex({ handler: customFunction }), '\\mbox{subtract}\\left(const\\left(1, number\\right), const\\left(2, number\\right), \\right)')
+    assert.strictEqual(
+      n1.toTex({ handler: customFunction }),
+      '\\mbox{add}\\left(const\\left(1, number\\right), const\\left(2, number\\right), \\right)'
+    )
+    assert.strictEqual(
+      n2.toTex({ handler: customFunction }),
+      '\\mbox{subtract}\\left(const\\left(1, number\\right), const\\left(2, number\\right), \\right)'
+    )
   })
 
   it('should LaTeX a FunctionNode with custom toTex for a single function', function () {
     // Also checks if the custom functions get passed on to the children
     const customFunction = {
       add: function (node, options) {
-        return node.args[0].toTex(options) +
-          ' ' + node.name + ' ' +
+        return (
+          node.args[0].toTex(options) +
+          ' ' +
+          node.name +
+          ' ' +
           node.args[1].toTex(options)
+        )
       }
     }
 
@@ -579,7 +665,9 @@ describe('FunctionNode', function () {
   it('should LaTeX a FunctionNode with callback attached to the function', function () {
     const customMath = math.create()
     customMath.add.toTex = function (node, options) {
-      return node.args[0].toTex(options) + ' plus ' + node.args[1].toTex(options)
+      return (
+        node.args[0].toTex(options) + ' plus ' + node.args[1].toTex(options)
+      )
     }
 
     assert.strictEqual(customMath.parse('add(1,2)').toTex(), '1 plus 2')
@@ -587,7 +675,8 @@ describe('FunctionNode', function () {
 
   it('should LaTeX a FunctionNode with template string attached to the function', function () {
     const customMath = math.create()
-    customMath.add.toTex = '${args[0]} plus ${args[1]}' /* eslint-disable-line no-template-curly-in-string */
+    customMath.add.toTex =
+      '${args[0]} plus ${args[1]}' /* eslint-disable-line no-template-curly-in-string */
 
     assert.strictEqual(customMath.parse('add(1,2)').toTex(), '1 plus 2')
   })
@@ -595,7 +684,7 @@ describe('FunctionNode', function () {
   it('should LaTeX a FunctionNode with object of callbacks attached to the function', function () {
     const customMath = math.create()
     customMath.sum.toTex = {
-      2: '${args[0]}+${args[1]}', /* eslint-disable-line no-template-curly-in-string */
+      2: '${args[0]}+${args[1]}' /* eslint-disable-line no-template-curly-in-string */,
       3: function (node, options) {
         return node.args[0] + '+' + node.args[1] + '+' + node.args[2]
       }
@@ -607,52 +696,66 @@ describe('FunctionNode', function () {
 
   it('should LaTeX templates with string properties', function () {
     const customMath = math.create()
-    customMath.add.toTex = '${name}' /* eslint-disable-line no-template-curly-in-string */
+    customMath.add.toTex =
+      '${name}' /* eslint-disable-line no-template-curly-in-string */
 
     assert.strictEqual(customMath.parse('add(1,2)').toTex(), 'add')
   })
 
   it('should LaTeX templates with node properties', function () {
     const customMath = math.create()
-    customMath.add.toTex = '${args[0]} plus ${args[1]}' /* eslint-disable-line no-template-curly-in-string */
+    customMath.add.toTex =
+      '${args[0]} plus ${args[1]}' /* eslint-disable-line no-template-curly-in-string */
 
     assert.strictEqual(customMath.parse('add(1,2)').toTex(), '1 plus 2')
   })
 
   it('should LaTeX templates with properties that are arrays of Nodes', function () {
     const customMath = math.create()
-    customMath.add.toTex = '${args}' /* eslint-disable-line no-template-curly-in-string */
+    customMath.add.toTex =
+      '${args}' /* eslint-disable-line no-template-curly-in-string */
 
     assert.strictEqual(customMath.parse('add(1,2)').toTex(), '1,2')
   })
 
-  it('should throw an Error for templates with properties that don\'t exist', function () {
+  it("should throw an Error for templates with properties that don't exist", function () {
     const customMath = math.create()
-    customMath.add.toTex = '${some_property}' /* eslint-disable-line no-template-curly-in-string */
+    customMath.add.toTex =
+      '${some_property}' /* eslint-disable-line no-template-curly-in-string */
 
-    assert.throws(function () { customMath.parse('add(1,2)').toTex() }, ReferenceError)
+    assert.throws(function () {
+      customMath.parse('add(1,2)').toTex()
+    }, ReferenceError)
   })
 
-  it('should throw an Error for templates with properties that aren\'t Nodes or Strings or Arrays of Nodes', function () {
+  it("should throw an Error for templates with properties that aren't Nodes or Strings or Arrays of Nodes", function () {
     const customMath = math.create()
-    customMath.add.toTex = '${some_property}' /* eslint-disable-line no-template-curly-in-string */
+    customMath.add.toTex =
+      '${some_property}' /* eslint-disable-line no-template-curly-in-string */
     const tree = customMath.parse('add(1,2)')
 
     tree.some_property = {}
-    assert.throws(function () { tree.toTex() }, TypeError)
+    assert.throws(function () {
+      tree.toTex()
+    }, TypeError)
 
     customMath.add.prototype.some_property = 1
     tree.some_property = 1
-    assert.throws(function () { tree.toTex() }, TypeError)
+    assert.throws(function () {
+      tree.toTex()
+    }, TypeError)
   })
 
   it('should throw an Error for templates with properties that are arrays of non Nodes', function () {
     const customMath = math.create()
-    customMath.add.toTex = '${some_property}' /* eslint-disable-line no-template-curly-in-string */
+    customMath.add.toTex =
+      '${some_property}' /* eslint-disable-line no-template-curly-in-string */
     const tree = customMath.parse('add(1,2)')
     tree.some_property = [1, 2]
 
-    assert.throws(function () { tree.toTex() }, TypeError)
+    assert.throws(function () {
+      tree.toTex()
+    }, TypeError)
   })
 
   it('evaluates different sorts of function calls', function () {
@@ -677,15 +780,21 @@ describe('FunctionNode', function () {
       ['f = 7; f(3)', TypeError, /f.*value[\s\S]*7/],
       ['a={f: 7}; a.f(3)', Error, /method.*f/],
       ['a=[1,2]; a[2](3)', TypeError, /a\[2\].*value[\s\S]*2/],
-      ['twiceOn(f, x) = f(f(x)); twiceOn(7, 3)',
+      [
+        'twiceOn(f, x) = f(f(x)); twiceOn(7, 3)',
         TypeError,
-        /f.*received[\s\S]*7/],
-      ['twice(f) = lambda(x) = f(f(x)); weird = twice(7); weird(3)',
+        /f.*received[\s\S]*7/
+      ],
+      [
+        'twice(f) = lambda(x) = f(f(x)); weird = twice(7); weird(3)',
         TypeError,
-        /f.*received[\s\S]*7/],
-      ['twice(f) = lambda(x) = f(f(x)); [twice(7)][1](3)',
+        /f.*received[\s\S]*7/
+      ],
+      [
+        'twice(f) = lambda(x) = f(f(x)); [twice(7)][1](3)',
         TypeError,
-        /f.*received[\s\S]*7/],
+        /f.*received[\s\S]*7/
+      ],
       ['[square(7)][1](3)', TypeError, /square\(7\).*evaluate[\s\S]*49/]
     ]
     for (const problem of throwers) {

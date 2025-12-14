@@ -7,7 +7,7 @@
  *
  * @param {Number}  i               The value to flip
  */
-export function csFlip (i: number): number {
+export function csFlip(i: number): number {
   // flip the value
   return -i - 2
 }

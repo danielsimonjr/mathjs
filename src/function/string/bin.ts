@@ -39,13 +39,20 @@ const dependencies = ['typed', 'format']
  * @param {number | BigNumber} wordSize Optional word size (see `format`)
  * @return {string}         The formatted value
  */
-export const createBin = /* #__PURE__ */ factory(name, dependencies, ({ typed, format }: Dependencies): TypedFunction => {
-  return typed(name, {
-    'number | BigNumber': function (n: number | bigint): string {
-      return format(n, { notation: 'bin' })
-    },
-    'number | BigNumber, number | BigNumber': function (n: number | bigint, wordSize: number | bigint): string {
-      return format(n, { notation: 'bin', wordSize })
-    }
-  })
-})
+export const createBin = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, format }: Dependencies): TypedFunction => {
+    return typed(name, {
+      'number | BigNumber': function (n: number | bigint): string {
+        return format(n, { notation: 'bin' })
+      },
+      'number | BigNumber, number | BigNumber': function (
+        n: number | bigint,
+        wordSize: number | bigint
+      ): string {
+        return format(n, { notation: 'bin', wordSize })
+      }
+    })
+  }
+)

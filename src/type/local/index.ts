@@ -8,7 +8,12 @@
  */
 
 export { Decimal, type DecimalConfig } from './Decimal.ts'
-export { Complex, type ComplexJSON, type PolarForm, type ComplexLike } from './Complex.ts'
+export {
+  Complex,
+  type ComplexJSON,
+  type PolarForm,
+  type ComplexLike
+} from './Complex.ts'
 export { Fraction, type FractionJSON, type FractionLike } from './Fraction.ts'
 
 // Re-export as default classes for drop-in replacement

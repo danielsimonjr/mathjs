@@ -9,7 +9,7 @@ export const rangeDocs = {
     'range(string)'
   ],
   description:
-      'Create a range. Lower bound of the range is included, upper bound is excluded.',
+    'Create a range. Lower bound of the range is included, upper bound is excluded.',
   examples: [
     '1:5',
     '3:-1:-3',
@@ -21,6 +21,17 @@ export const rangeDocs = {
     'a[1:2, 1:2]'
   ],
   seealso: [
-    'concat', 'det', 'diag', 'identity', 'inv', 'ones', 'size', 'squeeze', 'subset', 'trace', 'transpose', 'zeros'
+    'concat',
+    'det',
+    'diag',
+    'identity',
+    'inv',
+    'ones',
+    'size',
+    'squeeze',
+    'subset',
+    'trace',
+    'transpose',
+    'zeros'
   ]
 }

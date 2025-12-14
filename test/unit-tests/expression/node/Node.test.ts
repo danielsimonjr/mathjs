@@ -6,7 +6,7 @@ import math from '../../../../src/defaultInstance.js'
 const Node = math.Node
 
 describe('Node', function () {
-  function MyNode (value) {
+  function MyNode(value) {
     this.value = value
   }
   MyNode.prototype = new Node()
@@ -26,15 +26,32 @@ describe('Node', function () {
   })
 
   it('should throw an error when calling without new operator', function () {
-    assert.throws(function () { Node() }, TypeError)
+    assert.throws(function () {
+      Node()
+    }, TypeError)
   })
 
   it('should filter a Node', function () {
     const n = new MyNode(2)
 
-    assert.deepStrictEqual(n.filter(function () { return true }), [n])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof Node }), [n])
-    assert.deepStrictEqual(n.filter(function (node) { return node instanceof Date }), [])
+    assert.deepStrictEqual(
+      n.filter(function () {
+        return true
+      }),
+      [n]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof Node
+      }),
+      [n]
+    )
+    assert.deepStrictEqual(
+      n.filter(function (node) {
+        return node instanceof Date
+      }),
+      []
+    )
   })
 
   it('should transform a Node', function () {
@@ -67,7 +84,7 @@ describe('Node', function () {
   it('transform should iterate over unchanged nodes', function () {
     const logs = []
 
-    function TestNode (value) {
+    function TestNode(value) {
       this.value = value
     }
     TestNode.prototype = new Node()
@@ -82,16 +99,13 @@ describe('Node', function () {
       return node
     })
     assert.deepStrictEqual(t, a)
-    assert.deepStrictEqual(logs, [
-      'transform a',
-      'map a'
-    ])
+    assert.deepStrictEqual(logs, ['transform a', 'map a'])
   })
 
   it('transform should not iterate over replaced nodes', function () {
     const logs = []
 
-    function TestNode (value) {
+    function TestNode(value) {
       this.value = value
     }
     TestNode.prototype = new Node()

@@ -60,10 +60,7 @@ export class ParallelMatrix {
       const options: WorkerPoolOptions = {
         maxWorkers: this.config.maxWorkers || undefined
       }
-      this.workerPool = new MathWorkerPool(
-        this.config.workerScript,
-        options
-      )
+      this.workerPool = new MathWorkerPool(this.config.workerScript, options)
     }
     return this.workerPool
   }
@@ -83,7 +80,9 @@ export class ParallelMatrix {
       return data instanceof Float64Array ? data : new Float64Array(data)
     }
 
-    const buffer = new SharedArrayBuffer(data.length * Float64Array.BYTES_PER_ELEMENT)
+    const buffer = new SharedArrayBuffer(
+      data.length * Float64Array.BYTES_PER_ELEMENT
+    )
     const sharedArray = new Float64Array(buffer)
     sharedArray.set(data)
     return sharedArray
@@ -129,17 +128,19 @@ export class ParallelMatrix {
 
       if (startRow >= aRows) break
 
-      const task = pool.exec<void>('matrixMultiplyChunk', [{
-        aData: aShared,
-        aRows,
-        aCols,
-        bData: bShared,
-        bRows,
-        bCols,
-        startRow,
-        endRow,
-        resultData: result
-      }])
+      const task = pool.exec<void>('matrixMultiplyChunk', [
+        {
+          aData: aShared,
+          aRows,
+          aCols,
+          bData: bShared,
+          bRows,
+          bCols,
+          startRow,
+          endRow,
+          resultData: result
+        }
+      ])
 
       tasks.push(task)
     }
@@ -209,13 +210,15 @@ export class ParallelMatrix {
 
       if (start >= size) break
 
-      const task = pool.exec<void>('matrixAddChunk', [{
-        aData: aShared,
-        bData: bShared,
-        start,
-        end,
-        resultData: result
-      }])
+      const task = pool.exec<void>('matrixAddChunk', [
+        {
+          aData: aShared,
+          bData: bShared,
+          start,
+          end,
+          resultData: result
+        }
+      ])
 
       tasks.push(task)
     }
@@ -259,13 +262,15 @@ export class ParallelMatrix {
 
       if (start >= size) break
 
-      const task = pool.exec<void>('matrixSubtractChunk', [{
-        aData: aShared,
-        bData: bShared,
-        start,
-        end,
-        resultData: result
-      }])
+      const task = pool.exec<void>('matrixSubtractChunk', [
+        {
+          aData: aShared,
+          bData: bShared,
+          start,
+          end,
+          resultData: result
+        }
+      ])
 
       tasks.push(task)
     }
@@ -308,13 +313,15 @@ export class ParallelMatrix {
 
       if (start >= size) break
 
-      const task = pool.exec<void>('matrixScaleChunk', [{
-        data: dataShared,
-        scalar,
-        start,
-        end,
-        resultData: result
-      }])
+      const task = pool.exec<void>('matrixScaleChunk', [
+        {
+          data: dataShared,
+          scalar,
+          start,
+          end,
+          resultData: result
+        }
+      ])
 
       tasks.push(task)
     }
@@ -358,13 +365,15 @@ export class ParallelMatrix {
 
       if (start >= size) break
 
-      const task = pool.exec<void>('matrixElementMultiplyChunk', [{
-        aData: aShared,
-        bData: bShared,
-        start,
-        end,
-        resultData: result
-      }])
+      const task = pool.exec<void>('matrixElementMultiplyChunk', [
+        {
+          aData: aShared,
+          bData: bShared,
+          start,
+          end,
+          resultData: result
+        }
+      ])
 
       tasks.push(task)
     }
@@ -411,14 +420,16 @@ export class ParallelMatrix {
 
       if (startRow >= rows) break
 
-      const task = pool.exec<void>('matrixTransposeChunk', [{
-        data: dataShared,
-        rows,
-        cols,
-        startRow,
-        endRow,
-        resultData: result
-      }])
+      const task = pool.exec<void>('matrixTransposeChunk', [
+        {
+          data: dataShared,
+          rows,
+          cols,
+          startRow,
+          endRow,
+          resultData: result
+        }
+      ])
 
       tasks.push(task)
     }
@@ -458,12 +469,14 @@ export class ParallelMatrix {
 
       if (start >= size) break
 
-      const task = pool.exec<number>('dotProductChunk', [{
-        aData: aShared,
-        bData: bShared,
-        start,
-        end
-      }])
+      const task = pool.exec<number>('dotProductChunk', [
+        {
+          aData: aShared,
+          bData: bShared,
+          start,
+          end
+        }
+      ])
 
       tasks.push(task)
     }
@@ -501,11 +514,13 @@ export class ParallelMatrix {
 
       if (start >= size) break
 
-      const task = pool.exec<number>('sumChunk', [{
-        data: dataShared,
-        start,
-        end
-      }])
+      const task = pool.exec<number>('sumChunk', [
+        {
+          data: dataShared,
+          start,
+          end
+        }
+      ])
 
       tasks.push(task)
     }
@@ -517,7 +532,12 @@ export class ParallelMatrix {
   /**
    * Get pool statistics
    */
-  public static getStats(): { totalWorkers: number; busyWorkers: number; idleWorkers: number; pendingTasks: number } | null {
+  public static getStats(): {
+    totalWorkers: number
+    busyWorkers: number
+    idleWorkers: number
+    pendingTasks: number
+  } | null {
     if (!this.workerPool) return null
     return this.workerPool.stats()
   }

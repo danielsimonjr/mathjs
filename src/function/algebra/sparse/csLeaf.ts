@@ -21,7 +21,7 @@ interface CsLeafResult {
  *
  * @return {Object}
  */
-export function csLeaf (
+export function csLeaf(
   i: number,
   j: number,
   w: number[],
@@ -37,7 +37,9 @@ export function csLeaf (
   let q: number
 
   // check j is a leaf
-  if (i <= j || w[first + j] <= w[maxfirst + i]) { return (-1) }
+  if (i <= j || w[first + j] <= w[maxfirst + i]) {
+    return -1
+  }
   // update max first[j] seen so far
   w[maxfirst + i] = w[first + j]
   // jprev = previous leaf of ith subtree

@@ -8,7 +8,7 @@
  * @param {Array}   w               The array
  * @param {Number}  j               The array index
  */
-export function csMarked (w: number[], j: number): boolean {
+export function csMarked(w: number[], j: number): boolean {
   // check node is marked
   return w[j] < 0
 }

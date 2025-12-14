@@ -4,36 +4,45 @@ import { deepMap } from '../../utils/collection.ts'
 const name = 'conj'
 const dependencies = ['typed']
 
-export const createConj = /* #__PURE__ */ factory(name, dependencies, ({ typed }: { typed: any }) => {
-  /**
-   * Compute the complex conjugate of a complex value.
-   * If `x = a+bi`, the complex conjugate of `x` is `a - bi`.
-   *
-   * For matrices, the function is evaluated element wise.
-   *
-   * Syntax:
-   *
-   *    math.conj(x)
-   *
-   * Examples:
-   *
-   *    math.conj(math.complex('2 + 3i'))  // returns Complex 2 - 3i
-   *    math.conj(math.complex('2 - 3i'))  // returns Complex 2 + 3i
-   *    math.conj(math.complex('-5.2i'))  // returns Complex 5.2i
-   *
-   * See also:
-   *
-   *    re, im, arg, abs
-   *
-   * @param {number | BigNumber | Complex | Array | Matrix | Unit} x
-   *            A complex number or array with complex numbers
-   * @return {number | BigNumber | Complex | Array | Matrix | Unit}
-   *            The complex conjugate of x
-   */
-  return typed(name, {
-    'number | BigNumber | Fraction': (x: any) => x,
-    Complex: (x: any) => x.conjugate(),
-    Unit: typed.referToSelf(((self: any) => ((x: any) => new x.constructor(self(x.toNumeric()), x.formatUnits()))) as any) as any,
-    'Array | Matrix': typed.referToSelf(((self: any) => ((x: any) => deepMap(x, self))) as any) as any
-  })
-})
+export const createConj = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed }: { typed: any }) => {
+    /**
+     * Compute the complex conjugate of a complex value.
+     * If `x = a+bi`, the complex conjugate of `x` is `a - bi`.
+     *
+     * For matrices, the function is evaluated element wise.
+     *
+     * Syntax:
+     *
+     *    math.conj(x)
+     *
+     * Examples:
+     *
+     *    math.conj(math.complex('2 + 3i'))  // returns Complex 2 - 3i
+     *    math.conj(math.complex('2 - 3i'))  // returns Complex 2 + 3i
+     *    math.conj(math.complex('-5.2i'))  // returns Complex 5.2i
+     *
+     * See also:
+     *
+     *    re, im, arg, abs
+     *
+     * @param {number | BigNumber | Complex | Array | Matrix | Unit} x
+     *            A complex number or array with complex numbers
+     * @return {number | BigNumber | Complex | Array | Matrix | Unit}
+     *            The complex conjugate of x
+     */
+    return typed(name, {
+      'number | BigNumber | Fraction': (x: any) => x,
+      Complex: (x: any) => x.conjugate(),
+      Unit: typed.referToSelf(
+        ((self: any) => (x: any) =>
+          new x.constructor(self(x.toNumeric()), x.formatUnits())) as any
+      ) as any,
+      'Array | Matrix': typed.referToSelf(
+        ((self: any) => (x: any) => deepMap(x, self)) as any
+      ) as any
+    })
+  }
+)

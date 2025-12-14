@@ -1,9 +1,17 @@
 // @ts-nocheck
 import { Bench } from 'tinybench'
-import { abs, DenseMatrix, forEach, map, ones, random, round } from '../../lib/esm/index.js'
+import {
+  abs,
+  DenseMatrix,
+  forEach,
+  map,
+  ones,
+  random,
+  round
+} from '../../lib/esm/index.js'
 import { formatTaskResult } from './utils/formatTaskResult.js'
 
-const genericMatrix = map(ones(10, 10, 'dense'), _ => round(random(-5, 5), 2))
+const genericMatrix = map(ones(10, 10, 'dense'), (_) => round(random(-5, 5), 2))
 const numberMatrix = new DenseMatrix(genericMatrix, 'number')
 const array = genericMatrix.toArray()
 
@@ -50,5 +58,7 @@ const bench = new Bench({ time: 100, iterations: 100 })
     }
   })
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()

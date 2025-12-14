@@ -22,7 +22,9 @@ const bench = new Bench({ time: 100, iterations: 100 })
     total += evaluate(expr).size()[0]
   })
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()
 
 // we count at total to prevent the browsers from not executing

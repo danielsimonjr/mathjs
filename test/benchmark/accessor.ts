@@ -63,7 +63,9 @@ const bench = new Bench({ time: 100, iterations: 100 })
     total += compiledOptionalChaining.evaluate(scope)
   })
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()
 
 // we count at total to prevent the browsers from not executing
@@ -72,6 +74,6 @@ if (total > 1e6) {
   console.log('')
 }
 
-function assertEqual (actual, expected) {
+function assertEqual(actual, expected) {
   assert.equal(actual, expected)
 }

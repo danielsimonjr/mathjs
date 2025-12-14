@@ -22,10 +22,12 @@ const bench = new Bench({ time: 100, iterations: 100 })
     const instance = math.create()
     // force to load all lazy functions
     const everything = Object.values(instance)
-    assert(everything.find(fn => fn.name === 'add'))
+    assert(everything.find((fn) => fn.name === 'add'))
     calls = instance.typed.createCount
   })
 
-bench.addEventListener('cycle', (event) => console.log(formatTaskResult(bench, event.task)))
+bench.addEventListener('cycle', (event) =>
+  console.log(formatTaskResult(bench, event.task))
+)
 await bench.run()
 console.log(`Created ${calls} typed functions.`)

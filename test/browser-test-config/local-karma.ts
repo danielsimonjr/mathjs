@@ -5,14 +5,16 @@ const mochaConfig = require('../../.mocharc.json')
 module.exports = function (config) {
   const baseConfig = baseKarma(config)
 
-  config.set(Object.assign(baseConfig, {
-    browsers: ['FirefoxHeadless'],
+  config.set(
+    Object.assign(baseConfig, {
+      browsers: ['FirefoxHeadless'],
 
-    client: {
-      captureConsole: true,
-      mocha: {
-        timeout: mochaConfig.timeout
+      client: {
+        captureConsole: true,
+        mocha: {
+          timeout: mochaConfig.timeout
+        }
       }
-    }
-  }))
+    })
+  )
 }

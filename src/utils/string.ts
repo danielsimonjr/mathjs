@@ -7,10 +7,10 @@ import { format as formatBigNumber } from './bignumber/formatter.ts'
  * @param {string} text
  * @param {string} search
  */
-export function endsWith (text: any, search: any) {
+export function endsWith(text: any, search: any) {
   const start = text.length - search.length
   const end = text.length
-  return (text.substring(start, end) === search)
+  return text.substring(start, end) === search
 }
 
 /**
@@ -51,16 +51,20 @@ export function endsWith (text: any, search: any) {
  *     have been more, they are deleted and replaced by an ellipsis).
  * @return {string} str
  */
-export function format (value: any, options: any): string {
+export function format(value: any, options: any): string {
   const result: string = _format(value, options)
-  if (options && typeof options === 'object' && 'truncate' in options &&
-      result.length > options.truncate) {
+  if (
+    options &&
+    typeof options === 'object' &&
+    'truncate' in options &&
+    result.length > options.truncate
+  ) {
     return result.substring(0, options.truncate - 3) + '...'
   }
   return result
 }
 
-function _format (value: any, options: any): string {
+function _format(value: any, options: any): string {
   if (typeof value === 'number') {
     return formatNumber(value, options)
   }
@@ -100,7 +104,7 @@ function _format (value: any, options: any): string {
       // this object has a non-native toString method, use that one
       return value.toString(options)
     } else {
-      const entries = Object.keys(value).map(key => {
+      const entries = Object.keys(value).map((key) => {
         return stringify(key) + ': ' + format(value[key], options)
       })
 
@@ -117,13 +121,16 @@ function _format (value: any, options: any): string {
  * @param {*} value
  * @return {string}
  */
-export function stringify (value: any) {
+export function stringify(value: any) {
   const text = String(value)
   let escaped = ''
   let i = 0
   while (i < text.length) {
     const c = text.charAt(i)
-    escaped += (c in controlCharacters) ? (controlCharacters as Record<string, string>)[c] : c
+    escaped +=
+      c in controlCharacters
+        ? (controlCharacters as Record<string, string>)[c]
+        : c
     i++
   }
 
@@ -145,9 +152,10 @@ const controlCharacters = {
  * @param {*} value
  * @return {string}
  */
-export function escape (value: any) {
+export function escape(value: any) {
   let text = String(value)
-  text = text.replace(/&/g, '&amp;')
+  text = text
+    .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
     .replace(/</g, '&lt;')
@@ -166,7 +174,7 @@ export function escape (value: any) {
  *                                                options.
  * @returns {string} str
  */
-function formatArray (array: any, options: any) {
+function formatArray(array: any, options: any) {
   if (Array.isArray(array)) {
     let str = '['
     const len = array.length
@@ -188,12 +196,15 @@ function formatArray (array: any, options: any) {
  * @param {*} value
  * @return {boolean}
  */
-function looksLikeFraction (value: any) {
-  return (value &&
+function looksLikeFraction(value: any) {
+  return (
+    (value &&
       typeof value === 'object' &&
       typeof value.s === 'bigint' &&
       typeof value.n === 'bigint' &&
-      typeof value.d === 'bigint') || false
+      typeof value.d === 'bigint') ||
+    false
+  )
 }
 
 /**
@@ -202,18 +213,24 @@ function looksLikeFraction (value: any) {
  * @param {string} y
  * @returns {number}
  */
-export function compareText (x: any, y: any) {
+export function compareText(x: any, y: any) {
   // we don't want to convert numbers to string, only accept string input
   if (!isString(x)) {
-    throw new TypeError('Unexpected type of argument in function compareText ' +
-      '(expected: string or Array or Matrix, actual: ' + typeOf(x) + ', index: 0)')
+    throw new TypeError(
+      'Unexpected type of argument in function compareText ' +
+        '(expected: string or Array or Matrix, actual: ' +
+        typeOf(x) +
+        ', index: 0)'
+    )
   }
   if (!isString(y)) {
-    throw new TypeError('Unexpected type of argument in function compareText ' +
-      '(expected: string or Array or Matrix, actual: ' + typeOf(y) + ', index: 1)')
+    throw new TypeError(
+      'Unexpected type of argument in function compareText ' +
+        '(expected: string or Array or Matrix, actual: ' +
+        typeOf(y) +
+        ', index: 1)'
+    )
   }
 
-  return (x === y)
-    ? 0
-    : (x > y ? 1 : -1)
+  return x === y ? 0 : x > y ? 1 : -1
 }

@@ -27,7 +27,7 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
 // =============================================================================
 
 const pureJS = {
-  matrixMultiply(a, aRows, aCols, b, bRows, bCols) {
+  matrixMultiply (a, aRows, aCols, b, bRows, bCols) {
     const result = new Float64Array(aRows * bCols)
     for (let i = 0; i < aRows; i++) {
       for (let j = 0; j < bCols; j++) {
@@ -41,7 +41,7 @@ const pureJS = {
     return result
   },
 
-  matrixAdd(a, b, size) {
+  matrixAdd (a, b, size) {
     const result = new Float64Array(size)
     for (let i = 0; i < size; i++) {
       result[i] = a[i] + b[i]
@@ -49,7 +49,7 @@ const pureJS = {
     return result
   },
 
-  transpose(a, rows, cols) {
+  transpose (a, rows, cols) {
     const result = new Float64Array(rows * cols)
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
@@ -59,7 +59,7 @@ const pureJS = {
     return result
   },
 
-  dotProduct(a, b, size) {
+  dotProduct (a, b, size) {
     let sum = 0
     for (let i = 0; i < size; i++) {
       sum += a[i] * b[i]
@@ -67,7 +67,7 @@ const pureJS = {
     return sum
   },
 
-  sum(arr) {
+  sum (arr) {
     let total = 0
     for (let i = 0; i < arr.length; i++) {
       total += arr[i]
@@ -80,7 +80,7 @@ const pureJS = {
 // WASM Module Loader (using generated ESM bindings)
 // =============================================================================
 
-async function loadWasmModule() {
+async function loadWasmModule () {
   try {
     // The generated ESM bindings auto-load the WASM file and export wrapped functions directly
     const wasmModule = await import('../../lib/wasm/index.js')
@@ -95,28 +95,28 @@ async function loadWasmModule() {
 // WASM wrapper class using generated ESM bindings
 // The generated bindings handle all array conversion automatically
 class WasmOperations {
-  constructor(wasmModule) {
+  constructor (wasmModule) {
     this.module = wasmModule
   }
 
-  matrixMultiply(a, aRows, aCols, b, bRows, bCols) {
+  matrixMultiply (a, aRows, aCols, b, bRows, bCols) {
     // Generated binding accepts JS Float64Array directly and returns Float64Array
     return this.module.multiplyDense(a, aRows, aCols, b, bRows, bCols)
   }
 
-  matrixAdd(a, b, size) {
+  matrixAdd (a, b, size) {
     return this.module.matrixAdd(a, b, size)
   }
 
-  transpose(data, rows, cols) {
+  transpose (data, rows, cols) {
     return this.module.transpose(data, rows, cols)
   }
 
-  dotProduct(a, b, size) {
+  dotProduct (a, b, size) {
     return this.module.dotProduct(a, b, size)
   }
 
-  sum(data) {
+  sum (data) {
     return this.module.sum(data)
   }
 }
@@ -125,10 +125,10 @@ class WasmOperations {
 // Parallel JavaScript Implementation
 // =============================================================================
 
-function createParallelJS(workerpool) {
+function createParallelJS (workerpool) {
   let pool = null
 
-  function getPool() {
+  function getPool () {
     if (!pool) {
       pool = workerpool.pool()
     }
@@ -136,7 +136,7 @@ function createParallelJS(workerpool) {
   }
 
   return {
-    async matrixMultiply(a, aRows, aCols, b, bRows, bCols) {
+    async matrixMultiply (a, aRows, aCols, b, bRows, bCols) {
       const numWorkers = Math.min(aRows, 4)
       const rowsPerWorker = Math.ceil(aRows / numWorkers)
       const result = new Float64Array(aRows * bCols)
@@ -175,7 +175,7 @@ function createParallelJS(workerpool) {
       return result
     },
 
-    async matrixAdd(a, b, size) {
+    async matrixAdd (a, b, size) {
       const numWorkers = Math.min(4, Math.ceil(size / 10000))
       const chunkSize = Math.ceil(size / numWorkers)
       const result = new Float64Array(size)
@@ -208,7 +208,7 @@ function createParallelJS(workerpool) {
       return result
     },
 
-    async dotProduct(a, b, size) {
+    async dotProduct (a, b, size) {
       const numWorkers = Math.min(4, Math.ceil(size / 10000))
       const chunkSize = Math.ceil(size / numWorkers)
       const aArray = Array.from(a)
@@ -235,7 +235,7 @@ function createParallelJS(workerpool) {
       return results.reduce((acc, val) => acc + val, 0)
     },
 
-    async terminate() {
+    async terminate () {
       if (pool) {
         await pool.terminate()
         pool = null
@@ -248,13 +248,13 @@ function createParallelJS(workerpool) {
 // Hybrid WASM Implementation (WASM + block splitting in main thread)
 // =============================================================================
 
-function createHybridWasm(wasmOps) {
+function createHybridWasm (wasmOps) {
   return {
     wasmOps,
 
     // Split work into blocks and use WASM for each block (main thread)
     // This shows the benefit of WASM without worker overhead
-    matrixMultiply(a, aRows, aCols, b, bRows, bCols) {
+    matrixMultiply (a, aRows, aCols, b, bRows, bCols) {
       const blockSize = Math.max(32, Math.floor(aRows / 4))
       const numBlocks = Math.ceil(aRows / blockSize)
       const result = new Float64Array(aRows * bCols)
@@ -277,7 +277,7 @@ function createHybridWasm(wasmOps) {
       return result
     },
 
-    async terminate() {
+    async terminate () {
       // No cleanup needed
     }
   }
@@ -287,7 +287,7 @@ function createHybridWasm(wasmOps) {
 // Test Data Generators
 // =============================================================================
 
-function generateMatrix(rows, cols) {
+function generateMatrix (rows, cols) {
   const data = new Float64Array(rows * cols)
   for (let i = 0; i < rows * cols; i++) {
     data[i] = Math.random() * 10
@@ -295,7 +295,7 @@ function generateMatrix(rows, cols) {
   return data
 }
 
-function generateVector(size) {
+function generateVector (size) {
   const data = new Float64Array(size)
   for (let i = 0; i < size; i++) {
     data[i] = Math.random() * 100
@@ -307,7 +307,7 @@ function generateVector(size) {
 // Format Results
 // =============================================================================
 
-function formatResult(task) {
+function formatResult (task) {
   const result = task.result
   if (!result) return `${task.name}: No result`
   if (!result.hz) return `${task.name}: Error - ${result.error || 'Unknown error'}`
@@ -323,7 +323,7 @@ function formatResult(task) {
 // Main Benchmark
 // =============================================================================
 
-async function runBenchmarks() {
+async function runBenchmarks () {
   console.log('\n' + '='.repeat(90))
   console.log('BENCHMARK: JavaScript vs WASM vs Parallel(JS) vs Parallel(WASM)')
   console.log('='.repeat(90))
@@ -426,7 +426,7 @@ async function runBenchmarks() {
         const task = bench.tasks[i]
         if (task.result && task.result.hz) {
           const speedup = task.result.hz / jsResult.hz
-          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1/speedup).toFixed(2)}x slower`
+          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1 / speedup).toFixed(2)}x slower`
           console.log(`    ${task.name}: ${label}`)
         }
       }
@@ -479,7 +479,7 @@ async function runBenchmarks() {
         const task = bench.tasks[i]
         if (task.result && task.result.hz) {
           const speedup = task.result.hz / jsResult.hz
-          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1/speedup).toFixed(2)}x slower`
+          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1 / speedup).toFixed(2)}x slower`
           console.log(`    ${task.name}: ${label}`)
         }
       }
@@ -532,7 +532,7 @@ async function runBenchmarks() {
         const task = bench.tasks[i]
         if (task.result && task.result.hz) {
           const speedup = task.result.hz / jsResult.hz
-          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1/speedup).toFixed(2)}x slower`
+          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1 / speedup).toFixed(2)}x slower`
           console.log(`    ${task.name}: ${label}`)
         }
       }

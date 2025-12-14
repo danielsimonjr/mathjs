@@ -7,10 +7,6 @@ interface TypedFunction<T = any> {
   (...args: any[]): T
 }
 
-interface BigNumber {
-  minus(x: number): BigNumber
-}
-
 interface Dependencies {
   typed: TypedFunction
   isInteger: (x: any) => boolean
@@ -26,26 +22,31 @@ const dependencies = ['typed', 'isInteger']
  * This transform changed the last `dim` parameter of function mapSlices
  * from one-based to zero based
  */
-export const createMapSlicesTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, isInteger }: Dependencies) => {
-  const mapSlices = createMapSlices({ typed, isInteger })
+export const createMapSlicesTransform = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, isInteger }: Dependencies) => {
+    const mapSlices = createMapSlices({ typed, isInteger })
 
-  // @see: comment of concat itself
-  return typed('mapSlices', {
-    '...any': function (args: any[]): any {
-      // change dim from one-based to zero-based
-      const dim = args[1]
+    // @see: comment of concat itself
+    return typed('mapSlices', {
+      '...any': function (args: any[]): any {
+        // change dim from one-based to zero-based
+        const dim = args[1]
 
-      if (isNumber(dim)) {
-        args[1] = dim - 1
-      } else if (isBigNumber(dim)) {
-        args[1] = (dim as any).minus(1)
+        if (isNumber(dim)) {
+          args[1] = dim - 1
+        } else if (isBigNumber(dim)) {
+          args[1] = (dim as any).minus(1)
+        }
+
+        try {
+          return mapSlices.apply(null, args)
+        } catch (err) {
+          throw errorTransform(err as Error)
+        }
       }
-
-      try {
-        return mapSlices.apply(null, args)
-      } catch (err) {
-        throw errorTransform(err as Error)
-      }
-    }
-  })
-}, { isTransformFunction: true, ...createMapSlices.meta })
+    })
+  },
+  { isTransformFunction: true, ...createMapSlices.meta }
+)

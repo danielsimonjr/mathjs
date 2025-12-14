@@ -2,7 +2,12 @@ import { clone, deepExtend } from '../../utils/object.ts'
 import { DEFAULT_CONFIG, MathJsConfig } from '../config.ts'
 
 export const MATRIX_OPTIONS = ['Matrix', 'Array'] as const // valid values for option matrix
-export const NUMBER_OPTIONS = ['number', 'BigNumber', 'bigint', 'Fraction'] as const // valid values for option number
+export const NUMBER_OPTIONS = [
+  'number',
+  'BigNumber',
+  'bigint',
+  'Fraction'
+] as const // valid values for option number
 
 export type MatrixOption = (typeof MATRIX_OPTIONS)[number]
 export type NumberOption = (typeof NUMBER_OPTIONS)[number]
@@ -37,9 +42,17 @@ export interface ConfigFunction {
 /**
  * Type for the emit function
  */
-export type EmitFunction = (event: string, curr: MathJsConfig, prev: MathJsConfig, changes: Partial<MathJsConfig>) => void
+export type EmitFunction = (
+  event: string,
+  curr: MathJsConfig,
+  prev: MathJsConfig,
+  changes: Partial<MathJsConfig>
+) => void
 
-export function configFactory(config: MathJsConfig, emit: EmitFunction): ConfigFunction {
+export function configFactory(
+  config: MathJsConfig,
+  emit: EmitFunction
+): ConfigFunction {
   /**
    * Set configuration options for math.js, and get current options.
    * Will emit a 'config' event, with arguments (curr, prev, changes).
@@ -154,7 +167,10 @@ function validateOption(
   values: readonly string[]
 ): void {
   const optionValue = options[name as keyof ConfigOptions]
-  if (optionValue !== undefined && values.indexOf(optionValue as string) === -1) {
+  if (
+    optionValue !== undefined &&
+    values.indexOf(optionValue as string) === -1
+  ) {
     // unknown value
     console.warn(
       'Warning: Unknown value "' +

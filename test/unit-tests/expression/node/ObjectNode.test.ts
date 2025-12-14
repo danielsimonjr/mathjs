@@ -28,12 +28,18 @@ describe('ObjectNode', function () {
   })
 
   it('should throw an error when calling without new operator', function () {
-    assert.throws(function () { ObjectNode() }, TypeError)
+    assert.throws(function () {
+      ObjectNode()
+    }, TypeError)
   })
 
   it('should throw an error on wrong constructor arguments', function () {
-    assert.throws(function () { console.log(new ObjectNode(2)) }, TypeError)
-    assert.throws(function () { console.log(new ObjectNode({ a: 2, b: 3 })) }, TypeError)
+    assert.throws(function () {
+      console.log(new ObjectNode(2))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new ObjectNode({ a: 2, b: 3 }))
+    }, TypeError)
   })
 
   it('should evaluate an ObjectNode', function () {
@@ -56,7 +62,10 @@ describe('ObjectNode', function () {
     const n4 = new ObjectNode({ n2, n3 })
 
     const expr = n4.compile()
-    assert.deepStrictEqual(expr.evaluate(), { n2: { a: 1, b: 2 }, n3: { c: 3, d: 4 } })
+    assert.deepStrictEqual(expr.evaluate(), {
+      n2: { a: 1, b: 2 },
+      n3: { c: 3, d: 4 }
+    })
   })
 
   it('should filter an ObjectNode', function () {
@@ -65,11 +74,36 @@ describe('ObjectNode', function () {
     const c = new ConstantNode(2)
     const d = new ObjectNode({ a, b, c })
 
-    assert.deepStrictEqual(d.filter(function (node) { return node instanceof ObjectNode }), [d])
-    assert.deepStrictEqual(d.filter(function (node) { return node instanceof SymbolNode }), [b])
-    assert.deepStrictEqual(d.filter(function (node) { return node instanceof RangeNode }), [])
-    assert.deepStrictEqual(d.filter(function (node) { return node instanceof ConstantNode }), [a, c])
-    assert.deepStrictEqual(d.filter(function (node) { return node instanceof ConstantNode && node.value === 2 }), [c])
+    assert.deepStrictEqual(
+      d.filter(function (node) {
+        return node instanceof ObjectNode
+      }),
+      [d]
+    )
+    assert.deepStrictEqual(
+      d.filter(function (node) {
+        return node instanceof SymbolNode
+      }),
+      [b]
+    )
+    assert.deepStrictEqual(
+      d.filter(function (node) {
+        return node instanceof RangeNode
+      }),
+      []
+    )
+    assert.deepStrictEqual(
+      d.filter(function (node) {
+        return node instanceof ConstantNode
+      }),
+      [a, c]
+    )
+    assert.deepStrictEqual(
+      d.filter(function (node) {
+        return node instanceof ConstantNode && node.value === 2
+      }),
+      [c]
+    )
   })
 
   it('should run forEach on an ObjectNode', function () {
@@ -104,7 +138,7 @@ describe('ObjectNode', function () {
       paths.push(path)
       assert.strictEqual(parent, c)
 
-      return (node instanceof SymbolNode) && (node.name === 'x') ? d : node
+      return node instanceof SymbolNode && node.name === 'x' ? d : node
     })
 
     assert.deepStrictEqual(paths, ['properties["a"]', 'properties["b"]'])
@@ -123,7 +157,9 @@ describe('ObjectNode', function () {
     const c = new ObjectNode({ a, b })
 
     assert.throws(function () {
-      c.map(function () { return undefined })
+      c.map(function () {
+        return undefined
+      })
     }, /Callback function must return a Node/)
   })
 
@@ -134,7 +170,7 @@ describe('ObjectNode', function () {
 
     const d = new ConstantNode(3)
     const e = c.transform(function (node) {
-      return (node instanceof SymbolNode) && (node.name === 'x') ? d : node
+      return node instanceof SymbolNode && node.name === 'x' ? d : node
     })
 
     assert.notStrictEqual(e, c)
@@ -149,7 +185,7 @@ describe('ObjectNode', function () {
 
     const d = new ConstantNode(3)
     const e = c.transform(function (node) {
-      return (node instanceof ObjectNode) ? d : node
+      return node instanceof ObjectNode ? d : node
     })
 
     assert.notStrictEqual(e, c)
@@ -219,8 +255,15 @@ describe('ObjectNode', function () {
   it('test equality another Node', function () {
     const a = new ObjectNode({ a: new SymbolNode('a'), b: new ConstantNode(2) })
     const b = new ObjectNode({ a: new SymbolNode('a'), b: new ConstantNode(2) })
-    const c = new ObjectNode({ a: new SymbolNode('a'), b: new ConstantNode(2), c: new ConstantNode(3) })
-    const d = new ObjectNode({ a: new SymbolNode('foo'), b: new ConstantNode(2) })
+    const c = new ObjectNode({
+      a: new SymbolNode('a'),
+      b: new ConstantNode(2),
+      c: new ConstantNode(3)
+    })
+    const d = new ObjectNode({
+      a: new SymbolNode('foo'),
+      b: new ConstantNode(2)
+    })
     const e = new ObjectNode({ a: new SymbolNode('a') })
     const f = new SymbolNode('x')
 
@@ -254,7 +297,10 @@ describe('ObjectNode', function () {
     const b = new ConstantNode(2)
     const n = new ObjectNode({ a, b })
 
-    assert.strictEqual(n.toString({ handler: customFunction }), '{"a": const(1, number), "b": const(2, number)}')
+    assert.strictEqual(
+      n.toString({ handler: customFunction }),
+      '{"a": const(1, number), "b": const(2, number)}'
+    )
   })
 
   it('should stringify an ObjectNode with custom toHTML', function () {
@@ -268,7 +314,10 @@ describe('ObjectNode', function () {
     const b = new ConstantNode(2)
     const n = new ObjectNode({ a, b })
 
-    assert.strictEqual(n.toHTML({ handler: customFunction }), '<span class="math-parenthesis math-curly-parenthesis">{</span><span class="math-symbol math-property">a</span><span class="math-operator math-assignment-operator math-property-assignment-operator math-binary-operator">:</span>const(1, number)<span class="math-separator">,</span><span class="math-symbol math-property">b</span><span class="math-operator math-assignment-operator math-property-assignment-operator math-binary-operator">:</span>const(2, number)<span class="math-parenthesis math-curly-parenthesis">}</span>')
+    assert.strictEqual(
+      n.toHTML({ handler: customFunction }),
+      '<span class="math-parenthesis math-curly-parenthesis">{</span><span class="math-symbol math-property">a</span><span class="math-operator math-assignment-operator math-property-assignment-operator math-binary-operator">:</span>const(1, number)<span class="math-separator">,</span><span class="math-symbol math-property">b</span><span class="math-operator math-assignment-operator math-property-assignment-operator math-binary-operator">:</span>const(2, number)<span class="math-parenthesis math-curly-parenthesis">}</span>'
+    )
   })
 
   it('toJSON and fromJSON', function () {
@@ -301,13 +350,20 @@ describe('ObjectNode', function () {
         '\\mathbf{c:} & 3\\\\\n' +
         '\\mathbf{n1:} & \\left\\{\\begin{array}{ll}' +
         '\\mathbf{a:} & 1\\\\\n\\mathbf{b:} & 2\\\\\\end{array}\\right\\}\\\\' +
-        '\\end{array}\\right\\}')
+        '\\end{array}\\right\\}'
+    )
   })
 
   it('should LaTeX an ObjectNode with custom toTex', function () {
     const customFunction = function (node, options) {
       if (node.type === 'ConstantNode') {
-        return 'const\\left(' + node.value + ', ' + math.typeOf(node.value) + '\\right)'
+        return (
+          'const\\left(' +
+          node.value +
+          ', ' +
+          math.typeOf(node.value) +
+          '\\right)'
+        )
       }
     }
 
@@ -320,6 +376,7 @@ describe('ObjectNode', function () {
       '\\left\\{\\begin{array}{ll}' +
         '\\mathbf{a:} & const\\left(1, number\\right)\\\\\n' +
         '\\mathbf{b:} & const\\left(2, number\\right)\\\\' +
-        '\\end{array}\\right\\}')
+        '\\end{array}\\right\\}'
+    )
   })
 })

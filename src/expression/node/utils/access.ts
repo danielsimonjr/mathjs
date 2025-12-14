@@ -1,7 +1,7 @@
 import { errorTransform } from '../../transform/utils/errorTransform.ts'
 import { getSafeProperty } from '../../../utils/customs.ts'
 
-export function accessFactory ({ subset }: { subset: any }) {
+export function accessFactory({ subset }: { subset: any }) {
   /**
    * Retrieve part of an object:
    *
@@ -13,11 +13,12 @@ export function accessFactory ({ subset }: { subset: any }) {
    * @param {Index} index
    * @return {Object | Array | Matrix | string} Returns the subset
    */
-  return function access (object: any, index: any) {
+  return function access(object: any, index: any) {
     try {
       if (Array.isArray(object)) {
         return subset(object, index)
-      } else if (object && typeof object.subset === 'function') { // Matrix
+      } else if (object && typeof object.subset === 'function') {
+        // Matrix
         return object.subset(index)
       } else if (typeof object === 'string') {
         // TODO: move getStringSubset into a separate util file, use that

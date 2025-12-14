@@ -39,7 +39,10 @@ describe('coth', function () {
   it('should return the coth of a complex number', function () {
     approxDeepEqual(coth(complex('1')), complex(1.3130352854993, 0))
     approxDeepEqual(coth(complex('i')), complex(0, -0.64209261593433))
-    approxDeepEqual(coth(complex('2 + i')), complex(0.98432922645819, -0.032797755533753))
+    approxDeepEqual(
+      coth(complex('2 + i')),
+      complex(0.98432922645819, -0.032797755533753)
+    )
   })
 
   it('should throw an error on an angle', function () {
@@ -47,11 +50,15 @@ describe('coth', function () {
   })
 
   it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () { coth(unit('5 celsius')) })
+    assert.throws(function () {
+      coth(unit('5 celsius'))
+    })
   })
 
   it('should throw an error if called with a string', function () {
-    assert.throws(function () { coth('string') })
+    assert.throws(function () {
+      coth('string')
+    })
   })
 
   const coth123 = [1.3130352854993, 1.0373147207275, 1.0049698233137]
@@ -67,8 +74,12 @@ describe('coth', function () {
   })
 
   it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () { coth() }, /TypeError: Too few arguments/)
-    assert.throws(function () { coth(1, 2) }, /TypeError: Too many arguments/)
+    assert.throws(function () {
+      coth()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+      coth(1, 2)
+    }, /TypeError: Too many arguments/)
   })
 
   it('should LaTeX coth', function () {

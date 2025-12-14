@@ -10,8 +10,14 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module'
   },
-  ignorePatterns: ['*.generated.js'],
-  rules: {},
+  ignorePatterns: ['*.generated.js', 'src/**/*.d.ts'],
+  rules: {
+    // Relaxed rules during TypeScript migration
+    'prefer-spread': 'off',
+    'prefer-rest-params': 'off',
+    'no-constant-condition': 'off',
+    'no-empty': 'off'
+  },
   overrides: [
     {
       files: ['*.js', '*.cjs', '*.mjs'],
@@ -42,8 +48,26 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-unused-vars': [
           'error',
-          { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
-        ]
+          {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+            ignoreRestSiblings: true
+          }
+        ],
+        // Relaxed rules for TypeScript migration period (53% converted)
+        // TODO: Re-enable these rules as migration progresses
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
+        '@typescript-eslint/no-unsafe-function-type': 'off',
+        '@typescript-eslint/no-this-alias': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
+        '@typescript-eslint/no-empty-object-type': 'off',
+        '@typescript-eslint/prefer-as-const': 'warn',
+        '@typescript-eslint/no-misused-new': 'off',
+        'prefer-spread': 'off',
+        'prefer-rest-params': 'off',
+        'no-constant-condition': 'off',
+        'no-empty': 'off'
       },
       plugins: ['@typescript-eslint'],
       parserOptions: {

@@ -174,7 +174,8 @@ export function isNumber(x: unknown): x is number {
 
 export function isBigNumber(x: unknown): x is BigNumber {
   if (
-    !x || typeof x !== 'object' ||
+    !x ||
+    typeof x !== 'object' ||
     typeof (x as any).constructor !== 'function'
   ) {
     return false
@@ -205,11 +206,21 @@ export function isBigInt(x: unknown): x is bigint {
 }
 
 export function isComplex(x: unknown): x is Complex {
-  return (x && typeof x === 'object' && Object.getPrototypeOf(x).isComplex === true) || false
+  return (
+    (x &&
+      typeof x === 'object' &&
+      Object.getPrototypeOf(x).isComplex === true) ||
+    false
+  )
 }
 
 export function isFraction(x: unknown): x is Fraction {
-  return (x && typeof x === 'object' && Object.getPrototypeOf(x).isFraction === true) || false
+  return (
+    (x &&
+      typeof x === 'object' &&
+      Object.getPrototypeOf(x).isFraction === true) ||
+    false
+  )
 }
 
 export function isUnit(x: unknown): x is Unit {
@@ -236,11 +247,21 @@ export function isCollection(x: unknown): x is any[] | Matrix {
 }
 
 export function isDenseMatrix(x: unknown): x is DenseMatrix {
-  return (x && (x as any).isDenseMatrix && (x as any).constructor.prototype.isMatrix === true) || false
+  return (
+    (x &&
+      (x as any).isDenseMatrix &&
+      (x as any).constructor.prototype.isMatrix === true) ||
+    false
+  )
 }
 
 export function isSparseMatrix(x: unknown): x is SparseMatrix {
-  return (x && (x as any).isSparseMatrix && (x as any).constructor.prototype.isMatrix === true) || false
+  return (
+    (x &&
+      (x as any).isSparseMatrix &&
+      (x as any).constructor.prototype.isMatrix === true) ||
+    false
+  )
 }
 
 export function isRange(x: unknown): x is Range {
@@ -276,11 +297,13 @@ export function isRegExp(x: unknown): x is RegExp {
 }
 
 export function isObject(x: unknown): x is Record<string, any> {
-  return !!(x &&
+  return !!(
+    x &&
     typeof x === 'object' &&
     (x as any).constructor === Object &&
     !isComplex(x) &&
-    !isFraction(x))
+    !isFraction(x)
+  )
 }
 
 /**
@@ -297,21 +320,23 @@ export function isMap(object: unknown): object is Map<any, any> {
   if (!object) {
     return false
   }
-  return object instanceof Map ||
+  return (
+    object instanceof Map ||
     object instanceof ObjectWrappingMap ||
-    (
-      typeof (object as any).set === 'function' &&
+    (typeof (object as any).set === 'function' &&
       typeof (object as any).get === 'function' &&
       typeof (object as any).keys === 'function' &&
-      typeof (object as any).has === 'function'
-    )
+      typeof (object as any).has === 'function')
+  )
 }
 
 export function isPartitionedMap(object: unknown): object is PartitionedMap {
   return isMap(object) && isMap((object as any).a) && isMap((object as any).b)
 }
 
-export function isObjectWrappingMap(object: unknown): object is ObjectWrappingMap {
+export function isObjectWrappingMap(
+  object: unknown
+): object is ObjectWrappingMap {
   return isMap(object) && isObject((object as any).wrappedObject)
 }
 
@@ -324,27 +349,57 @@ export function isUndefined(x: unknown): x is undefined {
 }
 
 export function isAccessorNode(x: unknown): x is AccessorNode {
-  return (x && (x as any).isAccessorNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isAccessorNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isArrayNode(x: unknown): x is ArrayNode {
-  return (x && (x as any).isArrayNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isArrayNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isAssignmentNode(x: unknown): x is AssignmentNode {
-  return (x && (x as any).isAssignmentNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isAssignmentNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isBlockNode(x: unknown): x is BlockNode {
-  return (x && (x as any).isBlockNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isBlockNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isConditionalNode(x: unknown): x is ConditionalNode {
-  return (x && (x as any).isConditionalNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isConditionalNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isConstantNode(x: unknown): x is ConstantNode {
-  return (x && (x as any).isConstantNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isConstantNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 /* Very specialized: returns true for those nodes which in the numerator of
@@ -358,51 +413,105 @@ export function isConstantNode(x: unknown): x is ConstantNode {
    it should be exported.
 */
 export function rule2Node(node: Node): boolean {
-  return isConstantNode(node) ||
+  return (
+    isConstantNode(node) ||
     (isOperatorNode(node) &&
-     node.args.length === 1 &&
-     isConstantNode(node.args[0]) &&
-     '-+~'.includes(node.op))
+      node.args.length === 1 &&
+      isConstantNode(node.args[0]) &&
+      '-+~'.includes(node.op))
+  )
 }
 
-export function isFunctionAssignmentNode(x: unknown): x is FunctionAssignmentNode {
-  return (x && (x as any).isFunctionAssignmentNode === true && (x as any).constructor.prototype.isNode === true) || false
+export function isFunctionAssignmentNode(
+  x: unknown
+): x is FunctionAssignmentNode {
+  return (
+    (x &&
+      (x as any).isFunctionAssignmentNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isFunctionNode(x: unknown): x is FunctionNode {
-  return (x && (x as any).isFunctionNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isFunctionNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isIndexNode(x: unknown): x is IndexNode {
-  return (x && (x as any).isIndexNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isIndexNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isNode(x: unknown): x is Node {
-  return (x && (x as any).isNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isObjectNode(x: unknown): x is ObjectNode {
-  return (x && (x as any).isObjectNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isObjectNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isOperatorNode(x: unknown): x is OperatorNode {
-  return (x && (x as any).isOperatorNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isOperatorNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isParenthesisNode(x: unknown): x is ParenthesisNode {
-  return (x && (x as any).isParenthesisNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isParenthesisNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isRangeNode(x: unknown): x is RangeNode {
-  return (x && (x as any).isRangeNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isRangeNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isRelationalNode(x: unknown): x is RelationalNode {
-  return (x && (x as any).isRelationalNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isRelationalNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isSymbolNode(x: unknown): x is SymbolNode {
-  return (x && (x as any).isSymbolNode === true && (x as any).constructor.prototype.isNode === true) || false
+  return (
+    (x &&
+      (x as any).isSymbolNode === true &&
+      (x as any).constructor.prototype.isNode === true) ||
+    false
+  )
 }
 
 export function isChain(x: unknown): x is Chain {
@@ -415,7 +524,8 @@ export function typeOf(x: unknown): string {
   if (t === 'object') {
     if (x === null) return 'null'
     if (isBigNumber(x)) return 'BigNumber' // Special: weird mashup with Decimal
-    if ((x as any).constructor && (x as any).constructor.name) return (x as any).constructor.name
+    if ((x as any).constructor && (x as any).constructor.name)
+      return (x as any).constructor.name
 
     return 'Object' // just in case
   }

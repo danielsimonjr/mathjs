@@ -1,7 +1,13 @@
 // @ts-nocheck
 import assert from 'assert'
 import { isMap } from '../../../src/utils/is.js'
-import { assign, createMap, ObjectWrappingMap, PartitionedMap, toObject } from '../../../src/utils/map.js'
+import {
+  assign,
+  createMap,
+  ObjectWrappingMap,
+  PartitionedMap,
+  toObject
+} from '../../../src/utils/map.js'
 
 describe('maps', function () {
   it('should provide isMap, a function to tell maps from non-maps', function () {
@@ -25,7 +31,18 @@ describe('maps', function () {
     }
     assert.ok(!isMap(duckNotMap))
 
-    const notMaps = [null, undefined, true, false, 'string', 42, /regular-expression/, new Date(), {}, []]
+    const notMaps = [
+      null,
+      undefined,
+      true,
+      false,
+      'string',
+      42,
+      /regular-expression/,
+      new Date(),
+      {},
+      []
+    ]
     for (const thing of notMaps) {
       assert.ok(!isMap(thing))
     }
@@ -72,7 +89,10 @@ describe('maps', function () {
       }
 
       // keys()
-      assert.deepStrictEqual([...map.keys()], ['a', 'b', 'c', 'd', 'e', 'f', 'g'])
+      assert.deepStrictEqual(
+        [...map.keys()],
+        ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+      )
 
       for (const key of map.keys()) {
         assert.ok(map.has(key))
@@ -89,7 +109,7 @@ describe('maps', function () {
 
       // forEach
       const log = []
-      map.forEach((value, key) => (log.push([key, value])))
+      map.forEach((value, key) => log.push([key, value]))
       assert.deepStrictEqual(log, [
         ['a', 1],
         ['b', 2],
@@ -126,13 +146,19 @@ describe('maps', function () {
     it('should not allow getting unsafe properties', function () {
       const map = new ObjectWrappingMap({})
 
-      assert.throws(() => map.get('__proto__'), /Error: No access to property "__proto__"/)
+      assert.throws(
+        () => map.get('__proto__'),
+        /Error: No access to property "__proto__"/
+      )
     })
 
     it('should not allow setting unsafe properties', function () {
       const map = new ObjectWrappingMap({})
 
-      assert.throws(() => map.set('__proto__', 42), /Error: No access to property "__proto__"/)
+      assert.throws(
+        () => map.set('__proto__', 42),
+        /Error: No access to property "__proto__"/
+      )
     })
 
     it('should not allow testing has unsafe properties', function () {
@@ -153,7 +179,7 @@ describe('maps', function () {
   })
 
   describe('PartitionedMap', function () {
-    function createPartitionedMap (bKeys) {
+    function createPartitionedMap(bKeys) {
       const a = new Map()
       const b = new Map()
       const p = new PartitionedMap(a, b, new Set(bKeys))
@@ -162,9 +188,7 @@ describe('maps', function () {
 
     it('get, set', function () {
       const { a, b, p } = createPartitionedMap(['b'])
-      p
-        .set('a', 2)
-        .set('b', 3)
+      p.set('a', 2).set('b', 3)
 
       assert.strictEqual(p.get('a'), 2)
       assert.strictEqual(p.get('b'), 3)
@@ -179,9 +203,7 @@ describe('maps', function () {
 
     it('has', function () {
       const { a, b, p } = createPartitionedMap(['b'])
-      p
-        .set('a', 2)
-        .set('b', 3)
+      p.set('a', 2).set('b', 3)
 
       assert.strictEqual(p.has('a'), true)
       assert.strictEqual(p.has('b'), true)
@@ -215,7 +237,7 @@ describe('maps', function () {
       p.set('c', 4)
 
       const pLog = []
-      p.forEach((value, key) => (pLog.push([key, value])))
+      p.forEach((value, key) => pLog.push([key, value]))
       assert.deepStrictEqual(pLog, [
         ['a', 2],
         ['c', 4],
@@ -223,17 +245,15 @@ describe('maps', function () {
       ])
 
       const aLog = []
-      a.forEach((value, key) => (aLog.push([key, value])))
+      a.forEach((value, key) => aLog.push([key, value]))
       assert.deepStrictEqual(aLog, [
         ['a', 2],
         ['c', 4]
       ])
 
       const bLog = []
-      b.forEach((value, key) => (bLog.push([key, value])))
-      assert.deepStrictEqual(bLog, [
-        ['b', 3]
-      ])
+      b.forEach((value, key) => bLog.push([key, value]))
+      assert.deepStrictEqual(bLog, [['b', 3]])
     })
 
     it('entries', function () {
@@ -252,9 +272,7 @@ describe('maps', function () {
 
     it('copy', function () {
       const { p } = createPartitionedMap(['b'])
-      p
-        .set('a', 2)
-        .set('b', 3)
+      p.set('a', 2).set('b', 3)
 
       const copy = new Map(p)
       assert.deepStrictEqual([...copy.keys()], [...p.keys()])
@@ -275,9 +293,7 @@ describe('maps', function () {
 
     it('delete', function () {
       const { a, b, p } = createPartitionedMap(['b'])
-      p
-        .set('a', 2)
-        .set('b', 3)
+      p.set('a', 2).set('b', 3)
 
       p.delete('a')
 
@@ -315,9 +331,7 @@ describe('maps', function () {
   })
 
   it('should let us transform a map into an object', function () {
-    const actualMap = new Map()
-      .set('a', 1)
-      .set('b', 2)
+    const actualMap = new Map().set('a', 1).set('b', 2)
 
     const obj = {
       a: 1,
@@ -334,22 +348,13 @@ describe('maps', function () {
   })
 
   it('should provide an assign function like Object.assign', function () {
-    const target = new Map()
-      .set('a', 1)
-      .set('b', 2)
+    const target = new Map().set('a', 1).set('b', 2)
 
     assign(target, null, undefined, 'string', new Date())
 
-    assert.deepStrictEqual(
-      target,
-      new Map()
-        .set('a', 1)
-        .set('b', 2)
-    )
+    assert.deepStrictEqual(target, new Map().set('a', 1).set('b', 2))
 
-    const src1 = new Map()
-      .set('c', 3)
-      .set('d', 4)
+    const src1 = new Map().set('c', 3).set('d', 4)
 
     const src2 = { e: 5, f: 6 }
 
