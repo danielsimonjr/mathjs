@@ -1,4 +1,4 @@
-// @ts-expect-error - seedrandom has no type declarations
+// @ts-ignore - seedrandom may not have type declarations
 import seedrandom from 'seedrandom'
 
 const singletonRandom = /* #__PURE__ */ seedrandom(Date.now())

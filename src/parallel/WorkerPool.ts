@@ -28,7 +28,7 @@ export interface PoolStats {
  * Uses @danielsimonjr/workerpool under the hood
  */
 export class MathWorkerPool {
-  private pool: workerpool.Pool
+  private pool: any  // workerpool.Pool type
   private workerScript: string | null
 
   /**

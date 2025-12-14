@@ -106,13 +106,15 @@ export const createImmutableDenseMatrixClass = /* #__PURE__ */ factory(name, dep
 
     /**
      * Cached minimum value
+     * @internal
      */
-    private _min: any
+    _min: any
 
     /**
      * Cached maximum value
+     * @internal
      */
-    private _max: any
+    _max: any
 
     constructor(data?: MatrixData | ImmutableDenseMatrixData | any, datatype?: string) {
       if (!(this instanceof ImmutableDenseMatrix)) {

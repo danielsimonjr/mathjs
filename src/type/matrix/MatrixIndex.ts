@@ -100,18 +100,21 @@ export const createIndexClass = /* #__PURE__ */ factory(name, dependencies, ({ I
 
     /**
      * Internal array of dimensions
+     * @internal
      */
-    private _dimensions: IndexDimension[]
+    _dimensions: IndexDimension[]
 
     /**
      * Source sizes for boolean array conversions
+     * @internal
      */
-    private _sourceSize: (number | null)[]
+    _sourceSize: (number | null)[]
 
     /**
      * Flag indicating if this index represents a scalar value
+     * @internal
      */
-    private _isScalar: boolean
+    _isScalar: boolean
 
     constructor(...ranges: any[]) {
       if (!(this instanceof Index)) {
