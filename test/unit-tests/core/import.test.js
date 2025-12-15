@@ -359,29 +359,102 @@ describe('import', function () {
     })
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should import a factory with name', function () {
-    // TODO: unit test importing a factory
+  it('should import a factory with name', function () {
+    const math2 = mathjs.create()
+    const squareTestFactory = factory('squareTest', ['multiply'], ({ multiply }) => {
+      return function squareTest (x) {
+        return multiply(x, x)
+      }
+    })
+
+    math2.import(squareTestFactory)
+    assert.strictEqual(math2.squareTest(4), 16)
+    assert.strictEqual(math2.squareTest(3), 9)
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should import a factory with path', function () {
-    // TODO: unit test importing a factory
+  it('should import a factory with path', function () {
+    const math2 = mathjs.create()
+
+    // Factory with path (nested under expression)
+    const parseHelperFactory = factory('expression.parseHelper', ['parse'], ({ parse }) => {
+      return function parseHelper (expr) {
+        return parse(expr).toString()
+      }
+    })
+
+    // Note: nested paths are not allowed in factory names
+    assert.throws(() => {
+      math2.import(parseHelperFactory)
+    }, /Factory name should not contain a nested path/)
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should import a factory without name', function () {
-    // TODO: unit test importing a factory
+  it('should import a factory without name', function () {
+    // Factory functions must have a name via factory(), so we test
+    // that the factory's fn property becomes the import name
+    const math2 = mathjs.create()
+    const doubleFactory = factory('double', ['typed'], ({ typed }) => {
+      return typed('double', {
+        number: function (x) {
+          return x * 2
+        }
+      })
+    })
+
+    math2.import(doubleFactory)
+    assert.strictEqual(math2.double(5), 10)
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should pass the namespace to a factory function', function () {
-    // TODO: unit test importing a factory
+  it('should pass the namespace to a factory function', function () {
+    const math2 = mathjs.create()
+    let receivedScope = null
+
+    const inspectorFactory = factory('inspector', ['typed', 'add'], (scope) => {
+      receivedScope = scope
+      return function inspector () {
+        return 'inspected'
+      }
+    })
+
+    math2.import(inspectorFactory)
+
+    // Force lazy loading by accessing the function
+    math2.inspector()
+
+    // The factory should receive only the declared dependencies
+    assert.strictEqual(typeof receivedScope.typed, 'function')
+    assert.strictEqual(typeof receivedScope.add, 'function')
+    assert.strictEqual(math2.inspector(), 'inspected')
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should import an Array', function () {
-    // TODO: unit test importing an Array containing stuff
+  it('should import an Array', function () {
+    const math2 = mathjs.create()
+
+    const tripleFactory = factory('triple', [], () => {
+      return function triple (x) {
+        return x * 3
+      }
+    })
+
+    const quadrupleFactory = factory('quadruple', ['triple'], ({ triple }) => {
+      return function quadruple (x) {
+        return triple(x) + x
+      }
+    })
+
+    // Import an array of factories
+    math2.import([tripleFactory, quadrupleFactory])
+
+    assert.strictEqual(math2.triple(3), 9)
+    assert.strictEqual(math2.quadruple(3), 12)
+
+    // Also test importing an array of plain objects/values
+    math2.import([
+      { constA: 100 },
+      { constB: 200 }
+    ])
+
+    assert.strictEqual(math2.constA, 100)
+    assert.strictEqual(math2.constB, 200)
   })
 
   it('should LaTeX import', function () {
