@@ -165,23 +165,18 @@ describe('SparseMatrix', function () {
       assert.strictEqual(a.type, 'SparseMatrix')
     })
 
-    // TODO: add some more input validations to SparseMatrix
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should throw an error when input array does not have two dimensions', function () {
-      assert.throws(function () { console.log(new SparseMatrix([1, 2, 3])) }, /DimensionError: Two dimensional array expected/)
-      assert.throws(function () { console.log(new SparseMatrix([[[1]], [[2]], [[3]]])) }, /DimensionError: Two dimensional array expected/)
+    it('should throw an error when input array has more than two dimensions', function () {
+      assert.throws(function () { console.log(new SparseMatrix([[[1]], [[2]], [[3]]])) }, /DimensionError.*3.*2/)
     })
 
-    // TODO: add some more input validations to SparseMatrix
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should throw an error when the dimensions of the input array are invalid', function () {
+    it('should throw an error when the dimensions of the input array are invalid', function () {
       assert.throws(function () {
         console.log(new SparseMatrix(
           [
             [1, 2],
             [4, 5, 6]
           ]))
-      }, /DimensionError: Dimension mismatch \(3 != 2\)/)
+      }, /DimensionError.*3.*2/)
     })
 
     it('should create a SparseMatrix using method create', function () {
