@@ -1204,6 +1204,26 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       const rows = data.length
       let columns = 0
 
+      // Validate input array dimensions and consistency
+      let expectedColumns: number | null = null
+      for (let i = 0; i < rows; i++) {
+        const row = data[i]
+        if (isArray(row)) {
+          // Check for 3D+ arrays (elements within rows should not be arrays)
+          for (let k = 0; k < row.length; k++) {
+            if (isArray(row[k])) {
+              throw new DimensionError(3, 2)
+            }
+          }
+          // Check for consistent row lengths
+          if (expectedColumns === null) {
+            expectedColumns = row.length
+          } else if (row.length !== expectedColumns) {
+            throw new DimensionError(row.length, expectedColumns)
+          }
+        }
+      }
+
       // equal signature to use
       let eq: EqualScalarFunction = equalScalar
       // zero value
@@ -1768,6 +1788,13 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       }
       return a
     }
+
+    // Set the class name to match the type name
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(SparseMatrix, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return SparseMatrix
   },

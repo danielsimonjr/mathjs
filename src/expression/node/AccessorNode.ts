@@ -93,8 +93,6 @@ export const createAccessorNode = /* #__PURE__ */ factory(
         }
       }
 
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
       get type(): string {
         return name
       }
@@ -291,6 +289,13 @@ export const createAccessorNode = /* #__PURE__ */ factory(
         return new AccessorNode(json.object, json.index, json.optionalChaining)
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(AccessorNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return AccessorNode
   },

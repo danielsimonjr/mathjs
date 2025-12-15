@@ -53,8 +53,6 @@ export const createBlockNode = /* #__PURE__ */ factory(
         })
       }
 
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
       get type(): string {
         return name
       }
@@ -219,6 +217,13 @@ export const createBlockNode = /* #__PURE__ */ factory(
           .join('\\;\\;\n')
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(BlockNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return BlockNode
   },

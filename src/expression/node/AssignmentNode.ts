@@ -120,10 +120,6 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
         }
       }
 
-      // class name for typing purposes:
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
-
       // readonly property name
       get name(): string {
         if (this.index) {
@@ -422,6 +418,13 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
         return object + index + '=' + value
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(AssignmentNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return AssignmentNode
   },

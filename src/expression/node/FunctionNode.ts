@@ -166,8 +166,6 @@ export const createFunctionNode = /* #__PURE__ */ factory(
         return (this.fn as any).name || ''
       }
 
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
       get type(): string {
         return name
       }
@@ -651,6 +649,13 @@ export const createFunctionNode = /* #__PURE__ */ factory(
         return this.type + ':' + this.name
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(FunctionNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return FunctionNode
   },

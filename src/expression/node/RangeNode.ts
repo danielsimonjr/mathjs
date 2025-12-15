@@ -128,8 +128,6 @@ export const createRangeNode = /* #__PURE__ */ factory(
         this.step = step || null // optional step
       }
 
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
       get type(): string {
         return name
       }
@@ -396,6 +394,13 @@ export const createRangeNode = /* #__PURE__ */ factory(
         return str
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(RangeNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return RangeNode
   },

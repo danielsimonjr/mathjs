@@ -37,8 +37,6 @@ export const createConstantNode = /* #__PURE__ */ factory(
         this.value = value
       }
 
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
       get type(): string {
         return name
       }
@@ -200,6 +198,13 @@ export const createConstantNode = /* #__PURE__ */ factory(
         }
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(ConstantNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return ConstantNode
   },
