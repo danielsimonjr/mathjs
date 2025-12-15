@@ -197,7 +197,6 @@ export const createChainClass = /* #__PURE__ */ factory(
       }
     }
 
-    // @ts-expect-error - TypeScript spuriously reports this as "not callable"
     const excludedNames: Record<string, boolean> = {
       expression: true,
       docs: true,
@@ -206,10 +205,10 @@ export const createChainClass = /* #__PURE__ */ factory(
       json: true,
       error: true,
       isChain: true // conflicts with the property isChain of a Chain instance
-    }(
-      // create proxy for everything that is in math.js
-      Chain as any
-    ).createProxy(math)
+    }
+
+    // create proxy for everything that is in math.js
+    ;(Chain as any).createProxy(math)
 
     // register on the import event, automatically add a proxy for every imported function.
     if (on) {

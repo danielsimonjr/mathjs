@@ -1789,6 +1789,13 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       return a
     }
 
+    // Set the class name to match the type name
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(SparseMatrix, 'name', {
+      value: name,
+      configurable: true
+    })
+
     return SparseMatrix
   },
   { isClass: true }

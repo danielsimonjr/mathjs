@@ -37,7 +37,6 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
       precision: config.precision,
       modulo: EUCLID
     }) as BigNumberClass
-    ;(BigNumber as any).prototype = Object.create((BigNumber as any).prototype)
 
     /**
      * Attach type information

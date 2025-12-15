@@ -55,8 +55,6 @@ export const createParenthesisNode = /* #__PURE__ */ factory(
         this.content = content
       }
 
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
       get type(): string {
         return name
       }
@@ -200,6 +198,13 @@ export const createParenthesisNode = /* #__PURE__ */ factory(
         return this.content.toTex(options)
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(ParenthesisNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return ParenthesisNode
   },

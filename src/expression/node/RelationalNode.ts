@@ -82,8 +82,6 @@ export const createRelationalNode = /* #__PURE__ */ factory(
         this.params = params
       }
 
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
       get type(): string {
         return name
       }
@@ -329,6 +327,13 @@ export const createRelationalNode = /* #__PURE__ */ factory(
         return ret
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(RelationalNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return RelationalNode
   },

@@ -89,8 +89,6 @@ export const createConditionalNode = /* #__PURE__ */ factory(
         this.falseExpr = falseExpr
       }
 
-      // @ts-expect-error: intentionally overriding Function.name
-      static name = name
       get type(): string {
         return name
       }
@@ -377,6 +375,13 @@ export const createConditionalNode = /* #__PURE__ */ factory(
         )
       }
     }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(ConditionalNode, 'name', {
+      value: name,
+      configurable: true
+    })
 
     return ConditionalNode
   },
