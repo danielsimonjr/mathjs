@@ -320,7 +320,6 @@ export function irfft(data: Float64Array, n: i32): Float64Array {
 }
 
 // Helper function: find next power of 2
-@inline
 function nextPowerOf2(n: i32): i32 {
   let power: i32 = 1
   while (power < n) {
@@ -332,7 +331,6 @@ function nextPowerOf2(n: i32): i32 {
 /**
  * Check if n is a power of 2
  */
-@inline
 export function isPowerOf2(n: i32): i32 {
   return (n > 0) && ((n & (n - 1)) === 0) ? 1 : 0
 }

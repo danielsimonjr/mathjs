@@ -224,7 +224,6 @@ export function dotProduct(
 }
 
 // Helper function
-@inline
 function min(a: i32, b: i32): i32 {
   return a < b ? a : b
 }

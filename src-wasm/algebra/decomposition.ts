@@ -348,12 +348,10 @@ export function luDeterminant(
 
 // Helper functions
 
-@inline
 function abs(x: f64): f64 {
   return x >= 0.0 ? x : -x
 }
 
-@inline
 function sqrt(x: f64): f64 {
   return Math.sqrt(x)
 }

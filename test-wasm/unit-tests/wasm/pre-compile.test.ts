@@ -156,8 +156,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
   // ============================================
   // MATRIX OPERATIONS
   // ============================================
-  // NOTE: Skipped - matrix/multiply.ts uses @inline decorator which esbuild can't handle
-  describe.skip('Matrix Operations (direct import)', function () {
+  describe('Matrix Operations (direct import)', function () {
     it('should import and run matrix multiply', async function () {
       const matrix = await import('../../../src-wasm/matrix/multiply')
 
@@ -254,8 +253,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
   // ============================================
   // SIGNAL PROCESSING (FFT)
   // ============================================
-  // NOTE: Skipped - signal/fft.ts uses @inline decorator which esbuild can't handle
-  describe.skip('Signal Processing (direct import)', function () {
+  describe('Signal Processing FFT (direct import)', function () {
     it('should import and run signal processing functions', async function () {
       const signal = await import('../../../src-wasm/signal/fft')
 
@@ -357,8 +355,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
   // ============================================
   // ALGEBRA DECOMPOSITION
   // ============================================
-  // NOTE: Skipped - algebra/decomposition.ts uses @inline decorator which esbuild can't handle
-  describe.skip('Algebra Decomposition (direct import)', function () {
+  describe('Algebra Decomposition (direct import)', function () {
     it('should import and run LU decomposition', async function () {
       const decomp = await import('../../../src-wasm/algebra/decomposition')
 
@@ -413,8 +410,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
   // ============================================
   // MATRIX ALGORITHMS
   // ============================================
-  // NOTE: Skipped - matrix/algorithms.ts uses @inline decorator which esbuild can't handle
-  describe.skip('Matrix Algorithms (direct import)', function () {
+  describe('Matrix Algorithms (direct import)', function () {
     it('should import and run matrix algorithms', async function () {
       const algo = await import('../../../src-wasm/matrix/algorithms')
 
