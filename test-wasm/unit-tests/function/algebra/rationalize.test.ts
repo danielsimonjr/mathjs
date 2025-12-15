@@ -35,7 +35,7 @@ function stri(arg) {
  *     objToString(obj)
  *
  * @param  {object} obj     The input object
- * @return {array}          Arrey of sorted properties converted to strings
+ * @return {array}          Array of sorted properties converted to strings
  */
 function objToStrings(obj) {
   const vet = Object.keys(obj).sort()
