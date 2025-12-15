@@ -59,7 +59,7 @@ describe('filter', function () {
     math.filter(
       [1, 2, 3],
       math.typed('callback', {
-        'number, Array': function (value, index) {
+        'number, Array': function (value, _index) {
           output.push(value + 2)
         }
       })
@@ -72,7 +72,7 @@ describe('filter', function () {
     math.filter(
       [1, 2, 3],
       math.typed('callback', {
-        'number, Array, Array': function (value, index, array) {
+        'number, Array, Array': function (value, _index, _array) {
           output.push(value + 2)
         }
       })
