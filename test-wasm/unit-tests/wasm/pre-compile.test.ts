@@ -353,4 +353,215 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ trigonometry/basic')
     })
   })
+
+  // ============================================
+  // ALGEBRA DECOMPOSITION
+  // ============================================
+  // NOTE: Skipped - algebra/decomposition.ts uses @inline decorator which esbuild can't handle
+  describe.skip('Algebra Decomposition (direct import)', function () {
+    it('should import and run LU decomposition', async function () {
+      const decomp = await import('../../../src-wasm/algebra/decomposition')
+
+      // Test LU decomposition on 2x2 matrix
+      // A = [4, 3; 6, 3] -> LU decomposition
+      const A = new Float64Array([4, 3, 6, 3])
+      const result = decomp.luDecomposition(A, 2)
+      const lu = decomp.getLUMatrix(result)
+
+      assert.ok(lu.length === 4)
+      assert.strictEqual(decomp.isLUSingular(result), false)
+
+      console.log('  ✓ algebra/decomposition')
+    })
+  })
+
+  // ============================================
+  // ALGEBRA SPARSE UTILITIES
+  // ============================================
+  describe('Algebra Sparse Utilities (direct import)', function () {
+    it('should import and run sparse matrix utilities', async function () {
+      const sparse = await import('../../../src-wasm/algebra/sparse/utilities')
+
+      // Test csFlip and csUnflip
+      assert.strictEqual(sparse.csFlip(0), -2)
+      assert.strictEqual(sparse.csFlip(1), -3)
+      // Note: csUnflip(-2) returns -0, which equals 0 numerically
+      assert.ok(sparse.csUnflip(-2) === 0 || Object.is(sparse.csUnflip(-2), -0))
+      assert.strictEqual(sparse.csUnflip(-3), 1)
+      assert.strictEqual(sparse.csUnflip(5), 5) // Positive unchanged
+
+      // Test csCumsum
+      const p = new Int32Array(4)
+      const c = new Int32Array([1, 2, 3])
+      const sum = sparse.csCumsum(p, c, 3)
+      assert.strictEqual(sum, 6) // 1 + 2 + 3 = 6
+      assert.strictEqual(p[0], 0)
+      assert.strictEqual(p[1], 1)
+      assert.strictEqual(p[2], 3)
+      assert.strictEqual(p[3], 6)
+
+      // Test csMarked and csMark
+      const w = new Int32Array([1, 2, 3])
+      assert.strictEqual(sparse.csMarked(w, 0), false)
+      sparse.csMark(w, 0)
+      assert.strictEqual(sparse.csMarked(w, 0), true)
+
+      console.log('  ✓ algebra/sparse/utilities')
+    })
+  })
+
+  // ============================================
+  // MATRIX ALGORITHMS
+  // ============================================
+  // NOTE: Skipped - matrix/algorithms.ts uses @inline decorator which esbuild can't handle
+  describe.skip('Matrix Algorithms (direct import)', function () {
+    it('should import and run matrix algorithms', async function () {
+      const algo = await import('../../../src-wasm/matrix/algorithms')
+
+      // Test algo01 - Dense-Sparse operation
+      const dense = new Float64Array([1, 2, 3, 4])
+      const sparseValues = new Float64Array([10])
+      const sparseIndex = new Int32Array([0])
+      const sparsePtr = new Int32Array([0, 1, 1])
+      const result = new Float64Array(4)
+
+      algo.algo01DenseSparseDensity(
+        dense, 2, 2,
+        sparseValues, sparseIndex, sparsePtr,
+        result, 0 // operation: add
+      )
+
+      approxEqual(result[0], 11) // 1 + 10
+      approxEqual(result[1], 2)  // unchanged
+      approxEqual(result[2], 3)  // unchanged
+      approxEqual(result[3], 4)  // unchanged
+
+      console.log('  ✓ matrix/algorithms')
+    })
+  })
+
+  // ============================================
+  // PLAIN OPERATIONS
+  // ============================================
+  describe('Plain Operations (direct import)', function () {
+    it('should import and run plain number operations', async function () {
+      const plain = await import('../../../src-wasm/plain/operations')
+
+      // Basic arithmetic
+      approxEqual(plain.add(2, 3), 5)
+      approxEqual(plain.subtract(5, 3), 2)
+      approxEqual(plain.multiply(4, 3), 12)
+      approxEqual(plain.divide(10, 2), 5)
+      approxEqual(plain.abs(-5), 5)
+      approxEqual(plain.unaryMinus(5), -5)
+
+      // Powers and roots
+      approxEqual(plain.square(4), 16)
+      approxEqual(plain.cube(3), 27)
+      approxEqual(plain.sqrt(16), 4)
+      approxEqual(plain.cbrt(27), 3, 1e-8)
+      approxEqual(plain.pow(2, 10), 1024)
+      approxEqual(plain.nthRoot(8, 3), 2, 1e-8)
+
+      // Exponential and logarithmic
+      approxEqual(plain.exp(0), 1)
+      approxEqual(plain.log(Math.E), 1, 1e-10)
+      approxEqual(plain.log2(8), 3, 1e-10)
+      approxEqual(plain.log10(100), 2, 1e-10)
+
+      // GCD and LCM
+      approxEqual(plain.gcd(12, 8), 4)
+      approxEqual(plain.lcm(4, 6), 12)
+
+      // Sign and comparisons
+      approxEqual(plain.sign(5), 1)
+      approxEqual(plain.sign(-5), -1)
+      approxEqual(plain.sign(0), 0)
+
+      // Logical
+      assert.strictEqual(plain.and(1, 1), true)
+      assert.strictEqual(plain.or(0, 1), true)
+      assert.strictEqual(plain.not(0), true)
+
+      // Relational
+      assert.strictEqual(plain.equal(5, 5), true)
+      assert.strictEqual(plain.smaller(3, 5), true)
+      assert.strictEqual(plain.larger(5, 3), true)
+      assert.strictEqual(plain.compare(5, 3), 1)
+
+      // Bitwise
+      assert.strictEqual(plain.bitAnd(5, 3), 1)
+      assert.strictEqual(plain.bitOr(5, 3), 7)
+      assert.strictEqual(plain.bitXor(5, 3), 6)
+
+      // Trigonometry
+      approxEqual(plain.sin(0), 0)
+      approxEqual(plain.cos(0), 1)
+      approxEqual(plain.tan(0), 0)
+
+      // Gamma function
+      approxEqual(plain.gamma(5), 24, 1e-8)
+      approxEqual(plain.lgamma(1), 0, 1e-8)
+
+      // Constants
+      approxEqual(plain.PI, Math.PI)
+      approxEqual(plain.E, Math.E)
+
+      // Utility checks
+      assert.strictEqual(plain.isIntegerValue(5), true)
+      assert.strictEqual(plain.isIntegerValue(5.5), false)
+      assert.strictEqual(plain.isPositive(5), true)
+      assert.strictEqual(plain.isNegative(-5), true)
+      assert.strictEqual(plain.isZero(0), true)
+
+      console.log('  ✓ plain/operations')
+    })
+  })
+
+  // ============================================
+  // SIGNAL PROCESSING (freqz, zpk2tf)
+  // ============================================
+  describe('Signal Processing Functions (direct import)', function () {
+    it('should import and run signal processing functions', async function () {
+      const signal = await import('../../../src-wasm/signal/processing')
+
+      // Test freqzUniform - frequency response of simple filter
+      // Simple moving average filter: b = [0.5, 0.5], a = [1]
+      const b = new Float64Array([0.5, 0.5])
+      const a = new Float64Array([1])
+      const freqResult = signal.freqzUniform(b, 2, a, 1, 5)
+
+      const hReal = signal.getFreqzReal(freqResult)
+      const hImag = signal.getFreqzImag(freqResult)
+
+      // At DC (w=0), H = 1 (sum of b coefficients / sum of a)
+      approxEqual(hReal[0], 1.0, 1e-8)
+      approxEqual(hImag[0], 0.0, 1e-8)
+
+      // Test magnitude computation
+      const mag = signal.magnitude(hReal, hImag, 5)
+      approxEqual(mag[0], 1.0, 1e-8)
+
+      // Test phase computation
+      const ph = signal.phase(hReal, hImag, 5)
+      approxEqual(ph[0], 0.0, 1e-8) // Phase at DC is 0
+
+      // Test polynomial multiply
+      // (1 + x) * (1 - x) = 1 - x^2
+      const p1Real = new Float64Array([1, 1])
+      const p1Imag = new Float64Array([0, 0])
+      const p2Real = new Float64Array([1, -1])
+      const p2Imag = new Float64Array([0, 0])
+
+      const polyResult = signal.polyMultiply(p1Real, p1Imag, 2, p2Real, p2Imag, 2)
+      const resultReal = signal.getPolyReal(polyResult)
+      const resultImag = signal.getPolyImag(polyResult)
+
+      approxEqual(resultReal[0], 1.0, 1e-10)  // constant term
+      approxEqual(resultReal[1], 0.0, 1e-10)  // x term (cancels)
+      approxEqual(resultReal[2], -1.0, 1e-10) // x^2 term
+
+      console.log('  ✓ signal/processing')
+    })
+  })
 })
