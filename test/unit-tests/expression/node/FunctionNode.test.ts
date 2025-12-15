@@ -174,7 +174,7 @@ describe('FunctionNode', function () {
 
   it('should compile a FunctionNode with overloaded a raw function', function () {
     const mymath = math.create()
-    function myFunction(args, _math, _scope) {
+    function myFunction(_args, _math, _scope) {
       assert.ok(false, 'should not be executed')
     }
     myFunction.rawArgs = true
@@ -685,7 +685,7 @@ describe('FunctionNode', function () {
     const customMath = math.create()
     customMath.sum.toTex = {
       2: '${args[0]}+${args[1]}' /* eslint-disable-line no-template-curly-in-string */,
-      3: function (node, options) {
+      3: function (node, _options) {
         return node.args[0] + '+' + node.args[1] + '+' + node.args[2]
       }
     }

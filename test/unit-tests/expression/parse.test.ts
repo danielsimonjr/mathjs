@@ -4099,7 +4099,9 @@ describe('parse', function () {
 
     try {
       mathClone.evaluate('f(x)=1;config({clone:f})')
-    } catch (err) {}
+    } catch {
+      /* expected error */
+    }
 
     assert.strictEqual(mathClone.evaluate('2'), 2)
   })

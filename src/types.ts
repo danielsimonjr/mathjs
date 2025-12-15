@@ -16,7 +16,7 @@ export type {
 } from '../types/index.js'
 
 // Type aliases for common types used internally
-export type BigNumber = import('decimal.js').Decimal
+export type BigNumber = import('./type/local/Decimal.ts').Decimal
 export type Complex = import('complex.js').default
 export type Fraction = import('fraction.js').default
 

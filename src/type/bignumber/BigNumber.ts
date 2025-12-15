@@ -1,5 +1,4 @@
-import Decimal from 'decimal.js'
-import type { Decimal as DecimalType } from 'decimal.js'
+import { Decimal, EUCLID } from '../local/Decimal.ts'
 import { factory } from '../../utils/factory.ts'
 
 const name = 'BigNumber'
@@ -36,7 +35,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
   }) => {
     const BigNumber = (Decimal as any).clone({
       precision: config.precision,
-      modulo: (Decimal as any).EUCLID
+      modulo: EUCLID
     }) as BigNumberClass
     ;(BigNumber as any).prototype = Object.create((BigNumber as any).prototype)
 
@@ -53,7 +52,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
      *                   `{"mathjs": "BigNumber", "value": "0.2"}`
      */
     ;(BigNumber as any).prototype.toJSON = function (
-      this: DecimalType
+      this: Decimal
     ): BigNumberJSON {
       return {
         mathjs: 'BigNumber',
@@ -67,7 +66,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
      *                       `{"mathjs": "BigNumber", "value": "0.2"}`
      * @return {BigNumber}
      */
-    ;(BigNumber as any).fromJSON = function (json: BigNumberJSON): DecimalType {
+    ;(BigNumber as any).fromJSON = function (json: BigNumberJSON): Decimal {
       return new (BigNumber as any)(json.value)
     }
 

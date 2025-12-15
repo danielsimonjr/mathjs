@@ -19,7 +19,8 @@ console.log(`Node.js: ${process.version}`)
 // Pure JavaScript (Baseline)
 // =============================================================================
 
-function jsMatrixMultiply (a, aRows, aCols, b, bRows, bCols) {
+// eslint-disable-next-line no-unused-vars
+function jsMatrixMultiply (a, aRows, aCols, b, _bRows, bCols) {
   const result = new Float64Array(aRows * bCols)
   for (let i = 0; i < aRows; i++) {
     for (let j = 0; j < bCols; j++) {
