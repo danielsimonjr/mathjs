@@ -78,7 +78,13 @@ function _format(value: any, options: any): string {
   if (looksLikeFraction(value)) {
     if (!options || options.fraction !== 'decimal') {
       // output as ratio, like '1/3'
-      return `${value.s * value.n}/${value.d}`
+      // Convert sign to BigInt to avoid "Cannot mix BigInt and other types" error
+      // when n is a BigInt (as in local Fraction implementation)
+      const signedNumerator =
+        typeof value.n === 'bigint'
+          ? BigInt(value.s) * value.n
+          : value.s * value.n
+      return `${signedNumerator}/${value.d}`
     } else {
       // output as decimal, like '0.(3)'
       return value.toString()
