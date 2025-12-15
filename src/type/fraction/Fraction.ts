@@ -1,14 +1,11 @@
-import FractionJS from 'fraction.js'
+import { Fraction as LocalFraction } from '../local/Fraction.ts'
 import { factory } from '../../utils/factory.ts'
 
-// The Fraction type that we work with internally - use any since FractionJS has complex types
-type FractionType = any
-
 // Re-export Fraction type for use in other modules
-export type Fraction = FractionType
+export type Fraction = LocalFraction
 
-// Use the imported Fraction class internally - cast to any for runtime manipulation
-const Fraction = FractionJS as any
+// Use the local Fraction class - cast to any for runtime manipulation
+const Fraction = LocalFraction as any
 
 const name = 'Fraction'
 const dependencies: string[] = []

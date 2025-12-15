@@ -1,18 +1,13 @@
-import ComplexJS from 'complex.js'
+import { Complex as LocalComplex } from '../local/Complex.ts'
 import { format } from '../../utils/number.ts'
 import { isNumber, isUnit } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 
-// The Complex type that we work with internally
-type ComplexType = typeof ComplexJS extends new (...args: any[]) => infer T
-  ? T
-  : any
-
 // Re-export Complex type for use in other modules
-export type Complex = ComplexType
+export type Complex = LocalComplex
 
-// Use the imported Complex class internally - cast to any for runtime manipulation
-const Complex = ComplexJS as any
+// Use the local Complex class - cast to any for runtime manipulation
+const Complex = LocalComplex as any
 
 const name = 'Complex'
 const dependencies: string[] = []

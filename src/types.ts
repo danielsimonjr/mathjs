@@ -17,8 +17,8 @@ export type {
 
 // Type aliases for common types used internally
 export type BigNumber = import('./type/local/Decimal.ts').Decimal
-export type Complex = import('complex.js').default
-export type Fraction = import('fraction.js').default
+export type Complex = import('./type/local/Complex.ts').Complex
+export type Fraction = import('./type/local/Fraction.ts').Fraction
 
 // Matrix-related types
 export interface SparseMatrix {
