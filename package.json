@@ -144,6 +144,8 @@
     "build": "gulp && npm run build:wasm && npm run update-authors",
     "build:wasm": "asc src-wasm/index.ts --config asconfig.json --target release",
     "build:wasm:debug": "asc src-wasm/index.ts --config asconfig.json --target debug",
+    "validate:wasm": "asc src-wasm/index.ts --config asconfig.json --noEmit",
+    "test:wasm": "npm run validate:wasm && npm run build:wasm:debug && vitest run test-wasm/unit-tests/wasm/",
     "build-and-test": "npm run build && npm run test:all && npm run lint",
     "build:clean": "gulp clean",
     "build:docs": "gulp docs",
