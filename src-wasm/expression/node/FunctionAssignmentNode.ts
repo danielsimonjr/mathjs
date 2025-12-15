@@ -1,0 +1,339 @@
+import { isNode } from '../../utils/is.ts'
+
+import { keywords } from '../keywords.ts'
+import { escape } from '../../utils/string.ts'
+import { forEach, join } from '../../utils/array.ts'
+import { toSymbol } from '../../utils/latex.ts'
+import { getPrecedence } from '../operators.ts'
+import { factory } from '../../utils/factory.ts'
+import type { MathNode } from './Node.ts'
+
+const name = 'FunctionAssignmentNode'
+const dependencies = ['typed', 'Node']
+
+interface ParamWithType {
+  name: string
+  type: string
+}
+
+export const createFunctionAssignmentNode = /* #__PURE__ */ factory(
+  name,
+  dependencies,
+  ({ typed, Node }: { typed: any; Node: new (...args: any[]) => MathNode }) => {
+    /**
+     * Is parenthesis needed?
+     * @param {Node} node
+     * @param {Object} parenthesis
+     * @param {string} implicit
+     * @private
+     */
+    function needParenthesis(
+      node: FunctionAssignmentNode,
+      parenthesis?: string,
+      implicit?: string
+    ): boolean {
+      const precedence = getPrecedence(node, parenthesis, implicit, undefined)
+      const exprPrecedence = getPrecedence(
+        node.expr,
+        parenthesis,
+        implicit,
+        undefined
+      )
+
+      return (
+        parenthesis === 'all' ||
+        (exprPrecedence !== null && exprPrecedence <= precedence)
+      )
+    }
+
+    class FunctionAssignmentNode extends Node {
+      name: string
+      params: string[]
+      types: string[]
+      expr: MathNode
+
+      /**
+       * @constructor FunctionAssignmentNode
+       * @extends {Node}
+       * Function assignment
+       *
+       * @param {string} name           Function name
+       * @param {string[] | Array.<{name: string, type: string}>} params
+       *                                Array with function parameter names, or an
+       *                                array with objects containing the name
+       *                                and type of the parameter
+       * @param {Node} expr             The function expression
+       */
+      constructor(
+        name: string,
+        params: string[] | ParamWithType[],
+        expr: MathNode
+      ) {
+        super()
+        // validate input
+        if (typeof name !== 'string') {
+          throw new TypeError('String expected for parameter "name"')
+        }
+        if (!Array.isArray(params)) {
+          throw new TypeError(
+            'Array containing strings or objects expected for parameter "params"'
+          )
+        }
+        if (!isNode(expr)) {
+          throw new TypeError('Node expected for parameter "expr"')
+        }
+        if (keywords.has(name)) {
+          throw new Error(
+            'Illegal function name, "' + name + '" is a reserved keyword'
+          )
+        }
+
+        const paramNames = new Set<string>()
+        for (const param of params) {
+          const paramName = typeof param === 'string' ? param : param.name
+          if (paramNames.has(paramName)) {
+            throw new Error(`Duplicate parameter name "${paramName}"`)
+          } else {
+            paramNames.add(paramName)
+          }
+        }
+
+        this.name = name
+        this.params = params.map(function (param) {
+          return (param && (param as ParamWithType).name) || (param as string)
+        })
+        this.types = params.map(function (param) {
+          return (param && (param as ParamWithType).type) || 'any'
+        })
+        this.expr = expr
+      }
+
+      get type(): string {
+        return name
+      }
+      get isFunctionAssignmentNode(): boolean {
+        return true
+      }
+
+      /**
+       * Compile a node into a JavaScript function.
+       * This basically pre-calculates as much as possible and only leaves open
+       * calculations which depend on a dynamic scope with variables.
+       * @param {Object} math     Math.js namespace with functions and constants.
+       * @param {Object} argNames An object with argument names as key and `true`
+       *                          as value. Used in the SymbolNode to optimize
+       *                          for arguments from user assigned functions
+       *                          (see FunctionAssignmentNode) or special symbols
+       *                          like `end` (see IndexNode).
+       * @return {function} Returns a function which can be called like:
+       *                        evalNode(scope: Object, args: Object, context: *)
+       */
+      _compile(
+        math: any,
+        argNames: Record<string, boolean>
+      ): (scope: any, args: any, context: any) => any {
+        const childArgNames = Object.create(argNames)
+        forEach(this.params, function (param) {
+          childArgNames[param] = true
+        })
+
+        // compile the function expression with the child args
+        const expr = this.expr
+        const evalExpr = expr._compile(math, childArgNames)
+        const name = this.name
+        const params = this.params
+        const signature = join(this.types, ',')
+        const syntax = name + '(' + join(this.params, ', ') + ')'
+
+        return function evalFunctionAssignmentNode(
+          scope: any,
+          args: any,
+          context: any
+        ) {
+          const signatures: Record<string, Function> = {}
+          signatures[signature] = function (...fnArgs: any[]) {
+            const childArgs = Object.create(args)
+
+            for (let i = 0; i < params.length; i++) {
+              childArgs[params[i]] = fnArgs[i]
+            }
+
+            return evalExpr(scope, childArgs, context)
+          }
+          const fn: any = typed(name, signatures)
+          fn.syntax = syntax
+          fn.expr = expr.toString()
+
+          scope.set(name, fn)
+
+          return fn
+        }
+      }
+
+      /**
+       * Execute a callback for each of the child nodes of this node
+       * @param {function(child: Node, path: string, parent: Node)} callback
+       */
+      forEach(
+        callback: (child: MathNode, path: string, parent: MathNode) => void
+      ): void {
+        callback(this.expr, 'expr', this as any)
+      }
+
+      /**
+       * Create a new FunctionAssignmentNode whose children are the results of
+       * calling the provided callback function for each child of the original
+       * node.
+       * @param {function(child: Node, path: string, parent: Node): Node} callback
+       * @returns {FunctionAssignmentNode} Returns a transformed copy of the node
+       */
+      map(
+        callback: (child: MathNode, path: string, parent: MathNode) => MathNode
+      ): FunctionAssignmentNode {
+        const expr = this._ifNode(callback(this.expr, 'expr', this as any))
+
+        return new FunctionAssignmentNode(this.name, this.params.slice(0), expr)
+      }
+
+      /**
+       * Create a clone of this node, a shallow copy
+       * @return {FunctionAssignmentNode}
+       */
+      clone(): FunctionAssignmentNode {
+        return new FunctionAssignmentNode(
+          this.name,
+          this.params.slice(0),
+          this.expr
+        )
+      }
+
+      /**
+       * get string representation
+       * @param {Object} options
+       * @return {string} str
+       */
+      _toString(options?: any): string {
+        const parenthesis =
+          options && options.parenthesis ? options.parenthesis : 'keep'
+        let expr = this.expr.toString(options)
+        if (needParenthesis(this, parenthesis, options && options.implicit)) {
+          expr = '(' + expr + ')'
+        }
+        return this.name + '(' + this.params.join(', ') + ') = ' + expr
+      }
+
+      /**
+       * Get a JSON representation of the node
+       * @returns {Object}
+       */
+      toJSON(): {
+        mathjs: string
+        name: string
+        params: ParamWithType[]
+        expr: MathNode
+      } {
+        const types = this.types
+
+        return {
+          mathjs: name,
+          name: this.name,
+          params: this.params.map(function (param, index) {
+            return {
+              name: param,
+              type: types[index]
+            }
+          }),
+          expr: this.expr
+        }
+      }
+
+      /**
+       * Instantiate an FunctionAssignmentNode from its JSON representation
+       * @param {Object} json
+       *     An object structured like
+       *     ```
+       *     {"mathjs": "FunctionAssignmentNode",
+       *      name: ..., params: ..., expr: ...}
+       *     ```
+       *     where mathjs is optional
+       * @returns {FunctionAssignmentNode}
+       */
+      static fromJSON(json: {
+        name: string
+        params: ParamWithType[]
+        expr: MathNode
+      }): FunctionAssignmentNode {
+        return new FunctionAssignmentNode(json.name, json.params, json.expr)
+      }
+
+      /**
+       * get HTML representation
+       * @param {Object} options
+       * @return {string} str
+       */
+      _toHTML(options?: any): string {
+        const parenthesis =
+          options && options.parenthesis ? options.parenthesis : 'keep'
+        const params: string[] = []
+        for (let i = 0; i < this.params.length; i++) {
+          params.push(
+            '<span class="math-symbol math-parameter">' +
+              escape(this.params[i]) +
+              '</span>'
+          )
+        }
+        let expr = this.expr.toHTML(options)
+        if (needParenthesis(this, parenthesis, options && options.implicit)) {
+          expr =
+            '<span class="math-parenthesis math-round-parenthesis">(</span>' +
+            expr +
+            '<span class="math-parenthesis math-round-parenthesis">)</span>'
+        }
+        return (
+          '<span class="math-function">' +
+          escape(this.name) +
+          '</span>' +
+          '<span class="math-parenthesis math-round-parenthesis">(</span>' +
+          params.join('<span class="math-separator">,</span>') +
+          '<span class="math-parenthesis math-round-parenthesis">)</span>' +
+          '<span class="math-operator math-assignment-operator ' +
+          'math-variable-assignment-operator math-binary-operator">=</span>' +
+          expr
+        )
+      }
+
+      /**
+       * get LaTeX representation
+       * @param {Object} options
+       * @return {string} str
+       */
+      _toTex(options?: any): string {
+        const parenthesis =
+          options && options.parenthesis ? options.parenthesis : 'keep'
+        let expr = this.expr.toTex(options)
+        if (needParenthesis(this, parenthesis, options && options.implicit)) {
+          expr = `\\left(${expr}\\right)`
+        }
+
+        return (
+          '\\mathrm{' +
+          this.name +
+          '}\\left(' +
+          this.params.map(toSymbol).join(',') +
+          '\\right)=' +
+          expr
+        )
+      }
+    }
+
+    // Set the class name to match the node type
+    // Using Object.defineProperty because Function.name is read-only
+    Object.defineProperty(FunctionAssignmentNode, 'name', {
+      value: name,
+      configurable: true
+    })
+
+    return FunctionAssignmentNode
+  },
+  { isClass: true, isNode: true }
+)
