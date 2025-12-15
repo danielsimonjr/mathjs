@@ -1,22 +1,28 @@
-// @ts-nocheck
-// test exp
+/**
+ * Test for log10 - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const mathPredictable = math.create({ predictable: true })
 const complex = math.complex
 const matrix = math.matrix
 const unit = math.unit
 const log10 = math.log10
 
-describe('log10', function () {
-  it('should return the log base 10 of a boolean', function () {
+describe('log10', function (): void {
+  it('should return the log base 10 of a boolean', function (): void {
     assert.strictEqual(log10(true), 0)
     assert.strictEqual(log10(false), -Infinity)
   })
 
-  it('should return the log base 10 of positive numbers', function () {
+  it('should return the log base 10 of positive numbers', function (): void {
     approxDeepEqual(log10(1), 0)
     approxDeepEqual(log10(2), 0.301029995663981)
     approxDeepEqual(log10(3), 0.477121254719662)
@@ -29,7 +35,7 @@ describe('log10', function () {
     approxDeepEqual(log10(1000), 3)
   })
 
-  it('should return the log base 10 of negative numbers', function () {
+  it('should return the log base 10 of negative numbers', function (): void {
     approxDeepEqual(
       log10(-1),
       complex('0.000000000000000 + 1.364376353841841i')
@@ -44,16 +50,16 @@ describe('log10', function () {
     )
   })
 
-  it('should return the log base 10 of negative numbers with predicable:true', function () {
+  it('should return the log base 10 of negative numbers with predicable:true', function (): void {
     assert.strictEqual(typeof mathPredictable.log10(-1), 'number')
     assert(isNaN(mathPredictable.log10(-1)))
   })
 
-  it('should return the log base 10 of zero', function () {
+  it('should return the log base 10 of zero', function (): void {
     approxDeepEqual(log10(0), -Infinity)
   })
 
-  it('should return the log of positive bignumbers', function () {
+  it('should return the log of positive bignumbers', function (): void {
     const bigmath = math.create({ precision: 100 })
 
     assert.deepStrictEqual(
@@ -82,7 +88,7 @@ describe('log10', function () {
     )
   })
 
-  it('should return the log of negative bignumbers', function () {
+  it('should return the log of negative bignumbers', function (): void {
     const bigmath = math.create({ precision: 100 })
 
     approxDeepEqual(
@@ -99,7 +105,7 @@ describe('log10', function () {
     )
   })
 
-  it('should return the log of a bignumber with value zero', function () {
+  it('should return the log of a bignumber with value zero', function (): void {
     const bigmath = math.create({ precision: 100 })
 
     assert.deepStrictEqual(
@@ -108,22 +114,22 @@ describe('log10', function () {
     )
   })
 
-  it('should throw an error if used with a wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if used with a wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       log10()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       log10(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       log10(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should return the log base 10 of a complex number', function () {
+  it('should return the log base 10 of a complex number', function (): void {
     approxDeepEqual(
       log10(complex(0, 1)),
       complex('0.000000000000000 + 0.682188176920921i')
@@ -151,24 +157,24 @@ describe('log10', function () {
     approxDeepEqual(log10(complex(1, 0)), complex(0, 0))
   })
 
-  it('should return the log base 10 of a large bigint', function () {
+  it('should return the log base 10 of a large bigint', function (): void {
     const ten16 = 10000000000000000n
     assert.strictEqual(log10(ten16), 16)
   })
 
-  it('should throw an error when used on a unit', function () {
-    assert.throws(function () {
+  it('should throw an error when used on a unit', function (): void {
+    assert.throws(function (): void {
       log10(unit('5cm'))
     })
   })
 
-  it('should throw an error when used on a string', function () {
-    assert.throws(function () {
+  it('should throw an error when used on a string', function (): void {
+    assert.throws(function (): void {
       log10('text')
     })
   })
 
-  it('should return the log base 10 of each element of a matrix', function () {
+  it('should return the log base 10 of each element of a matrix', function (): void {
     const res = [0, 0.301029995663981, 0.477121254719662, 0.602059991327962]
     approxDeepEqual(log10([1, 2, 3, 4]), res)
     approxDeepEqual(log10(matrix([1, 2, 3, 4])), matrix(res))
@@ -190,7 +196,7 @@ describe('log10', function () {
     )
   })
 
-  it('should LaTeX log10', function () {
+  it('should LaTeX log10', function (): void {
     const expression = math.parse('log10(10)')
     assert.strictEqual(expression.toTex(), '\\log_{10}\\left(10\\right)')
   })

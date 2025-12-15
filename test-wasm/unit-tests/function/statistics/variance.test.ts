@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for variance - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
@@ -7,51 +9,56 @@ const Complex = math.Complex
 const DenseMatrix = math.DenseMatrix
 const variance = math.variance
 
-describe('variance', function () {
-  it('should return the variance of numbers', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('variance', function (): void {
+  it('should return the variance of numbers', function (): void {
     assert.strictEqual(variance(5), 0)
     assert.strictEqual(variance(2, 4, 6), 4)
   })
 
-  it('should return the variance of strings by their numerical values', function () {
+  it('should return the variance of strings by their numerical values', function (): void {
     assert.strictEqual(variance('2', '4', '6'), 4)
     assert.strictEqual(variance('5'), 0)
   })
 
-  it('should return the variance of big numbers', function () {
+  it('should return the variance of big numbers', function (): void {
     assert.deepStrictEqual(
       variance(new BigNumber(2), new BigNumber(4), new BigNumber(6)),
       new math.BigNumber(4)
     )
   })
 
-  it('should return the variance of complex numbers', function () {
+  it('should return the variance of complex numbers', function (): void {
     assert.deepStrictEqual(
       variance(new Complex(2, 3), new Complex(-1, 2)),
       new Complex(4, 3)
     )
   })
 
-  it('should return the variance of mixed numbers and complex numbers', function () {
+  it('should return the variance of mixed numbers and complex numbers', function (): void {
     assert.deepStrictEqual(variance(2, new Complex(-1, 3)), new Complex(0, -9))
   })
 
-  it('should return the variance from an array', function () {
+  it('should return the variance from an array', function (): void {
     assert.strictEqual(variance([2, 4, 6]), 4)
     assert.strictEqual(variance([5]), 0)
   })
 
-  it('should return the uncorrected variance from an array', function () {
+  it('should return the uncorrected variance from an array', function (): void {
     assert.strictEqual(variance([2, 4], 'uncorrected'), 1)
     assert.strictEqual(variance([2, 4, 6, 8], 'uncorrected'), 5)
   })
 
-  it('should return the biased variance from an array', function () {
+  it('should return the biased variance from an array', function (): void {
     assert.strictEqual(variance([2, 8], 'biased'), 6)
     assert.strictEqual(variance([2, 4, 6, 8], 'biased'), 4)
   })
 
-  it('should return NaN if any of the inputs contains NaN', function () {
+  it('should return NaN if any of the inputs contains NaN', function (): void {
     assert(isNaN(variance([NaN])))
     assert(isNaN(variance([1, NaN])))
     assert(isNaN(variance([NaN, 1])))
@@ -60,14 +67,14 @@ describe('variance', function () {
     assert(isNaN(variance(NaN, NaN, NaN)))
   })
 
-  it('should throw an error in case of unknown type of normalization', function () {
-    assert.throws(function () {
+  it('should throw an error in case of unknown type of normalization', function (): void {
+    assert.throws(function (): void {
       variance([2, 8], 'foo')
     }, /Unknown normalization/)
   })
 
-  it('should throw an error in case the dimension exceeds the matrix dimension', function () {
-    assert.throws(function () {
+  it('should throw an error in case the dimension exceeds the matrix dimension', function (): void {
+    assert.throws(function (): void {
       variance(
         [
           [2, 4, 6],
@@ -78,12 +85,12 @@ describe('variance', function () {
     }, /Index out of range/)
   })
 
-  it('should return the variance from an 1d matrix', function () {
+  it('should return the variance from an 1d matrix', function (): void {
     assert.strictEqual(variance(new DenseMatrix([2, 4, 6])), 4)
     assert.strictEqual(variance(new DenseMatrix([5])), 0)
   })
 
-  it('should return the variance element from a 2d array', function () {
+  it('should return the variance element from a 2d array', function (): void {
     assert.deepStrictEqual(
       variance([
         [2, 4, 6],
@@ -93,7 +100,7 @@ describe('variance', function () {
     )
   })
 
-  it('should return the variance element from a 2d matrix', function () {
+  it('should return the variance element from a 2d matrix', function (): void {
     assert.deepStrictEqual(
       variance(
         new DenseMatrix([
@@ -129,7 +136,7 @@ describe('variance', function () {
     ]
   ]
 
-  it('should return the variance value along a dimension on a matrix', function () {
+  it('should return the variance value along a dimension on a matrix', function (): void {
     assert.deepStrictEqual(
       variance(
         [
@@ -169,23 +176,23 @@ describe('variance', function () {
     ])
   })
 
-  it('should throw an error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       variance()
     })
   })
 
-  it('should throw an error if called with invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       variance(new Date(), 2)
     }, /Cannot calculate variance, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       variance(2, 3, null)
     }, /Cannot calculate variance, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       variance([2, 3, null])
     }, /Cannot calculate variance, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       variance(
         [
           [2, 4, 6],
@@ -195,7 +202,7 @@ describe('variance', function () {
         0
       )
     }, /Cannot convert "biased" to a number/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       variance(
         [
           [2, 4, 6],
@@ -205,47 +212,47 @@ describe('variance', function () {
         new Date()
       )
     }, /Cannot calculate variance, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       variance('a', 'b')
     }, /Error: Cannot convert "a" to a number/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       variance('a')
     }, /Error: Cannot convert "a" to a number/)
   })
 
-  it('should throw an error if the axis exceeds the dimension of the matrix', function () {
+  it('should throw an error if the axis exceeds the dimension of the matrix', function (): void {
     // TODO
   })
 
-  it('should throw an error if called with an empty array', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an empty array', function (): void {
+    assert.throws(function (): void {
       variance([])
     })
   })
 
-  it('should LaTeX var', function () {
-    const expression = math.parse('variance(1,2,3)')
+  it('should LaTeX var', function (): void {
+    const expression = math.parse('variance(1,2,3)') as MathNode
     assert.strictEqual(expression.toTex(), '\\mathrm{Var}\\left(1,2,3\\right)')
   })
 
-  it('should compute the variance of quantities with units', function () {
+  it('should compute the variance of quantities with units', function (): void {
     const a = math.unit(10, 'cm')
     const b = math.unit(20, 'cm')
     const c = math.unit(50, 'cm^2')
     approxEqual(variance([a, b]).toNumber('cm^2'), c.toNumber('cm^2'))
   })
 
-  it('should compute the variance of quantities with compatible units', function () {
+  it('should compute the variance of quantities with compatible units', function (): void {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'cm')
     const c = math.unit(1250, 'cm^2')
     approxEqual(variance([a, b]).toNumber('cm^2'), c.toNumber('cm^2'))
   })
 
-  it('should not compute the variance of quantities with incompatible units', function () {
+  it('should not compute the variance of quantities with incompatible units', function (): void {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'kg')
-    assert.throws(function () {
+    assert.throws(function (): void {
       variance([a, b])
     }, /Units do not match/)
   })

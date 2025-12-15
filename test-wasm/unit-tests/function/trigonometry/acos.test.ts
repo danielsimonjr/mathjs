@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for acos - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -14,13 +21,13 @@ const acosBig = bigmath.acos
 const cosBig = bigmath.cos
 const Big = bigmath.bignumber
 
-describe('acos', function () {
-  it('should return the arccos of a boolean', function () {
+describe('acos', function (): void {
+  it('should return the arccos of a boolean', function (): void {
     approxEqual(acos(true), 0)
     approxEqual(acos(false), 0.5 * pi)
   })
 
-  it('should return the arccos of a number', function () {
+  it('should return the arccos of a number', function (): void {
     approxEqual(acos(-1) / pi, 1)
     approxEqual(acos(-0.5) / pi, 2 / 3)
     approxEqual(acos(0) / pi, 0.5)
@@ -31,12 +38,12 @@ describe('acos', function () {
     approxDeepEqual(acos(2), complex('1.316957896924817i'))
   })
 
-  it('should return the arccos of a number when predictable:true', function () {
+  it('should return the arccos of a number when predictable:true', function (): void {
     assert.strictEqual(typeof mathPredictable.acos(-2), 'number')
     assert(isNaN(mathPredictable.acos(-2)))
   })
 
-  it('should return the arccos of a bignumber', function () {
+  it('should return the arccos of a bignumber', function (): void {
     const arg = Big(-1)
     assert.deepStrictEqual(acosBig(arg).toString(), bigmath.pi.toString())
     assert.deepStrictEqual(acosBig(Big(-0.5)), Big('2.0943951023931954923'))
@@ -57,7 +64,7 @@ describe('acos', function () {
     assert.deepStrictEqual(arg, Big(-1))
   })
 
-  it('should be the inverse function of cos', function () {
+  it('should be the inverse function of cos', function (): void {
     approxEqual(acos(cos(-1)), 1)
     approxEqual(acos(cos(0)), 0)
     approxEqual(acos(cos(0.1)), 0.1)
@@ -65,7 +72,7 @@ describe('acos', function () {
     approxEqual(acos(cos(2)), 2)
   })
 
-  it('should be the inverse function of bignumber cos', function () {
+  it('should be the inverse function of bignumber cos', function (): void {
     bigmath.config({ precision: 20 })
     assert.deepStrictEqual(acosBig(cosBig(Big(-1))), Big(1))
     assert.deepStrictEqual(acosBig(cosBig(Big(0))), Big('0'))
@@ -80,12 +87,12 @@ describe('acos', function () {
     assert.deepStrictEqual(acosBig(cosBig(Big(2))), Big(2))
   })
 
-  it('should return for bignumber cos for x > 1', function () {
+  it('should return for bignumber cos for x > 1', function (): void {
     assert.ok(acos(Big(1.1)).isNaN())
     assert.ok(acos(Big(-1.1)).isNaN())
   })
 
-  it('should return the arccos of a complex number', function () {
+  it('should return the arccos of a complex number', function (): void {
     approxDeepEqual(
       acos(complex('2+3i')),
       complex(1.0001435424738, -1.98338702991654)
@@ -113,22 +120,22 @@ describe('acos', function () {
     )
   })
 
-  it('should throw an error if called with a unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
       acos(unit('45deg'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       acos(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       acos('string')
     })
   })
 
-  it('should not operate on arrays and matrices', function () {
+  it('should not operate on arrays and matrices', function (): void {
     assert.throws(() => acos([1, 2, 3]), TypeError)
     // note: the results of acos(2) and acos(3) differs in octave
     // the next tests are verified with mathematica
@@ -141,16 +148,16 @@ describe('acos', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), acos), matrix(acos123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       acos()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       acos(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX acos', function () {
+  it('should LaTeX acos', function (): void {
     const expression = math.parse('acos(1)')
     assert.strictEqual(expression.toTex(), '\\cos^{-1}\\left(1\\right)')
   })

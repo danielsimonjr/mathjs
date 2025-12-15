@@ -1,11 +1,18 @@
-// @ts-nocheck
+/**
+ * Test for sqrtm - AssemblyScript-friendly TypeScript
+ */
 // test sqrtm
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 
-describe('sqrtm', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('sqrtm', function (): void {
   const A = [
     [5, 2],
     [4, 7]
@@ -24,7 +31,7 @@ describe('sqrtm', function () {
     [15, 22]
   ]
 
-  it('should return the principal square root of a matrix', function () {
+  it('should return the principal square root of a matrix', function (): void {
     approxDeepEqual(math.sqrtm(AA), A)
     approxDeepEqual(math.sqrtm(BB), B)
 
@@ -61,34 +68,34 @@ describe('sqrtm', function () {
     )
   })
 
-  it('should return the principal square root of a matrix with just one value', function () {
+  it('should return the principal square root of a matrix with just one value', function (): void {
     assert.deepStrictEqual(math.sqrtm([4]), [2])
     assert.deepStrictEqual(math.sqrtm([16]), [4])
     assert.deepStrictEqual(math.sqrtm([20.25]), [4.5])
   })
 
-  it('should return the principal square root of a matrix of big numbers', function () {
+  it('should return the principal square root of a matrix of big numbers', function (): void {
     assert.deepStrictEqual(
       math.round(math.sqrtm(math.bignumber(AA)), 20),
       math.bignumber(A)
     )
   })
 
-  it('math.pow(math.sqrtm(A), 2) should equal A', function () {
+  it('math.pow(math.sqrtm(A), 2) should equal A', function (): void {
     approxDeepEqual(math.pow(math.sqrtm(A), 2), A)
     approxDeepEqual(math.pow(math.sqrtm(B), 2), B)
     approxDeepEqual(math.pow(math.sqrtm(AA), 2), AA)
     approxDeepEqual(math.pow(math.sqrtm(BB), 2), BB)
   })
 
-  it('should throw an error in case of non-square matrices', function () {
-    assert.throws(function () {
+  it('should throw an error in case of non-square matrices', function (): void {
+    assert.throws(function (): void {
       math.sqrtm([1, 2, 3])
     }, /Matrix must be square/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.sqrtm([[1, 2, 3]])
     }, /Matrix must be square/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.sqrtm([
         [1, 2, 3],
         [4, 5, 6]
@@ -96,20 +103,20 @@ describe('sqrtm', function () {
     }, /Matrix must be square/)
   })
 
-  it('should throw an error in case of matrices with dimension greater than two', function () {
+  it('should throw an error in case of matrices with dimension greater than two', function (): void {
     const errorRegex = /Matrix must be at most two dimensional/
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.sqrtm(math.zeros(1, 1, 1))
     }, errorRegex)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.sqrtm(math.zeros(2, 2, 2))
     }, errorRegex)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.sqrtm(math.zeros(3, 3, 3, 3))
     }, errorRegex)
   })
 
-  it('should LaTeX sqrtm', function () {
+  it('should LaTeX sqrtm', function (): void {
     const expression = math.parse('sqrtm([[33, 24], [48, 57]])')
     assert.strictEqual(
       expression.toTex(),
@@ -117,7 +124,7 @@ describe('sqrtm', function () {
     )
   })
 
-  it('should return the result in the same format as the input', function () {
+  it('should return the result in the same format as the input', function (): void {
     assert.strictEqual(math.typeOf(math.sqrtm(A)), 'Array')
     assert.strictEqual(math.typeOf(math.sqrtm(B)), 'Array')
     assert.strictEqual(math.typeOf(math.sqrtm(AA)), 'Array')

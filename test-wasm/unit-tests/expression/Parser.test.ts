@@ -1,43 +1,43 @@
-// @ts-nocheck
-// test parser
-
+/**
+ * Test for Parser - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxEqual } from '../../../tools/approx.js'
 import math from '../../../src/defaultInstance.ts'
 const Parser = math.Parser
 
-describe('parser', function () {
-  it('should create a parser', function () {
+describe('parser', function (): void {
+  it('should create a parser', function (): void {
     const parser = new Parser()
     assert.ok(parser instanceof Parser)
   })
 
-  it('should have a property isParser', function () {
+  it('should have a property isParser', function (): void {
     const a = new Parser()
     assert.strictEqual(a.isParser, true)
   })
 
-  it('should have a property type', function () {
+  it('should have a property type', function (): void {
     const a = new Parser()
     assert.strictEqual(a.type, 'Parser')
   })
 
-  it('should evaluate an expression', function () {
+  it('should evaluate an expression', function (): void {
     const parser = new Parser()
 
     const result = parser.evaluate('2 + 3')
     assert.strictEqual(result, 5)
   })
 
-  it('should evaluate a list with expressions', function () {
+  it('should evaluate a list with expressions', function (): void {
     const parser = new Parser()
 
     const result = parser.evaluate(['a = 2', 'a + 3'])
     assert.deepStrictEqual(result, [2, 5])
   })
 
-  it('should get variables from the parsers namespace ', function () {
+  it('should get variables from the parsers namespace ', function (): void {
     const parser = new Parser()
 
     parser.evaluate('a = 3')
@@ -48,7 +48,7 @@ describe('parser', function () {
     assert.strictEqual(parser.get('b'), 5)
   })
 
-  it('should get all variables from the parsers namespace ', function () {
+  it('should get all variables from the parsers namespace ', function (): void {
     const parser = new Parser()
 
     parser.evaluate('a = 3')
@@ -59,13 +59,13 @@ describe('parser', function () {
     assert.deepStrictEqual(parser.getAll(), { b: 5 })
   })
 
-  it('should return undefined when getting a non existing variable', function () {
+  it('should return undefined when getting a non existing variable', function (): void {
     const parser = new Parser()
 
     assert.strictEqual(parser.get('non_existing_variable'), undefined)
   })
 
-  it('should set variables in the parsers namespace ', function () {
+  it('should set variables in the parsers namespace ', function (): void {
     const parser = new Parser()
 
     assert.strictEqual(parser.set('a', 3), 3)
@@ -81,7 +81,7 @@ describe('parser', function () {
     assert.strictEqual(parser.evaluate('a'), 1)
   })
 
-  it('should remove a variable from the parsers namespace ', function () {
+  it('should remove a variable from the parsers namespace ', function (): void {
     const parser = new Parser()
 
     assert.strictEqual(parser.set('qq', 3), 3)
@@ -90,7 +90,7 @@ describe('parser', function () {
 
     parser.remove('qq')
     assert.strictEqual(parser.get('qq'), undefined)
-    assert.throws(function () {
+    assert.throws(function (): void {
       parser.evaluate('qq')
     })
 
@@ -98,12 +98,12 @@ describe('parser', function () {
     assert.strictEqual(parser.get('ww'), 5)
     parser.remove('ww')
     assert.strictEqual(parser.get('ww'), undefined)
-    assert.throws(function () {
+    assert.throws(function (): void {
       parser.evaluate('ww')
     })
   })
 
-  it('should clear the parsers namespace ', function () {
+  it('should clear the parsers namespace ', function (): void {
     const parser = new Parser()
 
     assert.strictEqual(parser.evaluate('xx = yy = zz = 5'), 5)
@@ -127,19 +127,19 @@ describe('parser', function () {
     assert.strictEqual(parser.get('zz'), undefined)
     approxEqual(parser.get('pi'), undefined)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       parser.evaluate('xx')
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       parser.evaluate('yy')
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       parser.evaluate('zz')
     })
     assert.strictEqual(parser.evaluate('pi'), Math.PI)
   })
 
-  it('should validate variable names', function () {
+  it('should validate variable names', function (): void {
     const parser = new Parser()
 
     // Valid variable names
@@ -163,8 +163,8 @@ describe('parser', function () {
     assert.throws(() => parser.set('@specialChar', 5), /Invalid variable name/)
   })
 
-  describe('security', function () {
-    it('should return undefined when accessing what appears to be inherited properties', function () {
+  describe('security', function (): void {
+    it('should return undefined when accessing what appears to be inherited properties', function (): void {
       try {
         const parser = new Parser()
 
@@ -179,13 +179,13 @@ describe('parser', function () {
       }
     })
 
-    it('should throw an error when assigning an inherited property', function () {
+    it('should throw an error when assigning an inherited property', function (): void {
       try {
         const parser = new Parser()
         // We can safely set within the parser
         assert.strictEqual(parser.set('toString', null), null)
         // But getting it out via getAll() will throw.
-        assert.throws(function () {
+        assert.throws(function (): void {
           parser.getAll()
         }, /No access/)
       } finally {
@@ -194,8 +194,8 @@ describe('parser', function () {
     })
   })
 
-  it('should throw an exception when creating a parser without new', function () {
-    assert.throws(function () {
+  it('should throw an exception when creating a parser without new', function (): void {
+    assert.throws(function (): void {
       Parser()
     }, /Constructor must be called with the new operator/)
   })

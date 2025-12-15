@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for inv - AssemblyScript-friendly TypeScript
+ */
 // test inv
 import assert from 'assert'
 
@@ -6,18 +8,23 @@ import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 const inv = math.inv
 
-describe('inv', function () {
-  it('should return the inverse of a number', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('inv', function (): void {
+  it('should return the inverse of a number', function (): void {
     assert.deepStrictEqual(inv(4), 1 / 4)
     assert.deepStrictEqual(inv(math.bignumber(4)), math.bignumber(1 / 4))
   })
 
-  it('should return the inverse of a matrix with just one value', function () {
+  it('should return the inverse of a matrix with just one value', function (): void {
     assert.deepStrictEqual(inv([4]), [1 / 4])
     assert.deepStrictEqual(inv([[4]]), [[1 / 4]])
   })
 
-  it('should return the inverse for each element in an array', function () {
+  it('should return the inverse for each element in an array', function (): void {
     assert.deepStrictEqual(inv([4]), [1 / 4])
     assert.deepStrictEqual(inv([[4]]), [[1 / 4]])
 
@@ -75,7 +82,7 @@ describe('inv', function () {
     )
   })
 
-  it('should return the inverse for each element in a matrix', function () {
+  it('should return the inverse for each element in a matrix', function (): void {
     assert.deepStrictEqual(inv(math.matrix([4])), math.matrix([1 / 4]))
     assert.deepStrictEqual(inv(math.matrix([[4]])), math.matrix([[1 / 4]]))
     assert.deepStrictEqual(
@@ -102,11 +109,11 @@ describe('inv', function () {
     )
   })
 
-  it('should throw an error in case of non-square matrices', function () {
-    assert.throws(function () {
+  it('should throw an error in case of non-square matrices', function (): void {
+    assert.throws(function (): void {
       inv([1, 2, 3])
     }, /Matrix must be square/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       inv([
         [1, 2, 3],
         [4, 5, 6]
@@ -114,8 +121,8 @@ describe('inv', function () {
     }, /Matrix must be square/)
   })
 
-  it('should throw an error in case of multi dimensional matrices', function () {
-    assert.throws(function () {
+  it('should throw an error in case of multi dimensional matrices', function (): void {
+    assert.throws(function (): void {
       inv([
         [
           [1, 2, 3],
@@ -125,17 +132,17 @@ describe('inv', function () {
     }, /Matrix must be two dimensional/)
   })
 
-  it('should throw an error in case of non-invertable matrices', function () {
-    assert.throws(function () {
+  it('should throw an error in case of non-invertable matrices', function (): void {
+    assert.throws(function (): void {
       inv([[0]])
     }, /Cannot calculate inverse, determinant is zero/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       inv([
         [1, 0],
         [0, 0]
       ])
     }, /Cannot calculate inverse, determinant is zero/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       inv([
         [1, 1, 1],
         [1, 0, 0],
@@ -144,22 +151,22 @@ describe('inv', function () {
     }, /Cannot calculate inverse, determinant is zero/)
   })
 
-  it('should throw an error in case of wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       inv()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       inv([], [])
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an error in case of invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       math.concat(inv(new Date()))
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should avoid issues with elements that are almost zero', function () {
+  it('should avoid issues with elements that are almost zero', function (): void {
     approxDeepEqual(
       inv([
         [0, 1, 0, 788],
@@ -191,7 +198,7 @@ describe('inv', function () {
     )
   })
 
-  it('should  LaTeX inv', function () {
+  it('should  LaTeX inv', function (): void {
     const expression = math.parse('inv([[1,2],[3,4]])')
     assert.strictEqual(
       expression.toTex(),

@@ -1,12 +1,12 @@
-// @ts-nocheck
-// test fft
-
+/**
+ * Test for fft - AssemblyScript-friendly TypeScript
+ */
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 const fft = math.fft
 
-describe('fft', function () {
-  it('should calculate 1-dimensional Fourier transformation', function () {
+describe('fft', function (): void {
+  it('should calculate 1-dimensional Fourier transformation', function (): void {
     const in1 = [
       1,
       math.complex(2, -1),
@@ -23,7 +23,7 @@ describe('fft', function () {
     approxDeepEqual(fft(math.matrix(in1)), math.matrix(out1))
   })
 
-  it('should calculate multidimensional Fourier transformation', function () {
+  it('should calculate multidimensional Fourier transformation', function (): void {
     const in1 = [
       [1, 0],
       [1, 0]
@@ -50,7 +50,7 @@ describe('fft', function () {
     approxDeepEqual(fft(math.matrix(in2)), math.matrix(out2))
   })
 
-  it('should calculate 1-dimensional non-power-of-2 Fourier transformation', function () {
+  it('should calculate 1-dimensional non-power-of-2 Fourier transformation', function (): void {
     const in1 = [1, 2, 3]
     const out1 = [
       math.complex(6, -0),
@@ -77,7 +77,7 @@ describe('fft', function () {
     approxDeepEqual(fft(math.matrix(in2)), math.matrix(out2))
   })
 
-  it('should calculate multidimensional non-power-of-2 Fourier transformation', function () {
+  it('should calculate multidimensional non-power-of-2 Fourier transformation', function (): void {
     const in1 = [
       [1, 2, 3],
       [4, 5, 6],

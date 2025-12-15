@@ -1,9 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for seededrandom - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
-describe('seed', function () {
-  it('should generate same number with seed', function () {
+describe('seed', function (): void {
+  it('should generate same number with seed', function (): void {
     const math1 = math.create({ randomSeed: 'a' })
     const first = math1.random()
     const math2 = math.create({ randomSeed: 'a' })
@@ -11,14 +13,14 @@ describe('seed', function () {
     assert.strictEqual(first, second)
   })
 
-  it('should generate different number subsequent calls to seeded random', function () {
+  it('should generate different number subsequent calls to seeded random', function (): void {
     const math2 = math.create({ randomSeed: 'a' })
     const first = math2.random()
     const second = math2.random()
     assert.notStrictEqual(first, second)
   })
 
-  it('calling with no parameters should unseed rng', function () {
+  it('calling with no parameters should unseed rng', function (): void {
     const math1 = math.create({ randomSeed: 'a' })
     const firstA = math1.random()
     const secondA = math1.random()
@@ -30,7 +32,7 @@ describe('seed', function () {
     assert.notStrictEqual(secondA, secondB)
   })
 
-  it('should generate same matrix with seed', function () {
+  it('should generate same matrix with seed', function (): void {
     const math1 = math.create({ randomSeed: 'a' })
     const first = math1.random([5, 5])
     const math2 = math.create({ randomSeed: 'a' })
@@ -38,14 +40,14 @@ describe('seed', function () {
     assert.strictEqual(math.deepEqual(first, second), true)
   })
 
-  it('should generate different matrices subsequent calls to seeded random', function () {
+  it('should generate different matrices subsequent calls to seeded random', function (): void {
     const math2 = math.create({ randomSeed: 'a' })
     const first = math2.random([5, 5])
     const second = math2.random([5, 5])
     assert.strictEqual(math.deepEqual(first, second), false)
   })
 
-  it('should pick same number with seed', function () {
+  it('should pick same number with seed', function (): void {
     const range = math.range(1, 1000)
     const math1 = math.create({ randomSeed: 'a' })
     const first = math1.pickRandom(range)
@@ -54,7 +56,7 @@ describe('seed', function () {
     assert.strictEqual(first, second)
   })
 
-  it('should pick different number subsequent calls to seeded random', function () {
+  it('should pick different number subsequent calls to seeded random', function (): void {
     // In theory these might be the same but with 'a' as seed they are different and always will be
     const range = math.range(1, 1000)
     const math2 = math.create({ randomSeed: 'a' })
@@ -63,7 +65,7 @@ describe('seed', function () {
     assert.notStrictEqual(first, second)
   })
 
-  it('should pick same int with seed', function () {
+  it('should pick same int with seed', function (): void {
     const math1 = math.create({ randomSeed: 'a' })
     const first = math1.randomInt(1, 100)
     const math2 = math.create({ randomSeed: 'a' })
@@ -71,14 +73,14 @@ describe('seed', function () {
     assert.strictEqual(first, second)
   })
 
-  it('should pick different int subsequent calls to seeded random', function () {
+  it('should pick different int subsequent calls to seeded random', function (): void {
     const math2 = math.create({ randomSeed: 'a' })
     const first = math2.randomInt(1, 100)
     const second = math2.randomInt(1, 100)
     assert.notStrictEqual(first, second)
   })
 
-  it('should work for number seeds', function () {
+  it('should work for number seeds', function (): void {
     const math1 = math.create({ randomSeed: 1 })
     const first = math1.random()
     const math2 = math.create({ randomSeed: 1 })
@@ -86,7 +88,7 @@ describe('seed', function () {
     assert.strictEqual(first, second)
   })
 
-  it('should work for object seeds', function () {
+  it('should work for object seeds', function (): void {
     const math1 = math.create({ randomSeed: { a: 1 } })
     const first = math1.random()
     const math2 = math.create({ randomSeed: { a: 1 } })

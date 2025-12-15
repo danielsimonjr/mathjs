@@ -1,12 +1,14 @@
-// @ts-nocheck
+/**
+ * Test for quantileSeq - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 const bignumber = math.bignumber
 const quantileSeq = math.quantileSeq
 
-describe('quantileSeq', function () {
-  it('should return the quantileSeq from an array with number probability', function () {
+describe('quantileSeq', function (): void {
+  it('should return the quantileSeq from an array with number probability', function (): void {
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     assert.strictEqual(quantileSeq(lst, 0), 1.3)
     assert.strictEqual(quantileSeq(lst, 0.1), 1.75)
@@ -24,7 +26,7 @@ describe('quantileSeq', function () {
     assert.strictEqual(quantileSeq(lst, 1), 3.7)
   })
 
-  it('should return the quantileSeq from a multidimensional array in the specified dimension', function () {
+  it('should return the quantileSeq from a multidimensional array in the specified dimension', function (): void {
     const arr = [
       [3.7, 2.7, 3.3, 1.3, 2.2, 3.1],
       [3.8, 2.5, 3.2, 1.2, 3.2, 4.1]
@@ -50,7 +52,7 @@ describe('quantileSeq', function () {
     assert.deepStrictEqual(quantileSeq(arr, 1, false, 1), [3.7, 4.1])
   })
 
-  it('should return the quantileSeq from a multidimensional array in the specified dimension in the parser', function () {
+  it('should return the quantileSeq from a multidimensional array in the specified dimension in the parser', function (): void {
     const arr = [
       [3.7, 2.7, 3.3, 1.3, 2.2, 3.1],
       [3.8, 2.5, 3.2, 1.2, 3.2, 4.1]
@@ -79,7 +81,7 @@ describe('quantileSeq', function () {
     assert.deepStrictEqual(quantileSeq(arr, 1, false, 1), [3.7, 4.1])
   })
 
-  it('should return the quantileSeq from an ascending array with number probability', function () {
+  it('should return the quantileSeq from an ascending array with number probability', function (): void {
     const lst = [1.3, 2.2, 2.7, 3.1, 3.3, 3.7]
     assert.strictEqual(quantileSeq(lst, 0, true), 1.3)
     assert.strictEqual(quantileSeq(lst, 0.1, true), 1.75)
@@ -96,7 +98,7 @@ describe('quantileSeq', function () {
     assert.strictEqual(quantileSeq(lst, 1, true), 3.7)
   })
 
-  it('should return the quantileSeq from an array with BigNumber probability', function () {
+  it('should return the quantileSeq from an array with BigNumber probability', function (): void {
     // FIXME: why does quantileSeq sometimes return bignumber and sometimes not?
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     assert.deepStrictEqual(quantileSeq(lst, bignumber(0)), bignumber(1.3))
@@ -116,7 +118,7 @@ describe('quantileSeq', function () {
 
   // FIXME: should return the quantileSeq of an array of bignumbers with number probability
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should return the quantileSeq of an array of bignumbers with number probability', function () {
+  it.skip('should return the quantileSeq of an array of bignumbers with number probability', function (): void {
     approxEqual(
       quantileSeq(
         [
@@ -137,7 +139,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return the quantileSeq of an array of bignumbers with BigNumber probability', function () {
+  it('should return the quantileSeq of an array of bignumbers with BigNumber probability', function (): void {
     assert.deepStrictEqual(
       quantileSeq(
         [
@@ -158,7 +160,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return the quantileSeq of units', function () {
+  it('should return the quantileSeq of units', function (): void {
     assert.deepStrictEqual(
       quantileSeq(
         [math.unit('5mm'), math.unit('15mm'), math.unit('10mm')],
@@ -168,14 +170,14 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return the quantileSeq from a 1d matrix', function () {
+  it('should return the quantileSeq from a 1d matrix', function (): void {
     assert.strictEqual(
       quantileSeq(math.matrix([2, 4, 6, 8, 10, 12, 14]), 0.25),
       5
     )
   })
 
-  it('should return the quantileSeq from a 2d array', function () {
+  it('should return the quantileSeq from a 2d array', function (): void {
     approxEqual(
       quantileSeq(
         [
@@ -188,7 +190,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return the quantileSeq from an ascending 2d array', function () {
+  it('should return the quantileSeq from an ascending 2d array', function (): void {
     approxEqual(
       quantileSeq(
         [
@@ -202,7 +204,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return the quantileSeq from a 2d matrix', function () {
+  it('should return the quantileSeq from a 2d matrix', function (): void {
     approxEqual(
       quantileSeq(
         math.matrix([
@@ -215,7 +217,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return the quantileSeq from an ascending 2d matrix', function () {
+  it('should return the quantileSeq from an ascending 2d matrix', function (): void {
     approxEqual(
       quantileSeq(
         math.matrix([
@@ -229,7 +231,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return list quantiles for list of number probabilities', function () {
+  it('should return list quantiles for list of number probabilities', function (): void {
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     approxDeepEqual(quantileSeq(lst, [0.25, 0.5, 0.75]), [2.325, 2.9, 3.25])
     approxDeepEqual(
@@ -238,7 +240,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return list quantiles for list of number probabilities being a matrix', function () {
+  it('should return list quantiles for list of number probabilities being a matrix', function (): void {
     approxDeepEqual(
       quantileSeq(math.matrix([3, -1, 5, 7]), math.matrix([1 / 3, 2 / 3])),
       [3, 5]
@@ -246,7 +248,7 @@ describe('quantileSeq', function () {
     // FIXME: should return a matrix as output when the input is a matrix
   })
 
-  it('should return list quantiles for list of BigNumber probabilities', function () {
+  it('should return list quantiles for list of BigNumber probabilities', function (): void {
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     assert.deepStrictEqual(
       quantileSeq(lst, [bignumber(0.25), bignumber(0.5), bignumber(0.75)]),
@@ -268,7 +270,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return list quantiles for list of number and BigNumber probabilities', function () {
+  it('should return list quantiles for list of number and BigNumber probabilities', function (): void {
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     approxDeepEqual(
       quantileSeq(lst, [0.25, bignumber(0.5), 0.75]),
@@ -290,7 +292,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return the evenly number spaced quantiles of an array', function () {
+  it('should return the evenly number spaced quantiles of an array', function (): void {
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     approxDeepEqual(quantileSeq(lst, 3), [2.325, 2.9, 3.25])
     approxDeepEqual(
@@ -299,7 +301,7 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should return the evenly BigNumber spaced quantiles of an array', function () {
+  it('should return the evenly BigNumber spaced quantiles of an array', function (): void {
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     assert.deepStrictEqual(quantileSeq(lst, bignumber(3)), [
       bignumber(2.325),
@@ -312,70 +314,70 @@ describe('quantileSeq', function () {
     )
   })
 
-  it('should throw an error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       quantileSeq()
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq(2)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq([], 2, 3, 1)
     }, TypeError)
   })
 
-  it('should throw an error if called with unsupported type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with unsupported type of arguments', function (): void {
+    assert.throws(function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], 0.25, 10)
     }, math.UnsupportedTypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], [0.25, 2])
-    }, math.UnsuppoError)
-    assert.throws(function () {
+    }, math.UnsupportedTypeError)
+    assert.throws(function (): void {
       quantileSeq('A', 'C', 'B')
     }, math.UnsupportedTypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq(true, false, true)
     }, math.UnsupportedTypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq(0, 'B')
     }, math.UnsupportedTypeError)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq(math.complex(2, 3), math.complex(-1, 2))
     }, /TypeError: Unexpected type of argument in function quantileSeq/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq(2, null)
     }, /TypeError: Unexpected type of argument in function quantileSeq/)
 
     // TODO: improve error messages of quantileSeq
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq([2, null], 2)
     }, /TypeError: Unexpected type of argument in function compare/)
   })
 
-  it('should throw error for bad probabilities and splits', function () {
-    assert.throws(function () {
+  it('should throw error for bad probabilities and splits', function (): void {
+    assert.throws(function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], [0.23, 2, 0.2])
     }, Error)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], [0.23, bignumber(2), 0.2])
     }, Error)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], -2)
     }, Error)
-    assert.throws(function () {
+    assert.throws(function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], bignumber(-2))
     }, Error)
   })
 
-  it('should throw an error if called with an empty array', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an empty array', function (): void {
+    assert.throws(function (): void {
       quantileSeq([])
     })
   })
 
-  it('should not mutate the input', function () {
+  it('should not mutate the input', function (): void {
     const a = [3, 2, 1]
     quantileSeq(a, 0.2)
     quantileSeq(a, 2)
@@ -384,7 +386,7 @@ describe('quantileSeq', function () {
   })
 
   /*
-  it('should LaTeX quantileSeq', function () {
+  it('should LaTeX quantileSeq', function (): void {
     const expression = math.parse('quantileSeq(1,2,3,4,0.3)')
     assert.strictEqual(expression.toTex(), '\\mathrm{quantile}\\left(1,2,3,4,0.3\\right)')
   })

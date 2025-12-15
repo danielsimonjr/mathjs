@@ -1,38 +1,44 @@
-// @ts-nocheck
-// test sign
+/**
+ * Test for sign - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const bignumber = math.bignumber
 const fraction = math.fraction
 const complex = math.complex
 
-describe('sign', function () {
-  it('should calculate the sign of a boolean', function () {
+describe('sign', function (): void {
+  it('should calculate the sign of a boolean', function (): void {
     assert.strictEqual(math.sign(true), 1)
     assert.strictEqual(math.sign(false), 0)
   })
 
-  it('should calculate the sign of a number', function () {
+  it('should calculate the sign of a number', function (): void {
     assert.strictEqual(math.sign(3), 1)
     assert.strictEqual(math.sign(-3), -1)
     assert.strictEqual(math.sign(0), 0)
   })
 
-  it('should calculate the sign of a bigint', function () {
+  it('should calculate the sign of a bigint', function (): void {
     assert.strictEqual(math.sign(3n), 1n)
     assert.strictEqual(math.sign(-3n), -1n)
     assert.strictEqual(math.sign(0n), 0n)
   })
 
-  it('should calculate the sign of a big number', function () {
+  it('should calculate the sign of a big number', function (): void {
     assert.deepStrictEqual(math.sign(bignumber(3)), bignumber(1))
     assert.deepStrictEqual(math.sign(bignumber(-3)), bignumber(-1))
     assert.deepStrictEqual(math.sign(bignumber(0)), bignumber(0))
   })
 
-  it('should calculate the sign of a fraction', function () {
+  it('should calculate the sign of a fraction', function (): void {
     const a = fraction(0.5)
     assert(math.sign(a) instanceof math.Fraction)
     assert.strictEqual(math.sign(a).toString(), '1')
@@ -41,14 +47,14 @@ describe('sign', function () {
     assert.deepStrictEqual(math.sign(math.fraction(0)), math.fraction(0))
   })
 
-  it('should calculate the sign of a complex value', function () {
+  it('should calculate the sign of a complex value', function (): void {
     approxDeepEqual(
       math.sign(math.complex(2, -3)),
       math.complex(0.554700196225229, -0.832050294337844)
     )
   })
 
-  it('should calculate the sign of a unit', function () {
+  it('should calculate the sign of a unit', function (): void {
     assert.strictEqual(math.sign(math.unit('5 cm')), 1)
     assert.strictEqual(math.sign(math.unit('-5 kg')), -1)
     assert.strictEqual(math.sign(math.unit('0 mol/s')), 0)
@@ -83,64 +89,64 @@ describe('sign', function () {
     )
   })
 
-  it('should throw an error on a valueless unit or a unit with offset', function () {
+  it('should throw an error on a valueless unit or a unit with offset', function (): void {
     assert.throws(() => math.sign(math.unit('ohm')), TypeError)
     assert.throws(() => math.sign(math.unit('-3 degC')), /ambiguous/)
   })
 
-  it('should throw an error when used with a string', function () {
-    assert.throws(function () {
+  it('should throw an error when used with a string', function (): void {
+    assert.throws(function (): void {
       math.sign('hello world')
     })
   })
 
-  it('should return a matrix of the signs of each elements in the given array', function () {
+  it('should return a matrix of the signs of each elements in the given array', function (): void {
     assert.deepStrictEqual(math.sign([-2, -1, 0, 1, 2]), [-1, -1, 0, 1, 1])
   })
 
-  it('should return a matrix of the signs of each elements in the given matrix', function () {
+  it('should return a matrix of the signs of each elements in the given matrix', function (): void {
     assert.deepStrictEqual(
       math.sign(math.matrix([-2, -1, 0, 1, 2])),
       math.matrix([-1, -1, 0, 1, 1])
     )
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       math.sign()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.sign(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       math.sign(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  describe('sign(0) should return 0', function () {
-    it('number', function () {
+  describe('sign(0) should return 0', function (): void {
+    it('number', function (): void {
       assert.strictEqual(math.sign(0), 0)
     })
 
-    it('bignumber', function () {
+    it('bignumber', function (): void {
       assert.deepStrictEqual(math.sign(math.bignumber(0)), math.bignumber(0))
     })
 
-    it('complex', function () {
+    it('complex', function (): void {
       assert.deepStrictEqual(math.sign(math.complex(0)), math.complex(0))
     })
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       math.sign(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should LaTeX sign', function () {
+  it('should LaTeX sign', function (): void {
     const expression = math.parse('sign(-4)')
     assert.strictEqual(expression.toTex(), '\\mathrm{sign}\\left(-4\\right)')
   })

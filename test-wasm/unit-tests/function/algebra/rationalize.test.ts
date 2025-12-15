@@ -1,6 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for rationalize - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 /**
  * Transform node, array and single type value in a string with no spaces inside.
@@ -40,52 +47,52 @@ function objToStrings(obj) {
 }
 
 /// ////////////////// rationalize ///////////////////////
-describe('rationalize', function () {
-  it('invalid expression', function () {
-    assert.throws(function () {
+describe('rationalize', function (): void {
+  it('invalid expression', function (): void {
+    assert.throws(function (): void {
       math.rationalize('(x*/2)')
     }, /Value expected \(char 4\)/)
   })
 
-  it('valid expression but not appropriate', function () {
-    assert.throws(function () {
+  it('valid expression but not appropriate', function (): void {
+    assert.throws(function (): void {
       math.rationalize('a=2')
     }, /Unimplemented node type in simplifyConstant: AssignmentNode/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.rationalize('sin(x)+x')
     }, /There is an unsolved function call/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.rationalize('(x+2)/(x % 2)')
     }, /Operator % invalid in polynomial expression/)
   })
 
-  it('non-integer exponent', function () {
-    assert.throws(function () {
+  it('non-integer exponent', function (): void {
+    assert.throws(function (): void {
       math.rationalize('x^2.5 - 2*x + 3')
     }, /There is a non-integer exponent/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.rationalize('x^x')
     }, /There is a non-integer exponent/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.rationalize('x^2.5')
     }, /There is a non-integer exponent/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.rationalize('1/(x^(-2))')
     }, /There is a non-integer exponent/)
   })
 
-  it('calling error', function () {
-    assert.throws(function () {
+  it('calling error', function (): void {
+    assert.throws(function (): void {
       math.rationalize('x^2 + 2*x + 3', 23)
     }, /Unexpected type of argument in function rationalize \(expected: boolean or Object, actual: number, index: 1\)/)
   })
 
-  it('processing constant expressions', function () {
+  it('processing constant expressions', function (): void {
     assert.strictEqual(stri(math.rationalize('-2+3+32-32')), '1')
     assert.strictEqual(stri(math.rationalize('1^2 + 20 + 3')), '24')
   })
 
-  it('processing simple expressions', function () {
+  it('processing simple expressions', function (): void {
     assert.strictEqual(stri(math.rationalize('x')), 'x')
     assert.strictEqual(stri(math.rationalize('-x')), '-x')
     assert.strictEqual(stri(math.rationalize('2x')), '2*x')
@@ -118,7 +125,7 @@ describe('rationalize', function () {
     )
   })
 
-  it('processing simple and reducible expressions', function () {
+  it('processing simple and reducible expressions', function (): void {
     assert.strictEqual(stri(math.rationalize('x+x+x')), '3*x')
     assert.strictEqual(stri(math.rationalize('x-x')), '0')
     assert.strictEqual(stri(math.rationalize('5x^2-5x^2')), '0')
@@ -146,7 +153,7 @@ describe('rationalize', function () {
     assert.strictEqual(stri(math.rationalize('x*5')), '5*x')
   })
 
-  it('aditional simple expressions', function () {
+  it('aditional simple expressions', function (): void {
     assert.strictEqual(
       stri(math.rationalize('1/(0.1x+1)+1')),
       '(0.1*x+2)/(0.1*x+1)'
@@ -158,7 +165,7 @@ describe('rationalize', function () {
     )
   })
 
-  it('processing 2 variable expressions', function () {
+  it('processing 2 variable expressions', function (): void {
     assert.strictEqual(stri(math.rationalize('x+y')), 'x+y')
     assert.strictEqual(stri(math.rationalize('x^2 + 2*x*y + 3')), 'x^2+2*x*y+3')
     assert.strictEqual(
@@ -167,7 +174,7 @@ describe('rationalize', function () {
     )
   })
 
-  it('processing power expressions', function () {
+  it('processing power expressions', function (): void {
     assert.strictEqual(stri(math.rationalize('(2x+1)^3')), '8*x^3+12*x^2+6*x+1')
     assert.strictEqual(
       stri(math.rationalize('(2x+1)^3/(x-2)^3')),
@@ -175,7 +182,7 @@ describe('rationalize', function () {
     )
   })
 
-  it('processing tougher expressions', function () {
+  it('processing tougher expressions', function (): void {
     assert.strictEqual(
       stri(math.rationalize('2x/(x+2) - x/(x+1)')),
       'x^2/(x^2+3*x+2)'
@@ -198,7 +205,7 @@ describe('rationalize', function () {
   })
 
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('processes a really complex expression', function () {
+  it.skip('processes a really complex expression', function (): void {
     // note this test passes but takes for ever to complete
 
     assert.strictEqual(
@@ -211,12 +218,12 @@ describe('rationalize', function () {
     )
   })
 
-  it('testing scope', function () {
+  it('testing scope', function (): void {
     assert.strictEqual(stri(math.rationalize('x+x+x+y', { y: 1 })), '3*x+1')
     assert.strictEqual(stri(math.rationalize('x+x+x+y', {})), '3*x+y')
   })
 
-  it('testing complete form', function () {
+  it('testing complete form', function (): void {
     assert.deepStrictEqual(
       objToStrings(math.rationalize('x+x+x+y', {}, true)),
       {

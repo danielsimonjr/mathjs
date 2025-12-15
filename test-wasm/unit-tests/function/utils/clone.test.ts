@@ -1,18 +1,20 @@
-// @ts-nocheck
+/**
+ * Test for clone function - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
-describe('clone', function () {
-  it('should clone a boolean', function () {
+describe('clone', function (): void {
+  it('should clone a boolean', function (): void {
     assert.strictEqual(math.clone(true), true)
     assert.strictEqual(math.clone(false), false)
   })
 
-  it('should clone null', function () {
+  it('should clone null', function (): void {
     assert.strictEqual(math.clone(null), null)
   })
 
-  it('should clone a number', function () {
+  it('should clone a number', function (): void {
     let a = 1
     const b = math.clone(a)
     a = 2
@@ -20,7 +22,7 @@ describe('clone', function () {
     assert.strictEqual(b, 1)
   })
 
-  it('should clone a bigint', function () {
+  it('should clone a bigint', function (): void {
     let a = 1n
     const b = math.clone(a)
     a = 2n
@@ -28,22 +30,22 @@ describe('clone', function () {
     assert.strictEqual(b, 1n)
   })
 
-  it('should throw an error on wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error on wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       math.clone()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.clone(2, 4)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should clone a bignumber', function () {
+  it('should clone a bignumber', function (): void {
     const a = math.bignumber('2.3e500')
     const b = math.clone(a)
     assert.deepStrictEqual(a, b)
   })
 
-  it('should clone a string', function () {
+  it('should clone a string', function (): void {
     let a = 'hello world'
     const b = math.clone(a)
     a = 'bye!'
@@ -51,7 +53,7 @@ describe('clone', function () {
     assert.strictEqual(b, 'hello world')
   })
 
-  it('should clone a complex number', function () {
+  it('should clone a complex number', function (): void {
     const a = math.complex(2, 3)
     const b = math.clone(a)
     assert.notStrictEqual(a, b)
@@ -60,7 +62,7 @@ describe('clone', function () {
     assert.strictEqual(b.toString(), '2 + 3i')
   })
 
-  it('should clone a unit', function () {
+  it('should clone a unit', function (): void {
     const a = math.unit('5mm')
     const b = math.clone(a)
     a.value = 10
@@ -68,20 +70,20 @@ describe('clone', function () {
     assert.strictEqual(b.toString(), '5 mm')
   })
 
-  it('should clone a fraction', function () {
+  it('should clone a fraction', function (): void {
     const a = math.fraction(2, 3)
     const b = math.clone(a)
     assert.deepStrictEqual(a, b)
   })
 
-  it('should clone an array', function () {
+  it('should clone an array', function (): void {
     const a = [1, 2, [3, 4]]
     const b = math.clone(a)
     a[2][1] = 5
     assert.strictEqual(b[2][1], 4)
   })
 
-  it('should clone a matrix', function () {
+  it('should clone a matrix', function (): void {
     let a = math.matrix([
       [1, 2],
       [3, 4]
@@ -96,14 +98,14 @@ describe('clone', function () {
     assert.strictEqual(b.valueOf()[2].re, 2)
   })
 
-  it('should clone a function', function () {
+  it('should clone a function', function (): void {
     const f = () => 42
     const a = math.matrix([f])
     const b = math.clone(a)
     assert.strictEqual(b.get([0]), f)
   })
 
-  it('should LaTeX clone', function () {
+  it('should LaTeX clone', function (): void {
     const expression = math.parse('clone(1)')
     assert.strictEqual(expression.toTex(), '\\mathrm{clone}\\left(1\\right)')
   })

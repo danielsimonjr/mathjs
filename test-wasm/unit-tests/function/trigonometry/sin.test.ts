@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for sin - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -10,13 +17,13 @@ const unit = math.unit
 const sin = math.sin
 const bigmath = math.create({ precision: 242 })
 
-describe('sin', function () {
-  it('should return the sine of a boolean', function () {
+describe('sin', function (): void {
+  it('should return the sine of a boolean', function (): void {
     approxEqual(sin(true), 0.841470984807897)
     approxEqual(sin(false), 0)
   })
 
-  it('should return the sine of a number', function () {
+  it('should return the sine of a number', function (): void {
     approxEqual(sin(0), 0, EPSILON)
     approxEqual(sin(pi / 8), 0.38268343236509, EPSILON)
     approxEqual(sin(pi / 4), Math.SQRT1_2, EPSILON)
@@ -29,7 +36,7 @@ describe('sin', function () {
     approxEqual(sin(pi * 2), 0, EPSILON)
   })
 
-  it('should return the sine of a bignumber', function () {
+  it('should return the sine of a bignumber', function (): void {
     const Big = bigmath.bignumber
     assert.deepStrictEqual(bigmath.sin(Big(0)), Big(0))
 
@@ -104,7 +111,7 @@ describe('sin', function () {
     )
   })
 
-  it('should return the sine of a complex number', function () {
+  it('should return the sine of a complex number', function (): void {
     const re = 9.15449914691143
     const im = 4.16890695996656
     approxDeepEqual(sin(complex('2+3i')), complex(re, -im), EPSILON)
@@ -121,7 +128,7 @@ describe('sin', function () {
     approxDeepEqual(sin(complex('1e-10i')), complex('1e-10i'), EPSILON)
   })
 
-  it('should return the sine of an angle', function () {
+  it('should return the sine of an angle', function (): void {
     approxEqual(sin(unit('45deg')), 0.707106781186548, EPSILON)
     approxEqual(sin(unit('-45deg')), -0.707106781186548, EPSILON)
 
@@ -139,40 +146,40 @@ describe('sin', function () {
     )
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       sin(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       sin('string')
     })
   })
 
   const sin123 = [0.84147098480789, 0.909297426825682, 0.141120008059867]
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => sin([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], sin), sin123, EPSILON)
   })
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => sin(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), sin), matrix(sin123), EPSILON)
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       sin()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       sin(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX sin', function () {
+  it('should LaTeX sin', function (): void {
     const expression = math.parse('sin(0.5)')
     assert.strictEqual(expression.toTex(), '\\sin\\left(0.5\\right)')
   })

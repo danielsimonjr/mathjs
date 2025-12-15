@@ -1,10 +1,17 @@
-// @ts-nocheck
+/**
+ * Test for createUnit - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../../src/defaultInstance.ts'
 const createUnit = math.createUnit
 
-describe('createUnit', function () {
-  it('should create a unit', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('createUnit', function (): void {
+  it('should create a unit', function (): void {
     createUnit('flibbity', '4 hogshead')
     assert.strictEqual(
       math.evaluate('2 flibbity to hogshead').toString(),
@@ -12,21 +19,21 @@ describe('createUnit', function () {
     )
   })
 
-  it('should accept a unit as second parameter', function () {
+  it('should accept a unit as second parameter', function (): void {
     assert.strictEqual(
       math.evaluate('50 in^2 to createUnit("bingo", 25 in^2)').toString(),
       '2 bingo'
     )
   })
 
-  it('should accept a string as second parameter', function () {
+  it('should accept a string as second parameter', function (): void {
     assert.strictEqual(
       math.evaluate('50 in^2 to createUnit("zingo", "25 in^2")').toString(),
       '2 zingo'
     )
   })
 
-  it('should return the created unit', function () {
+  it('should return the created unit', function (): void {
     assert.strictEqual(
       math.evaluate('createUnit("giblet", "6 flibbity")').toString(),
       'giblet'
@@ -39,7 +46,7 @@ describe('createUnit', function () {
     )
   })
 
-  it('should accept options', function () {
+  it('should accept options', function (): void {
     math.evaluate(
       'createUnit("whosit", { definition: 3.14 kN, prefixes:"long"})'
     )
@@ -49,12 +56,12 @@ describe('createUnit', function () {
     assert.strictEqual(math.evaluate('1 wheresit to kN').toString(), '9.42 kN')
   })
 
-  it('should create multiple units', function () {
+  it('should create multiple units', function (): void {
     math.evaluate('createUnit({"xfoo":{}, "xbar":{}, "xfoobar":"1 xfoo xbar"})')
     assert.strictEqual(math.evaluate('5 xfoo').toString(), '5 xfoo')
   })
 
-  it('should simplify created units', function () {
+  it('should simplify created units', function (): void {
     // TODO: New units do not have base units set, therefore simplifying is impossible. Figure out a way to create base units for created units.
     assert.strictEqual(
       math.evaluate('5 xfoo * 5 xbar').toString(),
@@ -62,7 +69,7 @@ describe('createUnit', function () {
     )
   })
 
-  it('should override units', function () {
+  it('should override units', function (): void {
     const math2 = math.create()
     math2.evaluate('createUnit({"bar": 1e12 Pa}, {"override":true})')
     assert.strictEqual(math2.evaluate('1 bar to Pa').toString(), '1e+12 Pa')

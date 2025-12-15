@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for deepEqual - AssemblyScript-friendly TypeScript
+ */
 // test deepEqual
 import assert from 'assert'
 
@@ -8,8 +10,13 @@ const complex = math.complex
 const matrix = math.matrix
 const deepEqual = math.deepEqual
 
-describe('deepEqual', function () {
-  it('should compare scalars correctly', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('deepEqual', function (): void {
+  it('should compare scalars correctly', function (): void {
     assert.strictEqual(deepEqual(2, 3), false)
     assert.strictEqual(deepEqual(2, 2), true)
     assert.strictEqual(deepEqual(0, 0), true)
@@ -19,7 +26,7 @@ describe('deepEqual', function () {
     assert.strictEqual(deepEqual(true, 1), true)
   })
 
-  it('should compare two matrices', function () {
+  it('should compare two matrices', function (): void {
     assert.deepStrictEqual(deepEqual([1, 4, 5], [3, 4, 5]), false)
     assert.deepStrictEqual(deepEqual([1, 4, 5], [1, 4, 5]), true)
     assert.deepStrictEqual(deepEqual([1, 4, 5], [1, 4]), false)
@@ -87,14 +94,14 @@ describe('deepEqual', function () {
     )
   })
 
-  it('should compare mixed scalars and matrices', function () {
+  it('should compare mixed scalars and matrices', function (): void {
     assert.deepStrictEqual(deepEqual([1, 2, 3], 2), false)
     assert.deepStrictEqual(deepEqual(2, [1, 2, 3]), false)
     assert.deepStrictEqual(deepEqual(matrix([1, 2, 3]), 2), false)
     assert.deepStrictEqual(deepEqual(2, matrix([1, 2, 3])), false)
   })
 
-  it('should compare two matrices with mixed types', function () {
+  it('should compare two matrices with mixed types', function (): void {
     assert.deepStrictEqual(deepEqual([1, 4], [true, 4]), true)
     assert.deepStrictEqual(deepEqual([1, 4], [1, '4']), true)
     assert.deepStrictEqual(deepEqual([2, 3], [2, bignumber(3)]), true)
@@ -109,22 +116,22 @@ describe('deepEqual', function () {
     )
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       deepEqual(1)
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       deepEqual(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an error in case of invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       deepEqual(['A'], ['B'])
     }, /Error: Cannot convert "A" to a number/)
   })
 
-  it('should LaTeX deepEqual', function () {
+  it('should LaTeX deepEqual', function (): void {
     const expression = math.parse('deepEqual([1,2],[1,3])')
     assert.strictEqual(
       expression.toTex(),

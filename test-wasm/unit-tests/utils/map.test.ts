@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for map - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { isMap } from '../../../src/utils/is.js'
 import {
@@ -9,8 +11,8 @@ import {
   toObject
 } from '../../../src/utils/map.js'
 
-describe('maps', function () {
-  it('should provide isMap, a function to tell maps from non-maps', function () {
+describe('maps', function (): void {
+  it('should provide isMap, a function to tell maps from non-maps', function (): void {
     assert.ok(isMap(new Map()))
     assert.ok(!isMap([]))
     assert.ok(!isMap({}))
@@ -48,8 +50,8 @@ describe('maps', function () {
     }
   })
 
-  describe('ObjectWrappingMap', function () {
-    it('should wrap an object in a map-like object', function () {
+  describe('ObjectWrappingMap', function (): void {
+    it('should wrap an object in a map-like object', function (): void {
       const obj = {
         a: 1,
         b: 2,
@@ -143,31 +145,31 @@ describe('maps', function () {
       assert.deepStrictEqual(Object.keys(obj), [])
     })
 
-    it('should not allow getting unsafe properties', function () {
+    it('should not allow getting unsafe properties', function (): void {
       const map = new ObjectWrappingMap({})
 
       assert.throws(
-        () => map.get('__proto__'),
+        function (): void { map.get('__proto__') },
         /Error: No access to property "__proto__"/
       )
     })
 
-    it('should not allow setting unsafe properties', function () {
+    it('should not allow setting unsafe properties', function (): void {
       const map = new ObjectWrappingMap({})
 
       assert.throws(
-        () => map.set('__proto__', 42),
+        function (): void { map.set('__proto__', 42) },
         /Error: No access to property "__proto__"/
       )
     })
 
-    it('should not allow testing has unsafe properties', function () {
+    it('should not allow testing has unsafe properties', function (): void {
       const map = new ObjectWrappingMap({})
 
       assert.strictEqual(map.has('__proto__'), false)
     })
 
-    it('should not allow deleting unsafe properties', function () {
+    it('should not allow deleting unsafe properties', function (): void {
       const obj = {
         toString: 42
       }
@@ -178,7 +180,7 @@ describe('maps', function () {
     })
   })
 
-  describe('PartitionedMap', function () {
+  describe('PartitionedMap', function (): void {
     function createPartitionedMap(bKeys) {
       const a = new Map()
       const b = new Map()
@@ -186,7 +188,7 @@ describe('maps', function () {
       return { a, b, p }
     }
 
-    it('get, set', function () {
+    it('get, set', function (): void {
       const { a, b, p } = createPartitionedMap(['b'])
       p.set('a', 2).set('b', 3)
 
@@ -201,7 +203,7 @@ describe('maps', function () {
       assert.strictEqual(b.get('b'), 3)
     })
 
-    it('has', function () {
+    it('has', function (): void {
       const { a, b, p } = createPartitionedMap(['b'])
       p.set('a', 2).set('b', 3)
 
@@ -220,7 +222,7 @@ describe('maps', function () {
       assert.deepStrictEqual([...b.keys()], ['b'])
     })
 
-    it('keys', function () {
+    it('keys', function (): void {
       const { a, b, p } = createPartitionedMap(['b'])
       p.set('a', 2)
       p.set('b', 3)
@@ -230,7 +232,7 @@ describe('maps', function () {
       assert.deepStrictEqual([...b.keys()], ['b'])
     })
 
-    it('forEach', function () {
+    it('forEach', function (): void {
       const { a, b, p } = createPartitionedMap(['b'])
       p.set('a', 2)
       p.set('b', 3)
@@ -256,7 +258,7 @@ describe('maps', function () {
       assert.deepStrictEqual(bLog, [['b', 3]])
     })
 
-    it('entries', function () {
+    it('entries', function (): void {
       const { p } = createPartitionedMap(['b'])
       p.set('a', 2)
       p.set('b', 3)
@@ -270,7 +272,7 @@ describe('maps', function () {
       assert.deepStrictEqual(it.next(), { done: true, value: undefined })
     })
 
-    it('copy', function () {
+    it('copy', function (): void {
       const { p } = createPartitionedMap(['b'])
       p.set('a', 2).set('b', 3)
 
@@ -278,7 +280,7 @@ describe('maps', function () {
       assert.deepStrictEqual([...copy.keys()], [...p.keys()])
     })
 
-    it('size', function () {
+    it('size', function (): void {
       const { p } = createPartitionedMap(['b'])
       p.set('a', 2)
       p.set('b', 3)
@@ -291,7 +293,7 @@ describe('maps', function () {
       assert.strictEqual(p.size, 2)
     })
 
-    it('delete', function () {
+    it('delete', function (): void {
       const { a, b, p } = createPartitionedMap(['b'])
       p.set('a', 2).set('b', 3)
 
@@ -302,7 +304,7 @@ describe('maps', function () {
       assert.deepStrictEqual([...b.keys()], ['b'])
     })
 
-    it('clear', function () {
+    it('clear', function (): void {
       const { a, b, p } = createPartitionedMap(['b'])
       a.set('a', 2)
       b.set('b', 3)
@@ -315,7 +317,7 @@ describe('maps', function () {
     })
   })
 
-  it('should create a map from objects, maps, or undefined', function () {
+  it('should create a map from objects, maps, or undefined', function (): void {
     const emptyMap = createMap()
     assert.ok(isMap(emptyMap))
 
@@ -326,11 +328,11 @@ describe('maps', function () {
     assert.ok(isMap(wrappedMap))
 
     for (const notMap of ['string', new Date(), []]) {
-      assert.throws(() => createMap(notMap))
+      assert.throws(function (): void { createMap(notMap) })
     }
   })
 
-  it('should let us transform a map into an object', function () {
+  it('should let us transform a map into an object', function (): void {
     const actualMap = new Map().set('a', 1).set('b', 2)
 
     const obj = {
@@ -347,7 +349,7 @@ describe('maps', function () {
     assert.strictEqual(toObject(wrappedMap), obj)
   })
 
-  it('should provide an assign function like Object.assign', function () {
+  it('should provide an assign function like Object.assign', function (): void {
     const target = new Map().set('a', 1).set('b', 2)
 
     assign(target, null, undefined, 'string', new Date())

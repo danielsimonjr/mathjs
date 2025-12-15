@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for lgamma - AssemblyScript-friendly TypeScript
+ */
 /* eslint-disable no-loss-of-precision */
 
 import assert from 'assert'
@@ -6,8 +8,13 @@ import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 const lgamma = math.lgamma
 
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 // https://www.scratchcode.io/how-to-detect-ie-browser-in-javascript/
-function isInternetExplorer() {
+function isInternetExplorer(): boolean {
   return typeof document !== 'undefined' ? !!document.documentMode : false
 }
 
@@ -17,8 +24,8 @@ const EPSILON = isInternetExplorer() ? 1e-6 : 1e-11
 // lgamma for reals
 const CEPSILON = 5e-8
 
-describe('lgamma', function () {
-  it('should calculate the lgamma of 0 and negative numbers', function () {
+describe('lgamma', function (): void {
+  it('should calculate the lgamma of 0 and negative numbers', function (): void {
     assert.strictEqual(lgamma(0), Infinity)
 
     assert.ok(isNaN(lgamma(-0.0005)))
@@ -31,7 +38,7 @@ describe('lgamma', function () {
     assert.ok(isNaN(lgamma(-123456.123456)))
   })
 
-  it('should calculate the lgamma of a positive numbers', function () {
+  it('should calculate the lgamma of a positive numbers', function (): void {
     // computation reference: https://www.wolframalpha.com/input?i=LogGamma%5Bx%5D
 
     approxEqual(
@@ -106,13 +113,13 @@ describe('lgamma', function () {
     )
   })
 
-  it('should calculate the lgamma of an irrational number', function () {
+  it('should calculate the lgamma of an irrational number', function (): void {
     approxEqual(lgamma(Math.SQRT2), -0.12038230351896920333, EPSILON)
     approxEqual(lgamma(Math.PI), 0.82769459232343710153, EPSILON)
     approxEqual(lgamma(Math.E), 0.449461741820067667, EPSILON)
   })
 
-  it('should calculate the lgamma of a complex number', function () {
+  it('should calculate the lgamma of a complex number', function (): void {
     approxDeepEqual(lgamma(math.complex(0, 0)), math.complex(Infinity), EPSILON)
     approxDeepEqual(
       lgamma(math.complex(0.000000001, 0.000000001)),
@@ -255,7 +262,7 @@ describe('lgamma', function () {
     )
   })
 
-  it('should calculate the lgamma of some special arguments', function () {
+  it('should calculate the lgamma of some special arguments', function (): void {
     approxEqual(lgamma(true), 0, EPSILON)
     assert.strictEqual(lgamma(false), Infinity)
 
@@ -266,22 +273,22 @@ describe('lgamma', function () {
     assert.ok(!Number.isFinite(lgamma(-Infinity)))
   })
 
-  it('should throw an error if called with a big number', function () {
-    assert.throws(() => lgamma(math.bignumber(0)))
+  it('should throw an error if called with a big number', function (): void {
+    assert.throws(function (): void { lgamma(math.bignumber(0)) })
   })
 
-  it('should throw an error if called with invalid number of arguments', function () {
-    assert.throws(() => lgamma())
-    assert.throws(() => lgamma(1, 3))
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void { lgamma() })
+    assert.throws(function (): void { lgamma(1, 3) })
   })
 
-  it('should throw an error if called with invalid type of argument', function () {
-    assert.throws(() => lgamma(new Date()))
-    assert.throws(() => lgamma('a string'))
+  it('should throw an error if called with invalid type of argument', function (): void {
+    assert.throws(function (): void { lgamma(new Date()) })
+    assert.throws(function (): void { lgamma('a string') })
   })
 
-  it('should LaTeX lgamma', function () {
-    const expression = math.parse('lgamma(2.5)')
+  it('should LaTeX lgamma', function (): void {
+    const expression = math.parse('lgamma(2.5)') as MathNode
     assert.strictEqual(expression.toTex(), '\\ln\\Gamma\\left(2.5\\right)')
   })
 })

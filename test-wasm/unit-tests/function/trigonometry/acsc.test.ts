@@ -1,5 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for acsc - AssemblyScript-friendly TypeScript
+ */
 /* eslint-disable no-loss-of-precision */
+
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
@@ -16,14 +24,14 @@ const predmath = math.create({ predictable: true })
 const acscBig = bigmath.acsc
 const Big = bigmath.bignumber
 
-describe('acsc', function () {
-  it('should return the arccsc of a boolean', function () {
+describe('acsc', function (): void {
+  it('should return the arccsc of a boolean', function (): void {
     approxEqual(acsc(true), pi / 2)
     assert.deepStrictEqual(acsc(false), complex(pi / 2, Infinity))
     // assert.ok(isNaN(acsc(false)))
   })
 
-  it('should return the arccsc of a number', function () {
+  it('should return the arccsc of a number', function (): void {
     approxEqual(acsc(-2) / pi, -1 / 6)
     approxEqual(acsc(-1) / pi, -0.5)
     assert.deepStrictEqual(acsc(0), complex(pi / 2, Infinity))
@@ -32,12 +40,12 @@ describe('acsc', function () {
     approxEqual(acsc(2) / pi, 1 / 6)
   })
 
-  it('should return the arccsc of a number when predictable:true', function () {
+  it('should return the arccsc of a number when predictable:true', function (): void {
     assert.strictEqual(typeof predmath.acsc(0), 'number')
     assert(isNaN(predmath.acsc(0)))
   })
 
-  it('should return the arccsc of a bignumber', function () {
+  it('should return the arccsc of a bignumber', function (): void {
     const arg1 = Big(-2)
     const arg2 = Big(-1.71)
     const arg3 = Big(-1)
@@ -72,7 +80,7 @@ describe('acsc', function () {
     assert.ok(acscBig(Big(-0.5)).isNaN())
   })
 
-  it('should be the inverse function of csc', function () {
+  it('should be the inverse function of csc', function (): void {
     approxEqual(acsc(csc(-1)), -1)
     approxEqual(acsc(csc(0)), 0)
     approxEqual(acsc(csc(0.1)), 0.1)
@@ -80,7 +88,7 @@ describe('acsc', function () {
     approxEqual(acsc(csc(2)), 1.14159265358979)
   })
 
-  it('should be the inverse function of bignumber csc', function () {
+  it('should be the inverse function of bignumber csc', function (): void {
     const bigmath61 = bigmath.create({ number: 'BigNumber', precision: 61 })
     assert.deepStrictEqual(
       bigmath61.acsc(bigmath61.csc(bigmath61.bignumber(-2))),
@@ -141,7 +149,7 @@ describe('acsc', function () {
     )
   })
 
-  it('should return the arccsc of a complex number', function () {
+  it('should return the arccsc of a complex number', function (): void {
     const re = 0.150385604327861963
     const im = 0.231334698573973315
     approxDeepEqual(acsc(complex('2+3i')), complex(re, -im))
@@ -161,22 +169,22 @@ describe('acsc', function () {
     approxDeepEqual(acsc(complex('1')), complex(pi / 2, 0))
   })
 
-  it('should throw an error if called with a unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
       acsc(unit('45deg'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       acsc(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       acsc('string')
     })
   })
 
-  it('should not operate on arrays and matrices', function () {
+  it('should not operate on arrays and matrices', function (): void {
     assert.throws(() => acsc([1, 2, 3]), TypeError)
     assert.throws(() => acsc(matrix([1, 2, 3])), TypeError)
     const acsc123 = [pi / 2, pi / 6, 0.339836909454]
@@ -184,16 +192,16 @@ describe('acsc', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), acsc), matrix(acsc123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       acsc()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       acsc(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTex acsc', function () {
+  it('should LaTex acsc', function (): void {
     const expression = math.parse('acsc(2)')
     assert.strictEqual(expression.toTex(), '\\csc^{-1}\\left(2\\right)')
   })

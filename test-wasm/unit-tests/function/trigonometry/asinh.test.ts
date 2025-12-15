@@ -1,5 +1,12 @@
-// @ts-nocheck
+/**
+ * Test for asinh - AssemblyScript-friendly TypeScript
+ */
 /* eslint-disable no-loss-of-precision */
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
@@ -15,13 +22,13 @@ const biggermath = math.create({ precision: 21 })
 const asinhBig = bigmath.asinh
 const Big = bigmath.bignumber
 
-describe('asinh', function () {
-  it('should return the hyperbolic arcsin of a boolean', function () {
+describe('asinh', function (): void {
+  it('should return the hyperbolic arcsin of a boolean', function (): void {
     approxEqual(asinh(true), 0.881373587019543)
     assert.strictEqual(asinh(false), 0)
   })
 
-  it('should return the hyperbolic arcsin of a number', function () {
+  it('should return the hyperbolic arcsin of a number', function (): void {
     approxEqual(asinh(-2), -1.44363547517881034249327674027311)
     approxEqual(asinh(-1), -0.88137358701954302523260932497979)
     approxEqual(asinh(0), 0)
@@ -30,7 +37,7 @@ describe('asinh', function () {
     approxEqual(asinh(pi), 1.8622957433108482198883613251826)
   })
 
-  it('should return the hyperbolic arcsin of a bignumber', function () {
+  it('should return the hyperbolic arcsin of a bignumber', function (): void {
     const arg = Big(-2)
     assert.deepStrictEqual(asinhBig(arg), Big('-1.4436354751788103425'))
     assert.deepStrictEqual(asinhBig(Big(-1)), Big('-0.88137358701954302523'))
@@ -46,7 +53,7 @@ describe('asinh', function () {
     assert.deepStrictEqual(arg, Big(-2))
   })
 
-  it('should be the inverse function of hyperbolic sin', function () {
+  it('should be the inverse function of hyperbolic sin', function (): void {
     approxEqual(asinh(sinh(-1)), -1)
     approxEqual(asinh(sinh(0)), 0)
     approxEqual(asinh(sinh(0.1)), 0.1)
@@ -54,7 +61,7 @@ describe('asinh', function () {
     approxEqual(asinh(sinh(2)), 2)
   })
 
-  it('should be the inverse function of bignumber sinh', function () {
+  it('should be the inverse function of bignumber sinh', function (): void {
     assert.deepStrictEqual(asinhBig(bigmath.sinh(Big(-1))), Big(-1))
     assert.deepStrictEqual(asinhBig(bigmath.sinh(Big(0))), Big(0))
     assert.deepStrictEqual(asinhBig(bigmath.sinh(Big(0.5))), Big(0.5))
@@ -67,7 +74,7 @@ describe('asinh', function () {
     )
   })
 
-  it('should return the arcsinh of a complex number', function () {
+  it('should return the arcsinh of a complex number', function (): void {
     approxDeepEqual(
       asinh(complex('2+3i')),
       complex(1.9686379257931, 0.9646585044076028)
@@ -93,22 +100,22 @@ describe('asinh', function () {
     assert.deepStrictEqual(asinh(complex('0')), complex(0, 0))
   })
 
-  it('should throw an error if called with a unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
       asinh(unit('45deg'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       asinh(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       asinh('string')
     })
   })
 
-  it('should not operate on arrays and matrices', function () {
+  it('should not operate on arrays and matrices', function (): void {
     assert.throws(() => asinh([1, 2, 3]), TypeError)
     assert.throws(() => asinh(matrix([1, 2, 3])), TypeError)
     const asinh123 = [
@@ -118,16 +125,16 @@ describe('asinh', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), asinh), matrix(asinh123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       asinh()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       asinh(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX asinh', function () {
+  it('should LaTeX asinh', function (): void {
     const expression = math.parse('asinh(2)')
     assert.strictEqual(expression.toTex(), '\\sinh^{-1}\\left(2\\right)')
   })

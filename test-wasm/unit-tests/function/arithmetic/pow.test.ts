@@ -1,9 +1,15 @@
-// @ts-nocheck
-// test exp
+/**
+ * Test for pow - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const mathPredictable = math.create({ predictable: true })
 const bignumber = math.bignumber
 const fraction = math.fraction
@@ -12,8 +18,8 @@ const matrix = math.matrix
 const unit = math.unit
 const pow = math.pow
 
-describe('pow', function () {
-  it('should exponentiate a number to the given power', function () {
+describe('pow', function (): void {
+  it('should exponentiate a number to the given power', function (): void {
     approxDeepEqual(pow(2, 3), 8)
     approxDeepEqual(pow(2, 4), 16)
     approxDeepEqual(pow(-2, 2), 4)
@@ -25,7 +31,7 @@ describe('pow', function () {
     approxDeepEqual(pow(2, 1.5), 2.82842712474619)
   })
 
-  it('should exponentiate a bigint to the given power', function () {
+  it('should exponentiate a bigint to the given power', function (): void {
     assert.strictEqual(pow(2n, 3n), 8n)
     assert.strictEqual(pow(2n, 4n), 16n)
     assert.strictEqual(pow(-2n, 2n), 4n)
@@ -33,19 +39,19 @@ describe('pow', function () {
     assert.throws(() => pow(3n, -2n))
   })
 
-  it('should exponentiate a negative number to a non-integer power', function () {
+  it('should exponentiate a negative number to a non-integer power', function (): void {
     approxDeepEqual(pow(-2, 1.5), complex(0, -2.82842712474619))
     approxDeepEqual(pow(-8, 1 / 3), complex(1, 1.732050807568877))
   })
 
-  it('should exponentiate a negative number to a non-integer power with predictable:true', function () {
+  it('should exponentiate a negative number to a non-integer power with predictable:true', function (): void {
     const res = mathPredictable.pow(-2, 1.5)
     assert.strictEqual(typeof res, 'number')
     assert(isNaN(res))
     assert.strictEqual(mathPredictable.pow(-8, 1 / 3), -2)
   })
 
-  it('should return a real-valued root if one exists with predictable:true', function () {
+  it('should return a real-valued root if one exists with predictable:true', function (): void {
     approxEqual(mathPredictable.pow(-8, 1 / 3), -2)
     approxEqual(mathPredictable.pow(-8, 2 / 3), 4)
     approxEqual(mathPredictable.pow(-8, 3 / 3), -8)
@@ -69,21 +75,21 @@ describe('pow', function () {
     assert(isNaN(mathPredictable.pow(-17, 3.14159265358979)))
   })
 
-  it('should exponentiate booleans to the given power', function () {
+  it('should exponentiate booleans to the given power', function (): void {
     assert.strictEqual(pow(true, true), 1)
     assert.strictEqual(pow(true, false), 1)
     assert.strictEqual(pow(false, true), 0)
     assert.strictEqual(pow(false, false), 1)
   })
 
-  it('should exponentiate mixed numbers and booleans', function () {
+  it('should exponentiate mixed numbers and booleans', function (): void {
     assert.strictEqual(pow(2, true), 2)
     assert.strictEqual(pow(2, false), 1)
     assert.strictEqual(pow(true, 2), 1)
     assert.strictEqual(pow(false, 2), 0)
   })
 
-  it('should exponentiate bignumbers', function () {
+  it('should exponentiate bignumbers', function (): void {
     assert.deepStrictEqual(pow(bignumber(2), bignumber(3)), bignumber(8))
     assert.deepStrictEqual(
       pow(bignumber(100), bignumber(500)),
@@ -99,7 +105,7 @@ describe('pow', function () {
     )
   })
 
-  it('should exponentiate a negative bignumber to a non-integer power', function () {
+  it('should exponentiate a negative bignumber to a non-integer power', function (): void {
     approxDeepEqual(
       pow(bignumber(-2), bignumber(1.5)),
       complex(0, -2.82842712474619)
@@ -108,30 +114,30 @@ describe('pow', function () {
     approxDeepEqual(pow(bignumber(-2), 1.5), complex(0, -2.82842712474619))
   })
 
-  it('should exponentiate a negative bignumber to a non-integer power', function () {
+  it('should exponentiate a negative bignumber to a non-integer power', function (): void {
     assert.ok(mathPredictable.pow(bignumber(-2), bignumber(1.5)).isNaN())
   })
 
-  it('should exponentiate mixed numbers and bignumbers', function () {
+  it('should exponentiate mixed numbers and bignumbers', function (): void {
     assert.deepStrictEqual(pow(bignumber(2), 3), bignumber(8))
     assert.deepStrictEqual(pow(2, bignumber(3)), bignumber(8))
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(1 / 3, bignumber(2))
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(bignumber(1), 1 / 3)
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
   })
 
-  it('should exponentiate mixed booleans and bignumbers', function () {
+  it('should exponentiate mixed booleans and bignumbers', function (): void {
     assert.deepStrictEqual(pow(true, bignumber(3)), bignumber(1))
     assert.deepStrictEqual(pow(false, bignumber(3)), bignumber(0))
     assert.deepStrictEqual(pow(bignumber(3), false), bignumber(1))
     assert.deepStrictEqual(pow(bignumber(3), true), bignumber(3))
   })
 
-  it('should exponentiate a fraction to an integer power', function () {
+  it('should exponentiate a fraction to an integer power', function (): void {
     assert.deepStrictEqual(math.pow(fraction(3), fraction(2)), fraction(9))
     assert.deepStrictEqual(math.pow(fraction(1.5), fraction(2)), fraction(2.25))
     assert.deepStrictEqual(
@@ -141,7 +147,7 @@ describe('pow', function () {
     assert.deepStrictEqual(math.pow(fraction(1.5), 2), fraction(2.25))
   })
 
-  it('should exponentiate a fraction to an non-integer power', function () {
+  it('should exponentiate a fraction to an non-integer power', function (): void {
     assert.deepStrictEqual(
       math.pow(fraction(27, 8), fraction(2, 3)),
       fraction(9, 4)
@@ -150,27 +156,27 @@ describe('pow', function () {
     approxDeepEqual(math.pow(fraction(4), 1.5114), 8.127434364206053)
     approxDeepEqual(math.pow(fraction(4), fraction(1.5114)), 8.127434364206053)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       mathPredictable.pow(fraction(3), fraction(1.5114))
     }, /Result of pow is non-rational and cannot be expressed as a fraction/)
   })
 
-  it('should throw an error if used with wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if used with wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       pow(1)
     }, /TypeError: Too few arguments in function pow/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(1, 2, 3)
     }, /TypeError: Too many arguments in function pow \(expected: 2, actual: 3\)/)
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       pow(null, 2)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should handle infinite exponents', function () {
+  it('should handle infinite exponents', function (): void {
     const Ptbl = mathPredictable
 
     // TODO replace isNaN with complexInfinity when complex.js updates
@@ -194,7 +200,7 @@ describe('pow', function () {
     assert.strictEqual(math.pow(-Infinity, -Infinity), 0)
   })
 
-  it('should exponentiate a complex number to the given power', function () {
+  it('should exponentiate a complex number to the given power', function (): void {
     approxDeepEqual(pow(complex(3, 0), 2), complex(9, 0))
     approxDeepEqual(pow(complex(0, 2), 2), complex(-4, 0))
 
@@ -330,12 +336,12 @@ describe('pow', function () {
     )
   })
 
-  it('should exponentiate a complex number to the given bignumber power', function () {
+  it('should exponentiate a complex number to the given bignumber power', function (): void {
     approxDeepEqual(pow(complex(3, 0), math.bignumber(2)), complex(9, 0))
     approxDeepEqual(pow(complex(0, 2), math.bignumber(2)), complex(-4, 0))
   })
 
-  it('should correctly calculate unit ^ number', function () {
+  it('should correctly calculate unit ^ number', function (): void {
     assert.strictEqual(pow(unit('4 N'), 2).toString(), '16 N^2')
     assert.strictEqual(
       pow(unit('0.25 m/s'), -0.5).toString(),
@@ -344,7 +350,7 @@ describe('pow', function () {
     assert.strictEqual(pow(unit('123 hogshead'), 0).toString(), '1')
   })
 
-  it('should correctly calculate unit ^ BigNumber', function () {
+  it('should correctly calculate unit ^ BigNumber', function (): void {
     assert.strictEqual(pow(unit('4 N'), math.bignumber(2)).toString(), '16 N^2')
     assert.deepStrictEqual(
       pow(unit(math.bignumber(4), 'N'), math.bignumber(2)).toNumeric('N^2'),
@@ -352,7 +358,7 @@ describe('pow', function () {
     )
   })
 
-  it('should return a cloned value and not affect the argument', function () {
+  it('should return a cloned value and not affect the argument', function (): void {
     const unit1 = unit('2 m')
     const unit2 = pow(unit1, 2)
 
@@ -360,29 +366,29 @@ describe('pow', function () {
     assert.strictEqual(unit2.toString(), '4 m^2')
   })
 
-  it('should return a valuelessUnit when calculating valuelessUnit ^ number', function () {
+  it('should return a valuelessUnit when calculating valuelessUnit ^ number', function (): void {
     assert.strictEqual(
       pow(unit('kg^0.5 m^0.5 s^-1'), 2).toString(),
       '(kg m) / s^2'
     )
   })
 
-  it('should throw an error when doing number ^ unit', function () {
-    assert.throws(function () {
+  it('should throw an error when doing number ^ unit', function (): void {
+    assert.throws(function (): void {
       pow(2, unit('5cm'))
     })
   })
 
-  it('should throw an error if used with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if used with a string', function (): void {
+    assert.throws(function (): void {
       pow('text', 2)
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(2, 'text')
     })
   })
 
-  it('should raise a square matrix to the power 2', function () {
+  it('should raise a square matrix to the power 2', function (): void {
     const a = [
       [1, 2],
       [3, 4]
@@ -395,7 +401,7 @@ describe('pow', function () {
     approxDeepEqual(pow(matrix(a), 2), matrix(res))
   })
 
-  it('should raise an inverted matrix for power -1', function () {
+  it('should raise an inverted matrix for power -1', function (): void {
     const a = [
       [2, -1, 0],
       [-1, 2, -1],
@@ -410,7 +416,7 @@ describe('pow', function () {
     approxDeepEqual(pow(matrix(a), -1), matrix(res))
   })
 
-  it('should return identity matrix for power 0', function () {
+  it('should return identity matrix for power 0', function (): void {
     const a = [
       [1, 2],
       [3, 4]
@@ -423,17 +429,17 @@ describe('pow', function () {
     approxDeepEqual(pow(matrix(a), 0), matrix(res))
   })
 
-  it('should compute large size of square matrix', function () {
+  it('should compute large size of square matrix', function (): void {
     const a = math.identity(30).valueOf()
     approxDeepEqual(pow(a, 1000), a)
     approxDeepEqual(pow(matrix(a), 1000), matrix(a))
   })
 
-  it('should throw an error when calculating the power of a non square matrix', function () {
-    assert.throws(function () {
+  it('should throw an error when calculating the power of a non square matrix', function (): void {
+    assert.throws(function (): void {
       pow([1, 2, 3, 4], 2)
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(
         [
           [1, 2, 3],
@@ -442,7 +448,7 @@ describe('pow', function () {
         2
       )
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(
         [
           [1, 2, 3],
@@ -453,31 +459,31 @@ describe('pow', function () {
     })
   })
 
-  it('should throw an error when raising a matrix to a non-integer power', function () {
+  it('should throw an error when raising a matrix to a non-integer power', function (): void {
     const a = [
       [1, 2],
       [3, 4]
     ]
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(a, 2.5)
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(a, [2, 3])
     })
   })
 
-  it('should throw an error when raising a non-invertible matrix to a negative integer power', function () {
+  it('should throw an error when raising a non-invertible matrix to a negative integer power', function (): void {
     const a = [
       [1, 1, 1],
       [1, 0, 0],
       [0, 0, 0]
     ]
-    assert.throws(function () {
+    assert.throws(function (): void {
       pow(a, -1)
     })
   })
 
-  it('should LaTeX pow', function () {
+  it('should LaTeX pow', function (): void {
     const expression = math.parse('pow(2,10)')
     assert.strictEqual(expression.toTex(), '\\left(2\\right)^{10}')
   })

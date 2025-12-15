@@ -1,9 +1,16 @@
-// @ts-nocheck
+/**
+ * Test for concat - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const bignumber = math.bignumber
 
-describe('concat', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('concat', function (): void {
   const a = [
     [1, 2],
     [3, 4]
@@ -37,7 +44,7 @@ describe('concat', function () {
     ]
   ]
 
-  it('should concatenate compatible matrices on the last dimension by default', function () {
+  it('should concatenate compatible matrices on the last dimension by default', function (): void {
     assert.deepStrictEqual(math.concat([1, 2, 3], [4, 5]), [1, 2, 3, 4, 5])
     assert.deepStrictEqual(
       math.concat([bignumber(1), bignumber(2), bignumber(3)], [bignumber(4)]),
@@ -88,7 +95,7 @@ describe('concat', function () {
     ])
   })
 
-  it('should concatenate compatible matrices on the given dimension', function () {
+  it('should concatenate compatible matrices on the given dimension', function (): void {
     assert.deepStrictEqual(math.concat([[1]], [[2]], 1), [[1, 2]])
     assert.deepStrictEqual(math.concat([[1]], [[2]], 0), [[1], [2]])
     assert.deepStrictEqual(math.concat([[1]], [[2]], 0), [[1], [2]])
@@ -159,22 +166,22 @@ describe('concat', function () {
     ])
   })
 
-  it('should concatenate strings', function () {
+  it('should concatenate strings', function (): void {
     assert.strictEqual(math.concat('a', 'b'), 'ab')
     assert.strictEqual(math.concat('a', 'b', 'c'), 'abc')
   })
 
-  it('should throw an error in case of invalid requested dimension number', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid requested dimension number', function (): void {
+    assert.throws(function (): void {
       math.concat([1, 2], [3, 4], 2.3)
     }, /Integer number expected for dimension/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.concat([1, 2], [3, 4], 1)
     }, /Index out of range \(1 > 0\)/)
   })
 
-  it('should throw an error in case dimension mismatch', function () {
-    assert.throws(function () {
+  it('should throw an error in case dimension mismatch', function (): void {
+    assert.throws(function (): void {
       math.concat(
         [1, 2],
         [
@@ -183,7 +190,7 @@ describe('concat', function () {
         ]
       )
     }, RangeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.concat(
         [[1, 2]],
         [
@@ -194,19 +201,19 @@ describe('concat', function () {
     }, /Dimension mismatch/)
   })
 
-  it('should throw an error in case of invalid type of argument', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid type of argument', function (): void {
+    assert.throws(function (): void {
       math.concat(math.complex(2, 3))
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should throw an error when called without matrices as argument', function () {
-    assert.throws(function () {
+  it('should throw an error when called without matrices as argument', function (): void {
+    assert.throws(function (): void {
       math.concat(2)
     }, /At least one matrix expected/)
   })
 
-  it('should LaTeX concat', function () {
+  it('should LaTeX concat', function (): void {
     const expression = math.parse('concat([1],[2])')
     assert.strictEqual(
       expression.toTex(),

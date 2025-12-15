@@ -1,16 +1,22 @@
-// @ts-nocheck
-// test simplifyConstant
+/**
+ * Test for simplifyConstant - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
-describe('simplifyConstant', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('simplifyConstant', function (): void {
   const testSimplifyConstant = function (
-    expr,
-    expected,
+    expr: string,
+    expected: string,
     opts = {},
     simpOpts = {}
-  ) {
+  ): void {
     let actual = math
       .simplifyConstant(math.parse(expr), simpOpts)
       .toString(opts)
@@ -19,19 +25,19 @@ describe('simplifyConstant', function () {
     assert.strictEqual(actual, expected)
   }
 
-  it('should evaluate constant subexpressions', function () {
+  it('should evaluate constant subexpressions', function (): void {
     testSimplifyConstant('2+2', '4')
     testSimplifyConstant('x+3*5', 'x + 15')
     testSimplifyConstant('f(sin(0))', 'f(0)')
     testSimplifyConstant('[10/2, y, 8-4]', '[5, y, 4]')
   })
 
-  it('should by default convert decimals into fractions', function () {
+  it('should by default convert decimals into fractions', function (): void {
     testSimplifyConstant('0.5 x', '1 / 2 x')
   })
 
-  describe('should coalesce constants in a multi-argument expression', function () {
-    it('in the default context', function () {
+  describe('should coalesce constants in a multi-argument expression', function (): void {
+    it('in the default context', function (): void {
       testSimplifyConstant('3 + x + 7 + y', '10 + x + y')
       testSimplifyConstant('3 * x * 7 * y', '21 * x * y')
 
@@ -44,7 +50,7 @@ describe('simplifyConstant', function () {
       // constant such as 'foo')
     })
 
-    it('in non-commutative contexts', function () {
+    it('in non-commutative contexts', function (): void {
       const context = {
         add: { commutative: false },
         multiply: { commutative: false }
@@ -98,7 +104,7 @@ describe('simplifyConstant', function () {
     })
   })
 
-  it('should respect simplify options', function () {
+  it('should respect simplify options', function (): void {
     testSimplifyConstant(
       '0.5 x',
       '0.5 * x',

@@ -1,18 +1,20 @@
-// @ts-nocheck
+/**
+ * Test for reduce - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../../src/defaultInstance.ts'
 import { reduce } from '../../../../../src/utils/collection.js'
 
 const DenseMatrix = math.DenseMatrix
 
-describe('reduce', function () {
-  it('should reduce a 1D array along dimension 0', function () {
+describe('reduce', function (): void {
+  it('should reduce a 1D array along dimension 0', function (): void {
     const array = [1, 2, 3, 4]
     const result = reduce(array, 0, (a, b) => a + b)
     assert.strictEqual(result, 10)
   })
 
-  it('should reduce a 2D array along dimension 0', function () {
+  it('should reduce a 2D array along dimension 0', function (): void {
     const array = [
       [1, 2, 3],
       [4, 5, 6]
@@ -21,7 +23,7 @@ describe('reduce', function () {
     assert.deepStrictEqual(result, [5, 7, 9])
   })
 
-  it('should reduce a 2D array along dimension 1', function () {
+  it('should reduce a 2D array along dimension 1', function (): void {
     const array = [
       [1, 2, 3],
       [4, 5, 6]
@@ -30,7 +32,7 @@ describe('reduce', function () {
     assert.deepStrictEqual(result, [6, 15])
   })
 
-  it('should reduce a 3D array along dimension 0', function () {
+  it('should reduce a 3D array along dimension 0', function (): void {
     const array = [
       [
         [1, 2],
@@ -48,7 +50,7 @@ describe('reduce', function () {
     ])
   })
 
-  it('should reduce a 3D array along dimension 1', function () {
+  it('should reduce a 3D array along dimension 1', function (): void {
     const array = [
       [
         [1, 2],
@@ -66,7 +68,7 @@ describe('reduce', function () {
     ])
   })
 
-  it('should reduce a 3D array along dimension 2', function () {
+  it('should reduce a 3D array along dimension 2', function (): void {
     const array = [
       [
         [1, 2],
@@ -84,7 +86,7 @@ describe('reduce', function () {
     ])
   })
 
-  it('should reduce a DenseMatrix along dimension 0', function () {
+  it('should reduce a DenseMatrix along dimension 0', function (): void {
     const matrix = new DenseMatrix([
       [1, 2, 3],
       [4, 5, 6]
@@ -93,7 +95,7 @@ describe('reduce', function () {
     assert.deepStrictEqual(result, new DenseMatrix([5, 7, 9]))
   })
 
-  it('should reduce a DenseMatrix along dimension 1', function () {
+  it('should reduce a DenseMatrix along dimension 1', function (): void {
     const matrix = new DenseMatrix([
       [1, 2, 3],
       [4, 5, 6]
@@ -102,12 +104,12 @@ describe('reduce', function () {
     assert.deepStrictEqual(result, new DenseMatrix([6, 15]))
   })
 
-  it('should throw an error for invalid dimension', function () {
+  it('should throw an error for invalid dimension', function (): void {
     const array = [
       [1, 2, 3],
       [4, 5, 6]
     ]
-    assert.throws(() => reduce(array, -1, (a, b) => a + b), /IndexError/)
-    assert.throws(() => reduce(array, 2, (a, b) => a + b), /IndexError/)
+    assert.throws(function (): void { r }educe(array, -1, (a, b) => a + b), /IndexError/)
+    assert.throws(function (): void { r }educe(array, 2, (a, b) => a + b), /IndexError/)
   })
 })

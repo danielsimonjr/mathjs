@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for sum - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
@@ -8,8 +10,13 @@ const DenseMatrix = math.DenseMatrix
 const Unit = math.Unit
 const sum = math.sum
 
-describe('sum', function () {
-  it('should return the sum of numbers', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('sum', function (): void {
+  it('should return the sum of numbers', function (): void {
     assert.strictEqual(sum(5), 5)
     assert.strictEqual(sum(3, 1), 4)
     assert.strictEqual(sum(1, 3), 4)
@@ -17,7 +24,7 @@ describe('sum', function () {
     assert.strictEqual(sum(0, 0, 0, 0), 0)
   })
 
-  it('should return the sum of big numbers', function () {
+  it('should return the sum of big numbers', function (): void {
     assert.deepStrictEqual(
       sum(
         new BigNumber(1),
@@ -29,7 +36,7 @@ describe('sum', function () {
     )
   })
 
-  it('should return the sum of strings (convert them to numbers)', function () {
+  it('should return the sum of strings (convert them to numbers)', function (): void {
     assert.strictEqual(sum('2', '3', '4', '5'), 14)
     assert.strictEqual(sum('2'), 2)
     assert.strictEqual(
@@ -62,33 +69,33 @@ describe('sum', function () {
     assert.strictEqual(bigmath.sum('2.5', '4'), 6.5) // fallback to number
   })
 
-  it('should return the sum of complex numbers', function () {
+  it('should return the sum of complex numbers', function (): void {
     assert.deepStrictEqual(
       sum(new Complex(2, 3), new Complex(-1, 2)),
       new Complex(1, 5)
     )
   })
 
-  it('should return the sum of mixed numbers and complex numbers', function () {
+  it('should return the sum of mixed numbers and complex numbers', function (): void {
     assert.deepStrictEqual(sum(2, new Complex(-1, 3)), new Complex(1, 3))
   })
 
-  it('should return the sum from an array', function () {
+  it('should return the sum from an array', function (): void {
     assert.strictEqual(sum([1, 3, 5, 2, -5]), 6)
   })
 
-  it('should return the sum of units', function () {
+  it('should return the sum of units', function (): void {
     assert.deepStrictEqual(
       sum([new Unit(5, 'mm'), new Unit(10, 'mm'), new Unit(15, 'mm')]),
       new Unit(30, 'mm')
     )
   })
 
-  it('should return the sum from an 1d matrix', function () {
+  it('should return the sum from an 1d matrix', function (): void {
     assert.strictEqual(sum(new DenseMatrix([1, 3, 5, 2, -5])), 6)
   })
 
-  it('should return the sum element from a 2d array', function () {
+  it('should return the sum element from a 2d array', function (): void {
     assert.deepStrictEqual(
       sum([
         [1, 4, 7],
@@ -99,7 +106,7 @@ describe('sum', function () {
     )
   })
 
-  it('should return the sum element from a 2d matrix', function () {
+  it('should return the sum element from a 2d matrix', function (): void {
     assert.deepStrictEqual(
       sum(
         new DenseMatrix([
@@ -112,7 +119,7 @@ describe('sum', function () {
     )
   })
 
-  it('should return NaN if any of the inputs contains NaN', function () {
+  it('should return NaN if any of the inputs contains NaN', function (): void {
     assert(isNaN(sum([NaN])))
     assert(isNaN(sum([1, NaN])))
     assert(isNaN(sum([NaN, 1])))
@@ -121,8 +128,8 @@ describe('sum', function () {
     assert(isNaN(sum(NaN, NaN, NaN)))
   })
 
-  it('should throw an error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       sum()
     })
   })
@@ -151,7 +158,7 @@ describe('sum', function () {
     ]
   ]
 
-  it('should return the sum value along a dimension of a matrix', function () {
+  it('should return the sum value along a dimension of a matrix', function (): void {
     assert.deepStrictEqual(
       sum(
         [
@@ -191,7 +198,7 @@ describe('sum', function () {
     ])
   })
 
-  it('should return zero if called with an empty array', function () {
+  it('should return zero if called with an empty array', function (): void {
     const bigMath = math.create({ number: 'BigNumber' })
     const fracMath = math.create({ number: 'Fraction' })
 
@@ -211,26 +218,26 @@ describe('sum', function () {
     )
   })
 
-  it('should throw an error if called with invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       sum(new Date(), 2)
     }, /Cannot calculate sum, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       sum(2, 3, null)
     }, /Cannot calculate sum, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       sum([2, 3, null])
     }, /Cannot calculate sum, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       sum('a', 'b')
     }, /Error: Cannot convert "a" to a number/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       sum('a')
     }, /SyntaxError: String "a" is not a valid number/)
   })
 
-  it('should LaTeX sum', function () {
-    const expression = math.parse('sum(1,2,3)')
+  it('should LaTeX sum', function (): void {
+    const expression = math.parse('sum(1,2,3)') as MathNode
     assert.strictEqual(expression.toTex(), '\\mathrm{sum}\\left(1,2,3\\right)')
   })
 })

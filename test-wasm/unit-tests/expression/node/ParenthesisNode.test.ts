@@ -1,5 +1,6 @@
-// @ts-nocheck
-// test SymbolNode
+/**
+ * Test for SymbolNode - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -7,8 +8,8 @@ const Node = math.Node
 const ConstantNode = math.ConstantNode
 const ParenthesisNode = math.ParenthesisNode
 
-describe('ParenthesisNode', function () {
-  it('should create a ParenthesisNode', function () {
+describe('ParenthesisNode', function (): void {
+  it('should create a ParenthesisNode', function (): void {
     const a = new ConstantNode(1)
 
     const n = new ParenthesisNode(a)
@@ -17,23 +18,23 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(n.type, 'ParenthesisNode')
   })
 
-  it('should throw an error when calling without new operator', function () {
+  it('should throw an error when calling without new operator', function (): void {
     const a = new ConstantNode(1)
-    assert.throws(function () {
+    assert.throws(function (): void {
       ParenthesisNode(a)
     }, TypeError)
   })
 
-  it('should throw an error when calling with wrong arguments', function () {
-    assert.throws(function () {
+  it('should throw an error when calling with wrong arguments', function (): void {
+    assert.throws(function (): void {
       console.log(new ParenthesisNode())
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new ParenthesisNode(2))
     }, TypeError)
   })
 
-  it('should compile a ParenthesisNode', function () {
+  it('should compile a ParenthesisNode', function (): void {
     const a = new ConstantNode(1)
     const n = new ParenthesisNode(a)
 
@@ -43,7 +44,7 @@ describe('ParenthesisNode', function () {
     )
   })
 
-  it('should filter a ParenthesisNode', function () {
+  it('should filter a ParenthesisNode', function (): void {
     const a = new ConstantNode(1)
     const n = new ParenthesisNode(a)
 
@@ -82,7 +83,7 @@ describe('ParenthesisNode', function () {
     )
   })
 
-  it('should run forEach on a ParenthesisNode', function () {
+  it('should run forEach on a ParenthesisNode', function (): void {
     let count = 0
     const a = new ConstantNode(1)
 
@@ -97,7 +98,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(count, 1)
   })
 
-  it('should map a ParenthesisNode', function () {
+  it('should map a ParenthesisNode', function (): void {
     const a = new ConstantNode(1)
     const b = new ParenthesisNode(a)
 
@@ -114,7 +115,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(c.content.value, 2)
   })
 
-  it('should transform a ParenthesisNode', function () {
+  it('should transform a ParenthesisNode', function (): void {
     const c1 = new ConstantNode(1)
     const c2 = new ConstantNode(2)
 
@@ -135,7 +136,7 @@ describe('ParenthesisNode', function () {
     assert.deepStrictEqual(d, a)
   })
 
-  it('should clone a ParenthesisNode', function () {
+  it('should clone a ParenthesisNode', function (): void {
     const a = new ConstantNode(1)
     const n = new ParenthesisNode(a)
     const clone = n.clone()
@@ -146,7 +147,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(n.content, clone.content)
   })
 
-  it('test equality another Node', function () {
+  it('test equality another Node', function (): void {
     const a = new ParenthesisNode(new ConstantNode(1))
     const b = new ParenthesisNode(new ConstantNode(1))
     const c = new ParenthesisNode(new ConstantNode(2))
@@ -159,7 +160,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(a.equals(d), false)
   })
 
-  it('should get the content of a ParenthesisNode', function () {
+  it('should get the content of a ParenthesisNode', function (): void {
     const c = new math.ConstantNode(1)
     const p1 = new math.ParenthesisNode(c)
     const p2 = new math.ParenthesisNode(p1)
@@ -171,7 +172,7 @@ describe('ParenthesisNode', function () {
     assert.deepStrictEqual(p2.getContent(), c)
   })
 
-  it('should stringify a ParenthesisNode', function () {
+  it('should stringify a ParenthesisNode', function (): void {
     const a = new ConstantNode(1)
     const n = new ParenthesisNode(a)
 
@@ -179,7 +180,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(n.toString({}), '(1)')
   })
 
-  it('should stringify a ParenthesisNode when not in keep mode', function () {
+  it('should stringify a ParenthesisNode when not in keep mode', function (): void {
     const c = new math.ConstantNode(1)
 
     const p = new math.ParenthesisNode(c)
@@ -188,7 +189,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(p.toString({ parenthesis: 'auto' }), '1')
   })
 
-  it('should stringify a ParenthesisNode with custom toString', function () {
+  it('should stringify a ParenthesisNode with custom toString', function (): void {
     const customFunction = function (node, options) {
       if (node.type === 'ParenthesisNode') {
         return '[' + node.content.toString(options) + ']'
@@ -201,7 +202,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(n.toString({ handler: customFunction }), '[1]')
   })
 
-  it('should stringify a ParenthesisNode with custom toHTML', function () {
+  it('should stringify a ParenthesisNode with custom toHTML', function (): void {
     const customFunction = function (node, options) {
       if (node.type === 'ParenthesisNode') {
         return '[' + node.content.toHTML(options) + ']'
@@ -217,7 +218,7 @@ describe('ParenthesisNode', function () {
     )
   })
 
-  it('toJSON and fromJSON', function () {
+  it('toJSON and fromJSON', function (): void {
     const b = new ConstantNode(2)
     const node = new ParenthesisNode(b)
 
@@ -232,7 +233,7 @@ describe('ParenthesisNode', function () {
     assert.deepStrictEqual(parsed, node)
   })
 
-  it('should LaTeX a ParenthesisNode', function () {
+  it('should LaTeX a ParenthesisNode', function (): void {
     const a = new ConstantNode(1)
     const n = new ParenthesisNode(a)
 
@@ -240,7 +241,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(n.toTex({}), '\\left(1\\right)')
   })
 
-  it('should LaTeX a ParenthesisNode when not in keep mode', function () {
+  it('should LaTeX a ParenthesisNode when not in keep mode', function (): void {
     const c = new math.ConstantNode(1)
 
     const p = new math.ParenthesisNode(c)
@@ -249,7 +250,7 @@ describe('ParenthesisNode', function () {
     assert.strictEqual(p.toTex({ parenthesis: 'auto' }), '1')
   })
 
-  it('should LaTeX a ParenthesisNode with custom toTex', function () {
+  it('should LaTeX a ParenthesisNode with custom toTex', function (): void {
     const customFunction = function (node, options) {
       if (node.type === 'ParenthesisNode') {
         return '\\left[' + node.content.toTex(options) + '\\right]'

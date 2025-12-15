@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for tan - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -12,13 +19,13 @@ const bigmath = math.create({ precision: 20 })
 const Big = bigmath.bignumber
 const bigTan = bigmath.tan
 
-describe('tan', function () {
-  it('should return the tangent of a boolean', function () {
+describe('tan', function (): void {
+  it('should return the tangent of a boolean', function (): void {
     approxEqual(tan(true), 1.5574077246549)
     approxEqual(tan(false), 0)
   })
 
-  it('should return the tangent of a number', function () {
+  it('should return the tangent of a number', function (): void {
     approxEqual(tan(0), 0)
     approxEqual(tan((pi * 1) / 4), 1)
     approxEqual(tan((pi * 1) / 8), 0.414213562373095)
@@ -31,7 +38,7 @@ describe('tan', function () {
     approxEqual(tan((pi * 8) / 4), 0)
   })
 
-  it('should return the tangent of a bignumber', function () {
+  it('should return the tangent of a bignumber', function (): void {
     const bigPi = piBigmath.pi
 
     assert.deepStrictEqual(bigTan(Big(0)), Big(0))
@@ -48,7 +55,7 @@ describe('tan', function () {
     )
   })
 
-  it('should return the tangent of a complex number', function () {
+  it('should return the tangent of a complex number', function (): void {
     const re = 0.00376402564150425
     const im = 1.0032386273536098
     approxDeepEqual(tan(complex('2+3i')), complex(-re, im))
@@ -63,7 +70,7 @@ describe('tan', function () {
     )
   })
 
-  it('should return the tangent of an angle', function () {
+  it('should return the tangent of an angle', function (): void {
     approxEqual(tan(unit(' 60deg')), math.sqrt(3))
     approxEqual(tan(unit('-135deg')), 1)
 
@@ -76,40 +83,40 @@ describe('tan', function () {
     )
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       tan(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       tan('string')
     })
   })
 
   const tan123 = [1.557407724654902, -2.185039863261519, -0.142546543074278]
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => tan([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], tan), tan123)
   })
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => tan(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), tan), matrix(tan123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       tan()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       tan(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX tan', function () {
+  it('should LaTeX tan', function (): void {
     const expression = math.parse('tan(1)')
     assert.strictEqual(expression.toTex(), '\\tan\\left(1\\right)')
   })

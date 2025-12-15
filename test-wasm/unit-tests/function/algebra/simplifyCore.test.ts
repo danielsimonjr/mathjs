@@ -1,18 +1,24 @@
-// @ts-nocheck
-// test simplifyCore
+/**
+ * Test for simplifyCore - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
-describe('simplifyCore', function () {
-  const testSimplifyCore = function (expr, expected, opts = {}, simpOpts = {}) {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('simplifyCore', function (): void {
+  const testSimplifyCore = function (expr: string, expected: string, opts = {}, simpOpts = {}): void {
     let actual = math.simplifyCore(math.parse(expr), simpOpts).toString(opts)
     assert.strictEqual(actual, expected)
     actual = math.simplifyCore(expr, simpOpts).toString(opts)
     assert.strictEqual(actual, expected)
   }
 
-  it('should handle different node types', function () {
+  it('should handle different node types', function (): void {
     testSimplifyCore('5*x*3', '3 * 5 * x')
     testSimplifyCore('5*x*3*x', '3 * 5 * x * x')
 
@@ -55,7 +61,7 @@ describe('simplifyCore', function () {
     testSimplifyCore('{a:x*1, b:y-0}', '{"a": x, "b": y}')
   })
 
-  it('should not alter order of multiplication when noncommutative', function () {
+  it('should not alter order of multiplication when noncommutative', function (): void {
     testSimplifyCore(
       '5*x*3',
       '5 * x * 3',
@@ -64,11 +70,11 @@ describe('simplifyCore', function () {
     )
   })
 
-  it('should remove any trivial function', function () {
+  it('should remove any trivial function', function (): void {
     testSimplifyCore('foo(y)', 'y', {}, { context: { foo: { trivial: true } } })
   })
 
-  it('strips ParenthesisNodes (implicit in tree)', function () {
+  it('strips ParenthesisNodes (implicit in tree)', function (): void {
     testSimplifyCore('((x)*(y))', 'x * y')
     testSimplifyCore('((x)*(y))^1', 'x * y')
     testSimplifyCore('x*(y+z)', 'x * (y + z)')
@@ -78,7 +84,7 @@ describe('simplifyCore', function () {
     testSimplifyCore('x+(y+z)+w', '(x + (y + z)) + w', { parenthesis: 'all' })
   })
 
-  it('should convert +unaryMinus to subtract', function () {
+  it('should convert +unaryMinus to subtract', function (): void {
     testSimplifyCore('x + -1', 'x - 1')
     const result = math
       .simplify('x + y + a', [math.simplifyCore], { a: -1 })
@@ -86,25 +92,25 @@ describe('simplifyCore', function () {
     assert.strictEqual(result, 'x + y - 1')
   })
 
-  it('should recurse through arbitrary binary operators', function () {
+  it('should recurse through arbitrary binary operators', function (): void {
     testSimplifyCore('x+0==5', 'x == 5')
     testSimplifyCore('(x*1) % (y^1)', 'x % y')
   })
 
-  it('converts functions to their corresponding infix operators', function () {
+  it('converts functions to their corresponding infix operators', function (): void {
     testSimplifyCore('add(x, y)', 'x + y')
     testSimplifyCore('mod(x, 5)', 'x mod 5')
     testSimplifyCore('to(5 cm, in)', '5 cm to in')
     testSimplifyCore('ctranspose(M)', "M'")
   })
 
-  it('continues to simplify after function -> operator conversion', function () {
+  it('continues to simplify after function -> operator conversion', function (): void {
     testSimplifyCore('add(multiply(x, 0), y)', 'y')
     testSimplifyCore('and(multiply(1, x), true)', 'x and true')
     testSimplifyCore('add(x, 0 ,y)', 'x + y')
   })
 
-  it('can perform sequential distinct core simplifications', function () {
+  it('can perform sequential distinct core simplifications', function (): void {
     testSimplifyCore('0 - -x', 'x')
     testSimplifyCore('0 - (x - y)', 'y - x')
     testSimplifyCore('a + -0', 'a')

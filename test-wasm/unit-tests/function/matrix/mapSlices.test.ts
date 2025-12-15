@@ -1,13 +1,15 @@
-// @ts-nocheck
+/**
+ * Test for mapSlices - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
 const sum = math.sum
 
-describe('mapSlices', function () {
+describe('mapSlices', function (): void {
   const mapSlices = math.mapSlices
 
-  it('should apply a function to the rows of a matrix', function () {
+  it('should apply a function to the rows of a matrix', function (): void {
     assert.deepStrictEqual(
       mapSlices(
         [
@@ -21,7 +23,7 @@ describe('mapSlices', function () {
     )
   })
 
-  it('should temporarily be accessible via synonym `apply`', function () {
+  it('should temporarily be accessible via synonym `apply`', function (): void {
     assert.deepStrictEqual(
       math.apply(
         [
@@ -35,7 +37,7 @@ describe('mapSlices', function () {
     )
   })
 
-  it('should apply a function to the columns of a matrix', function () {
+  it('should apply a function to the columns of a matrix', function (): void {
     assert.deepStrictEqual(
       mapSlices(
         [
@@ -73,7 +75,7 @@ describe('mapSlices', function () {
     ]
   ]
 
-  it('should apply to the rows of a tensor', function () {
+  it('should apply to the rows of a tensor', function (): void {
     assert.deepStrictEqual(mapSlices(inputMatrix, 2, sum), [
       [3, 7, 11],
       [15, 19, 23],
@@ -82,8 +84,8 @@ describe('mapSlices', function () {
     ])
   })
 
-  it('should throw an error if the dimension is out of range', function () {
-    assert.throws(function () {
+  it('should throw an error if the dimension is out of range', function (): void {
+    assert.throws(function (): void {
       mapSlices(
         [
           [1, 2],
@@ -95,8 +97,8 @@ describe('mapSlices', function () {
     }, /Index out of range/)
   })
 
-  it('should throw an error if the dimension is not an integer', function () {
-    assert.throws(function () {
+  it('should throw an error if the dimension is not an integer', function (): void {
+    assert.throws(function (): void {
       mapSlices(
         [
           [1, 2],
@@ -108,8 +110,8 @@ describe('mapSlices', function () {
     }, /Unexpected type of argument in function mapSlices/)
   })
 
-  it('should throw an error if the matrix, is not a matrix or array', function () {
-    assert.throws(function () {
+  it('should throw an error if the matrix, is not a matrix or array', function (): void {
+    assert.throws(function (): void {
       mapSlices('[[1, 2], [3, 4]]', 0, sum)
     }, /Unexpected type of argument in function mapSlices/)
   })

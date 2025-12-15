@@ -1,8 +1,14 @@
-// @ts-nocheck
-// test multiply
+/**
+ * Test for multiply - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 const multiply = math.multiply
 const divide = math.divide
@@ -12,9 +18,9 @@ const bignumber = math.bignumber
 const i = math.i
 const unit = math.unit
 
-describe('multiply', function () {
-  describe('Scalar', function () {
-    it('should multiply two numbers correctly', function () {
+describe('multiply', function (): void {
+  describe('Scalar', function (): void {
+    it('should multiply two numbers correctly', function (): void {
       approxEqual(multiply(2, 3), 6)
       approxEqual(multiply(-2, 3), -6)
       approxEqual(multiply(-2, -3), 6)
@@ -25,37 +31,37 @@ describe('multiply', function () {
       approxDeepEqual(multiply(-2, Infinity), -Infinity)
     })
 
-    it('should multiply bigint', function () {
+    it('should multiply bigint', function (): void {
       assert.strictEqual(multiply(2n, 3n), 6n)
     })
 
-    it('should multiply booleans', function () {
+    it('should multiply booleans', function (): void {
       assert.strictEqual(multiply(true, true), 1)
       assert.strictEqual(multiply(true, false), 0)
       assert.strictEqual(multiply(false, true), 0)
       assert.strictEqual(multiply(false, false), 0)
     })
 
-    it('should multiply mixed numbers and booleans', function () {
+    it('should multiply mixed numbers and booleans', function (): void {
       assert.strictEqual(multiply(2, true), 2)
       assert.strictEqual(multiply(2, false), 0)
       assert.strictEqual(multiply(true, 2), 2)
       assert.strictEqual(multiply(false, 2), 0)
     })
 
-    it('should multiply mixed numbers and bigint', function () {
+    it('should multiply mixed numbers and bigint', function (): void {
       assert.strictEqual(multiply(2, 3n), 6)
       assert.strictEqual(multiply(2n, 3), 6)
 
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(123123123123123123123n, 1)
       }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(1, 123123123123123123123n)
       }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
     })
 
-    it('should multiply bignumbers', function () {
+    it('should multiply bignumbers', function (): void {
       assert.deepStrictEqual(
         multiply(bignumber(1.5), bignumber(0.2)),
         bignumber(0.3)
@@ -66,7 +72,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should multiply mixed numbers and bignumbers', function () {
+    it('should multiply mixed numbers and bignumbers', function (): void {
       assert.deepStrictEqual(multiply(bignumber(1.5), 0.2), bignumber(0.3))
       assert.deepStrictEqual(multiply(1.5, bignumber(0.2)), bignumber(0.3))
       assert.deepStrictEqual(
@@ -74,36 +80,36 @@ describe('multiply', function () {
         bignumber('2.6e5000')
       )
 
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(1 / 3, bignumber(1).div(3))
       }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(bignumber(1).div(3), 1 / 3)
       }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
     })
 
-    it('should multiply mixed bigints and BigNumbers', function () {
+    it('should multiply mixed bigints and BigNumbers', function (): void {
       assert.deepStrictEqual(multiply(bignumber(2), 3n), bignumber(6))
       assert.deepStrictEqual(multiply(2n, bignumber(3)), bignumber(6))
     })
 
-    it('should throw an error when multipling mixed fractions and bignumbers', function () {
-      assert.throws(function () {
+    it('should throw an error when multipling mixed fractions and bignumbers', function (): void {
+      assert.throws(function (): void {
         multiply(math.bignumber('2'), math.fraction(1, 3))
       }, /Cannot implicitly convert a Fraction to BigNumber/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(math.fraction(1, 3), math.bignumber('2'))
       }, /Cannot implicitly convert a Fraction to BigNumber/)
     })
 
-    it('should multiply mixed booleans and bignumbers', function () {
+    it('should multiply mixed booleans and bignumbers', function (): void {
       assert.deepStrictEqual(multiply(bignumber(0.3), true), bignumber(0.3))
       assert.deepStrictEqual(multiply(bignumber(0.3), false), bignumber(0))
       assert.deepStrictEqual(multiply(false, bignumber('2')), bignumber(0))
       assert.deepStrictEqual(multiply(true, bignumber('2')), bignumber(2))
     })
 
-    it('should multiply two complex numbers correctly', function () {
+    it('should multiply two complex numbers correctly', function (): void {
       approxDeepEqual(multiply(complex(2, 3), 2), complex(4, 6))
       approxDeepEqual(multiply(complex(2, -3), -2), complex(-4, 6))
       approxDeepEqual(multiply(complex(2, -3), 2), complex(4, -6))
@@ -168,7 +174,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should multiply mixed complex numbers and numbers', function () {
+    it('should multiply mixed complex numbers and numbers', function (): void {
       assert.deepStrictEqual(
         multiply(math.complex(6, -4), 2),
         math.complex(12, -8)
@@ -179,7 +185,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should multiply mixed complex numbers and big numbers', function () {
+    it('should multiply mixed complex numbers and big numbers', function (): void {
       assert.deepStrictEqual(
         multiply(math.complex(6, -4), math.bignumber(2)),
         math.complex(12, -8)
@@ -190,7 +196,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should multiply two fractions', function () {
+    it('should multiply two fractions', function (): void {
       const a = math.fraction(1, 4)
       assert.strictEqual(multiply(a, math.fraction(1, 2)).toString(), '0.125')
       assert.strictEqual(a.toString(), '0.25')
@@ -201,7 +207,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should multiply mixed fractions and numbers', function () {
+    it('should multiply mixed fractions and numbers', function (): void {
       assert.deepStrictEqual(
         multiply(2, math.fraction(1, 3)),
         math.fraction(2, 3)
@@ -212,7 +218,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should multiply mixed fractions and bigints', function () {
+    it('should multiply mixed fractions and bigints', function (): void {
       assert.deepStrictEqual(
         multiply(2n, math.fraction(1, 3)),
         math.fraction(2, 3)
@@ -223,7 +229,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should multiply a number and a unit correctly', function () {
+    it('should multiply a number and a unit correctly', function (): void {
       assert.strictEqual(multiply(2, unit('5 mm')).toString(), '10 mm')
       assert.strictEqual(multiply(2, unit('5 mm')).toString(), '10 mm')
       assert.strictEqual(multiply(10, unit('celsius')).toString(), '10 celsius')
@@ -261,7 +267,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should multiply a number and a unit without value correctly', function () {
+    it('should multiply a number and a unit without value correctly', function (): void {
       assert.strictEqual(multiply(2, unit('mm')).toString(), '2 mm')
       assert.strictEqual(multiply(2, unit('km')).toString(), '2 km')
       assert.strictEqual(multiply(2, unit('inch')).toString(), '2 inch')
@@ -270,11 +276,11 @@ describe('multiply', function () {
       assert.strictEqual(multiply(unit('inch'), 2).toString(), '2 inch')
     })
 
-    it('should multiply a bigint and a unit value correctly', function () {
+    it('should multiply a bigint and a unit value correctly', function (): void {
       assert.strictEqual(multiply(2n, unit('5 mm')).toString(), '10 mm')
     })
 
-    it('should multiply two units correctly', function () {
+    it('should multiply two units correctly', function (): void {
       assert.strictEqual(multiply(unit('2 m'), unit('4 m')).toString(), '8 m^2')
       assert.strictEqual(
         multiply(unit('2 ft'), unit('4 ft')).toString(),
@@ -301,12 +307,12 @@ describe('multiply', function () {
       )
     })
 
-    it('should evaluate a complicated unit multiplication', function () {
+    it('should evaluate a complicated unit multiplication', function (): void {
       const v1 = math.evaluate('0.1 kg/s * 4.2 J/degC/g * 5 degC')
       approxEqual(v1.value, 2100)
     })
 
-    it('should multiply valueless units correctly', function () {
+    it('should multiply valueless units correctly', function (): void {
       assert.strictEqual(multiply(unit('m'), unit('4 m')).toString(), '4 m^2')
       assert.strictEqual(multiply(unit('ft'), unit('4 ft')).format(5), '4 ft^2')
       assert.strictEqual(
@@ -358,25 +364,25 @@ describe('multiply', function () {
       )
     })
 
-    it('should throw an error in case of unit non-numeric argument', function () {
+    it('should throw an error in case of unit non-numeric argument', function (): void {
       // Multiplying two units is supported now
-      // assert.throws(function () {multiply(math.unit('5cm'), math.unit('4cm'));}, /TypeError: Unexpected type/)
+      // assert.throws(function (): void {multiply(math.unit('5cm'), math.unit('4cm'));}, /TypeError: Unexpected type/)
       // Complex units are supported now
-      // assert.throws(function () {multiply(math.unit('5cm'), math.complex('2+3i'))}, /TypeError: Unexpected type/)
-      // assert.throws(function () {multiply(math.complex('2+3i'), math.unit('5cm'))}, /TypeError: Unexpected type/)
+      // assert.throws(function (): void {multiply(math.unit('5cm'), math.complex('2+3i'))}, /TypeError: Unexpected type/)
+      // assert.throws(function (): void {multiply(math.complex('2+3i'), math.unit('5cm'))}, /TypeError: Unexpected type/)
     })
 
-    it('should throw an error if used with strings', function () {
-      assert.throws(function () {
+    it('should throw an error if used with strings', function (): void {
+      assert.throws(function (): void {
         multiply('hello', 'world')
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply('hello', 2)
       })
     })
   })
 
-  it('should multiply mixed array and matrix', function () {
+  it('should multiply mixed array and matrix', function (): void {
     const a = [
       [1, 2],
       [3, 4]
@@ -409,39 +415,39 @@ describe('multiply', function () {
     assert.strictEqual(multiply(matrix(c), d), 32)
   })
 
-  describe('squeeze', function () {
+  describe('squeeze', function (): void {
     // math.js v1 and v2 did squeeze output being a vector. Changed in v3
 
-    it('should NOT squeeze scalar results of matrix * matrix', function () {
+    it('should NOT squeeze scalar results of matrix * matrix', function (): void {
       const a = [[1, 2, 3]]
       const b = [[4], [5], [6]]
       assert.deepStrictEqual(multiply(a, b), [[32]])
     })
 
-    it('should NOT squeeze scalar results of vector * matrix', function () {
+    it('should NOT squeeze scalar results of vector * matrix', function (): void {
       const a = [1, 2, 3]
       const b = [[4], [5], [6]]
       assert.deepStrictEqual(multiply(a, b), [32])
     })
 
-    it('should NOT squeeze scalar results of matrix * vector', function () {
+    it('should NOT squeeze scalar results of matrix * vector', function (): void {
       const a = [[1, 2, 3]]
       const b = [4, 5, 6]
       assert.deepStrictEqual(multiply(a, b), [32])
     })
   })
 
-  it('should throw an error when multiplying matrices with incompatible sizes', function () {
+  it('should throw an error when multiplying matrices with incompatible sizes', function (): void {
     // vector * vector
-    assert.throws(function () {
+    assert.throws(function (): void {
       multiply([1, 1], [1, 1, 1])
     })
 
     // matrix * matrix
-    assert.throws(function () {
+    assert.throws(function (): void {
       multiply([[1, 1]], [[1, 1]])
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       multiply(
         [[1, 1]],
         [
@@ -453,7 +459,7 @@ describe('multiply', function () {
     })
 
     // matrix * vector
-    assert.throws(function () {
+    assert.throws(function (): void {
       multiply(
         [
           [1, 1],
@@ -464,7 +470,7 @@ describe('multiply', function () {
     })
 
     // vector * matrix
-    assert.throws(function () {
+    assert.throws(function (): void {
       multiply(
         [1, 1, 1],
         [
@@ -475,35 +481,35 @@ describe('multiply', function () {
     })
   })
 
-  it('should throw an error when multiplying multi dimensional matrices', function () {
-    assert.throws(function () {
+  it('should throw an error when multiplying multi dimensional matrices', function (): void {
+    assert.throws(function (): void {
       multiply([[[1]]], [1])
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       multiply([[[1]]], [[1]])
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       multiply([1], [[[1]]])
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       multiply([[1]], [[[1]]])
     })
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       multiply(1)
     }, /TypeError: Too few arguments/)
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       multiply(2, null)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  describe('Vector', function () {
-    it('should multiply vectors correctly (dot product)', function () {
+  describe('Vector', function (): void {
+    it('should multiply vectors correctly (dot product)', function (): void {
       const a = [1, 2, 3]
       const b = [4, 5, 6]
 
@@ -511,7 +517,7 @@ describe('multiply', function () {
       approxDeepEqual(multiply(matrix(a), matrix(b)), 32)
     })
 
-    it('should multiply vectors with units correctly (dot product)', function () {
+    it('should multiply vectors with units correctly (dot product)', function (): void {
       const a = [1, 2, 3]
       const b = [unit('4cm'), unit('5cm'), unit('6cm')]
 
@@ -524,7 +530,7 @@ describe('multiply', function () {
       assert.strictEqual(multiply(matrix(e), matrix(b)).format(5), '32 cm^2')
     })
 
-    it('should conjugate the first argument in dot product', function () {
+    it('should conjugate the first argument in dot product', function (): void {
       const a = [complex(1, 2), complex(3, 4)]
       const b = [complex(5, 6), complex(7, 8)]
 
@@ -532,7 +538,7 @@ describe('multiply', function () {
       approxDeepEqual(multiply(matrix(a), matrix(b)), complex(70, -8))
     })
 
-    it('should multiply row vector x column vector', function () {
+    it('should multiply row vector x column vector', function (): void {
       const v = [[1, 2, 3, 0, 0, 5, 6]]
 
       let r = multiply(v, [[3], [4], [6], [0], [1], [2], [0]])
@@ -548,7 +554,7 @@ describe('multiply', function () {
       assert.deepStrictEqual(r, math.matrix([[39]], 'sparse'))
     })
 
-    it('should multiply dense row vector x column vector', function () {
+    it('should multiply dense row vector x column vector', function (): void {
       const v = math.matrix([[1, 2, 3, 0, 0, 5, 6]], 'dense')
 
       let r = multiply(v, [[3], [4], [6], [0], [1], [2], [0]])
@@ -564,13 +570,13 @@ describe('multiply', function () {
       assert.deepStrictEqual(r, math.matrix([[39]], 'sparse'))
     })
 
-    it('should throw an error when multiplying empty vectors', function () {
-      assert.throws(function () {
+    it('should throw an error when multiplying empty vectors', function (): void {
+      assert.throws(function (): void {
         multiply([], [])
       }, /Cannot multiply two empty vectors/)
     })
 
-    it('should multiply a vector with a matrix correctly', function () {
+    it('should multiply a vector with a matrix correctly', function (): void {
       const a = [1, 2, 3]
       const b = [
         [8, 1, 6],
@@ -586,8 +592,8 @@ describe('multiply', function () {
     })
   })
 
-  describe('Dense Matrix', function () {
-    it('should multiply matrix x scalar', function () {
+  describe('Dense Matrix', function (): void {
+    it('should multiply matrix x scalar', function (): void {
       const m = math.matrix([
         [2, 0],
         [4, 0]
@@ -629,7 +635,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply matrix x matrix with zeros', function () {
+    it('should multiply matrix x matrix with zeros', function (): void {
       const m = math.matrix([
         [2, 0],
         [4, 0]
@@ -663,7 +669,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply matrix x matrix', function () {
+    it('should multiply matrix x matrix', function (): void {
       const m = math.matrix(
         [
           [1, 2],
@@ -729,7 +735,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply matrix x array', function () {
+    it('should multiply matrix x array', function (): void {
       const m = math.matrix([
         [2, 0],
         [4, 0]
@@ -754,7 +760,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply matrix x vector array', function () {
+    it('should multiply matrix x vector array', function (): void {
       const m = math.matrix([
         [2, 0],
         [4, 0]
@@ -764,29 +770,29 @@ describe('multiply', function () {
       assert.deepStrictEqual(r.valueOf(), [[4], [8]])
     })
 
-    it('should NOT squeeze scalar results of matrix * matrix', function () {
+    it('should NOT squeeze scalar results of matrix * matrix', function (): void {
       const a = math.matrix([[1, 2, 3]])
       const b = math.matrix([[4], [5], [6]])
       assert.deepStrictEqual(multiply(a, b), math.matrix([[32]]))
     })
 
-    it('should NOT squeeze scalar results of matrix * vector', function () {
+    it('should NOT squeeze scalar results of matrix * vector', function (): void {
       const a = math.matrix([[1, 2, 3]])
       const b = [4, 5, 6]
       assert.deepStrictEqual(multiply(a, b), math.matrix([32]))
     })
 
-    it('should throw an error when multiplying matrices with incompatible sizes', function () {
+    it('should throw an error when multiplying matrices with incompatible sizes', function (): void {
       // vector * vector
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(math.matrix([1, 1], 'dense'), [1, 1, 1])
       })
 
       // matrix * matrix
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(math.matrix([[1, 1]], 'dense'), [[1, 1]])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(math.matrix([[1, 1]], 'dense'), [
           [1, 1],
           [1, 1],
@@ -795,7 +801,7 @@ describe('multiply', function () {
       })
 
       // matrix * vector
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(
           math.matrix(
             [
@@ -809,7 +815,7 @@ describe('multiply', function () {
       })
 
       // vector * matrix
-      assert.throws(function () {
+      assert.throws(function (): void {
         multiply(math.matrix([1, 1, 1], 'dense'), [
           [1, 1],
           [1, 1]
@@ -817,7 +823,7 @@ describe('multiply', function () {
       })
     })
 
-    it('should multiply triangular matrices', function () {
+    it('should multiply triangular matrices', function (): void {
       const l = [
         [1, 0, 0, 0],
         [-0.5, 1, 0, 0],
@@ -852,7 +858,7 @@ describe('multiply', function () {
     const c = matrix([[5], [6]])
     const d = matrix([[5, 6]])
 
-    it('should perform element-wise multiplication if multiplying a matrix and a number', function () {
+    it('should perform element-wise multiplication if multiplying a matrix and a number', function (): void {
       approxDeepEqual(
         multiply(a, 3),
         matrix([
@@ -869,7 +875,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should perform matrix multiplication', function () {
+    it('should perform matrix multiplication', function (): void {
       approxDeepEqual(
         multiply(a, b),
         matrix([
@@ -902,8 +908,8 @@ describe('multiply', function () {
     })
   })
 
-  describe('Sparse Matrix', function () {
-    it('should multiply matrix x scalar', function () {
+  describe('Sparse Matrix', function (): void {
+    it('should multiply matrix x scalar', function (): void {
       const m = math.matrix(
         [
           [2, 0],
@@ -946,7 +952,7 @@ describe('multiply', function () {
       assert.deepStrictEqual(r._ptr, [0, 0, 0])
     })
 
-    it('should multiply matrix x matrix with zeros', function () {
+    it('should multiply matrix x matrix with zeros', function (): void {
       const m = math.matrix(
         [
           [2, 0],
@@ -986,7 +992,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply matrix x matrix', function () {
+    it('should multiply matrix x matrix', function (): void {
       const m = math.matrix(
         [
           [1, 2],
@@ -1052,7 +1058,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply matrix x array', function () {
+    it('should multiply matrix x array', function (): void {
       const m = math.matrix(
         [
           [2, 0],
@@ -1080,7 +1086,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply matrix x vector array', function () {
+    it('should multiply matrix x vector array', function (): void {
       const m = math.matrix(
         [
           [2, 0],
@@ -1093,29 +1099,29 @@ describe('multiply', function () {
       assert.deepStrictEqual(r.valueOf(), [[4], [8]])
     })
 
-    it('should NOT squeeze scalar results of matrix * matrix', function () {
+    it('should NOT squeeze scalar results of matrix * matrix', function (): void {
       const a = math.matrix([[1, 2, 3]], 'sparse')
       const b = math.matrix([[4], [5], [6]], 'sparse')
       assert.deepStrictEqual(multiply(a, b), math.matrix([[32]], 'sparse'))
     })
 
-    it('should NOT squeeze scalar results of matrix * vector', function () {
+    it('should NOT squeeze scalar results of matrix * vector', function (): void {
       const a = math.matrix([[1, 2, 3]], 'sparse')
       const b = [4, 5, 6]
       assert.deepStrictEqual(multiply(a, b), math.matrix([32], 'sparse'))
     })
 
-    it('should throw an error when multiplying matrices with incompatible sizes', function () {
+    it('should throw an error when multiplying matrices with incompatible sizes', function (): void {
       // vector * vector
-      assert.throws(function () {
+      assert.throws(function (): void {
         math.matrix([1, 1], 'sparse').multiply([1, 1, 1])
       })
 
       // matrix * matrix
-      assert.throws(function () {
+      assert.throws(function (): void {
         math.matrix([[1, 1]], 'sparse').multiply([[1, 1]])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         math.matrix([[1, 1]], 'sparse').multiply([
           [1, 1],
           [1, 1],
@@ -1124,7 +1130,7 @@ describe('multiply', function () {
       })
 
       // matrix * vector
-      assert.throws(function () {
+      assert.throws(function (): void {
         math
           .matrix(
             [
@@ -1137,7 +1143,7 @@ describe('multiply', function () {
       })
 
       // vector * matrix
-      assert.throws(function () {
+      assert.throws(function (): void {
         math.matrix([1, 1, 1], 'sparse').multiply([
           [1, 1],
           [1, 1]
@@ -1145,7 +1151,7 @@ describe('multiply', function () {
       })
     })
 
-    it('should multiply triangular matrices', function () {
+    it('should multiply triangular matrices', function (): void {
       const l = math.matrix(
         [
           [1, 0, 0, 0],
@@ -1193,7 +1199,7 @@ describe('multiply', function () {
     const c = matrix([[5], [6]], 'sparse')
     const d = matrix([[5, 6]], 'sparse')
 
-    it('should perform element-wise multiplication if multiplying a matrix and a number', function () {
+    it('should perform element-wise multiplication if multiplying a matrix and a number', function (): void {
       approxDeepEqual(
         multiply(a, 3),
         matrix(
@@ -1216,7 +1222,7 @@ describe('multiply', function () {
       )
     })
 
-    it('should perform matrix multiplication', function () {
+    it('should perform matrix multiplication', function (): void {
       approxDeepEqual(
         multiply(a, b),
         matrix(
@@ -1233,7 +1239,7 @@ describe('multiply', function () {
       approxDeepEqual(multiply(d, c), matrix([[61]], 'sparse'))
     })
 
-    it('should multiply two pattern matrices correctly', function () {
+    it('should multiply two pattern matrices correctly', function (): void {
       const a = new math.SparseMatrix({
         values: undefined,
         index: [0, 1, 2, 0],
@@ -1257,7 +1263,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply pattern and value matrices correctly', function () {
+    it('should multiply pattern and value matrices correctly', function (): void {
       const a = new math.SparseMatrix({
         values: undefined,
         index: [0, 1, 2, 0],
@@ -1281,7 +1287,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should multiply value and pattern matrices correctly', function () {
+    it('should multiply value and pattern matrices correctly', function (): void {
       const a = new math.SparseMatrix({
         values: [1, 2, 3, 4],
         index: [0, 1, 2, 0],
@@ -1306,8 +1312,8 @@ describe('multiply', function () {
     })
   })
 
-  describe('multiple arguments', function () {
-    it('should multiply more than two arguments', function () {
+  describe('multiple arguments', function (): void {
+    it('should multiply more than two arguments', function (): void {
       assert.deepStrictEqual(multiply(2, 3, 4), 24)
       assert.deepStrictEqual(multiply(2, 3, [5, 6]), [30, 36])
 
@@ -1417,8 +1423,8 @@ describe('multiply', function () {
     })
   })
 
-  describe('immutable operations', function () {
-    it('should not mutate the input (arrays)', function () {
+  describe('immutable operations', function (): void {
+    it('should not mutate the input (arrays)', function (): void {
       const a = Object.freeze([
         [1, 2],
         [3, 4]
@@ -1442,7 +1448,7 @@ describe('multiply', function () {
       ])
     })
 
-    it('should not mutate the input (arrays with nested Matrices)', function () {
+    it('should not mutate the input (arrays with nested Matrices)', function (): void {
       const a = Object.freeze([math.matrix([1, 2]), math.matrix([3, 4])])
       const b = Object.freeze([math.matrix([5, 6]), math.matrix([7, 8])])
 
@@ -1455,7 +1461,7 @@ describe('multiply', function () {
     })
   })
 
-  it('should LaTeX multiply', function () {
+  it('should LaTeX multiply', function (): void {
     const expression = math.parse('multiply(2,3)')
     assert.strictEqual(expression.toTex(), '\\left(2\\cdot3\\right)')
   })

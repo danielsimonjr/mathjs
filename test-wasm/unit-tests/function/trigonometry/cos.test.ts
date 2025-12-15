@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for cos - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -10,13 +17,13 @@ const cos = math.cos
 const bigmath = math.create({ number: 'BigNumber', precision: 15 })
 const biggermath = math.create({ number: 'BigNumber', precision: 238 })
 
-describe('cos', function () {
-  it('should return the cosine of a boolean', function () {
+describe('cos', function (): void {
+  it('should return the cosine of a boolean', function (): void {
     approxEqual(cos(true), 0.54030230586814)
     approxEqual(cos(false), 1)
   })
 
-  it('should return the cosine of a number', function () {
+  it('should return the cosine of a number', function (): void {
     approxEqual(cos(0), 1)
     approxEqual(cos((pi * 1) / 4), 0.707106781186548)
     approxEqual(cos((pi * 1) / 8), 0.923879532511287)
@@ -30,7 +37,7 @@ describe('cos', function () {
     approxEqual(cos(pi / 4), Math.SQRT1_2)
   })
 
-  it('should return the cosine of a bignumber', function () {
+  it('should return the cosine of a bignumber', function (): void {
     assert.deepStrictEqual(bigmath.cos(biggermath.bignumber(0)).toString(), '1')
 
     // 103.64 % tau = 3.109... <- pretty close to the pi boundary
@@ -79,7 +86,7 @@ describe('cos', function () {
     assert.deepStrictEqual(bigmath.cos(bigmath.tau.times(2)).toString(), '1')
   })
 
-  it('should return the cosine of a complex number', function () {
+  it('should return the cosine of a complex number', function (): void {
     const re = 4.18962569096881
     const im = 9.10922789375534
     approxDeepEqual(cos(complex('2+3i')), complex(-re, -im))
@@ -95,7 +102,7 @@ describe('cos', function () {
     approxDeepEqual(cos(complex('1e-10+1e-10i')), complex('1-1e-20i'))
   })
 
-  it('should return the cosine of an angle', function () {
+  it('should return the cosine of an angle', function (): void {
     approxEqual(cos(unit('45deg')), 0.707106781186548)
     approxEqual(cos(unit('-135deg')), -0.707106781186548)
 
@@ -111,40 +118,40 @@ describe('cos', function () {
     )
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       cos(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       cos('string')
     })
   })
 
   const cos123 = [0.54030230586814, -0.41614683654714, -0.989992496600445]
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => cos(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), cos), matrix(cos123))
   })
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => cos([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], cos), cos123)
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       cos()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       cos(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX cos', function () {
+  it('should LaTeX cos', function (): void {
     const expression = math.parse('cos(1)')
     assert.strictEqual(expression.toTex(), '\\cos\\left(1\\right)')
   })

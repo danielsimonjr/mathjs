@@ -1,9 +1,15 @@
-// @ts-nocheck
-// test nthRoot
+/**
+ * Test for nthRoot - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const matrix = math.matrix
 const sparse = math.sparse
 const unit = math.unit
@@ -11,14 +17,14 @@ const nthRoot = math.nthRoot
 const big = math.bignumber
 const complex = math.complex
 
-describe('nthRoot', function () {
-  it('should return the nthRoot of a boolean value', function () {
+describe('nthRoot', function (): void {
+  it('should return the nthRoot of a boolean value', function (): void {
     assert.strictEqual(nthRoot(true), 1)
     assert.strictEqual(nthRoot(false), 0)
     assert.strictEqual(nthRoot(1, true), 1)
   })
 
-  it('should return the nthRoot for numbers', function () {
+  it('should return the nthRoot for numbers', function (): void {
     approxEqual(nthRoot(4), 2)
     approxEqual(nthRoot(9), 3)
     approxEqual(nthRoot(8, 3), 2)
@@ -31,76 +37,76 @@ describe('nthRoot', function () {
     approxEqual(nthRoot(0.0001, 3), 0.0464158883361278)
   })
 
-  it('should return the nthRoot for very large numbers', function () {
+  it('should return the nthRoot for very large numbers', function (): void {
     approxEqual(nthRoot(2e150 * 2e150), 2e150)
     approxEqual(nthRoot(Math.pow(2, 1000)), 3.273390607896142e150)
   })
 
-  it('should return the nthRoot for small large numbers', function () {
+  it('should return the nthRoot for small large numbers', function (): void {
     approxEqual(nthRoot(4e-300), 2e-150)
   })
 
-  it('should return the nthRoot for negative numbers', function () {
+  it('should return the nthRoot for negative numbers', function (): void {
     approxEqual(nthRoot(-64, 3), -4)
     approxEqual(nthRoot(-8, 3), -2)
     // Newton's method fails in this particular case: --ericman314
     approxEqual(nthRoot(-2, 3), -1.2599210498949)
   })
 
-  it('should return the nthRoot for negative roots', function () {
+  it('should return the nthRoot for negative roots', function (): void {
     approxEqual(nthRoot(64, -3), 0.25)
     approxEqual(nthRoot(-64, -3), -0.25)
   })
 
-  it('should return the nthRoot for zero', function () {
+  it('should return the nthRoot for zero', function (): void {
     assert.strictEqual(nthRoot(0, 2), 0)
     assert.strictEqual(nthRoot(0, -2), Infinity)
   })
 
-  it('should return the nthRoot for infinity', function () {
+  it('should return the nthRoot for infinity', function (): void {
     approxEqual(nthRoot(Infinity, 2), Infinity)
     approxEqual(nthRoot(-Infinity, 3), -Infinity)
     approxEqual(nthRoot(Infinity, -3), 0)
   })
 
-  it('should throw an error when n is zero', function () {
-    assert.throws(function () {
+  it('should throw an error when n is zero', function (): void {
+    assert.throws(function (): void {
       nthRoot(4, 0)
     }, /Root must be non-zero/)
   })
 
-  it('should throw an error when value is negative and root is even', function () {
-    assert.throws(function () {
+  it('should throw an error when value is negative and root is even', function (): void {
+    assert.throws(function (): void {
       nthRoot(-27, 2)
     }, /Root must be odd when a is negative/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       nthRoot(-27, 2.5)
     }, /Root must be odd when a is negative/)
   })
 
-  it('should throw an error if invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       nthRoot()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       nthRoot(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       nthRoot(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should return the nthRoot of bignumbers', function () {
+  it('should return the nthRoot of bignumbers', function (): void {
     assert.deepStrictEqual(nthRoot(big(4)), big(2))
     assert.deepStrictEqual(nthRoot(big(9)), big(3))
     assert.deepStrictEqual(nthRoot(big(8), big(3)), big(2))
     assert.deepStrictEqual(nthRoot(big(64), big(3)), big(4))
   })
 
-  it('should return the nthRoot of negative bignumber values', function () {
+  it('should return the nthRoot of negative bignumber values', function (): void {
     assert.deepStrictEqual(
       nthRoot(big(-2), big(3)),
       big('-1.259921049894873164767210607278228350570251464701507980081975112')
@@ -108,18 +114,18 @@ describe('nthRoot', function () {
     assert.deepStrictEqual(nthRoot(big(-64), big(3)), big(-4))
   })
 
-  it('should return the nthRoot of negative bignumber roots', function () {
+  it('should return the nthRoot of negative bignumber roots', function (): void {
     assert.deepStrictEqual(nthRoot(big(64), big(-3)), big(0.25))
     assert.deepStrictEqual(nthRoot(big(-64), big(3)), big(-4))
     assert.deepStrictEqual(nthRoot(big(-64), big(-3)), big(-0.25))
   })
 
-  it('should return the nthRoot for bignumber zero', function () {
+  it('should return the nthRoot for bignumber zero', function (): void {
     assert.deepStrictEqual(nthRoot(big(0), big(2)).toString(), '0')
     assert.deepStrictEqual(nthRoot(big(0), big(-2)).toString(), 'Infinity')
   })
 
-  it('should return the nthRoot for bignumber infinity', function () {
+  it('should return the nthRoot for bignumber infinity', function (): void {
     assert.deepStrictEqual(
       nthRoot(big(Infinity), big(2)).toString(),
       'Infinity'
@@ -131,43 +137,43 @@ describe('nthRoot', function () {
     assert.deepStrictEqual(nthRoot(big(Infinity), big(-3)), big(0))
   })
 
-  it('should throw an error when used with a complex number', function () {
-    assert.throws(function () {
+  it('should throw an error when used with a complex number', function (): void {
+    assert.throws(function (): void {
       nthRoot(complex('-8'), 3)
     })
   })
 
-  it('should throw an error when used with a complex number and root is less than 0', function () {
-    assert.throws(function () {
+  it('should throw an error when used with a complex number and root is less than 0', function (): void {
+    assert.throws(function (): void {
       nthRoot(complex('-1'), -1)
     })
   })
 
-  it('should throw an error when used with a complex number and root is not an integer', function () {
-    assert.throws(function () {
+  it('should throw an error when used with a complex number and root is not an integer', function (): void {
+    assert.throws(function (): void {
       nthRoot(complex('-1 + 2i'), 0.5)
     })
   })
 
-  it('should throw an error when used on a unit', function () {
-    assert.throws(function () {
+  it('should throw an error when used on a unit', function (): void {
+    assert.throws(function (): void {
       nthRoot(unit('5cm'))
     })
   })
 
-  it('should throw an error when used on a string', function () {
-    assert.throws(function () {
+  it('should throw an error when used on a string', function (): void {
+    assert.throws(function (): void {
       nthRoot('text')
     })
   })
 
-  describe('Array', function () {
-    it('should return the nthRoot for array - scalar', function () {
+  describe('Array', function (): void {
+    it('should return the nthRoot for array - scalar', function (): void {
       approxDeepEqual(nthRoot([8, 27, 64], 3), [2, 3, 4])
       approxDeepEqual(nthRoot(64, [2, 3, 8]), [8, 4, 1.68179283050743])
     })
 
-    it('should return the nthRoot for array - array', function () {
+    it('should return the nthRoot for array - array', function (): void {
       approxDeepEqual(
         nthRoot(
           [
@@ -186,7 +192,7 @@ describe('nthRoot', function () {
       )
     })
 
-    it('should return the nthRoot for broadcastable arrays', function () {
+    it('should return the nthRoot for broadcastable arrays', function (): void {
       approxDeepEqual(nthRoot([64, 3125], [[3], [1]]), [
         [3.9999999999999996, 14.620088691064328],
         [64, 3125]
@@ -197,7 +203,7 @@ describe('nthRoot', function () {
       ])
     })
 
-    it('should return the nthRoot for array - dense matrix', function () {
+    it('should return the nthRoot for array - dense matrix', function (): void {
       approxDeepEqual(
         nthRoot(
           [
@@ -216,7 +222,7 @@ describe('nthRoot', function () {
       )
     })
 
-    it('should return the nthRoot for array - sparse matrix', function () {
+    it('should return the nthRoot for array - sparse matrix', function (): void {
       approxDeepEqual(
         nthRoot(
           [
@@ -236,8 +242,8 @@ describe('nthRoot', function () {
     })
   })
 
-  describe('DenseMatrix', function () {
-    it('should return the nthRoot for dense matrix - scalar', function () {
+  describe('DenseMatrix', function (): void {
+    it('should return the nthRoot for dense matrix - scalar', function (): void {
       approxDeepEqual(nthRoot(matrix([8, 27, 64]), 3), matrix([2, 3, 4]))
       approxDeepEqual(
         nthRoot(64, matrix([2, 3, 8])),
@@ -245,7 +251,7 @@ describe('nthRoot', function () {
       )
     })
 
-    it('should return the nthRoot for dense matrix - array', function () {
+    it('should return the nthRoot for dense matrix - array', function (): void {
       approxDeepEqual(
         nthRoot(
           matrix([
@@ -264,7 +270,7 @@ describe('nthRoot', function () {
       )
     })
 
-    it('should return the nthRoot for dense matrix - dense matrix', function () {
+    it('should return the nthRoot for dense matrix - dense matrix', function (): void {
       approxDeepEqual(
         nthRoot(
           matrix([
@@ -283,7 +289,7 @@ describe('nthRoot', function () {
       )
     })
 
-    it('should return the nthRoot for dense matrix - sparse matrix', function () {
+    it('should return the nthRoot for dense matrix - sparse matrix', function (): void {
       approxDeepEqual(
         nthRoot(
           matrix([
@@ -303,8 +309,8 @@ describe('nthRoot', function () {
     })
   })
 
-  describe('SparseMatrix', function () {
-    it('should return the nthRoot for sparse matrix - scalar', function () {
+  describe('SparseMatrix', function (): void {
+    it('should return the nthRoot for sparse matrix - scalar', function (): void {
       approxDeepEqual(
         nthRoot(
           sparse([
@@ -333,7 +339,7 @@ describe('nthRoot', function () {
       )
     })
 
-    it('should return the nthRoot for sparse matrix - array', function () {
+    it('should return the nthRoot for sparse matrix - array', function (): void {
       approxDeepEqual(
         nthRoot(
           sparse([
@@ -352,7 +358,7 @@ describe('nthRoot', function () {
       )
     })
 
-    it('should return the nthRoot for sparse matrix - dense matrix', function () {
+    it('should return the nthRoot for sparse matrix - dense matrix', function (): void {
       approxDeepEqual(
         nthRoot(
           sparse([
@@ -371,7 +377,7 @@ describe('nthRoot', function () {
       )
     })
 
-    it('should return the nthRoot for sparse matrix - sparse matrix', function () {
+    it('should return the nthRoot for sparse matrix - sparse matrix', function (): void {
       approxDeepEqual(
         nthRoot(
           sparse([
@@ -391,7 +397,7 @@ describe('nthRoot', function () {
     })
   })
 
-  it('should LaTeX nthRoot', function () {
+  it('should LaTeX nthRoot', function (): void {
     const expression = math.parse('nthRoot(8,3)')
     assert.strictEqual(expression.toTex(), '\\sqrt[3]{8}')
   })

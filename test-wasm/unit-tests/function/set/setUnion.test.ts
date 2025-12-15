@@ -1,11 +1,12 @@
-// @ts-nocheck
-// test setUnion
+/**
+ * Test for setUnion - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
-describe('setUnion', function () {
-  it('should return the union of two sets', function () {
+describe('setUnion', function (): void {
+  it('should return the union of two sets', function (): void {
     assert.deepStrictEqual(math.setUnion([1, 2], [3, 4]), [1, 2, 3, 4])
     assert.deepStrictEqual(math.setUnion(['a', 'b'], ['c', 'd']), [
       'a',
@@ -17,14 +18,14 @@ describe('setUnion', function () {
     assert.deepStrictEqual(math.setUnion([], []), [])
   })
 
-  it('should return the union of two multisets', function () {
+  it('should return the union of two multisets', function (): void {
     assert.deepStrictEqual(
       math.setUnion([1, 1, 2, 3, 4, 4], [1, 2, 3, 4, 4, 4]),
       [1, 4, 1, 2, 3, 4, 4]
     )
   })
 
-  it('should return the same type of output as the inputs', function () {
+  it('should return the same type of output as the inputs', function (): void {
     assert.strictEqual(
       math.typeOf(math.setUnion([1, 2, 3], [3, 4, 5])),
       'Array'
@@ -37,11 +38,11 @@ describe('setUnion', function () {
     )
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       math.setUnion()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.setUnion([], [], [])
     }, /TypeError: Too many arguments/)
   })

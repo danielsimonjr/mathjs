@@ -1,5 +1,6 @@
-// @ts-nocheck
-// test lup
+/**
+ * Test for qr - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxEqual, approxDeepEqual } from '../../../../../tools/approx.js'
@@ -115,8 +116,8 @@ function assertValidQRDecomposition(A, Q, R) {
   }
 }
 
-describe('qr', function () {
-  it('should decompose matrix, n x n, no permutations, array', function () {
+describe('qr', function (): void {
+  it('should decompose matrix, n x n, no permutations, array', function (): void {
     const m = [
       [15, 42],
       [20, 81]
@@ -147,7 +148,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m2, r2.Q, r2.R)
   })
 
-  it('should throw a helpfull error for sparse matricies', function () {
+  it('should throw a helpfull error for sparse matricies', function (): void {
     const m = math.matrix(
       [
         [15, 42],
@@ -159,7 +160,7 @@ describe('qr', function () {
     assert.throws(math.qr.bind(null, m))
   })
 
-  it('should decompose matrix, n x n, dense format', function () {
+  it('should decompose matrix, n x n, dense format', function (): void {
     const m = math.matrix(
       [
         [15, 42],
@@ -183,7 +184,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m, r.Q, r.R)
   })
 
-  it('should decompose matrix, n x n, with a column of zeros dense format', function () {
+  it('should decompose matrix, n x n, with a column of zeros dense format', function (): void {
     const m = math.matrix(
       [
         [5, 0, 15],
@@ -211,7 +212,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m, r.Q, r.R)
   })
 
-  it('should decompose matrix, m x n, m < n, dense format', function () {
+  it('should decompose matrix, m x n, m < n, dense format', function (): void {
     const m = math.matrix(
       [
         [15, 42, -11, 9],
@@ -251,7 +252,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m2, r2.Q, r2.R)
   })
 
-  it('should decompose matrix, m x n, m > n, dense format', function () {
+  it('should decompose matrix, m x n, m > n, dense format', function (): void {
     const m = math.matrix(
       [
         [8, 4],
@@ -299,7 +300,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m, r.Q, r.R)
   })
 
-  it('should decompose matrix, 3 x 3, zero pivote value, dense format', function () {
+  it('should decompose matrix, 3 x 3, zero pivote value, dense format', function (): void {
     const m = math.matrix([
       [1, 2, 3],
       [2, 4, 6],
@@ -326,7 +327,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m, r.Q, r.R)
   })
 
-  it('should decompose matrix, n x n, dense format', function () {
+  it('should decompose matrix, n x n, dense format', function (): void {
     const m = math.matrix([
       [math.complex(24, 3), math.complex(10)],
       [math.complex(12, 53), math.complex(1.46, 10.6)],
@@ -365,7 +366,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m, r.Q, r.R)
   })
 
-  it('should decompose matrix, m x n, n > m, complex numbers, dense format', function () {
+  it('should decompose matrix, m x n, n > m, complex numbers, dense format', function (): void {
     const m = math.evaluate(`[
       [-0.3264527816002377 + 2.493709974375747i, 27.144413452851555 - 95.38310595714056i, 24.851291758133694 - 31.358002980198492i, 17.60452153083572 - 58.02180107190187i, 29.062500250928192 - 57.24316264710557i, 5.699170296748263 - 65.11241969628546i, 19.819861372592023 + 25.900390198129045i, 16.557353232092076 - 37.25486567332457i],
       [8.548264534732331 - 47.59913064936665i, 14.40138539657334 - 90.80495969865513i, 29.343082104326758 - 15.039062252958018i, 27.20916452240602 + 25.774841219390325i, 19.38506691927698 - 95.11167912062224i, 29.17634152715012 - 95.07970712229994i, 2.1987345350210092 - 9.041770826482406i, 2.806832236244097 + 2.0385477771778966i], [24.20532702537307 + 12.879358968749457i, 25.839682426729887 - 18.102222530229938i, 29.093489513094948 - 9.581972254775465i, 12.65038940459419 - 55.38946414968438i, -0.7049513892161683 - 23.70085292748422i, 7.910814607291806 + 24.701861346839564i, 2.4219941297871004 + 28.36329723916822i, 16.535587534250833 - 38.86239252709116i],
@@ -436,7 +437,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m, r.Q, r.R)
   })
 
-  it('Prevent regression: #1669', function () {
+  it('Prevent regression: #1669', function (): void {
     const m = math.evaluate(`[
       [0, 1],
       [1, 0]
@@ -465,7 +466,7 @@ describe('qr', function () {
     assertValidQRDecomposition(m, r.Q, r.R)
   })
 
-  it('Prevent regression for complex matricies: #1669', function () {
+  it('Prevent regression for complex matricies: #1669', function (): void {
     const m = math.evaluate(`[
       [0, 1],
       [i, 0]

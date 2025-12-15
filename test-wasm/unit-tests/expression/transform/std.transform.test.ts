@@ -1,7 +1,14 @@
-// @ts-nocheck
+/**
+ * Test for std.transform - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 const Unit = math.Unit
 const std = math.expression.transform.std
@@ -72,25 +79,25 @@ describe('std.transform', function () {
   })
 
   it('should throw an error if called with an invalid one based index', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(inputMatrix, 0)
     }, /Index out of range/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(inputMatrix, 4)
     }, /Index out of range/)
   })
 
   it('should throw an error if called with invalid type of arguments', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(new Date(), 2)
     }, /Cannot calculate std, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(2, 3, null)
     }, /Cannot calculate std, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std([2, 3, null])
     }, /Cannot calculate std, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(
         [
           [2, 4, 6],
@@ -100,7 +107,7 @@ describe('std.transform', function () {
         0
       )
     }, /Cannot convert "biased" to a number/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(
         [
           [2, 4, 6],
@@ -113,7 +120,7 @@ describe('std.transform', function () {
   })
 
   it('should throw an error if called with an empty array', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       std([])
     })
   })
@@ -141,7 +148,7 @@ describe('std.transform', function () {
   it('should not compute the standard deviation value of quantities with incompatible units', function () {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'kg')
-    assert.throws(function () {
+    assert.throws(function (): void {
       std([a, b])
     }, /Units do not match/)
   })

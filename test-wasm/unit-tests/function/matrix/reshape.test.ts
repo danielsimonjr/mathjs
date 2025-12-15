@@ -1,10 +1,17 @@
-// @ts-nocheck
+/**
+ * Test for reshape - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { DimensionError } from '../../../../src/error/DimensionError.js'
 
-describe('reshape', function () {
-  it('should reshape an array', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('reshape', function (): void {
+  it('should reshape an array', function (): void {
     const array = [
       [0, 1, 2],
       [3, 4, 5]
@@ -22,7 +29,7 @@ describe('reshape', function () {
     ])
   })
 
-  it('should reshape an array with bignumbers', function () {
+  it('should reshape an array with bignumbers', function (): void {
     const zero = math.bignumber(0)
     const one = math.bignumber(1)
     const two = math.bignumber(2)
@@ -34,7 +41,7 @@ describe('reshape', function () {
     ])
   })
 
-  it('should reshape a matrix', function () {
+  it('should reshape a matrix', function (): void {
     const matrix = math.matrix([
       [0, 1, 2],
       [3, 4, 5]
@@ -66,12 +73,12 @@ describe('reshape', function () {
     )
   })
 
-  it('should reshape a flat single-element array into multiple dimensions', function () {
+  it('should reshape a flat single-element array into multiple dimensions', function (): void {
     const array = [3]
     assert.deepStrictEqual(math.reshape(array, [1, 1, 1]), [[[3]]])
   })
 
-  it('should reshape a vector into a 2d matrix', function () {
+  it('should reshape a vector into a 2d matrix', function (): void {
     const math2 = math.create({ matrix: 'Array' })
     assert.deepStrictEqual(math2.reshape([1, 2, 3, 4, 5, 6], [3, 2]), [
       [1, 2],
@@ -80,7 +87,7 @@ describe('reshape', function () {
     ])
   })
 
-  it('should reshape 2d matrix into a vector', function () {
+  it('should reshape 2d matrix into a vector', function (): void {
     const math2 = math.create({ matrix: 'Array' })
     assert.deepStrictEqual(
       math2.reshape(
@@ -95,37 +102,37 @@ describe('reshape', function () {
     )
   })
 
-  it('should throw an error on invalid arguments', function () {
-    assert.throws(function () {
+  it('should throw an error on invalid arguments', function (): void {
+    assert.throws(function (): void {
       math.reshape()
     }, /Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([])
     }, /Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([], 2)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([], [], 4)
     }, /Too many arguments/)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([], ['no number'])
     }, /Cannot convert/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([], [2.3])
     }, /Invalid size/)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([1, 2], [])
     }, DimensionError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([1, 2], [0])
     }, DimensionError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([1, 2], [0, 0])
     }, DimensionError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([[1, 2]], [0])
     }, DimensionError)
     assert.doesNotThrow(function () {
@@ -136,7 +143,7 @@ describe('reshape', function () {
     })
   })
 
-  it('should LaTeX reshape', function () {
+  it('should LaTeX reshape', function (): void {
     const expression = math.parse('reshape([1,2],1)')
     assert.strictEqual(
       expression.toTex(),
@@ -144,7 +151,7 @@ describe('reshape', function () {
     )
   })
 
-  it('should reshape a SparseMatrix', function () {
+  it('should reshape a SparseMatrix', function (): void {
     /*
      * Must use toArray because SparseMatrix.reshape currently does not preserve
      * the order of the _index and _values arrays (this does not matter?)
@@ -191,27 +198,27 @@ describe('reshape', function () {
     ])
   })
 
-  it('should throw on attempting to reshape an ImmutableDenseMatrix', function () {
+  it('should throw on attempting to reshape an ImmutableDenseMatrix', function (): void {
     const immutableMatrix = new math.ImmutableDenseMatrix([
       [1, 2],
       [3, 4]
     ])
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape(immutableMatrix, [1, 4])
     }, /Cannot invoke reshape on an Immutable Matrix instance/)
   })
 
-  it('should throw on attempting to reshape a Matrix (abstract type)', function () {
+  it('should throw on attempting to reshape a Matrix (abstract type)', function (): void {
     const matrix = new math.Matrix([
       [1, 2],
       [3, 4]
     ])
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape(matrix, [1, 4])
     }, /Cannot invoke reshape on a Matrix interface/)
   })
 
-  it('should support only one wildcard', function () {
+  it('should support only one wildcard', function (): void {
     assert.deepStrictEqual(math.reshape([1, 2, 3, 4], [-1, 2]), [
       [1, 2],
       [3, 4]
@@ -226,19 +233,19 @@ describe('reshape', function () {
       ),
       [1, 2, 3, 4]
     )
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([1, 2], [-1, -1])
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape([1], [-1, -1])
     })
   })
 
-  it('should throw an error when wildcard cannot be replaced', function () {
-    assert.throws(function () {
+  it('should throw an error when wildcard cannot be replaced', function (): void {
+    assert.throws(function (): void {
       math.reshape([1, 2, 3, 4], [-1, 3])
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.reshape(
         [
           [1, 2, 3],
@@ -249,7 +256,7 @@ describe('reshape', function () {
     })
   })
 
-  it('should use wildcard with DenseMatrix', function () {
+  it('should use wildcard with DenseMatrix', function (): void {
     const matrix = math.matrix([
       [0, 1, 2],
       [3, 4, 5]
@@ -272,7 +279,7 @@ describe('reshape', function () {
     )
   })
 
-  it('should use wildcard with SparseArray', function () {
+  it('should use wildcard with SparseArray', function (): void {
     const matrix = math.matrix(
       [
         [0, 1, 2],
@@ -292,7 +299,7 @@ describe('reshape', function () {
     ])
   })
 
-  it("should update a matrix's size correctly when using wildcard", function () {
+  it("should update a matrix's size correctly when using wildcard", function (): void {
     const matrix = math.matrix([
       [0, 1, 2],
       [3, 4, 5]
@@ -301,7 +308,7 @@ describe('reshape', function () {
     assert.deepStrictEqual(size, [3, 2])
   })
 
-  it('should be parseable', function () {
+  it('should be parseable', function (): void {
     assert.deepStrictEqual(
       math.evaluate('reshape([0,1,2,3,4,5], [-1,2])'),
       math.matrix([

@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for pinv - AssemblyScript-friendly TypeScript
+ */
 // test pinv
 import assert from 'assert'
 import { approxDeepEqual } from '../../../../tools/approx.js'
@@ -52,7 +54,12 @@ function assertValidPinv(A, A_) {
   )
 }
 
-describe('pinv', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('pinv', function (): void {
   function check(A, A_, strict = false) {
     const pinvA = pinv(A)
     if (A_) {
@@ -75,17 +82,17 @@ describe('pinv', function () {
     }
   }
 
-  it('should return the inverse of a number', function () {
+  it('should return the inverse of a number', function (): void {
     check(4, 1 / 4, true)
     check(math.bignumber(4), math.bignumber(1 / 4), true)
   })
 
-  it('should return the inverse of a matrix with just one value', function () {
+  it('should return the inverse of a matrix with just one value', function (): void {
     check([4], [1 / 4], true)
     check([[4]], [[1 / 4]], true)
   })
 
-  it('should return the inverse for each element in an array', function () {
+  it('should return the inverse for each element in an array', function (): void {
     check([4], [1 / 4], true)
     check([[4]], [[1 / 4]], true)
 
@@ -142,7 +149,7 @@ describe('pinv', function () {
     )
   })
 
-  it('should return the inverse for each element in a matrix', function () {
+  it('should return the inverse for each element in a matrix', function (): void {
     check(math.matrix([4]), math.matrix([1 / 4]), true)
     check(math.matrix([[4]]), math.matrix([[1 / 4]]), true)
     check(math.matrix([[4]], 'sparse'), math.matrix([[1 / 4]], 'sparse'), true)
@@ -165,7 +172,7 @@ describe('pinv', function () {
     )
   })
 
-  it('should return the Moore–Penrose inverse of complex matrices', function () {
+  it('should return the Moore–Penrose inverse of complex matrices', function (): void {
     check(
       math.evaluate(`[
           [0.4032 + 0.0876i,   0.1678 + 0.0390i,   0.5425 + 0.5118i],
@@ -180,7 +187,7 @@ describe('pinv', function () {
     )
   })
 
-  it('should return the Moore–Penrose inverse of non-square matrices', function () {
+  it('should return the Moore–Penrose inverse of non-square matrices', function (): void {
     check([[0, 0]], [[0], [0]], true)
 
     check([1, 2, 3], [1 / 14, 2 / 14, 3 / 14])
@@ -220,8 +227,8 @@ describe('pinv', function () {
     ])
   })
 
-  it('should throw an error in case of multi dimensional matrices', function () {
-    assert.throws(function () {
+  it('should throw an error in case of multi dimensional matrices', function (): void {
+    assert.throws(function (): void {
       pinv([
         [
           [1, 2, 3],
@@ -231,7 +238,7 @@ describe('pinv', function () {
     }, /Matrix must be two dimensional/)
   })
 
-  it('should return the Moore–Penrose inverse of non-invertable matrices', function () {
+  it('should return the Moore–Penrose inverse of non-invertable matrices', function (): void {
     check([[0]], [[0]], true)
     check(
       [
@@ -257,22 +264,22 @@ describe('pinv', function () {
     )
   })
 
-  it('should throw an error in case of wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       pinv()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       pinv([], [])
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an error in case of invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       math.concat(pinv(new Date()))
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should  LaTeX pinv', function () {
+  it('should  LaTeX pinv', function (): void {
     const expression = math.parse('pinv([[1,2],[3,4]])')
     assert.strictEqual(
       expression.toTex(),

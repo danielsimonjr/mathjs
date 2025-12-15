@@ -1,11 +1,12 @@
-// @ts-nocheck
-// test setIntersect
+/**
+ * Test for setIntersect - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
-describe('setIntersect', function () {
-  it('should return the intersection of two sets', function () {
+describe('setIntersect', function (): void {
+  it('should return the intersection of two sets', function (): void {
     assert.deepStrictEqual(math.setIntersect([1, 2, 3], [3, 4]), [3])
     assert.deepStrictEqual(math.setIntersect([1, 2], [3, 4]), [])
     assert.deepStrictEqual(math.setIntersect(['a', 'b', 'c'], ['c', 'd']), [
@@ -22,7 +23,7 @@ describe('setIntersect', function () {
     assert.deepStrictEqual(math.setIntersect([], []), [])
   })
 
-  it('should return the intersection of two multisets', function () {
+  it('should return the intersection of two multisets', function (): void {
     assert.deepStrictEqual(
       math.setIntersect([1, 1, 2, 3, 4, 4], [1, 2, 3, 4, 4, 4]),
       [1, 2, 3, 4, 4]
@@ -33,7 +34,7 @@ describe('setIntersect', function () {
     )
   })
 
-  it('should return the same type of output as the inputs', function () {
+  it('should return the same type of output as the inputs', function (): void {
     assert.strictEqual(
       math.typeOf(math.setIntersect([1, 2, 3], [3, 4, 5])),
       'Array'
@@ -46,11 +47,11 @@ describe('setIntersect', function () {
     )
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       math.setIntersect()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.setIntersect([], [], [])
     }, /TypeError: Too many arguments/)
   })

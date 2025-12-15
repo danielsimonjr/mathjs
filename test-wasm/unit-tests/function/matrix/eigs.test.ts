@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for eigs - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -21,14 +23,14 @@ const {
   Complex
 } = math
 
-describe('eigs', function () {
+describe('eigs', function (): void {
   // helper to examine eigenvectors
   function testEigenvectors(soln, predicate) {
     soln.eigenvectors.forEach((ev, i) => predicate(ev.vector, i))
   }
 
-  it('only accepts a square matrix', function () {
-    assert.throws(function () {
+  it('only accepts a square matrix', function (): void {
+    assert.throws(function (): void {
       eigs(
         matrix([
           [1, 2, 3],
@@ -36,30 +38,30 @@ describe('eigs', function () {
         ])
       )
     }, /Matrix must be square/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       eigs([
         [1, 2, 3],
         [4, 5, 6]
       ])
     }, /Matrix must be square/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       eigs([
         [1, 2],
         [4, 5, 6]
       ])
     }, /DimensionError: Dimension mismatch/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       eigs([4, 5, 6])
     }, /Matrix must be square/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       eigs(1.0)
     }, /TypeError: Unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       eigs('random')
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('follows aiao-mimo', function () {
+  it('follows aiao-mimo', function (): void {
     const realSymArray = eigs([
       [1, 0],
       [0, 1]
@@ -112,8 +114,8 @@ describe('eigs', function () {
     })
   })
 
-  it('only accepts a matrix with valid element type', function () {
-    assert.throws(function () {
+  it('only accepts a matrix with valid element type', function (): void {
+    assert.throws(function (): void {
       eigs([
         ['x', 2],
         [4, 5]
@@ -121,7 +123,7 @@ describe('eigs', function () {
     }, /Cannot convert "x" to a number/)
   })
 
-  it('eigenvalue check for diagonal matrix', function () {
+  it('eigenvalue check for diagonal matrix', function (): void {
     // trivial test
     approxDeepEqual(
       eigs([
@@ -148,7 +150,7 @@ describe('eigs', function () {
     )
   })
 
-  it('calculates eigenvalues for 2x2 simple matrix', function () {
+  it('calculates eigenvalues for 2x2 simple matrix', function (): void {
     // 2x2 test
     approxDeepEqual(
       eigs([
@@ -175,7 +177,7 @@ describe('eigs', function () {
     )
   })
 
-  it('calculates eigenvalues for 2x2 matrix with complex entries', function () {
+  it('calculates eigenvalues for 2x2 matrix with complex entries', function (): void {
     approxDeepEqual(
       eigs([
         [3, -2],
@@ -192,7 +194,7 @@ describe('eigs', function () {
     )
   })
 
-  it('calculates eigenvalues for 3x3 and 4x4 matrix', function () {
+  it('calculates eigenvalues for 3x3 and 4x4 matrix', function (): void {
     // 3x3 test and 4x4
     approxDeepEqual(
       eigs([
@@ -233,7 +235,7 @@ describe('eigs', function () {
     assert.ok(!('eigenvectors' in justEigs))
   })
 
-  it('calculates eigenvalues and eigenvectors for 5x5 matrix', function () {
+  it('calculates eigenvalues and eigenvectors for 5x5 matrix', function (): void {
     const m = zeros([5, 5])
     m[4][3] = m[3][4] = m[3][2] = m[2][4] = 1
 
@@ -271,7 +273,7 @@ describe('eigs', function () {
     }
   })
 
-  it('eigenvector check', function () {
+  it('eigenvector check', function (): void {
     const H = [
       [-4.78, -1.0, -2.59, -3.26, 4.24, 4.14],
       [-1.0, -2.45, -0.92, -2.33, -4.68, 4.27],
@@ -298,7 +300,7 @@ describe('eigs', function () {
     approxDeepEqual(Ei, E)
   })
 
-  it('complex matrix eigenvector check', function () {
+  it('complex matrix eigenvector check', function (): void {
     // Example from issue #2478
     const A = [
       [1, 2, 3],
@@ -314,7 +316,7 @@ describe('eigs', function () {
     )
   })
 
-  it('supports fractions', function () {
+  it('supports fractions', function (): void {
     const aij = fraction('1/2')
     approxDeepEqual(
       eigs([
@@ -326,7 +328,7 @@ describe('eigs', function () {
     )
   })
 
-  it('handles some 2x2 defective matrices', function () {
+  it('handles some 2x2 defective matrices', function (): void {
     const check = eigs([
       [2.0, 1.0],
       [0.0, 2.0]
@@ -344,7 +346,7 @@ describe('eigs', function () {
     approxEqual(vec[0], vec[1])
   })
 
-  it('handles a 3x3 defective matrix', function () {
+  it('handles a 3x3 defective matrix', function (): void {
     const fromWeb = eigs([
       [2, -5, 0],
       [0, 2, 0],
@@ -375,7 +377,7 @@ describe('eigs', function () {
     approxEqual(ev2[1].vector[1], 2 * ev2[1].vector[0])
   })
 
-  it('accepts a precision argument', function () {
+  it('accepts a precision argument', function (): void {
     // The following is a matrix with an algebraically triple eigenvalue
     // equal to 2 which has a unique eigenvector (up to scale, of course).
     // It is from https://web.uvic.ca/~tbazett/diffyqs/sec_multeigen.html
@@ -403,7 +405,7 @@ describe('eigs', function () {
     assert.ok(!('eigenvectors' in stillbad))
   })
 
-  it('diagonalizes matrix with bigNumber', function () {
+  it('diagonalizes matrix with bigNumber', function (): void {
     const x = [
       [bignum(1), bignum(0)],
       [bignum(0), bignum(1)]
@@ -439,7 +441,7 @@ describe('eigs', function () {
     approxDeepEqual(Ei, E)
   })
 
-  it('actually calculates BigNumbers input with BigNumber precision', function () {
+  it('actually calculates BigNumbers input with BigNumber precision', function (): void {
     const B = bignum([
       [0, 1],
       [1, 0]

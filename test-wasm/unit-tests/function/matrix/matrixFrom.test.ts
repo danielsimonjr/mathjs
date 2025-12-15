@@ -1,12 +1,14 @@
-// @ts-nocheck
+/**
+ * Test for matrixFrom - AssemblyScript-friendly TypeScript
+ */
 // test zeros
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 const matrix = math.matrix
 
-describe('matrixFrom...', function () {
-  it('...Function', function () {
+describe('matrixFrom...', function (): void {
+  it('...Function', function (): void {
     let expected, actual
 
     // an antisymmetric matrix (array)
@@ -58,7 +60,7 @@ describe('matrixFrom...', function () {
     // TODO test datatype
   })
 
-  it('...Rows', function () {
+  it('...Rows', function (): void {
     const expected = [
       [1, 2, 3],
       [4, 5, 6],
@@ -103,7 +105,7 @@ describe('matrixFrom...', function () {
     assert.deepStrictEqual(actual, expected)
   })
 
-  it('...Columns', function () {
+  it('...Columns', function (): void {
     const expected = [
       [1, 4, 7],
       [2, 5, 8],

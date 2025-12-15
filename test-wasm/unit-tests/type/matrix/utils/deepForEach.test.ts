@@ -1,19 +1,21 @@
-// @ts-nocheck
+/**
+ * Test for deepForEach - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../../src/defaultInstance.ts'
 import { deepForEach } from '../../../../../src/utils/collection.js'
 
 const DenseMatrix = math.DenseMatrix
 
-describe('deepForEach', function () {
-  it('should iterate over all elements in a simple array', function () {
+describe('deepForEach', function (): void {
+  it('should iterate over all elements in a simple array', function (): void {
     const array = [1, 2, 3]
     const result = []
     deepForEach(array, (value) => result.push(value))
     assert.deepStrictEqual(result, [1, 2, 3])
   })
 
-  it('should iterate over all elements in a nested array', function () {
+  it('should iterate over all elements in a nested array', function (): void {
     const array = [
       [1, 2],
       [3, [4, 5]]
@@ -23,28 +25,28 @@ describe('deepForEach', function () {
     assert.deepStrictEqual(result, [1, 2, 3, 4, 5])
   })
 
-  it('should iterate over all elements in a mixed type array', function () {
+  it('should iterate over all elements in a mixed type array', function (): void {
     const array = [1, 'two', [3, null, undefined, true]]
     const result = []
     deepForEach(array, (value) => result.push(value))
     assert.deepStrictEqual(result, [1, 'two', 3, null, undefined, true])
   })
 
-  it('should handle an empty array', function () {
+  it('should handle an empty array', function (): void {
     const array = []
     const result = []
     deepForEach(array, (value) => result.push(value))
     assert.deepStrictEqual(result, [])
   })
 
-  it('should handle an array with empty nested arrays', function () {
+  it('should handle an array with empty nested arrays', function (): void {
     const array = [[], [1, []], [2, [3, []]]]
     const result = []
     deepForEach(array, (value) => result.push(value))
     assert.deepStrictEqual(result, [1, 2, 3])
   })
 
-  it('should iterate over all elements in a DenseMatrix', function () {
+  it('should iterate over all elements in a DenseMatrix', function (): void {
     const matrix = new DenseMatrix([
       [1, 2],
       [3, 4]
@@ -54,7 +56,7 @@ describe('deepForEach', function () {
     assert.deepStrictEqual(result, [1, 2, 3, 4])
   })
 
-  it('should call the callback with each element of a matrix after converting to array', function () {
+  it('should call the callback with each element of a matrix after converting to array', function (): void {
     const matrix = math.matrix([
       [1, 2],
       [3, 4]
@@ -64,7 +66,7 @@ describe('deepForEach', function () {
     assert.deepStrictEqual(result, [1, 2, 3, 4])
   })
 
-  it('should work with arrays containing complex numbers', function () {
+  it('should work with arrays containing complex numbers', function (): void {
     const array = [math.complex(2, 3), [math.complex(4, 5)]]
     const result = []
     deepForEach(array, (value) => result.push(value))

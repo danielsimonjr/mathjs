@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for zeta - AssemblyScript-friendly TypeScript
+ */
 /* eslint-disable no-loss-of-precision */
 
 import assert from 'assert'
@@ -12,8 +14,8 @@ function approxEqual(a, b) {
   _approxEqual(a, b, epsilon)
 }
 
-describe('Riemann Zeta', function () {
-  it('should calculate the Riemann Zeta Function of a positive integer', function () {
+describe('Riemann Zeta', function (): void {
+  it('should calculate the Riemann Zeta Function of a positive integer', function (): void {
     assert.ok(isNaN(zeta(1)))
     approxEqual(zeta(2), 1.6449340668482264)
     approxEqual(zeta(3), 1.2020569031595942)
@@ -22,7 +24,7 @@ describe('Riemann Zeta', function () {
     assert.strictEqual(zeta(Infinity), 1) // shouldn't stall
   })
 
-  it('should calculate the Riemann Zeta Function of a non-positive integer', function () {
+  it('should calculate the Riemann Zeta Function of a non-positive integer', function (): void {
     assert.strictEqual(zeta(0), -0.5)
     approxEqual(zeta(-1), -1 / 12)
     approxEqual(zeta(-2), 0)
@@ -31,7 +33,7 @@ describe('Riemann Zeta', function () {
     assert.ok(isNaN(zeta(-Infinity)))
   })
 
-  it('should calculate the Riemann Zeta Function of a BigNumber', function () {
+  it('should calculate the Riemann Zeta Function of a BigNumber', function (): void {
     const bigEpsilon = 1e-5 // FIXME: should work with for example an epsilon of 1e-64
     const digits = Math.abs(Math.log10(bigEpsilon))
 
@@ -89,7 +91,7 @@ describe('Riemann Zeta', function () {
     bigApproxEqual(zeta(math2.bignumber(-Infinity)), math2.bignumber(NaN)) // shouldn't stall
   })
 
-  it('should calculate the Riemann Zeta Function of a rational number', function () {
+  it('should calculate the Riemann Zeta Function of a rational number', function (): void {
     approxEqual(zeta(0.125), -0.6327756234986952552935)
     approxEqual(zeta(0.25), -0.81327840526189165652144)
     approxEqual(zeta(0.5), -1.460354508809586812889499)
@@ -104,7 +106,7 @@ describe('Riemann Zeta', function () {
     approxEqual(zeta(-2.5), 0.00851692877785033054235856)
   })
 
-  it('should calculate the Riemann Zeta Function of an irrational number', function () {
+  it('should calculate the Riemann Zeta Function of an irrational number', function (): void {
     approxEqual(zeta(Math.SQRT2), 3.0207376794860326682709)
     approxEqual(zeta(Math.PI), 1.17624173838258275887215)
     approxEqual(zeta(Math.E), 1.26900960433571711576556)
@@ -114,7 +116,7 @@ describe('Riemann Zeta', function () {
     approxEqual(zeta(-Math.E), 0.00915987755942023170457566822)
   })
 
-  it('should calculate the Riemann Zeta Function of a Complex number', function () {
+  it('should calculate the Riemann Zeta Function of a Complex number', function (): void {
     approxEqual(
       zeta(math.complex(0, 1)),
       math.complex(0.00330022368532410287421711, -0.418155449141321676689274239)

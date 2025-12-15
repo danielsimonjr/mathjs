@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for is - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
 import {
@@ -9,20 +11,25 @@ import {
   isString
 } from '../../../src/utils/is.js'
 
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 const { bignumber, complex, fraction, matrix, parse } = math
 
-describe('is', function () {
-  it('isObject', function () {
+describe('is', function (): void {
+  it('isObject', function (): void {
     assert.strictEqual(isObject({}), true)
     assert.strictEqual(isObject(matrix()), false)
     assert.strictEqual(isObject([]), false)
     assert.strictEqual(isObject(fraction(1, 2)), false)
     assert.strictEqual(isObject(bignumber(2)), false)
     assert.strictEqual(isObject(complex(2, 3)), false)
-    assert.strictEqual(isObject(parse('2')), false)
+    assert.strictEqual(isObject(parse('2') as MathNode), false)
     assert.strictEqual(isObject(/test/), false)
     assert.strictEqual(
-      isObject(function () {}),
+      isObject(function (): void {}),
       false
     )
     assert.strictEqual(isObject(2), false)
@@ -31,7 +38,7 @@ describe('is', function () {
     assert.strictEqual(isObject(), false)
   })
 
-  it('isBoolean', function () {
+  it('isBoolean', function (): void {
     assert.strictEqual(isBoolean(true), true)
     assert.strictEqual(isBoolean(false), true)
     assert.strictEqual(isBoolean(Boolean(false)), true)
@@ -42,7 +49,7 @@ describe('is', function () {
     assert.strictEqual(isBoolean(new Date()), false)
   })
 
-  it('isString', function () {
+  it('isString', function (): void {
     assert.strictEqual(isString('hi'), true)
     assert.strictEqual(isString(String('hi')), true)
 
@@ -51,7 +58,7 @@ describe('is', function () {
     assert.strictEqual(isString(new Date()), false)
   })
 
-  it('isNumber', function () {
+  it('isNumber', function (): void {
     assert.strictEqual(isNumber(1), true)
     assert.strictEqual(isNumber(2e3), true)
     assert.strictEqual(isNumber(Number(2.3)), true)
@@ -72,7 +79,7 @@ describe('is', function () {
     assert.strictEqual(isNumber(), false)
   })
 
-  it('isBigInt', function () {
+  it('isBigInt', function (): void {
     assert.strictEqual(isBigInt(2n), true)
     assert.strictEqual(isBigInt(BigInt(2)), true)
     assert.strictEqual(isBigInt(2), false)

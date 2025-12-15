@@ -1,9 +1,16 @@
-// @ts-nocheck
+/**
+ * Test for forEach - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
-describe('forEach', function () {
-  it('should iterate over all elements of the matrix', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('forEach', function (): void {
+  it('should iterate over all elements of the matrix', function (): void {
     const m = math.matrix([1, 2, 3])
     const output = []
     math.forEach(m, function (value) {
@@ -12,7 +19,7 @@ describe('forEach', function () {
     assert.deepStrictEqual(output, [1, 2, 3])
   })
 
-  it('should iterate deep over all elements in the array', function () {
+  it('should iterate deep over all elements in the array', function (): void {
     const arr = [1, 2, 3]
     const output = []
     math.forEach(arr, function (value) {
@@ -21,7 +28,7 @@ describe('forEach', function () {
     assert.deepStrictEqual(output, [1, 2, 3])
   })
 
-  it('should invoke a typed function with correct number of arguments (1)', function () {
+  it('should invoke a typed function with correct number of arguments (1)', function (): void {
     const output = []
     math.forEach(
       [1, 2, 3],
@@ -38,7 +45,7 @@ describe('forEach', function () {
     ])
   })
 
-  it('should invoke a typed function with correct number of arguments (2)', function () {
+  it('should invoke a typed function with correct number of arguments (2)', function (): void {
     const arr = [1, 2, 3]
     const output = []
     math.forEach(
@@ -56,7 +63,7 @@ describe('forEach', function () {
     ])
   })
 
-  it('should invoke callback with 3 parameters (value, index, obj)', function () {
+  it('should invoke callback with 3 parameters (value, index, obj)', function (): void {
     const arr = [
       [1, 2, 3],
       [4, 5, 6]
@@ -77,7 +84,7 @@ describe('forEach', function () {
     ])
   })
 
-  it('should invoke callback with 3 parameters when not providing explicit arguments', function () {
+  it('should invoke callback with 3 parameters when not providing explicit arguments', function (): void {
     const arr = [1, 2, 3]
     const output = []
 
@@ -88,7 +95,7 @@ describe('forEach', function () {
     assert.deepStrictEqual(output, [3, 3, 3])
   })
 
-  it('should not throw on empty arrays/matrices, with a typed callback', function () {
+  it('should not throw on empty arrays/matrices, with a typed callback', function (): void {
     const testCases = [
       [],
       [[]],
@@ -135,34 +142,34 @@ describe('forEach', function () {
     })
   })
 
-  it('should not throw an error on an empty array with a typed function', function () {
+  it('should not throw an error on an empty array with a typed function', function (): void {
     assert.doesNotThrow(function () {
       math.forEach([], math.square)
     })
   })
 
-  it('should not throw an error on an empty matrix with a typed function', function () {
+  it('should not throw an error on an empty matrix with a typed function', function (): void {
     assert.doesNotThrow(function () {
       math.forEach(math.matrix([]), math.square)
     })
   })
 
-  it('should throw an error if called with unsupported type', function () {
-    assert.throws(function () {
+  it('should throw an error if called with unsupported type', function (): void {
+    assert.throws(function (): void {
       math.forEach(1, function () {})
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.forEach('arr', function () {})
     })
   })
 
-  it('should throw an error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       math.forEach([1, 2, 3])
     })
   })
 
-  it('should LaTeX forEach', function () {
+  it('should LaTeX forEach', function (): void {
     const expression = math.parse('forEach([1,2,3],callback)')
     assert.strictEqual(
       expression.toTex(),

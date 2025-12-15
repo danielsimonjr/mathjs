@@ -1,12 +1,19 @@
-// @ts-nocheck
+/**
+ * Test for lcm - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const matrix = math.matrix
 const sparse = math.sparse
 const lcm = math.lcm
 
-describe('lcm', function () {
-  it('should find the lowest common multiple of two or more numbers', function () {
+describe('lcm', function (): void {
+  it('should find the lowest common multiple of two or more numbers', function (): void {
     assert.strictEqual(lcm(4, 6), 12)
     assert.strictEqual(lcm(4, -6), 12)
     assert.strictEqual(lcm(6, 4), 12)
@@ -15,12 +22,12 @@ describe('lcm', function () {
     assert.strictEqual(lcm(21, 6), 42)
     assert.strictEqual(lcm(3, -4, 24), 24)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       lcm(1)
     }, /TypeError: Too few arguments/)
   })
 
-  it('should calculate lcm for edge cases around zero', function () {
+  it('should calculate lcm for edge cases around zero', function (): void {
     assert.strictEqual(lcm(3, 0), 0)
     assert.strictEqual(lcm(-3, 0), 0)
     assert.strictEqual(lcm(0, 3), 0)
@@ -38,7 +45,7 @@ describe('lcm', function () {
     assert.strictEqual(lcm(0, 0), 0)
   })
 
-  it('should calculate lcm for BigNumbers', function () {
+  it('should calculate lcm for BigNumbers', function (): void {
     assert.deepStrictEqual(
       lcm(math.bignumber(4), math.bignumber(6)),
       math.bignumber(12)
@@ -49,34 +56,34 @@ describe('lcm', function () {
     )
   })
 
-  it('should calculate lcm for mixed BigNumbers and Numbers', function () {
+  it('should calculate lcm for mixed BigNumbers and Numbers', function (): void {
     assert.deepStrictEqual(lcm(math.bignumber(4), 6), math.bignumber(12))
     assert.deepStrictEqual(lcm(4, math.bignumber(6)), math.bignumber(12))
   })
 
-  it('should find the lowest common multiple of booleans', function () {
+  it('should find the lowest common multiple of booleans', function (): void {
     assert.strictEqual(lcm(true, true), 1)
     assert.strictEqual(lcm(true, false), 0)
     assert.strictEqual(lcm(false, true), 0)
     assert.strictEqual(lcm(false, false), 0)
   })
 
-  it('should throw an error for non-integer numbers', function () {
-    assert.throws(function () {
+  it('should throw an error for non-integer numbers', function (): void {
+    assert.throws(function (): void {
       lcm(2, 4.1)
     }, /Parameters in function lcm must be integer numbers/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       lcm(2.3, 4)
     }, /Parameters in function lcm must be integer numbers/)
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       lcm(null, 2)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should throw an error with complex numbers', function () {
+  it('should throw an error with complex numbers', function (): void {
     assert.throws(
       function () {
         lcm(math.complex(1, 3), 2)
@@ -86,28 +93,28 @@ describe('lcm', function () {
     )
   })
 
-  it('should convert strings to numbers', function () {
+  it('should convert strings to numbers', function (): void {
     assert.strictEqual(lcm('4', '6'), 12)
     assert.strictEqual(lcm('4', 6), 12)
     assert.strictEqual(lcm(4, '6'), 12)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       lcm('a', 2)
     }, /Cannot convert "a" to a number/)
   })
 
-  it('should find the least common multiple of fractions', function () {
+  it('should find the least common multiple of fractions', function (): void {
     const a = math.fraction(5, 8)
     assert.strictEqual(lcm(a, math.fraction(3, 7)).toString(), '15')
     assert.strictEqual(a.toString(), '0.625')
   })
 
-  it('should find the least common multiple of mixed numbers and fractions', function () {
+  it('should find the least common multiple of mixed numbers and fractions', function (): void {
     assert.deepStrictEqual(lcm(math.fraction(12), 8), math.fraction(24))
     assert.deepStrictEqual(lcm(12, math.fraction(8)), math.fraction(24))
   })
 
-  it('should find the least common even for edge cases', function () {
+  it('should find the least common even for edge cases', function (): void {
     assert.deepStrictEqual(
       lcm(math.fraction(-3), math.fraction(3)),
       math.fraction(3)
@@ -138,7 +145,7 @@ describe('lcm', function () {
     )
   })
 
-  it('should throw an error with units', function () {
+  it('should throw an error with units', function (): void {
     assert.throws(
       function () {
         lcm(math.unit('5cm'), 2)
@@ -148,13 +155,13 @@ describe('lcm', function () {
     )
   })
 
-  describe('Array', function () {
-    it('should find the greatest common divisor array - scalar', function () {
+  describe('Array', function (): void {
+    it('should find the greatest common divisor array - scalar', function (): void {
       assert.deepStrictEqual(lcm([5, 18, 3], 3), [15, 18, 3])
       assert.deepStrictEqual(lcm(3, [5, 18, 3]), [15, 18, 3])
     })
 
-    it('should find the greatest common divisor array - scalar', function () {
+    it('should find the greatest common divisor array - scalar', function (): void {
       assert.deepStrictEqual(lcm([5, 18, 3], [[3], [2], [1]]), [
         [15, 18, 3],
         [10, 18, 6],
@@ -167,18 +174,18 @@ describe('lcm', function () {
       ])
     })
 
-    it('should find the greatest common divisor array - array', function () {
+    it('should find the greatest common divisor array - array', function (): void {
       assert.deepStrictEqual(lcm([5, 2, 3], [25, 3, 6]), [25, 6, 6])
     })
 
-    it('should find the greatest common divisor array - dense matrix', function () {
+    it('should find the greatest common divisor array - dense matrix', function (): void {
       assert.deepStrictEqual(
         lcm([5, 2, 3], matrix([25, 3, 6])),
         matrix([25, 6, 6])
       )
     })
 
-    it('should find the greatest common divisor array - sparse matrix', function () {
+    it('should find the greatest common divisor array - sparse matrix', function (): void {
       assert.deepStrictEqual(
         lcm(
           [
@@ -198,27 +205,27 @@ describe('lcm', function () {
     })
   })
 
-  describe('DenseMatrix', function () {
-    it('should find the greatest common divisor dense matrix - scalar', function () {
+  describe('DenseMatrix', function (): void {
+    it('should find the greatest common divisor dense matrix - scalar', function (): void {
       assert.deepStrictEqual(lcm(matrix([5, 18, 3]), 3), matrix([15, 18, 3]))
       assert.deepStrictEqual(lcm(3, matrix([5, 18, 3])), matrix([15, 18, 3]))
     })
 
-    it('should find the greatest common divisor dense matrix - array', function () {
+    it('should find the greatest common divisor dense matrix - array', function (): void {
       assert.deepStrictEqual(
         lcm(matrix([5, 2, 3]), [25, 3, 6]),
         matrix([25, 6, 6])
       )
     })
 
-    it('should find the greatest common divisor dense matrix - dense matrix', function () {
+    it('should find the greatest common divisor dense matrix - dense matrix', function (): void {
       assert.deepStrictEqual(
         lcm(matrix([5, 2, 3]), matrix([25, 3, 6])),
         matrix([25, 6, 6])
       )
     })
 
-    it('should find the greatest common divisor dense matrix - sparse matrix', function () {
+    it('should find the greatest common divisor dense matrix - sparse matrix', function (): void {
       assert.deepStrictEqual(
         lcm(
           matrix([
@@ -238,8 +245,8 @@ describe('lcm', function () {
     })
   })
 
-  describe('SparseMatrix', function () {
-    it('should find the greatest common divisor sparse matrix - scalar', function () {
+  describe('SparseMatrix', function (): void {
+    it('should find the greatest common divisor sparse matrix - scalar', function (): void {
       assert.deepStrictEqual(
         lcm(
           sparse([
@@ -268,7 +275,7 @@ describe('lcm', function () {
       )
     })
 
-    it('should find the greatest common divisor sparse matrix - array', function () {
+    it('should find the greatest common divisor sparse matrix - array', function (): void {
       assert.deepStrictEqual(
         lcm(
           sparse([
@@ -287,7 +294,7 @@ describe('lcm', function () {
       )
     })
 
-    it('should find the greatest common divisor sparse matrix - dense matrix', function () {
+    it('should find the greatest common divisor sparse matrix - dense matrix', function (): void {
       assert.deepStrictEqual(
         lcm(
           sparse([
@@ -306,7 +313,7 @@ describe('lcm', function () {
       )
     })
 
-    it('should find the greatest common divisor sparse matrix - sparse matrix', function () {
+    it('should find the greatest common divisor sparse matrix - sparse matrix', function (): void {
       assert.deepStrictEqual(
         lcm(
           sparse([
@@ -326,7 +333,7 @@ describe('lcm', function () {
     })
   })
 
-  it('should LaTeX lcm', function () {
+  it('should LaTeX lcm', function (): void {
     const expression = math.parse('lcm(2,3)')
     assert.strictEqual(expression.toTex(), '\\mathrm{lcm}\\left(2,3\\right)')
   })

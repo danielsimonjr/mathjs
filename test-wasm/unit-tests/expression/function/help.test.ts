@@ -1,7 +1,14 @@
-// @ts-nocheck
+/**
+ * Test for help - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDocs.js'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 let mathDocs = math.create(math.all)
 const originalConfig = mathDocs.config()
@@ -88,10 +95,10 @@ describe('help', function () {
   })
 
   it('should throw an error on wrong number of arguments', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.help()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.help('sin', 2)
     }, /TypeError: Too many arguments/)
   })
@@ -128,20 +135,20 @@ describe('help', function () {
   })
 
   it('should not allow accessing unsafe properties ', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.help('constructor')
     }, /No access/)
   })
 
   it('should throw an error when no help is found', function () {
-    // assert.throws(function () {math.help(undefined)}, /No documentation found/);
-    assert.throws(function () {
+    // assert.throws(function (): void {math.help(undefined)}, /No documentation found/);
+    assert.throws(function (): void {
       math.help(new Date())
     }, /No documentation found/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.help('nonExistingFunction')
     }, /No documentation found/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.help('addScalar')
     }, /No documentation found/)
   })

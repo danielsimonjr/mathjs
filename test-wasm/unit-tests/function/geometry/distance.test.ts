@@ -1,13 +1,15 @@
-// @ts-nocheck
+/**
+ * Test for distance - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
-describe('distance', function () {
-  it('should calculate the distance of two 1D points', function () {
+describe('distance', function (): void {
+  it('should calculate the distance of two 1D points', function (): void {
     assert.strictEqual(math.distance([1], [2]), 1)
   })
 
-  it('should calculate the distance of two 2D points', function () {
+  it('should calculate the distance of two 2D points', function (): void {
     assert.strictEqual(math.distance([0, 0], [10, 10]), 14.142135623730951)
     assert.strictEqual(
       math.distance(math.matrix([0, 0]), math.matrix([10, 10])),
@@ -26,7 +28,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate distance between two 3d points', function () {
+  it('should calculate distance between two 3d points', function (): void {
     assert.strictEqual(math.distance([4, 5, 8], [2, 7, 9]), 3)
     assert.strictEqual(
       math.distance(math.matrix([0, 0, 0]), math.matrix([10, 10, 0])),
@@ -53,7 +55,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate distance between two N dimensional points', function () {
+  it('should calculate distance between two N dimensional points', function (): void {
     assert.strictEqual(
       math.distance(
         [10, 2, -5, 13, -6, 12, 0, 16, 8],
@@ -70,7 +72,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate distance for inputs passed as objects', function () {
+  it('should calculate distance for inputs passed as objects', function (): void {
     assert.deepStrictEqual(
       math.distance(
         { pointX: 0, pointY: 0 },
@@ -93,7 +95,7 @@ describe('distance', function () {
       ),
       14.142135623730951
     )
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 1, pointY: 4 },
         { lineOnePtX: 'l', lineOnePtY: 3 },
@@ -109,7 +111,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate distance for all non-zero values', function () {
+  it('should calculate distance for all non-zero values', function (): void {
     assert.strictEqual(math.distance([1, 1], [10, 10]), 12.727922061357855)
     assert.strictEqual(math.distance([-1, -1], [10, 10]), 15.556349186104045)
     assert.strictEqual(
@@ -131,46 +133,46 @@ describe('distance', function () {
     )
   })
 
-  it('should throw an error for incompatible parameter types', function () {
-    assert.throws(function () {
+  it('should throw an error for incompatible parameter types', function (): void {
+    assert.throws(function (): void {
       math.distance(0.5)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance('1')
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(['abc', 'def'], [1, 3])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([1, 3], ['abc', 'def'])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(['2', '3'], math.matrix([1, 2]), [1, 2])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([2, 3], math.matrix(['a', 'b']), [1, 2])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([2, 3], math.matrix([1, 2]), ['a', 'b'])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         math.matrix([0, 0]),
         math.matrix([3, 0]),
         math.matrix([3, 0])
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([0, 0], [3, 0], [3, 0])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 0, pointY: 0 },
         { lineOnePtX: 3, lineOnePtY: 0 },
         { lineTwoPtX: 3, lineTwoPtY: 0 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 'l', pointY: 4 },
         { lineOnePtX: 1, lineOnePtY: 3 },
@@ -184,89 +186,89 @@ describe('distance', function () {
         { lineTwoPtX: 2, lineTwoPtY: 8 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 1, pointY: 4 },
         { lineOnePtX: 1, lineOnePtY: 3 },
         { lineTwoPtX: 'l', lineTwoPtY: 8 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { wrongkeyname: 1, pointY: 4 },
         { lineOnePtX: 1, lineOnePtY: 3 },
         { lineTwoPtX: 2, lineTwoPtY: 8 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 1, pointY: 4 },
         { wrongkeyname: 1, lineOnePtY: 3 },
         { lineTwoPtX: 2, lineTwoPtY: 8 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 1, pointY: 4 },
         { lineOnePtX: 1, lineOnePtY: 3 },
         { wrongkeyname: 2, lineTwoPtY: 8 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 'a', pointY: 'b', pointZ: 'c' },
         { x0: 1, y0: 1, z0: 2, a: 5, b: 0, c: 1 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 2, pointY: 3, pointZ: 1 },
         { x0: 'a', y0: 'b', z0: 'c', a: 5, b: 0, c: 1 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { wrongkeyname: 2, english: 3, pointZ: 1 },
         { x0: 1, y0: 1, z0: 2, a: 5, b: 0, c: 1 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 2, pointY: 3, pointZ: 1 },
         { wrongkeyname: 1, y0: 1, z0: 2, a: 5, b: 0, c: 1 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 'a', pointY: 'b' },
         { xCoeffLine: 8, yCoeffLine: 1, constant: 3 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 10, pointY: 10 },
         { xCoeffLine: 'a', yCoeffLine: 'b', constant: 'c' }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { wrongkeyname: 10, pointY: 10 },
         { xCoeffLine: 8, yCoeffLine: 1, constant: 3 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 10, pointY: 10 },
         { wrongkeyname: 8, yCoeffLine: 1, constant: 3 }
       )
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(['a', ' b', 'c', 'd'], [1, 2, 3, 4])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([1, 2, 3, 4], ['a', ' b', 'c', 'd'])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance(
         { pointX: 10, pointY: 10 },
         { xCoeffLine: 8, yCoeffLine: 1, constant: 3, extraElement: 4 }
@@ -274,25 +276,25 @@ describe('distance', function () {
     }, TypeError)
   })
 
-  it('should throw an error for unsupported number of parameters', function () {
-    assert.throws(function () {
+  it('should throw an error for unsupported number of parameters', function (): void {
+    assert.throws(function (): void {
       math.distance([0, 0])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([9, 4, 3.6])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([[1, 2, 4], math.matrix([1, 2]), [8, 1, 3]])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([-0.5, 4.3], [3.2, -4.654323, 3.3, 6.5, 3.4])
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.distance([1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6])
     }, TypeError)
   })
 
-  it('should calculate pairwise distance between more than two 2D points accurately', function () {
+  it('should calculate pairwise distance between more than two 2D points accurately', function (): void {
     assert.deepStrictEqual(
       math.distance([
         [1, 2],
@@ -323,7 +325,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate pairwise distance between more than two 3D points accurately', function () {
+  it('should calculate pairwise distance between more than two 3D points accurately', function (): void {
     assert.deepStrictEqual(
       math.distance([
         [0, 0, 0],
@@ -359,7 +361,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate distance between a point and a line segment given by an equation in 2D accurately', function () {
+  it('should calculate distance between a point and a line segment given by an equation in 2D accurately', function (): void {
     assert.deepStrictEqual(
       math.distance([0.1123, -0.242], [0.1316, -0.2421, 0.122135]),
       0.7094821347343443
@@ -385,7 +387,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate distance between a point and a line segment given by two points in 2D accurately', function () {
+  it('should calculate distance between a point and a line segment given by two points in 2D accurately', function (): void {
     assert.deepStrictEqual(
       math.distance(
         math.matrix([8, 0]),
@@ -447,7 +449,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate distance between point and line segment(with parametric co-ordinates) in 3D accurately', function () {
+  it('should calculate distance between point and line segment(with parametric co-ordinates) in 3D accurately', function (): void {
     assert.deepStrictEqual(
       math.distance([2, 3, 1], [1, 1, 2, 5, 0, 1]),
       2.3204774044612857
@@ -469,7 +471,7 @@ describe('distance', function () {
     )
   })
 
-  it('should calculate the distance if coordinates are bignumbers', function () {
+  it('should calculate the distance if coordinates are bignumbers', function (): void {
     const bigmath = math.create({ number: 'BigNumber', precision: 32 })
     const bigdistance = bigmath.distance
     const bignumber = bigmath.bignumber

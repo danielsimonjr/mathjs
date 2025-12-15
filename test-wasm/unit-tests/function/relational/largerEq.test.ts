@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for largerEq - AssemblyScript-friendly TypeScript
+ */
 // test largerEq
 import assert from 'assert'
 
@@ -10,8 +12,13 @@ const sparse = math.sparse
 const unit = math.unit
 const largerEq = math.largerEq
 
-describe('largerEq', function () {
-  it('should compare two numbers correctly', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('largerEq', function (): void {
+  it('should compare two numbers correctly', function (): void {
     assert.strictEqual(largerEq(2, 3), false)
     assert.strictEqual(largerEq(2, 2), true)
     assert.strictEqual(largerEq(2, 1), true)
@@ -21,7 +28,7 @@ describe('largerEq', function () {
     assert.strictEqual(largerEq(-3, -2), false)
   })
 
-  it('should compare two bigints correctly', function () {
+  it('should compare two bigints correctly', function (): void {
     assert.strictEqual(largerEq(2n, 3n), false)
     assert.strictEqual(largerEq(2n, 2n), true)
     assert.strictEqual(largerEq(2n, 1n), true)
@@ -31,7 +38,7 @@ describe('largerEq', function () {
     assert.strictEqual(largerEq(-3n, -2n), false)
   })
 
-  it('should compare two floating point numbers correctly', function () {
+  it('should compare two floating point numbers correctly', function (): void {
     // Infinity
     assert.strictEqual(
       largerEq(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
@@ -57,14 +64,14 @@ describe('largerEq', function () {
     assert.strictEqual(largerEq(0.3 - 0.2, 0.1), true)
   })
 
-  it('should compare two booleans', function () {
+  it('should compare two booleans', function (): void {
     assert.strictEqual(largerEq(true, true), true)
     assert.strictEqual(largerEq(true, false), true)
     assert.strictEqual(largerEq(false, true), false)
     assert.strictEqual(largerEq(false, false), true)
   })
 
-  it('should compare mixed numbers and booleans', function () {
+  it('should compare mixed numbers and booleans', function (): void {
     assert.strictEqual(largerEq(2, true), true)
     assert.strictEqual(largerEq(0, true), false)
     assert.strictEqual(largerEq(true, 2), false)
@@ -72,7 +79,7 @@ describe('largerEq', function () {
     assert.strictEqual(largerEq(false, 0), true)
   })
 
-  it('should compare bignumbers', function () {
+  it('should compare bignumbers', function (): void {
     assert.strictEqual(largerEq(bignumber(2), bignumber(3)), false)
     assert.strictEqual(largerEq(bignumber(2), bignumber(2)), true)
     assert.strictEqual(largerEq(bignumber(3), bignumber(2)), true)
@@ -80,31 +87,31 @@ describe('largerEq', function () {
     assert.strictEqual(largerEq(bignumber(-2), bignumber(2)), false)
   })
 
-  it('should compare mixed numbers and bignumbers', function () {
+  it('should compare mixed numbers and bignumbers', function (): void {
     assert.strictEqual(largerEq(bignumber(2), 3), false)
     assert.strictEqual(largerEq(2, bignumber(2)), true)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(1 / 3, bignumber(1).div(3))
     }, /TypeError: Cannot implicitly convert a number with >15 significant digits to BigNumber/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(bignumber(1).div(3), 1 / 3)
     }, /TypeError: Cannot implicitly convert a number with >15 significant digits to BigNumber/)
   })
 
-  it('should compare mixed numbers and bigints', function () {
+  it('should compare mixed numbers and bigints', function (): void {
     assert.strictEqual(largerEq(2n, 3), false)
     assert.strictEqual(largerEq(2, 2n), true)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(123123123123123123123n, 1)
     }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(1, 123123123123123123123n)
     }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
   })
 
-  it('should compare mixed booleans and bignumbers', function () {
+  it('should compare mixed booleans and bignumbers', function (): void {
     assert.strictEqual(largerEq(bignumber(0.1), true), false)
     assert.strictEqual(largerEq(bignumber(1), true), true)
     assert.strictEqual(largerEq(bignumber(1), false), true)
@@ -113,7 +120,7 @@ describe('largerEq', function () {
     assert.strictEqual(largerEq(true, bignumber(1)), true)
   })
 
-  it('should compare two fractions', function () {
+  it('should compare two fractions', function (): void {
     assert.strictEqual(
       largerEq(math.fraction(3), math.fraction(2)).valueOf(),
       true
@@ -128,24 +135,24 @@ describe('largerEq', function () {
     )
   })
 
-  it('should compare mixed fractions and numbers', function () {
+  it('should compare mixed fractions and numbers', function (): void {
     assert.strictEqual(largerEq(1, math.fraction(1, 3)), true)
     assert.strictEqual(largerEq(math.fraction(2), 2), true)
   })
 
-  it('should compare mixed fractions and bigints', function () {
+  it('should compare mixed fractions and bigints', function (): void {
     assert.strictEqual(largerEq(1n, math.fraction(1, 3)), true)
     assert.strictEqual(largerEq(math.fraction(2), 2n), true)
   })
 
-  it('should compare two units correctly', function () {
+  it('should compare two units correctly', function (): void {
     assert.strictEqual(largerEq(unit('100cm'), unit('10inch')), true)
     assert.strictEqual(largerEq(unit('99cm'), unit('1m')), false)
     // assert.strictEqual(largerEq(unit('100cm'), unit('1m')), true); // dangerous, round-off errors
     assert.strictEqual(largerEq(unit('101cm'), unit('1m')), true)
   })
 
-  it('should apply configuration option relTol', function () {
+  it('should apply configuration option relTol', function (): void {
     const mymath = math.create()
     assert.strictEqual(mymath.largerEq(1, 1.01), false)
     assert.strictEqual(
@@ -161,41 +168,41 @@ describe('largerEq', function () {
     )
   })
 
-  it('should throw an error if comparing a unit with a number', function () {
-    assert.throws(function () {
+  it('should throw an error if comparing a unit with a number', function (): void {
+    assert.throws(function (): void {
       largerEq(unit('100cm'), 22)
     })
   })
 
-  it('should throw an error for two measures of different units', function () {
-    assert.throws(function () {
+  it('should throw an error for two measures of different units', function (): void {
+    assert.throws(function (): void {
       largerEq(math.unit(5, 'km'), math.unit(100, 'gram'))
     })
   })
 
-  it('should throw an error if comparing a unit with a bignumber', function () {
-    assert.throws(function () {
+  it('should throw an error if comparing a unit with a bignumber', function (): void {
+    assert.throws(function (): void {
       largerEq(unit('100cm'), bignumber(22))
     })
   })
 
-  it('should compare two strings by their numerical value', function () {
+  it('should compare two strings by their numerical value', function (): void {
     assert.strictEqual(largerEq('0', 0), true)
     assert.strictEqual(largerEq('10', '2'), true)
     assert.strictEqual(largerEq('1e3', '1000'), true)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq('A', 'B')
     }, /Cannot convert "A" to a number/)
   })
 
-  describe('Array', function () {
-    it('should compare array - scalar', function () {
+  describe('Array', function (): void {
+    it('should compare array - scalar', function (): void {
       assert.deepStrictEqual(largerEq(2, [1, 2, 3]), [true, true, false])
       assert.deepStrictEqual(largerEq([1, 2, 3], 2), [false, true, true])
     })
 
-    it('should compare array - array', function () {
+    it('should compare array - array', function (): void {
       assert.deepStrictEqual(
         largerEq(
           [
@@ -214,14 +221,14 @@ describe('largerEq', function () {
       )
     })
 
-    it('should compare broadcastable arrays', function () {
+    it('should compare broadcastable arrays', function (): void {
       assert.deepStrictEqual(largerEq([1, 2, 0], [[1], [-1]]), [
         [true, true, false],
         [true, true, true]
       ])
     })
 
-    it('should compare array - dense matrix', function () {
+    it('should compare array - dense matrix', function (): void {
       assert.deepStrictEqual(
         largerEq(
           [
@@ -240,7 +247,7 @@ describe('largerEq', function () {
       )
     })
 
-    it('should compare array - sparse matrix', function () {
+    it('should compare array - sparse matrix', function (): void {
       assert.deepStrictEqual(
         largerEq(
           [
@@ -259,15 +266,15 @@ describe('largerEq', function () {
       )
     })
 
-    it('should throw an error if arrays have different sizes', function () {
-      assert.throws(function () {
+    it('should throw an error if arrays have different sizes', function (): void {
+      assert.throws(function (): void {
         largerEq([1, 4, 5], [3, 4])
       })
     })
   })
 
-  describe('DenseMatrix', function () {
-    it('should compare dense matrix - scalar', function () {
+  describe('DenseMatrix', function (): void {
+    it('should compare dense matrix - scalar', function (): void {
       assert.deepStrictEqual(
         largerEq(2, matrix([1, 2, 3])),
         matrix([true, true, false])
@@ -278,7 +285,7 @@ describe('largerEq', function () {
       )
     })
 
-    it('should compare dense matrix - array', function () {
+    it('should compare dense matrix - array', function (): void {
       assert.deepStrictEqual(
         largerEq(
           matrix([
@@ -297,7 +304,7 @@ describe('largerEq', function () {
       )
     })
 
-    it('should compare dense matrix - dense matrix', function () {
+    it('should compare dense matrix - dense matrix', function (): void {
       assert.deepStrictEqual(
         largerEq(
           matrix([
@@ -316,7 +323,7 @@ describe('largerEq', function () {
       )
     })
 
-    it('should compare dense matrix - sparse matrix', function () {
+    it('should compare dense matrix - sparse matrix', function (): void {
       assert.deepStrictEqual(
         largerEq(
           matrix([
@@ -336,8 +343,8 @@ describe('largerEq', function () {
     })
   })
 
-  describe('SparseMatrix', function () {
-    it('should compare sparse matrix - scalar', function () {
+  describe('SparseMatrix', function (): void {
+    it('should compare sparse matrix - scalar', function (): void {
       assert.deepStrictEqual(
         largerEq(
           2,
@@ -366,7 +373,7 @@ describe('largerEq', function () {
       )
     })
 
-    it('should compare sparse matrix - array', function () {
+    it('should compare sparse matrix - array', function (): void {
       assert.deepStrictEqual(
         largerEq(
           sparse([
@@ -385,7 +392,7 @@ describe('largerEq', function () {
       )
     })
 
-    it('should compare sparse matrix - dense matrix', function () {
+    it('should compare sparse matrix - dense matrix', function (): void {
       assert.deepStrictEqual(
         largerEq(
           sparse([
@@ -404,7 +411,7 @@ describe('largerEq', function () {
       )
     })
 
-    it('should compare sparse matrix - sparse matrix', function () {
+    it('should compare sparse matrix - sparse matrix', function (): void {
       assert.deepStrictEqual(
         largerEq(
           sparse([
@@ -424,46 +431,46 @@ describe('largerEq', function () {
     })
   })
 
-  it('should throw an error when comparing complex numbers', function () {
-    assert.throws(function () {
+  it('should throw an error when comparing complex numbers', function (): void {
+    assert.throws(function (): void {
       largerEq(complex(1, 1), complex(1, 2))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(complex(2, 1), 3)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(3, complex(2, 4))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(math.bignumber(3), complex(2, 4))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(complex(2, 4), math.bignumber(3))
     }, TypeError)
   })
 
-  it('should throw an error if comparing two matrices of different sizes', function () {
-    assert.throws(function () {
+  it('should throw an error if comparing two matrices of different sizes', function (): void {
+    assert.throws(function (): void {
       largerEq([1, 4, 6], [3, 4])
     })
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       largerEq(1)
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       largerEq(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an error in case of invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       largerEq(2, null)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should LaTeX largerEq', function () {
+  it('should LaTeX largerEq', function (): void {
     const expression = math.parse('largerEq(1,2)')
     assert.strictEqual(expression.toTex(), '\\left(1\\geq2\\right)')
   })

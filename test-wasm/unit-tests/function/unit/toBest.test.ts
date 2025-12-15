@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for toBest - AssemblyScript-friendly TypeScript
+ */
 import math from '../../../../src/defaultInstance.ts'
 import assert from 'assert'
 
@@ -11,16 +13,16 @@ function assertUnit(actualUnit, expectedValue, expectedPrefix, expectedName) {
   assert.equal(actualUnit.units.length, 1)
 }
 
-describe('toBest', function () {
-  it('should return the best unit without any parameters', function () {
+describe('toBest', function (): void {
+  it('should return the best unit without any parameters', function (): void {
     assertUnit(new Unit(2 / 3, 'cm').toBest(), 0.006666666666666666, 'c', 'm')
   })
 
-  it('should format a unit without any value', function () {
+  it('should format a unit without any value', function (): void {
     assertUnit(new Unit(null, 'cm').toBest(), null, 'c', 'm')
   })
 
-  it('should return the best unit with only given unit array - valorized and empty', function () {
+  it('should return the best unit with only given unit array - valorized and empty', function (): void {
     const unit1 = new Unit(10, 'm')
     assertUnit(unit1.toBest(['km', 'mm', 'cm']), 10, 'm', 'm')
 
@@ -28,7 +30,7 @@ describe('toBest', function () {
     assertUnit(unit2.toBest(['cm', 'mm']), 5, 'c', 'm')
   })
 
-  it('should return the best unit with valueless unit as parameter', function () {
+  it('should return the best unit with valueless unit as parameter', function (): void {
     assertUnit(
       new Unit(1000, 'cm').toBest([new Unit(null, 'km')]),
       10,
@@ -37,7 +39,7 @@ describe('toBest', function () {
     )
   })
 
-  it('should return the best unit with given array and offset', function () {
+  it('should return the best unit with given array and offset', function (): void {
     assertUnit(
       new Unit(10, 'm').toBest(['mm', 'km'], { offset: 1.5 }),
       10,
@@ -46,23 +48,23 @@ describe('toBest', function () {
     )
   })
 
-  it('should handle negative values correctly', function () {
+  it('should handle negative values correctly', function (): void {
     assertUnit(new Unit(-1000, 'cm').toBest(), -10, 'c', 'm')
   })
 
-  it('should handle zero values correctly', function () {
+  it('should handle zero values correctly', function (): void {
     assertUnit(new Unit(0, 'km').toBest(), 0, 'k', 'm')
     assertUnit(new Unit(0, 'cm').toBest(['km', 'm', 'cm', 'mm']), 0, 'k', 'm')
   })
 
-  it('should throw error for first parameter not being an array', function () {
+  it('should throw error for first parameter not being an array', function (): void {
     assert.throws(
       () => new Unit(2 / 3, 'cm').toBest(new Unit(null, 'cm')),
       /Invalid unit type. Expected string or Unit./
     )
   })
 
-  it('should return the correct string representation', function () {
+  it('should return the correct string representation', function (): void {
     assert.equal(
       new Unit(2 / 3, 'cm').toBest().toString(),
       '0.6666666666666666 cm'
@@ -83,7 +85,7 @@ describe('toBest', function () {
   ]
 
   incompatibleUnits.forEach(([description, sourceUnit, targetUnits]) => {
-    it(`should throw error when converting ${description}`, function () {
+    it(`should throw error when converting ${description}`, function (): void {
       assert.throws(
         () => new Unit(1, sourceUnit).toBest(targetUnits),
         /Invalid unit type. Expected compatible string or Unit./

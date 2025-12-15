@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for std - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
@@ -8,20 +10,25 @@ const DenseMatrix = math.DenseMatrix
 const Unit = math.Unit
 const std = math.std
 
-describe('std', function () {
-  it('should return the standard deviation of numbers', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('std', function (): void {
+  it('should return the standard deviation of numbers', function (): void {
     assert.strictEqual(std(5), 0)
     assert.strictEqual(std(2, 4, 6), 2)
   })
 
-  it('should return the standard deviation of big numbers', function () {
+  it('should return the standard deviation of big numbers', function (): void {
     assert.deepStrictEqual(
       std(new BigNumber(2), new BigNumber(4), new BigNumber(6)),
       new math.BigNumber(2)
     )
   })
 
-  it('should return the standard deviation of complex numbers', function () {
+  it('should return the standard deviation of complex numbers', function (): void {
     //
     approxDeepEqual(
       std(new Complex(2, 4), new Complex(4, 2)),
@@ -29,26 +36,26 @@ describe('std', function () {
     )
   })
 
-  it('should return the standard deviation of mixed numbers and complex numbers', function () {
+  it('should return the standard deviation of mixed numbers and complex numbers', function (): void {
     approxDeepEqual(std(2, new Complex(6, 4)), new Complex(2.82842, 2.82842))
   })
 
-  it('should return the standard deviation from an array', function () {
+  it('should return the standard deviation from an array', function (): void {
     assert.strictEqual(std([2, 4, 6]), 2)
     assert.strictEqual(std([5]), 0)
   })
 
-  it('should return the uncorrected standard deviation from an array', function () {
+  it('should return the uncorrected standard deviation from an array', function (): void {
     assert.strictEqual(std([2, 4], 'uncorrected'), 1)
     assert.strictEqual(std([2, 4, 6, 8], 'uncorrected'), Math.sqrt(5))
   })
 
-  it('should return the biased standard deviation from an array', function () {
+  it('should return the biased standard deviation from an array', function (): void {
     assert.strictEqual(std([2, 8], 'biased'), Math.sqrt(6))
     assert.strictEqual(std([2, 4, 6, 8], 'biased'), 2)
   })
 
-  it('should return NaN if any of the inputs contains NaN', function () {
+  it('should return NaN if any of the inputs contains NaN', function (): void {
     assert(isNaN(std([NaN])))
     assert(isNaN(std([1, NaN])))
     assert(isNaN(std([NaN, 1])))
@@ -57,14 +64,14 @@ describe('std', function () {
     assert(isNaN(std(NaN, NaN, NaN)))
   })
 
-  it('should throw an error in case of unknown type of normalization', function () {
-    assert.throws(function () {
+  it('should throw an error in case of unknown type of normalization', function (): void {
+    assert.throws(function (): void {
       std([2, 8], 'foo')
     }, /Unknown normalization/)
   })
 
-  it('should throw an error in case the dimension exceeds the matrix dimension', function () {
-    assert.throws(function () {
+  it('should throw an error in case the dimension exceeds the matrix dimension', function (): void {
+    assert.throws(function (): void {
       std(
         [
           [2, 4, 6],
@@ -75,12 +82,12 @@ describe('std', function () {
     }, /Index out of range/)
   })
 
-  it('should return the standard deviation from an 1d matrix', function () {
+  it('should return the standard deviation from an 1d matrix', function (): void {
     assert.strictEqual(std(new DenseMatrix([2, 4, 6])), 2)
     assert.strictEqual(std(new DenseMatrix([5])), 0)
   })
 
-  it('should return the standard deviation element from a 2d array', function () {
+  it('should return the standard deviation element from a 2d array', function (): void {
     assert.deepStrictEqual(
       std([
         [2, 4, 6],
@@ -90,7 +97,7 @@ describe('std', function () {
     )
   })
 
-  it('should return the standard deviation element from a 2d matrix', function () {
+  it('should return the standard deviation element from a 2d matrix', function (): void {
     assert.deepStrictEqual(
       std(
         new DenseMatrix([
@@ -126,7 +133,7 @@ describe('std', function () {
     ]
   ]
 
-  it('should return the standard deviation value along a dimension on a matrix', function () {
+  it('should return the standard deviation value along a dimension on a matrix', function (): void {
     assert.deepStrictEqual(
       std(
         [
@@ -166,23 +173,23 @@ describe('std', function () {
     ])
   })
 
-  it('should throw an error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       std()
     })
   })
 
-  it('should throw an error if called with invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       std(new Date(), 2)
     }, /Cannot calculate std, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(2, 3, null)
     }, /Cannot calculate std, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std([2, 3, null])
     }, /Cannot calculate std, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(
         [
           [2, 4, 6],
@@ -192,7 +199,7 @@ describe('std', function () {
         0
       )
     }, /Cannot convert "biased" to a number/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       std(
         [
           [2, 4, 6],
@@ -204,18 +211,18 @@ describe('std', function () {
     }, /Cannot calculate std, unexpected type of argument/)
   })
 
-  it('should throw an error if called with an empty array', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an empty array', function (): void {
+    assert.throws(function (): void {
       std([])
     })
   })
 
-  it('should LaTeX std', function () {
-    const expression = math.parse('std(1,2,3)')
+  it('should LaTeX std', function (): void {
+    const expression = math.parse('std(1,2,3)') as MathNode
     assert.strictEqual(expression.toTex(), '\\mathrm{std}\\left(1,2,3\\right)')
   })
 
-  it('should compute the standard deviation value of quantities with units', function () {
+  it('should compute the standard deviation value of quantities with units', function (): void {
     const a = new Unit(2, 'cm')
     const b = new Unit(5, 'cm')
     const c = new Unit(8, 'cm')
@@ -223,17 +230,17 @@ describe('std', function () {
     approxEqual(std([a, b, c]).toNumber('cm'), res.toNumber('cm'))
   })
 
-  it('should compute the standard deviation value of quantities with compatible units', function () {
+  it('should compute the standard deviation value of quantities with compatible units', function (): void {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'cm')
     const c = math.unit(math.sqrt(1250), 'cm')
     approxEqual(std([a, b]).toNumber('cm'), c.toNumber('cm'))
   })
 
-  it('should not compute the standard deviation value of quantities with incompatible units', function () {
+  it('should not compute the standard deviation value of quantities with incompatible units', function (): void {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'kg')
-    assert.throws(function () {
+    assert.throws(function (): void {
       std([a, b])
     }, /Units do not match/)
   })

@@ -1,5 +1,6 @@
-// @ts-nocheck
-// test FunctionAssignmentNode
+/**
+ * Test for FunctionAssignmentNode - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { toObject } from '../../../../src/utils/map.js'
 import math from '../../../../src/defaultInstance.ts'
@@ -13,42 +14,42 @@ const FunctionNode = math.FunctionNode
 const FunctionAssignmentNode = math.FunctionAssignmentNode
 const RangeNode = math.RangeNode
 
-describe('FunctionAssignmentNode', function () {
-  it('should create a FunctionAssignmentNode', function () {
+describe('FunctionAssignmentNode', function (): void {
+  it('should create a FunctionAssignmentNode', function (): void {
     const n = new FunctionAssignmentNode('f', ['x'], new ConstantNode(2))
     assert(n instanceof FunctionAssignmentNode)
     assert(n instanceof Node)
     assert.strictEqual(n.type, 'FunctionAssignmentNode')
   })
 
-  it('should have isFunctionAssignmentNode', function () {
+  it('should have isFunctionAssignmentNode', function (): void {
     const node = new FunctionAssignmentNode('f', ['x'], new ConstantNode(2))
     assert(node.isFunctionAssignmentNode)
   })
 
-  it('should throw an error when calling without new operator', function () {
+  it('should throw an error when calling without new operator', function (): void {
     assert.throws(
       () => FunctionAssignmentNode('f', ['x'], new ConstantNode(2)),
       TypeError
     )
   })
 
-  it('should throw an error on wrong constructor arguments', function () {
-    assert.throws(function () {
+  it('should throw an error on wrong constructor arguments', function (): void {
+    assert.throws(function (): void {
       console.log(new FunctionAssignmentNode())
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new FunctionAssignmentNode('a'))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new FunctionAssignmentNode('a', ['x']))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new FunctionAssignmentNode(null, ['x'], new ConstantNode(2)))
     }, TypeError)
   })
 
-  it('should compile a FunctionAssignmentNode', function () {
+  it('should compile a FunctionAssignmentNode', function (): void {
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')
     const o = new OperatorNode('+', 'add', [a, x])
@@ -62,7 +63,7 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(scope.f(5), 7)
   })
 
-  it('should compile a typed FunctionAssignmentNode', function () {
+  it('should compile a typed FunctionAssignmentNode', function (): void {
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')
     const o = new OperatorNode('+', 'add', [a, x])
@@ -78,18 +79,18 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(typeof scope.f, 'function')
     assert.strictEqual(scope.f(3), 5)
     assert.strictEqual(scope.f(5), 7)
-    assert.throws(function () {
+    assert.throws(function (): void {
       scope.f(new Date())
     }, /Unexpected type of argument in function f/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       scope.f(2, 2)
     }, /Too many arguments in function f/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       scope.f()
     }, /Too few arguments in function f/)
   })
 
-  it('should evaluate a recursive FunctionAssignmentNode', function () {
+  it('should evaluate a recursive FunctionAssignmentNode', function (): void {
     const x = new SymbolNode('x')
     const one = new ConstantNode(1)
     const condition = new OperatorNode('<=', 'smallerEq', [x, one])
@@ -112,7 +113,7 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(factorial(5), 120)
   })
 
-  it('should evaluate a recursive FunctionAssignmentNode with two recursive calls', function () {
+  it('should evaluate a recursive FunctionAssignmentNode with two recursive calls', function (): void {
     const x = new SymbolNode('x')
     const zero = new ConstantNode(0)
     const one = new ConstantNode(1)
@@ -154,7 +155,7 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(fib(8), 21)
   })
 
-  it('should pass function arguments in scope to functions with rawArgs', function () {
+  it('should pass function arguments in scope to functions with rawArgs', function (): void {
     const outputScope = function (args, math, scope) {
       return toObject(scope)
     }
@@ -171,7 +172,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(f(3), { a: 2, f, x: 3 })
   })
 
-  it('should pass function arguments in scope to functions with rawArgs returned by another function', function () {
+  it('should pass function arguments in scope to functions with rawArgs returned by another function', function (): void {
     const outputScope = function (args, math, scope) {
       return toObject(scope)
     }
@@ -199,7 +200,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(f(3, 4), { a: 2, f, x: 3, y: 4 })
   })
 
-  it('should pass function arguments in scope to functions with rawArgs and transform', function () {
+  it('should pass function arguments in scope to functions with rawArgs and transform', function (): void {
     const outputScope = function (_x) {
       return 'should not occur'
     }
@@ -219,7 +220,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(f(3), { a: 2, f, x: 3 })
   })
 
-  it('should pass function arguments via scope to rawArgs function', function () {
+  it('should pass function arguments via scope to rawArgs function', function (): void {
     const math2 = math.create()
     const f = function (args, _math, _scope) {
       return args[0].compile().evaluate(_scope)
@@ -232,7 +233,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(g([1, 2, 3]), [1, 2, 3])
   })
 
-  it('should pass function arguments via scope to an inner function', function () {
+  it('should pass function arguments via scope to an inner function', function (): void {
     const myFunc = math.evaluate(
       'myFunc(arr, val) = arr.map(f(x,i,a) = x * val)'
     )
@@ -240,7 +241,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(myFunc([1, 2, 3], 10), [10, 20, 30])
   })
 
-  it('should evaluate a function passed as a parameter', function () {
+  it('should evaluate a function passed as a parameter', function (): void {
     const applicator = math.evaluate('applicator(f,x) = f(x)')
     assert.strictEqual(applicator(math.exp, 1), math.e)
     const repeater = math.evaluate('repeater(f,x) = f(f(x))')
@@ -252,7 +253,7 @@ describe('FunctionAssignmentNode', function () {
     assert(nd(math.square, 2) - 4 < 1e-6)
   })
 
-  it('should filter a FunctionAssignmentNode', function () {
+  it('should filter a FunctionAssignmentNode', function (): void {
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')
     const o = new OperatorNode('+', 'add', [a, x])
@@ -296,13 +297,13 @@ describe('FunctionAssignmentNode', function () {
     )
   })
 
-  it('should throw an error when creating a FunctionAssignmentNode with a reserved keyword', function () {
-    assert.throws(function () {
+  it('should throw an error when creating a FunctionAssignmentNode with a reserved keyword', function (): void {
+    assert.throws(function (): void {
       console.log(new FunctionAssignmentNode('end', ['x'], new ConstantNode(2)))
     }, /Illegal function name/)
   })
 
-  it('should filter a FunctionAssignmentNode without expression', function () {
+  it('should filter a FunctionAssignmentNode without expression', function (): void {
     const e = new FunctionAssignmentNode('f', ['x'], new ConstantNode(2))
 
     assert.deepStrictEqual(
@@ -319,7 +320,7 @@ describe('FunctionAssignmentNode', function () {
     )
   })
 
-  it('should run forEach on a FunctionAssignmentNode', function () {
+  it('should run forEach on a FunctionAssignmentNode', function (): void {
     const a = new ConstantNode(2)
     const n = new FunctionAssignmentNode('f', ['x'], a)
 
@@ -336,7 +337,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(paths, ['expr'])
   })
 
-  it('should map a FunctionAssignmentNode', function () {
+  it('should map a FunctionAssignmentNode', function (): void {
     const a = new ConstantNode(2)
     const n = new FunctionAssignmentNode('f', ['x'], a)
 
@@ -359,37 +360,37 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(f.expr, a)
   })
 
-  it('should throw an error when the map callback does not return a node', function () {
+  it('should throw an error when the map callback does not return a node', function (): void {
     const a = new ConstantNode(2)
     const n = new FunctionAssignmentNode('f', ['x'], a)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       n.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
-  it('should throw an error when having duplicate variables', function () {
-    assert.throws(function () {
+  it('should throw an error when having duplicate variables', function (): void {
+    assert.throws(function (): void {
       console.log(
         new FunctionAssignmentNode('f', ['x', 'x'], new ConstantNode(2))
       )
     }, new Error('Duplicate parameter name "x"'))
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(
         new FunctionAssignmentNode('f', ['x', 'y', 'x'], new ConstantNode(2))
       )
     }, new Error('Duplicate parameter name "x"'))
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(
         new FunctionAssignmentNode('f', ['y', 'x', 'x'], new ConstantNode(2))
       )
     }, new Error('Duplicate parameter name "x"'))
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(
         new FunctionAssignmentNode(
           'f',
@@ -400,7 +401,7 @@ describe('FunctionAssignmentNode', function () {
     }, new Error('Duplicate parameter name "x"'))
   })
 
-  it('should transform a FunctionAssignmentNodes (nested) parameters', function () {
+  it('should transform a FunctionAssignmentNodes (nested) parameters', function (): void {
     // f(x) = 2 + x
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')
@@ -417,7 +418,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(f.expr.args[1], e)
   })
 
-  it('should transform a FunctionAssignmentNode itself', function () {
+  it('should transform a FunctionAssignmentNode itself', function (): void {
     // f(x) = 2 + x
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')
@@ -433,7 +434,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(f, e)
   })
 
-  it('should clone a FunctionAssignmentNode', function () {
+  it('should clone a FunctionAssignmentNode', function (): void {
     // f(x) = 2 + x
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')
@@ -447,7 +448,7 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(e.expr, d.expr)
   })
 
-  it('test equality another Node', function () {
+  it('test equality another Node', function (): void {
     const a = new FunctionAssignmentNode(
       'f',
       ['x'],
@@ -484,7 +485,7 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(a.equals(f), false)
   })
 
-  it("should respect the 'all' parenthesis option", function () {
+  it("should respect the 'all' parenthesis option", function (): void {
     const expr = math.parse('f(x)=x+1')
     assert.strictEqual(expr.toString({ parenthesis: 'all' }), 'f(x) = (x + 1)')
     assert.strictEqual(
@@ -493,7 +494,7 @@ describe('FunctionAssignmentNode', function () {
     )
   })
 
-  it('should stringify a FunctionAssignmentNode', function () {
+  it('should stringify a FunctionAssignmentNode', function (): void {
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')
     const o = new OperatorNode('+', 'add', [a, x])
@@ -502,7 +503,7 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(n.toString(), 'f(x) = 2 + x')
   })
 
-  it('should stringify a FunctionAssignmentNode containing an AssignmentNode', function () {
+  it('should stringify a FunctionAssignmentNode containing an AssignmentNode', function (): void {
     const a = new ConstantNode(2)
 
     const n1 = new AssignmentNode(new SymbolNode('a'), a)
@@ -511,7 +512,7 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(n.toString(), 'f(x) = (a = 2)')
   })
 
-  it('should stringify a FunctionAssignmentNode with custom toString', function () {
+  it('should stringify a FunctionAssignmentNode with custom toString', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'FunctionAssignmentNode') {
@@ -537,7 +538,7 @@ describe('FunctionAssignmentNode', function () {
     )
   })
 
-  it('should stringify a FunctionAssignmentNode with custom toHTML', function () {
+  it('should stringify a FunctionAssignmentNode with custom toHTML', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'FunctionAssignmentNode') {
@@ -563,7 +564,7 @@ describe('FunctionAssignmentNode', function () {
     )
   })
 
-  it('toJSON and fromJSON', function () {
+  it('toJSON and fromJSON', function (): void {
     const expr = new SymbolNode('add')
     const node = new FunctionAssignmentNode(
       'f',
@@ -587,7 +588,7 @@ describe('FunctionAssignmentNode', function () {
     assert.deepStrictEqual(parsed, node)
   })
 
-  it('should LaTeX a FunctionAssignmentNode', function () {
+  it('should LaTeX a FunctionAssignmentNode', function (): void {
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')
     const o = new OperatorNode('/', 'divide', [x, a])
@@ -600,7 +601,7 @@ describe('FunctionAssignmentNode', function () {
     )
   })
 
-  it('should LaTeX a FunctionAssignmentNode containing an AssignmentNode', function () {
+  it('should LaTeX a FunctionAssignmentNode containing an AssignmentNode', function (): void {
     const a = new ConstantNode(2)
 
     const n1 = new AssignmentNode(new SymbolNode('a'), a)
@@ -612,7 +613,7 @@ describe('FunctionAssignmentNode', function () {
     )
   })
 
-  it('should LaTeX a FunctionAssignmentNode with custom toTex', function () {
+  it('should LaTeX a FunctionAssignmentNode with custom toTex', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'FunctionAssignmentNode') {

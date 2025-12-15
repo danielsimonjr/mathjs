@@ -156,6 +156,8 @@
     "validate:ascii": "gulp validate:ascii",
     "test": "npm run test:src && npm run lint",
     "test:src": "mocha test/unit-tests",
+    "test:ts": "vitest run test-wasm/unit-tests",
+    "test:ts:watch": "vitest watch test-wasm/unit-tests",
     "test:generated": "mocha test/generated-code-tests",
     "test:node": "mocha test/node-tests/*.test.{js,cjs,mjs} test/node-tests/**/*.test.{js,cjs,mjs}",
     "test:all": "npm run test:src && npm run test:generated && npm run test:node && npm run test:types",

@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for dot - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
@@ -10,23 +12,28 @@ const unit = math.unit
 const bignumber = math.bignumber
 const fraction = math.fraction
 
-describe('dot', function () {
-  it('should calculate dot product for two 1-dim arrays', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('dot', function (): void {
+  it('should calculate dot product for two 1-dim arrays', function (): void {
     assert.strictEqual(dot([2, 4, 1], [2, 2, 3]), 15)
     assert.strictEqual(dot([7, 3], [2, 4]), 26)
   })
 
-  it('should calculate dot product for two column arrays', function () {
+  it('should calculate dot product for two column arrays', function (): void {
     assert.strictEqual(dot([[2], [4], [1]], [[2], [2], [3]]), 15)
     assert.strictEqual(dot([[7], [3]], [[2], [4]]), 26)
   })
 
-  it('should calculate dot product for two 1-dim vectors', function () {
+  it('should calculate dot product for two 1-dim vectors', function (): void {
     assert.strictEqual(dot(matrix([2, 4, 1]), matrix([2, 2, 3])), 15)
     assert.strictEqual(dot(matrix([7, 3]), matrix([2, 4])), 26)
   })
 
-  it('should calculate dot product for two column vectors', function () {
+  it('should calculate dot product for two column vectors', function (): void {
     assert.strictEqual(
       dot(matrix([[2], [4], [1]]), matrix([[2], [2], [3]])),
       15
@@ -34,37 +41,37 @@ describe('dot', function () {
     assert.strictEqual(dot(matrix([[7], [3]]), matrix([[2], [4]])), 26)
   })
 
-  it('should calculate dot product for mixed 1-dim arrays and column arrays', function () {
+  it('should calculate dot product for mixed 1-dim arrays and column arrays', function (): void {
     assert.strictEqual(dot([2, 4, 1], [[2], [2], [3]]), 15)
     assert.strictEqual(dot([[7], [3]], [2, 4]), 26)
   })
 
-  it('should calculate dot product for mixed 1-dim arrays and 1-dim vectors', function () {
+  it('should calculate dot product for mixed 1-dim arrays and 1-dim vectors', function (): void {
     assert.strictEqual(dot([2, 4, 1], matrix([2, 2, 3])), 15)
     assert.strictEqual(dot(matrix([7, 3]), [2, 4]), 26)
   })
 
-  it('should calculate dot product for mixed 1-dim arrays and column vectors', function () {
+  it('should calculate dot product for mixed 1-dim arrays and column vectors', function (): void {
     assert.strictEqual(dot([2, 4, 1], matrix([[2], [2], [3]])), 15)
     assert.strictEqual(dot(matrix([[7], [3]]), [2, 4]), 26)
   })
 
-  it('should calculate dot product for mixed column arrays and 1-dim vectors', function () {
+  it('should calculate dot product for mixed column arrays and 1-dim vectors', function (): void {
     assert.strictEqual(dot([[2], [4], [1]], matrix([2, 2, 3])), 15)
     assert.strictEqual(dot(matrix([7, 3]), [[2], [4]]), 26)
   })
 
-  it('should calculate dot product for mixed column arrays and column vectors', function () {
+  it('should calculate dot product for mixed column arrays and column vectors', function (): void {
     assert.strictEqual(dot([[2], [4], [1]], matrix([[2], [2], [3]])), 15)
     assert.strictEqual(dot(matrix([[7], [3]]), [[2], [4]]), 26)
   })
 
-  it('should calculate dot product for mixed 1-dim vectors and column vectors', function () {
+  it('should calculate dot product for mixed 1-dim vectors and column vectors', function (): void {
     assert.strictEqual(dot(matrix([2, 4, 1]), matrix([[2], [2], [3]])), 15)
     assert.strictEqual(dot(matrix([[7], [3]]), matrix([2, 4])), 26)
   })
 
-  it('should calculate dot product for two 1-dim unit arrays', function () {
+  it('should calculate dot product for two 1-dim unit arrays', function (): void {
     assert.strictEqual(
       dot([unit('2m'), unit('4m'), unit('1m')], [2, 2, 3]).toString(),
       '15 m'
@@ -79,7 +86,7 @@ describe('dot', function () {
     )
   })
 
-  it('should calculate dot product for two column unit arrays', function () {
+  it('should calculate dot product for two column unit arrays', function (): void {
     assert.strictEqual(
       dot(
         [[unit('2g')], [unit('4g')], [unit('1g')]],
@@ -93,7 +100,7 @@ describe('dot', function () {
     )
   })
 
-  it('should calculate dot product for two 1-dim unit vectors', function () {
+  it('should calculate dot product for two 1-dim unit vectors', function (): void {
     assert.strictEqual(
       dot(
         matrix([2, 4, 1]),
@@ -110,7 +117,7 @@ describe('dot', function () {
     )
   })
 
-  it('should calculate dot product for two column unit vectors', function () {
+  it('should calculate dot product for two column unit vectors', function (): void {
     assert.strictEqual(
       dot(
         matrix([[unit('2m')], [unit('4m')], [unit('1m')]]),
@@ -124,7 +131,7 @@ describe('dot', function () {
     )
   })
 
-  it('should calculate dot product for two 1-dim unit with complex value vectors', function () {
+  it('should calculate dot product for two 1-dim unit with complex value vectors', function (): void {
     assert.deepEqual(
       dot(
         matrix([unit(complex(2, 3), 'm'), unit(complex(4, 5), 'm')]),
@@ -141,7 +148,7 @@ describe('dot', function () {
     )
   })
 
-  it('should calculate dot product for two 1-dim unit with BigNumber value vectors', function () {
+  it('should calculate dot product for two 1-dim unit with BigNumber value vectors', function (): void {
     assert.strictEqual(
       dot(
         matrix([[unit(bignumber(7), 'g')], [unit(bignumber(3), 'g')]]),
@@ -151,7 +158,7 @@ describe('dot', function () {
     )
   })
 
-  it('should calculate dot product for two 1-dim unit with Fraction value vectors', function () {
+  it('should calculate dot product for two 1-dim unit with Fraction value vectors', function (): void {
     assert.strictEqual(
       dot(
         matrix([[unit(fraction(0.4), 'm')], [unit(fraction('0.5'), 'm')]]),
@@ -161,7 +168,7 @@ describe('dot', function () {
     )
   })
 
-  it('should calculate dot product for sparse vectors', function () {
+  it('should calculate dot product for sparse vectors', function (): void {
     assert.strictEqual(
       dot(sparse([0, 0, 2, 4, 4, 1]), sparse([1, 0, 2, 2, 0, 3])),
       15
@@ -169,14 +176,14 @@ describe('dot', function () {
     assert.strictEqual(dot(sparse([7, 1, 2, 3]), sparse([2, 0, 0, 4])), 26)
   })
 
-  it('should throw an error for unsupported types of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error for unsupported types of arguments', function (): void {
+    assert.throws(function (): void {
       dot([2, 4, 1], 2)
     }, TypeError)
   })
 
-  it('should throw an error for multi dimensional matrix input', function () {
-    assert.throws(function () {
+  it('should throw an error for multi dimensional matrix input', function (): void {
+    assert.throws(function (): void {
       dot(
         [
           [1, 2],
@@ -190,19 +197,19 @@ describe('dot', function () {
     }, /Expected a column vector, instead got a matrix of size \(2, 2\)/)
   })
 
-  it('should throw an error in case of vectors with unequal length', function () {
-    assert.throws(function () {
+  it('should throw an error in case of vectors with unequal length', function (): void {
+    assert.throws(function (): void {
       dot([2, 3], [1, 2, 3])
     }, /Vectors must have equal length \(2 != 3\)/)
   })
 
-  it('should throw an error in case of empty vectors', function () {
-    assert.throws(function () {
+  it('should throw an error in case of empty vectors', function (): void {
+    assert.throws(function (): void {
       dot([], [])
     }, /Cannot calculate the dot product of empty vectors/)
   })
 
-  it('should LaTeX dot', function () {
+  it('should LaTeX dot', function (): void {
     const expression = math.parse('dot([1,2],[3,4])')
     assert.strictEqual(
       expression.toTex(),
@@ -210,7 +217,7 @@ describe('dot', function () {
     )
   })
 
-  it('should be antilinear in the first argument', function () {
+  it('should be antilinear in the first argument', function (): void {
     const I = complex(0, 1)
     assert.deepStrictEqual(dot([I, 2], [1, I]), I)
 

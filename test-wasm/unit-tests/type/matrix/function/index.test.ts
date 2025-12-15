@@ -1,12 +1,18 @@
-// @ts-nocheck
-// test index construction
+/**
+ * Test for index - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../../src/defaultInstance.ts'
 const Range = math.Range
 
-describe('index', function () {
-  it('should create an index', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('index', function (): void {
+  it('should create an index', function (): void {
     const index = math.index(new Range(2, 6))
     assert.ok(index instanceof math.Index)
     assert.deepStrictEqual(index._dimensions.length, 1)
@@ -19,7 +25,7 @@ describe('index', function () {
     assert.deepStrictEqual(index2._dimensions[1], new Range(5, 2, -1))
   })
 
-  it('should create an index from bignumbers (downgrades to numbers)', function () {
+  it('should create an index from bignumbers (downgrades to numbers)', function (): void {
     const index = math.index(
       new Range(math.bignumber(2), math.bignumber(6)),
       math.bignumber(3)
@@ -28,16 +34,16 @@ describe('index', function () {
     assert.deepStrictEqual(index._dimensions, [new Range(2, 6, 1), 3])
   })
 
-  it('should create an index from bigints (downgrades to numbers)', function () {
+  it('should create an index from bigints (downgrades to numbers)', function (): void {
     const index = math.index(new Range(2n, 6n), 3n)
     assert.ok(index instanceof math.Index)
     assert.deepStrictEqual(index._dimensions, [new Range(2, 6, 1), 3])
   })
 
-  it('should LaTeX index', function () {
-    const expr1 = math.parse('index(1)')
-    const expr2 = math.parse('index(1,2)')
-    const expr3 = math.parse('index(1,2,3)')
+  it('should LaTeX index', function (): void {
+    const expr1 = math.parse('index(1)') as MathNode
+    const expr2 = math.parse('index(1,2)') as MathNode
+    const expr3 = math.parse('index(1,2,3)') as MathNode
 
     assert.strictEqual(expr1.toTex(), '\\mathrm{index}\\left(1\\right)')
     assert.strictEqual(expr2.toTex(), '\\mathrm{index}\\left(1,2\\right)')

@@ -1,12 +1,14 @@
-// @ts-nocheck
+/**
+ * Test for freqz - AssemblyScript-friendly TypeScript
+ */
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
 const freqz = math.freqz
 
-describe('freqz', function () {
-  it('should return the frequency response of a zero-pole-gain model given number as w parameter', function () {
+describe('freqz', function (): void {
+  it('should return the frequency response of a zero-pole-gain model given number as w parameter', function (): void {
     approxDeepEqual(
       freqz(
         [math.complex(1, 0), math.complex(-1, -5)],
@@ -43,7 +45,7 @@ describe('freqz', function () {
     )
   })
 
-  it('should return the frequency response of a zero-pole-gain model when not given w parameter', function () {
+  it('should return the frequency response of a zero-pole-gain model when not given w parameter', function (): void {
     const { h, w } = freqz(
       [math.complex(1, 0), math.complex(-1, -5)],
       [math.complex(1, 0), math.complex(5, 0), math.complex(6, 0)]
@@ -52,7 +54,7 @@ describe('freqz', function () {
     approxDeepEqual(w.length, 512)
   })
 
-  it('should return the frequency response of a zero-pole-gain model given b and a as matrix and not given w parameter', function () {
+  it('should return the frequency response of a zero-pole-gain model given b and a as matrix and not given w parameter', function (): void {
     const b = math.matrix([math.complex(1, 0), math.complex(-1, -5)])
     const a = math.matrix([
       math.complex(1, 0),
@@ -64,7 +66,7 @@ describe('freqz', function () {
     approxDeepEqual(w._size, [512])
   })
 
-  it('should return the frequency response of a zero-pole-gain model given array as w parameter', function () {
+  it('should return the frequency response of a zero-pole-gain model given array as w parameter', function (): void {
     approxDeepEqual(
       freqz(
         [math.complex(1, 0), math.complex(-1, -5)],
@@ -82,7 +84,7 @@ describe('freqz', function () {
     )
   })
 
-  it('should return the frequency response of a zero-pole-gain model given matrix as b,a and w parameter', function () {
+  it('should return the frequency response of a zero-pole-gain model given matrix as b,a and w parameter', function (): void {
     approxDeepEqual(
       freqz(
         math.matrix([math.complex(1, 0), math.complex(-1, -5)]),
@@ -104,7 +106,7 @@ describe('freqz', function () {
     )
   })
 
-  it('should return the frequency response of a zero-pole-gain model given matrix as b,a and number as w parameter', function () {
+  it('should return the frequency response of a zero-pole-gain model given matrix as b,a and number as w parameter', function (): void {
     approxDeepEqual(
       freqz(
         math.matrix([math.complex(1, 0), math.complex(-1, -5)]),
@@ -128,14 +130,14 @@ describe('freqz', function () {
     )
   })
 
-  it('should error with negative number of points', function () {
-    assert.throws(function () {
+  it('should error with negative number of points', function (): void {
+    assert.throws(function (): void {
       freqz([1, 2], [1, 2, 3], -1)
     }, /w must be a positive number/)
   })
 
-  it('should error with negative number of points when given matrix as b,a and w parameter', function () {
-    assert.throws(function () {
+  it('should error with negative number of points when given matrix as b,a and w parameter', function (): void {
+    assert.throws(function (): void {
       freqz(math.matrix([1, 2]), math.matrix([1, 2, 3]), -1)
     }, /w must be a positive number/)
   })

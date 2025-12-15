@@ -1,19 +1,20 @@
-// @ts-nocheck
-// test add
+/**
+ * Test for add - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 const add = math.add
 
 // TODO: make unit tests independent of math
-describe('add', function () {
-  describe('Array', function () {
-    it('should convert strings and add them element wise', function () {
+describe('add', function (): void {
+  describe('Array', function (): void {
+    it('should convert strings and add them element wise', function (): void {
       assert.deepStrictEqual(add('2', ['3', '4']), [5, 6])
       assert.deepStrictEqual(add(['2', '3'], '4'), [6, 7])
     })
 
-    it('should add arrays correctly', function () {
+    it('should add arrays correctly', function (): void {
       const a2 = [
         [1, 2],
         [3, 4]
@@ -29,7 +30,7 @@ describe('add', function () {
       ])
     })
 
-    it('should add 3 dimension arrays correctly', function () {
+    it('should add 3 dimension arrays correctly', function (): void {
       const a2 = [
         [
           [1, 1],
@@ -63,12 +64,12 @@ describe('add', function () {
       ])
     })
 
-    it('should add a scalar and an array correctly', function () {
+    it('should add a scalar and an array correctly', function (): void {
       assert.deepStrictEqual(add(2, [3, 4]), [5, 6])
       assert.deepStrictEqual(add([3, 4], 2), [5, 6])
     })
 
-    it('should add broadcastable arrays correctly', function () {
+    it('should add broadcastable arrays correctly', function (): void {
       const a2 = [1, 2]
       const a3 = [[3], [4]]
       const a4 = add(a2, a3)
@@ -83,7 +84,7 @@ describe('add', function () {
       ])
     })
 
-    it('should add array and dense matrix correctly', function () {
+    it('should add array and dense matrix correctly', function (): void {
       const a = [1, 2, 3]
       const b = math.matrix([3, 2, 1])
       const c = add(a, b)
@@ -92,7 +93,7 @@ describe('add', function () {
       assert.deepStrictEqual(c, math.matrix([4, 4, 4]))
     })
 
-    it('should add array and sparse matrix correctly', function () {
+    it('should add array and sparse matrix correctly', function (): void {
       const a = [
         [1, 2, 3],
         [4, 5, 6]
@@ -114,8 +115,8 @@ describe('add', function () {
     })
   })
 
-  describe('DenseMatrix', function () {
-    it('should handle strings and matrices element wise', function () {
+  describe('DenseMatrix', function (): void {
+    it('should handle strings and matrices element wise', function (): void {
       assert.deepStrictEqual(
         add('2', math.matrix(['3', '4'])),
         math.matrix([5, 6])
@@ -126,7 +127,7 @@ describe('add', function () {
       )
     })
 
-    it('should add matrices correctly', function () {
+    it('should add matrices correctly', function (): void {
       const a2 = math.matrix([
         [1, 2],
         [3, 4]
@@ -144,7 +145,7 @@ describe('add', function () {
       ])
     })
 
-    it('should add 3 dimension natrices correctly', function () {
+    it('should add 3 dimension natrices correctly', function (): void {
       const a2 = math.matrix([
         [
           [1, 1],
@@ -181,12 +182,12 @@ describe('add', function () {
       )
     })
 
-    it('should add a scalar and a matrix correctly', function () {
+    it('should add a scalar and a matrix correctly', function (): void {
       assert.deepStrictEqual(add(2, math.matrix([3, 4])), math.matrix([5, 6]))
       assert.deepStrictEqual(add(math.matrix([3, 4]), 2), math.matrix([5, 6]))
     })
 
-    it('should add matrix and array correctly', function () {
+    it('should add matrix and array correctly', function (): void {
       const a = math.matrix([1, 2, 3])
       const b = [3, 2, 1]
       const c = add(a, b)
@@ -195,7 +196,7 @@ describe('add', function () {
       assert.deepStrictEqual(c, math.matrix([4, 4, 4]))
     })
 
-    it('should add dense and sparse matrices correctly', function () {
+    it('should add dense and sparse matrices correctly', function (): void {
       const a = math.matrix([
         [1, 2, 3],
         [1, 0, 0]
@@ -216,7 +217,7 @@ describe('add', function () {
       )
     })
 
-    it('should add matrices with a datatype correctly', function () {
+    it('should add matrices with a datatype correctly', function (): void {
       const a2 = math.matrix(
         [
           [1, 2],
@@ -243,7 +244,7 @@ describe('add', function () {
       ])
     })
 
-    it('should add matrices with a datatype correctly', function () {
+    it('should add matrices with a datatype correctly', function (): void {
       const a2 = math.matrix(
         [math.bignumber(3), math.bignumber(4)],
         'dense',
@@ -265,8 +266,8 @@ describe('add', function () {
     })
   })
 
-  describe('SparseMatrix', function () {
-    it('should add matrices correctly', function () {
+  describe('SparseMatrix', function (): void {
+    it('should add matrices correctly', function (): void {
       const a2 = math.matrix(
         [
           [1, 2],
@@ -292,7 +293,7 @@ describe('add', function () {
       )
     })
 
-    it('should add a scalar and a matrix correctly', function () {
+    it('should add a scalar and a matrix correctly', function (): void {
       assert.deepStrictEqual(
         add(
           2,
@@ -333,7 +334,7 @@ describe('add', function () {
       )
     })
 
-    it('should add matrix and array correctly', function () {
+    it('should add matrix and array correctly', function (): void {
       const a = math.matrix(
         [
           [1, 2, 3],
@@ -357,7 +358,7 @@ describe('add', function () {
       )
     })
 
-    it('should add sparse and dense matrices correctly', function () {
+    it('should add sparse and dense matrices correctly', function (): void {
       const a = math.sparse([
         [1, 2, 3],
         [1, 0, 0]
@@ -378,7 +379,7 @@ describe('add', function () {
       )
     })
 
-    it('should add sparse and sparse matrices correctly', function () {
+    it('should add sparse and sparse matrices correctly', function (): void {
       const a = math.sparse([
         [1, 2, 3],
         [1, 0, 0]
@@ -399,7 +400,7 @@ describe('add', function () {
       )
     })
 
-    it('should add two pattern matrices correctly', function () {
+    it('should add two pattern matrices correctly', function (): void {
       const a = new math.SparseMatrix({
         values: undefined,
         index: [0, 1, 2, 0],
@@ -427,7 +428,7 @@ describe('add', function () {
       )
     })
 
-    it('should add pattern and value matrices correctly', function () {
+    it('should add pattern and value matrices correctly', function (): void {
       const a = new math.SparseMatrix({
         values: undefined,
         index: [0, 1, 2, 0],
@@ -455,7 +456,7 @@ describe('add', function () {
       )
     })
 
-    it('should add value and pattern matrices correctly', function () {
+    it('should add value and pattern matrices correctly', function (): void {
       const a = new math.SparseMatrix({
         values: [1, 2, 3, 4],
         index: [0, 1, 2, 0],
@@ -484,8 +485,8 @@ describe('add', function () {
     })
   })
 
-  describe('multiple arguments', function () {
-    it('should add more than two arguments', function () {
+  describe('multiple arguments', function (): void {
+    it('should add more than two arguments', function (): void {
       assert.deepStrictEqual(add(2, 3, 4), 9)
       assert.deepStrictEqual(add(2, 3, [5, 6]), [10, 11])
 

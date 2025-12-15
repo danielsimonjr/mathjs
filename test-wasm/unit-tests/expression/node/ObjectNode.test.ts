@@ -1,5 +1,6 @@
-// @ts-nocheck
-// test ObjectNode
+/**
+ * Test for ObjectNode - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -10,8 +11,8 @@ const ObjectNode = math.ObjectNode
 
 // FIXME: a lot of tests depend on order of object keys, whilst the order is officially undeterministic
 
-describe('ObjectNode', function () {
-  it('should create an ObjectNode', function () {
+describe('ObjectNode', function (): void {
+  it('should create an ObjectNode', function (): void {
     const c = new ConstantNode(1)
     const a = new ObjectNode({ c })
     const b = new ObjectNode()
@@ -21,28 +22,28 @@ describe('ObjectNode', function () {
     assert.strictEqual(b.type, 'ObjectNode')
   })
 
-  it('should have isObjectNode', function () {
+  it('should have isObjectNode', function (): void {
     const node = new ObjectNode({})
 
     assert(node.isObjectNode)
   })
 
-  it('should throw an error when calling without new operator', function () {
-    assert.throws(function () {
+  it('should throw an error when calling without new operator', function (): void {
+    assert.throws(function (): void {
       ObjectNode()
     }, TypeError)
   })
 
-  it('should throw an error on wrong constructor arguments', function () {
-    assert.throws(function () {
+  it('should throw an error on wrong constructor arguments', function (): void {
+    assert.throws(function (): void {
       console.log(new ObjectNode(2))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new ObjectNode({ a: 2, b: 3 }))
     }, TypeError)
   })
 
-  it('should evaluate an ObjectNode', function () {
+  it('should evaluate an ObjectNode', function (): void {
     const c = new ConstantNode(1)
     const a = new ObjectNode({ c })
     const b = new ObjectNode()
@@ -51,7 +52,7 @@ describe('ObjectNode', function () {
     assert.deepStrictEqual(b.compile().evaluate(), {})
   })
 
-  it('should compile nested ObjectNodes', function () {
+  it('should compile nested ObjectNodes', function (): void {
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
     const c = new ConstantNode(3)
@@ -68,7 +69,7 @@ describe('ObjectNode', function () {
     })
   })
 
-  it('should filter an ObjectNode', function () {
+  it('should filter an ObjectNode', function (): void {
     const a = new ConstantNode(1)
     const b = new SymbolNode('x')
     const c = new ConstantNode(2)
@@ -106,7 +107,7 @@ describe('ObjectNode', function () {
     )
   })
 
-  it('should run forEach on an ObjectNode', function () {
+  it('should run forEach on an ObjectNode', function (): void {
     const a = new SymbolNode('x')
     const b = new ConstantNode(2)
     const c = new ObjectNode({ a, b })
@@ -125,7 +126,7 @@ describe('ObjectNode', function () {
     assert.strictEqual(nodes[1], b)
   })
 
-  it('should map an ObjectNode', function () {
+  it('should map an ObjectNode', function (): void {
     const a = new SymbolNode('x')
     const b = new ConstantNode(2)
     const c = new ObjectNode({ a, b })
@@ -151,19 +152,19 @@ describe('ObjectNode', function () {
     assert.deepStrictEqual(e.properties.b, b)
   })
 
-  it('should throw an error when the map callback does not return a node', function () {
+  it('should throw an error when the map callback does not return a node', function (): void {
     const a = new SymbolNode('x')
     const b = new ConstantNode(2)
     const c = new ObjectNode({ a, b })
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       c.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
-  it('should transform an ObjectNodes parameters', function () {
+  it('should transform an ObjectNodes parameters', function (): void {
     const a = new SymbolNode('x')
     const b = new ConstantNode(2)
     const c = new ObjectNode({ a, b })
@@ -178,7 +179,7 @@ describe('ObjectNode', function () {
     assert.deepStrictEqual(e.properties.b, b)
   })
 
-  it('should transform an ObjectNode itself', function () {
+  it('should transform an ObjectNode itself', function (): void {
     const a = new SymbolNode('x')
     const b = new ConstantNode(2)
     const c = new ObjectNode({ a, b })
@@ -192,7 +193,7 @@ describe('ObjectNode', function () {
     assert.deepStrictEqual(e, d)
   })
 
-  it('should traverse an ObjectNode', function () {
+  it('should traverse an ObjectNode', function (): void {
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
     const c = new ConstantNode(3)
@@ -239,7 +240,7 @@ describe('ObjectNode', function () {
     assert.strictEqual(count, 5)
   })
 
-  it('should clone an ObjectNode', function () {
+  it('should clone an ObjectNode', function (): void {
     const a = new SymbolNode('x')
     const b = new ConstantNode(2)
     const c = new ObjectNode({ a, b })
@@ -252,7 +253,7 @@ describe('ObjectNode', function () {
     assert.strictEqual(c.properties.b, d.properties.b)
   })
 
-  it('test equality another Node', function () {
+  it('test equality another Node', function (): void {
     const a = new ObjectNode({ a: new SymbolNode('a'), b: new ConstantNode(2) })
     const b = new ObjectNode({ a: new SymbolNode('a'), b: new ConstantNode(2) })
     const c = new ObjectNode({
@@ -276,7 +277,7 @@ describe('ObjectNode', function () {
     assert.strictEqual(a.equals(f), false)
   })
 
-  it('should stringify an ObjectNode', function () {
+  it('should stringify an ObjectNode', function (): void {
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
     const c = new ConstantNode(3)
@@ -286,7 +287,7 @@ describe('ObjectNode', function () {
     assert.strictEqual(n2.toString(), '{"c": 3, "n1": {"a": 1, "b": 2}}')
   })
 
-  it('should stringify an ObjectNode with custom toString', function () {
+  it('should stringify an ObjectNode with custom toString', function (): void {
     const customFunction = function (node, _options) {
       if (node.type === 'ConstantNode') {
         return 'const(' + node.value + ', ' + math.typeOf(node.value) + ')'
@@ -303,7 +304,7 @@ describe('ObjectNode', function () {
     )
   })
 
-  it('should stringify an ObjectNode with custom toHTML', function () {
+  it('should stringify an ObjectNode with custom toHTML', function (): void {
     const customFunction = function (node, _options) {
       if (node.type === 'ConstantNode') {
         return 'const(' + node.value + ', ' + math.typeOf(node.value) + ')'
@@ -320,7 +321,7 @@ describe('ObjectNode', function () {
     )
   })
 
-  it('toJSON and fromJSON', function () {
+  it('toJSON and fromJSON', function (): void {
     const b = new ConstantNode(1)
     const c = new ConstantNode(2)
 
@@ -337,7 +338,7 @@ describe('ObjectNode', function () {
     assert.deepStrictEqual(parsed, node)
   })
 
-  it('should LaTeX an ObjectNode', function () {
+  it('should LaTeX an ObjectNode', function (): void {
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
     const c = new ConstantNode(3)
@@ -354,7 +355,7 @@ describe('ObjectNode', function () {
     )
   })
 
-  it('should LaTeX an ObjectNode with custom toTex', function () {
+  it('should LaTeX an ObjectNode with custom toTex', function (): void {
     const customFunction = function (node, _options) {
       if (node.type === 'ConstantNode') {
         return (

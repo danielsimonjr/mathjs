@@ -1,12 +1,13 @@
-// @ts-nocheck
-// test Help
+/**
+ * Test for Help - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../src/defaultInstance.ts'
 import { embeddedDocs } from '../../../src/expression/embeddedDocs/embeddedDocs.js'
 const Help = math.Help
 
-describe('help', function () {
+describe('help', function (): void {
   const doc = {
     name: 'add',
     category: 'Operators',
@@ -16,7 +17,7 @@ describe('help', function () {
     seealso: ['subtract']
   }
 
-  it('should generate the help for a function', function () {
+  it('should generate the help for a function', function (): void {
     const help = new Help(doc)
 
     assert(help instanceof Help)
@@ -24,29 +25,29 @@ describe('help', function () {
     assert.deepStrictEqual(help.doc, doc)
   })
 
-  it('should throw an error when constructed without new operator', function () {
-    assert.throws(function () {
+  it('should throw an error when constructed without new operator', function (): void {
+    assert.throws(function (): void {
       console.log(Help(embeddedDocs.sin))
     }, /Constructor must be called with the new operator/)
   })
 
-  it('should throw an error when constructed without doc argument', function () {
-    assert.throws(function () {
+  it('should throw an error when constructed without doc argument', function (): void {
+    assert.throws(function (): void {
       console.log(new Help())
     }, /Argument "doc" missing/)
   })
 
-  it('should have a property isHelp', function () {
+  it('should have a property isHelp', function (): void {
     const a = new Help(doc)
     assert.strictEqual(a.isHelp, true)
   })
 
-  it('should have a property type', function () {
+  it('should have a property type', function (): void {
     const a = new Help(doc)
     assert.strictEqual(a.type, 'Help')
   })
 
-  it('should stringify a help', function () {
+  it('should stringify a help', function (): void {
     const help = new Help(doc)
     assert.strictEqual(
       help.toString(),
@@ -71,12 +72,12 @@ describe('help', function () {
     )
   })
 
-  it('should stringify a help with empty doc', function () {
+  it('should stringify a help with empty doc', function (): void {
     const help = new Help({})
     assert.strictEqual(help.toString(), '\n')
   })
 
-  it('should stringify a doc with empty example', function () {
+  it('should stringify a doc with empty example', function (): void {
     const help = new Help({
       name: 'add',
       examples: ['2 + 3', '']
@@ -94,7 +95,7 @@ describe('help', function () {
     )
   })
 
-  it('should stringify a doc with example throwing an error', function () {
+  it('should stringify a doc with example throwing an error', function (): void {
     const help = new Help({
       name: 'add',
       examples: ['2 ^^ 3']
@@ -111,7 +112,7 @@ describe('help', function () {
     )
   })
 
-  it('should return string representation on valueOf', function () {
+  it('should return string representation on valueOf', function (): void {
     const help = new Help({
       name: 'add',
       examples: ['2 ^^ 3']
@@ -128,7 +129,7 @@ describe('help', function () {
     )
   })
 
-  it('should export doc to JSON', function () {
+  it('should export doc to JSON', function (): void {
     const help = new Help(doc)
     const json = help.toJSON()
     assert.deepStrictEqual(json, {
@@ -146,7 +147,7 @@ describe('help', function () {
     assert.notStrictEqual(json.examples.length, doc.examples.length)
   })
 
-  it('should instantiate Help from json using fromJSON', function () {
+  it('should instantiate Help from json using fromJSON', function (): void {
     const json = {
       mathjs: 'Help',
       name: 'add',

@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for coth - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -10,13 +17,13 @@ const coth = math.coth
 const bigmath = math.create({ precision: 20 })
 const biggermath = math.create({ number: 'BigNumber', precision: 21 })
 
-describe('coth', function () {
-  it('should return the coth of a boolean', function () {
+describe('coth', function (): void {
+  it('should return the coth of a boolean', function (): void {
     approxEqual(coth(true), 1.3130352854993)
     approxEqual(coth(false), Number.POSITIVE_INFINITY)
   })
 
-  it('should return the coth of a number', function () {
+  it('should return the coth of a number', function (): void {
     approxEqual(coth(0), Number.POSITIVE_INFINITY)
     approxEqual(coth(pi), 1.0037418731973)
     approxEqual(coth(1), 1.3130352854993)
@@ -24,7 +31,7 @@ describe('coth', function () {
     approxEqual(coth(3), 1.0049698233137)
   })
 
-  it('should return the coth of a bignumber', function () {
+  it('should return the coth of a bignumber', function (): void {
     const cothBig = bigmath.coth
     const Big = bigmath.bignumber
     assert.deepStrictEqual(cothBig(Big(0)).toString(), 'Infinity')
@@ -36,7 +43,7 @@ describe('coth', function () {
     assert.deepStrictEqual(cothBig(biggermath.pi), Big('1.0037418731973212882'))
   })
 
-  it('should return the coth of a complex number', function () {
+  it('should return the coth of a complex number', function (): void {
     approxDeepEqual(coth(complex('1')), complex(1.3130352854993, 0))
     approxDeepEqual(coth(complex('i')), complex(0, -0.64209261593433))
     approxDeepEqual(
@@ -45,44 +52,44 @@ describe('coth', function () {
     )
   })
 
-  it('should throw an error on an angle', function () {
+  it('should throw an error on an angle', function (): void {
     assert.throws(() => coth(unit('90deg')), TypeError)
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       coth(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       coth('string')
     })
   })
 
   const coth123 = [1.3130352854993, 1.0373147207275, 1.0049698233137]
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => coth([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], coth), coth123)
   })
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => coth(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), coth), matrix(coth123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       coth()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       coth(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX coth', function () {
+  it('should LaTeX coth', function (): void {
     const expression = math.parse('coth(1)')
     assert.strictEqual(expression.toTex(), '\\coth\\left(1\\right)')
   })

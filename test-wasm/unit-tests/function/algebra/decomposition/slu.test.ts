@@ -1,9 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for slu - AssemblyScript-friendly TypeScript
+ */
 import { approxDeepEqual } from '../../../../../tools/approx.js'
 import math from '../../../../../src/defaultInstance.ts'
 
-describe('slu', function () {
-  it('should decompose matrix, 4 x 4, natural ordering (order=0), partial pivoting', function () {
+describe('slu', function (): void {
+  it('should decompose matrix, 4 x 4, natural ordering (order=0), partial pivoting', function (): void {
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -21,7 +23,7 @@ describe('slu', function () {
     )
   })
 
-  it("should decompose matrix, 4 x 4, amd(A+A') (order=1)", function () {
+  it("should decompose matrix, 4 x 4, amd(A+A') (order=1)", function (): void {
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -39,7 +41,7 @@ describe('slu', function () {
     )
   })
 
-  it("should decompose matrix, 4 x 4, amd(A'*A) (order=2), partial pivoting", function () {
+  it("should decompose matrix, 4 x 4, amd(A'*A) (order=2), partial pivoting", function (): void {
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -57,7 +59,7 @@ describe('slu', function () {
     )
   })
 
-  it("should decompose matrix, 4 x 4, amd(A'*A) (order=3), partial pivoting", function () {
+  it("should decompose matrix, 4 x 4, amd(A'*A) (order=3), partial pivoting", function (): void {
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],

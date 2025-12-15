@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for tanh - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -9,13 +16,13 @@ const unit = math.unit
 const tanh = math.tanh
 const bigmath = math.create({ number: 'BigNumber', precision: 20 })
 
-describe('tanh', function () {
-  it('should return the tanh of a boolean', function () {
+describe('tanh', function (): void {
+  it('should return the tanh of a boolean', function (): void {
     approxEqual(tanh(true), 0.76159415595576)
     approxEqual(tanh(false), 0)
   })
 
-  it('should return the tanh of a number', function () {
+  it('should return the tanh of a number', function (): void {
     approxEqual(tanh(0), 0)
     approxEqual(tanh(pi), 0.99627207622075)
     approxEqual(tanh(1), 0.76159415595576)
@@ -23,7 +30,7 @@ describe('tanh', function () {
     approxEqual(tanh(3), 0.99505475368673)
   })
 
-  it('should return the tanh of a bignumber', function () {
+  it('should return the tanh of a bignumber', function (): void {
     const tanhBig = bigmath.tanh
     const Big = bigmath.bignumber
 
@@ -50,7 +57,7 @@ describe('tanh', function () {
     assert.deepStrictEqual(arg10.toString(), 'Infinity')
   })
 
-  it('should return the tanh of a complex number', function () {
+  it('should return the tanh of a complex number', function (): void {
     approxDeepEqual(tanh(complex('1')), complex(0.76159415595576, 0))
     approxDeepEqual(tanh(complex('i')), complex(0, 1.5574077246549))
     approxDeepEqual(
@@ -59,44 +66,44 @@ describe('tanh', function () {
     )
   })
 
-  it('should throw an error on an angle', function () {
+  it('should throw an error on an angle', function (): void {
     assert.throws(() => tanh(unit('90deg')), TypeError)
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       tanh(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       tanh('string')
     })
   })
 
   const tanh123 = [0.76159415595576, 0.96402758007582, 0.99505475368673]
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => tanh([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], tanh), tanh123)
   })
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => tanh(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), tanh), matrix(tanh123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       tanh()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       tanh(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX tanh', function () {
+  it('should LaTeX tanh', function (): void {
     const expression = math.parse('tanh(1)')
     assert.strictEqual(expression.toTex(), '\\tanh\\left(1\\right)')
   })

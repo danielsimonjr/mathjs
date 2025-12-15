@@ -1,11 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for zpk2tf - AssemblyScript-friendly TypeScript
+ */
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 
 const zpk2tf = math.zpk2tf
 
-describe('zpk2tf', function () {
-  it('should return the transfer function of a zero-pole-gain model', function () {
+describe('zpk2tf', function (): void {
+  it('should return the transfer function of a zero-pole-gain model', function (): void {
     approxDeepEqual(
       zpk2tf(
         [math.complex(1, 5)],
@@ -30,7 +32,7 @@ describe('zpk2tf', function () {
     )
   })
 
-  it('should return the transfer function of a zero-pole model', function () {
+  it('should return the transfer function of a zero-pole model', function (): void {
     approxDeepEqual(
       zpk2tf([math.complex(1, 5)], [math.complex(-2, 0), math.complex(-3, 0)]),
       [
@@ -40,7 +42,7 @@ describe('zpk2tf', function () {
     )
   })
 
-  it('should return the transfer function of a zero-pole-gain model with number parameters', function () {
+  it('should return the transfer function of a zero-pole-gain model with number parameters', function (): void {
     approxDeepEqual(zpk2tf([1, 2], [-1, -2], 1), [
       [math.complex(1, 0), math.complex(-3, 0), math.complex(2, 0)],
       [math.complex(1, 0), math.complex(3, 0), math.complex(2, 0)]
@@ -69,7 +71,7 @@ describe('zpk2tf', function () {
     ])
   })
 
-  it('should return the transfer function of a zero-pole model with Bignumber parameters', function () {
+  it('should return the transfer function of a zero-pole model with Bignumber parameters', function (): void {
     approxDeepEqual(zpk2tf(math.bignumber([1, 2]), math.bignumber([-1, -2])), [
       [math.complex(1, 0), math.complex(-3, 0), math.complex(2, 0)],
       [math.complex(1, 0), math.complex(3, 0), math.complex(2, 0)]
@@ -80,7 +82,7 @@ describe('zpk2tf', function () {
     ])
   })
 
-  it('should return the transfer function of a zero-pole-gain model with matrix parameters', function () {
+  it('should return the transfer function of a zero-pole-gain model with matrix parameters', function (): void {
     approxDeepEqual(
       zpk2tf(
         math.matrix([math.complex(1, 5)]),
@@ -105,7 +107,7 @@ describe('zpk2tf', function () {
     )
   })
 
-  it('should return the transfer function of a zero-pole model with matrix parameters', function () {
+  it('should return the transfer function of a zero-pole model with matrix parameters', function (): void {
     approxDeepEqual(
       zpk2tf(
         math.matrix([math.complex(1, 5)]),

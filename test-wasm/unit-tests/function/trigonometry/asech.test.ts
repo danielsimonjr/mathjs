@@ -1,5 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for asech - AssemblyScript-friendly TypeScript
+ */
 /* eslint-disable no-loss-of-precision */
+
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
@@ -16,13 +24,13 @@ const predmath = math.create({ predictable: true })
 const asechBig = bigmath.asech
 const Big = bigmath.bignumber
 
-describe('asech', function () {
-  it('should return the hyperbolic arcsec of a boolean', function () {
+describe('asech', function (): void {
+  it('should return the hyperbolic arcsec of a boolean', function (): void {
     assert.strictEqual(asech(true), 0)
     assert.strictEqual(asech(false), Infinity)
   })
 
-  it('should return the hyperbolic arcsec of a number', function () {
+  it('should return the hyperbolic arcsec of a number', function (): void {
     approxDeepEqual(asech(-0.5), complex(1.3169578969, pi))
     approxDeepEqual(asech(2), complex(0, pi / 3))
     // assert.ok(isNaN(asech(-0.5)))
@@ -35,12 +43,12 @@ describe('asech', function () {
     assert.strictEqual(asech(1), 0)
   })
 
-  it('should return the hyperbolic arcsec of a number when predictable:true', function () {
+  it('should return the hyperbolic arcsec of a number when predictable:true', function (): void {
     assert.strictEqual(typeof predmath.asech(2), 'number')
     assert(isNaN(predmath.asech(2)))
   })
 
-  it('should return the hyperbolic arcsec of a bignumber', function () {
+  it('should return the hyperbolic arcsec of a bignumber', function (): void {
     const arg1 = Big(0)
     const arg2 = Big(0.25)
     assert.deepStrictEqual(asechBig(arg1).toString(), 'Infinity')
@@ -58,7 +66,7 @@ describe('asech', function () {
     assert.ok(asech(Big(2)).isNaN())
   })
 
-  it('should be the inverse function of hyperbolic sec', function () {
+  it('should be the inverse function of hyperbolic sec', function (): void {
     approxEqual(asech(sech(-1)), 1)
     approxEqual(asech(sech(0)), 0)
     approxEqual(asech(sech(0.1)), 0.1)
@@ -66,7 +74,7 @@ describe('asech', function () {
     approxEqual(asech(sech(2)), 2)
   })
 
-  it('should be the inverse function of bignumber sech', function () {
+  it('should be the inverse function of bignumber sech', function (): void {
     assert.deepStrictEqual(asechBig(bigmath.sech(Big(-1))), Big(1))
     assert.deepStrictEqual(asechBig(bigmath.sech(Big(0))), Big(0))
     assert.deepStrictEqual(
@@ -82,7 +90,7 @@ describe('asech', function () {
     )
   })
 
-  it('should return the arcsech of a complex number', function () {
+  it('should return the arcsech of a complex number', function (): void {
     approxDeepEqual(
       asech(complex('2+3i')),
       complex(0.23133469857397, -1.420410722467035)
@@ -115,22 +123,22 @@ describe('asech', function () {
     approxDeepEqual(asech(complex('-1')), complex(0, pi))
   })
 
-  it('should throw an error if called with a unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
       asech(unit('45deg'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       asech(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       asech('string')
     })
   })
 
-  it('should not operate on arrays and matrices', function () {
+  it('should not operate on arrays and matrices', function (): void {
     assert.throws(() => asech([0, 1]), TypeError)
     assert.throws(() => asech(matrix([0, 1])), TypeError)
     const asech01 = [Infinity, 0]
@@ -138,16 +146,16 @@ describe('asech', function () {
     assert.deepStrictEqual(math.map(matrix([0, 1]), asech), matrix(asech01))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       asech()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       asech(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX asech', function () {
+  it('should LaTeX asech', function (): void {
     const expression = math.parse('asech(1)')
     assert.strictEqual(
       expression.toTex(),

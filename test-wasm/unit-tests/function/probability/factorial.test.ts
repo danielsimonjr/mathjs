@@ -1,11 +1,18 @@
-// @ts-nocheck
+/**
+ * Test for factorial - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 const factorial = math.factorial
 
-describe('factorial', function () {
-  it('should calculate the factorial of a number', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('factorial', function (): void {
+  it('should calculate the factorial of a number', function (): void {
     assert.strictEqual(factorial(0), 1)
     assert.strictEqual(factorial(1), 1)
     assert.strictEqual(factorial(2), 2)
@@ -16,7 +23,7 @@ describe('factorial', function () {
     assert.ok(!Number.isFinite(factorial(Infinity)))
   })
 
-  it('should calculate the factorial of a bignumber', function () {
+  it('should calculate the factorial of a bignumber', function (): void {
     const bigmath = math.create({ number: 'BigNumber', precision: 5 })
     assert.deepStrictEqual(
       bigmath.factorial(bigmath.bignumber(0)),
@@ -74,72 +81,72 @@ describe('factorial', function () {
     )
   })
 
-  it('should calculate the factorial of a boolean', function () {
+  it('should calculate the factorial of a boolean', function (): void {
     assert.strictEqual(factorial(true), 1)
     assert.strictEqual(factorial(false), 1)
   })
 
-  it('should calculate the factorial of each element in a matrix', function () {
+  it('should calculate the factorial of each element in a matrix', function (): void {
     assert.deepStrictEqual(
       factorial(math.matrix([0, 1, 2, 3, 4, 5])),
       math.matrix([1, 1, 2, 6, 24, 120])
     )
   })
 
-  it('should calculate the factorial of each element in an array', function () {
+  it('should calculate the factorial of each element in an array', function (): void {
     assert.deepStrictEqual(factorial([0, 1, 2, 3, 4, 5]), [1, 1, 2, 6, 24, 120])
   })
 
-  it('should calculate the factorial of a non-integer', function () {
+  it('should calculate the factorial of a non-integer', function (): void {
     approxEqual(factorial(1.5), 1.32934038817914)
     approxEqual(factorial(7.5), 14034.40729348)
   })
 
-  it('should throw error if called with negative number', function () {
-    assert.throws(function () {
+  it('should throw error if called with negative number', function (): void {
+    assert.throws(function (): void {
       factorial(-1)
     }, /Value must be non-negative/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       factorial(-1.5)
     }, /Value must be non-negative/)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       factorial(math.bignumber(-1))
     }, /Value must be non-negative/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       factorial(math.bignumber(-1.5))
     }, /Value must be non-negative/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       factorial(math.bignumber(-Infinity))
     }, /Value must be non-negative/)
   })
 
-  it('should throw an error if called with non-integer bignumber', function () {
-    assert.throws(function () {
+  it('should throw an error if called with non-integer bignumber', function (): void {
+    assert.throws(function (): void {
       factorial(math.bignumber(1.5))
     })
   })
 
-  it('should throw en error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw en error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       factorial()
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       factorial(1, 3)
     })
   })
 
-  it('should throw en error if called with invalid type of argument', function () {
-    assert.throws(function () {
+  it('should throw en error if called with invalid type of argument', function (): void {
+    assert.throws(function (): void {
       factorial(new Date())
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       factorial('a string')
     })
   })
 
-  it('should LaTeX factorial', function () {
-    const expression = math.parse('factorial(6)')
+  it('should LaTeX factorial', function (): void {
+    const expression = math.parse('factorial(6)') as MathNode
     assert.strictEqual(expression.toTex(), '\\left(6\\right)!')
   })
 })

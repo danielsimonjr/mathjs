@@ -1,10 +1,17 @@
-// @ts-nocheck
+/**
+ * Test for combinationsWithRep - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const combinationsWithRep = math.combinationsWithRep
 
-describe('combinations', function () {
-  it('should calculate the combinations of a number taking k at a time', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('combinations', function (): void {
+  it('should calculate the combinations of a number taking k at a time', function (): void {
     assert.strictEqual(combinationsWithRep(7, 5), 462)
     assert.strictEqual(combinationsWithRep(3, 10), 66)
     assert.strictEqual(combinationsWithRep(8, 33), 18643560)
@@ -12,7 +19,7 @@ describe('combinations', function () {
     assert.strictEqual(combinationsWithRep(25, 6), 593775)
   })
 
-  it('should calculate the combinations of n items taken k at a time with BigNumbers', function () {
+  it('should calculate the combinations of n items taken k at a time with BigNumbers', function (): void {
     assert.deepStrictEqual(
       combinationsWithRep(math.bignumber(7), math.bignumber(5)),
       math.bignumber(462)
@@ -35,47 +42,47 @@ describe('combinations', function () {
     )
   })
 
-  it('should not work with non-integer and negative input', function () {
-    assert.throws(function () {
+  it('should not work with non-integer and negative input', function (): void {
+    assert.throws(function (): void {
       combinationsWithRep(-12, 6)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       combinationsWithRep(12, -6)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       combinationsWithRep(0.5, 3)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       combinationsWithRep(4, 0.5)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       combinationsWithRep(math.bignumber(3.5), math.bignumber(-3))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       combinationsWithRep(math.bignumber(3.5), 1 / 3)
     }, TypeError)
   })
 
-  it('should fail loudly when k is larger than n + k - 1', function () {
-    assert.throws(function () {
+  it('should fail loudly when k is larger than n + k - 1', function (): void {
+    assert.throws(function (): void {
       combinationsWithRep(0, 0)
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       combinationsWithRep(0, 3)
     }, TypeError)
   })
 
-  it('should not work with the wrong number or type of arguments', function () {
-    assert.throws(function () {
+  it('should not work with the wrong number or type of arguments', function (): void {
+    assert.throws(function (): void {
       combinationsWithRep(5, 3, 2)
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       combinationsWithRep(true, 'hello world')
     })
   })
 
-  it('should LaTeX combinations', function () {
-    const expression = math.parse('combinationsWithRep(3, 2)')
+  it('should LaTeX combinations', function (): void {
+    const expression = math.parse('combinationsWithRep(3, 2)') as MathNode
     assert.strictEqual(
       expression.toTex(),
       '\\left(\\!\\!{\\binom{3}{2}}\\!\\!\\right)'

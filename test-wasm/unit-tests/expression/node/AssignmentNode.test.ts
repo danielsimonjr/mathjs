@@ -1,5 +1,6 @@
-// @ts-nocheck
-// test AssignmentNode
+/**
+ * Test for AssignmentNode - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -12,51 +13,51 @@ const AssignmentNode = math.AssignmentNode
 const OperatorNode = math.OperatorNode
 const IndexNode = math.IndexNode
 
-describe('AssignmentNode', function () {
-  it('should create an AssignmentNode', function () {
+describe('AssignmentNode', function (): void {
+  it('should create an AssignmentNode', function (): void {
     const n = new AssignmentNode(new SymbolNode('a'), new Node())
     assert(n instanceof AssignmentNode)
     assert(n instanceof Node)
     assert.strictEqual(n.type, 'AssignmentNode')
   })
 
-  it('should have property isAssignmentNode', function () {
+  it('should have property isAssignmentNode', function (): void {
     const node = new AssignmentNode(new SymbolNode('a'), new Node())
     assert(node.isAssignmentNode)
   })
 
-  it('should throw an error when calling without new operator', function () {
+  it('should throw an error when calling without new operator', function (): void {
     assert.throws(
       () => AssignmentNode(new SymbolNode('a'), new Node()),
       TypeError
     )
   })
 
-  it('should throw an error when creating an AssignmentNode with a reserved keyword', function () {
-    assert.throws(function () {
+  it('should throw an error when creating an AssignmentNode with a reserved keyword', function (): void {
+    assert.throws(function (): void {
       console.log(new AssignmentNode(new SymbolNode('end'), new Node()))
     }, /Cannot assign to symbol "end"/)
   })
 
-  it('should throw an error on wrong constructor arguments', function () {
-    assert.throws(function () {
+  it('should throw an error on wrong constructor arguments', function (): void {
+    assert.throws(function (): void {
       console.log(new AssignmentNode())
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new AssignmentNode(new Node(), new Node()))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new AssignmentNode('a', new Node()))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new AssignmentNode(2, new Node()))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new AssignmentNode(new Node(), new Node(), new Node()))
     }, TypeError)
   })
 
-  it('should get the name of an AssignmentNode', function () {
+  it('should get the name of an AssignmentNode', function (): void {
     const n = new AssignmentNode(new SymbolNode('a'), new ConstantNode(1))
     assert.strictEqual(n.name, 'a')
 
@@ -82,7 +83,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(n5.name, '')
   })
 
-  it('should compile an AssignmentNode without index', function () {
+  it('should compile an AssignmentNode without index', function (): void {
     const n = new AssignmentNode(new SymbolNode('b'), new ConstantNode(3))
 
     const expr = n.compile()
@@ -92,7 +93,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(scope.b, 3)
   })
 
-  it('should compile an AssignmentNode with property index', function () {
+  it('should compile an AssignmentNode with property index', function (): void {
     const object = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode('b')])
     const value = new ConstantNode(3)
@@ -107,7 +108,7 @@ describe('AssignmentNode', function () {
     assert.deepStrictEqual(scope, { a: { b: 3 } })
   })
 
-  it('should compile an AssignmentNode with nested property index', function () {
+  it('should compile an AssignmentNode with nested property index', function (): void {
     const a = new SymbolNode('a')
     const object = new AccessorNode(a, new IndexNode([new ConstantNode('b')]))
     const index = new IndexNode([new ConstantNode('c')])
@@ -125,7 +126,7 @@ describe('AssignmentNode', function () {
     assert.deepStrictEqual(scope, { a: { b: { c: 3 } } })
   })
 
-  it('should compile an AssignmentNode with matrix index', function () {
+  it('should compile an AssignmentNode with matrix index', function (): void {
     const object = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(2), new ConstantNode(1)])
     const value = new ConstantNode(5)
@@ -147,7 +148,7 @@ describe('AssignmentNode', function () {
     })
   })
 
-  it('should compile an AssignmentNode with range and context parameters', function () {
+  it('should compile an AssignmentNode with range and context parameters', function (): void {
     const object = new SymbolNode('a')
     const index = new IndexNode([
       new ConstantNode(2),
@@ -174,7 +175,7 @@ describe('AssignmentNode', function () {
     })
   })
 
-  it('should compile an AssignmentNode with bignumber setting', function () {
+  it('should compile an AssignmentNode with bignumber setting', function (): void {
     const bigmath = math.create({ number: 'BigNumber' })
 
     const object = new bigmath.SymbolNode('a')
@@ -201,7 +202,7 @@ describe('AssignmentNode', function () {
     })
   })
 
-  it('should throw an error when applying an index onto a scalar', function () {
+  it('should throw an error when applying an index onto a scalar', function (): void {
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(4)])
     const value = new ConstantNode(2)
@@ -211,12 +212,12 @@ describe('AssignmentNode', function () {
     const scope = {
       a: 42
     }
-    assert.throws(function () {
+    assert.throws(function (): void {
       expr.evaluate(scope)
     }, /Cannot apply index: unsupported type of object/)
   })
 
-  it('should filter an AssignmentNode', function () {
+  it('should filter an AssignmentNode', function (): void {
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -262,7 +263,7 @@ describe('AssignmentNode', function () {
     )
   })
 
-  it('should filter an AssignmentNode without index', function () {
+  it('should filter an AssignmentNode without index', function (): void {
     const a = new SymbolNode('a')
     const v = new ConstantNode(2)
     const n = new AssignmentNode(a, v)
@@ -299,7 +300,7 @@ describe('AssignmentNode', function () {
     )
   })
 
-  it('should run forEach on an AssignmentNode', function () {
+  it('should run forEach on an AssignmentNode', function (): void {
     // A[1, x] = 3
     const a = new SymbolNode('A')
     const b = new ConstantNode(2)
@@ -323,7 +324,7 @@ describe('AssignmentNode', function () {
     assert.deepStrictEqual(paths, ['object', 'index', 'value'])
   })
 
-  it('should run forEach on an AssignmentNode without index', function () {
+  it('should run forEach on an AssignmentNode without index', function (): void {
     // A[1, x] = 3
     const a = new SymbolNode('A')
     const v = new ConstantNode(3)
@@ -343,7 +344,7 @@ describe('AssignmentNode', function () {
     assert.deepStrictEqual(paths, ['object', 'value'])
   })
 
-  it('should map an AssignmentNode', function () {
+  it('should map an AssignmentNode', function (): void {
     // A[1, x] = 3
     const a = new SymbolNode('A')
     const b = new ConstantNode(2)
@@ -376,7 +377,7 @@ describe('AssignmentNode', function () {
     assert.deepStrictEqual(f.value, v)
   })
 
-  it('should map an AssignmentNode without index', function () {
+  it('should map an AssignmentNode without index', function (): void {
     // a = x + 2
     const a = new SymbolNode('a')
     const x = new SymbolNode('x')
@@ -402,7 +403,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(f.value, e)
   })
 
-  it('should throw an error when the map callback does not return a node', function () {
+  it('should throw an error when the map callback does not return a node', function (): void {
     // A[1, x] = 3
     const a = new SymbolNode('A')
     const b = new ConstantNode(2)
@@ -411,14 +412,14 @@ describe('AssignmentNode', function () {
     const v = new ConstantNode(3)
     const n = new AssignmentNode(a, i, v)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       n.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
-  it('should transform an AssignmentNodes (nested) parameters', function () {
+  it('should transform an AssignmentNodes (nested) parameters', function (): void {
     // a = x + 2
     const object = new SymbolNode('a')
     const x = new SymbolNode('x')
@@ -438,7 +439,7 @@ describe('AssignmentNode', function () {
     assert.deepStrictEqual(f.value.args[1], b)
   })
 
-  it('should transform an AssignmentNode itself', function () {
+  it('should transform an AssignmentNode itself', function (): void {
     // a = x + 2
     const object = new SymbolNode('a')
     const x = new SymbolNode('x')
@@ -455,7 +456,7 @@ describe('AssignmentNode', function () {
     assert.deepStrictEqual(f, e)
   })
 
-  it('should traverse an AssignmentNode', function () {
+  it('should traverse an AssignmentNode', function (): void {
     const object = new SymbolNode('a')
     const i = new IndexNode([])
     const value = new ConstantNode(2)
@@ -495,7 +496,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(count, 4)
   })
 
-  it('should clone an AssignmentNode without index', function () {
+  it('should clone an AssignmentNode without index', function (): void {
     const object = new SymbolNode('a')
     const value = new ConstantNode(2)
     const a = new AssignmentNode(object, value)
@@ -509,7 +510,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(b.value, a.value)
   })
 
-  it('should clone an AssignmentNode', function () {
+  it('should clone an AssignmentNode', function (): void {
     // A[1, x] = 3
     const a = new SymbolNode('A')
     const b = new ConstantNode(2)
@@ -528,7 +529,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(e.value, d.value)
   })
 
-  it('test equality another Node', function () {
+  it('test equality another Node', function (): void {
     const a = new AssignmentNode(
       new SymbolNode('A'),
       new IndexNode([new ConstantNode(2), new SymbolNode('x')]),
@@ -563,7 +564,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(a.equals(e), false)
   })
 
-  it("should respect the 'all' parenthesis option", function () {
+  it("should respect the 'all' parenthesis option", function (): void {
     const object = new SymbolNode('a')
     const value = new ConstantNode(1)
     const n = new AssignmentNode(object, value)
@@ -572,7 +573,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(n.toTex({ parenthesis: 'all' }), ' a=\\left(1\\right)')
   })
 
-  it('should stringify a AssignmentNode', function () {
+  it('should stringify a AssignmentNode', function (): void {
     const object = new SymbolNode('b')
     const value = new ConstantNode(3)
     const n = new AssignmentNode(object, value)
@@ -580,7 +581,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(n.toString(), 'b = 3')
   })
 
-  it('should stringify an AssignmentNode containing an AssignmentNode', function () {
+  it('should stringify an AssignmentNode containing an AssignmentNode', function (): void {
     const value = new ConstantNode(2)
     const a = new AssignmentNode(new SymbolNode('a'), value)
     const n = new AssignmentNode(new SymbolNode('b'), a)
@@ -588,7 +589,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(n.toString(), 'b = (a = 2)')
   })
 
-  it('should stringify an AssignmentNode with custom toString', function () {
+  it('should stringify an AssignmentNode with custom toString', function (): void {
     // Also checks if custom funcions get passed to the children
     const customFunction = function (node, options) {
       if (node.type === 'AssignmentNode') {
@@ -613,7 +614,7 @@ describe('AssignmentNode', function () {
     )
   })
 
-  it('should stringify an AssignmentNode with custom toHTML', function () {
+  it('should stringify an AssignmentNode with custom toHTML', function (): void {
     // Also checks if custom funcions get passed to the children
     const customFunction = function (node, options) {
       if (node.type === 'AssignmentNode') {
@@ -638,7 +639,7 @@ describe('AssignmentNode', function () {
     )
   })
 
-  it('toJSON and fromJSON', function () {
+  it('toJSON and fromJSON', function (): void {
     const a = new SymbolNode('a')
     const b = new ConstantNode(1)
     const c = new ConstantNode(2)
@@ -659,14 +660,14 @@ describe('AssignmentNode', function () {
     assert.deepStrictEqual(parsed, node)
   })
 
-  it('should LaTeX a AssignmentNode', function () {
+  it('should LaTeX a AssignmentNode', function (): void {
     const value = new ConstantNode(2)
     const a = new AssignmentNode(new SymbolNode('a'), value)
 
     assert.strictEqual(a.toTex(), ' a=2')
   })
 
-  it('should LaTeX an AssignmentNode containing an AssignmentNode', function () {
+  it('should LaTeX an AssignmentNode containing an AssignmentNode', function (): void {
     const value = new ConstantNode(2)
     const a = new AssignmentNode(new SymbolNode('a'), value)
     const q = new AssignmentNode(new SymbolNode('q'), a)
@@ -674,7 +675,7 @@ describe('AssignmentNode', function () {
     assert.strictEqual(q.toTex(), ' q=\\left( a=2\\right)')
   })
 
-  it('should LaTeX an AssignmentNode with custom toTex', function () {
+  it('should LaTeX an AssignmentNode with custom toTex', function (): void {
     // Also checks if custom funcions get passed to the children
     const customFunction = function (node, options) {
       if (node.isAssignmentNode) {

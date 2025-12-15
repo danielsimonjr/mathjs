@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for sech - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -10,13 +17,13 @@ const sech = math.sech
 const bigmath = math.create({ precision: 20 })
 const biggermath = math.create({ number: 'BigNumber', precision: 21 })
 
-describe('sech', function () {
-  it('should return the sech of a boolean', function () {
+describe('sech', function (): void {
+  it('should return the sech of a boolean', function (): void {
     approxEqual(sech(true), 0.64805427366389)
     approxEqual(sech(false), 1)
   })
 
-  it('should return the sech of a number', function () {
+  it('should return the sech of a number', function (): void {
     approxEqual(sech(0), 1)
     approxEqual(sech(pi), 0.086266738334054)
     approxEqual(sech(1), 0.64805427366389)
@@ -24,7 +31,7 @@ describe('sech', function () {
     approxEqual(sech(3), 0.099327927419433)
   })
 
-  it('should return the sech of a bignumber', function () {
+  it('should return the sech of a bignumber', function (): void {
     const sechBig = bigmath.sech
     const Big = bigmath.bignumber
 
@@ -40,7 +47,7 @@ describe('sech', function () {
     )
   })
 
-  it('should return the sech of a complex number', function () {
+  it('should return the sech of a complex number', function (): void {
     approxDeepEqual(sech(complex('1')), complex(0.64805427366389, 0))
     approxDeepEqual(sech(complex('i')), complex(1.8508157176809, 0))
     approxDeepEqual(
@@ -49,44 +56,44 @@ describe('sech', function () {
     )
   })
 
-  it('should throw an error on an angle', function () {
+  it('should throw an error on an angle', function (): void {
     assert.throws(() => sech(unit('90deg')), TypeError)
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       sech(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       sech('string')
     })
   })
 
   const sech123 = [0.64805427366389, 0.26580222883408, 0.099327927419433]
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => sech([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], sech), sech123)
   })
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => sech(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), sech), matrix(sech123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       sech()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       sech(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX sech', function () {
+  it('should LaTeX sech', function (): void {
     const expression = math.parse('sech(1)')
     assert.strictEqual(expression.toTex(), '\\mathrm{sech}\\left(1\\right)')
   })

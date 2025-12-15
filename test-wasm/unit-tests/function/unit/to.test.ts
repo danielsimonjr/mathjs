@@ -1,13 +1,21 @@
-// @ts-nocheck
+/**
+ * Test for to - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 const matrix = math.matrix
 const Unit = math.Unit
 const unit = math.unit
 
-describe('to', function () {
-  it('should perform the given unit conversion', function () {
+describe('to', function (): void {
+  it('should perform the given unit conversion', function (): void {
     const a = math.unit('500 cm')
     a.fixPrefix = true
     approxDeepEqual(math.to(unit('5m'), unit('cm')), a)
@@ -29,8 +37,8 @@ describe('to', function () {
     approxDeepEqual(math.to(unit('2 litre'), unit('m3')), e)
   })
 
-  describe('Array', function () {
-    it('should perform the given unit conversion, array - scalar', function () {
+  describe('Array', function (): void {
+    it('should perform the given unit conversion, array - scalar', function (): void {
       approxDeepEqual(
         math.to([unit('1cm'), unit('2 inch'), unit('2km')], unit('foot')),
         [
@@ -50,7 +58,7 @@ describe('to', function () {
       )
     })
 
-    it('should perform the given unit conversion, array - array', function () {
+    it('should perform the given unit conversion, array - array', function (): void {
       approxDeepEqual(
         math.to(
           [
@@ -69,7 +77,7 @@ describe('to', function () {
       )
     })
 
-    it('should perform the given unit conversion, between broadcastable arrays', function () {
+    it('should perform the given unit conversion, between broadcastable arrays', function (): void {
       approxDeepEqual(
         math.to([unit('1 cm'), unit('2 inch')], [[unit('foot')], [unit('cm')]]),
         [
@@ -79,7 +87,7 @@ describe('to', function () {
       )
     })
 
-    it('should perform the given unit conversion, array - dense matrix', function () {
+    it('should perform the given unit conversion, array - dense matrix', function (): void {
       approxDeepEqual(
         math.to(
           [
@@ -99,8 +107,8 @@ describe('to', function () {
     })
   })
 
-  describe('DenseMatrix', function () {
-    it('should perform the given unit conversion, dense matrix - scalar', function () {
+  describe('DenseMatrix', function (): void {
+    it('should perform the given unit conversion, dense matrix - scalar', function (): void {
       approxDeepEqual(
         math.to(
           matrix([unit('1cm'), unit('2 inch'), unit('2km')]),
@@ -126,7 +134,7 @@ describe('to', function () {
       )
     })
 
-    it('should perform the given unit conversion, dense matrix - array', function () {
+    it('should perform the given unit conversion, dense matrix - array', function (): void {
       approxDeepEqual(
         math.to(
           matrix([
@@ -145,7 +153,7 @@ describe('to', function () {
       )
     })
 
-    it('should perform the given unit conversion, dense matrix - dense matrix', function () {
+    it('should perform the given unit conversion, dense matrix - dense matrix', function (): void {
       approxDeepEqual(
         math.to(
           matrix([
@@ -165,49 +173,49 @@ describe('to', function () {
     })
   })
 
-  it('should throw an error if converting between incompatible units', function () {
-    assert.throws(function () {
+  it('should throw an error if converting between incompatible units', function (): void {
+    assert.throws(function (): void {
       math.to(unit('20 kg'), unit('cm'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.to(unit('20 celsius'), unit('litre'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.to(unit('5 cm'), unit('2 m^2'))
     })
   })
 
-  it('should throw an error if called with a wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       math.to(unit('20 kg'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.to(unit('20 kg'), unit('m'), unit('cm'))
     })
   })
 
-  it('should throw an error if called with a non-plain unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a non-plain unit', function (): void {
+    assert.throws(function (): void {
       math.unit(5000, 'cm').to('5mm')
     })
   })
 
-  it('should throw an error if called with a number', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a number', function (): void {
+    assert.throws(function (): void {
       math.to(5, unit('m'))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.to(unit('5cm'), 2)
     }, TypeError)
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       math.to('5cm', unit('cm'))
     }, TypeError)
   })
 
-  it('should LaTeX to', function () {
+  it('should LaTeX to', function (): void {
     const expression = math.parse('to(2cm,m)')
     assert.strictEqual(
       expression.toTex(),

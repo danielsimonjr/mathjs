@@ -1,16 +1,19 @@
-// @ts-nocheck
-// test RangeNode
+/**
+ * Test for RangeNode - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode { type: string; toTex(): string }
 const Node = math.Node
 const ConstantNode = math.ConstantNode
 const SymbolNode = math.SymbolNode
 const RangeNode = math.RangeNode
 const OperatorNode = math.OperatorNode
 
-describe('RangeNode', function () {
-  it('should create a RangeNode', function () {
+describe('RangeNode', function (): void {
+  it('should create a RangeNode', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const n = new RangeNode(start, end)
@@ -19,7 +22,7 @@ describe('RangeNode', function () {
     assert.strictEqual(n.type, 'RangeNode')
   })
 
-  it('should have isRangeNode', function () {
+  it('should have isRangeNode', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const node = new RangeNode(start, end)
@@ -27,36 +30,36 @@ describe('RangeNode', function () {
     assert(node.isRangeNode)
   })
 
-  it('should throw an error when calling without new operator', function () {
+  it('should throw an error when calling without new operator', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
-    assert.throws(function () {
+    assert.throws(function (): void {
       RangeNode([start, end])
     }, TypeError)
   })
 
-  it('should throw an error creating a RangeNode with wrong number or type of arguments', function () {
+  it('should throw an error creating a RangeNode with wrong number or type of arguments', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new RangeNode())
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new RangeNode(start))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new RangeNode([]))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new RangeNode(start, end, start, end))
     }, Error)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new RangeNode(0, 10))
     }, TypeError)
   })
 
-  it('should compile a RangeNode', function () {
+  it('should compile a RangeNode', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -66,7 +69,7 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(expr.evaluate(), math.matrix([0, 2, 4, 6, 8, 10]))
   })
 
-  it('should filter a RangeNode', function () {
+  it('should filter a RangeNode', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -104,7 +107,7 @@ describe('RangeNode', function () {
     )
   })
 
-  it('should run forEach on a RangeNode', function () {
+  it('should run forEach on a RangeNode', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -125,7 +128,7 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(paths, ['start', 'end', 'step'])
   })
 
-  it('should map a RangeNode', function () {
+  it('should map a RangeNode', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -154,20 +157,20 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(f.step, step)
   })
 
-  it('should throw an error when the map callback does not return a node', function () {
+  it('should throw an error when the map callback does not return a node', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
     const n = new RangeNode(start, end, step)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       n.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
-  it('should transform a RangeNodes start', function () {
+  it('should transform a RangeNodes start', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -184,7 +187,7 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(f.step, step)
   })
 
-  it('should transform a RangeNodes end', function () {
+  it('should transform a RangeNodes end', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -201,7 +204,7 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(f.step, step)
   })
 
-  it('should transform a RangeNodes step', function () {
+  it('should transform a RangeNodes step', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -218,7 +221,7 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(f.step, e)
   })
 
-  it('should transform a RangeNodes without step', function () {
+  it('should transform a RangeNodes without step', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const n = new RangeNode(start, end)
@@ -233,7 +236,7 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(f.end, e)
   })
 
-  it('should transform a RangeNode itself', function () {
+  it('should transform a RangeNode itself', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -247,7 +250,7 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(f, e)
   })
 
-  it('should clone a RangeNode', function () {
+  it('should clone a RangeNode', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -262,7 +265,7 @@ describe('RangeNode', function () {
     assert.strictEqual(d.step, c.step)
   })
 
-  it('should clone a RangeNode without step', function () {
+  it('should clone a RangeNode without step', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const c = new RangeNode(start, end)
@@ -278,7 +281,7 @@ describe('RangeNode', function () {
     assert.strictEqual(d.step, null)
   })
 
-  it('test equality another Node', function () {
+  it('test equality another Node', function (): void {
     assert.strictEqual(
       createRangeNode(2, 4).equals(createRangeNode(2, 4)),
       true
@@ -311,7 +314,7 @@ describe('RangeNode', function () {
     )
   })
 
-  it('should stringify a RangeNode without step', function () {
+  it('should stringify a RangeNode without step', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const n = new RangeNode(start, end)
@@ -319,7 +322,7 @@ describe('RangeNode', function () {
     assert.strictEqual(n.toString(), '0:10')
   })
 
-  it('should stringify a RangeNode with step', function () {
+  it('should stringify a RangeNode with step', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -328,7 +331,7 @@ describe('RangeNode', function () {
     assert.strictEqual(n.toString(), '0:2:10')
   })
 
-  it('should stringify a RangeNode with an OperatorNode', function () {
+  it('should stringify a RangeNode with an OperatorNode', function (): void {
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
 
@@ -340,7 +343,7 @@ describe('RangeNode', function () {
     assert.strictEqual(n.toString(), '1 + 2:(1 < 2):1 + 2')
   })
 
-  it('should stringify a RangeNode with a RangeNode', function () {
+  it('should stringify a RangeNode with a RangeNode', function (): void {
     const start1 = new ConstantNode(0)
     const end1 = new ConstantNode(10)
     const step2 = new ConstantNode(2)
@@ -352,7 +355,7 @@ describe('RangeNode', function () {
     assert.strictEqual(n.toString(), '(0:10):2:100')
   })
 
-  it('should stringify a RangeNode with custom toString', function () {
+  it('should stringify a RangeNode with custom toString', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'RangeNode') {
@@ -381,7 +384,7 @@ describe('RangeNode', function () {
     )
   })
 
-  it('should stringify a RangeNode with custom toHTML', function () {
+  it('should stringify a RangeNode with custom toHTML', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'RangeNode') {
@@ -410,7 +413,7 @@ describe('RangeNode', function () {
     )
   })
 
-  it("should respect the 'all' parenthesis option", function () {
+  it("should respect the 'all' parenthesis option", function (): void {
     assert.strictEqual(
       math.parse('1:2:3').toString({ parenthesis: 'all' }),
       '(1):(2):(3)'
@@ -421,7 +424,7 @@ describe('RangeNode', function () {
     )
   })
 
-  it('toJSON and fromJSON', function () {
+  it('toJSON and fromJSON', function (): void {
     const a = new ConstantNode(0)
     const b = new ConstantNode(10)
     const c = new ConstantNode(2)
@@ -440,7 +443,7 @@ describe('RangeNode', function () {
     assert.deepStrictEqual(parsed, node)
   })
 
-  it('should LaTeX a RangeNode without step', function () {
+  it('should LaTeX a RangeNode without step', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const n = new RangeNode(start, end)
@@ -448,7 +451,7 @@ describe('RangeNode', function () {
     assert.strictEqual(n.toTex(), '0:10')
   })
 
-  it('should LaTeX a RangeNode with step', function () {
+  it('should LaTeX a RangeNode with step', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -457,7 +460,7 @@ describe('RangeNode', function () {
     assert.strictEqual(n.toTex(), '0:2:10')
   })
 
-  it('should LaTeX a RangeNode with custom toTex', function () {
+  it('should LaTeX a RangeNode with custom toTex', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'RangeNode') {

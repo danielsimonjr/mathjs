@@ -1,8 +1,11 @@
-// @ts-nocheck
-// test OperatorNode
+/**
+ * Test for OperatorNode - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode { type: string; toTex(): string }
 const Node = math.Node
 const ConstantNode = math.ConstantNode
 const SymbolNode = math.SymbolNode
@@ -24,30 +27,30 @@ const dsym = new SymbolNode('d')
 const xsym = new SymbolNode('x')
 const ysym = new SymbolNode('y')
 
-describe('OperatorNode', function () {
-  it('should create an OperatorNode', function () {
+describe('OperatorNode', function (): void {
+  it('should create an OperatorNode', function (): void {
     const n = new OperatorNode('op', 'fn', [])
     assert(n instanceof OperatorNode)
     assert(n instanceof Node)
     assert.strictEqual(n.type, 'OperatorNode')
   })
 
-  it('should have isOperatorNode', function () {
+  it('should have isOperatorNode', function (): void {
     const node = new OperatorNode('op', 'fn', [])
     assert(node.isOperatorNode)
   })
 
-  it('should throw an error when calling without new operator', function () {
-    assert.throws(function () {
+  it('should throw an error when calling without new operator', function (): void {
+    assert.throws(function (): void {
       OperatorNode('+', 'add', [two, three])
     }, TypeError)
   })
 
-  it('should compile an OperatorNode', function () {
+  it('should compile an OperatorNode', function (): void {
     assert.strictEqual(add23.compile().evaluate(), 5)
   })
 
-  it('should test whether a unary or binary operator', function () {
+  it('should test whether a unary or binary operator', function (): void {
     const n1 = new OperatorNode('-', 'unaryMinus', [two])
     assert.strictEqual(n1.isUnary(), true)
     assert.strictEqual(n1.isBinary(), false)
@@ -71,15 +74,15 @@ describe('OperatorNode', function () {
     assert.strictEqual(n3.isBinary(), true)
   })
 
-  it('should throw an error in case of unresolved operator function', function () {
+  it('should throw an error in case of unresolved operator function', function (): void {
     const n = new OperatorNode('***', 'foo', [two, three])
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       n.compile()
     }, /Function foo missing in provided namespace/)
   })
 
-  it('should filter an OperatorNode', function () {
+  it('should filter an OperatorNode', function (): void {
     assert.deepStrictEqual(
       add23.filter(function (node) {
         return node instanceof OperatorNode
@@ -112,7 +115,7 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should filter an OperatorNode without contents', function () {
+  it('should filter an OperatorNode without contents', function (): void {
     const n = new OperatorNode('op', 'fn', [])
 
     assert.deepStrictEqual(
@@ -129,7 +132,7 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should run forEach on an OperatorNode', function () {
+  it('should run forEach on an OperatorNode', function (): void {
     // x^2-x
     const c = new OperatorNode('^', 'pow', [xsym, two])
     const d = new SymbolNode('x') // to make sure it's different from xsym
@@ -149,7 +152,7 @@ describe('OperatorNode', function () {
     assert.deepStrictEqual(paths, ['args[0]', 'args[1]'])
   })
 
-  it('should map an OperatorNode', function () {
+  it('should map an OperatorNode', function (): void {
     // x^2-x
     const c = new OperatorNode('^', 'pow', [xsym, two])
     const d = new SymbolNode('x') // to make sure it's different from xsym
@@ -177,7 +180,7 @@ describe('OperatorNode', function () {
     assert.deepStrictEqual(g.args[1], three)
   })
 
-  it('should map an implicit OperatorNode', function () {
+  it('should map an implicit OperatorNode', function (): void {
     const product = new OperatorNode(
       '*',
       'multiply',
@@ -193,17 +196,17 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should throw an error when the map callback does not return a node', function () {
+  it('should throw an error when the map callback does not return a node', function (): void {
     const c = new OperatorNode('^', 'pow', [xsym, two])
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       c.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
-  it('should transform an OperatorNodes parameters', function () {
+  it('should transform an OperatorNodes parameters', function (): void {
     // x^2-x
     const c = new OperatorNode('^', 'pow', [xsym, two])
     const d = new SymbolNode('x') // to make sure it's different from xsym
@@ -216,7 +219,7 @@ describe('OperatorNode', function () {
     assert.deepStrictEqual(g.args[1], three)
   })
 
-  it('should transform an OperatorNode itself', function () {
+  it('should transform an OperatorNode itself', function (): void {
     const c = new OperatorNode('+', 'add', [xsym, two])
 
     const g = c.transform(function (node) {
@@ -227,7 +230,7 @@ describe('OperatorNode', function () {
     assert.deepStrictEqual(g, three)
   })
 
-  it('should clone an OperatorNode', function () {
+  it('should clone an OperatorNode', function (): void {
     const c = new OperatorNode('+', 'add', [xsym, two])
 
     const d = c.clone()
@@ -239,7 +242,7 @@ describe('OperatorNode', function () {
     assert.strictEqual(d.args[1], c.args[1])
   })
 
-  it('should clone implicit multiplications', function () {
+  it('should clone implicit multiplications', function (): void {
     const node = new OperatorNode('*', 'multiply', [two, xsym], true)
 
     assert.strictEqual('2 x', node.toString())
@@ -247,7 +250,7 @@ describe('OperatorNode', function () {
     assert.strictEqual(node.toString(), node.clone().toString())
   })
 
-  it('test equality another Node', function () {
+  it('test equality another Node', function (): void {
     // not using the standard instances to make sure everything is fresh
     const a = new OperatorNode('+', 'add', [
       new SymbolNode('x'),
@@ -309,20 +312,20 @@ describe('OperatorNode', function () {
     }
   }
 
-  describe('toString and toTex', function () {
-    it('on an OperatorNode', function () {
+  describe('toString and toTex', function (): void {
+    it('on an OperatorNode', function (): void {
       ex({ n: add23, s: '2 + 3', l: '2+3' })
     })
 
-    it('on an OperatorNode with factorial', function () {
+    it('on an OperatorNode with factorial', function (): void {
       ex({ n: new OperatorNode('!', 'factorial', [two]), s: '2!', l: '2!' })
     })
 
-    it('on an OperatorNode with unary minus', function () {
+    it('on an OperatorNode with unary minus', function (): void {
       ex({ n: new OperatorNode('-', 'unaryMinus', [two]), s: '-2', l: '-2' })
     })
 
-    it('on an OperatorNode with zero arguments', function () {
+    it('on an OperatorNode with zero arguments', function (): void {
       ex({
         n: new OperatorNode('foo', 'foo', []),
         s: 'foo()',
@@ -330,7 +333,7 @@ describe('OperatorNode', function () {
       })
     })
 
-    it('on an OperatorNode with more than two operators', function () {
+    it('on an OperatorNode with more than two operators', function (): void {
       ex({
         n: new OperatorNode('foo', 'foo', [two, three, four]),
         s: 'foo(2, 3, 4)',
@@ -338,7 +341,7 @@ describe('OperatorNode', function () {
       })
     })
 
-    it('on addition and multiplication with more than two operands', function () {
+    it('on addition and multiplication with more than two operands', function (): void {
       // This is slightly different than most of the tests, so not using `ex`
       const add = new OperatorNode('+', 'add', [asym, bsym, csym])
       const multiply = new OperatorNode('*', 'multiply', [asym, bsym, csym])
@@ -375,7 +378,7 @@ describe('OperatorNode', function () {
       )
     })
 
-    it('on addition and multiplication with more than two operands including OperatorNode', function () {
+    it('on addition and multiplication with more than two operands including OperatorNode', function (): void {
       const mult = new OperatorNode('*', 'multiply', [asym, bsym])
       const add = new OperatorNode('+', 'add', [asym, bsym])
 
@@ -418,7 +421,7 @@ describe('OperatorNode', function () {
       })
     })
 
-    it('on an OperatorNode that contains an operatornode with more than two operands', function () {
+    it('on an OperatorNode that contains an operatornode with more than two operands', function (): void {
       const mult = new OperatorNode('*', 'multiply', [asym, bsym, csym])
       const add = new OperatorNode('+', 'add', [asym, bsym, csym])
 
@@ -445,7 +448,7 @@ describe('OperatorNode', function () {
       })
     })
 
-    it('on an OperatorNode with nested operator nodes', function () {
+    it('on an OperatorNode with nested operator nodes', function (): void {
       const sub45 = new OperatorNode('-', 'subtract', [four, five])
       const prod1 = new OperatorNode('*', 'multiply', [add23, sub45])
       const prod2 = new OperatorNode('*', 'multiply', [add23, four])
@@ -460,7 +463,7 @@ describe('OperatorNode', function () {
       ex({ n: diff1, s: '(2 + 3) * 4 - 5', l: '\\left(2+3\\right)\\cdot4-5' })
     })
 
-    it('on left associative OperatorNodes that are associative with another Node', function () {
+    it('on left associative OperatorNodes that are associative with another Node', function (): void {
       ex({
         i: '(a+b)+c',
         skeep: '(a + b) + c',
@@ -520,7 +523,7 @@ describe('OperatorNode', function () {
       })
     })
 
-    it('on left associative OperatorNodes that are not associative with another Node', function () {
+    it('on left associative OperatorNodes that are not associative with another Node', function (): void {
       ex({
         i: '(a-b)-c',
         skeep: '(a - b) - c',
@@ -574,7 +577,7 @@ describe('OperatorNode', function () {
       })
     })
 
-    it('on right associative OperatorNodes that are not associative with another Node', function () {
+    it('on right associative OperatorNodes that are not associative with another Node', function (): void {
       ex({
         i: '(a^b)^c',
         s: '(a ^ b) ^ c',
@@ -589,7 +592,7 @@ describe('OperatorNode', function () {
       })
     })
 
-    it('on unary OperatorNodes containing a binary OperatorNode', function () {
+    it('on unary OperatorNodes containing a binary OperatorNode', function (): void {
       ex({
         i: '(a*b)!',
         s: '(a * b)!',
@@ -603,7 +606,7 @@ describe('OperatorNode', function () {
       ex({ i: '-(a+b)', s: '-(a + b)', l: '-\\left( a+\\mathrm{b}\\right)' })
     })
 
-    it('on unary OperatorNodes containing a unary OperatorNode', function () {
+    it('on unary OperatorNodes containing a unary OperatorNode', function (): void {
       ex({ i: '(-a)!', s: '(-a)!', l: '\\left(- a\\right)!' })
       ex({
         i: '-(a!)',
@@ -616,7 +619,7 @@ describe('OperatorNode', function () {
     })
   })
 
-  it('should stringify an OperatorNode with custom toString', function () {
+  it('should stringify an OperatorNode with custom toString', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'OperatorNode') {
@@ -646,7 +649,7 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should stringify an OperatorNode with custom toString for a single operator', function () {
+  it('should stringify an OperatorNode with custom toString for a single operator', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'OperatorNode' && node.fn === 'add') {
@@ -668,11 +671,11 @@ describe('OperatorNode', function () {
     )
   })
 
-  it("should respect the 'all' parenthesis option", function () {
+  it("should respect the 'all' parenthesis option", function (): void {
     ex({ i: '1+1+1', s: '(1 + 1) + 1', l: '\\left(1+1\\right)+1' }, ['all'])
   })
 
-  it("should correctly format fractions in 'all' parenthesis mode", function () {
+  it("should correctly format fractions in 'all' parenthesis mode", function (): void {
     ex(
       {
         i: '1/2/3',
@@ -683,7 +686,7 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should format an OperatorNode with factorial of an OperatorNode', function () {
+  it('should format an OperatorNode with factorial of an OperatorNode', function (): void {
     const mult23 = new OperatorNode('*', 'multiply', [two, three])
     const div23 = new OperatorNode('/', 'divide', [two, three])
 
@@ -697,7 +700,7 @@ describe('OperatorNode', function () {
     ex({ n: n4, s: '(2 / 3)!', l: '\\frac{2}{3}!' })
   })
 
-  it('should format an OperatorNode with unary minus', function () {
+  it('should format an OperatorNode with unary minus', function (): void {
     const n2 = new OperatorNode('-', 'unaryMinus', [sub23])
     const n3 = new OperatorNode('-', 'unaryMinus', [add23])
 
@@ -705,7 +708,7 @@ describe('OperatorNode', function () {
     ex({ n: n3, s: '-(2 + 3)', l: '-\\left(2+3\\right)' })
   })
 
-  it('should format an OperatorNode that subtracts an OperatorNode', function () {
+  it('should format an OperatorNode that subtracts an OperatorNode', function (): void {
     const n1 = new OperatorNode('-', 'subtract', [one, sub23])
     const n2 = new OperatorNode('-', 'subtract', [one, add23])
 
@@ -713,7 +716,7 @@ describe('OperatorNode', function () {
     ex({ n: n2, s: '1 - (2 + 3)', l: '1-\\left(2+3\\right)' })
   })
 
-  it('should format fractions with operators that are enclosed in parenthesis', function () {
+  it('should format fractions with operators that are enclosed in parenthesis', function (): void {
     ex({
       n: new OperatorNode('/', 'divide', [add23, four]),
       s: '(2 + 3) / 4',
@@ -721,11 +724,11 @@ describe('OperatorNode', function () {
     })
   })
 
-  it('should have an identifier', function () {
+  it('should have an identifier', function (): void {
     assert.strictEqual(add23.getIdentifier(), 'OperatorNode:add')
   })
 
-  it('should LaTeX an OperatorNode with custom toTex', function () {
+  it('should LaTeX an OperatorNode with custom toTex', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'OperatorNode') {
@@ -759,7 +762,7 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should LaTeX an OperatorNode with custom toTex for a single operator', function () {
+  it('should LaTeX an OperatorNode with custom toTex for a single operator', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'OperatorNode' && node.fn === 'add') {
@@ -787,14 +790,14 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should format powers of fractions with parentheses', function () {
+  it('should format powers of fractions with parentheses', function (): void {
     const frac = new OperatorNode('/', 'divide', [one, one])
     const pow = new OperatorNode('^', 'pow', [frac, one])
 
     ex({ n: pow, s: '(1 / 1) ^ 1', l: '\\left({\\frac{1}{1}}\\right)^{1}' })
   })
 
-  it('should format powers of conditions with parentheses', function () {
+  it('should format powers of conditions with parentheses', function (): void {
     const cond = new ConditionalNode(one, one, one)
     const pow = new OperatorNode('^', 'pow', [cond, one])
 
@@ -805,7 +808,7 @@ describe('OperatorNode', function () {
     })
   })
 
-  it("should format simple expressions in 'auto' mode", function () {
+  it("should format simple expressions in 'auto' mode", function (): void {
     // this covers a bug that was triggered previously
     ex({
       i: '1+(1+1)',
@@ -841,7 +844,7 @@ describe('OperatorNode', function () {
     }
   }
 
-  it('should format implicit multiplications', function () {
+  it('should format implicit multiplications', function (): void {
     exhs({ i: '4a', s: ['4 a', '4 * a'], l: ['4~ a', '4\\cdot a'] })
     exhs({ i: '4 a', s: ['4 a', '4 * a'], l: ['4~ a', '4\\cdot a'] })
     exhs({
@@ -990,7 +993,7 @@ describe('OperatorNode', function () {
     })
   })
 
-  it('toJSON and fromJSON', function () {
+  it('toJSON and fromJSON', function (): void {
     // There is no such thing as an implicit add node, really, but
     // put toJSON really through its paces
     const node = new OperatorNode('+', 'add', [one, two], true)
@@ -1010,7 +1013,7 @@ describe('OperatorNode', function () {
     assert.deepStrictEqual(parsed, node)
   })
 
-  it('should HTML operators', function () {
+  it('should HTML operators', function (): void {
     assert.strictEqual(
       math.parse('2 + 3').toHTML(),
       '<span class="math-number">2</span>' +
@@ -1037,7 +1040,7 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should HTML an OperatorNode with custom handler for a single operator', function () {
+  it('should HTML an OperatorNode with custom handler for a single operator', function (): void {
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'OperatorNode' && node.fn === 'add') {
@@ -1053,7 +1056,7 @@ describe('OperatorNode', function () {
     )
   })
 
-  it('should format implicit multiplications between ConstantNodes with parentheses', function () {
+  it('should format implicit multiplications between ConstantNodes with parentheses', function (): void {
     ex({
       i: '(3)x',
       skeep: '(3) x',
@@ -1083,7 +1086,7 @@ describe('OperatorNode', function () {
     })
   })
 
-  it('should stringify implicit multiplications recoverably and to preserve their values', function () {
+  it('should stringify implicit multiplications recoverably and to preserve their values', function (): void {
     const m1 = new OperatorNode('-', 'unaryMinus', [one])
     const m2 = new OperatorNode('-', 'unaryMinus', [two])
     const p1 = new OperatorNode('+', 'unaryPlus', [one])
@@ -1135,7 +1138,7 @@ describe('OperatorNode', function () {
     }
   })
 
-  it('should HTML implicit multiplications between ConstantNodes with parentheses', function () {
+  it('should HTML implicit multiplications between ConstantNodes with parentheses', function (): void {
     const z = math.parse('(3)x')
     const a = math.parse('(4)(4)(4)(4)')
     const b = math.parse('4b*4(4)')

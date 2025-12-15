@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for mapSlices.transform - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
@@ -35,7 +37,7 @@ describe('mapSlices.transform', function () {
   })
 
   it('should throw an error if the dimension is below the range for one based indices', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       mapSlices(
         [
           [1, 2],
@@ -48,7 +50,7 @@ describe('mapSlices.transform', function () {
   })
 
   it('should throw an error if the dimension is above the range for one based indices', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       mapSlices(
         [
           [1, 2],

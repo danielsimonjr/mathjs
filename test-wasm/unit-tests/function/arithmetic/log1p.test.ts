@@ -1,23 +1,29 @@
-// @ts-nocheck
-// test log1p
+/**
+ * Test for log1p - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const mathPredictable = math.create({ predictable: true })
 const complex = math.complex
 const matrix = math.matrix
 const unit = math.unit
 const log1p = math.log1p
 
-describe('log1p', function () {
-  it('should return the log1p of a boolean value', function () {
+describe('log1p', function (): void {
+  it('should return the log1p of a boolean value', function (): void {
     approxEqual(log1p(true), 0.6931471805599)
     assert.strictEqual(log1p(false), 0)
     assert.strictEqual(log1p(1, false), -0)
   })
 
-  it('should return the log1p of positive numbers', function () {
+  it('should return the log1p of positive numbers', function (): void {
     assert.strictEqual(log1p(-1), -Infinity)
     assert.strictEqual(log1p(-0), -0)
     assert.strictEqual(log1p(+0), +0)
@@ -26,7 +32,7 @@ describe('log1p', function () {
     approxDeepEqual(math.exp(log1p(99)), 100)
   })
 
-  it('should return the log1p of negative numbers', function () {
+  it('should return the log1p of negative numbers', function (): void {
     approxDeepEqual(
       log1p(-2),
       complex('0.000000000000000 + 3.141592653589793i')
@@ -41,28 +47,28 @@ describe('log1p', function () {
     )
   })
 
-  it('should return the log1p of negative numbers with predictable: true', function () {
+  it('should return the log1p of negative numbers with predictable: true', function (): void {
     assert.strictEqual(typeof mathPredictable.log1p(-2), 'number')
     assert(isNaN(mathPredictable.log1p(-2)))
   })
 
-  it('should return the log1p base N of a number', function () {
+  it('should return the log1p base N of a number', function (): void {
     approxDeepEqual(log1p(99, 10), 2)
     approxDeepEqual(log1p(999, 10), 3)
     approxDeepEqual(log1p(7, 2), 3)
     approxDeepEqual(log1p(15, 2), 4)
   })
 
-  it('should throw an error if invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       log1p()
     }, /TypeError: Too few arguments in function log1p \(expected: any, index: 0\)/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       log1p(1, 2, 3)
     }, /TypeError: Too many arguments in function log1p \(expected: 2, actual: 3\)/)
   })
 
-  it('should return the log1p of positive bignumbers', function () {
+  it('should return the log1p of positive bignumbers', function (): void {
     const bigmath = math.create({ precision: 100 })
 
     assert.deepStrictEqual(
@@ -93,7 +99,7 @@ describe('log1p', function () {
     )
   })
 
-  it('should return the log1p of negative bignumbers', function () {
+  it('should return the log1p of negative bignumbers', function (): void {
     const bigmath = math.create({ precision: 100 })
 
     approxDeepEqual(
@@ -110,11 +116,11 @@ describe('log1p', function () {
     )
   })
 
-  it('should return the log1p of negative bignumbers with predictable:true', function () {
+  it('should return the log1p of negative bignumbers with predictable:true', function (): void {
     assert(mathPredictable.log1p(math.bignumber(-2)).isNaN(), 'should be NaN')
   })
 
-  it('should return the log1p of a complex number', function () {
+  it('should return the log1p of a complex number', function (): void {
     approxDeepEqual(
       log1p(math.i),
       complex('0.346573590279973 + 0.785398163397448i')
@@ -136,19 +142,19 @@ describe('log1p', function () {
     approxDeepEqual(log1p(complex(1, 0)), complex('0.693147180559945'))
   })
 
-  it('should throw an error when used on a unit', function () {
-    assert.throws(function () {
+  it('should throw an error when used on a unit', function (): void {
+    assert.throws(function (): void {
       log1p(unit('5cm'))
     })
   })
 
-  it('should throw an error when used on a string', function () {
-    assert.throws(function () {
+  it('should throw an error when used on a string', function (): void {
+    assert.throws(function (): void {
       log1p('text')
     })
   })
 
-  it('should return the log1p of each element of a matrix', function () {
+  it('should return the log1p of each element of a matrix', function (): void {
     const res = [0, 0.693147180559945, 1.09861228866811, 1.386294361119891]
     approxDeepEqual(log1p([0, 1, 2, 3]), res)
     approxDeepEqual(log1p(matrix([0, 1, 2, 3])), matrix(res))
@@ -166,7 +172,7 @@ describe('log1p', function () {
     )
   })
 
-  it('should LaTeX log1p', function () {
+  it('should LaTeX log1p', function (): void {
     const expr1 = math.parse('log1p(e)')
     const expr2 = math.parse('log1p(32,2)')
 

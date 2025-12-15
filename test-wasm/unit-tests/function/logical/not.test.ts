@@ -1,5 +1,6 @@
-// @ts-nocheck
-// test not
+/**
+ * Test for not - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -12,8 +13,8 @@ const FunctionNode = math.FunctionNode
 const ConstantNode = math.ConstantNode
 const SymbolNode = math.SymbolNode
 
-describe('not', function () {
-  it('should not numbers correctly', function () {
+describe('not', function (): void {
+  it('should not numbers correctly', function (): void {
     assert.strictEqual(not(1), false)
     assert.strictEqual(not(-1), false)
     assert.strictEqual(not(1.23e100), false)
@@ -25,13 +26,13 @@ describe('not', function () {
     assert.strictEqual(not(NaN), true)
   })
 
-  it('should not a bigint', function () {
+  it('should not a bigint', function (): void {
     assert.strictEqual(not(1n), false)
     assert.strictEqual(not(-1n), false)
     assert.strictEqual(not(0n), true)
   })
 
-  it('should not complex numbers', function () {
+  it('should not complex numbers', function (): void {
     assert.strictEqual(not(complex(1, 1)), false)
     assert.strictEqual(not(complex(0, 1)), false)
     assert.strictEqual(not(complex(1, 0)), false)
@@ -41,12 +42,12 @@ describe('not', function () {
     assert.strictEqual(not(complex(1)), false)
   })
 
-  it('should not booleans', function () {
+  it('should not booleans', function (): void {
     assert.strictEqual(not(true), false)
     assert.strictEqual(not(false), true)
   })
 
-  it('should not bignumbers', function () {
+  it('should not bignumbers', function (): void {
     assert.strictEqual(not(bignumber(1)), false)
     assert.strictEqual(not(bignumber(-1)), false)
     assert.strictEqual(not(bignumber(0)), true)
@@ -58,7 +59,7 @@ describe('not', function () {
     assert.strictEqual(not(bignumber(-Infinity)), false)
   })
 
-  it('should not units', function () {
+  it('should not units', function (): void {
     assert.strictEqual(not(unit('100cm')), false)
     assert.strictEqual(not(unit('0 inch')), true)
     assert.strictEqual(not(unit('1m')), false)
@@ -69,39 +70,39 @@ describe('not', function () {
     assert.strictEqual(not(unit(bignumber(0), 'm')), true)
   })
 
-  it('should not arrays', function () {
+  it('should not arrays', function (): void {
     assert.deepStrictEqual(not([0, 10]), [true, false])
     assert.deepStrictEqual(not([]), [])
   })
 
-  it('should not matrices', function () {
+  it('should not matrices', function (): void {
     assert.deepStrictEqual(not(matrix([0, 10])), matrix([true, false]))
     assert.deepStrictEqual(not(matrix([])), matrix([]))
   })
 
-  it('should not null', function () {
+  it('should not null', function (): void {
     assert.strictEqual(not(null), true)
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       not()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       not(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an error in case of invalid type if arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid type if arguments', function (): void {
+    assert.throws(function (): void {
       not(new Date())
     }, /TypeError: Unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       not({})
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should LaTeX not', function () {
+  it('should LaTeX not', function (): void {
     const c = new ConstantNode(1)
     const node = new FunctionNode(new SymbolNode('not'), [c])
     assert.strictEqual(node.toTex(), '\\neg\\left(1\\right)')

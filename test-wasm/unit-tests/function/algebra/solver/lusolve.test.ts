@@ -1,12 +1,13 @@
-// @ts-nocheck
-// test lusolve
+/**
+ * Test for lusolve - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../../tools/approx.js'
 import math from '../../../../../src/defaultInstance.ts'
 
-describe('lusolve', function () {
-  it('should solve linear system 4 x 4, arrays', function () {
+describe('lusolve', function (): void {
+  it('should solve linear system 4 x 4, arrays', function (): void {
     const m = [
       [1, 0, 0, 0],
       [0, 2, 0, 0],
@@ -20,7 +21,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, [[-1], [-0.5], [-1 / 3], [-0.25]])
   })
 
-  it('should solve linear system 4 x 4, array and column array', function () {
+  it('should solve linear system 4 x 4, array and column array', function (): void {
     const m = [
       [1, 0, 0, 0],
       [0, 2, 0, 0],
@@ -33,7 +34,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, [[-1], [-0.5], [-1 / 3], [-0.25]])
   })
 
-  it('should solve linear system 4 x 4, matrices', function () {
+  it('should solve linear system 4 x 4, matrices', function (): void {
     const m = math.matrix([
       [1, 0, 0, 0],
       [0, 2, 0, 0],
@@ -48,7 +49,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[-1], [-0.5], [-1 / 3], [-0.25]]))
   })
 
-  it('should solve linear system 4 x 4, sparse matrices', function () {
+  it('should solve linear system 4 x 4, sparse matrices', function (): void {
     const m = math.matrix(
       [
         [1, 0, 0, 0],
@@ -66,7 +67,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[-1], [-0.5], [-1 / 3], [-0.25]]))
   })
 
-  it('should solve linear system 4 x 4, matrix and column matrix', function () {
+  it('should solve linear system 4 x 4, matrix and column matrix', function (): void {
     const m = math.matrix([
       [1, 0, 0, 0],
       [0, 2, 0, 0],
@@ -81,7 +82,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[-1], [-0.5], [-1 / 3], [-0.25]]))
   })
 
-  it('should solve linear system 4 x 4, sparse matrix and column matrix', function () {
+  it('should solve linear system 4 x 4, sparse matrix and column matrix', function (): void {
     const m = math.matrix(
       [
         [1, 0, 0, 0],
@@ -99,7 +100,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[-1], [-0.5], [-1 / 3], [-0.25]]))
   })
 
-  it('should solve linear system 4 x 4, LUP decomposition (array)', function () {
+  it('should solve linear system 4 x 4, LUP decomposition (array)', function (): void {
     const m = [
       [1, 0, 0, 0],
       [0, 2, 0, 0],
@@ -115,7 +116,7 @@ describe('lusolve', function () {
     approxDeepEqual(y, math.matrix([[1], [1], [1 / 3], [-0.25]]))
   })
 
-  it('should solve linear system 4 x 4, LUP decomposition (matrix)', function () {
+  it('should solve linear system 4 x 4, LUP decomposition (matrix)', function (): void {
     const m = math.matrix([
       [1, 0, 0, 0],
       [0, 2, 0, 0],
@@ -131,7 +132,7 @@ describe('lusolve', function () {
     approxDeepEqual(y, math.matrix([[1], [1], [1 / 3], [-0.25]]))
   })
 
-  it('should solve linear system 4 x 4, LUP decomposition (sparse matrix)', function () {
+  it('should solve linear system 4 x 4, LUP decomposition (sparse matrix)', function (): void {
     const m = math.matrix(
       [
         [1, 0, 0, 0],
@@ -150,7 +151,7 @@ describe('lusolve', function () {
     approxDeepEqual(y, math.matrix([[1], [1], [1 / 3], [-0.25]]))
   })
 
-  it('should solve linear system 3 x 3, no permutations, arrays', function () {
+  it('should solve linear system 3 x 3, no permutations, arrays', function (): void {
     const m = [
       [2, 1, 1],
       [1, 2, -1],
@@ -163,7 +164,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, [[-5 / 3], [7 / 3], [-1]])
   })
 
-  it('should solve linear system 3 x 3, no permutations, matrix', function () {
+  it('should solve linear system 3 x 3, no permutations, matrix', function (): void {
     const m = math.matrix([
       [2, 1, 1],
       [1, 2, -1],
@@ -176,7 +177,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[-5 / 3], [7 / 3], [-1]]))
   })
 
-  it('should solve linear system 3 x 3, no permutations, sparse matrix', function () {
+  it('should solve linear system 3 x 3, no permutations, sparse matrix', function (): void {
     const m = math.matrix(
       [
         [2, 1, 1],
@@ -192,7 +193,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[-5 / 3], [7 / 3], [-1]]))
   })
 
-  it('should solve linear system 3 x 3, permutations, arrays', function () {
+  it('should solve linear system 3 x 3, permutations, arrays', function (): void {
     const m = [
       [1, 2, -1],
       [2, 1, 1],
@@ -205,7 +206,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, [[-5 / 3], [7 / 3], [-1]])
   })
 
-  it('should solve linear system 4 x 4, permutations, matrix - Issue 437', function () {
+  it('should solve linear system 4 x 4, permutations, matrix - Issue 437', function (): void {
     const m = math.matrix([
       [-1, 1, -1, 1],
       [0, 0, 0, 1],
@@ -220,7 +221,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[0.025], [-0.075], [0], [0.2]]))
   })
 
-  it('should solve linear system 4 x 4, permutations, sparse - Issue 437', function () {
+  it('should solve linear system 4 x 4, permutations, sparse - Issue 437', function (): void {
     const m = math.sparse([
       [-1, 1, -1, 1],
       [0, 0, 0, 1],
@@ -235,7 +236,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[0.025], [-0.075], [0], [0.2]]))
   })
 
-  it('should solve linear system 3 x 3, permutations, sparse matrix', function () {
+  it('should solve linear system 3 x 3, permutations, sparse matrix', function (): void {
     const m = math.matrix(
       [
         [1, 2, -1],
@@ -251,7 +252,7 @@ describe('lusolve', function () {
     approxDeepEqual(x, math.matrix([[-5 / 3], [7 / 3], [-1]]))
   })
 
-  it('should solve linear system 4 x 4, natural ordering (order=0), partial pivoting, sparse matrix', function () {
+  it('should solve linear system 4 x 4, natural ordering (order=0), partial pivoting, sparse matrix', function (): void {
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -269,7 +270,7 @@ describe('lusolve', function () {
     )
   })
 
-  it("should solve linear system 4 x 4, amd(A+A') (order=1), partial pivoting, sparse matrix", function () {
+  it("should solve linear system 4 x 4, amd(A+A') (order=1), partial pivoting, sparse matrix", function (): void {
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -287,7 +288,7 @@ describe('lusolve', function () {
     )
   })
 
-  it("should solve linear system 4 x 4, amd(A'*A) (order=2), partial pivoting, sparse matrix", function () {
+  it("should solve linear system 4 x 4, amd(A'*A) (order=2), partial pivoting, sparse matrix", function (): void {
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -305,7 +306,7 @@ describe('lusolve', function () {
     )
   })
 
-  it("should solve linear system 4 x 4, amd(A'*A) (order=3), partial pivoting, sparse matrix", function () {
+  it("should solve linear system 4 x 4, amd(A'*A) (order=3), partial pivoting, sparse matrix", function (): void {
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -323,8 +324,8 @@ describe('lusolve', function () {
     )
   })
 
-  it('should throw exception when matrix is singular', function () {
-    assert.throws(function () {
+  it('should throw exception when matrix is singular', function (): void {
+    assert.throws(function (): void {
       math.lusolve(
         [
           [1, 1],
@@ -333,7 +334,7 @@ describe('lusolve', function () {
         [1, 1]
       )
     }, /Error: Linear system cannot be solved since matrix is singular/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.lusolve(
         math.matrix(
           [
@@ -345,7 +346,7 @@ describe('lusolve', function () {
         [1, 1]
       )
     }, /Error: Linear system cannot be solved since matrix is singular/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.lusolve(
         math.matrix(
           [

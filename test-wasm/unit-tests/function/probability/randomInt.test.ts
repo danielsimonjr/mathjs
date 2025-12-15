@@ -1,16 +1,23 @@
-// @ts-nocheck
+/**
+ * Test for randomInt - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
 const math2 = math.create({ randomSeed: 'test' })
 const randomInt = math2.randomInt
 
-describe('randomInt', function () {
-  it('should have a function randomInt', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('randomInt', function (): void {
+  it('should have a function randomInt', function (): void {
     assert.strictEqual(typeof math.randomInt, 'function')
   })
 
-  it('should pick uniformly distributed integers in [min, max)', function () {
+  it('should pick uniformly distributed integers in [min, max)', function (): void {
     const picked = []
 
     times(10000, function () {
@@ -20,12 +27,12 @@ describe('randomInt', function () {
     assertUniformDistributionInt(picked, -15, -5)
   })
 
-  it('when called with no arguments, should flip a coin', function () {
+  it('when called with no arguments, should flip a coin', function (): void {
     const picked = Array.from({ length: 10000 }, () => randomInt())
     assertUniformDistributionInt(picked, 0, 2)
   })
 
-  it('should return a bigint given bigint limits', function () {
+  it('should return a bigint given bigint limits', function (): void {
     let picked = randomInt(1n, 7n)
     assert.strictEqual(typeof picked, 'bigint')
     assert(picked >= 1n)
@@ -41,7 +48,7 @@ describe('randomInt', function () {
     assert(picked < wayBig)
   })
 
-  it('should pick uniformly distributed random array, with elements in [min, max)', function () {
+  it('should pick uniformly distributed random array, with elements in [min, max)', function (): void {
     const picked = []
     const matrices = []
     const size = [2, 3, 4]
@@ -61,24 +68,24 @@ describe('randomInt', function () {
     assertUniformDistributionInt(picked, -14.9, -2)
   })
 
-  it('should throw an error if called with invalid arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid arguments', function (): void {
+    assert.throws(function (): void {
       randomInt(1, 2, [4, 8])
     })
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       randomInt(1, 2, 3, 6)
     })
   })
 
-  it('should throw an error in case of wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       randomInt([2, 3], 10, 100, 12)
     }, / Too many arguments/)
   })
 
-  it('should LaTeX randomInt', function () {
-    const expression = math.parse('randomInt(0,100)')
+  it('should LaTeX randomInt', function (): void {
+    const expression = math.parse('randomInt(0,100)') as MathNode
     assert.strictEqual(
       expression.toTex(),
       '\\mathrm{randomInt}\\left(0,100\\right)'
@@ -86,7 +93,7 @@ describe('randomInt', function () {
   })
 })
 
-const assertUniformDistributionInt = function (values, min, max) {
+const assertUniformDistributionInt = function (values: number[], min: number, max: number): void {
   const valuesRange = range(Math.floor(min), Math.floor(max))
   let count
 
@@ -102,19 +109,19 @@ const assertUniformDistributionInt = function (values, min, max) {
   })
 }
 
-const assertApproxEqual = function (testVal, val, tolerance) {
+const assertApproxEqual = function (testVal: number, val: number, tolerance: number): void {
   const diff = Math.abs(val - testVal)
   if (diff > tolerance) assert.strictEqual(testVal, val)
   else assert.ok(diff <= tolerance)
 }
 
-function times(n, callback) {
+function times(n: number, callback: () => void): void {
   for (let i = 0; i < n; i++) {
     callback()
   }
 }
 
-function range(start, end) {
+function range(start: number, end: number): number[] {
   const array = []
 
   for (let i = start; i < end; i++) {

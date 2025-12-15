@@ -1,9 +1,16 @@
-// @ts-nocheck
+/**
+ * Test for map - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
-describe('map', function () {
-  it('should apply map to all elements of the matrix', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('map', function (): void {
+  it('should apply map to all elements of the matrix', function (): void {
     const m = math.matrix([
       [1, 2, 3],
       [4, 5, 6]
@@ -18,7 +25,7 @@ describe('map', function () {
     assert.ok(m2 instanceof math.Matrix)
   })
 
-  it('should apply deep-map to all elements in the array', function () {
+  it('should apply deep-map to all elements in the array', function (): void {
     const arr = [
       [1, 2, 3],
       [4, 5, 6]
@@ -33,7 +40,7 @@ describe('map', function () {
     assert.ok(Array.isArray(arr2))
   })
 
-  it('should map two arrays', function () {
+  it('should map two arrays', function (): void {
     const arrA = [
       [1, 2, 3],
       [4, 5, 6]
@@ -61,7 +68,7 @@ describe('map', function () {
     assert.ok(Array.isArray(arr3))
   })
 
-  it('should map three arrays', function () {
+  it('should map three arrays', function (): void {
     const arrA = [
       [1, 2, 3],
       [4, 5, 6]
@@ -94,7 +101,7 @@ describe('map', function () {
     assert.ok(Array.isArray(arr3))
   })
 
-  it('should map three arrays with broadcasting', function () {
+  it('should map three arrays with broadcasting', function (): void {
     const arrA = [1, 2, 3]
     const arrB = [[10], [20], [30]]
     const arrC = [100, 200, 300]
@@ -109,7 +116,7 @@ describe('map', function () {
     assert.ok(Array.isArray(arr2))
   })
 
-  it('should map two matrices', function () {
+  it('should map two matrices', function (): void {
     const matA = math.matrix([
       [1, 2, 3],
       [4, 5, 6]
@@ -131,7 +138,7 @@ describe('map', function () {
     assert.ok(mat2 instanceof math.Matrix)
   })
 
-  it('should map three matrices', function () {
+  it('should map three matrices', function (): void {
     const matA = math.matrix([
       [1, 2, 3],
       [4, 5, 6]
@@ -164,7 +171,7 @@ describe('map', function () {
     assert.ok(mat3 instanceof math.Matrix)
   })
 
-  it('should map three matrices with broadcasting', function () {
+  it('should map three matrices with broadcasting', function (): void {
     const matA = math.matrix([1, 2, 3])
     const matB = math.matrix([[10], [20], [30]])
     const matC = math.matrix([100, 200, 300])
@@ -189,7 +196,7 @@ describe('map', function () {
     assert.ok(mat3 instanceof math.Matrix)
   })
 
-  it('should map three matrices or arrays with broadcasting', function () {
+  it('should map three matrices or arrays with broadcasting', function (): void {
     const matA = math.matrix([1, 2, 3])
     const matB = [[10], [20], [30]]
     const matC = math.matrix([100, 200, 300])
@@ -214,7 +221,7 @@ describe('map', function () {
     assert.ok(mat3 instanceof math.Matrix)
   })
 
-  it('should invoke callback with parameters value, index, obj', function () {
+  it('should invoke callback with parameters value, index, obj', function (): void {
     const arr = [
       [1, 2, 3],
       [4, 5, 6]
@@ -242,7 +249,7 @@ describe('map', function () {
     )
   })
 
-  it('should invoke a typed function with the correct number of arguments (1)', function () {
+  it('should invoke a typed function with the correct number of arguments (1)', function (): void {
     const output = math.map(
       [1, 2, 3],
       math.typed('callback', {
@@ -254,7 +261,7 @@ describe('map', function () {
     assert.deepStrictEqual(output, [3, 4, 5])
   })
 
-  it('should invoke a typed function with the correct number of arguments (2) for two arrays', function () {
+  it('should invoke a typed function with the correct number of arguments (2) for two arrays', function (): void {
     const output = math.map(
       [1, 2, 3],
       [4, 5, 6],
@@ -267,7 +274,7 @@ describe('map', function () {
     assert.deepStrictEqual(output, [5, 7, 9])
   })
 
-  it('should invoke a typed function with correct number of arguments (2) for two matrices', function () {
+  it('should invoke a typed function with correct number of arguments (2) for two matrices', function (): void {
     const output = math.map(
       math.matrix([1, 2, 3]),
       math.matrix([4, 5, 6]),
@@ -280,7 +287,7 @@ describe('map', function () {
     assert.deepStrictEqual(output, math.matrix([5, 7, 9]))
   })
 
-  it('should invoke a typed function with correct number of arguments for two matrices and an index', function () {
+  it('should invoke a typed function with correct number of arguments for two matrices and an index', function (): void {
     const callback = function (a, b, idx) {
       return a + b + idx[0]
     }
@@ -295,7 +302,7 @@ describe('map', function () {
     assert.deepStrictEqual(output, expected)
   })
 
-  it('should invoke a function with correct number of arguments for two matrices and an index', function () {
+  it('should invoke a function with correct number of arguments for two matrices and an index', function (): void {
     const callback = function (a, b, idx) {
       return a + b + idx[0]
     }
@@ -308,7 +315,7 @@ describe('map', function () {
     assert.deepStrictEqual(output, expected)
   })
 
-  it('should invoke a function with correct number of arguments for two matrices, index and original matrices', function () {
+  it('should invoke a function with correct number of arguments for two matrices, index and original matrices', function (): void {
     const callback = function (a, b, idx, A, B) {
       return a + b + A.get(idx) + B.get(idx) + idx[0]
     }
@@ -321,7 +328,7 @@ describe('map', function () {
     assert.deepStrictEqual(output, expected)
   })
 
-  it('should invoke a typed function with correct number of arguments (2)', function () {
+  it('should invoke a typed function with correct number of arguments (2)', function (): void {
     const output = math.map(
       [1, 2, 3],
       math.typed('callback', {
@@ -333,7 +340,7 @@ describe('map', function () {
     assert.deepStrictEqual(output, [1, 4, 7])
   })
 
-  it('should invoke a typed function with correct number of arguments (3)', function () {
+  it('should invoke a typed function with correct number of arguments (3)', function (): void {
     const output = math.map(
       [1, 2, 3],
       math.typed('callback', {
@@ -345,7 +352,7 @@ describe('map', function () {
     assert.deepStrictEqual(output, [3, 5, 7])
   })
 
-  it('should invoke a typed function with correct number of arguments (4)', function () {
+  it('should invoke a typed function with correct number of arguments (4)', function (): void {
     // cbrt has a syntax cbrt(x, allRoots), but it should invoke cbrt(x) here
     assert.deepStrictEqual(math.map([1, 8, 27], math.cbrt), [1, 2, 3])
     assert.deepStrictEqual(
@@ -358,7 +365,7 @@ describe('map', function () {
     )
   })
 
-  it('should invoke a typed function with correct number of arguments (5)', function () {
+  it('should invoke a typed function with correct number of arguments (5)', function (): void {
     // format has a syntax format(x, options), but it should invoke format(x) here
     assert.deepStrictEqual(math.map([1, 8, 27], math.format), ['1', '8', '27'])
     assert.deepStrictEqual(
@@ -371,7 +378,7 @@ describe('map', function () {
     )
   })
 
-  it('should return an empty array/matrix unchanged, with a typed callback', function () {
+  it('should return an empty array/matrix unchanged, with a typed callback', function (): void {
     const testCases = [
       [],
       [[]],
@@ -411,36 +418,36 @@ describe('map', function () {
     })
   })
 
-  it('should throw an error if called with unsupported type', function () {
-    assert.throws(function () {
+  it('should throw an error if called with unsupported type', function (): void {
+    assert.throws(function (): void {
       math.map(1, function () {})
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.map('arr', function () {})
     })
   })
 
-  it('should throw an error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       math.map([1, 2, 3])
     })
   })
 
-  it('should throw an error if the callback argument types are incorrect (1)', function () {
+  it('should throw an error if the callback argument types are incorrect (1)', function (): void {
     assert.throws(
       () => math.map([1, 2, 3], math.equalText),
       /Function map cannot apply callback arguments to function equalText: Unexpected type of argument in function compareText \(expected: string or Array or Matrix, actual: number, index: 0\)/
     )
   })
 
-  it('should throw an error if the callback argument types are incorrect (2)', function () {
+  it('should throw an error if the callback argument types are incorrect (2)', function (): void {
     assert.throws(
       () => math.map([math.sin, 2, 3], math.sqrt),
       /TypeError: Function map cannot apply callback arguments sqrt\(value: function, index: Array, array: Array\) at index \[0]/
     )
   })
 
-  it('should throw an error if the last argument of a mullti callback function is not a function', function () {
+  it('should throw an error if the last argument of a mullti callback function is not a function', function (): void {
     assert.throws(
       () => math.map([1], [2], 'not a function'),
       /TypeError: Unexpected type of argument in function map/
@@ -452,7 +459,7 @@ describe('map', function () {
     )
   })
 
-  it('should operate from the parser', function () {
+  it('should operate from the parser', function (): void {
     assert.deepStrictEqual(
       math.evaluate('map([1,2,3], square)'),
       math.matrix([1, 4, 9])
@@ -463,7 +470,7 @@ describe('map', function () {
     )
   })
 
-  it('should operate from the parser with multiple inputs', function () {
+  it('should operate from the parser with multiple inputs', function (): void {
     assert.deepStrictEqual(
       math.evaluate('map([1, 2], [3, 4], f)', { f: (a, b) => a + b }),
       math.matrix([4, 6])
@@ -483,7 +490,7 @@ describe('map', function () {
     )
   })
 
-  it('should operate from the parser with three arrays with broadcasting', function () {
+  it('should operate from the parser with three arrays with broadcasting', function (): void {
     const arr2 = math.evaluate(
       'map([1, 2, 3], [[10], [20], [30]], [100, 200, 300], _(A, B, C) = A * 2 + B + C / 2)'
     )
@@ -497,19 +504,19 @@ describe('map', function () {
     )
   })
 
-  it('should operate from the parser with multiple inputs and one based indices', function () {
+  it('should operate from the parser with multiple inputs and one based indices', function (): void {
     const arr2 = math.evaluate('map([1,2],[3,4], f(a,b,idx)=a+b+idx[1])')
     const expected = math.matrix([5, 8])
     assert.deepStrictEqual(arr2, expected)
   })
 
-  it('should operate from the parser with multiple inputs that need broadcasting and one based indices', function () {
+  it('should operate from the parser with multiple inputs that need broadcasting and one based indices', function (): void {
     const arr2 = math.evaluate('map([1],[3,4], f(a,b,idx)=a+b+idx[1])')
     const expected = math.matrix([5, 7])
     assert.deepStrictEqual(arr2, expected)
   })
 
-  it('should operate from the parser with multiple inputs that need broadcasting and one based indices and the broadcasted arrays', function () {
+  it('should operate from the parser with multiple inputs that need broadcasting and one based indices and the broadcasted arrays', function (): void {
     // this is a convoluted way of calculating f(a,b,idx) = 2a+2b+index
     // 2(1) + 2([3,4]) + [1, 2] # yields [9, 12]
     const arr2 = math.evaluate(
@@ -519,7 +526,7 @@ describe('map', function () {
     assert.deepStrictEqual(arr2, expected)
   })
 
-  it('should LaTeX map', function () {
+  it('should LaTeX map', function (): void {
     const expression = math.parse('map([1,2,3],callback)')
     assert.strictEqual(
       expression.toTex(),

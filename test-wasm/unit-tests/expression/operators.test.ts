@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for operators - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
 import {
@@ -7,6 +9,11 @@ import {
   isAssociativeWith,
   getOperator
 } from '../../../src/expression/operators.js'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const OperatorNode = math.OperatorNode
 const AssignmentNode = math.AssignmentNode
 const SymbolNode = math.SymbolNode
@@ -14,8 +21,8 @@ const ConstantNode = math.ConstantNode
 const Node = math.Node
 const ParenthesisNode = math.ParenthesisNode
 
-describe('operators', function () {
-  it('should return the precedence of a node', function () {
+describe('operators', function (): void {
+  it('should return the precedence of a node', function (): void {
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
 
@@ -30,13 +37,13 @@ describe('operators', function () {
     assert.strictEqual(getPrecedence(n4, 'keep'), 19)
   })
 
-  it('should return null if precedence is not defined for a node', function () {
+  it('should return null if precedence is not defined for a node', function (): void {
     const n = new Node()
 
     assert.strictEqual(getPrecedence(n, 'keep'), null)
   })
 
-  it('should return the precedence of a ParenthesisNode', function () {
+  it('should return the precedence of a ParenthesisNode', function (): void {
     const c = new ConstantNode(1)
 
     const op = new OperatorNode('or', 'or', [c, c])
@@ -48,7 +55,7 @@ describe('operators', function () {
     assert.strictEqual(getPrecedence(p, 'keep'), null)
   })
 
-  it('should return the associativity of a node', function () {
+  it('should return the associativity of a node', function (): void {
     const a = new ConstantNode(1)
 
     const n1 = new OperatorNode('+', 'add', [a, a])
@@ -66,7 +73,7 @@ describe('operators', function () {
     assert.strictEqual(getAssociativity(n5, 'keep'), 'left')
   })
 
-  it('should return the associativity of a ParenthesisNode', function () {
+  it('should return the associativity of a ParenthesisNode', function (): void {
     const c = new ConstantNode(1)
 
     const op = new OperatorNode('or', 'or', [c, c])
@@ -81,7 +88,7 @@ describe('operators', function () {
     assert.strictEqual(getAssociativity(p, 'keep'), null)
   })
 
-  it('should return null if associativity is not defined for a node', function () {
+  it('should return null if associativity is not defined for a node', function (): void {
     const a = new ConstantNode(1)
 
     const n1 = new Node()
@@ -91,7 +98,7 @@ describe('operators', function () {
     assert.strictEqual(getAssociativity(n2, 'keep'), null)
   })
 
-  it('should return if a Node is associative with another Node', function () {
+  it('should return if a Node is associative with another Node', function (): void {
     const a = new ConstantNode(1)
 
     const n1 = new OperatorNode('+', 'add', [a, a])
@@ -103,7 +110,7 @@ describe('operators', function () {
     assert.strictEqual(isAssociativeWith(n2, n1, 'keep'), false)
   })
 
-  it('should return null if the associativity between two Nodes is not defined', function () {
+  it('should return null if the associativity between two Nodes is not defined', function (): void {
     const a = new ConstantNode(1)
 
     const n1 = new Node()
@@ -115,7 +122,7 @@ describe('operators', function () {
     assert.strictEqual(isAssociativeWith(n2, n1, 'keep'), null)
   })
 
-  it('should return if a ParenthesisNode is associative with another Node', function () {
+  it('should return if a ParenthesisNode is associative with another Node', function (): void {
     const a = new ConstantNode(1)
 
     const add = new OperatorNode('+', 'add', [a, a])
@@ -128,7 +135,7 @@ describe('operators', function () {
     assert.strictEqual(isAssociativeWith(p, sub, 'keep'), null)
   })
 
-  it('should get the operator of a function name', function () {
+  it('should get the operator of a function name', function (): void {
     assert.strictEqual(getOperator('multiply'), '*')
     assert.strictEqual(getOperator('ctranspose'), "'")
     assert.strictEqual(getOperator('mod'), 'mod')

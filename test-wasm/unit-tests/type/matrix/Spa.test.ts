@@ -1,29 +1,31 @@
-// @ts-nocheck
+/**
+ * Test for Spa - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const Spa = math.Spa
 
-describe('Spa', function () {
-  describe('constructor', function () {
-    it('should throw an error when called without new keyword', function () {
-      assert.throws(function () {
+describe('Spa', function (): void {
+  describe('constructor', function (): void {
+    it('should throw an error when called without new keyword', function (): void {
+      assert.throws(function (): void {
         Spa()
       }, /Constructor must be called with the new operator/)
     })
 
-    it('should have a property isSpa', function () {
+    it('should have a property isSpa', function (): void {
       const a = new Spa()
       assert.strictEqual(a.isSpa, true)
     })
 
-    it('should have a property type', function () {
+    it('should have a property type', function (): void {
       const a = new Spa()
       assert.strictEqual(a.type, 'Spa')
     })
   })
 
-  describe('test', function () {
-    it('should add value when no value exists for row', function () {
+  describe('test', function (): void {
+    it('should add value when no value exists for row', function (): void {
       const spa = new Spa(10)
       spa.set(5, 0.5)
       assert(spa._values[5])
@@ -31,7 +33,7 @@ describe('Spa', function () {
       assert.strictEqual(spa._values[5].value, 0.5)
     })
 
-    it('should set value when value exists for row', function () {
+    it('should set value when value exists for row', function (): void {
       const spa = new Spa(10)
       spa.set(5, 0.5)
       assert(spa._values[5])
@@ -44,14 +46,14 @@ describe('Spa', function () {
     })
   })
 
-  describe('get', function () {
-    it('should get zero when no value exists for row', function () {
+  describe('get', function (): void {
+    it('should get zero when no value exists for row', function (): void {
       const spa = new Spa(10)
       const v = spa.get(5)
       assert.strictEqual(v, 0)
     })
 
-    it('should get value when value exists for row', function () {
+    it('should get value when value exists for row', function (): void {
       const spa = new Spa(10)
       spa.set(5, 0.5)
       const v = spa.get(5)
@@ -59,8 +61,8 @@ describe('Spa', function () {
     })
   })
 
-  describe('accumulate', function () {
-    it('should add value when no value exists for row', function () {
+  describe('accumulate', function (): void {
+    it('should add value when no value exists for row', function (): void {
       const spa = new Spa(10)
       spa.accumulate(5, 0.5)
       assert(spa._values[5])
@@ -68,7 +70,7 @@ describe('Spa', function () {
       assert.strictEqual(spa._values[5].value, 0.5)
     })
 
-    it('should accumulate value when value exists for row', function () {
+    it('should accumulate value when value exists for row', function (): void {
       const spa = new Spa(10)
       spa.set(5, 0.5)
       spa.accumulate(5, 1.5)
@@ -78,8 +80,8 @@ describe('Spa', function () {
     })
   })
 
-  describe('swap', function () {
-    it('should swap two existing values', function () {
+  describe('swap', function (): void {
+    it('should swap two existing values', function (): void {
       const spa = new Spa(10)
       spa.set(5, 0.5)
       spa.set(2, 0.2)
@@ -92,7 +94,7 @@ describe('Spa', function () {
       assert.strictEqual(spa._values[2].value, 0.5)
     })
 
-    it('should swap an existing and non existing values', function () {
+    it('should swap an existing and non existing values', function (): void {
       const spa = new Spa(10)
       spa.set(5, 0.5)
       spa.swap(5, 2)
@@ -102,7 +104,7 @@ describe('Spa', function () {
       assert.strictEqual(spa._values[2].value, 0.5)
     })
 
-    it('should swap a non existing and existing values', function () {
+    it('should swap a non existing and existing values', function (): void {
       const spa = new Spa(10)
       spa.set(5, 0.5)
       spa.swap(2, 5)
@@ -112,7 +114,7 @@ describe('Spa', function () {
       assert.strictEqual(spa._values[2].value, 0.5)
     })
 
-    it('should swap two non existing values', function () {
+    it('should swap two non existing values', function (): void {
       const spa = new Spa(10)
       spa.swap(2, 5)
       assert(!spa._values[5])
@@ -120,8 +122,8 @@ describe('Spa', function () {
     })
   })
 
-  describe('forEach', function () {
-    it('should enumerate values in correct order', function () {
+  describe('forEach', function (): void {
+    it('should enumerate values in correct order', function (): void {
       const spa = new Spa(10)
       spa.set(2, 2)
       spa.set(3, 3)
@@ -145,7 +147,7 @@ describe('Spa', function () {
       assert.strictEqual(spa._heap._size, 4)
     })
 
-    it('should enumerate values in interval', function () {
+    it('should enumerate values in interval', function (): void {
       const spa = new Spa(10)
       spa.set(2, 2)
       spa.set(3, 3)

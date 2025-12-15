@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for lastDimToZeroBase - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../../src/defaultInstance.ts'
 import { lastDimToZeroBase } from '../../../../../src/expression/transform/utils/lastDimToZeroBase.js'

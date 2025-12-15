@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for bignumber/formatter - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import BigNumber from 'decimal.js'
 import {
@@ -7,21 +9,21 @@ import {
   toFixed
 } from '../../../../src/utils/bignumber/formatter.js'
 
-describe('format', function () {
-  describe('format', function () {
+describe('format', function (): void {
+  describe('format', function (): void {
     let B = null
 
     before(function () {
       B = BigNumber.clone({ precision: 20 }) // ensure the precision is 20 digits
     })
 
-    it('should format special values Infinity, NaN', function () {
+    it('should format special values Infinity, NaN', function (): void {
       assert.strictEqual(format(new BigNumber(Infinity)), 'Infinity')
       assert.strictEqual(format(new BigNumber(-Infinity)), '-Infinity')
       assert.strictEqual(format(new BigNumber(NaN)), 'NaN')
     })
 
-    it('auto notation', function () {
+    it('auto notation', function (): void {
       assert.strictEqual(
         format(new B(2).dividedBy(7)),
         '0.28571428571428571429'
@@ -71,7 +73,7 @@ describe('format', function () {
       assert.strictEqual(format(new B(1.111e6)), '1.111e+6')
     })
 
-    it('auto notation with very high precision', function () {
+    it('auto notation with very high precision', function (): void {
       const precision = 2000
       const B = BigNumber.clone({ precision: 2000 })
 
@@ -81,7 +83,7 @@ describe('format', function () {
       assert.strictEqual(format(a), aStr)
     })
 
-    it('auto notation with precision as second parameter', function () {
+    it('auto notation with precision as second parameter', function (): void {
       assert.deepStrictEqual(format(new B('1.23456'), 3), '1.23')
       assert.deepStrictEqual(format(new B('12345678'), 4), '1.235e+7')
 
@@ -94,8 +96,8 @@ describe('format', function () {
       assert.strictEqual(format(new B(2).dividedBy(3), 3), '0.667')
     })
 
-    describe('should apply options', function () {
-      it('auto notation with precision', function () {
+    describe('should apply options', function (): void {
+      it('auto notation with precision', function (): void {
         assert.strictEqual(format(new B(1).div(3)), '0.33333333333333333333')
         assert.strictEqual(format(new B(1).div(3), { precision: 3 }), '0.333')
         assert.strictEqual(format(new B(1).div(3), { precision: 4 }), '0.3333')
@@ -118,7 +120,7 @@ describe('format', function () {
         assert.strictEqual(format(new B(2.3), { precision: 30 }), '2.3')
       })
 
-      it('auto notation with custom lower and upper bound', function () {
+      it('auto notation with custom lower and upper bound', function (): void {
         const options = {
           lowerExp: -6,
           upperExp: 9
@@ -135,7 +137,7 @@ describe('format', function () {
         )
       })
 
-      it('auto notation with custom lower and upper bound (2)', function () {
+      it('auto notation with custom lower and upper bound (2)', function (): void {
         assert.strictEqual(format(new B(1), { lowerExp: -2 }), '1')
         assert.strictEqual(format(new B(0.1), { lowerExp: -2 }), '0.1')
         assert.strictEqual(format(new B(0.01), { lowerExp: -2 }), '0.01')
@@ -160,7 +162,7 @@ describe('format', function () {
       })
     })
 
-    it('should format bignumbers with a custom formatting function', function () {
+    it('should format bignumbers with a custom formatting function', function (): void {
       function asCurrency(value) {
         return '$' + value.toFixed(2)
       }
@@ -173,7 +175,7 @@ describe('format', function () {
       )
     })
 
-    it('should format bignumbers in exponential notation', function () {
+    it('should format bignumbers in exponential notation', function (): void {
       const options = {
         notation: 'exponential'
       }
@@ -185,7 +187,7 @@ describe('format', function () {
       assert.deepStrictEqual(format(new B('0.23e-30'), options), '2.3e-31')
     })
 
-    it('should format bignumbers in exponential notation with precision', function () {
+    it('should format bignumbers in exponential notation with precision', function (): void {
       const options = {
         notation: 'exponential',
         precision: 18
@@ -196,7 +198,7 @@ describe('format', function () {
       )
     })
 
-    it('should format bignumbers with custom precision, lower, and upper bound', function () {
+    it('should format bignumbers with custom precision, lower, and upper bound', function (): void {
       const Big = BigNumber.clone({ precision: 100 })
 
       const options = {
@@ -232,7 +234,7 @@ describe('format', function () {
       )
     })
 
-    it('auto notation with custom lower bound', function () {
+    it('auto notation with custom lower bound', function (): void {
       const options = {
         lowerExp: -6
       }
@@ -243,7 +245,7 @@ describe('format', function () {
       assert.strictEqual(format(new BigNumber(1e-7), options), '1e-7')
     })
 
-    it('auto notation with custom upper bound', function () {
+    it('auto notation with custom upper bound', function (): void {
       const options = {
         upperExp: 9
       }
@@ -251,7 +253,7 @@ describe('format', function () {
       assert.strictEqual(format(new BigNumber(1e9 - 1), options), '999999999')
     })
 
-    it('should format bignumbers in fixed notation', function () {
+    it('should format bignumbers in fixed notation', function (): void {
       const options = {
         notation: 'fixed'
       }
@@ -275,7 +277,7 @@ describe('format', function () {
       )
     })
 
-    it('should format bignumbers in fixed notation with precision', function () {
+    it('should format bignumbers in fixed notation with precision', function (): void {
       const options = {
         notation: 'fixed',
         precision: 2
@@ -295,14 +297,14 @@ describe('format', function () {
       )
     })
 
-    it('should throw an error on unknown notation', function () {
-      assert.throws(function () {
+    it('should throw an error on unknown notation', function (): void {
+      assert.throws(function (): void {
         format(new BigNumber(123), { notation: 'non existing' })
       })
     })
   })
 
-  it('should format a bignumber using toFixed', function () {
+  it('should format a bignumber using toFixed', function (): void {
     const Big = BigNumber.clone({ precision: 100 })
 
     assert.strictEqual(toFixed(new Big(2.34)), '2.34')
@@ -316,7 +318,7 @@ describe('format', function () {
     )
   })
 
-  it('should format a bignumber using toExponential', function () {
+  it('should format a bignumber using toExponential', function (): void {
     const Big = BigNumber.clone({ precision: 100 })
 
     assert.strictEqual(toExponential(new Big(2.34)), '2.34e+0')

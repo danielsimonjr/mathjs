@@ -1,5 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for acoth - AssemblyScript-friendly TypeScript
+ */
 /* eslint-disable no-loss-of-precision */
+
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
@@ -16,14 +24,14 @@ const predmath = math.create({ predictable: true })
 const acothBig = bigmath.acoth
 const Big = bigmath.bignumber
 
-describe('acoth', function () {
-  it('should return the hyperbolic arccot of a boolean', function () {
+describe('acoth', function (): void {
+  it('should return the hyperbolic arccot of a boolean', function (): void {
     assert.strictEqual(acoth(true), Infinity)
     approxDeepEqual(acoth(false), complex(0, pi / 2))
     // assert.ok(isNaN(acoth(false)))
   })
 
-  it('should return the hyperbolic arccot of a number', function () {
+  it('should return the hyperbolic arccot of a number', function (): void {
     approxDeepEqual(acoth(0), complex(0, pi / 2))
     approxDeepEqual(acoth(0.5), complex(0.5493061443340548, -1.5707963267949))
     // assert.ok(isNaN(acoth(0)))
@@ -36,12 +44,12 @@ describe('acoth', function () {
     assert.strictEqual(acoth(Infinity), 0)
   })
 
-  it('should return the hyperbolic arccot of a number when predictable:true', function () {
+  it('should return the hyperbolic arccot of a number when predictable:true', function (): void {
     assert.strictEqual(typeof predmath.acoth(0.5), 'number')
     assert(isNaN(predmath.acoth(0.5)))
   })
 
-  it('should return the hyperbolic arccot of a bignumber', function () {
+  it('should return the hyperbolic arccot of a bignumber', function (): void {
     const arg2 = Big(-2)
     const arg3 = Big(-1)
     assert.deepStrictEqual(acothBig(Big(-Infinity)), Big('-0'))
@@ -60,7 +68,7 @@ describe('acoth', function () {
     assert.ok(acothBig(Big(0.5)).isNaN())
   })
 
-  it('should be the inverse function of hyperbolic cot', function () {
+  it('should be the inverse function of hyperbolic cot', function (): void {
     approxEqual(acoth(coth(-2)), -2)
     approxEqual(acoth(coth(-1)), -1)
     approxEqual(acoth(coth(0)), 0)
@@ -68,7 +76,7 @@ describe('acoth', function () {
     approxEqual(acoth(coth(2)), 2)
   })
 
-  it('should be the inverse function of bignumber coth', function () {
+  it('should be the inverse function of bignumber coth', function (): void {
     assert.deepStrictEqual(acothBig(bigmath.coth(Big(-1))), Big(-1))
     assert.deepStrictEqual(acothBig(bigmath.coth(Big(0))), Big(0))
     assert.deepStrictEqual(acothBig(bigmath.coth(Big(1))), Big(1))
@@ -84,7 +92,7 @@ describe('acoth', function () {
     )
   })
 
-  it('should return the arccoth of a complex number', function () {
+  it('should return the arccoth of a complex number', function (): void {
     approxDeepEqual(
       acoth(complex('2+3i')),
       complex(0.1469466662255, -0.2318238045004)
@@ -114,22 +122,22 @@ describe('acoth', function () {
     approxDeepEqual(acoth(complex('0')), complex(0, pi / 2))
   })
 
-  it('should throw an error if called with a unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
       acoth(unit('45deg'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       acoth(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       acoth('string')
     })
   })
 
-  it('should not operate on arrays and matrices', function () {
+  it('should not operate on arrays and matrices', function (): void {
     assert.throws(() => acoth([1, 2, 3]), TypeError)
     assert.throws(() => acoth(matrix([1, 2, 3])), TypeError)
     const acoth123 = [Infinity, 0.54930614433405, 0.34657359027997]
@@ -137,16 +145,16 @@ describe('acoth', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), acoth), matrix(acoth123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       acoth()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       acoth(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX acoth', function () {
+  it('should LaTeX acoth', function (): void {
     const expression = math.parse('acoth(2)')
     assert.strictEqual(expression.toTex(), '\\coth^{-1}\\left(2\\right)')
   })

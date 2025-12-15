@@ -1,15 +1,21 @@
-// @ts-nocheck
-// test divide
+/**
+ * Test for divide - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 const divide = math.divide
 const bignumber = math.bignumber
 const complex = math.complex
 
-describe('divide', function () {
-  it('should divide two numbers', function () {
+describe('divide', function (): void {
+  it('should divide two numbers', function (): void {
     assert.strictEqual(divide(4, 2), 2)
     assert.strictEqual(divide(-4, 2), -2)
     assert.strictEqual(divide(4, -2), -2)
@@ -20,37 +26,37 @@ describe('divide', function () {
     assert.ok(isNaN(divide(0, 0)))
   })
 
-  it('should divide bigint', function () {
+  it('should divide bigint', function (): void {
     assert.strictEqual(divide(6n, 3n), 2n)
   })
 
-  it('should divide booleans', function () {
+  it('should divide booleans', function (): void {
     assert.strictEqual(divide(true, true), 1)
     assert.strictEqual(divide(true, false), Infinity)
     assert.strictEqual(divide(false, true), 0)
     assert.ok(isNaN(divide(false, false)))
   })
 
-  it('should divide mixed numbers and booleans', function () {
+  it('should divide mixed numbers and booleans', function (): void {
     assert.strictEqual(divide(2, true), 2)
     assert.strictEqual(divide(2, false), Infinity)
     approxEqual(divide(true, 2), 0.5)
     assert.strictEqual(divide(false, 2), 0)
   })
 
-  it('should divide mixed numbers and bigint', function () {
+  it('should divide mixed numbers and bigint', function (): void {
     assert.strictEqual(divide(6, 3n), 2)
     assert.strictEqual(divide(6n, 3), 2)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       divide(123123123123123123123n, 1)
     }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       divide(1, 123123123123123123123n)
     }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
   })
 
-  it('should divide bignumbers', function () {
+  it('should divide bignumbers', function (): void {
     assert.deepStrictEqual(
       divide(bignumber(0.3), bignumber(0.2)),
       bignumber(1.5)
@@ -61,7 +67,7 @@ describe('divide', function () {
     )
   })
 
-  it('should divide mixed numbers and bignumbers', function () {
+  it('should divide mixed numbers and bignumbers', function (): void {
     assert.deepStrictEqual(divide(bignumber(0.3), 0.2), bignumber(1.5))
     assert.deepStrictEqual(divide(0.3, bignumber(0.2)), bignumber(1.5))
     assert.deepStrictEqual(
@@ -69,22 +75,22 @@ describe('divide', function () {
       bignumber('1.3e5000')
     )
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       divide(1 / 3, bignumber(2))
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       divide(bignumber(1), 1 / 3)
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
   })
 
-  it('should divide mixed booleans and bignumbers', function () {
+  it('should divide mixed booleans and bignumbers', function (): void {
     assert.deepStrictEqual(divide(bignumber(0.3), true), bignumber(0.3))
     assert.deepStrictEqual(divide(bignumber(0.3), false).toString(), 'Infinity')
     assert.deepStrictEqual(divide(false, bignumber('2')), bignumber(0))
     assert.deepStrictEqual(divide(true, bignumber('2')), bignumber(0.5))
   })
 
-  it('should divide two complex numbers', function () {
+  it('should divide two complex numbers', function (): void {
     approxDeepEqual(divide(complex('2+3i'), 2), complex('1+1.5i'))
     approxDeepEqual(
       divide(complex('2+3i'), complex('4i')),
@@ -180,7 +186,7 @@ describe('divide', function () {
     )
   })
 
-  it('should divide mixed complex numbers and numbers', function () {
+  it('should divide mixed complex numbers and numbers', function (): void {
     assert.deepStrictEqual(divide(math.complex(6, -4), 2), math.complex(3, -2))
     assert.deepStrictEqual(
       divide(1, math.complex(2, 4)),
@@ -188,7 +194,7 @@ describe('divide', function () {
     )
   })
 
-  it('should divide mixed complex numbers and bignumbers', function () {
+  it('should divide mixed complex numbers and bignumbers', function (): void {
     assert.deepStrictEqual(
       divide(math.complex(6, -4), bignumber(2)),
       math.complex(3, -2)
@@ -199,31 +205,31 @@ describe('divide', function () {
     )
   })
 
-  it('should divide two fractions', function () {
+  it('should divide two fractions', function (): void {
     const a = math.fraction(1, 4)
     assert.strictEqual(divide(a, math.fraction(1, 2)).toString(), '0.5')
     assert.strictEqual(a.toString(), '0.25')
   })
 
-  it('should divide mixed fractions and numbers', function () {
+  it('should divide mixed fractions and numbers', function (): void {
     assert.deepStrictEqual(divide(1, math.fraction(3)), math.fraction(1, 3))
     assert.deepStrictEqual(divide(math.fraction(1), 3), math.fraction(1, 3))
   })
 
-  it('should divide mixed fractions and bigints', function () {
+  it('should divide mixed fractions and bigints', function (): void {
     assert.deepStrictEqual(divide(1n, math.fraction(3)), math.fraction(1, 3))
     assert.deepStrictEqual(divide(math.fraction(1), 3n), math.fraction(1, 3))
   })
 
-  it('should divide units by a number', function () {
+  it('should divide units by a number', function (): void {
     assert.strictEqual(divide(math.unit('5 m'), 10).toString(), '0.5 m')
   })
 
-  it('should divide valueless units by a number', function () {
+  it('should divide valueless units by a number', function (): void {
     assert.strictEqual(divide(math.unit('m'), 2).toString(), '0.5 m')
   })
 
-  it('should divide a number by a unit', function () {
+  it('should divide a number by a unit', function (): void {
     assert.strictEqual(divide(20, math.unit('4 N s')).toString(), '5 N^-1 s^-1')
     assert.strictEqual(divide(4, math.unit('W')).toString(), '4 W^-1')
     assert.strictEqual(divide(2.5, math.unit('1.25 mm')).toString(), '2 mm^-1')
@@ -247,7 +253,7 @@ describe('divide', function () {
     )
   })
 
-  it('should divide two units', function () {
+  it('should divide two units', function (): void {
     assert.strictEqual(
       divide(math.unit('75 mi/h'), math.unit('40 mi/gal'))
         .to('gal/minute')
@@ -270,7 +276,7 @@ describe('divide', function () {
     )
   })
 
-  it('should divide one valued unit by a valueless unit and vice-versa', function () {
+  it('should divide one valued unit by a valueless unit and vice-versa', function (): void {
     assert.strictEqual(
       divide(math.unit('4 gal'), math.unit('L')).toString(),
       '15.141647136'
@@ -286,14 +292,14 @@ describe('divide', function () {
     )
   })
 
-  it('should divide (but not simplify) two valueless units', function () {
+  it('should divide (but not simplify) two valueless units', function (): void {
     assert.strictEqual(
       divide(math.unit('gal'), math.unit('L')).toString(),
       'gal / L'
     )
   })
 
-  it('should divide units by a big number', function () {
+  it('should divide units by a big number', function (): void {
     assert.strictEqual(
       divide(math.unit('5 m'), bignumber(10)).toString(),
       '0.5 m'
@@ -324,7 +330,7 @@ describe('divide', function () {
     )
   })
 
-  it('should divide each elements in a matrix by a number', function () {
+  it('should divide each elements in a matrix by a number', function (): void {
     assert.deepStrictEqual(divide([2, 4, 6], 2), [1, 2, 3])
     const a = math.matrix([
       [1, 2],
@@ -345,7 +351,7 @@ describe('divide', function () {
     assert.deepStrictEqual(divide([], 2), [])
   })
 
-  it('should divide 1 over a matrix (matrix inverse)', function () {
+  it('should divide 1 over a matrix (matrix inverse)', function (): void {
     approxDeepEqual(
       divide(1, [
         [1, 4, 7],
@@ -360,7 +366,7 @@ describe('divide', function () {
     )
   })
 
-  it('should perform matrix division', function () {
+  it('should perform matrix division', function (): void {
     const a = math.matrix([
       [1, 2],
       [3, 4]
@@ -378,12 +384,12 @@ describe('divide', function () {
     )
   })
 
-  it('should divide a matrix by a matrix containing a scalar', function () {
+  it('should divide a matrix by a matrix containing a scalar', function (): void {
     const a = math.matrix([
       [1, 2],
       [3, 4]
     ])
-    assert.throws(function () {
+    assert.throws(function (): void {
       divide(a, [[1]])
     })
   })
@@ -391,30 +397,30 @@ describe('divide', function () {
   /*
   // These are supported now --ericman314
   it('should throw an error if dividing a number by a unit', function() {
-    assert.throws(function () {divide(10, math.unit('5 m')).toString()})
+    assert.throws(function (): void {divide(10, math.unit('5 m')).toString()})
   })
 
   it('should throw an error if dividing a unit by a non-number', function() {
-    assert.throws(function () {divide(math.unit('5 m'), math.unit('5cm')).toString()})
+    assert.throws(function (): void {divide(math.unit('5 m'), math.unit('5cm')).toString()})
   })
   */
 
-  it("should throw an error if there's wrong number of arguments", function () {
-    assert.throws(function () {
+  it("should throw an error if there's wrong number of arguments", function (): void {
+    assert.throws(function (): void {
       divide(2, 3, 4)
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       divide(2)
     })
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       divide(null, 2)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should LaTeX divide', function () {
+  it('should LaTeX divide', function (): void {
     const expression = math.parse('divide(1,2)')
     assert.strictEqual(expression.toTex(), '\\frac{1}{2}')
   })

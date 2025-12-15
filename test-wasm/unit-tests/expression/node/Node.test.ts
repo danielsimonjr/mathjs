@@ -1,11 +1,14 @@
-// @ts-nocheck
-// test Node
+/**
+ * Test for Node - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode { type: string; toTex(): string }
 const Node = math.Node
 
-describe('Node', function () {
+describe('Node', function (): void {
   function MyNode(value) {
     this.value = value
   }
@@ -15,23 +18,23 @@ describe('Node', function () {
     return new MyNode(this.value)
   }
 
-  it('should create a Node', function () {
+  it('should create a Node', function (): void {
     const n = new Node()
     assert(n instanceof Node)
   })
 
-  it('should have isNode', function () {
+  it('should have isNode', function (): void {
     const node = new Node()
     assert(node.isNode)
   })
 
-  it('should throw an error when calling without new operator', function () {
-    assert.throws(function () {
+  it('should throw an error when calling without new operator', function (): void {
+    assert.throws(function (): void {
       Node()
     }, TypeError)
   })
 
-  it('should filter a Node', function () {
+  it('should filter a Node', function (): void {
     const n = new MyNode(2)
 
     assert.deepStrictEqual(
@@ -54,7 +57,7 @@ describe('Node', function () {
     )
   })
 
-  it('should transform a Node', function () {
+  it('should transform a Node', function (): void {
     let a = new MyNode(2)
     let b = new MyNode(3)
     let c = a.transform(function (_node) {
@@ -71,7 +74,7 @@ describe('Node', function () {
     assert.deepStrictEqual(c, a)
   })
 
-  it('should transform a Node using a replacement function', function () {
+  it('should transform a Node using a replacement function', function (): void {
     const a = new MyNode(2)
     const b = new MyNode(3)
     const c = a.transform(function (_node) {
@@ -81,7 +84,7 @@ describe('Node', function () {
     assert.deepStrictEqual(c, b)
   })
 
-  it('transform should iterate over unchanged nodes', function () {
+  it('transform should iterate over unchanged nodes', function (): void {
     const logs = []
 
     function TestNode(value) {
@@ -102,7 +105,7 @@ describe('Node', function () {
     assert.deepStrictEqual(logs, ['transform a', 'map a'])
   })
 
-  it('transform should not iterate over replaced nodes', function () {
+  it('transform should not iterate over replaced nodes', function (): void {
     const logs = []
 
     function TestNode(value) {
@@ -128,14 +131,14 @@ describe('Node', function () {
     ])
   })
 
-  it('should throw an error when cloning a Node interface', function () {
-    assert.throws(function () {
+  it('should throw an error when cloning a Node interface', function (): void {
+    assert.throws(function (): void {
       const a = new Node()
       a.clone()
     }, /Cannot clone a Node interface/)
   })
 
-  it('should shallow clone the content of a Node', function () {
+  it('should shallow clone the content of a Node', function (): void {
     const a = new math.ConstantNode(1)
     const b = new math.ConstantNode(2)
     const c = new math.OperatorNode('+', 'add', [a, b])
@@ -148,7 +151,7 @@ describe('Node', function () {
     assert.strictEqual(clone.args[1], c.args[1])
   })
 
-  it('should deepClone the content of a Node', function () {
+  it('should deepClone the content of a Node', function (): void {
     const a = new math.ConstantNode(1)
     const b = new math.ConstantNode(2)
     const c = new math.OperatorNode('+', 'add', [a, b])
@@ -161,35 +164,35 @@ describe('Node', function () {
     assert.notStrictEqual(clone.args[1], c.args[1])
   })
 
-  it('test equality with another Node', function () {
+  it('test equality with another Node', function (): void {
     assert.strictEqual(new Node().equals(new Node()), true)
     assert.strictEqual(new Node().equals(null), false)
     assert.strictEqual(new Node().equals(undefined), false)
     assert.strictEqual(new Node().equals({}), false)
   })
 
-  it('should throw an error when stringifying a Node interface', function () {
-    assert.throws(function () {
+  it('should throw an error when stringifying a Node interface', function (): void {
+    assert.throws(function (): void {
       const node = new Node()
       node.toString()
     }, /_toString not implemented for Node/)
   })
 
-  it('should throw an error when calling toJSON on a Node interface', function () {
-    assert.throws(function () {
+  it('should throw an error when calling toJSON on a Node interface', function (): void {
+    assert.throws(function (): void {
       const a = new Node()
       a.toJSON()
     }, /Cannot serialize object: toJSON not implemented/)
   })
 
-  it('should throw an error when calling _toTex', function () {
-    assert.throws(function () {
+  it('should throw an error when calling _toTex', function (): void {
+    assert.throws(function (): void {
       const node = new Node()
       node._toTex()
     }, /_toTex not implemented for Node/)
   })
 
-  it('should ignore custom toString if it returns nothing', function () {
+  it('should ignore custom toString if it returns nothing', function (): void {
     const callback1 = function (_node, _callback) {}
     const callback2 = {
       bla: function (_node, _callbacks) {}
@@ -206,7 +209,7 @@ describe('Node', function () {
     assert.strictEqual(n2.toString(callback2), 'bla()')
   })
 
-  it('should ignore custom toTex if it returns nothing', function () {
+  it('should ignore custom toTex if it returns nothing', function (): void {
     const callback1 = function (_node, _callback) {}
     const callback2 = {
       bla: function (_node, _callbacks) {}
@@ -223,20 +226,20 @@ describe('Node', function () {
     assert.strictEqual(n2.toTex(callback2), '\\mathrm{bla}\\left(\\right)')
   })
 
-  it('should throw an error when compiling an abstract node', function () {
+  it('should throw an error when compiling an abstract node', function (): void {
     const node = new Node()
-    assert.throws(function () {
+    assert.throws(function (): void {
       node.compile()
     }, /Error: Method _compile must be implemented by type Node/)
   })
 
-  it('should have an identifier', function () {
+  it('should have an identifier', function (): void {
     const node = new Node()
 
     assert.strictEqual(node.getIdentifier(), 'Node')
   })
 
-  it('should get the content of a Node', function () {
+  it('should get the content of a Node', function (): void {
     const c = new math.ConstantNode(1)
 
     assert.strictEqual(c.getContent(), c)

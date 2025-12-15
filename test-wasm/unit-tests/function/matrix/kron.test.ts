@@ -1,11 +1,18 @@
-// @ts-nocheck
+/**
+ * Test for kron - AssemblyScript-friendly TypeScript
+ */
 // test Kronecker product
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
-describe('kron', function () {
-  it('should calculate the Kronecker product of two arrays', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('kron', function (): void {
+  it('should calculate the Kronecker product of two arrays', function (): void {
     assert.deepStrictEqual(math.kron([[2]], [[3]]), [[6]])
     assert.deepStrictEqual(
       math.kron(
@@ -46,15 +53,15 @@ describe('kron', function () {
     )
   })
 
-  it('should calculate product for empty 1D Arrays', function () {
+  it('should calculate product for empty 1D Arrays', function (): void {
     assert.deepStrictEqual(math.kron([], []), [])
   })
 
-  it('should calculate product for empty 2D Arrays', function () {
+  it('should calculate product for empty 2D Arrays', function (): void {
     assert.deepStrictEqual(math.kron([[]], [[]]), [[]])
   })
 
-  it('should calculate product for 1D Arrays', function () {
+  it('should calculate product for 1D Arrays', function (): void {
     assert.deepStrictEqual(math.kron([2], [3]), [6])
     assert.deepStrictEqual(math.kron([1, 2], [3, 4]), [3, 4, 6, 8])
     assert.deepStrictEqual(
@@ -63,7 +70,7 @@ describe('kron', function () {
     )
   })
 
-  it('should calculate product for 1D & 2D Arrays', function () {
+  it('should calculate product for 1D & 2D Arrays', function (): void {
     assert.deepStrictEqual(
       math.kron(
         [1, 1],
@@ -112,7 +119,7 @@ describe('kron', function () {
     ])
   })
 
-  it('should support complex numbers', function () {
+  it('should support complex numbers', function (): void {
     assert.deepStrictEqual(
       math.kron(
         [
@@ -133,7 +140,7 @@ describe('kron', function () {
     )
   })
 
-  it('should calculate a 3D Kronecker product', function () {
+  it('should calculate a 3D Kronecker product', function (): void {
     assert.deepStrictEqual(
       math.kron(
         [
@@ -188,7 +195,7 @@ describe('kron', function () {
     )
   })
 
-  it('should allow mixed-dimensional Kronecker products', function () {
+  it('should allow mixed-dimensional Kronecker products', function (): void {
     const b = [
       [
         [4, 3],
@@ -206,17 +213,17 @@ describe('kron', function () {
     assert.deepStrictEqual(math.kron(b, [a]), math.kron(b, [[a]]))
   })
 
-  it('should throw an error if called with an invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       math.kron()
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.kron([[1, 2]])
     }, TypeError)
   })
 
-  describe('DenseMatrix', function () {
-    it('should calculate the Kronecker product of a 2d matrix (1)', function () {
+  describe('DenseMatrix', function (): void {
+    it('should calculate the Kronecker product of a 2d matrix (1)', function (): void {
       const y = math.matrix([
         [1, 1],
         [1, 1]
@@ -234,7 +241,7 @@ describe('kron', function () {
       ])
     })
 
-    it('should calculate the Kronecker product of a 2d matrix (2)', function () {
+    it('should calculate the Kronecker product of a 2d matrix (2)', function (): void {
       const y = math.matrix([
         [1, 2],
         [55, -1]
@@ -252,7 +259,7 @@ describe('kron', function () {
       ])
     })
 
-    it('should calculate the Kronecker product of 3d matrices', function () {
+    it('should calculate the Kronecker product of 3d matrices', function (): void {
       const y = math.matrix([[[3]]])
       const x = math.matrix([
         [
@@ -278,8 +285,8 @@ describe('kron', function () {
     })
   })
 
-  describe('SparseMatrix', function () {
-    it('should calculate the Kronecker product of a 2d matrix (1)', function () {
+  describe('SparseMatrix', function (): void {
+    it('should calculate the Kronecker product of a 2d matrix (1)', function (): void {
       const y = math.sparse([
         [1, 1],
         [1, 1]
@@ -297,7 +304,7 @@ describe('kron', function () {
       ])
     })
 
-    it('should calculate the Kronecker product of a 2d matrix (2)', function () {
+    it('should calculate the Kronecker product of a 2d matrix (2)', function (): void {
       const y = math.matrix(
         [
           [1, 2],

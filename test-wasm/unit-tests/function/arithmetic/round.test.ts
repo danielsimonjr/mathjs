@@ -1,9 +1,15 @@
-// @ts-nocheck
-// test round
+/**
+ * Test for round - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const bignumber = math.bignumber
 const complex = math.complex
 const fraction = math.fraction
@@ -19,8 +25,8 @@ const testBigNum = bignumber(
   '10.9999999999999999999999999999999999999999999999999999999999999998'
 )
 
-describe('round', function () {
-  it('should round a number to te given number of decimals', function () {
+describe('round', function (): void {
+  it('should round a number to te given number of decimals', function (): void {
     approxEqual(round(math.pi), 3)
     approxEqual(round(math.pi * 1000), 3142)
     approxEqual(round(math.pi, 3), 3.142)
@@ -46,70 +52,70 @@ describe('round', function () {
     approxEqual(round(false, 2), 0)
   })
 
-  it('should throw an error on invalid type of value', function () {
-    assert.throws(function () {
+  it('should throw an error on invalid type of value', function (): void {
+    assert.throws(function (): void {
       round(new Date())
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should throw an error on invalid type of n', function () {
-    assert.throws(function () {
+  it('should throw an error on invalid type of n', function (): void {
+    assert.throws(function (): void {
       round(math.pi, new Date())
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should throw an error on invalid value of n', function () {
-    assert.throws(function () {
+  it('should throw an error on invalid value of n', function (): void {
+    assert.throws(function (): void {
       round(math.pi, -2)
     }, /Number of decimals in function round must be .* 0 .* 15/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(math.pi, 20)
     }, /Number of decimals in function round must be .* 0 .* 15/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(math.pi, 2.5)
     }, /Number of decimals in function round must be an integer/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(1, 1.2)
     }, /Error: Number of decimals in function round must be an integer/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(1, bignumber(1.2))
     }, /Error: Number of decimals in function round must be an integer/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(complex(1, 1), 1.2)
     }, /Error: Number of decimals in function round must be an integer/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(complex(1, 1), bignumber(1.2))
     }, /Error: Number of decimals in function round must be an integer/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(bignumber(1.2), bignumber(1.2))
     }, /Error: Number of decimals in function round must be an integer/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(round(fraction('1/2'), 1.2))
     }, /Error: Number of decimals in function round must be an integer/)
   })
 
-  it('should throw an error if used with wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if used with wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       round()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       round(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should be safe to call with a bigint', function () {
+  it('should be safe to call with a bigint', function (): void {
     const b = 12345678901234567890n
     assert.strictEqual(round(b), b)
     assert.strictEqual(round(b, 7), b)
   })
 
-  it('should round bignumbers', function () {
+  it('should round bignumbers', function (): void {
     assert.deepStrictEqual(round(bignumber(0.145 * 100)), bignumber(15))
     assert.deepStrictEqual(
       round(bignumber(0.145 * 100), bignumber(0)),
@@ -133,7 +139,7 @@ describe('round', function () {
     assert.deepStrictEqual(round(bignumber(1.23), true), bignumber(1.2))
   })
 
-  it('should round fractions', function () {
+  it('should round fractions', function (): void {
     const a = fraction('2/3')
     assert(round(a) instanceof math.Fraction)
     assert.strictEqual(a.toString(), '0.(6)')
@@ -149,7 +155,7 @@ describe('round', function () {
     )
   })
 
-  it('should gracefully handle round-off errors', function () {
+  it('should gracefully handle round-off errors', function (): void {
     assert.strictEqual(round(0.145 * 100), 15)
     assert.strictEqual(round(0.145 * 100, 0), 15)
     assert.strictEqual(round(3.0000000000000004), 3)
@@ -171,18 +177,18 @@ describe('round', function () {
     assert.strictEqual(round(-799999.9999999999, 2), -800000)
   })
 
-  it('should round real and imag part of a complex number', function () {
+  it('should round real and imag part of a complex number', function (): void {
     assert.deepStrictEqual(round(complex(2.2, math.pi)), complex(2, 3))
   })
 
-  it('should round a complex number with a bignumber as number of decimals', function () {
+  it('should round a complex number with a bignumber as number of decimals', function (): void {
     assert.deepStrictEqual(
       round(complex(2.157, math.pi), bignumber(2)),
       complex(2.16, 3.14)
     )
   })
 
-  it('should round units', function () {
+  it('should round units', function (): void {
     assert.deepStrictEqual(
       round(unit('3.12345 cm'), 3, unit('cm')),
       unit('3.123 cm')
@@ -216,7 +222,7 @@ describe('round', function () {
     )
   })
 
-  it('should throw an error if used with a unit without valueless unit', function () {
+  it('should throw an error if used with a unit without valueless unit', function (): void {
     assert.throws(
       function () {
         round(unit('5cm'))
@@ -240,19 +246,19 @@ describe('round', function () {
     )
   })
 
-  it('should throw an error if used with a unit with a second unit that is not valueless', function () {
-    assert.throws(function () {
+  it('should throw an error if used with a unit with a second unit that is not valueless', function (): void {
+    assert.throws(function (): void {
       round(unit('2 inch'), 1, unit('10 cm'))
     }, Error)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round(unit('2 inch'), unit('10 cm'))
     }, Error)
   })
 
-  it('should convert to a number when used with a string', function () {
+  it('should convert to a number when used with a string', function (): void {
     assert.strictEqual(round('3.6'), 4)
     assert.strictEqual(round('3.12345', '3'), 3.123)
-    assert.throws(function () {
+    assert.throws(function (): void {
       round('hello world')
     }, /Cannot convert "hello world" to a number/)
   })
@@ -270,8 +276,8 @@ describe('round', function () {
     assert.deepStrictEqual(round(math.matrix([1.7, 2.3])).valueOf(), [2, 2])
   })
 
-  describe('changing config.relTol during runtime', function () {
-    it('uses default config.relTol of 1e-12', function () {
+  describe('changing config.relTol during runtime', function (): void {
+    it('uses default config.relTol of 1e-12', function (): void {
       assert.strictEqual(math2.round(0.000000000001459, 12), 1e-12)
       assert.deepStrictEqual(
         math2.round(bignumber(1.49e-12), bignumber(12)),
@@ -279,7 +285,7 @@ describe('round', function () {
       )
     })
 
-    it('uses updated config.relTol value', function () {
+    it('uses updated config.relTol value', function (): void {
       math2.config({ relTol: 1e-13 })
       assert.strictEqual(math2.round(0.000000000001459, 12), 1e-12)
       assert.deepStrictEqual(
@@ -289,12 +295,12 @@ describe('round', function () {
     })
   })
 
-  describe('Array', function () {
-    it('should round array', function () {
+  describe('Array', function (): void {
+    it('should round array', function (): void {
       assert.deepStrictEqual(round([1.7, 2.3]), [2, 2])
     })
 
-    it('should round array and scalar', function () {
+    it('should round array and scalar', function (): void {
       assert.deepStrictEqual(round([1.7777, 2.3456], 3), [1.778, 2.346])
       assert.deepStrictEqual(round(3.12385, [2, 3]), [3.12, 3.124])
       assert.deepStrictEqual(round(fraction(44, 7), [2, 3]), [
@@ -304,8 +310,8 @@ describe('round', function () {
     })
   })
 
-  describe('DenseMatrix', function () {
-    it('should round dense matrix', function () {
+  describe('DenseMatrix', function (): void {
+    it('should round dense matrix', function (): void {
       assert.deepStrictEqual(
         round(
           matrix([
@@ -320,7 +326,7 @@ describe('round', function () {
       )
     })
 
-    it('should round dense matrix and scalar', function () {
+    it('should round dense matrix and scalar', function (): void {
       assert.deepStrictEqual(
         round(
           matrix([
@@ -355,8 +361,8 @@ describe('round', function () {
     })
   })
 
-  describe('SparseMatrix', function () {
-    it('should round sparse matrix', function () {
+  describe('SparseMatrix', function (): void {
+    it('should round sparse matrix', function (): void {
       assert.deepStrictEqual(
         round(
           sparse([
@@ -371,7 +377,7 @@ describe('round', function () {
       )
     })
 
-    it('should round sparse matrix and scalar', function () {
+    it('should round sparse matrix and scalar', function (): void {
       assert.deepStrictEqual(
         round(
           sparse([
@@ -406,7 +412,7 @@ describe('round', function () {
     })
   })
 
-  it('should LaTeX round', function () {
+  it('should LaTeX round', function (): void {
     const expr1 = math.parse('round(1.1)')
     const expr2 = math.parse('round(1.1,2)')
 

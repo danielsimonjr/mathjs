@@ -1,5 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for acosh - AssemblyScript-friendly TypeScript
+ */
 /* eslint-disable no-loss-of-precision */
+
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
@@ -16,14 +24,14 @@ const predmath = math.create({ predictable: true })
 const acoshBig = bigmath.acosh
 const Big = bigmath.bignumber
 
-describe('acosh', function () {
-  it('should return the hyperbolic arccos of a boolean', function () {
+describe('acosh', function (): void {
+  it('should return the hyperbolic arccos of a boolean', function (): void {
     assert.strictEqual(acosh(true), 0)
     approxDeepEqual(acosh(false), complex(0, pi / 2))
     // assert.ok(isNaN(acosh(false)))
   })
 
-  it('should return the hyperbolic arccos of a number', function () {
+  it('should return the hyperbolic arccos of a number', function (): void {
     approxDeepEqual(acosh(-2), complex(1.31695789692481670862504634730797, pi))
     approxDeepEqual(acosh(0), complex(0, pi / 2))
     // assert.ok(isNaN(acosh(-2)))
@@ -35,12 +43,12 @@ describe('acosh', function () {
     approxEqual(acosh(pi), 1.811526272460853107021852049305)
   })
 
-  it('should return NaN for values out of range and predictable:true', function () {
+  it('should return NaN for values out of range and predictable:true', function (): void {
     assert.strictEqual(typeof predmath.acosh(-2), 'number')
     assert(isNaN(predmath.acosh(-2)))
   })
 
-  it('should return the hyperbolic arccos of a bignumber', function () {
+  it('should return the hyperbolic arccos of a bignumber', function (): void {
     const arg = Big(1)
     assert.deepStrictEqual(acosh(arg), Big(0))
     assert.deepStrictEqual(acoshBig(Big(2)), Big('1.3169578969248167086'))
@@ -54,7 +62,7 @@ describe('acosh', function () {
     assert.deepStrictEqual(arg, Big(1))
   })
 
-  it('should be the inverse function of hyperbolic cos', function () {
+  it('should be the inverse function of hyperbolic cos', function (): void {
     approxEqual(acosh(cosh(-1)), 1)
     approxEqual(acosh(cosh(0)), 0)
     approxEqual(acosh(cosh(0.1)), 0.1)
@@ -62,7 +70,7 @@ describe('acosh', function () {
     approxEqual(acosh(cosh(2)), 2)
   })
 
-  it('should be the inverse function of bignumber cosh', function () {
+  it('should be the inverse function of bignumber cosh', function (): void {
     assert.deepStrictEqual(acoshBig(bigmath.cosh(Big(-1))), Big(1))
     assert.deepStrictEqual(acoshBig(bigmath.cosh(Big(0))), Big(0))
     assert.deepStrictEqual(acoshBig(bigmath.cosh(Big(2))), Big(2))
@@ -80,12 +88,12 @@ describe('acosh', function () {
     assert.deepStrictEqual(arg, Big(0.1))
   })
 
-  it('should throw an error if the bignumber result is complex', function () {
+  it('should throw an error if the bignumber result is complex', function (): void {
     assert.ok(acosh(Big(0.5).isNaN()))
     assert.ok(acosh(Big(-0.5).isNaN()))
   })
 
-  it('should return the arccosh of a complex number', function () {
+  it('should return the arccosh of a complex number', function (): void {
     approxDeepEqual(
       acosh(complex('2+3i')),
       complex(1.9833870299165, 1.000143542473797)
@@ -114,22 +122,22 @@ describe('acosh', function () {
     approxDeepEqual(acosh(complex('0')), complex(0, pi / 2))
   })
 
-  it('should throw an error if called with a unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
       acosh(unit('45deg'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       acosh(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       acosh('string')
     })
   })
 
-  it('should not operate on arrays and matrices', function () {
+  it('should not operate on arrays and matrices', function (): void {
     assert.throws(() => acosh([1, 2, 3]), TypeError)
     assert.throws(() => acosh(matrix([1, 2, 3])), TypeError)
     const acosh123 = [0, 1.3169578969248167, 1.7627471740390860504]
@@ -137,16 +145,16 @@ describe('acosh', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), acosh), matrix(acosh123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       acosh()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       acosh(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX acosh', function () {
+  it('should LaTeX acosh', function (): void {
     const expression = math.parse('acosh(1)')
     assert.strictEqual(expression.toTex(), '\\cosh^{-1}\\left(1\\right)')
   })

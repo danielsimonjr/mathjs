@@ -1,13 +1,20 @@
-// @ts-nocheck
+/**
+ * Test for erf - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 const erf = math.erf
 
 const DIFF_THRESH = 5e-16
 
-describe('erf', function () {
-  it('should calculate erf(x), |x| < 0.46875', function () {
+describe('erf', function (): void {
+  it('should calculate erf(x), |x| < 0.46875', function (): void {
     let i, diff, actual, expected
     for (i = -4; i <= 4; i += 1) {
       actual = erf(i / 10)
@@ -17,7 +24,7 @@ describe('erf', function () {
     }
   })
 
-  it('should calculate erf(x), 0.46875 <= |x| <= 4', function () {
+  it('should calculate erf(x), 0.46875 <= |x| <= 4', function (): void {
     let i, diff, actual, expected
     for (i = -40; i < -4; i += 1) {
       actual = erf(i / 10)
@@ -33,7 +40,7 @@ describe('erf', function () {
     }
   })
 
-  it('should calculate erf(x), |x| > 4', function () {
+  it('should calculate erf(x), |x| > 4', function (): void {
     let i, diff, actual, expected
     for (i = -70; i < -40; i += 1) {
       actual = erf(i / 10)
@@ -49,18 +56,18 @@ describe('erf', function () {
     }
   })
 
-  it('should calculate the erf of a nonpositive integer', function () {
+  it('should calculate the erf of a nonpositive integer', function (): void {
     assert.ok(Math.abs(erf(-1) - actualErfValues['-1.0']) < DIFF_THRESH)
     assert.ok(Math.abs(erf(-2) - actualErfValues['-2.0']) < DIFF_THRESH)
     assert.ok(Math.abs(erf(-3) - actualErfValues['-3.0']) < DIFF_THRESH)
   })
 
-  it('should calculate the erf of a boolean (true = 1, false = 0)', function () {
+  it('should calculate the erf of a boolean (true = 1, false = 0)', function (): void {
     assert.ok(Math.abs(erf(true) - actualErfValues['1.0']) < DIFF_THRESH)
     assert.ok(Math.abs(erf(false) - actualErfValues['0.0']) < DIFF_THRESH)
   })
 
-  it('should calculate the erf of each element in a matrix', function () {
+  it('should calculate the erf of each element in a matrix', function (): void {
     math
       .subtract(
         erf(math.matrix([0, 1, 2, 3, 4, 5])),
@@ -75,7 +82,7 @@ describe('erf', function () {
       })
   })
 
-  it('should calculate the erf of each element in an array', function () {
+  it('should calculate the erf of each element in an array', function (): void {
     math
       .subtract(
         erf(math.matrix([0, 1, 2, 3, 4, 5])),
@@ -90,35 +97,35 @@ describe('erf', function () {
       })
   })
 
-  it('should throw en error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw en error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       erf()
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       erf(1, 3)
     })
   })
 
-  it('should throw en error if called with invalid type of argument', function () {
-    assert.throws(function () {
+  it('should throw en error if called with invalid type of argument', function (): void {
+    assert.throws(function (): void {
       erf(new Date())
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       erf('a string')
     })
   })
 
-  it('should LaTeX erf', function () {
+  it('should LaTeX erf', function (): void {
     const expression = math.parse('erf(2.5)')
     assert.strictEqual(expression.toTex(), 'erf\\left(2.5\\right)')
   })
 
-  it('should return 1 for numbers greater than 2**53 (including Infinity)', function () {
+  it('should return 1 for numbers greater than 2**53 (including Infinity)', function (): void {
     assert.strictEqual(erf(Math.pow(2, 53)), 1)
     assert.strictEqual(erf(Infinity), 1)
   })
 
-  it('should return -1 for numbers less than -2**53 (including -Infinity)', function () {
+  it('should return -1 for numbers less than -2**53 (including -Infinity)', function (): void {
     assert.strictEqual(erf(-Math.pow(2, 53)), -1)
     assert.strictEqual(erf(-Infinity), -1)
   })

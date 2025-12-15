@@ -1,84 +1,84 @@
-// @ts-nocheck
-// test data type Range
-
+/**
+ * Test for Range - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 const Range = math.Range
 
-describe('range', function () {
-  describe('create', function () {
-    it('should create a range', function () {
+describe('range', function (): void {
+  describe('create', function (): void {
+    it('should create a range', function (): void {
       const r = new Range(2, 6)
       assert.deepStrictEqual(r.toArray(), [2, 3, 4, 5])
       assert.deepStrictEqual(r.size(), [4])
     })
 
-    it('should create a range with custom step', function () {
+    it('should create a range with custom step', function (): void {
       const r = new Range(10, 4, -1)
       assert.deepStrictEqual(r.toArray(), [10, 9, 8, 7, 6, 5])
       assert.deepStrictEqual(r.size(), [6])
     })
 
-    it('should create a range with floating points', function () {
+    it('should create a range with floating points', function (): void {
       const r = new Range(1, 5.5, 1.5)
       assert.deepStrictEqual(r.toArray(), [1, 2.5, 4])
       assert.deepStrictEqual(r.size(), [3])
     })
 
-    it('should create an empty range', function () {
+    it('should create an empty range', function (): void {
       const r = new Range()
       assert.deepStrictEqual(r.toArray(), [])
     })
 
-    it('should create a range with only one value', function () {
+    it('should create a range with only one value', function (): void {
       const r = new Range(0, 1)
       assert.deepStrictEqual(r.toArray(), [0])
       assert.deepStrictEqual(r.size(), [1])
     })
 
-    it('should create an empty range because of wrong step size', function () {
+    it('should create an empty range because of wrong step size', function (): void {
       const r = new Range(0, 10, -1)
       assert.deepStrictEqual(r.toArray(), [])
       assert.deepStrictEqual(r.size(), [0])
     })
 
-    it('should throw an error when created without new keyword', function () {
-      assert.throws(function () {
+    it('should throw an error when created without new keyword', function (): void {
+      assert.throws(function (): void {
         Range(0, 10)
       }, /Constructor must be called with the new operator/)
     })
 
-    it('should throw an error for wrong type of arguments', function () {
-      assert.throws(function () {
+    it('should throw an error for wrong type of arguments', function (): void {
+      assert.throws(function (): void {
         console.log(new Range('str', 10, 1))
       }, /Parameter start must be a number/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         console.log(new Range(0, 'str', 1))
       }, /Parameter end must be a number/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         console.log(new Range(0, 10, 'str'))
       }, /Parameter step must be a number/)
     })
 
-    it('should throw an error for step size zero', function () {
-      assert.throws(function () {
+    it('should throw an error for step size zero', function (): void {
+      assert.throws(function (): void {
         console.log(new Range(0, 0, 0))
       }, /Step must not be zero/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         console.log(new Range(10, 10, 0))
       }, /Step must not be zero/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         console.log(new Range(0, 10, math.bignumber(0)))
       }, /Step must not be zero/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         console.log(new Range(0, 10, math.bigint(0)))
       }, /Step must not be zero/)
     })
   })
 
-  describe('parse', function () {
-    it('should create a range from a string', function () {
+  describe('parse', function (): void {
+    it('should create a range from a string', function (): void {
       let r = Range.parse('10:-1:4')
       assert.deepStrictEqual(r.toArray(), [10, 9, 8, 7, 6, 5])
       assert.deepStrictEqual(r.size(), [6])
@@ -88,7 +88,7 @@ describe('range', function () {
       assert.deepStrictEqual(r.size(), [4])
     })
 
-    it('should return null when parsing an invalid string', function () {
+    it('should return null when parsing an invalid string', function (): void {
       assert.strictEqual(Range.parse('a:4'), null)
       assert.strictEqual(Range.parse('3'), null)
       assert.strictEqual(Range.parse(''), null)
@@ -96,8 +96,8 @@ describe('range', function () {
     })
   })
 
-  describe('size', function () {
-    it('should calculate the size of a range', function () {
+  describe('size', function (): void {
+    it('should calculate the size of a range', function (): void {
       assert.deepStrictEqual(new Range(0, 0).size(), [0])
       assert.deepStrictEqual(new Range(0, 0, -1).size(), [0])
       assert.deepStrictEqual(new Range(0, 4).size(), [4])
@@ -117,8 +117,8 @@ describe('range', function () {
     })
   })
 
-  describe('min', function () {
-    it('should calculate the minimum value of a range', function () {
+  describe('min', function (): void {
+    it('should calculate the minimum value of a range', function (): void {
       assert.strictEqual(new Range(0, 0).min(), undefined)
       assert.strictEqual(new Range(0, 0, -1).min(), undefined)
 
@@ -139,8 +139,8 @@ describe('range', function () {
     })
   })
 
-  describe('max', function () {
-    it('should calculate the maximum value of a range', function () {
+  describe('max', function (): void {
+    it('should calculate the maximum value of a range', function (): void {
       assert.strictEqual(new Range(0, 0).max(), undefined)
       assert.strictEqual(new Range(0, 0, -1).max(), undefined)
 
@@ -160,13 +160,13 @@ describe('range', function () {
     })
   })
 
-  describe('toString', function () {
-    it('should stringify a range to format start:step:end', function () {
+  describe('toString', function (): void {
+    it('should stringify a range to format start:step:end', function (): void {
       assert.strictEqual(new math.Range(0, 10).toString(), '0:10')
       assert.strictEqual(new math.Range(0, 10, 2).toString(), '0:2:10')
     })
 
-    it('should stringify a range to format start:step:end with given precision', function () {
+    it('should stringify a range to format start:step:end with given precision', function (): void {
       assert.strictEqual(
         new math.Range(1 / 3, 4 / 3, 2 / 3).format(3),
         '0.333:0.667:1.33'
@@ -182,8 +182,8 @@ describe('range', function () {
     })
   })
 
-  describe('clone', function () {
-    it('should clone a Range', function () {
+  describe('clone', function (): void {
+    it('should clone a Range', function (): void {
       const r1 = new Range(0, 10, 2)
       const r2 = r1.clone()
 
@@ -204,20 +204,20 @@ describe('range', function () {
     })
   })
 
-  describe('type', function () {
-    it('should have a property isRange', function () {
+  describe('type', function (): void {
+    it('should have a property isRange', function (): void {
       const a = new math.Range(0, 10)
       assert.strictEqual(a.isRange, true)
     })
 
-    it('should have a property type', function () {
+    it('should have a property type', function (): void {
       const a = new math.Range(0, 10)
       assert.strictEqual(a.type, 'Range')
     })
   })
 
-  describe('map', function () {
-    it('should perform a transformation on all values in the range', function () {
+  describe('map', function (): void {
+    it('should perform a transformation on all values in the range', function (): void {
       const r = new Range(2, 6)
       assert.deepStrictEqual(
         r.map(function (value, index, range) {
@@ -229,8 +229,8 @@ describe('range', function () {
     })
   })
 
-  describe('forEach', function () {
-    it('should perform a given callback on all values in the range', function () {
+  describe('forEach', function (): void {
+    it('should perform a given callback on all values in the range', function (): void {
       const r = new Range(2, 6)
       const log = []
       r.forEach(function (value, index, range) {
@@ -247,8 +247,8 @@ describe('range', function () {
     })
   })
 
-  describe('format', function () {
-    it('should format a range as string', function () {
+  describe('format', function (): void {
+    it('should format a range as string', function (): void {
       assert.strictEqual(new Range(0, 4).format(), '0:4')
       assert.strictEqual(new Range(0, 4, 2).format(), '0:2:4')
 
@@ -263,21 +263,21 @@ describe('range', function () {
     })
   })
 
-  describe('toArray', function () {
-    it('should expand a Range into an Array', function () {
+  describe('toArray', function (): void {
+    it('should expand a Range into an Array', function (): void {
       assert.deepStrictEqual(new Range(0, 4).toArray(), [0, 1, 2, 3])
       assert.deepStrictEqual(new Range(4, 0, -1).toArray(), [4, 3, 2, 1])
     })
   })
 
-  describe('valueOf', function () {
-    it('valueOf should return the Range expanded as Array', function () {
+  describe('valueOf', function (): void {
+    it('valueOf should return the Range expanded as Array', function (): void {
       assert.deepStrictEqual(new Range(0, 4).valueOf(), [0, 1, 2, 3])
       assert.deepStrictEqual(new Range(4, 0, -1).valueOf(), [4, 3, 2, 1])
     })
   })
 
-  it('toJSON', function () {
+  it('toJSON', function (): void {
     assert.deepStrictEqual(new Range(2, 4).toJSON(), {
       mathjs: 'Range',
       start: 2,
@@ -292,7 +292,7 @@ describe('range', function () {
     })
   })
 
-  it('fromJSON', function () {
+  it('fromJSON', function (): void {
     const r1 = Range.fromJSON({ start: 2, end: 4 })
     assert.ok(r1 instanceof Range)
     assert.strictEqual(r1.start, 2)

@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for string - AssemblyScript-friendly TypeScript
+ */
 // test string utils
 import assert from 'assert'
 
@@ -6,8 +8,8 @@ import BigNumber from 'decimal.js'
 import math from '../../../src/defaultInstance.ts'
 import { endsWith, escape, format } from '../../../src/utils/string.js'
 
-describe('string', function () {
-  it('endsWith', function () {
+describe('string', function (): void {
+  it('endsWith', function (): void {
     assert.strictEqual(endsWith('hello', 'hello'), true)
     assert.strictEqual(endsWith('hello', 'lo'), true)
     assert.strictEqual(endsWith('hello', ''), true)
@@ -17,7 +19,7 @@ describe('string', function () {
     assert.strictEqual(endsWith('hello', 'hellohello'), false)
   })
 
-  it('should escape special HTML characters', function () {
+  it('should escape special HTML characters', function (): void {
     assert.strictEqual(escape('&<>"\''), '&amp;&lt;&gt;&quot;&#39;')
     assert.strictEqual(
       escape('<script src="script.js?version=1.0&type=js">'),
@@ -25,33 +27,33 @@ describe('string', function () {
     )
   })
 
-  describe('format', function () {
-    it('should format null', function () {
+  describe('format', function (): void {
+    it('should format null', function (): void {
       assert.strictEqual(format(null), 'null')
     })
 
-    it('should format undefined', function () {
+    it('should format undefined', function (): void {
       assert.strictEqual(format(undefined), 'undefined')
     })
 
-    it('should format a number', function () {
+    it('should format a number', function (): void {
       assert.strictEqual(format(2.3), '2.3')
     })
 
-    it('should format a bignumber', function () {
+    it('should format a bignumber', function (): void {
       const B = BigNumber.config({
         precision: 20
       })
       assert.strictEqual(format(new B(1).div(3)), '0.33333333333333333333')
     })
 
-    it('should format a fraction without options', function () {
+    it('should format a fraction without options', function (): void {
       assert.strictEqual(format(math.fraction(1, 3)), '1/3')
       assert.strictEqual(format(math.fraction(2, 6)), '1/3')
       assert.strictEqual(format(math.fraction(-0.125)), '-1/8')
     })
 
-    it("should format a fraction with option fraction='ratio'", function () {
+    it("should format a fraction with option fraction='ratio'", function (): void {
       assert.strictEqual(
         format(math.fraction(1, 3), { fraction: 'ratio' }),
         '1/3'
@@ -62,7 +64,7 @@ describe('string', function () {
       )
     })
 
-    it("should format a fraction with option fraction='decimal'", function () {
+    it("should format a fraction with option fraction='decimal'", function (): void {
       assert.strictEqual(
         format(math.fraction(1, 3), { fraction: 'decimal' }),
         '0.(3)'
@@ -73,12 +75,12 @@ describe('string', function () {
       )
     })
 
-    it('should format a number with configuration', function () {
+    it('should format a number with configuration', function (): void {
       assert.strictEqual(format(1.23456, 3), '1.23')
       assert.strictEqual(format(1.23456, { precision: 3 }), '1.23')
     })
 
-    it('should format an array', function () {
+    it('should format an array', function (): void {
       assert.strictEqual(format([1, 2, 3]), '[1, 2, 3]')
       assert.strictEqual(
         format([
@@ -89,11 +91,11 @@ describe('string', function () {
       )
     })
 
-    it('should format a string', function () {
+    it('should format a string', function (): void {
       assert.strictEqual(format('string'), '"string"')
     })
 
-    it('should format a string with escape characters', function () {
+    it('should format a string with escape characters', function (): void {
       assert.strictEqual(
         format('with " double quote'),
         '"with \\" double quote"'
@@ -106,7 +108,7 @@ describe('string', function () {
       assert.strictEqual(format('with \t tab'), '"with \\t tab"')
     })
 
-    it('should format an object', function () {
+    it('should format an object', function (): void {
       const obj = {
         a: 1.1111,
         b: math.complex(2.2222, 3)
@@ -116,7 +118,7 @@ describe('string', function () {
       assert.strictEqual(format(obj, 3), '{"a": 1.11, "b": 2.22 + 3i}')
     })
 
-    it('should format an object with escape characters', function () {
+    it('should format an object with escape characters', function (): void {
       assert.strictEqual(
         format({ 'with " double quote': 42 }),
         '{"with \\" double quote": 42}'
@@ -127,7 +129,7 @@ describe('string', function () {
       )
     })
 
-    it('should format an object with its own format function', function () {
+    it('should format an object with its own format function', function (): void {
       const obj = {
         format: function (options) {
           let str = 'obj'
@@ -143,7 +145,7 @@ describe('string', function () {
       assert.strictEqual(format(obj, { precision: 4 }), 'obj {"precision":4}')
     })
 
-    it('should format a function', function () {
+    it('should format a function', function (): void {
       assert.strictEqual(
         format(function (a, b) {
           return a + b
@@ -157,15 +159,15 @@ describe('string', function () {
       assert.strictEqual(format(f), 'f(x, y)')
     })
 
-    it('should format unknown objects by converting them to string', function () {
+    it('should format unknown objects by converting them to string', function (): void {
       assert.strictEqual(format({}), '{}')
     })
 
-    it('should format unknown primitives by converting them to string', function () {
+    it('should format unknown primitives by converting them to string', function (): void {
       assert.strictEqual(format(true), 'true')
     })
 
-    it('should limit the length of output with a truncate option', function () {
+    it('should limit the length of output with a truncate option', function (): void {
       const result = format('01234567890123456789', { truncate: 17 })
       assert.strictEqual(result.length, 17)
       assert.ok(endsWith(result, '...'))

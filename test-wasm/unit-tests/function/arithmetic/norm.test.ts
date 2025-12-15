@@ -1,23 +1,29 @@
-// @ts-nocheck
-// test norm
+/**
+ * Test for norm - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
-describe('norm', function () {
-  it('should return the absolute value of a boolean', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('norm', function (): void {
+  it('should return the absolute value of a boolean', function (): void {
     assert.strictEqual(math.norm(true), 1)
     assert.strictEqual(math.norm(false), 0)
   })
 
-  it('should return the absolute value of a number', function () {
+  it('should return the absolute value of a number', function (): void {
     assert.strictEqual(math.norm(-4.2), 4.2)
     assert.strictEqual(math.norm(-3.5), 3.5)
     assert.strictEqual(math.norm(100), 100)
     assert.strictEqual(math.norm(0), 0)
   })
 
-  it('should return the absolute value of a big number', function () {
+  it('should return the absolute value of a big number', function (): void {
     assert.deepStrictEqual(math.norm(math.bignumber(-2.3)), math.bignumber(2.3))
     assert.deepStrictEqual(
       math.norm(math.bignumber('5e500')),
@@ -38,7 +44,7 @@ describe('norm', function () {
     )
   })
 
-  it('should return the norm of a complex number', function () {
+  it('should return the norm of a complex number', function (): void {
     assert.strictEqual(math.norm(math.complex(3, -4)), 5)
     assert.strictEqual(
       math.norm(math.complex(1e200, -4e200)),
@@ -54,7 +60,7 @@ describe('norm', function () {
     )
   })
 
-  it('should return the norm of a vector', function () {
+  it('should return the norm of a vector', function (): void {
     // empty vector
     assert.strictEqual(math.norm([]), 0.0)
     assert.strictEqual(math.norm(math.matrix([])), 0.0)
@@ -97,7 +103,7 @@ describe('norm', function () {
     )
   })
 
-  it('should return the norm of a matrix', function () {
+  it('should return the norm of a matrix', function (): void {
     // p = 1
     assert.strictEqual(
       math.norm(
@@ -260,7 +266,7 @@ describe('norm', function () {
     )
   })
 
-  it('should not fail in case of a zero matrix', function () {
+  it('should not fail in case of a zero matrix', function (): void {
     assert.strictEqual(
       math.norm(
         [
@@ -307,34 +313,34 @@ describe('norm', function () {
     )
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       math.norm()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.norm(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       math.norm(null)
     }, /Unexpected type of argument in function norm/)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.norm([[], []], 'fro')
     }, /RangeError: Invalid matrix dimensions/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.norm([[], []], 1)
     }, /RangeError: Invalid matrix dimensions/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.norm([[], []], 2)
     }, /RangeError: Invalid matrix dimensions/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.norm([[], []], 'inf')
     }, /RangeError: Invalid matrix dimensions/)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.norm(
         [
           [1, 2, 3],
@@ -345,13 +351,13 @@ describe('norm', function () {
     }, /RangeError: Invalid matrix dimensions/)
   })
 
-  it('should throw an error with a string', function () {
-    assert.throws(function () {
+  it('should throw an error with a string', function (): void {
+    assert.throws(function (): void {
       math.norm('a string')
     })
   })
 
-  it('should LaTeX norm', function () {
+  it('should LaTeX norm', function (): void {
     const expr1 = math.parse('norm(a)')
     const expr2 = math.parse('norm(a,2)')
 

@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for pickRandom - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { flatten } from '../../../../src/utils/array.js'
@@ -7,45 +9,50 @@ const math2 = math.create({ randomSeed: 'test2' })
 const pickRandom = math2.pickRandom
 const matrix = math2.matrix
 
-describe('pickRandom', function () {
-  it('should have a function pickRandom', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('pickRandom', function (): void {
+  it('should have a function pickRandom', function (): void {
     assert.strictEqual(typeof math.pickRandom, 'function')
   })
 
-  it('should throw an error if the length of the weights does not match the length of the possibles', function () {
+  it('should throw an error if the length of the weights does not match the length of the possibles', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4]
     const number = 2
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       pickRandom(possibles, weights)
     }, /Weights must have the same length as possibles/)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       pickRandom(possibles, number, weights)
     }, /Weights must have the same length as possibles/)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       pickRandom(possibles, weights, number)
     }, /Weights must have the same length as possibles/)
   })
 
-  it('should throw an error if the weights array contains a non number or negative value', function () {
+  it('should throw an error if the weights array contains a non number or negative value', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     let weights = [1, 5, 2, -1, 6]
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       pickRandom(possibles, weights)
     }, /Weights must be an array of positive numbers/)
 
     weights = [1, 5, 2, 'stinky', 6]
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       pickRandom(possibles, weights)
     }, /Weights must be an array of positive numbers/)
   })
 
-  it('should return a single value if no number argument was passed', function () {
+  it('should return a single value if no number argument was passed', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
 
@@ -53,13 +60,13 @@ describe('pickRandom', function () {
     assert.notStrictEqual(possibles.indexOf(pickRandom(possibles, weights)), -1)
   })
 
-  it('should return a single value if no number argument was passed (2)', function () {
+  it('should return a single value if no number argument was passed (2)', function (): void {
     const possibles = [5]
 
     assert.strictEqual(pickRandom(possibles), 5)
   })
 
-  it('should return an empty array if the given number is 0', function () {
+  it('should return an empty array if the given number is 0', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 0
@@ -70,7 +77,7 @@ describe('pickRandom', function () {
     assert.strictEqual(pickRandom(possibles, { weights, number }).length, 0)
   })
 
-  it('should return an array of length 1 if the number passed is 1', function () {
+  it('should return an array of length 1 if the number passed is 1', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 1
@@ -85,7 +92,7 @@ describe('pickRandom', function () {
     assert.strictEqual(pickRandom(possibles, { weights, number }).length, 1)
   })
 
-  it('should pick the given number of values from the given array', function () {
+  it('should pick the given number of values from the given array', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 3
@@ -99,7 +106,7 @@ describe('pickRandom', function () {
     )
   })
 
-  it('should pick the given number of values from the given array also when this is more than the number of possibles', function () {
+  it('should pick the given number of values from the given array also when this is more than the number of possibles', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 10
@@ -113,7 +120,7 @@ describe('pickRandom', function () {
     )
   })
 
-  it('should pick the given number of values element-wise', function () {
+  it('should pick the given number of values element-wise', function (): void {
     const possibles = [
       [1, 2],
       [3, 4]
@@ -130,7 +137,7 @@ describe('pickRandom', function () {
     )
   })
 
-  it('should return a matrix when input was a matrix', function () {
+  it('should return a matrix when input was a matrix', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 2
@@ -160,7 +167,7 @@ describe('pickRandom', function () {
     assert.strictEqual(result6.size()[0], 2)
   })
 
-  it('should pick a number from the given multi dimensional array following an uniform distribution', function () {
+  it('should pick a number from the given multi dimensional array following an uniform distribution', function (): void {
     const possibles = [
       [11, 12],
       [22, 23],
@@ -168,17 +175,17 @@ describe('pickRandom', function () {
       [44, 45],
       [55, 56]
     ]
-    const picked = []
+    const picked: any[] = []
 
-    times(1000, () => picked.push(pickRandom(possibles)))
+    times(1000, function (): void { picked.push(pickRandom(possibles)) })
 
-    flatten(possibles).forEach((possible) => {
-      const count = flatten(picked).filter((val) => val === possible).length
+    flatten(possibles).forEach(function (possible): void {
+      const count = flatten(picked).filter(function (val): boolean { return val === possible }).length
       assert.strictEqual(math.round(count / picked.length, 1), 0.1)
     })
   })
 
-  it('should pick a value from the given multi dimensional array following an uniform distribution', function () {
+  it('should pick a value from the given multi dimensional array following an uniform distribution', function (): void {
     // just to be sure that works for any kind of array
     const possibles = [
       [[11], [12]],
@@ -188,21 +195,21 @@ describe('pickRandom', function () {
       false,
       [1.3, 4.5, true]
     ]
-    const picked = []
+    const picked: any[] = []
 
-    times(1000, () => picked.push(pickRandom(possibles)))
-    flatten(possibles).forEach((possible) => {
-      const count = picked.filter((val) => val === possible).length
+    times(1000, function (): void { picked.push(pickRandom(possibles)) })
+    flatten(possibles).forEach(function (possible): void {
+      const count = picked.filter(function (val): boolean { return val === possible }).length
       assert.strictEqual(math.round(count / picked.length, 1), 0.1)
     })
   })
 
-  it('should pick a value from the given array following an uniform distribution if only possibles are passed', function () {
+  it('should pick a value from the given array following an uniform distribution if only possibles are passed', function (): void {
     const possibles = [11, 22, 33, 44, 55]
-    const picked = []
+    const picked: number[] = []
     let count
 
-    times(1000, function () {
+    times(1000, function (): void {
       picked.push(pickRandom(possibles))
     })
 
@@ -232,13 +239,13 @@ describe('pickRandom', function () {
     assert.strictEqual(math.round(count / picked.length, 1), 0.2)
   })
 
-  it('should pick a given number of values from the given array following an uniform distribution if no weights were passed', function () {
+  it('should pick a given number of values from the given array following an uniform distribution if no weights were passed', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const number = 2
-    const picked = []
+    const picked: number[] = []
     let count
 
-    times(1000, function () {
+    times(1000, function (): void {
       picked.push.apply(picked, pickRandom(possibles, number))
     })
 
@@ -270,13 +277,13 @@ describe('pickRandom', function () {
     assert.strictEqual(math.round(count / picked.length, 1), 0.2)
   })
 
-  it('should pick a value from the given array following a weighted distribution', function () {
+  it('should pick a value from the given array following a weighted distribution', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 4, 0, 2, 3]
-    const picked = []
+    const picked: number[] = []
     let count
 
-    times(1000, function () {
+    times(1000, function (): void {
       picked.push(pickRandom(possibles, weights))
     })
 
@@ -306,14 +313,14 @@ describe('pickRandom', function () {
     assert.strictEqual(math.round(count / picked.length, 1), 0.3)
   })
 
-  it('should return an array of values from the given array following a weighted distribution', function () {
+  it('should return an array of values from the given array following a weighted distribution', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 4, 0, 2, 3]
     const number = 2
-    const picked = []
+    const picked: number[] = []
     let count
 
-    times(1000, function () {
+    times(1000, function (): void {
       picked.push.apply(picked, pickRandom(possibles, number, weights))
     })
 
@@ -342,7 +349,7 @@ describe('pickRandom', function () {
     }).length
     assert.strictEqual(math.round(count / picked.length, 1), 0.3)
 
-    times(1000, function () {
+    times(1000, function (): void {
       picked.push.apply(picked, pickRandom(possibles, weights, number))
     })
 
@@ -372,22 +379,22 @@ describe('pickRandom', function () {
     assert.strictEqual(math.round(count / picked.length, 1), 0.3)
   })
 
-  it('should throw an error in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       pickRandom(23)
     }, /Unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       pickRandom()
     }, /Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       pickRandom([], 23, [], 9)
     }, /Too many arguments/)
 
     // TODO: more type testing...
   })
 
-  it('should LaTeX pickRandom', function () {
-    const expression = math.parse('pickRandom([1,2,3])')
+  it('should LaTeX pickRandom', function (): void {
+    const expression = math.parse('pickRandom([1,2,3])') as MathNode
     assert.strictEqual(
       expression.toTex(),
       '\\mathrm{pickRandom}\\left(\\begin{bmatrix}1\\\\2\\\\3\\end{bmatrix}\\right)'
@@ -395,7 +402,7 @@ describe('pickRandom', function () {
   })
 })
 
-function times(n, callback) {
+function times(n: number, callback: () => void): void {
   for (let i = 0; i < n; i++) {
     callback()
   }

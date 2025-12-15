@@ -1,8 +1,15 @@
-// @ts-nocheck
+/**
+ * Test for evaluate - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 import { createMap } from '../../../../src/utils/map.js'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 const Complex = math.Complex
 const Unit = math.Unit
@@ -37,22 +44,22 @@ describe('evaluate', function () {
   })
 
   it('should throw an error if wrong number of arguments', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.evaluate()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.evaluate('', {}, 3)
     }, /TypeError: Too many arguments/)
   })
 
   it('should throw an error with a unit', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.evaluate(new Unit(5, 'cm'))
     }, /TypeError: Unexpected type of argument/)
   })
 
   it('should throw an error with a complex number', function () {
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.evaluate(new Complex(2, 3))
     }, /TypeError: Unexpected type of argument/)
   })
@@ -212,7 +219,7 @@ describe('evaluate', function () {
       assert.strictEqual(math.evaluate('c ?? b * 2', scope), 0) // 0 ?? (5 * 2) = 0
       assert.strictEqual(math.evaluate('(a ?? b) * 2', scope), 10) // (null ?? 5) * 2 = 10
       // d is undefined, would throw error without fallback
-      assert.throws(() => math.evaluate('d ?? 0', scope), /Undefined symbol d/)
+      assert.throws((): void => math.evaluate('d ?? 0', scope), /Undefined symbol d/)
     })
 
     it('should handle nullish coalescing with strings', function () {
@@ -278,8 +285,8 @@ describe('evaluate', function () {
       )
 
       // Test shape mismatch with empty array
-      assert.throws(() => math.evaluate('[] ?? [7, 8]'), /RangeError/)
-      assert.throws(() => math.evaluate('[1] ?? [7, 8]'), /RangeError/)
+      assert.throws((): void => math.evaluate('[] ?? [7, 8]'), /RangeError/)
+      assert.throws((): void => math.evaluate('[1] ?? [7, 8]'), /RangeError/)
     })
 
     it('should handle nullish coalescing with function calls', function () {
@@ -347,8 +354,8 @@ describe('evaluate', function () {
       assert.strictEqual(math.evaluate('0 ?? boom()', scope), 0)
       assert.strictEqual(math.evaluate('false ?? boom()', scope), false)
       assert.strictEqual(math.evaluate('"" ?? boom()', scope), '')
-      assert.throws(() => math.evaluate('null ?? boom()', scope))
-      assert.throws(() => math.evaluate('undefined ?? boom()', scope))
+      assert.throws((): void => math.evaluate('null ?? boom()', scope))
+      assert.throws((): void => math.evaluate('undefined ?? boom()', scope))
     })
 
     it('should evaluate the right-hand side when left is nullish', function () {

@@ -1,11 +1,13 @@
-// @ts-nocheck
 // test schur decomposition
+/**
+ * Test for sylvester - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import sinon from 'sinon'
 
-describe('sylvester', function () {
-  it('should solve sylvester equation of order 5 with Arrays', function () {
+describe('sylvester', function (): void {
+  it('should solve sylvester equation of order 5 with Arrays', function (): void {
     assert.ok(
       math.norm(
         math.subtract(
@@ -54,7 +56,7 @@ describe('sylvester', function () {
     )
   })
 
-  it('should solve sylvester equation of order 5 with Matrices', function () {
+  it('should solve sylvester equation of order 5 with Matrices', function (): void {
     assert.ok(
       math.norm(
         math.subtract(
@@ -103,7 +105,7 @@ describe('sylvester', function () {
     )
   })
 
-  it('should work with config legacySubset during deprecation', function () {
+  it('should work with config legacySubset during deprecation', function (): void {
     const math2 = math.create()
     // Add a spy to temporarily disable console.warn
     const warnStub = sinon.stub(console, 'warn')

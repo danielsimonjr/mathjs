@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for atan - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -12,13 +19,13 @@ const bigmath = math.create({ number: 'BigNumber', precision: 20 })
 const atanBig = bigmath.atan
 const Big = bigmath.bignumber
 
-describe('atan', function () {
-  it('should return the arctan of a boolean', function () {
+describe('atan', function (): void {
+  it('should return the arctan of a boolean', function (): void {
     approxEqual(atan(true), 0.25 * pi)
     approxEqual(atan(false), 0)
   })
 
-  it('should return the arctan of a number', function () {
+  it('should return the arctan of a number', function (): void {
     approxEqual(atan(-1) / pi, -0.25)
     approxEqual(atan(-0.5) / pi, -0.147583617650433)
     approxEqual(atan(0) / pi, 0)
@@ -26,7 +33,7 @@ describe('atan', function () {
     approxEqual(atan(1) / pi, 0.25)
   })
 
-  it('should return the arctan of a bignumber', function () {
+  it('should return the arctan of a bignumber', function (): void {
     const arg1 = Big(-1)
     const arg2 = Big(-0.5)
     const arg3 = Big(0)
@@ -57,7 +64,7 @@ describe('atan', function () {
     )
   })
 
-  it('should be the inverse function of tan', function () {
+  it('should be the inverse function of tan', function (): void {
     approxEqual(atan(tan(-1)), -1)
     approxEqual(atan(tan(0)), 0)
     approxEqual(atan(tan(0.1)), 0.1)
@@ -65,7 +72,7 @@ describe('atan', function () {
     approxEqual(atan(tan(2)), -1.14159265358979)
   })
 
-  it('should be the inverse function of bignumber tan', function () {
+  it('should be the inverse function of bignumber tan', function (): void {
     bigmath.config({ precision: 20 })
     assert.deepStrictEqual(atanBig(bigmath.tan(Big(-1))), Big(-1))
     assert.deepStrictEqual(atanBig(bigmath.tan(Big(0))), Big(0))
@@ -81,7 +88,7 @@ describe('atan', function () {
     )
   })
 
-  it('should return the arctan of a complex number', function () {
+  it('should return the arctan of a complex number', function (): void {
     const re = 1.409921049596575
     const im = 0.229072682968539
     approxDeepEqual(atan(complex('2+3i')), complex(re, im))
@@ -97,22 +104,22 @@ describe('atan', function () {
     )
   })
 
-  it('should throw an error if called with a unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
       atan(unit('45deg'))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       atan(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       atan('string')
     })
   })
 
-  it('should not operate on arrays and matrices', function () {
+  it('should not operate on arrays and matrices', function (): void {
     assert.throws(() => atan([1, 2, 3]), TypeError)
     assert.throws(() => atan(matrix([1, 2, 3])), TypeError)
     // matrix, array, range
@@ -121,16 +128,16 @@ describe('atan', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), atan), matrix(atan123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       atan()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       atan(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX atan', function () {
+  it('should LaTeX atan', function (): void {
     const expression = math.parse('atan(10)')
     assert.strictEqual(expression.toTex(), '\\tan^{-1}\\left(10\\right)')
   })

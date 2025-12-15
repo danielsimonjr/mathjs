@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for customs - AssemblyScript-friendly TypeScript
+ */
 // test boolean utils
 import assert from 'assert'
 
@@ -11,9 +13,9 @@ import {
 } from '../../../src/utils/customs.js'
 import math from '../../../src/defaultInstance.ts'
 
-describe('customs', function () {
-  describe('isSafeMethod', function () {
-    it('plain objects', function () {
+describe('customs', function (): void {
+  describe('isSafeMethod', function (): void {
+    it('plain objects', function (): void {
       const object = {
         fn: function () {}
       }
@@ -47,7 +49,7 @@ describe('customs', function () {
       assert.strictEqual(isSafeMethod(object3, 'toString'), false)
     })
 
-    it('functions', function () {
+    it('functions', function (): void {
       const f = function () {}
 
       assert.strictEqual(isSafeMethod(f, 'call'), false)
@@ -55,7 +57,7 @@ describe('customs', function () {
       assert.strictEqual(isSafeMethod(f, 'constructor'), false)
     })
 
-    it('classes', function () {
+    it('classes', function (): void {
       const matrix = math.matrix()
       assert.strictEqual(isSafeMethod(matrix, 'get'), true)
       assert.strictEqual(isSafeMethod(matrix, 'toString'), true)
@@ -95,21 +97,21 @@ describe('customs', function () {
       assert.strictEqual(isSafeMethod(matrix, 'co\u006Estructor'), false)
     })
 
-    it('strings', function () {
+    it('strings', function (): void {
       assert.strictEqual(isSafeMethod('abc', 'toUpperCase'), true)
       assert.strictEqual(isSafeMethod('', 'toUpperCase'), true)
       assert.strictEqual(isSafeMethod('abc', 'constructor'), false)
       assert.strictEqual(isSafeMethod('abc', '__proto__'), false)
     })
 
-    it('numbers', function () {
+    it('numbers', function (): void {
       assert.strictEqual(isSafeMethod(3.14, 'toFixed'), true)
       assert.strictEqual(isSafeMethod(0, 'toFixed'), true)
       assert.strictEqual(isSafeMethod(3.14, 'constructor'), false)
       assert.strictEqual(isSafeMethod(3.14, '__proto__'), false)
     })
 
-    it('dates', function () {
+    it('dates', function (): void {
       assert.strictEqual(isSafeMethod(new Date(), 'getTime'), true)
       assert.strictEqual(isSafeMethod(new Date(0), 'getTime'), true)
       assert.strictEqual(isSafeMethod(new Date(), 'constructor'), false)
@@ -117,22 +119,22 @@ describe('customs', function () {
     })
   })
 
-  describe('getSafeMethod', function () {
-    it('should return a method when safe', function () {
+  describe('getSafeMethod', function (): void {
+    it('should return a method when safe', function (): void {
       const obj = { getName: () => 'Joe' }
 
       assert.strictEqual(getSafeMethod(obj, 'getName'), obj.getName)
     })
 
-    it('should throw an exception when a method is unsafe', function () {
-      assert.throws(() => {
+    it('should throw an exception when a method is unsafe', function (): void {
+      assert.throws(function (): void {
         getSafeMethod(Function, 'constructor')
       }, /Error: No access to method "constructor"/)
     })
   })
 
-  describe('isSafeProperty', function () {
-    it('should test properties on plain objects', function () {
+  describe('isSafeProperty', function (): void {
+    it('should test properties on plain objects', function (): void {
       const object = {}
 
       /* From Object.prototype:
@@ -158,7 +160,7 @@ describe('customs', function () {
       assert.strictEqual(isSafeProperty(object, 'co\u006Estructor'), false)
     })
 
-    it('should test inherited properties on plain objects', function () {
+    it('should test inherited properties on plain objects', function (): void {
       const object1 = {}
       const object2 = Object.create(object1)
       object1.foo = true
@@ -173,7 +175,7 @@ describe('customs', function () {
       assert.strictEqual(isSafeProperty(object2, 'constructor'), false)
     })
 
-    it('should test properties on an array', function () {
+    it('should test properties on an array', function (): void {
       const array = [3, 2, 1]
       assert.strictEqual(isSafeProperty(array, 'length'), true)
       assert.strictEqual(isSafeProperty(array, 'foo'), true)
@@ -183,33 +185,33 @@ describe('customs', function () {
     })
   })
 
-  describe('getSafeProperty', function () {
-    it('should return a method when safe', function () {
+  describe('getSafeProperty', function (): void {
+    it('should return a method when safe', function (): void {
       const obj = { getName: () => 'Joe' }
 
       assert.strictEqual(getSafeProperty(obj, 'getName'), obj.getName)
     })
 
-    it('should return a property when safe', function () {
+    it('should return a property when safe', function (): void {
       const obj = { username: 'Joe' }
 
       assert.strictEqual(getSafeProperty(obj, 'username'), 'Joe')
     })
 
-    it('should throw an exception when a method is unsafe', function () {
-      assert.throws(() => {
+    it('should throw an exception when a method is unsafe', function (): void {
+      assert.throws(function (): void {
         getSafeProperty(Function, 'constructor')
       }, /Error: No access to property "constructor"/)
     })
 
-    it('should throw an exception when a property is unsafe', function () {
-      assert.throws(() => {
+    it('should throw an exception when a property is unsafe', function (): void {
+      assert.throws(function (): void {
         getSafeProperty({ constructor: 'test' }, 'constructor')
       }, /Error: No access to property "constructor"/)
     })
   })
 
-  it('should distinguish plain objects', function () {
+  it('should distinguish plain objects', function (): void {
     const a = {}
     const b = Object.create(a)
     assert.strictEqual(isPlainObject(a), true)

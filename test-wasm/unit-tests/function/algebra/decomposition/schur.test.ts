@@ -1,11 +1,12 @@
-// @ts-nocheck
-// test schur decomposition
+/**
+ * Test for schur - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../../src/defaultInstance.ts'
 
-describe('schur', function () {
-  it('should calculate schur decomposition of order 5 Array with numbers', function () {
+describe('schur', function (): void {
+  it('should calculate schur decomposition of order 5 Array with numbers', function (): void {
     assert.ok(
       math.norm(
         math.subtract(
@@ -79,7 +80,7 @@ describe('schur', function () {
     )
   })
 
-  it('should calculate schur decomposition of order 5 Matrix with numbers', function () {
+  it('should calculate schur decomposition of order 5 Matrix with numbers', function (): void {
     assert.ok(
       math.norm(
         math.subtract(

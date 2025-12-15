@@ -1,12 +1,13 @@
-// @ts-nocheck
-// test lsolveAll
+/**
+ * Test for lsolveAll - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../../tools/approx.js'
 import math from '../../../../../src/defaultInstance.ts'
 
-describe('lsolveAll', function () {
-  it('should solve linear system 4 x 4, arrays', function () {
+describe('lsolveAll', function (): void {
+  it('should solve linear system 4 x 4, arrays', function (): void {
     const m = [
       [1, 0, 0, 0],
       [1, 1, 0, 0],
@@ -20,7 +21,7 @@ describe('lsolveAll', function () {
     approxDeepEqual(x, [[[1], [1], [1], [1]]])
   })
 
-  it('should solve linear system 4 x 4, array and column array', function () {
+  it('should solve linear system 4 x 4, array and column array', function (): void {
     const m = [
       [1, 0, 0, 0],
       [1, 1, 0, 0],
@@ -33,7 +34,7 @@ describe('lsolveAll', function () {
     approxDeepEqual(x, [[[1], [1], [1], [1]]])
   })
 
-  it('should solve linear system 4 x 4, matrices', function () {
+  it('should solve linear system 4 x 4, matrices', function (): void {
     const m = math.matrix([
       [1, 0, 0, 0],
       [1, 1, 0, 0],
@@ -48,7 +49,7 @@ describe('lsolveAll', function () {
     approxDeepEqual(x, [math.matrix([[1], [1], [1], [1]])])
   })
 
-  it('should solve linear system 4 x 4, sparse matrices', function () {
+  it('should solve linear system 4 x 4, sparse matrices', function (): void {
     const m = math.sparse([
       [1, 0, 0, 0],
       [1, 1, 0, 0],
@@ -63,7 +64,7 @@ describe('lsolveAll', function () {
     approxDeepEqual(x, [math.matrix([[1], [1], [1], [1]])])
   })
 
-  it('should solve linear system 4 x 4, matrix and column matrix', function () {
+  it('should solve linear system 4 x 4, matrix and column matrix', function (): void {
     const m = math.matrix([
       [1, 0, 0, 0],
       [1, 1, 0, 0],
@@ -78,7 +79,7 @@ describe('lsolveAll', function () {
     approxDeepEqual(x, [math.matrix([[1], [1], [1], [1]])])
   })
 
-  it('should solve linear system 4 x 4, sparse matrix and column matrix', function () {
+  it('should solve linear system 4 x 4, sparse matrix and column matrix', function (): void {
     const m = math.matrix(
       [
         [1, 0, 0, 0],
@@ -96,7 +97,7 @@ describe('lsolveAll', function () {
     approxDeepEqual(x, [math.matrix([[1], [1], [1], [1]])])
   })
 
-  it('should return an empty array when there is no solution', function () {
+  it('should return an empty array when there is no solution', function (): void {
     assert.deepStrictEqual(
       [],
       math.lsolveAll(
@@ -135,7 +136,7 @@ describe('lsolveAll', function () {
     )
   })
 
-  it('should solve systems with singular dense matrices', function () {
+  it('should solve systems with singular dense matrices', function (): void {
     approxDeepEqual(
       math.lsolveAll(
         [
@@ -183,7 +184,7 @@ describe('lsolveAll', function () {
     )
   })
 
-  it('should solve systems with singular sparse matrices', function () {
+  it('should solve systems with singular sparse matrices', function (): void {
     approxDeepEqual(
       math.lsolveAll(
         math.matrix(

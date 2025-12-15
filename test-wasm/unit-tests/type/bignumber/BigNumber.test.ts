@@ -1,34 +1,36 @@
-// @ts-nocheck
+/**
+ * Test for BigNumber - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import Decimal from 'decimal.js'
 
-describe('BigNumber', function () {
-  it('should have a property isBigNumber', function () {
+describe('BigNumber', function (): void {
+  it('should have a property isBigNumber', function (): void {
     const a = new math.BigNumber(5)
     assert.strictEqual(a.isBigNumber, true)
   })
 
-  it('should have a property type', function () {
+  it('should have a property type', function (): void {
     const a = new math.BigNumber(5)
     assert.strictEqual(a.type, 'BigNumber')
   })
 
-  it('toJSON', function () {
+  it('toJSON', function (): void {
     assert.deepStrictEqual(new math.BigNumber(5).toJSON(), {
       mathjs: 'BigNumber',
       value: '5'
     })
   })
 
-  it('fromJSON', function () {
+  it('fromJSON', function (): void {
     const b = math.BigNumber.fromJSON({ value: '5' })
     assert.ok(b instanceof math.BigNumber)
     assert.strictEqual(b.toString(), '5')
     assert.deepStrictEqual(b, new math.BigNumber(5))
   })
 
-  it('should not pollute the prototype of Decimal', function () {
+  it('should not pollute the prototype of Decimal', function (): void {
     const a = new Decimal(2)
     assert.ok(a instanceof math.BigNumber === false)
     assert.ok(a.isBigNumber === undefined)

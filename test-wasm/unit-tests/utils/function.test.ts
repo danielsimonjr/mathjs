@@ -1,11 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for function - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { memoize, memoizeCompare } from '../../../src/utils/function.js'
 import { deepStrictEqual } from '../../../src/utils/object.js'
 
-describe('util.function', function () {
-  describe('memoize', function () {
-    it('should memoize a function with one argument', function () {
+describe('util.function', function (): void {
+  describe('memoize', function (): void {
+    it('should memoize a function with one argument', function (): void {
       const f = function (x) {
         return x * x
       }
@@ -16,7 +18,7 @@ describe('util.function', function () {
       assert.strictEqual(m(3), 9)
     })
 
-    it('should memoize a function with two arguments', function () {
+    it('should memoize a function with two arguments', function (): void {
       const f = function (x, y) {
         return x * y
       }
@@ -30,7 +32,7 @@ describe('util.function', function () {
       assert.strictEqual(m(12, 3), 36)
     })
 
-    it('should memoize a function with objects as arguments', function () {
+    it('should memoize a function with objects as arguments', function (): void {
       const f = function (obj) {
         return obj.x * obj.y
       }
@@ -42,7 +44,7 @@ describe('util.function', function () {
       assert.strictEqual(m.cache.values.get('[{"x":2,"y":3}]'), 6)
     })
 
-    it('should memoize a function with a custom hashIt function', function () {
+    it('should memoize a function with a custom hashIt function', function (): void {
       const f = function (obj) {
         return obj.id
       }
@@ -57,7 +59,7 @@ describe('util.function', function () {
       assert.strictEqual(m.cache.values.get('id:2'), 2)
     })
 
-    it('should really return the cached result', function () {
+    it('should really return the cached result', function (): void {
       let a = 2
       const f = function (_x) {
         return a
@@ -71,7 +73,7 @@ describe('util.function', function () {
     })
   })
 
-  it('should limit the number of values stored', function () {
+  it('should limit the number of values stored', function (): void {
     let a = 1
     const f = function (_x) {
       a++
@@ -88,8 +90,8 @@ describe('util.function', function () {
     assert.strictEqual(m(1), 5)
   })
 
-  describe('memoizeCompare', function () {
-    it('should memoize using comparison', function () {
+  describe('memoizeCompare', function (): void {
+    it('should memoize using comparison', function (): void {
       let execCount = 0
 
       function multiply(obj) {

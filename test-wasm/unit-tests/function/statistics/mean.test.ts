@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for mean - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
@@ -7,8 +9,13 @@ const Complex = math.Complex
 const DenseMatrix = math.DenseMatrix
 const mean = math.mean
 
-describe('mean', function () {
-  it('should return the mean value of some numbers', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('mean', function (): void {
+  it('should return the mean value of some numbers', function (): void {
     assert.strictEqual(mean(5), 5)
     assert.strictEqual(mean(3, 1), 2)
     assert.strictEqual(mean(0, 3), 1.5)
@@ -16,12 +23,12 @@ describe('mean', function () {
     assert.strictEqual(mean(0, 0, 0, 0), 0)
   })
 
-  it('should return the mean value of strings by their numerical value', function () {
+  it('should return the mean value of strings by their numerical value', function (): void {
     assert.strictEqual(mean('1', '3', '5', '2', '-5'), 1.2)
     assert.strictEqual(mean('5'), 5)
   })
 
-  it('should return the mean of big numbers', function () {
+  it('should return the mean of big numbers', function (): void {
     assert.deepStrictEqual(
       mean(
         new BigNumber(1),
@@ -34,7 +41,7 @@ describe('mean', function () {
     )
   })
 
-  it('should return the mean value for complex values', function () {
+  it('should return the mean value for complex values', function (): void {
     assert.deepStrictEqual(
       mean(new Complex(2, 3), new Complex(2, 1)),
       new Complex(2, 2)
@@ -45,22 +52,22 @@ describe('mean', function () {
     )
   })
 
-  it('should return the mean value for mixed real and complex values', function () {
+  it('should return the mean value for mixed real and complex values', function (): void {
     assert.deepStrictEqual(mean(new Complex(2, 4), 4), new Complex(3, 2))
     assert.deepStrictEqual(mean(4, new Complex(2, 4)), new Complex(3, 2))
   })
 
-  it('should return the mean value from an array', function () {
+  it('should return the mean value from an array', function (): void {
     assert.strictEqual(mean([5]), 5)
     assert.strictEqual(mean([1, 3, 5, 2, -5]), 1.2)
   })
 
-  it('should return the mean value from a 1d matrix', function () {
+  it('should return the mean value from a 1d matrix', function (): void {
     assert.strictEqual(mean(new DenseMatrix([5])), 5)
     assert.strictEqual(mean(new DenseMatrix([1, 3, 5, 2, -5])), 1.2)
   })
 
-  it('should return the mean for each vector on the last dimension', function () {
+  it('should return the mean for each vector on the last dimension', function (): void {
     assert.deepStrictEqual(
       mean([
         [2, 4],
@@ -79,24 +86,24 @@ describe('mean', function () {
     )
   })
 
-  it('should compute the mean of quantities with units', function () {
+  it('should compute the mean of quantities with units', function (): void {
     const a = math.unit(10, 'cm')
     const b = math.unit(20, 'cm')
     const c = math.unit(15, 'cm')
     approxEqual(mean(a, b).toNumber('cm'), c.toNumber('cm'))
   })
 
-  it('should compute the mean of quantities with compatible units', function () {
+  it('should compute the mean of quantities with compatible units', function (): void {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'cm')
     const c = math.unit(0.75, 'm')
     approxEqual(mean(a, b).toNumber('cm'), c.toNumber('cm'))
   })
 
-  it('should not compute the mean of quantities with incompatible units', function () {
+  it('should not compute the mean of quantities with incompatible units', function (): void {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'kg')
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean(a, b)
     }, /Units do not match/)
   })
@@ -125,7 +132,7 @@ describe('mean', function () {
     ]
   ]
 
-  it('should return the mean value along a dimension on a matrix', function () {
+  it('should return the mean value along a dimension on a matrix', function (): void {
     assert.deepStrictEqual(
       mean(
         [
@@ -165,7 +172,7 @@ describe('mean', function () {
     ])
   })
 
-  it('should return NaN if any of the inputs contains NaN', function () {
+  it('should return NaN if any of the inputs contains NaN', function (): void {
     assert(isNaN(mean([NaN])))
     assert(isNaN(mean([1, NaN])))
     assert(isNaN(mean([NaN, 1])))
@@ -174,50 +181,50 @@ describe('mean', function () {
     assert(isNaN(mean(NaN, NaN)))
   })
 
-  it('should throw an error if called with invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       mean()
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean([], 2, 3)
     })
   })
 
-  it('should throw an error when called multiple arrays or matrices', function () {
-    assert.throws(function () {
+  it('should throw an error when called multiple arrays or matrices', function (): void {
+    assert.throws(function (): void {
       mean([1, 2], [3, 4])
     }, /Scalar values expected/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean(math.matrix([1, 2]), math.matrix([3, 4]))
     }, /Scalar values expected/)
   })
 
-  it('should throw an error if called a dimension out of range', function () {
-    assert.throws(function () {
+  it('should throw an error if called a dimension out of range', function (): void {
+    assert.throws(function (): void {
       mean([1, 2, 3], -1)
     }, /IndexError: Index out of range \(-1 < 0\)/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean([1, 2, 3], 1)
     }, /IndexError: Index out of range \(1 > 0\)/)
   })
 
-  it('should throw an error if called with an empty array', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an empty array', function (): void {
+    assert.throws(function (): void {
       mean([])
     })
   })
 
-  it('should throw an error if called with invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       mean([[2, undefined, 4]])
     }, /TypeError: Cannot calculate mean, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean([[2, new Date(), 4]])
     }, /TypeError: Cannot calculate mean, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean([2, null, 4])
     }, /TypeError: Cannot calculate mean, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean(
         [
           [2, 5],
@@ -227,16 +234,16 @@ describe('mean', function () {
         0
       )
     }, /TypeError: Cannot calculate mean, unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean('a', 'b')
     }, /Error: Cannot convert "a" to a number/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       mean('a')
     }, /Error: Cannot convert "a" to a number/)
   })
 
-  it('should LaTeX mean', function () {
-    const expression = math.parse('mean(1,2,3,4)')
+  it('should LaTeX mean', function (): void {
+    const expression = math.parse('mean(1,2,3,4)') as MathNode
     assert.strictEqual(
       expression.toTex(),
       '\\mathrm{mean}\\left(1,2,3,4\\right)'

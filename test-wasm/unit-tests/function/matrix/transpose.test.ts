@@ -1,16 +1,23 @@
-// @ts-nocheck
+/**
+ * Test for transpose - AssemblyScript-friendly TypeScript
+ */
 // test transpose
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 const transpose = math.transpose
 
-describe('transpose', function () {
-  it('should transpose a scalar', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('transpose', function (): void {
+  it('should transpose a scalar', function (): void {
     assert.deepStrictEqual(transpose(3), 3)
   })
 
-  it('should transpose a vector', function () {
+  it('should transpose a vector', function (): void {
     assert.deepStrictEqual(transpose([1, 2, 3]), [1, 2, 3])
     assert.deepStrictEqual(
       transpose(math.matrix([1, 2, 3]).toArray()),
@@ -18,7 +25,7 @@ describe('transpose', function () {
     )
   })
 
-  it('should transpose a 2d matrix', function () {
+  it('should transpose a 2d matrix', function (): void {
     assert.deepStrictEqual(
       transpose([
         [1, 2, 3],
@@ -58,11 +65,11 @@ describe('transpose', function () {
     assert.deepStrictEqual(transpose([[1, 2, 3, 4]]), [[1], [2], [3], [4]])
   })
 
-  it('should throw an error for invalid matrix transpose', function () {
-    assert.throws(function () {
+  it('should throw an error for invalid matrix transpose', function (): void {
+    assert.throws(function (): void {
       assert.deepStrictEqual(transpose([[]]), [[]]) // size [2,0]
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       transpose([
         [[1], [2]],
         [[3], [4]]
@@ -70,17 +77,17 @@ describe('transpose', function () {
     }, /RangeError: Matrix.*2, 2, 1/)
   })
 
-  it('should throw an error if called with an invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       transpose()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       transpose([1, 2], 2)
     }, /TypeError: Too many arguments/)
   })
 
-  describe('DenseMatrix', function () {
-    it('should transpose a 2d matrix', function () {
+  describe('DenseMatrix', function (): void {
+    it('should transpose a 2d matrix', function (): void {
       let m = math.matrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -123,9 +130,9 @@ describe('transpose', function () {
       assert.ok(t.datatype() === 'number')
     })
 
-    it('should throw an error for invalid matrix transpose', function () {
+    it('should throw an error for invalid matrix transpose', function (): void {
       let m = math.matrix([[]])
-      assert.throws(function () {
+      assert.throws(function (): void {
         transpose(m)
       })
 
@@ -133,14 +140,14 @@ describe('transpose', function () {
         [[1], [2]],
         [[3], [4]]
       ])
-      assert.throws(function () {
+      assert.throws(function (): void {
         transpose(m)
       })
     })
   })
 
-  describe('SparseMatrix', function () {
-    it('should transpose a 2d matrix', function () {
+  describe('SparseMatrix', function (): void {
+    it('should transpose a 2d matrix', function (): void {
       let m = math.sparse([
         [1, 2, 3],
         [4, 5, 6]
@@ -179,15 +186,15 @@ describe('transpose', function () {
       assert.ok(t.datatype() === 'number')
     })
 
-    it('should throw an error for invalid matrix transpose', function () {
+    it('should throw an error for invalid matrix transpose', function (): void {
       const m = math.matrix([[]], 'sparse')
-      assert.throws(function () {
+      assert.throws(function (): void {
         transpose(m)
       })
     })
   })
 
-  it('should LaTeX transpose', function () {
+  it('should LaTeX transpose', function (): void {
     const expression = math.parse('transpose([[1,2],[3,4]])')
     assert.strictEqual(
       expression.toTex(),

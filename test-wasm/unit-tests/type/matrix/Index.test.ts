@@ -1,5 +1,6 @@
-// @ts-nocheck
-// test data type Index
+/**
+ * Test for Index - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -7,8 +8,8 @@ const Index = math.Index
 const Range = math.Range
 const ImmutableDenseMatrix = math.ImmutableDenseMatrix
 
-describe('Index', function () {
-  it('should create an Index', function () {
+describe('Index', function (): void {
+  it('should create an Index', function (): void {
     assert.deepStrictEqual(new Index(0, 2)._dimensions, [0, 2])
 
     assert.deepStrictEqual(new Index(new Range(0, 10))._dimensions, [
@@ -31,7 +32,7 @@ describe('Index', function () {
     assert.deepStrictEqual(new Index(10)._dimensions, [10])
   })
 
-  it('should create an Index from bigints', function () {
+  it('should create an Index from bigints', function (): void {
     assert.deepStrictEqual(new Index(0n, 2n)._dimensions, [0, 2])
 
     assert.deepStrictEqual(new Index(new Range(0n, 10n))._dimensions, [
@@ -46,42 +47,42 @@ describe('Index', function () {
     )
   })
 
-  it('should create an Index from a Range', function () {
+  it('should create an Index from a Range', function (): void {
     assert.deepStrictEqual(new Index(new Range(0, 10))._dimensions, [
       new Range(0, 10, 1)
     ])
   })
 
-  it('should create an Index from a Matrix', function () {
+  it('should create an Index from a Matrix', function (): void {
     assert.deepStrictEqual(new Index(math.matrix([0, 10]))._dimensions, [
       new ImmutableDenseMatrix([0, 10])
     ])
   })
 
-  it('should create an Index from an Array', function () {
+  it('should create an Index from an Array', function (): void {
     assert.deepStrictEqual(new Index([0, 10])._dimensions, [
       new ImmutableDenseMatrix([0, 10])
     ])
   })
 
-  it('should create an Index from a string', function () {
+  it('should create an Index from a string', function (): void {
     assert.deepStrictEqual(new Index('property')._dimensions, ['property'])
   })
 
-  it('should create an Index from a ImmutableDenseMatrix', function () {
+  it('should create an Index from a ImmutableDenseMatrix', function (): void {
     assert.deepStrictEqual(
       new Index(new ImmutableDenseMatrix([0, 10]))._dimensions,
       [new ImmutableDenseMatrix([0, 10])]
     )
   })
 
-  it('should create an Index from an array with ranges', function () {
+  it('should create an Index from an array with ranges', function (): void {
     const index = Index.create([new Range(0, 10), new Range(4)])
     assert(index instanceof Index)
     assert.deepStrictEqual(index._dimensions, [new Range(0, 10), new Range(4)])
   })
 
-  it('should create an Index from an array with sets', function () {
+  it('should create an Index from an array with sets', function (): void {
     const index = Index.create([
       new ImmutableDenseMatrix([0, 10]),
       new ImmutableDenseMatrix([4])
@@ -93,7 +94,7 @@ describe('Index', function () {
     ])
   })
 
-  it('should calculate the size of an Index', function () {
+  it('should calculate the size of an Index', function (): void {
     assert.deepStrictEqual(new Index(new Range(0, 10)).size(), [10])
     assert.deepStrictEqual(new Index(new Range(0, 10, 2)).size(), [5])
     assert.deepStrictEqual(new Index(new Range(4, 0, -1)).size(), [4])
@@ -117,7 +118,7 @@ describe('Index', function () {
     assert.deepStrictEqual(new Index().size(), [])
   })
 
-  it('should calculate the minimum values of an Index', function () {
+  it('should calculate the minimum values of an Index', function (): void {
     assert.deepStrictEqual(new Index(new Range(2, 10)).min(), [2])
     assert.deepStrictEqual(new Index(new Range(4, 0, -1)).min(), [1])
     assert.deepStrictEqual(
@@ -141,7 +142,7 @@ describe('Index', function () {
     assert.deepStrictEqual(new Index('property').min(), ['property'])
   })
 
-  it('should calculate the maximum values of an Index', function () {
+  it('should calculate the maximum values of an Index', function (): void {
     assert.deepStrictEqual(new Index(new Range(2, 10)).max(), [9])
     assert.deepStrictEqual(new Index(new Range(4, 0, -1)).max(), [4])
     assert.deepStrictEqual(
@@ -165,7 +166,7 @@ describe('Index', function () {
     assert.deepStrictEqual(new Index().max(), [])
   })
 
-  it('should test whether an Index contains a scalar', function () {
+  it('should test whether an Index contains a scalar', function (): void {
     assert.strictEqual(new Index(2, 5, 2).isScalar(), true)
     assert.strictEqual(new Index(2).isScalar(), true)
     assert.strictEqual(new Index([0, 1, 2], 2).isScalar(), false)
@@ -200,7 +201,7 @@ describe('Index', function () {
     assert.strictEqual(new Index().isScalar(), true)
   })
 
-  it('should clone an Index', function () {
+  it('should clone an Index', function (): void {
     const index1 = new Index(
       [2],
       new Range(0, 4),
@@ -215,7 +216,7 @@ describe('Index', function () {
     assert.notStrictEqual(index1._dimensions[2], index2._dimensions[2])
   })
 
-  it('should stringify an index', function () {
+  it('should stringify an index', function (): void {
     assert.strictEqual(new Index().toString(), '[]')
     assert.strictEqual(new Index(2, 3).toString(), '[2, 3]')
     assert.strictEqual(new Index(2, 3, 1).toString(), '[2, 3, 1]')
@@ -228,7 +229,7 @@ describe('Index', function () {
     assert.deepStrictEqual(new Index('property').toString(), '["property"]')
   })
 
-  it('toJSON', function () {
+  it('toJSON', function (): void {
     assert.deepStrictEqual(
       new Index(
         new Range(0, 10),
@@ -246,7 +247,7 @@ describe('Index', function () {
     )
   })
 
-  it('fromJSON', function () {
+  it('fromJSON', function (): void {
     const json = {
       dimensions: [new Range(0, 10, 1), 2, new ImmutableDenseMatrix([1, 2, 3])]
     }
@@ -261,7 +262,7 @@ describe('Index', function () {
     assert.deepStrictEqual(i2, i1)
   })
 
-  it('should get the range for a given dimension', function () {
+  it('should get the range for a given dimension', function (): void {
     const index = new Index(
       2,
       new Range(0, 8, 2),
@@ -287,7 +288,7 @@ describe('Index', function () {
     assert.strictEqual(index.dimension(4), null)
   })
 
-  it('should iterate over all ranges', function () {
+  it('should iterate over all ranges', function (): void {
     const index = new Index(
       2,
       new Range(0, 8, 2),
@@ -312,24 +313,24 @@ describe('Index', function () {
     ])
   })
 
-  it('should have a property isIndex', function () {
+  it('should have a property isIndex', function (): void {
     const a = new math.Index([2, 5])
     assert.strictEqual(a.isIndex, true)
   })
 
-  it('should have a property type', function () {
+  it('should have a property type', function (): void {
     const a = new math.Index([2, 5])
     assert.strictEqual(a.type, 'Index')
   })
 
-  it('should test whether index contains an object property', function () {
+  it('should test whether index contains an object property', function (): void {
     assert.strictEqual(new math.Index(2, 3).isObjectProperty(), false)
     assert.strictEqual(new math.Index([2, 5]).isObjectProperty(), false)
     assert.strictEqual(new math.Index('foo', 'bar').isObjectProperty(), false)
     assert.strictEqual(new math.Index('foo').isObjectProperty(), true)
   })
 
-  it('should expand an index into an array', function () {
+  it('should expand an index into an array', function (): void {
     assert.deepStrictEqual(new Index(new Range(2, 5)).toArray(), [[2, 3, 4]])
 
     assert.deepStrictEqual(
@@ -350,7 +351,7 @@ describe('Index', function () {
     assert.deepStrictEqual(new Index('property').toArray(), ['property'])
   })
 
-  it('valueOf should return the expanded array', function () {
+  it('valueOf should return the expanded array', function (): void {
     assert.deepStrictEqual(
       new Index(
         2,
@@ -363,29 +364,29 @@ describe('Index', function () {
     )
   })
 
-  it('should complain when new operator is missing', function () {
-    assert.throws(function () {
+  it('should complain when new operator is missing', function (): void {
+    assert.throws(function (): void {
       Index([2, 5])
     }, /Constructor must be called with the new operator/)
   })
 
-  it('should throw an error on non-integer ranges', function () {
-    assert.throws(function () {
+  it('should throw an error on non-integer ranges', function (): void {
+    assert.throws(function (): void {
       console.log(new Index([0, 4.5]))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new Index([0.1, 4]))
     })
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new Index([4, 2, 0.1]))
     })
   })
 
-  it('should throw an error on unsupported type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error on unsupported type of arguments', function (): void {
+    assert.throws(function (): void {
       console.log(new Index({}))
     }, TypeError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       console.log(new Index(new Date()))
     }, TypeError)
   })

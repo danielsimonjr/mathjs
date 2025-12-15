@@ -1,17 +1,23 @@
-// @ts-nocheck
-// test exp
+/**
+ * Test for dotPow - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 const complex = math.complex
 const matrix = math.matrix
 const sparse = math.sparse
 const unit = math.unit
 const dotPow = math.dotPow
 
-describe('dotPow', function () {
-  it('should elevate a number to the given power', function () {
+describe('dotPow', function (): void {
+  it('should elevate a number to the given power', function (): void {
     approxDeepEqual(dotPow(2, 3), 8)
     approxDeepEqual(dotPow(2, 4), 16)
     approxDeepEqual(dotPow(-2, 2), 4)
@@ -24,30 +30,30 @@ describe('dotPow', function () {
     approxDeepEqual(dotPow(-2, 1.5), complex(0, -2.82842712474619))
   })
 
-  it('should elevate booleans to the given power', function () {
+  it('should elevate booleans to the given power', function (): void {
     assert.strictEqual(dotPow(true, true), 1)
     assert.strictEqual(dotPow(true, false), 1)
     assert.strictEqual(dotPow(false, true), 0)
     assert.strictEqual(dotPow(false, false), 1)
   })
 
-  it('should exponentiate mixed numbers and booleans', function () {
+  it('should exponentiate mixed numbers and booleans', function (): void {
     assert.strictEqual(dotPow(2, true), 2)
     assert.strictEqual(dotPow(2, false), 1)
     assert.strictEqual(dotPow(true, 2), 1)
     assert.strictEqual(dotPow(false, 2), 0)
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       dotPow(1)
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       dotPow(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should elevate a complex number to the given power', function () {
+  it('should elevate a complex number to the given power', function (): void {
     approxDeepEqual(
       dotPow(complex(-1, -1), complex(-1, -1)),
       complex('-0.0284750589322119 +  0.0606697332231795i')
@@ -180,20 +186,20 @@ describe('dotPow', function () {
     )
   })
 
-  it('should throw an error with units', function () {
-    assert.throws(function () {
+  it('should throw an error with units', function (): void {
+    assert.throws(function (): void {
       dotPow(unit('5cm'))
     })
   })
 
-  it('should throw an error with strings', function () {
-    assert.throws(function () {
+  it('should throw an error with strings', function (): void {
+    assert.throws(function (): void {
       dotPow('text')
     })
   })
 
-  describe('Array', function () {
-    it('should elevate array .^ scalar', function () {
+  describe('Array', function (): void {
+    it('should elevate array .^ scalar', function (): void {
       approxDeepEqual(
         dotPow(
           [
@@ -235,7 +241,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate scalar .^ array', function () {
+    it('should elevate scalar .^ array', function (): void {
       approxDeepEqual(
         dotPow(2, [
           [1, 2],
@@ -268,7 +274,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate broadcastable arrays element-wise', function () {
+    it('should elevate broadcastable arrays element-wise', function (): void {
       const a2 = [1, 2]
       const a3 = [[3], [4]]
       const a4 = dotPow(a2, a3)
@@ -283,7 +289,7 @@ describe('dotPow', function () {
       ])
     })
 
-    it('should elevate array .^ array', function () {
+    it('should elevate array .^ array', function (): void {
       approxDeepEqual(
         dotPow(
           [
@@ -302,7 +308,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate array .^ dense matrix', function () {
+    it('should elevate array .^ dense matrix', function (): void {
       approxDeepEqual(
         dotPow(
           [
@@ -321,7 +327,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate array .^ sparse matrix', function () {
+    it('should elevate array .^ sparse matrix', function (): void {
       approxDeepEqual(
         dotPow(
           [
@@ -341,8 +347,8 @@ describe('dotPow', function () {
     })
   })
 
-  describe('DenseMatrix', function () {
-    it('should elevate dense matrix .^ scalar', function () {
+  describe('DenseMatrix', function (): void {
+    it('should elevate dense matrix .^ scalar', function (): void {
       approxDeepEqual(
         dotPow(
           matrix([
@@ -384,7 +390,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate scaler .^ dense matrix', function () {
+    it('should elevate scaler .^ dense matrix', function (): void {
       approxDeepEqual(
         dotPow(
           2,
@@ -426,7 +432,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate dense matrix .^ array', function () {
+    it('should elevate dense matrix .^ array', function (): void {
       approxDeepEqual(
         dotPow(
           matrix([
@@ -445,7 +451,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate dense matrix .^ dense matrix', function () {
+    it('should elevate dense matrix .^ dense matrix', function (): void {
       approxDeepEqual(
         dotPow(
           matrix([
@@ -464,7 +470,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate dense matrix .^ sparse matrix', function () {
+    it('should elevate dense matrix .^ sparse matrix', function (): void {
       approxDeepEqual(
         dotPow(
           matrix([
@@ -484,8 +490,8 @@ describe('dotPow', function () {
     })
   })
 
-  describe('SparseMatrix', function () {
-    it('should elevate sparse matrix .^ scalar', function () {
+  describe('SparseMatrix', function (): void {
+    it('should elevate sparse matrix .^ scalar', function (): void {
       approxDeepEqual(
         dotPow(
           sparse([
@@ -527,7 +533,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate scalar .^ sparse matrix', function () {
+    it('should elevate scalar .^ sparse matrix', function (): void {
       approxDeepEqual(
         dotPow(
           2,
@@ -569,7 +575,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate sparse matrix .^ array', function () {
+    it('should elevate sparse matrix .^ array', function (): void {
       approxDeepEqual(
         dotPow(
           sparse([
@@ -588,7 +594,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate sparse matrix .^ dense matrix', function () {
+    it('should elevate sparse matrix .^ dense matrix', function (): void {
       approxDeepEqual(
         dotPow(
           sparse([
@@ -607,7 +613,7 @@ describe('dotPow', function () {
       )
     })
 
-    it('should elevate sparse matrix .^ sparse matrix', function () {
+    it('should elevate sparse matrix .^ sparse matrix', function (): void {
       approxDeepEqual(
         dotPow(
           sparse([
@@ -627,7 +633,7 @@ describe('dotPow', function () {
     })
   })
 
-  it('should LaTeX dotPow', function () {
+  it('should LaTeX dotPow', function (): void {
     const expression = math.parse('dotPow([1,2],[3,4])')
     assert.strictEqual(
       expression.toTex(),
