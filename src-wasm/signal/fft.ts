@@ -334,3 +334,153 @@ function nextPowerOf2(n: i32): i32 {
 export function isPowerOf2(n: i32): i32 {
   return (n > 0) && ((n & (n - 1)) === 0) ? 1 : 0
 }
+
+/**
+ * Inverse FFT (convenience wrapper)
+ * @param data - Complex data array [real0, imag0, real1, imag1, ...]
+ * @param n - Number of complex samples (must be power of 2)
+ * @returns Inverse transformed complex data
+ */
+export function ifft(data: Float64Array, n: i32): Float64Array {
+  return fft(data, n, 1)
+}
+
+/**
+ * Inverse 2D FFT (convenience wrapper)
+ * @param data - 2D complex data (row-major)
+ * @param rows - Number of rows
+ * @param cols - Number of columns
+ * @returns Inverse transformed 2D complex data
+ */
+export function ifft2d(
+  data: Float64Array,
+  rows: i32,
+  cols: i32
+): Float64Array {
+  return fft2d(data, rows, cols, 1)
+}
+
+/**
+ * Compute power spectrum (magnitude squared) of a signal
+ * @param data - Complex FFT data [real0, imag0, ...]
+ * @param n - Number of complex samples
+ * @returns Power spectrum (real values, length n)
+ */
+export function powerSpectrum(data: Float64Array, n: i32): Float64Array {
+  const result = new Float64Array(n)
+
+  for (let i: i32 = 0; i < n; i++) {
+    const idx: i32 = i << 1
+    const real: f64 = data[idx]
+    const imag: f64 = data[idx + 1]
+    result[i] = real * real + imag * imag
+  }
+
+  return result
+}
+
+/**
+ * Compute magnitude spectrum of a signal
+ * @param data - Complex FFT data [real0, imag0, ...]
+ * @param n - Number of complex samples
+ * @returns Magnitude spectrum (real values, length n)
+ */
+export function magnitudeSpectrum(data: Float64Array, n: i32): Float64Array {
+  const result = new Float64Array(n)
+
+  for (let i: i32 = 0; i < n; i++) {
+    const idx: i32 = i << 1
+    const real: f64 = data[idx]
+    const imag: f64 = data[idx + 1]
+    result[i] = Math.sqrt(real * real + imag * imag)
+  }
+
+  return result
+}
+
+/**
+ * Compute phase spectrum of a signal
+ * @param data - Complex FFT data [real0, imag0, ...]
+ * @param n - Number of complex samples
+ * @returns Phase spectrum (in radians, length n)
+ */
+export function phaseSpectrum(data: Float64Array, n: i32): Float64Array {
+  const result = new Float64Array(n)
+
+  for (let i: i32 = 0; i < n; i++) {
+    const idx: i32 = i << 1
+    result[i] = Math.atan2(data[idx + 1], data[idx])
+  }
+
+  return result
+}
+
+/**
+ * Cross-correlation using FFT
+ * @param a - First signal (real)
+ * @param n - Length of first signal
+ * @param b - Second signal (real)
+ * @param m - Length of second signal
+ * @returns Cross-correlation result (real)
+ */
+export function crossCorrelation(
+  a: Float64Array,
+  n: i32,
+  b: Float64Array,
+  m: i32
+): Float64Array {
+  // Size for FFT
+  const size: i32 = nextPowerOf2(n + m - 1)
+
+  // Convert to complex and pad
+  const aComplex = new Float64Array(size << 1)
+  const bComplex = new Float64Array(size << 1)
+
+  for (let i: i32 = 0; i < n; i++) {
+    aComplex[i << 1] = a[i]
+  }
+  for (let i: i32 = 0; i < m; i++) {
+    bComplex[i << 1] = b[i]
+  }
+
+  // FFT of both signals
+  const aFFT = fft(aComplex, size, 0)
+  const bFFT = fft(bComplex, size, 0)
+
+  // Multiply A(f) by conjugate of B(f)
+  const product = new Float64Array(size << 1)
+  for (let i: i32 = 0; i < size; i++) {
+    const idx: i32 = i << 1
+    const aReal: f64 = aFFT[idx]
+    const aImag: f64 = aFFT[idx + 1]
+    const bReal: f64 = bFFT[idx]
+    const bImag: f64 = -bFFT[idx + 1] // Conjugate
+
+    product[idx] = aReal * bReal - aImag * bImag
+    product[idx + 1] = aReal * bImag + aImag * bReal
+  }
+
+  // Inverse FFT
+  const corr = fft(product, size, 1)
+
+  // Extract real part
+  const result = new Float64Array(n + m - 1)
+  for (let i: i32 = 0; i < n + m - 1; i++) {
+    result[i] = corr[i << 1]
+  }
+
+  return result
+}
+
+/**
+ * Auto-correlation using FFT
+ * @param signal - Input signal (real)
+ * @param n - Length of signal
+ * @returns Auto-correlation result (real)
+ */
+export function autoCorrelation(
+  signal: Float64Array,
+  n: i32
+): Float64Array {
+  return crossCorrelation(signal, n, signal, n)
+}
