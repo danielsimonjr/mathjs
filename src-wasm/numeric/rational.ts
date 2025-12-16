@@ -718,3 +718,199 @@ export function bestApproximation(value: f64, maxDenom: i64): StaticArray<i64> {
   }
   return result
 }
+
+// ============================================================================
+// F64 ALTERNATIVES FOR PRE-COMPILE TESTING
+// These use f64 instead of i64 and Float64Array instead of StaticArray<i64>
+// for compatibility with Node.js imports (pre-compile testing)
+// Works correctly for integers up to Number.MAX_SAFE_INTEGER (2^53 - 1)
+// ============================================================================
+
+/**
+ * Greatest Common Divisor using binary GCD (f64 version)
+ * @param a First integer (as f64)
+ * @param b Second integer (as f64)
+ * @returns GCD(|a|, |b|)
+ */
+export function gcdF64(a: f64, b: f64): f64 {
+  // Handle absolute values and round to integers
+  a = Math.abs(Math.floor(a))
+  b = Math.abs(Math.floor(b))
+
+  if (a === 0) return b
+  if (b === 0) return a
+
+  // Euclidean algorithm (simpler and sufficient for f64)
+  while (b !== 0) {
+    const temp = b
+    b = a % b
+    a = temp
+  }
+  return a
+}
+
+/**
+ * Least Common Multiple (f64 version)
+ * @param a First integer (as f64)
+ * @param b Second integer (as f64)
+ * @returns LCM(|a|, |b|)
+ */
+export function lcmF64(a: f64, b: f64): f64 {
+  a = Math.abs(Math.floor(a))
+  b = Math.abs(Math.floor(b))
+  if (a === 0 || b === 0) return 0
+  const g = gcdF64(a, b)
+  return (a / g) * b
+}
+
+/**
+ * Reduce a rational to lowest terms (f64 version)
+ * @param num Numerator (as f64)
+ * @param den Denominator (as f64)
+ * @param result Float64Array[2] to store [numerator, denominator]
+ */
+export function reduceF64(num: f64, den: f64, result: Float64Array): void {
+  num = Math.floor(num)
+  den = Math.floor(den)
+
+  if (den === 0) {
+    unchecked(result[0] = num > 0 ? 1 : (num < 0 ? -1 : 0))
+    unchecked(result[1] = 0)
+    return
+  }
+
+  if (num === 0) {
+    unchecked(result[0] = 0)
+    unchecked(result[1] = 1)
+    return
+  }
+
+  // Make denominator positive
+  if (den < 0) {
+    num = -num
+    den = -den
+  }
+
+  const g = gcdF64(num < 0 ? -num : num, den)
+  unchecked(result[0] = num / g)
+  unchecked(result[1] = den / g)
+}
+
+/**
+ * Add two rationals (f64 version)
+ * @param num1 Numerator of first rational
+ * @param den1 Denominator of first rational
+ * @param num2 Numerator of second rational
+ * @param den2 Denominator of second rational
+ * @param result Float64Array[2] to store [numerator, denominator]
+ */
+export function addF64(num1: f64, den1: f64, num2: f64, den2: f64, result: Float64Array): void {
+  const g = gcdF64(den1, den2)
+  const d1 = den1 / g
+  const d2 = den2 / g
+
+  const num = num1 * d2 + num2 * d1
+  const den = den1 * d2
+
+  reduceF64(num, den, result)
+}
+
+/**
+ * Multiply two rationals (f64 version)
+ * @param num1 Numerator of first rational
+ * @param den1 Denominator of first rational
+ * @param num2 Numerator of second rational
+ * @param den2 Denominator of second rational
+ * @param result Float64Array[2] to store [numerator, denominator]
+ */
+export function multiplyF64(num1: f64, den1: f64, num2: f64, den2: f64, result: Float64Array): void {
+  // Cross-reduce to minimize overflow
+  const g1 = gcdF64(Math.abs(num1), Math.abs(den2))
+  const g2 = gcdF64(Math.abs(num2), Math.abs(den1))
+
+  const num = (num1 / g1) * (num2 / g2)
+  const den = (den1 / g2) * (den2 / g1)
+
+  reduceF64(num, den, result)
+}
+
+/**
+ * Compare two rationals (f64 version)
+ * @returns -1 if a/b < c/d, 0 if equal, 1 if a/b > c/d
+ */
+export function compareF64(num1: f64, den1: f64, num2: f64, den2: f64): i32 {
+  if (den1 === 0 && den2 === 0) {
+    if (num1 === num2) return 0
+    return num1 > num2 ? 1 : -1
+  }
+  if (den1 === 0) return num1 >= 0 ? 1 : -1
+  if (den2 === 0) return num2 >= 0 ? -1 : 1
+
+  // Normalize signs
+  if (den1 < 0) { num1 = -num1; den1 = -den1 }
+  if (den2 < 0) { num2 = -num2; den2 = -den2 }
+
+  // Cross multiply
+  const lhs = num1 * den2
+  const rhs = num2 * den1
+
+  if (lhs < rhs) return -1
+  if (lhs > rhs) return 1
+  return 0
+}
+
+/**
+ * Convert f64 to rational approximation (f64 version)
+ * Uses continued fraction expansion
+ * @param value The floating-point value
+ * @param maxDenom Maximum denominator
+ * @param result Float64Array[2] to store [numerator, denominator]
+ */
+export function fromFloatF64(value: f64, maxDenom: f64, result: Float64Array): void {
+  if (!isFinite(value)) {
+    unchecked(result[0] = value > 0 ? 1 : (value < 0 ? -1 : 0))
+    unchecked(result[1] = 0)
+    return
+  }
+
+  const neg = value < 0
+  if (neg) value = -value
+
+  let aNum: f64 = 0, aDen: f64 = 1
+  let bNum: f64 = 1, bDen: f64 = 0
+
+  while (true) {
+    const mNum = aNum + bNum
+    const mDen = aDen + bDen
+
+    if (mDen > maxDenom) break
+
+    const mVal = mNum / mDen
+
+    if (Math.abs(mVal - value) < 1e-15) {
+      unchecked(result[0] = neg ? -mNum : mNum)
+      unchecked(result[1] = mDen)
+      return
+    }
+
+    if (mVal < value) {
+      aNum = mNum
+      aDen = mDen
+    } else {
+      bNum = mNum
+      bDen = mDen
+    }
+  }
+
+  // Return the closer of a or b
+  const aErr = Math.abs(aNum / aDen - value)
+  const bErr = bDen > 0 ? Math.abs(bNum / bDen - value) : Infinity
+
+  if (aErr <= bErr) {
+    unchecked(result[0] = neg ? -aNum : aNum)
+    unchecked(result[1] = aDen)
+  } else {
+    unchecked(result[0] = neg ? -bNum : bNum)
+    unchecked(result[1] = bDen)
+  }
+}
