@@ -104,14 +104,15 @@ export function matrixMultiply(
 | **Algebra** | `solver.ts` | lsolve, usolve, lsolveUnit, usolveUnit, solveTridiagonal, triangularInverse |
 | **Algebra** | `polynomial.ts` | polyEval, polyEvalWithDerivative, quadraticRoots, cubicRoots, quarticRoots, polyRoots, polyDerivative, polyMultiply, polyDivide |
 | **Algebra** | `equations.ts` | sylvester, lyap, dlyap, sylvesterResidual, lyapResidual, dlyapResidual |
-| **Algebra/Sparse** | `utilities.ts` | csFlip, csUnflip, csCumsum, csMarked, csMark |
+| **Algebra/Sparse** | `utilities.ts` | csFlip, csUnflip, csCumsum, csMarked, csMark, csPermute, csLeaf, csEtree, csDfs, csSpsolve |
+| **Algebra/Sparse** | `operations.ts` | sparseMatVec, sparseTranspose, sparseCholesky, symbolicCholesky, sparseLU, sparseQR, sparseLsolve, sparseUsolve, sparseSolve |
 | **Probability** | `distributions.ts` | random, randomInt, uniform, normal, exponential, bernoulli, binomial, poisson, geometric, normalPDF, normalCDF, klDivergence, entropy |
 | **Utils** | `checks.ts` | isNaN, isFinite, isInteger, isPositive, isNegative, isZero, isPrime, isEven, isOdd, gcd, lcm |
 | **String** | `operations.ts` | isDigit, isLetter, toLowerCode, toUpperCode, parseFloatFromCodes, parseIntFromCodes |
 | **Plain** | `operations.ts` | Comprehensive scalar operations mirror |
 
 ### Test Coverage
-- **Pre-compile tests**: 70 individual tests passing across 50 test suites
+- **Pre-compile tests**: 77 individual tests passing across 57 test suites
 - **All modules tested** via `test-wasm/unit-tests/wasm/pre-compile.test.ts`
 - **WASM validation**: All modules pass AssemblyScript compilation check
 
@@ -278,11 +279,16 @@ Sparse matrix algorithms, eigenvalue problems.
   - eigs (eigenvalues of general matrices via QR iteration)
   - spectralRadius, trace
 
-### Phase 7: Sparse Algorithms (Week 16-20) - Optional
-- [ ] Sparse LU factorization
-- [ ] Sparse Cholesky factorization
-- [ ] Sparse QR factorization
-- [ ] Approximate minimum degree ordering
+### Phase 7: Sparse Algorithms (Week 16-20) ✅ COMPLETE
+- [x] `algebra/sparse/operations.ts` - Sparse matrix operations:
+  - sparseMatVec (sparse matrix-vector multiply)
+  - sparseTranspose (transpose to CSC format)
+  - sparseCholesky (Cholesky factorization for SPD)
+  - symbolicCholesky (elimination tree analysis)
+  - sparseLU (LU factorization with partial pivoting)
+  - sparseQR (QR factorization via Householder)
+  - sparseLsolve, sparseUsolve (triangular solvers)
+  - sparseSolve (complete linear system solver)
 
 ---
 

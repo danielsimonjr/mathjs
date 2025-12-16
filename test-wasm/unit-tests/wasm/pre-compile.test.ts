@@ -1808,4 +1808,144 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ matrix/functions (trace)')
     })
   })
+
+  // ============================================
+  // SPARSE MATRIX OPERATIONS
+  // ============================================
+  describe('Sparse Operations (direct import)', function () {
+    it('should perform sparse matrix-vector multiply', async function () {
+      const sparse = await import('../../../src-wasm/algebra/sparse/operations')
+
+      // 2x2 sparse matrix: [[1, 2], [3, 4]] in CSC format
+      // Column 0: values[0]=1 at row 0, values[1]=3 at row 1
+      // Column 1: values[2]=2 at row 0, values[3]=4 at row 1
+      const values = new Float64Array([1, 3, 2, 4])
+      const index = new Int32Array([0, 1, 0, 1])
+      const ptr = new Int32Array([0, 2, 4])
+
+      const x = new Float64Array([1, 2]) // x = [1, 2]
+      const y = new Float64Array(2)
+
+      sparse.sparseMatVec(values, index, ptr, 2, 2, x, y)
+
+      // y = A*x = [[1,2],[3,4]] * [1,2] = [5, 11]
+      approxEqual(y[0], 5, 1e-10)
+      approxEqual(y[1], 11, 1e-10)
+
+      console.log('  ✓ algebra/sparse/operations (matVec)')
+    })
+
+    it('should compute sparse matrix transpose', async function () {
+      const sparse = await import('../../../src-wasm/algebra/sparse/operations')
+
+      // 2x3 matrix: [[1, 2, 3], [4, 5, 6]] in CSC
+      const values = new Float64Array([1, 4, 2, 5, 3, 6])
+      const index = new Int32Array([0, 1, 0, 1, 0, 1])
+      const ptr = new Int32Array([0, 2, 4, 6])
+
+      const result = sparse.sparseTranspose(values, index, ptr, 2, 3)
+      assert.ok(result.length > 0)
+
+      // Result should be 3x2 matrix: [[1,4],[2,5],[3,6]]
+      // nnz = 6, so result has 6 values + 6 indices + 3 pointers (m+1=2+1) = 15 elements
+      assert.strictEqual(result.length, 15)
+
+      console.log('  ✓ algebra/sparse/operations (transpose)')
+    })
+
+    it('should perform sparse Cholesky factorization', async function () {
+      const sparse = await import('../../../src-wasm/algebra/sparse/operations')
+
+      // 2x2 SPD matrix: [[4, 2], [2, 5]] in CSC (lower triangle only for Cholesky)
+      // L should be [[2, 0], [1, 2]]
+      // L*L^T = [[4, 2], [2, 5]] ✓
+      const values = new Float64Array([4, 2, 5]) // Lower triangle: (0,0)=4, (1,0)=2, (1,1)=5
+      const index = new Int32Array([0, 1, 1])
+      const ptr = new Int32Array([0, 2, 3])
+
+      const result = sparse.sparseCholesky(values, index, ptr, 2)
+
+      // Should succeed (matrix is SPD)
+      assert.ok(result.length > 0)
+
+      console.log('  ✓ algebra/sparse/operations (cholesky)')
+    })
+
+    it('should perform sparse LU factorization', async function () {
+      const sparse = await import('../../../src-wasm/algebra/sparse/operations')
+
+      // 2x2 matrix: [[4, 3], [6, 3]] in CSC
+      const values = new Float64Array([4, 6, 3, 3])
+      const index = new Int32Array([0, 1, 0, 1])
+      const ptr = new Int32Array([0, 2, 4])
+
+      const result = sparse.sparseLU(values, index, ptr, 2, 1.0)
+
+      // Should succeed (matrix is non-singular)
+      assert.ok(result.length > 0)
+
+      console.log('  ✓ algebra/sparse/operations (lu)')
+    })
+
+    it('should solve sparse triangular systems', async function () {
+      const sparse = await import('../../../src-wasm/algebra/sparse/operations')
+
+      // Lower triangular: L = [[2, 0], [1, 3]] in CSC
+      const lValues = new Float64Array([2, 1, 3])
+      const lIndex = new Int32Array([0, 1, 1])
+      const lPtr = new Int32Array([0, 2, 3])
+
+      const b = new Float64Array([4, 7]) // Solve L*x = b
+      const x = new Float64Array(2)
+
+      sparse.sparseLsolve(lValues, lIndex, lPtr, b, x, 2)
+
+      // L*x = b => [[2,0],[1,3]]*x = [4,7]
+      // x[0] = 4/2 = 2
+      // x[1] = (7 - 1*2)/3 = 5/3
+      approxEqual(x[0], 2, 1e-10)
+      approxEqual(x[1], 5 / 3, 1e-10)
+
+      console.log('  ✓ algebra/sparse/operations (lsolve)')
+    })
+
+    it('should solve sparse linear system', async function () {
+      const sparse = await import('../../../src-wasm/algebra/sparse/operations')
+
+      // 2x2 matrix: [[2, 1], [1, 3]] in CSC
+      const values = new Float64Array([2, 1, 1, 3])
+      const index = new Int32Array([0, 1, 0, 1])
+      const ptr = new Int32Array([0, 2, 4])
+
+      const b = new Float64Array([4, 7])
+      const x = sparse.sparseSolve(values, index, ptr, b, 2)
+
+      // Check result: A*x should equal b
+      assert.ok(x.length === 2)
+
+      // Verify: [[2,1],[1,3]]*x = [4,7]
+      const Ax0 = 2 * x[0] + 1 * x[1]
+      const Ax1 = 1 * x[0] + 3 * x[1]
+      approxEqual(Ax0, 4, 1e-8)
+      approxEqual(Ax1, 7, 1e-8)
+
+      console.log('  ✓ algebra/sparse/operations (solve)')
+    })
+
+    it('should perform sparse QR factorization', async function () {
+      const sparse = await import('../../../src-wasm/algebra/sparse/operations')
+
+      // 3x2 overdetermined system in CSC
+      const values = new Float64Array([1, 0, 1, 0, 1, 1])
+      const index = new Int32Array([0, 1, 2, 0, 1, 2])
+      const ptr = new Int32Array([0, 3, 6])
+
+      const result = sparse.sparseQR(values, index, ptr, 3, 2)
+
+      // Should return R factor
+      assert.ok(result.length > 0)
+
+      console.log('  ✓ algebra/sparse/operations (qr)')
+    })
+  })
 })
