@@ -90,7 +90,7 @@ export function matrixMultiply(
 | **Set** | `operations.ts` | createSet, setUnion, setIntersect, setDifference, setSymDifference, setIsSubset, setPowerset |
 | **Geometry** | `operations.ts` | distance2D, distance3D, manhattanDistance, cross3D, dot3D |
 | **Special** | `functions.ts` | erf, erfc, gamma, lgamma, beta, zeta, besselJ0, besselJ1, besselY0, besselY1 |
-| **Statistics** | `basic.ts` | sum, mean, min, max, prod, variance, std, median, mode, range, covariance, correlation, skewness, kurtosis |
+| **Statistics** | `basic.ts` | sum, mean, min, max, prod, variance, std, median, mode, range, covariance, correlation, skewness, kurtosis, quantileSeq, interquartileRange, zscore, percentile, medianUnsorted, weightedMean, rms, meanAbsoluteDeviation, coefficientOfVariation, standardError, sumOfSquares |
 | **Combinatorics** | `basic.ts` | factorial, permutations, combinations, combinationsWithRep, stirlingS2, bellNumbers, catalan, fibonacci, lucas |
 | **Signal** | `fft.ts` | fft, ifft, ifft2d, isPowerOf2, powerSpectrum, magnitudeSpectrum, phaseSpectrum, crossCorrelation, autoCorrelation |
 | **Signal** | `processing.ts` | freqzUniform, magnitude, phase, polyMultiply |
@@ -98,6 +98,7 @@ export function matrixMultiply(
 | **Matrix** | `algorithms.ts` | algo01-14 (sparse/dense operations) |
 | **Matrix** | `basic.ts` | zeros, ones, identity, fill, diag, diagFromVector, trace, getRow, getColumn, setRow, setColumn, swapRows, transpose, flatten, reshape, dotMultiply, dotDivide, dotPow, abs, sqrt, square, sum, prod, min, max, argmin, argmax, sumRows, sumCols, concatHorizontal, concatVertical |
 | **Matrix** | `linalg.ts` | det, inv, inv2x2, inv3x3, norm1, norm2, normP, normInf, normFro, matrixNorm1, matrixNormInf, normalize, kron, cross, dot, outer, cond1, condInf, rank, solve |
+| **Matrix** | `functions.ts` | pinv, sqrtm, sqrtmSPD, expm, powerIteration, eigsSymmetric, eigs, spectralRadius, trace |
 | **Numeric** | `ode.ts` | vectorAdd, vectorScale, vectorNorm, rk4Step |
 | **Algebra** | `decomposition.ts` | luDecomposition, qrDecomposition, choleskyDecomposition, luSolve, luDeterminant |
 | **Algebra** | `solver.ts` | lsolve, usolve, lsolveUnit, usolveUnit, solveTridiagonal, triangularInverse |
