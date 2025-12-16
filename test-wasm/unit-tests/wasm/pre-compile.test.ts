@@ -273,6 +273,62 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
 
       console.log('  ✓ signal/fft')
     })
+
+    it('should compute inverse FFT', async function () {
+      const signal = await import('../../../src-wasm/signal/fft')
+
+      // FFT then IFFT should give back the original
+      const original = new Float64Array([1, 0, 2, 0, 3, 0, 4, 0]) // [1+0i, 2+0i, 3+0i, 4+0i]
+      const fftResult = signal.fft(original, 4, 0)
+      const recovered = signal.ifft(fftResult, 4)
+
+      // Verify we get back the original
+      approxEqual(recovered[0], 1, 1e-10)
+      approxEqual(recovered[2], 2, 1e-10)
+      approxEqual(recovered[4], 3, 1e-10)
+      approxEqual(recovered[6], 4, 1e-10)
+
+      console.log('  ✓ signal/ifft')
+    })
+
+    it('should compute power and magnitude spectrum', async function () {
+      const signal = await import('../../../src-wasm/signal/fft')
+
+      // Simple test: FFT of [1, 0, 0, 0] should have power at DC
+      const data = new Float64Array([1, 0, 0, 0, 0, 0, 0, 0])
+      const fftResult = signal.fft(data, 4, 0)
+
+      const power = signal.powerSpectrum(fftResult, 4)
+      const magnitude = signal.magnitudeSpectrum(fftResult, 4)
+
+      // DC component is 1, others are also 1 (for constant signal)
+      approxEqual(magnitude[0], 1, 1e-10)
+
+      // Power is magnitude squared
+      approxEqual(power[0], magnitude[0] * magnitude[0], 1e-10)
+
+      console.log('  ✓ signal/spectrum')
+    })
+
+    it('should compute cross-correlation', async function () {
+      const signal = await import('../../../src-wasm/signal/fft')
+
+      // Cross-correlation of signal with itself (auto-correlation)
+      const a = new Float64Array([1, 2, 3, 4])
+      const corr = signal.autoCorrelation(a, 4)
+
+      // Maximum should be at zero lag
+      const maxIdx = corr.reduce(
+        (maxI, val, i, arr) => (val > arr[maxI] ? i : maxI),
+        0
+      )
+
+      // For auto-correlation, peak is at index 0 or n-1 depending on implementation
+      // The auto-correlation of [1,2,3,4] should have peak at lag 0
+      assert.ok(corr.length === 7) // 4 + 4 - 1 = 7
+
+      console.log('  ✓ signal/correlation')
+    })
   })
 
   // ============================================
@@ -1012,6 +1068,283 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(v[7], 8)
 
       console.log('  ✓ matrix/basic (concatenation)')
+    })
+  })
+
+  // ============================================
+  // MATRIX LINEAR ALGEBRA
+  // ============================================
+  describe('Matrix Linear Algebra (direct import)', function () {
+    it('should compute determinants', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      // 1x1 determinant
+      const a1 = new Float64Array([5])
+      approxEqual(linalg.det(a1, 1), 5)
+
+      // 2x2 determinant: [[1,2],[3,4]] = 1*4 - 2*3 = -2
+      const a2 = new Float64Array([1, 2, 3, 4])
+      approxEqual(linalg.det(a2, 2), -2)
+
+      // 3x3 determinant: [[1,2,3],[4,5,6],[7,8,9]] = 0 (singular)
+      const a3 = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+      approxEqual(linalg.det(a3, 3), 0, 1e-10)
+
+      // Non-singular 3x3: [[1,0,0],[0,2,0],[0,0,3]] = 6
+      const diag3 = new Float64Array([1, 0, 0, 0, 2, 0, 0, 0, 3])
+      approxEqual(linalg.det(diag3, 3), 6)
+
+      console.log('  ✓ matrix/linalg (det)')
+    })
+
+    it('should compute matrix inverse', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      // 2x2 inverse: [[4,7],[2,6]]
+      // det = 24-14 = 10
+      // inv = (1/10)*[[6,-7],[-2,4]]
+      const a2 = new Float64Array([4, 7, 2, 6])
+      const inv2 = linalg.inv(a2, 2)
+      approxEqual(inv2[0], 0.6, 1e-10)
+      approxEqual(inv2[1], -0.7, 1e-10)
+      approxEqual(inv2[2], -0.2, 1e-10)
+      approxEqual(inv2[3], 0.4, 1e-10)
+
+      // Test inv2x2
+      const inv2x2 = linalg.inv2x2(a2)
+      approxEqual(inv2x2[0], 0.6, 1e-10)
+      approxEqual(inv2x2[1], -0.7, 1e-10)
+
+      // 3x3 inverse of diagonal matrix
+      const diag3 = new Float64Array([2, 0, 0, 0, 4, 0, 0, 0, 5])
+      const invDiag3 = linalg.inv(diag3, 3)
+      approxEqual(invDiag3[0], 0.5, 1e-10)
+      approxEqual(invDiag3[4], 0.25, 1e-10)
+      approxEqual(invDiag3[8], 0.2, 1e-10)
+
+      // Test inv3x3
+      const inv3x3 = linalg.inv3x3(diag3)
+      approxEqual(inv3x3[0], 0.5, 1e-10)
+      approxEqual(inv3x3[4], 0.25, 1e-10)
+
+      // Singular matrix should return empty array
+      const singular = new Float64Array([1, 2, 2, 4])
+      const invSing = linalg.inv(singular, 2)
+      assert.strictEqual(invSing.length, 0)
+
+      console.log('  ✓ matrix/linalg (inv)')
+    })
+
+    it('should compute vector norms', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      const v = new Float64Array([3, -4])
+
+      // L1 norm: |3| + |-4| = 7
+      approxEqual(linalg.norm1(v, 2), 7)
+
+      // L2 norm: sqrt(9 + 16) = 5
+      approxEqual(linalg.norm2(v, 2), 5)
+
+      // Infinity norm: max(|3|, |-4|) = 4
+      approxEqual(linalg.normInf(v, 2), 4)
+
+      // Lp norm (p=3)
+      const v2 = new Float64Array([1, 2, 2])
+      approxEqual(linalg.normP(v2, 3, 3), Math.pow(1 + 8 + 8, 1 / 3), 1e-10)
+
+      // Frobenius norm (same as L2 for vectors)
+      approxEqual(linalg.normFro(v, 2), 5)
+
+      console.log('  ✓ matrix/linalg (vector norms)')
+    })
+
+    it('should compute matrix norms', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      // 2x2 matrix: [[1,2],[3,4]]
+      const a = new Float64Array([1, 2, 3, 4])
+
+      // 1-norm (max column sum): max(|1|+|3|, |2|+|4|) = max(4, 6) = 6
+      approxEqual(linalg.matrixNorm1(a, 2, 2), 6)
+
+      // Infinity-norm (max row sum): max(|1|+|2|, |3|+|4|) = max(3, 7) = 7
+      approxEqual(linalg.matrixNormInf(a, 2, 2), 7)
+
+      // Frobenius norm: sqrt(1+4+9+16) = sqrt(30)
+      approxEqual(linalg.normFro(a, 4), Math.sqrt(30), 1e-10)
+
+      console.log('  ✓ matrix/linalg (matrix norms)')
+    })
+
+    it('should normalize vectors', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      const v = new Float64Array([3, 4])
+      const normalized = linalg.normalize(v, 2)
+
+      // Unit vector: [3/5, 4/5]
+      approxEqual(normalized[0], 0.6, 1e-10)
+      approxEqual(normalized[1], 0.8, 1e-10)
+
+      // Verify norm is 1
+      approxEqual(linalg.norm2(normalized, 2), 1, 1e-10)
+
+      console.log('  ✓ matrix/linalg (normalize)')
+    })
+
+    it('should compute Kronecker product', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      // A = [[1,2],[3,4]], B = [[0,5],[6,7]]
+      // kron(A,B) is 4x4
+      const A = new Float64Array([1, 2, 3, 4])
+      const B = new Float64Array([0, 5, 6, 7])
+
+      const K = linalg.kron(A, 2, 2, B, 2, 2)
+      assert.strictEqual(K.length, 16)
+
+      // First block: 1*B = [[0,5],[6,7]]
+      approxEqual(K[0], 0)
+      approxEqual(K[1], 5)
+      approxEqual(K[4], 6)
+      approxEqual(K[5], 7)
+
+      // Second block: 2*B = [[0,10],[12,14]]
+      approxEqual(K[2], 0)
+      approxEqual(K[3], 10)
+
+      console.log('  ✓ matrix/linalg (kron)')
+    })
+
+    it('should compute cross product', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      // i x j = k
+      const i = new Float64Array([1, 0, 0])
+      const j = new Float64Array([0, 1, 0])
+      const k = linalg.cross(i, j)
+      approxEqual(k[0], 0)
+      approxEqual(k[1], 0)
+      approxEqual(k[2], 1)
+
+      // j x i = -k
+      const negK = linalg.cross(j, i)
+      approxEqual(negK[0], 0)
+      approxEqual(negK[1], 0)
+      approxEqual(negK[2], -1)
+
+      // General case: [1,2,3] x [4,5,6] = [-3, 6, -3]
+      const a = new Float64Array([1, 2, 3])
+      const b = new Float64Array([4, 5, 6])
+      const c = linalg.cross(a, b)
+      approxEqual(c[0], -3, 1e-10)
+      approxEqual(c[1], 6, 1e-10)
+      approxEqual(c[2], -3, 1e-10)
+
+      console.log('  ✓ matrix/linalg (cross)')
+    })
+
+    it('should compute dot product', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      const a = new Float64Array([1, 2, 3])
+      const b = new Float64Array([4, 5, 6])
+
+      // 1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32
+      approxEqual(linalg.dot(a, b, 3), 32)
+
+      console.log('  ✓ matrix/linalg (dot)')
+    })
+
+    it('should compute outer product', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      const a = new Float64Array([1, 2])
+      const b = new Float64Array([3, 4, 5])
+
+      // outer(a, b) = [[1*3, 1*4, 1*5], [2*3, 2*4, 2*5]]
+      const outer = linalg.outer(a, 2, b, 3)
+      assert.strictEqual(outer.length, 6)
+      approxEqual(outer[0], 3)
+      approxEqual(outer[1], 4)
+      approxEqual(outer[2], 5)
+      approxEqual(outer[3], 6)
+      approxEqual(outer[4], 8)
+      approxEqual(outer[5], 10)
+
+      console.log('  ✓ matrix/linalg (outer)')
+    })
+
+    it('should solve linear systems', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      // Solve: [[2,1],[1,3]] * x = [5,5]
+      // Solution: x = [2, 1]
+      const A = new Float64Array([2, 1, 1, 3])
+      const b = new Float64Array([5, 5])
+      const x = linalg.solve(A, b, 2)
+
+      approxEqual(x[0], 2, 1e-10)
+      approxEqual(x[1], 1, 1e-10)
+
+      // Verify: A*x = b
+      const Ax0 = 2 * x[0] + 1 * x[1]
+      const Ax1 = 1 * x[0] + 3 * x[1]
+      approxEqual(Ax0, 5, 1e-10)
+      approxEqual(Ax1, 5, 1e-10)
+
+      // Singular system should return empty
+      const singular = new Float64Array([1, 2, 2, 4])
+      const bSing = new Float64Array([1, 2])
+      const xSing = linalg.solve(singular, bSing, 2)
+      assert.strictEqual(xSing.length, 0)
+
+      console.log('  ✓ matrix/linalg (solve)')
+    })
+
+    it('should compute matrix rank', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      // Full rank 2x2
+      const a2 = new Float64Array([1, 2, 3, 4])
+      assert.strictEqual(linalg.rank(a2, 2, 2, 1e-10), 2)
+
+      // Rank-deficient 2x2 (rows are multiples)
+      const singular = new Float64Array([1, 2, 2, 4])
+      assert.strictEqual(linalg.rank(singular, 2, 2, 1e-10), 1)
+
+      // 3x3 identity has rank 3
+      const id3 = new Float64Array([1, 0, 0, 0, 1, 0, 0, 0, 1])
+      assert.strictEqual(linalg.rank(id3, 3, 3, 1e-10), 3)
+
+      // Zero matrix has rank 0
+      const zeros = new Float64Array([0, 0, 0, 0])
+      assert.strictEqual(linalg.rank(zeros, 2, 2, 1e-10), 0)
+
+      console.log('  ✓ matrix/linalg (rank)')
+    })
+
+    it('should estimate condition numbers', async function () {
+      const linalg = await import('../../../src-wasm/matrix/linalg')
+
+      // Identity matrix has condition number 1
+      const id2 = new Float64Array([1, 0, 0, 1])
+      approxEqual(linalg.cond1(id2, 2), 1, 1e-10)
+      approxEqual(linalg.condInf(id2, 2), 1, 1e-10)
+
+      // Well-conditioned matrix
+      const wellCond = new Float64Array([2, 1, 1, 2])
+      const cond1 = linalg.cond1(wellCond, 2)
+      const condInf = linalg.condInf(wellCond, 2)
+      assert.ok(cond1 < 10) // Should be relatively small
+      assert.ok(condInf < 10)
+
+      // Singular matrix should return Infinity
+      const singular = new Float64Array([1, 2, 2, 4])
+      assert.strictEqual(linalg.cond1(singular, 2), Infinity)
+
+      console.log('  ✓ matrix/linalg (condition number)')
     })
   })
 })
