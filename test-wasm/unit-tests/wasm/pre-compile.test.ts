@@ -752,4 +752,266 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ signal/processing')
     })
   })
+
+  // ============================================
+  // MATRIX BASIC OPERATIONS
+  // ============================================
+  describe('Matrix Basic Operations (direct import)', function () {
+    it('should import and run matrix creation functions', async function () {
+      const matrix = await import('../../../src-wasm/matrix/basic')
+
+      // Test zeros
+      const z = matrix.zeros(2, 3)
+      assert.strictEqual(z.length, 6)
+      assert.strictEqual(z[0], 0)
+      assert.strictEqual(z[5], 0)
+
+      // Test ones
+      const o = matrix.ones(2, 3)
+      assert.strictEqual(o.length, 6)
+      assert.strictEqual(o[0], 1)
+      assert.strictEqual(o[5], 1)
+
+      // Test identity
+      const id = matrix.identity(3)
+      assert.strictEqual(id.length, 9)
+      approxEqual(id[0], 1) // (0,0)
+      approxEqual(id[4], 1) // (1,1)
+      approxEqual(id[8], 1) // (2,2)
+      approxEqual(id[1], 0) // (0,1)
+      approxEqual(id[3], 0) // (1,0)
+
+      // Test fill
+      const f = matrix.fill(2, 2, 5.0)
+      assert.strictEqual(f.length, 4)
+      approxEqual(f[0], 5)
+      approxEqual(f[3], 5)
+
+      // Test diagFromVector
+      const dv = new Float64Array([1, 2, 3])
+      const dm = matrix.diagFromVector(dv, 3)
+      approxEqual(dm[0], 1) // (0,0)
+      approxEqual(dm[4], 2) // (1,1)
+      approxEqual(dm[8], 3) // (2,2)
+      approxEqual(dm[1], 0) // off-diagonal
+
+      console.log('  ✓ matrix/basic (creation)')
+    })
+
+    it('should import and run diagonal operations', async function () {
+      const matrix = await import('../../../src-wasm/matrix/basic')
+
+      // Test matrix: [[1,2,3],[4,5,6],[7,8,9]]
+      const a = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+      // Test diag (extract main diagonal)
+      const d = matrix.diag(a, 3, 3)
+      assert.strictEqual(d.length, 3)
+      approxEqual(d[0], 1)
+      approxEqual(d[1], 5)
+      approxEqual(d[2], 9)
+
+      // Test trace
+      approxEqual(matrix.trace(a, 3), 15) // 1 + 5 + 9
+
+      // Test traceRect on non-square
+      const rect = new Float64Array([1, 2, 3, 4, 5, 6]) // 2x3
+      approxEqual(matrix.traceRect(rect, 2, 3), 6) // 1 + 5
+
+      // Test diagK (upper diagonal k=1)
+      const d1 = matrix.diagK(a, 3, 3, 1)
+      assert.strictEqual(d1.length, 2)
+      approxEqual(d1[0], 2) // (0,1)
+      approxEqual(d1[1], 6) // (1,2)
+
+      // Test diagK (lower diagonal k=-1)
+      const dm1 = matrix.diagK(a, 3, 3, -1)
+      assert.strictEqual(dm1.length, 2)
+      approxEqual(dm1[0], 4) // (1,0)
+      approxEqual(dm1[1], 8) // (2,1)
+
+      console.log('  ✓ matrix/basic (diagonal)')
+    })
+
+    it('should import and run reshape operations', async function () {
+      const matrix = await import('../../../src-wasm/matrix/basic')
+
+      const a = new Float64Array([1, 2, 3, 4, 5, 6])
+
+      // Test flatten (copy)
+      const flat = matrix.flatten(a, 6)
+      assert.strictEqual(flat.length, 6)
+      approxEqual(flat[0], 1)
+      approxEqual(flat[5], 6)
+
+      // Test reshape 2x3 -> 3x2
+      const reshaped = matrix.reshape(a, 2, 3, 3, 2)
+      assert.strictEqual(reshaped.length, 6)
+      approxEqual(reshaped[0], 1)
+      approxEqual(reshaped[5], 6)
+
+      // Test reshape with invalid size (should return empty)
+      const invalid = matrix.reshape(a, 2, 3, 2, 2)
+      assert.strictEqual(invalid.length, 0)
+
+      // Test clone
+      const c = matrix.clone(a, 6)
+      assert.strictEqual(c.length, 6)
+      approxEqual(c[0], 1)
+
+      console.log('  ✓ matrix/basic (reshape)')
+    })
+
+    it('should import and run row/column operations', async function () {
+      const matrix = await import('../../../src-wasm/matrix/basic')
+
+      // 2x3 matrix: [[1,2,3],[4,5,6]]
+      const a = new Float64Array([1, 2, 3, 4, 5, 6])
+
+      // Test getRow
+      const row0 = matrix.getRow(a, 3, 0)
+      assert.strictEqual(row0.length, 3)
+      approxEqual(row0[0], 1)
+      approxEqual(row0[1], 2)
+      approxEqual(row0[2], 3)
+
+      const row1 = matrix.getRow(a, 3, 1)
+      approxEqual(row1[0], 4)
+
+      // Test getColumn
+      const col1 = matrix.getColumn(a, 2, 3, 1)
+      assert.strictEqual(col1.length, 2)
+      approxEqual(col1[0], 2)
+      approxEqual(col1[1], 5)
+
+      // Test swapRows
+      const b = new Float64Array([1, 2, 3, 4, 5, 6])
+      matrix.swapRows(b, 3, 0, 1)
+      approxEqual(b[0], 4) // Row 1 is now first
+      approxEqual(b[3], 1) // Row 0 is now second
+
+      console.log('  ✓ matrix/basic (row/column)')
+    })
+
+    it('should import and run element-wise operations', async function () {
+      const matrix = await import('../../../src-wasm/matrix/basic')
+
+      const a = new Float64Array([1, 2, 3, 4])
+      const b = new Float64Array([2, 2, 2, 2])
+
+      // Test dotMultiply
+      const dm = matrix.dotMultiply(a, b, 4)
+      approxEqual(dm[0], 2)
+      approxEqual(dm[1], 4)
+      approxEqual(dm[2], 6)
+      approxEqual(dm[3], 8)
+
+      // Test dotDivide
+      const dd = matrix.dotDivide(a, b, 4)
+      approxEqual(dd[0], 0.5)
+      approxEqual(dd[1], 1)
+      approxEqual(dd[2], 1.5)
+      approxEqual(dd[3], 2)
+
+      // Test dotPow
+      const dp = matrix.dotPow(a, b, 4)
+      approxEqual(dp[0], 1)  // 1^2
+      approxEqual(dp[1], 4)  // 2^2
+      approxEqual(dp[2], 9)  // 3^2
+      approxEqual(dp[3], 16) // 4^2
+
+      // Test abs
+      const neg = new Float64Array([-1, 2, -3, 4])
+      const absVal = matrix.abs(neg, 4)
+      approxEqual(absVal[0], 1)
+      approxEqual(absVal[2], 3)
+
+      // Test sqrt
+      const sqrtVal = matrix.sqrt(dp, 4)
+      approxEqual(sqrtVal[0], 1)
+      approxEqual(sqrtVal[1], 2)
+      approxEqual(sqrtVal[2], 3)
+      approxEqual(sqrtVal[3], 4)
+
+      // Test square
+      const sq = matrix.square(a, 4)
+      approxEqual(sq[0], 1)
+      approxEqual(sq[1], 4)
+      approxEqual(sq[2], 9)
+      approxEqual(sq[3], 16)
+
+      console.log('  ✓ matrix/basic (element-wise)')
+    })
+
+    it('should import and run reduction operations', async function () {
+      const matrix = await import('../../../src-wasm/matrix/basic')
+
+      const a = new Float64Array([1, 2, 3, 4, 5, 6])
+
+      // Test sum
+      approxEqual(matrix.sum(a, 6), 21)
+
+      // Test prod
+      approxEqual(matrix.prod(a, 6), 720)
+
+      // Test min/max
+      approxEqual(matrix.min(a, 6), 1)
+      approxEqual(matrix.max(a, 6), 6)
+
+      // Test argmin/argmax
+      assert.strictEqual(matrix.argmin(a, 6), 0)
+      assert.strictEqual(matrix.argmax(a, 6), 5)
+
+      // Test countNonZero
+      const withZeros = new Float64Array([0, 1, 0, 2, 3, 0])
+      assert.strictEqual(matrix.countNonZero(withZeros, 6), 3)
+
+      // Test sumRows on 2x3 matrix
+      const sumR = matrix.sumRows(a, 2, 3)
+      approxEqual(sumR[0], 6)  // 1+2+3
+      approxEqual(sumR[1], 15) // 4+5+6
+
+      // Test sumCols on 2x3 matrix
+      const sumC = matrix.sumCols(a, 2, 3)
+      approxEqual(sumC[0], 5)  // 1+4
+      approxEqual(sumC[1], 7)  // 2+5
+      approxEqual(sumC[2], 9)  // 3+6
+
+      console.log('  ✓ matrix/basic (reduction)')
+    })
+
+    it('should import and run concatenation operations', async function () {
+      const matrix = await import('../../../src-wasm/matrix/basic')
+
+      // A = [[1,2],[3,4]], B = [[5,6],[7,8]]
+      const a = new Float64Array([1, 2, 3, 4])
+      const b = new Float64Array([5, 6, 7, 8])
+
+      // Test horizontal concat: [[1,2,5,6],[3,4,7,8]]
+      const h = matrix.concatHorizontal(a, 2, 2, b, 2)
+      assert.strictEqual(h.length, 8)
+      approxEqual(h[0], 1)
+      approxEqual(h[1], 2)
+      approxEqual(h[2], 5)
+      approxEqual(h[3], 6)
+      approxEqual(h[4], 3)
+      approxEqual(h[5], 4)
+      approxEqual(h[6], 7)
+      approxEqual(h[7], 8)
+
+      // Test vertical concat: [[1,2],[3,4],[5,6],[7,8]]
+      const v = matrix.concatVertical(a, 2, 2, b, 2)
+      assert.strictEqual(v.length, 8)
+      approxEqual(v[0], 1)
+      approxEqual(v[1], 2)
+      approxEqual(v[2], 3)
+      approxEqual(v[3], 4)
+      approxEqual(v[4], 5)
+      approxEqual(v[5], 6)
+      approxEqual(v[6], 7)
+      approxEqual(v[7], 8)
+
+      console.log('  ✓ matrix/basic (concatenation)')
+    })
+  })
 })
