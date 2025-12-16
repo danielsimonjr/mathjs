@@ -19,9 +19,7 @@ function approxEqual(actual: number, expected: number, tolerance = EPSILON): voi
 }
 
 describe('Pre-Compilation Tests (Direct AS Import)', function () {
-  // ============================================
   // ARITHMETIC OPERATIONS
-  // ============================================
   describe('Arithmetic Basic (direct import)', function () {
     it('should import and run basic arithmetic', async function () {
       const arith = await import('../../../src-wasm/arithmetic/basic')
@@ -65,9 +63,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // BITWISE OPERATIONS
-  // ============================================
   describe('Bitwise Operations (direct import)', function () {
     it('should import and run bitwise operations', async function () {
       const bitwise = await import('../../../src-wasm/bitwise/operations')
@@ -84,9 +80,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // COMBINATORICS
-  // ============================================
   describe('Combinatorics (direct import)', function () {
     it('should import and run combinatorics functions', async function () {
       const comb = await import('../../../src-wasm/combinatorics/basic')
@@ -102,9 +96,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // COMPLEX OPERATIONS
-  // ============================================
   describe('Complex Operations (direct import)', function () {
     it('should import and run complex operations', async function () {
       const complex = await import('../../../src-wasm/complex/operations')
@@ -119,9 +111,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // GEOMETRY OPERATIONS
-  // ============================================
   describe('Geometry Operations (direct import)', function () {
     it('should import and run geometry operations', async function () {
       const geometry = await import('../../../src-wasm/geometry/operations')
@@ -134,9 +124,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // LOGICAL OPERATIONS
-  // ============================================
   describe('Logical Operations (direct import)', function () {
     it('should import and run logical operations', async function () {
       const logical = await import('../../../src-wasm/logical/operations')
@@ -153,9 +141,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // MATRIX OPERATIONS
-  // ============================================
   describe('Matrix Operations (direct import)', function () {
     it('should import and run matrix multiply', async function () {
       const matrix = await import('../../../src-wasm/matrix/multiply')
@@ -176,9 +162,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // NUMERIC (ODE) OPERATIONS
-  // ============================================
   describe('Numeric ODE Operations (direct import)', function () {
     it('should import and run ODE utilities', async function () {
       const ode = await import('../../../src-wasm/numeric/ode')
@@ -201,9 +185,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // RELATIONAL OPERATIONS
-  // ============================================
   describe('Relational Operations (direct import)', function () {
     it('should import and run relational operations', async function () {
       const relational = await import('../../../src-wasm/relational/operations')
@@ -221,9 +203,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SET OPERATIONS
-  // ============================================
   describe('Set Operations (direct import)', function () {
     it('should import and run set operations', async function () {
       const set = await import('../../../src-wasm/set/operations')
@@ -250,9 +230,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SIGNAL PROCESSING (FFT)
-  // ============================================
   describe('Signal Processing FFT (direct import)', function () {
     it('should import and run signal processing functions', async function () {
       const signal = await import('../../../src-wasm/signal/fft')
@@ -331,9 +309,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SPECIAL FUNCTIONS
-  // ============================================
   describe('Special Functions (direct import)', function () {
     it('should import and run special functions', async function () {
       const special = await import('../../../src-wasm/special/functions')
@@ -347,9 +323,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // STATISTICS
-  // ============================================
   describe('Statistics (direct import)', function () {
     it('should import and run statistics functions', async function () {
       const stats = await import('../../../src-wasm/statistics/basic')
@@ -471,9 +445,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // STRING OPERATIONS
-  // ============================================
   describe('String Operations (direct import)', function () {
     it('should import and run string operations', async function () {
       const str = await import('../../../src-wasm/string/operations')
@@ -490,9 +462,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // TRIGONOMETRY
-  // ============================================
   describe('Trigonometry (direct import)', function () {
     it('should import and run trigonometry functions', async function () {
       const trig = await import('../../../src-wasm/trigonometry/basic')
@@ -510,9 +480,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ALGEBRA DECOMPOSITION
-  // ============================================
   describe('Algebra Decomposition (direct import)', function () {
     it('should import and run LU decomposition', async function () {
       const decomp = await import('../../../src-wasm/algebra/decomposition')
@@ -530,9 +498,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ALGEBRA SPARSE UTILITIES
-  // ============================================
   describe('Algebra Sparse Utilities (direct import)', function () {
     it('should import and run sparse matrix utilities', async function () {
       const sparse = await import('../../../src-wasm/algebra/sparse/utilities')
@@ -565,9 +531,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // MATRIX ALGORITHMS
-  // ============================================
   describe('Matrix Algorithms (direct import)', function () {
     it('should import and run matrix algorithms', async function () {
       const algo = await import('../../../src-wasm/matrix/algorithms')
@@ -594,9 +558,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // PLAIN OPERATIONS
-  // ============================================
   describe('Plain Operations (direct import)', function () {
     it('should import and run plain number operations', async function () {
       const plain = await import('../../../src-wasm/plain/operations')
@@ -672,9 +634,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // PROBABILITY DISTRIBUTIONS
-  // ============================================
   describe('Probability Distributions (direct import)', function () {
     it('should import and run probability distribution functions', async function () {
       const prob = await import('../../../src-wasm/probability/distributions')
@@ -736,9 +696,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // UTILS/CHECKS
-  // ============================================
   describe('Utils Checks (direct import)', function () {
     it('should import and run utility check functions', async function () {
       const checks = await import('../../../src-wasm/utils/checks')
@@ -809,9 +767,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ALGEBRA SOLVER (Triangular Systems)
-  // ============================================
   describe('Algebra Solver (direct import)', function () {
     it('should import and run triangular solver functions', async function () {
       const solver = await import('../../../src-wasm/algebra/solver')
@@ -864,9 +820,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SIGNAL PROCESSING (freqz, zpk2tf)
-  // ============================================
   describe('Signal Processing Functions (direct import)', function () {
     it('should import and run signal processing functions', async function () {
       const signal = await import('../../../src-wasm/signal/processing')
@@ -911,9 +865,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // MATRIX BASIC OPERATIONS
-  // ============================================
   describe('Matrix Basic Operations (direct import)', function () {
     it('should import and run matrix creation functions', async function () {
       const matrix = await import('../../../src-wasm/matrix/basic')
@@ -1173,9 +1125,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // MATRIX LINEAR ALGEBRA
-  // ============================================
   describe('Matrix Linear Algebra (direct import)', function () {
     it('should compute determinants', async function () {
       const linalg = await import('../../../src-wasm/matrix/linalg')
@@ -1450,9 +1400,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ALGEBRA EQUATIONS (Lyapunov, Sylvester)
-  // ============================================
   describe('Algebra Equations (direct import)', function () {
     it('should solve Sylvester equation AX + XB = C', async function () {
       const equations = await import('../../../src-wasm/algebra/equations')
@@ -1600,9 +1548,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SCHUR DECOMPOSITION
-  // ============================================
   describe('Schur Decomposition (direct import)', function () {
     it('should compute Schur decomposition of 2x2 matrix', async function () {
       const schur = await import('../../../src-wasm/algebra/schur')
@@ -1686,9 +1632,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // BROADCAST OPERATIONS
-  // ============================================
   describe('Broadcast Operations (direct import)', function () {
     it('should broadcast multiply matrices', async function () {
       const broadcast = await import('../../../src-wasm/matrix/broadcast')
@@ -1790,9 +1734,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SELECT / QUICKSELECT
-  // ============================================
   describe('Selection Algorithms (direct import)', function () {
     it('should select k-th smallest element', async function () {
       const select = await import('../../../src-wasm/statistics/select')
@@ -1889,9 +1831,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ROTATION MATRICES
-  // ============================================
   describe('Rotation Matrices (direct import)', function () {
     it('should create 2D rotation matrix', async function () {
       const rotation = await import('../../../src-wasm/matrix/rotation')
@@ -2058,9 +1998,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // AMD ORDERING
-  // ============================================
   describe('AMD Ordering (direct import)', function () {
     it('should compute AMD ordering', async function () {
       const amd = await import('../../../src-wasm/algebra/sparse/amd')
@@ -2147,9 +2085,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // GEOMETRY INTERSECT FUNCTIONS
-  // ============================================
   describe('Geometry Intersect Functions (direct import)', function () {
     it('should compute line-circle intersection', async function () {
       const geometry = await import('../../../src-wasm/geometry/operations')
@@ -2291,9 +2227,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // NUMERICAL CALCULUS
-  // ============================================
   describe('Numerical Calculus (direct import)', function () {
     it('should compute numerical derivatives', async function () {
       const calculus = await import('../../../src-wasm/numeric/calculus')
@@ -2368,9 +2302,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ROOT FINDING
-  // ============================================
   describe('Root Finding (direct import)', function () {
     it('should compute bisection setup', async function () {
       const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
@@ -2464,9 +2396,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // INTERPOLATION
-  // ============================================
   describe('Interpolation (direct import)', function () {
     it('should perform linear interpolation', async function () {
       const interp = await import('../../../src-wasm/numeric/interpolation')
@@ -2584,9 +2514,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // RATIONAL ARITHMETIC
-  // ============================================
   // Note: Rational arithmetic tests are skipped in pre-compile mode because they use
   // AssemblyScript-specific types (i64, StaticArray) that are not available in Node.js.
   // These functions are tested when running the full WASM build (npm run test:wasm).
@@ -2622,9 +2550,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // UNIT CONVERSION
-  // ============================================
   describe('Unit Conversion (direct import)', function () {
     it('should convert length units', async function () {
       const units = await import('../../../src-wasm/unit/conversion')
@@ -2782,9 +2708,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SPARSE MATRIX ALGORITHMS
-  // ============================================
   describe('Sparse Matrix Algorithms (direct import)', function () {
     it('should compute elimination tree', async function () {
       const sparse = await import('../../../src-wasm/matrix/sparse')
@@ -2987,9 +2911,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ADVANCED ARITHMETIC (nthRoots)
-  // ============================================
   describe('Advanced Arithmetic (direct import)', function () {
     it('should compute nth roots of unity', async function () {
       const advanced = await import('../../../src-wasm/arithmetic/advanced')
@@ -3130,9 +3052,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SOLVER EXTENSIONS
-  // ============================================
   describe('Solver Extensions (direct import)', function () {
     it('should solve lower triangular with lsolve', async function () {
       const solver = await import('../../../src-wasm/algebra/solver')
