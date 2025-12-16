@@ -2781,4 +2781,453 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ unit/conversion (array conversion)')
     })
   })
+
+  // ============================================
+  // SPARSE MATRIX ALGORITHMS
+  // ============================================
+  describe('Sparse Matrix Algorithms (direct import)', function () {
+    it('should compute elimination tree', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // Simple 4x4 tridiagonal matrix in CSC format
+      // [1, 1, 0, 0]
+      // [1, 2, 1, 0]
+      // [0, 1, 2, 1]
+      // [0, 0, 1, 1]
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const n = 4
+      const parent = new Int32Array(n)
+
+      sparse.csEtree(aIndex, aPtr, n, parent)
+
+      // Elimination tree for tridiagonal: linear chain
+      // parent[0] = 1, parent[1] = 2, parent[2] = 3, parent[3] = -1
+      assert.strictEqual(parent[0], 1)
+      assert.strictEqual(parent[1], 2)
+      assert.strictEqual(parent[2], 3)
+      assert.strictEqual(parent[3], -1)
+
+      console.log('  ✓ matrix/sparse (elimination tree)')
+    })
+
+    it('should compute post-order of elimination tree', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // Linear elimination tree: 0 -> 1 -> 2 -> 3 (root)
+      const parent = new Int32Array([1, 2, 3, -1])
+      const n = 4
+      const post = new Int32Array(n)
+
+      sparse.csPost(parent, n, post)
+
+      // Post-order: children before parents
+      // So order should be [0, 1, 2, 3]
+      assert.strictEqual(post[0], 0)
+      assert.strictEqual(post[1], 1)
+      assert.strictEqual(post[2], 2)
+      assert.strictEqual(post[3], 3)
+
+      console.log('  ✓ matrix/sparse (post-order)')
+    })
+
+    it('should permute sparse matrix', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // 3x3 diagonal matrix
+      const aValues = new Float64Array([1, 2, 3])
+      const aIndex = new Int32Array([0, 1, 2])
+      const aPtr = new Int32Array([0, 1, 2, 3])
+
+      // Reverse permutation: [2, 1, 0]
+      const q = new Int32Array([2, 1, 0])
+      const pinv = new Int32Array([2, 1, 0])
+
+      const cValues = new Float64Array(3)
+      const cIndex = new Int32Array(3)
+      const cPtr = new Int32Array(4)
+
+      const nnz = sparse.csPermute(aValues, aIndex, aPtr, pinv, q, 3, 3, cValues, cIndex, cPtr)
+
+      assert.strictEqual(nnz, 3)
+      // After permutation with reverse order, values should be reversed
+      approxEqual(cValues[0], 3, 1e-10)
+      approxEqual(cValues[1], 2, 1e-10)
+      approxEqual(cValues[2], 1, 1e-10)
+
+      console.log('  ✓ matrix/sparse (permute)')
+    })
+
+    it('should compute transpose', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // 2x3 matrix: [[1, 2, 3], [4, 5, 6]]
+      // CSC format: col 0: [1,4], col 1: [2,5], col 2: [3,6]
+      const aValues = new Float64Array([1, 4, 2, 5, 3, 6])
+      const aIndex = new Int32Array([0, 1, 0, 1, 0, 1])
+      const aPtr = new Int32Array([0, 2, 4, 6])
+      const m = 2, n = 3
+
+      const bValues = new Float64Array(6)
+      const bIndex = new Int32Array(6)
+      const bPtr = new Int32Array(3)
+
+      const nnz = sparse.csTranspose(aValues, aIndex, aPtr, m, n, bValues, bIndex, bPtr)
+
+      assert.strictEqual(nnz, 6)
+      // Transpose should be 3x2: [[1, 4], [2, 5], [3, 6]]
+      // CSC: col 0: [1, 2, 3], col 1: [4, 5, 6]
+      assert.strictEqual(bPtr[0], 0)
+      assert.strictEqual(bPtr[1], 3)
+      assert.strictEqual(bPtr[2], 6)
+
+      console.log('  ✓ matrix/sparse (transpose)')
+    })
+
+    it('should compute AMD ordering', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // Simple 4x4 matrix
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
+      const n = 4
+      const perm = new Int32Array(n)
+
+      sparse.csAmd(aIndex, aPtr, n, perm)
+
+      // Check that perm is a valid permutation (contains 0,1,2,3)
+      const sorted = Array.from(perm).sort((a, b) => a - b)
+      assert.strictEqual(sorted[0], 0)
+      assert.strictEqual(sorted[1], 1)
+      assert.strictEqual(sorted[2], 2)
+      assert.strictEqual(sorted[3], 3)
+
+      console.log('  ✓ matrix/sparse (AMD ordering)')
+    })
+
+    it('should compute RCM ordering', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // Simple 4x4 matrix
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
+      const n = 4
+      const perm = new Int32Array(n)
+
+      sparse.csRcm(aIndex, aPtr, n, perm)
+
+      // Check valid permutation
+      const sorted = Array.from(perm).sort((a, b) => a - b)
+      assert.strictEqual(sorted[0], 0)
+      assert.strictEqual(sorted[1], 1)
+      assert.strictEqual(sorted[2], 2)
+      assert.strictEqual(sorted[3], 3)
+
+      console.log('  ✓ matrix/sparse (RCM ordering)')
+    })
+
+    it('should compute inverse permutation', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      const perm = new Int32Array([2, 0, 3, 1])
+      const pinv = new Int32Array(4)
+
+      sparse.csInvPerm(perm, 4, pinv)
+
+      // perm[i] = j means pinv[j] = i
+      assert.strictEqual(pinv[2], 0)
+      assert.strictEqual(pinv[0], 1)
+      assert.strictEqual(pinv[3], 2)
+      assert.strictEqual(pinv[1], 3)
+
+      console.log('  ✓ matrix/sparse (inverse permutation)')
+    })
+
+    it('should estimate sparse multiply nnz', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // 3x3 identity matrices
+      const aPtr = new Int32Array([0, 1, 2, 3])
+      const bIndex = new Int32Array([0, 1, 2])
+      const bPtr = new Int32Array([0, 1, 2, 3])
+
+      const estimate = sparse.csMultNnzEstimate(aPtr, 3, bIndex, bPtr, 3, 3)
+
+      // Identity * Identity = Identity, so 3 nonzeros
+      assert.ok(estimate >= 3)
+
+      console.log('  ✓ matrix/sparse (multiply nnz estimate)')
+    })
+
+    it('should multiply sparse matrices', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // 2x2 identity matrix
+      const aValues = new Float64Array([1, 1])
+      const aIndex = new Int32Array([0, 1])
+      const aPtr = new Int32Array([0, 1, 2])
+
+      // Diagonal matrix [[2, 0], [0, 3]]
+      const bValues = new Float64Array([2, 3])
+      const bIndex = new Int32Array([0, 1])
+      const bPtr = new Int32Array([0, 1, 2])
+
+      // Output arrays (oversized for safety)
+      const cValues = new Float64Array(4)
+      const cIndex = new Int32Array(4)
+      const cPtr = new Int32Array(3)
+
+      const nnz = sparse.csMult(aValues, aIndex, aPtr, 2, 2, bValues, bIndex, bPtr, 2, cValues, cIndex, cPtr)
+
+      assert.strictEqual(nnz, 2)
+      approxEqual(cValues[0], 2, 1e-10)
+      approxEqual(cValues[1], 3, 1e-10)
+
+      console.log('  ✓ matrix/sparse (multiply)')
+    })
+  })
+
+  // ============================================
+  // ADVANCED ARITHMETIC (nthRoots)
+  // ============================================
+  describe('Advanced Arithmetic (direct import)', function () {
+    it('should compute nth roots of unity', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      const n = 4
+      const output = new Float64Array(2 * n)
+
+      advanced.nthRootsOfUnity(n, output)
+
+      // 4th roots of unity: 1, i, -1, -i
+      // k=0: e^(0) = 1 + 0i
+      approxEqual(output[0], 1, 1e-10)
+      approxEqual(output[1], 0, 1e-10)
+
+      // k=1: e^(iπ/2) = 0 + i
+      approxEqual(output[2], 0, 1e-10)
+      approxEqual(output[3], 1, 1e-10)
+
+      // k=2: e^(iπ) = -1 + 0i
+      approxEqual(output[4], -1, 1e-10)
+      approxEqual(output[5], 0, 1e-10)
+
+      // k=3: e^(i3π/2) = 0 - i
+      approxEqual(output[6], 0, 1e-10)
+      approxEqual(output[7], -1, 1e-10)
+
+      console.log('  ✓ arithmetic/advanced (nth roots of unity)')
+    })
+
+    it('should compute principal nth root', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // Positive numbers
+      approxEqual(advanced.nthRoot(8, 3), 2, 1e-10) // cube root of 8
+      approxEqual(advanced.nthRoot(16, 4), 2, 1e-10) // 4th root of 16
+      approxEqual(advanced.nthRoot(27, 3), 3, 1e-10) // cube root of 27
+
+      // Negative number with odd root
+      approxEqual(advanced.nthRoot(-8, 3), -2, 1e-10) // cube root of -8
+
+      // Negative number with even root - behavior differs between JS and WASM:
+      // WASM returns NaN, JS mode may return undefined
+      // This edge case is tested in full WASM mode
+
+      console.log('  ✓ arithmetic/advanced (principal nth root)')
+    })
+
+    it('should compute nth root with sign preservation', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // Positive numbers
+      approxEqual(advanced.nthRootSigned(8, 3), 2, 1e-10)
+
+      // Negative number with odd root - preserves sign
+      approxEqual(advanced.nthRootSigned(-8, 3), -2, 1e-10)
+
+      // Negative number with even root
+      approxEqual(advanced.nthRootSigned(-4, 2), Math.pow(4, 0.5), 1e-10)
+
+      console.log('  ✓ arithmetic/advanced (nth root signed)')
+    })
+
+    it('should compute nth roots of real number', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // Cube roots of 8: 2, 2*e^(2πi/3), 2*e^(4πi/3)
+      const n = 3
+      const output = new Float64Array(2 * n)
+
+      advanced.nthRootsReal(8, n, output)
+
+      // All roots should have magnitude 2
+      for (let k = 0; k < n; k++) {
+        const re = output[k * 2]
+        const im = output[k * 2 + 1]
+        const mag = Math.sqrt(re * re + im * im)
+        approxEqual(mag, 2, 1e-10)
+      }
+
+      console.log('  ✓ arithmetic/advanced (nth roots real)')
+    })
+
+    it('should compute nth roots of complex number', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // Square roots of i (0 + 1i)
+      // Roots: (1+i)/√2 and (-1-i)/√2
+      const n = 2
+      const output = new Float64Array(2 * n)
+
+      advanced.nthRootsComplex(0, 1, n, output)
+
+      // Both roots should have magnitude 1
+      for (let k = 0; k < n; k++) {
+        const re = output[k * 2]
+        const im = output[k * 2 + 1]
+        const mag = Math.sqrt(re * re + im * im)
+        approxEqual(mag, 1, 1e-10)
+      }
+
+      console.log('  ✓ arithmetic/advanced (nth roots complex)')
+    })
+
+    // Note: GCD, LCM, xgcd, invmod use i64 (BigInt) types which have
+    // compatibility issues in Node.js pre-compile mode. These are tested
+    // when running the full WASM build (npm run test:wasm).
+    it.skip('should compute GCD (uses AS i64 types)', async function () {
+      console.log('  ⊘ arithmetic/advanced (gcd - skipped, AS types)')
+    })
+
+    it.skip('should compute LCM (uses AS i64 types)', async function () {
+      console.log('  ⊘ arithmetic/advanced (lcm - skipped, AS types)')
+    })
+
+    it.skip('should compute extended GCD (uses AS i64 types)', async function () {
+      console.log('  ⊘ arithmetic/advanced (xgcd - skipped, AS types)')
+    })
+
+    it.skip('should compute modular inverse (uses AS i64 types)', async function () {
+      console.log('  ⊘ arithmetic/advanced (invmod - skipped, AS types)')
+    })
+
+    it('should compute norms', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      const values = new Float64Array([3, -4])
+
+      // L2 norm (Euclidean): sqrt(9 + 16) = 5
+      approxEqual(advanced.norm2(values, 2), 5, 1e-10)
+
+      // L1 norm: |3| + |-4| = 7
+      approxEqual(advanced.norm1(values, 2), 7, 1e-10)
+
+      // L-infinity norm: max(|3|, |-4|) = 4
+      approxEqual(advanced.normInf(values, 2), 4, 1e-10)
+
+      console.log('  ✓ arithmetic/advanced (norms)')
+    })
+  })
+
+  // ============================================
+  // SOLVER EXTENSIONS
+  // ============================================
+  describe('Solver Extensions (direct import)', function () {
+    it('should solve lower triangular with lsolve', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // L = [[2, 0], [1, 3]]
+      // Solve Lx = [4, 7]
+      // x1 = 4/2 = 2
+      // x2 = (7 - 1*2)/3 = 5/3
+      const L = new Float64Array([2, 0, 1, 3])
+      const b = new Float64Array([4, 7])
+
+      // lsolve returns a new array
+      const x = solver.lsolve(L, b, 2)
+
+      approxEqual(x[0], 2, 1e-10)
+      approxEqual(x[1], 5 / 3, 1e-10)
+
+      console.log('  ✓ algebra/solver (lsolve)')
+    })
+
+    it('should solve upper triangular with usolve', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // U = [[2, 1], [0, 3]]
+      // Solve Ux = [5, 6]
+      // x2 = 6/3 = 2
+      // x1 = (5 - 1*2)/2 = 1.5
+      const U = new Float64Array([2, 1, 0, 3])
+      const b = new Float64Array([5, 6])
+
+      // usolve returns a new array
+      const x = solver.usolve(U, b, 2)
+
+      approxEqual(x[0], 1.5, 1e-10)
+      approxEqual(x[1], 2, 1e-10)
+
+      console.log('  ✓ algebra/solver (usolve)')
+    })
+
+    it('should compute triangular rank', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // Full rank: [[2, 0], [1, 3]]
+      const L1 = new Float64Array([2, 0, 1, 3])
+      assert.strictEqual(solver.lowerTriangularRank(L1, 2), 2)
+
+      // Rank 1: [[2, 0], [1, 0]]
+      const L2 = new Float64Array([2, 0, 1, 0])
+      assert.strictEqual(solver.lowerTriangularRank(L2, 2), 1)
+
+      // Upper triangular full rank
+      const U1 = new Float64Array([2, 1, 0, 3])
+      assert.strictEqual(solver.upperTriangularRank(U1, 2), 2)
+
+      console.log('  ✓ algebra/solver (triangular rank)')
+    })
+
+    it('should solve singular lower triangular system', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // Singular system: L = [[1, 0], [1, 0]], b = [1, 1]
+      // Row 1: x1 = 1
+      // Row 2: x1 = 1 (consistent)
+      // x2 can be anything (free variable)
+      const L = new Float64Array([1, 0, 1, 0])
+      const b = new Float64Array([1, 1])
+      const solutions = new Float64Array(4) // 2 solutions max
+      const info = new Int32Array(4)
+
+      solver.lsolveAll(L, b, 2, solutions, info)
+
+      // info[0] = number of solutions (0, 1, or -1 for infinite)
+      // info[1] = number of free variables
+      assert.ok(info[0] !== 0) // Should have solution(s)
+
+      console.log('  ✓ algebra/solver (lsolveAll)')
+    })
+
+    it('should detect inconsistent system', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // Inconsistent: L = [[1, 0], [1, 0]], b = [1, 2]
+      // Row 1: x1 = 1
+      // Row 2: x1 = 2 (inconsistent!)
+      const L = new Float64Array([1, 0, 1, 0])
+      const b = new Float64Array([1, 2])
+      const solutions = new Float64Array(4)
+      const info = new Int32Array(4)
+
+      solver.lsolveAll(L, b, 2, solutions, info)
+
+      // info[0] = 0 means no solution
+      assert.strictEqual(info[0], 0)
+
+      console.log('  ✓ algebra/solver (inconsistent detection)')
+    })
+  })
 })
