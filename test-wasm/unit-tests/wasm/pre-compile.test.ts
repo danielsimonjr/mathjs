@@ -367,6 +367,108 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
 
       console.log('  ✓ statistics/basic')
     })
+
+    it('should compute quantiles and percentiles', async function () {
+      const stats = await import('../../../src-wasm/statistics/basic')
+
+      // Data must be sorted for quantile
+      const data = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+      // Median (p=0.5) = 5.5
+      approxEqual(stats.quantile(data, 10, 0.5), 5.5)
+
+      // Q1 (p=0.25) = 3.25
+      approxEqual(stats.quantile(data, 10, 0.25), 3.25)
+
+      // Q3 (p=0.75) = 7.75
+      approxEqual(stats.quantile(data, 10, 0.75), 7.75)
+
+      // Percentile (50th = median)
+      approxEqual(stats.percentile(data, 10, 50), 5.5)
+
+      // Multiple quantiles at once
+      const probs = new Float64Array([0.25, 0.5, 0.75])
+      const dataCopy = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+      const quantiles = stats.quantileSeq(dataCopy, 10, probs, 3)
+      approxEqual(quantiles[0], 3.25) // Q1
+      approxEqual(quantiles[1], 5.5)  // Median
+      approxEqual(quantiles[2], 7.75) // Q3
+
+      console.log('  ✓ statistics/quantiles')
+    })
+
+    it('should compute IQR and MAD', async function () {
+      const stats = await import('../../../src-wasm/statistics/basic')
+
+      // IQR test
+      const iqrData = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+      const iqr = stats.interquartileRange(iqrData, 10)
+      approxEqual(iqr, 4.5) // Q3 - Q1 = 7.75 - 3.25 = 4.5
+
+      // MAD test: median(|x - median(x)|)
+      const madData = new Float64Array([1, 2, 3, 4, 5])
+      const madVal = stats.mad(madData, 5)
+      // median = 3, deviations = [2, 1, 0, 1, 2], median of deviations = 1
+      approxEqual(madVal, 1)
+
+      console.log('  ✓ statistics/iqr-mad')
+    })
+
+    it('should compute z-scores', async function () {
+      const stats = await import('../../../src-wasm/statistics/basic')
+
+      const data = new Float64Array([2, 4, 6, 8, 10])
+      const zscores = stats.zscore(data, 5)
+
+      // Mean = 6, std ≈ 3.16
+      // z-scores should sum to ~0
+      const zSum = zscores[0] + zscores[1] + zscores[2] + zscores[3] + zscores[4]
+      approxEqual(zSum, 0, 1e-10)
+
+      // First z-score should be negative (below mean)
+      assert.ok(zscores[0] < 0)
+
+      // Last z-score should be positive (above mean)
+      assert.ok(zscores[4] > 0)
+
+      // Middle value (6) should have z-score ≈ 0
+      approxEqual(zscores[2], 0, 1e-10)
+
+      console.log('  ✓ statistics/zscore')
+    })
+
+    it('should compute weighted mean', async function () {
+      const stats = await import('../../../src-wasm/statistics/basic')
+
+      const values = new Float64Array([10, 20, 30])
+      const weights = new Float64Array([1, 2, 3])
+
+      // Weighted mean = (10*1 + 20*2 + 30*3) / (1+2+3) = 140/6 ≈ 23.33
+      approxEqual(stats.weightedMean(values, weights, 3), 140 / 6)
+
+      console.log('  ✓ statistics/weighted-mean')
+    })
+
+    it('should compute RMS and other measures', async function () {
+      const stats = await import('../../../src-wasm/statistics/basic')
+
+      const data = new Float64Array([3, 4])
+
+      // RMS of [3, 4] = sqrt((9+16)/2) = sqrt(12.5) ≈ 3.54
+      approxEqual(stats.rms(data, 2), Math.sqrt(12.5))
+
+      // Mean absolute deviation
+      const data2 = new Float64Array([1, 2, 3, 4, 5])
+      // Mean = 3, deviations = [2, 1, 0, 1, 2], MAD = 6/5 = 1.2
+      approxEqual(stats.meanAbsoluteDeviation(data2, 5), 1.2)
+
+      // Standard error = std / sqrt(n)
+      const se = stats.standardError(data2, 5)
+      const std = stats.std(data2, 5, false)
+      approxEqual(se, std / Math.sqrt(5))
+
+      console.log('  ✓ statistics/rms-mad-se')
+    })
   })
 
   // ============================================
