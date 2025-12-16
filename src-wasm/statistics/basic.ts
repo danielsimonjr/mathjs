@@ -297,3 +297,152 @@ export function mode(data: Float64Array, length: i32, tolerance: f64): f64 {
 
   return modeValue
 }
+
+/**
+ * Calculate covariance between two arrays
+ * @param x First array
+ * @param y Second array
+ * @param length Length of arrays
+ * @param bias If true, use biased estimator (divide by n)
+ * @returns Covariance
+ */
+export function covariance(x: Float64Array, y: Float64Array, length: i32, bias: boolean): f64 {
+  if (length === 0) return NaN
+  if (length === 1) return bias ? 0 : NaN
+
+  const meanX = mean(x, length)
+  const meanY = mean(y, length)
+
+  let sumProd: f64 = 0
+  for (let i: i32 = 0; i < length; i++) {
+    sumProd += (unchecked(x[i]) - meanX) * (unchecked(y[i]) - meanY)
+  }
+
+  const divisor = bias ? f64(length) : f64(length - 1)
+  return sumProd / divisor
+}
+
+/**
+ * Calculate Pearson correlation coefficient
+ * @param x First array
+ * @param y Second array
+ * @param length Length of arrays
+ * @returns Correlation coefficient (-1 to 1)
+ */
+export function correlation(x: Float64Array, y: Float64Array, length: i32): f64 {
+  if (length === 0) return NaN
+
+  const meanX = mean(x, length)
+  const meanY = mean(y, length)
+
+  let sumXY: f64 = 0
+  let sumX2: f64 = 0
+  let sumY2: f64 = 0
+
+  for (let i: i32 = 0; i < length; i++) {
+    const dx = unchecked(x[i]) - meanX
+    const dy = unchecked(y[i]) - meanY
+    sumXY += dx * dy
+    sumX2 += dx * dx
+    sumY2 += dy * dy
+  }
+
+  const denom = Math.sqrt(sumX2 * sumY2)
+  if (denom === 0) return NaN
+  return sumXY / denom
+}
+
+/**
+ * Calculate range (max - min)
+ * @param data Input array
+ * @param length Length of array
+ * @returns Range
+ */
+export function range(data: Float64Array, length: i32): f64 {
+  return max(data, length) - min(data, length)
+}
+
+/**
+ * Calculate geometric mean
+ * @param data Input array (all values must be positive)
+ * @param length Length of array
+ * @returns Geometric mean
+ */
+export function geometricMean(data: Float64Array, length: i32): f64 {
+  if (length === 0) return NaN
+
+  let logSum: f64 = 0
+  for (let i: i32 = 0; i < length; i++) {
+    const val = unchecked(data[i])
+    if (val <= 0) return NaN
+    logSum += Math.log(val)
+  }
+  return Math.exp(logSum / f64(length))
+}
+
+/**
+ * Calculate harmonic mean
+ * @param data Input array (all values must be positive)
+ * @param length Length of array
+ * @returns Harmonic mean
+ */
+export function harmonicMean(data: Float64Array, length: i32): f64 {
+  if (length === 0) return NaN
+
+  let recipSum: f64 = 0
+  for (let i: i32 = 0; i < length; i++) {
+    const val = unchecked(data[i])
+    if (val === 0) return 0
+    recipSum += 1.0 / val
+  }
+  return f64(length) / recipSum
+}
+
+/**
+ * Calculate skewness
+ * @param data Input array
+ * @param length Length of array
+ * @returns Skewness
+ */
+export function skewness(data: Float64Array, length: i32): f64 {
+  if (length < 3) return NaN
+
+  const m = mean(data, length)
+  const s = std(data, length, false)
+  if (s === 0) return NaN
+
+  let sum3: f64 = 0
+  for (let i: i32 = 0; i < length; i++) {
+    const diff = (unchecked(data[i]) - m) / s
+    sum3 += diff * diff * diff
+  }
+
+  const n = f64(length)
+  return (n / ((n - 1) * (n - 2))) * sum3
+}
+
+/**
+ * Calculate kurtosis (excess kurtosis)
+ * @param data Input array
+ * @param length Length of array
+ * @returns Excess kurtosis
+ */
+export function kurtosis(data: Float64Array, length: i32): f64 {
+  if (length < 4) return NaN
+
+  const m = mean(data, length)
+  const s = std(data, length, false)
+  if (s === 0) return NaN
+
+  let sum4: f64 = 0
+  for (let i: i32 = 0; i < length; i++) {
+    const diff = (unchecked(data[i]) - m) / s
+    const d2 = diff * diff
+    sum4 += d2 * d2
+  }
+
+  const n = f64(length)
+  const term1 = (n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3))
+  const term2 = (3 * (n - 1) * (n - 1)) / ((n - 2) * (n - 3))
+  return term1 * sum4 - term2
+}

@@ -249,3 +249,120 @@ export function permutationsArray(
 function min(a: i32, b: i32): i32 {
   return a < b ? a : b
 }
+
+/**
+ * Double factorial (n!!)
+ * n!! = n * (n-2) * (n-4) * ... * 1 or 2
+ * @param n The value
+ * @returns n!!
+ */
+export function doubleFactorial(n: i32): f64 {
+  if (n < 0) return NaN
+  if (n <= 1) return 1
+
+  let result: f64 = 1
+  for (let i: i32 = n; i > 1; i -= 2) {
+    result *= f64(i)
+  }
+  return result
+}
+
+/**
+ * Subfactorial (derangements) !n
+ * Number of permutations with no fixed points
+ * @param n Number of items
+ * @returns !n
+ */
+export function subfactorial(n: i32): f64 {
+  if (n < 0) return NaN
+  if (n === 0) return 1
+  if (n === 1) return 0
+
+  // Use recurrence: !n = (n-1)(!(n-1) + !(n-2))
+  let prev2: f64 = 1  // !0
+  let prev1: f64 = 0  // !1
+
+  for (let i: i32 = 2; i <= n; i++) {
+    const curr = f64(i - 1) * (prev1 + prev2)
+    prev2 = prev1
+    prev1 = curr
+  }
+  return prev1
+}
+
+/**
+ * Falling factorial (Pochhammer symbol, descending)
+ * (x)_n = x * (x-1) * ... * (x-n+1)
+ * @param x The base
+ * @param n The number of factors
+ * @returns Falling factorial
+ */
+export function fallingFactorial(x: f64, n: i32): f64 {
+  if (n < 0) return NaN
+  if (n === 0) return 1
+
+  let result: f64 = 1
+  for (let i: i32 = 0; i < n; i++) {
+    result *= (x - f64(i))
+  }
+  return result
+}
+
+/**
+ * Rising factorial (Pochhammer symbol, ascending)
+ * x^(n) = x * (x+1) * ... * (x+n-1)
+ * @param x The base
+ * @param n The number of factors
+ * @returns Rising factorial
+ */
+export function risingFactorial(x: f64, n: i32): f64 {
+  if (n < 0) return NaN
+  if (n === 0) return 1
+
+  let result: f64 = 1
+  for (let i: i32 = 0; i < n; i++) {
+    result *= (x + f64(i))
+  }
+  return result
+}
+
+/**
+ * Fibonacci number F(n)
+ * @param n The index
+ * @returns F(n)
+ */
+export function fibonacci(n: i32): f64 {
+  if (n < 0) return NaN
+  if (n <= 1) return f64(n)
+
+  let prev2: f64 = 0
+  let prev1: f64 = 1
+
+  for (let i: i32 = 2; i <= n; i++) {
+    const curr = prev1 + prev2
+    prev2 = prev1
+    prev1 = curr
+  }
+  return prev1
+}
+
+/**
+ * Lucas number L(n)
+ * @param n The index
+ * @returns L(n)
+ */
+export function lucas(n: i32): f64 {
+  if (n < 0) return NaN
+  if (n === 0) return 2
+  if (n === 1) return 1
+
+  let prev2: f64 = 2
+  let prev1: f64 = 1
+
+  for (let i: i32 = 2; i <= n; i++) {
+    const curr = prev1 + prev2
+    prev2 = prev1
+    prev1 = curr
+  }
+  return prev1
+}
