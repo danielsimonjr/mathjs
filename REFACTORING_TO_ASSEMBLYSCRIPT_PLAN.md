@@ -92,10 +92,12 @@ export function matrixMultiply(
 | **Special** | `functions.ts` | erf, erfc, gamma, lgamma, beta, zeta, besselJ0, besselJ1, besselY0, besselY1 |
 | **Statistics** | `basic.ts` | sum, mean, min, max, prod, variance, std, median, mode, range, covariance, correlation, skewness, kurtosis |
 | **Combinatorics** | `basic.ts` | factorial, permutations, combinations, combinationsWithRep, stirlingS2, bellNumbers, catalan, fibonacci, lucas |
-| **Signal** | `fft.ts` | fft, ifft, isPowerOf2 |
+| **Signal** | `fft.ts` | fft, ifft, ifft2d, isPowerOf2, powerSpectrum, magnitudeSpectrum, phaseSpectrum, crossCorrelation, autoCorrelation |
 | **Signal** | `processing.ts` | freqzUniform, magnitude, phase, polyMultiply |
 | **Matrix** | `multiply.ts` | dotProduct, scalarMultiply, matrixMultiply |
 | **Matrix** | `algorithms.ts` | algo01-14 (sparse/dense operations) |
+| **Matrix** | `basic.ts` | zeros, ones, identity, fill, diag, diagFromVector, trace, getRow, getColumn, setRow, setColumn, swapRows, transpose, flatten, reshape, dotMultiply, dotDivide, dotPow, abs, sqrt, square, sum, prod, min, max, argmin, argmax, sumRows, sumCols, concatHorizontal, concatVertical |
+| **Matrix** | `linalg.ts` | det, inv, inv2x2, inv3x3, norm1, norm2, normP, normInf, normFro, matrixNorm1, matrixNormInf, normalize, kron, cross, dot, outer, cond1, condInf, rank, solve |
 | **Numeric** | `ode.ts` | vectorAdd, vectorScale, vectorNorm, rk4Step |
 | **Algebra** | `decomposition.ts` | luDecomposition, qrDecomposition, choleskyDecomposition, luSolve, luDeterminant |
 | **Algebra** | `solver.ts` | lsolve, usolve, lsolveUnit, usolveUnit, solveTridiagonal, triangularInverse |
@@ -106,8 +108,9 @@ export function matrixMultiply(
 | **Plain** | `operations.ts` | Comprehensive scalar operations mirror |
 
 ### Test Coverage
-- **Pre-compile tests**: 25 test suites passing
+- **Pre-compile tests**: 47 individual tests passing across 33 test suites
 - **All modules tested** via `test-wasm/unit-tests/wasm/pre-compile.test.ts`
+- **WASM validation**: All modules pass AssemblyScript compilation check
 
 ---
 
@@ -139,28 +142,29 @@ Scalar functions with simple algorithms.
 ### Tier 3: MEDIUM (2-4 hours each)
 Array-based algorithms, basic linear algebra.
 
-| File | Location | Complexity | Notes |
-|------|----------|------------|-------|
-| `trace.ts` | matrix/ | ⭐⭐ | Sum of diagonal |
-| `transpose.ts` | matrix/ | ⭐⭐ | Index transposition |
-| `identity.ts` | matrix/ | ⭐ | Create identity matrix |
-| `zeros.ts` | matrix/ | ⭐ | Create zero matrix |
-| `ones.ts` | matrix/ | ⭐ | Create ones matrix |
-| `diag.ts` | matrix/ | ⭐⭐ | Diagonal extraction/creation |
-| `flatten.ts` | matrix/ | ⭐⭐ | Multi-dim to 1D |
-| `reshape.ts` | matrix/ | ⭐⭐ | Change dimensions |
-| `dot.ts` | matrix/ | ⭐⭐ | Vector dot product |
-| `cross.ts` | matrix/ | ⭐⭐ | 3D cross product |
-| `det.ts` | matrix/ | ⭐⭐⭐ | Determinant via LU |
-| `inv.ts` | matrix/ | ⭐⭐⭐ | Matrix inverse |
-| `kron.ts` | matrix/ | ⭐⭐⭐ | Kronecker product |
-| `norm.ts` | arithmetic/ | ⭐⭐⭐ | Various norms (1, 2, inf, fro) |
-| `variance.ts` | statistics/ | ⭐⭐ | Two-pass variance |
-| `std.ts` | statistics/ | ⭐⭐ | sqrt(variance) |
-| `quantileSeq.ts` | statistics/ | ⭐⭐⭐ | Percentile calculation |
-| `ifft.ts` | matrix/ | ⭐⭐⭐ | Inverse FFT |
+| File | Location | Complexity | Status | Notes |
+|------|----------|------------|--------|-------|
+| `trace.ts` | matrix/ | ⭐⭐ | ✅ Done | In `matrix/basic.ts` |
+| `transpose.ts` | matrix/ | ⭐⭐ | ✅ Done | In `matrix/basic.ts` |
+| `identity.ts` | matrix/ | ⭐ | ✅ Done | In `matrix/basic.ts` |
+| `zeros.ts` | matrix/ | ⭐ | ✅ Done | In `matrix/basic.ts` |
+| `ones.ts` | matrix/ | ⭐ | ✅ Done | In `matrix/basic.ts` |
+| `diag.ts` | matrix/ | ⭐⭐ | ✅ Done | In `matrix/basic.ts` |
+| `flatten.ts` | matrix/ | ⭐⭐ | ✅ Done | In `matrix/basic.ts` |
+| `reshape.ts` | matrix/ | ⭐⭐ | ✅ Done | In `matrix/basic.ts` |
+| `dot.ts` | matrix/ | ⭐⭐ | ✅ Done | In `matrix/linalg.ts` |
+| `cross.ts` | matrix/ | ⭐⭐ | ✅ Done | In `matrix/linalg.ts` |
+| `det.ts` | matrix/ | ⭐⭐⭐ | ✅ Done | In `matrix/linalg.ts` |
+| `inv.ts` | matrix/ | ⭐⭐⭐ | ✅ Done | In `matrix/linalg.ts` |
+| `kron.ts` | matrix/ | ⭐⭐⭐ | ✅ Done | In `matrix/linalg.ts` |
+| `norm.ts` | arithmetic/ | ⭐⭐⭐ | ✅ Done | In `matrix/linalg.ts` |
+| `variance.ts` | statistics/ | ⭐⭐ | ✅ Done | In `statistics/basic.ts` |
+| `std.ts` | statistics/ | ⭐⭐ | ✅ Done | In `statistics/basic.ts` |
+| `quantileSeq.ts` | statistics/ | ⭐⭐⭐ | Pending | Percentile calculation |
+| `ifft.ts` | matrix/ | ⭐⭐⭐ | ✅ Done | In `signal/fft.ts` |
 
-**Estimated effort**: 2-3 weeks total
+**Status**: 17/18 complete (94%)
+**Remaining**: quantileSeq
 
 ---
 
