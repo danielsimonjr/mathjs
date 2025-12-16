@@ -1,10 +1,12 @@
-// @ts-nocheck
+/**
+ * Test for core/config - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
 import sinon from 'sinon'
 
-describe('config', function () {
-  it('should allow setting config after having overwritten import', function () {
+describe('config', function (): void {
+  it('should allow setting config after having overwritten import', function (): void {
     const math2 = math.create()
 
     assert.strictEqual(math2.typeOf(math2.pi), 'number')
@@ -25,13 +27,13 @@ describe('config', function () {
 
   // TODO: test function config
 
-  it('should work with config epsilon during deprecation', function () {
+  it('should work with config epsilon during deprecation', function (): void {
     const math2 = math.create()
     // Add a spy to temporarily disable console.warn
     const warnStub = sinon.stub(console, 'warn')
 
     // Set epsilon to throw a warning and set relTol and absTol
-    assert.doesNotThrow(function () {
+    assert.doesNotThrow(function (): void {
       math2.config({ epsilon: 1e-5 })
     })
 
@@ -46,13 +48,13 @@ describe('config', function () {
     warnStub.restore()
   })
 
-  it('should work with config legacySubset during deprecation', function () {
+  it('should work with config legacySubset during deprecation', function (): void {
     const math2 = math.create()
     // Add a spy to temporarily disable console.warn
     const warnStub = sinon.stub(console, 'warn')
 
     // Set legacySubset to true and should throw a warning
-    assert.doesNotThrow(function () {
+    assert.doesNotThrow(function (): void {
       math2.config({ legacySubset: true })
     })
 
@@ -63,7 +65,7 @@ describe('config', function () {
     assert.strictEqual(warnStub.callCount, 1)
 
     // Set legacySubset to false, should not throw a warning
-    assert.doesNotThrow(function () {
+    assert.doesNotThrow(function (): void {
       math2.config({ legacySubset: false })
     })
 

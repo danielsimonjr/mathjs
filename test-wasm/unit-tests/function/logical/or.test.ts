@@ -1,8 +1,22 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test or
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
+=======
+/**
+ * Test for or - AssemblyScript-friendly TypeScript
+ */
+import assert from 'assert'
+
+import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const bignumber = math.bignumber
 const complex = math.complex
 const matrix = math.matrix
@@ -10,8 +24,13 @@ const sparse = math.sparse
 const unit = math.unit
 const or = math.or
 
+<<<<<<< HEAD
 describe('or', function () {
   it('should or two numbers correctly', function () {
+=======
+describe('or', function (): void {
+  it('should or two numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(1, 1), true)
     assert.strictEqual(or(-1, 1), true)
     assert.strictEqual(or(-1, -1), true)
@@ -28,7 +47,11 @@ describe('or', function () {
     assert.strictEqual(or(0, 0), false)
   })
 
+<<<<<<< HEAD
   it('should or two complex numbers', function () {
+=======
+  it('should or two complex numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(complex(1, 1), complex(1, 1)), true)
     assert.strictEqual(or(complex(0, 1), complex(1, 1)), true)
     assert.strictEqual(or(complex(1, 0), complex(1, 1)), true)
@@ -52,7 +75,11 @@ describe('or', function () {
     assert.strictEqual(or(complex(), complex()), false)
   })
 
+<<<<<<< HEAD
   it('should or mixed numbers and complex numbers', function () {
+=======
+  it('should or mixed numbers and complex numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(complex(1, 1), 1), true)
     assert.strictEqual(or(complex(1, 1), 0), true)
     assert.strictEqual(or(1, complex(1, 1)), true)
@@ -63,14 +90,22 @@ describe('or', function () {
     assert.strictEqual(or(complex(0, 0), 0), false)
   })
 
+<<<<<<< HEAD
   it('should or two booleans', function () {
+=======
+  it('should or two booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(true, true), true)
     assert.strictEqual(or(true, false), true)
     assert.strictEqual(or(false, true), true)
     assert.strictEqual(or(false, false), false)
   })
 
+<<<<<<< HEAD
   it('should or mixed numbers and booleans', function () {
+=======
+  it('should or mixed numbers and booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(2, true), true)
     assert.strictEqual(or(2, false), true)
     assert.strictEqual(or(0, true), true)
@@ -80,7 +115,11 @@ describe('or', function () {
     assert.strictEqual(or(false, 0), false)
   })
 
+<<<<<<< HEAD
   it('should or bignumbers', function () {
+=======
+  it('should or bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(bignumber(1), bignumber(1)), true)
     assert.strictEqual(or(bignumber(-1), bignumber(1)), true)
     assert.strictEqual(or(bignumber(-1), bignumber(-1)), true)
@@ -97,7 +136,11 @@ describe('or', function () {
     assert.strictEqual(or(bignumber(0), bignumber(0)), false)
   })
 
+<<<<<<< HEAD
   it('should or bigints', function () {
+=======
+  it('should or bigints', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(1n, 1n), true)
     assert.strictEqual(or(-1n, 1n), true)
     assert.strictEqual(or(-1n, -1n), true)
@@ -105,7 +148,11 @@ describe('or', function () {
     assert.strictEqual(or(1n, 0n), true)
   })
 
+<<<<<<< HEAD
   it('should or mixed numbers and bignumbers', function () {
+=======
+  it('should or mixed numbers and bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(bignumber(2), 3), true)
     assert.strictEqual(or(2, bignumber(2)), true)
     assert.strictEqual(or(0, bignumber(2)), true)
@@ -116,12 +163,20 @@ describe('or', function () {
     assert.strictEqual(or(bignumber(0), 0), false)
   })
 
+<<<<<<< HEAD
   it('should or mixed numbers and bigints', function () {
+=======
+  it('should or mixed numbers and bigints', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(2n, 3), true)
     assert.strictEqual(or(2, 3n), true)
   })
 
+<<<<<<< HEAD
   it('should or two units', function () {
+=======
+  it('should or two units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(or(unit('100cm'), unit('10inch')), true)
     assert.strictEqual(or(unit('100cm'), unit('0 inch')), true)
     assert.strictEqual(or(unit('0cm'), unit('1m')), true)
@@ -152,7 +207,11 @@ describe('or', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should or two arrays', function () {
+=======
+  it('should or two arrays', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(or([0, 1, 0, 12], [0, 0, 1, 22]), [
       false,
       true,
@@ -162,20 +221,33 @@ describe('or', function () {
     assert.deepStrictEqual(or([], []), [])
   })
 
+<<<<<<< HEAD
   it('should or mixed numbers and arrays', function () {
+=======
+  it('should or mixed numbers and arrays', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(or(10, [0, 2]), [true, true])
     assert.deepStrictEqual(or([0, 2], 10), [true, true])
     assert.deepStrictEqual(or(0, [0, 2]), [false, true])
     assert.deepStrictEqual(or([0, 2], 0), [false, true])
   })
 
+<<<<<<< HEAD
   describe('Array', function () {
     it('should or array - scalar', function () {
+=======
+  describe('Array', function (): void {
+    it('should or array - scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(or(10, [0, 2]), [true, true])
       assert.deepStrictEqual(or([0, 2], 10), [true, true])
     })
 
+<<<<<<< HEAD
     it('should or array - array', function () {
+=======
+    it('should or array - array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(or([0, 1, 0, 12], [0, 0, 1, 22]), [
         false,
         true,
@@ -185,7 +257,11 @@ describe('or', function () {
       assert.deepStrictEqual(or([], []), [])
     })
 
+<<<<<<< HEAD
     it('should or broadcastable arrays', function () {
+=======
+    it('should or broadcastable arrays', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(or([[0, 1, 0, 12]], [[0], [0], [1], [22]]), [
         [false, true, false, true],
         [false, true, false, true],
@@ -194,7 +270,11 @@ describe('or', function () {
       ])
     })
 
+<<<<<<< HEAD
     it('should or array - dense matrix', function () {
+=======
+    it('should or array - dense matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or([0, 1, 0, 12], matrix([0, 0, 1, 22])),
         matrix([false, true, true, true])
@@ -202,7 +282,11 @@ describe('or', function () {
       assert.deepStrictEqual(or([], matrix([])), matrix([]))
     })
 
+<<<<<<< HEAD
     it('should or array - sparse matrix', function () {
+=======
+    it('should or array - sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or(
           [
@@ -222,13 +306,22 @@ describe('or', function () {
     })
   })
 
+<<<<<<< HEAD
   describe('DenseMatrix', function () {
     it('should or dense matrix - scalar', function () {
+=======
+  describe('DenseMatrix', function (): void {
+    it('should or dense matrix - scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(or(10, matrix([0, 2])), matrix([true, true]))
       assert.deepStrictEqual(or(matrix([0, 2]), 10), matrix([true, true]))
     })
 
+<<<<<<< HEAD
     it('should or dense matrix - array', function () {
+=======
+    it('should or dense matrix - array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or(matrix([0, 1, 0, 12]), [0, 0, 1, 22]),
         matrix([false, true, true, true])
@@ -236,7 +329,11 @@ describe('or', function () {
       assert.deepStrictEqual(or(matrix([]), []), matrix([]))
     })
 
+<<<<<<< HEAD
     it('should or dense matrix - dense matrix', function () {
+=======
+    it('should or dense matrix - dense matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or(matrix([0, 1, 0, 12]), matrix([0, 0, 1, 22])),
         matrix([false, true, true, true])
@@ -244,7 +341,11 @@ describe('or', function () {
       assert.deepStrictEqual(or(matrix([]), matrix([])), matrix([]))
     })
 
+<<<<<<< HEAD
     it('should or dense matrix - sparse matrix', function () {
+=======
+    it('should or dense matrix - sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or(
           matrix([
@@ -264,8 +365,13 @@ describe('or', function () {
     })
   })
 
+<<<<<<< HEAD
   describe('SparseMatrix', function () {
     it('should or sparse matrix - scalar', function () {
+=======
+  describe('SparseMatrix', function (): void {
+    it('should or sparse matrix - scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or(10, sparse([[0], [2]])),
         matrix([[true], [true]])
@@ -276,7 +382,11 @@ describe('or', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should or sparse matrix - array', function () {
+=======
+    it('should or sparse matrix - array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or(
           sparse([
@@ -295,7 +405,11 @@ describe('or', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should or sparse matrix - dense matrix', function () {
+=======
+    it('should or sparse matrix - dense matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or(
           sparse([
@@ -314,7 +428,11 @@ describe('or', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should or sparse matrix - sparse matrix', function () {
+=======
+    it('should or sparse matrix - sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         or(
           sparse([
@@ -334,15 +452,24 @@ describe('or', function () {
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       or(1)
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      or(1)
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       or(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid type of arguments', function () {
     assert.throws(function () {
       or(2, null)
@@ -357,11 +484,31 @@ describe('or', function () {
       or(true, undefined)
     }, /TypeError: Unexpected type of argument/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
+      or(2, null)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+      or(new Date(), true)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+      or(true, new Date())
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+      or(true, undefined)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       or(undefined, true)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX or', function () {
+=======
+  it('should LaTeX or', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('or(1,2)')
     assert.strictEqual(expression.toTex(), '\\left(1\\vee2\\right)')
   })

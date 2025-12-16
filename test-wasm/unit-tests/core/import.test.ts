@@ -1,5 +1,12 @@
-// @ts-nocheck
+/**
+ * Test for core/import - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 import mathjs from '../../../src/defaultInstance.ts'
 import { approxEqual } from '../../../tools/approx.js'
 import { factory } from '../../../src/utils/factory.js'
@@ -28,10 +35,10 @@ const nestedFactory = factory('tools.misc.nested', [], () => {
   }
 })
 
-describe('import', function () {
+describe('import', function (): void {
   let math = null
 
-  beforeEach(function () {
+  beforeEach(function (): void {
     math = mathjs.create()
     math.import(
       {
@@ -44,30 +51,30 @@ describe('import', function () {
     )
   })
 
-  afterEach(function () {
+  afterEach(function (): void {
     math = null
   })
 
-  it('should import a custom member', function () {
+  it('should import a custom member', function (): void {
     assert.strictEqual(math.myvalue * 2, 84)
     assert.strictEqual(math.hello('user'), 'hello, user!')
   })
 
-  it('should not override existing functions', function () {
-    assert.throws(function () {
+  it('should not override existing functions', function (): void {
+    assert.throws(function (): void {
       math.import({ myvalue: 10 })
     }, /Error: Cannot import "myvalue": already exists/)
     assert.strictEqual(math.myvalue, 42)
   })
 
-  it('should not override existing units', function () {
-    assert.throws(function () {
+  it('should not override existing units', function (): void {
+    assert.throws(function (): void {
       math.import({ meter: 10 })
     }, /Error: Cannot import "meter": already exists/)
     assert.deepStrictEqual(math.evaluate('1 meter'), math.unit('1 meter'))
   })
 
-  it('should allow importing the same function twice if it is strictly equal', function () {
+  it('should allow importing the same function twice if it is strictly equal', function (): void {
     function foo() {
       return 'bar'
     }
@@ -84,7 +91,7 @@ describe('import', function () {
     assert.strictEqual(math.foo(), 'bar')
   })
 
-  it('should not allow importing the same function twice if it is not strictly equal', function () {
+  it('should not allow importing the same function twice if it is not strictly equal', function (): void {
     function foo1() {
       return 'bar'
     }
@@ -92,7 +99,7 @@ describe('import', function () {
       return 'bar'
     }
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.import({
         object1: {
           foo: foo1
@@ -104,22 +111,22 @@ describe('import', function () {
     }, /Error: Cannot import "foo" twice/)
   })
 
-  it('should throw no errors when silent:true', function () {
+  it('should throw no errors when silent:true', function (): void {
     math.import({ myvalue: 10 }, { silent: true })
     assert.strictEqual(math.myvalue, 42)
   })
 
-  it('should override existing functions if forced', function () {
+  it('should override existing functions if forced', function (): void {
     math.import({ myvalue: 10 }, { override: true })
     assert.strictEqual(math.myvalue, 10)
   })
 
-  it('should override existing units if forced', function () {
+  it('should override existing units if forced', function (): void {
     math.import({ meter: 10 }, { override: true })
     assert.strictEqual(math.evaluate('meter'), 10)
   })
 
-  it('should parse the user defined members', function () {
+  it('should parse the user defined members', function (): void {
     if (math.parser) {
       const parser = math.parser()
       math.add(math.myvalue, 10)
@@ -132,7 +139,7 @@ describe('import', function () {
     return array.length
   }
 
-  it("shouldn't wrap custom functions by default", function () {
+  it("shouldn't wrap custom functions by default", function (): void {
     math.import({ getSizeNotWrapped: getSize })
     assert.strictEqual(math.getSizeNotWrapped([1, 2, 3]), 3)
     assert.strictEqual(
@@ -141,13 +148,13 @@ describe('import', function () {
     )
   })
 
-  it('should wrap custom functions if wrap = true', function () {
+  it('should wrap custom functions if wrap = true', function (): void {
     math.import({ getSizeWrapped: getSize }, { wrap: true })
     assert.strictEqual(math.getSizeWrapped([1, 2, 3]), 3)
     assert.strictEqual(math.getSizeWrapped(math.matrix([1, 2, 3])), 3)
   })
 
-  it('wrapped imported functions should accept undefined and null', function () {
+  it('wrapped imported functions should accept undefined and null', function (): void {
     math.import(
       {
         testIsNull: function (obj) {
@@ -172,25 +179,25 @@ describe('import', function () {
     assert.strictEqual(math.testIsUndefined(null), false)
   })
 
-  it('should throw an error in case of wrong number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of wrong number of arguments', function (): void {
+    assert.throws(function (): void {
       math.import()
     }, /ArgumentsError/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.import('', {}, 3)
     }, /ArgumentsError/)
   })
 
-  it('should throw an error in case of wrong type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
       math.import(2)
     }, /TypeError: Factory, Object, or Array expected/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.import(function () {})
     }, /TypeError: Factory, Object, or Array expected/)
   })
 
-  it('should ignore properties on Object', function () {
+  it('should ignore properties on Object', function (): void {
     Object.prototype.foo = 'bar' // eslint-disable-line no-extend-native
 
     math.import({ baz: 456 })
@@ -201,7 +208,7 @@ describe('import', function () {
     delete Object.prototype.foo
   })
 
-  it('should return the imported object', function () {
+  it('should return the imported object', function (): void {
     math.import({ a: 24 })
     assert.deepStrictEqual(math.a, 24)
 
@@ -214,7 +221,7 @@ describe('import', function () {
     assert.strictEqual(math.a, true)
   })
 
-  it('should merge typed functions with the same name', function () {
+  it('should merge typed functions with the same name', function (): void {
     math.import({
       foo: math.typed('foo', {
         number: function (_x) {
@@ -242,7 +249,7 @@ describe('import', function () {
     }, /TypeError: Unexpected type of argument in function foo/)
   })
 
-  it('should override existing typed functions', function () {
+  it('should override existing typed functions', function (): void {
     math.import({
       foo: math.typed('foo', {
         Date: function (_x) {
@@ -269,7 +276,7 @@ describe('import', function () {
     assert.throws(function () {
       math.foo(new Date())
     }, /TypeError: Unexpected type of argument in function foo/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       math.foo(new Date())
     }, /TypeError: Unexpected type of argument in function foo/)
   })
@@ -279,7 +286,7 @@ describe('import', function () {
     assert.strictEqual(math.a, true)
   })
 
-  it('should import a function with transform', function () {
+  it('should import a function with transform', function (): void {
     function foo(text) {
       return text.toLowerCase()
     }
@@ -296,7 +303,7 @@ describe('import', function () {
     assert.strictEqual(math.expression.transform.foo, foo.transform)
   })
 
-  it('should override a function with transform for one without', function () {
+  it('should override a function with transform for one without', function (): void {
     function mean() {
       return 'test'
     }
@@ -309,7 +316,7 @@ describe('import', function () {
     assert.strictEqual(math.expression.mathWithTransform.mean, mean)
   })
 
-  it('should import a constant with a Complex value', function () {
+  it('should import a constant with a Complex value', function (): void {
     const myComplexConst = math.complex(2, 3)
 
     math.import({
@@ -319,8 +326,8 @@ describe('import', function () {
     assert.strictEqual(math.myComplexConst, myComplexConst)
   })
 
-  describe('factory', function () {
-    it('should import a factory function', function () {
+  describe('factory', function (): void {
+    it('should import a factory function', function (): void {
       const math2 = create()
 
       assert.strictEqual(math2.multiplyTest, undefined)
@@ -333,7 +340,7 @@ describe('import', function () {
       assert.strictEqual(math2.cubeTest(3), 27)
     })
 
-    it('should import an array with factory functions', function () {
+    it('should import an array with factory functions', function (): void {
       const math2 = create()
 
       assert.strictEqual(math2.multiplyTest, undefined)
@@ -345,7 +352,7 @@ describe('import', function () {
       assert.strictEqual(math2.cubeTest(3), 27)
     })
 
-    it('should not allow nested nested paths in a factory', function () {
+    it('should not allow nested nested paths in a factory', function (): void {
       const math2 = create()
 
       assert.strictEqual(math2.tools, undefined)
@@ -355,7 +362,7 @@ describe('import', function () {
       }, /Factory name should not contain a nested path/)
     })
 
-    it('should import an array with factory functions in the correct order, resolving dependencies', function () {
+    it('should import an array with factory functions in the correct order, resolving dependencies', function (): void {
       const math2 = create()
 
       assert.strictEqual(math2.multiplyTest, undefined)
@@ -368,7 +375,7 @@ describe('import', function () {
       assert.strictEqual(math2.cubeTest(3), 27)
     })
 
-    it('should NOT import factory functions with custom name', function () {
+    it('should NOT import factory functions with custom name', function (): void {
       // changed since v6
       const math2 = create()
 
@@ -388,7 +395,7 @@ describe('import', function () {
       assert.strictEqual(math2.cubeTest(3), 27)
     })
 
-    it('should throw an error when a dependency is missing with import factory', function () {
+    it('should throw an error when a dependency is missing with import factory', function (): void {
       const math2 = create()
 
       assert.throws(() => {
@@ -423,7 +430,7 @@ describe('import', function () {
     // TODO: unit test importing an Array containing stuff
   })
 
-  it('should LaTeX import', function () {
+  it('should LaTeX import', function (): void {
     const expression = math.parse('import(object)')
     assert.strictEqual(
       expression.toTex(),

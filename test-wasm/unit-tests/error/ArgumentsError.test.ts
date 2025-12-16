@@ -1,9 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for error/ArgumentsError - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { ArgumentsError } from '../../../src/error/ArgumentsError.js'
 
-describe('ArgumentsError', function () {
-  it('should construct an ArgumentsError without max', function () {
+describe('ArgumentsError', function (): void {
+  it('should construct an ArgumentsError without max', function (): void {
     const err = new ArgumentsError('myfunction', 1, 2)
     assert(err instanceof Error)
     assert(err instanceof ArgumentsError)
@@ -17,7 +19,7 @@ describe('ArgumentsError', function () {
     )
   })
 
-  it('should construct an ArgumentsError with max', function () {
+  it('should construct an ArgumentsError with max', function (): void {
     const err = new ArgumentsError('myfunction', 1, 2, 3)
     assert(err instanceof Error)
     assert(err instanceof ArgumentsError)
@@ -31,8 +33,8 @@ describe('ArgumentsError', function () {
     )
   })
 
-  it('should throw an error when operator new is missing', function () {
-    assert.throws(function () {
+  it('should throw an error when operator new is missing', function (): void {
+    assert.throws(function (): void {
       ArgumentsError()
     }, SyntaxError)
   })

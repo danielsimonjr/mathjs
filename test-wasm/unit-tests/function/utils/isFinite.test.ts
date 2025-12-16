@@ -1,11 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for isFinite function - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
 const isFinite = math.isFinite
 
-describe('isFinite', function () {
-  it('should check scalars for finiteness', function () {
+describe('isFinite', function (): void {
+  it('should check scalars for finiteness', function (): void {
     assert(isFinite(0))
     assert(isFinite(math.bignumber('0')))
     assert(isFinite(math.fraction(0)))
@@ -21,7 +23,7 @@ describe('isFinite', function () {
     assert.strictEqual(isFinite('Infinity'), false)
   })
 
-  it('should test finiteness of an Array/Matrix elementwise', function () {
+  it('should test finiteness of an Array/Matrix elementwise', function (): void {
     assert.deepStrictEqual(isFinite([1n, 1, math.complex(1, 1)]), [
       true,
       true,

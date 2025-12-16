@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for number - AssemblyScript-friendly TypeScript
+ */
 // test number utils
 import assert from 'assert'
 
@@ -15,8 +17,8 @@ import {
   toPrecision
 } from '../../../src/utils/number.js'
 
-describe('number', function () {
-  it('isInteger', function () {
+describe('number', function (): void {
+  it('isInteger', function (): void {
     assert.strictEqual(isInteger(1), true)
     assert.strictEqual(isInteger(3), true)
     assert.strictEqual(isInteger(-4), true)
@@ -31,7 +33,7 @@ describe('number', function () {
     assert.strictEqual(isInteger(NaN), false)
   })
 
-  it('sign', function () {
+  it('sign', function (): void {
     assert.strictEqual(sign(1), 1)
     assert.strictEqual(sign(3), 1)
     assert.strictEqual(sign(4.5), 1)
@@ -44,7 +46,7 @@ describe('number', function () {
     assert.strictEqual(sign(-0.23), -1)
   })
 
-  it('should count the number of significant digits of a number', function () {
+  it('should count the number of significant digits of a number', function (): void {
     assert.strictEqual(digits(0), 0)
     assert.strictEqual(digits(2), 1)
     assert.strictEqual(digits(1234), 4)
@@ -57,7 +59,7 @@ describe('number', function () {
     assert.strictEqual(digits(Math.PI), 16)
   })
 
-  it('should format a number using toFixed', function () {
+  it('should format a number using toFixed', function (): void {
     assert.strictEqual(toFixed(2.34), '2.34')
     assert.strictEqual(toFixed(2.34, 1), '2.3')
     assert.strictEqual(toFixed(-2.34, 1), '-2.3')
@@ -82,7 +84,7 @@ describe('number', function () {
     assert.strictEqual(toFixed(-2.5, 0), '-3')
   })
 
-  it('should format a number using toPrecision', function () {
+  it('should format a number using toPrecision', function (): void {
     assert.strictEqual(toPrecision(2.34), '2.34')
     assert.strictEqual(toPrecision(2.34, 2), '2.3')
     assert.strictEqual(toPrecision(-2.34, 2), '-2.3')
@@ -95,7 +97,7 @@ describe('number', function () {
     // TODO: test upper and lower bounds here
   })
 
-  it('should format a number using toExponential', function () {
+  it('should format a number using toExponential', function (): void {
     assert.strictEqual(toExponential(2.34), '2.34e+0')
     assert.strictEqual(toExponential(2.34e3), '2.34e+3')
     assert.strictEqual(toExponential(2.34e-3), '2.34e-3')
@@ -110,15 +112,15 @@ describe('number', function () {
     )
   })
 
-  describe('format', function () {
-    it('should format special values Infinity, NaN', function () {
+  describe('format', function (): void {
+    it('should format special values Infinity, NaN', function (): void {
       assert.strictEqual(format(Infinity), 'Infinity')
       assert.strictEqual(format(-Infinity), '-Infinity')
       assert.strictEqual(format('no number'), 'NaN')
     })
 
-    describe('should apply options', function () {
-      it('fixed notation', function () {
+    describe('should apply options', function (): void {
+      it('fixed notation', function (): void {
         const options = { notation: 'fixed' }
         assert.strictEqual(format(0, options), '0')
         assert.strictEqual(format(123, options), '123')
@@ -164,7 +166,7 @@ describe('number', function () {
         )
       })
 
-      it('fixed notation with precision', function () {
+      it('fixed notation with precision', function (): void {
         const notation = 'fixed'
         const options = { notation, precision: 2 }
 
@@ -221,7 +223,7 @@ describe('number', function () {
         assert.strictEqual(format(-123.456, { notation, precision: 0 }), '-123')
       })
 
-      it('exponential notation', function () {
+      it('exponential notation', function (): void {
         const options = { notation: 'exponential' }
         assert.strictEqual(format(0, options), '0e+0')
         assert.strictEqual(format(123, options), '1.23e+2')
@@ -232,14 +234,14 @@ describe('number', function () {
         assert.strictEqual(format(123456789e-9, options), '1.23456789e-1')
       })
 
-      it('exponential notation with precision', function () {
+      it('exponential notation with precision', function (): void {
         const options = { notation: 'exponential', precision: 3 }
         assert.strictEqual(format(123, options), '1.23e+2')
         assert.strictEqual(format(123.456, options), '1.23e+2')
         assert.strictEqual(format(2, options), '2.00e+0')
       })
 
-      it('auto notation', function () {
+      it('auto notation', function (): void {
         assert.strictEqual(format(2 / 7), '0.2857142857142857')
         assert.strictEqual(format(0.104), '0.104')
         assert.strictEqual(format(1000), '1000')
@@ -279,7 +281,7 @@ describe('number', function () {
         assert.strictEqual(format(1.111e6), '1.111e+6')
       })
 
-      it('auto notation with precision', function () {
+      it('auto notation with precision', function (): void {
         assert.strictEqual(format(1 / 3), '0.3333333333333333')
         assert.strictEqual(format(1 / 3, { precision: 3 }), '0.333')
         assert.strictEqual(format(1 / 3, { precision: 4 }), '0.3333')
@@ -304,7 +306,7 @@ describe('number', function () {
         assert.strictEqual(format(4, { precision: 30 }), '4')
       })
 
-      it('auto notation with custom lower and upper bound', function () {
+      it('auto notation with custom lower and upper bound', function (): void {
         const options = {
           lowerExp: -6,
           upperExp: 9
@@ -323,21 +325,21 @@ describe('number', function () {
         )
       })
 
-      it('auto notation with custom lower bound', function () {
+      it('auto notation with custom lower bound', function (): void {
         const options = { lowerExp: -6 }
         assert.strictEqual(format(0, options), '0')
         assert.strictEqual(format(1e-6, options), '0.000001')
         assert.strictEqual(format(0.999e-6, options), '9.99e-7')
       })
 
-      it('auto notation with very large custom lower bound', function () {
+      it('auto notation with very large custom lower bound', function (): void {
         assert.strictEqual(format(1, { lowerExp: -2 }), '1')
         assert.strictEqual(format(1e-1, { lowerExp: -2 }), '0.1')
         assert.strictEqual(format(1e-2, { lowerExp: -2 }), '0.01')
         assert.strictEqual(format(1e-3, { lowerExp: -2 }), '1e-3')
       })
 
-      it('auto notation with very small custom lower bound', function () {
+      it('auto notation with very small custom lower bound', function (): void {
         assert.strictEqual(format(1, { lowerExp: -2 }), '1')
         assert.strictEqual(format(0.1, { lowerExp: -2 }), '0.1')
         assert.strictEqual(format(0.01, { lowerExp: -2 }), '0.01')
@@ -387,13 +389,13 @@ describe('number', function () {
         )
       })
 
-      it('auto notation with custom upper bound', function () {
+      it('auto notation with custom upper bound', function (): void {
         const options = { upperExp: 9 }
         assert.strictEqual(format(1e9, options), '1e+9')
         assert.strictEqual(format(1e9 - 1, options), '999999999')
       })
 
-      it('auto notation with very large custom upper bound', function () {
+      it('auto notation with very large custom upper bound', function (): void {
         assert.strictEqual(
           format(1e18, { upperExp: 30 }),
           '1000000000000000000'
@@ -424,14 +426,14 @@ describe('number', function () {
         )
       })
 
-      it('auto notation with very small custom upper bound', function () {
+      it('auto notation with very small custom upper bound', function (): void {
         assert.strictEqual(format(1, { upperExp: 2 }), '1')
         assert.strictEqual(format(1e1, { upperExp: 2 }), '10')
         assert.strictEqual(format(1e2, { upperExp: 2 }), '1e+2')
         assert.strictEqual(format(1e3, { upperExp: 2 }), '1e+3')
       })
 
-      it('auto notation with custom precision, lower, and upper bound', function () {
+      it('auto notation with custom precision, lower, and upper bound', function (): void {
         const options = {
           precision: 4,
           lowerExp: -6,
@@ -448,13 +450,13 @@ describe('number', function () {
         assert.strictEqual(format(123456789123, options), '1.235e+11')
       })
 
-      it('should throw an error on unknown notation', function () {
-        assert.throws(function () {
+      it('should throw an error on unknown notation', function (): void {
+        assert.throws(function (): void {
           format(123, { notation: 'non existing' })
         })
       })
 
-      it('should split a number into sign, coefficient, exponent', function () {
+      it('should split a number into sign, coefficient, exponent', function (): void {
         assert.deepStrictEqual(splitNumber(0), {
           sign: '',
           coefficients: [0],
@@ -558,7 +560,7 @@ describe('number', function () {
         })
       })
 
-      it('should round digits of a a split number', function () {
+      it('should round digits of a a split number', function (): void {
         assert.deepStrictEqual(
           roundDigits(splitNumber(123456), 3),
           splitNumber(123000)
@@ -577,7 +579,7 @@ describe('number', function () {
         )
       })
 
-      it('should format a number with toFixed', function () {
+      it('should format a number with toFixed', function (): void {
         assert.strictEqual(toFixed(0), '0')
         assert.strictEqual(toFixed(2300), '2300')
         assert.strictEqual(toFixed(-2300), '-2300')
@@ -609,7 +611,7 @@ describe('number', function () {
         assert.strictEqual(toFixed(-Infinity, 2), '-Infinity')
       })
 
-      it('should format a number with toExponential', function () {
+      it('should format a number with toExponential', function (): void {
         assert.strictEqual(toExponential(0), '0e+0')
         assert.strictEqual(toExponential(0.15), '1.5e-1')
         assert.strictEqual(toExponential(1), '1e+0')
@@ -634,7 +636,7 @@ describe('number', function () {
         assert.strictEqual(toExponential(-Infinity, 2), '-Infinity')
       })
 
-      it('should format a number with toPrecision', function () {
+      it('should format a number with toPrecision', function (): void {
         assert.strictEqual(toPrecision(0), '0')
         assert.strictEqual(toPrecision(0.15), '0.15')
         assert.strictEqual(toPrecision(2300), '2300')
@@ -662,42 +664,42 @@ describe('number', function () {
         assert.strictEqual(toPrecision(-Infinity, 2), '-Infinity')
       })
 
-      it('should should throw an error on invalid input', function () {
-        assert.throws(function () {
+      it('should should throw an error on invalid input', function (): void {
+        assert.throws(function (): void {
           splitNumber('2.3.4')
         }, /SyntaxError/)
-        assert.throws(function () {
+        assert.throws(function (): void {
           splitNumber('2.3ee')
         }, /SyntaxError/)
-        assert.throws(function () {
+        assert.throws(function (): void {
           splitNumber('2.3e4.3')
         }, /SyntaxError/)
-        assert.throws(function () {
+        assert.throws(function (): void {
           splitNumber('2.3a')
         }, /SyntaxError/)
-        assert.throws(function () {
+        assert.throws(function (): void {
           splitNumber('foo')
         }, /SyntaxError/)
-        assert.throws(function () {
+        assert.throws(function (): void {
           splitNumber(NaN)
         }, /SyntaxError/)
-        assert.throws(function () {
+        assert.throws(function (): void {
           splitNumber('NaN')
         }, /SyntaxError/)
-        assert.throws(function () {
+        assert.throws(function (): void {
           splitNumber(new Date())
         }, /SyntaxError/)
       })
     })
 
-    it('should format numbers with precision as second parameter', function () {
+    it('should format numbers with precision as second parameter', function (): void {
       assert.strictEqual(format(1 / 3), '0.3333333333333333')
       assert.strictEqual(format(1 / 3, 5), '0.33333')
       assert.strictEqual(format(1 / 3, 3), '0.333')
       assert.strictEqual(format(2 / 3, 3), '0.667')
     })
 
-    it('should format numbers with a custom formatting function', function () {
+    it('should format numbers with a custom formatting function', function (): void {
       function asCurrency(value) {
         return '$' + value.toFixed(2)
       }
@@ -708,8 +710,8 @@ describe('number', function () {
     })
   })
 
-  describe('nearlyEqual', function () {
-    it('should test whether two numbers are nearly equal', function () {
+  describe('nearlyEqual', function (): void {
+    it('should test whether two numbers are nearly equal', function (): void {
       const relTol = 1e-2
       const absTol = 1e-5
       assert.strictEqual(nearlyEqual(1, 0.9, relTol, absTol), false)
@@ -734,7 +736,7 @@ describe('number', function () {
       assert.strictEqual(nearlyEqual(0.1 + 0.2, 0.3, 1e-14), true)
     })
 
-    it('should test whether a positive and negative number are nearly equal', function () {
+    it('should test whether a positive and negative number are nearly equal', function (): void {
       const relTol = 1e-3
       const absTol = 1e-6
       assert.strictEqual(nearlyEqual(1.2, 1.2, relTol, absTol), true)
@@ -743,7 +745,7 @@ describe('number', function () {
       assert.strictEqual(nearlyEqual(-1.2, -1.2, relTol, absTol), true)
     })
 
-    it('should test whether two large numbers are nearly equal', function () {
+    it('should test whether two large numbers are nearly equal', function (): void {
       const relTol = 1e-2
       const absTol = 1e-5
       assert.strictEqual(nearlyEqual(1e200, 0.9e200, relTol, absTol), false)
@@ -752,14 +754,14 @@ describe('number', function () {
       assert.strictEqual(nearlyEqual(1e200, 0.99e200, relTol, absTol), true)
     })
 
-    it('should test whether two small numbers are nearly equal (always true)', function () {
+    it('should test whether two small numbers are nearly equal (always true)', function (): void {
       const relTol = 1e-2
       const absTol = 1e-5
       assert.strictEqual(nearlyEqual(1e-200, 0.99e-200, relTol, absTol), true)
       assert.strictEqual(nearlyEqual(1e-200, 10e-200, relTol, absTol), true) // FIXME: why is this true?
     })
 
-    it('should compare with zero', function () {
+    it('should compare with zero', function (): void {
       const relTol = 1e-3
       const absTol = 1e-6
       assert.strictEqual(nearlyEqual(0, 0, relTol, absTol), true)
@@ -769,7 +771,7 @@ describe('number', function () {
       assert.strictEqual(nearlyEqual(0, 1e-30, relTol, absTol), true) // FIXME: why is this true?
     })
 
-    it('should compare with Infinity', function () {
+    it('should compare with Infinity', function (): void {
       const relTol = 1e-3
       const absTol = 1e-6
 
@@ -790,7 +792,7 @@ describe('number', function () {
       )
     })
 
-    it('should compare with NaN', function () {
+    it('should compare with NaN', function (): void {
       const relTol = 1e-3
       const absTol = 1e-6
       assert.strictEqual(nearlyEqual(1.2, NaN, relTol, absTol), false)
@@ -798,7 +800,7 @@ describe('number', function () {
       assert.strictEqual(nearlyEqual(NaN, NaN, relTol, absTol), false)
     })
 
-    it('should use default values when absTol and relTol are undefined', function () {
+    it('should use default values when absTol and relTol are undefined', function (): void {
       assert.strictEqual(nearlyEqual(1.2, 1.2), true)
       assert.strictEqual(nearlyEqual(1.2, 1.2, undefined), true)
       assert.strictEqual(nearlyEqual(1.2, 1.2, undefined, undefined), true)

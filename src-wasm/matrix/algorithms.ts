@@ -507,7 +507,6 @@ export function algo08SparseZeroIdentity(
  * @param b - Second operand
  * @param operation - 0=add, 1=subtract, 2=multiply, 3=divide
  */
-@inline
 function applyOperation(a: f64, b: f64, operation: i32): f64 {
   if (operation === 0) {
     return a + b
@@ -524,7 +523,6 @@ function applyOperation(a: f64, b: f64, operation: i32): f64 {
 /**
  * Helper min function
  */
-@inline
 function min(a: i32, b: i32): i32 {
   return a < b ? a : b
 }
@@ -532,7 +530,6 @@ function min(a: i32, b: i32): i32 {
 /**
  * Helper max function
  */
-@inline
 function max(a: i32, b: i32): i32 {
   return a > b ? a : b
 }

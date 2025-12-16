@@ -1,8 +1,22 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for variance.transform - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 
+<<<<<<< HEAD
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const variance = math.expression.transform.variance
 
 describe('variance.transform', function () {
@@ -71,15 +85,23 @@ describe('variance.transform', function () {
   })
 
   it('should throw an error if called with an invalid one based index', function () {
+<<<<<<< HEAD
     assert.throws(function () {
       variance(inputMatrix, 0)
     }, /Index out of range/)
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      variance(inputMatrix, 0)
+    }, /Index out of range/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       variance(inputMatrix, 4)
     }, /Index out of range/)
   })
 
   it('should throw an error if called with invalid type of arguments', function () {
+<<<<<<< HEAD
     assert.throws(function () {
       variance(new Date(), 2)
     }, /Cannot calculate variance, unexpected type of argument/)
@@ -90,6 +112,18 @@ describe('variance.transform', function () {
       variance([2, 3, null])
     }, /Cannot calculate variance, unexpected type of argument/)
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      variance(new Date(), 2)
+    }, /Cannot calculate variance, unexpected type of argument/)
+    assert.throws(function (): void {
+      variance(2, 3, null)
+    }, /Cannot calculate variance, unexpected type of argument/)
+    assert.throws(function (): void {
+      variance([2, 3, null])
+    }, /Cannot calculate variance, unexpected type of argument/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       variance(
         [
           [2, 4, 6],
@@ -99,7 +133,11 @@ describe('variance.transform', function () {
         0
       )
     }, /Cannot convert "biased" to a number/)
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       variance(
         [
           [2, 4, 6],
@@ -112,7 +150,11 @@ describe('variance.transform', function () {
   })
 
   it('should throw an error if called with an empty array', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       variance([])
     })
   })
@@ -139,7 +181,11 @@ describe('variance.transform', function () {
   it('should not compute the variance of quantities with incompatible units', function () {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'kg')
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       variance([a, b])
     }, /Units do not match/)
   })

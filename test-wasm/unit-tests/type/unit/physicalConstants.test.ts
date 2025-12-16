@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for physicalConstants - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import {
@@ -59,8 +61,8 @@ import math from '../../../../src/defaultInstance.ts'
 
 const { BigNumber, Unit } = math
 
-describe('physical constants', function () {
-  it('should return the correct value and unit for physical constants', function () {
+describe('physical constants', function (): void {
+  it('should return the correct value and unit for physical constants', function (): void {
     // Note: to keep these unit tests readable and compact, the toString() of the units is compared
     const config = { number: 'number', precision: 64, relTol: 1e-12 }
     const dependencies = { config, BigNumber, Unit }
@@ -284,7 +286,7 @@ describe('physical constants', function () {
     )
   })
 
-  it('should create BigNumber unit values if configured', function () {
+  it('should create BigNumber unit values if configured', function (): void {
     const config = { number: 'BigNumber', precision: 64, relTol: 1e-12 }
     const dependencies = { config, BigNumber, Unit }
     const molarMass = createMolarMass(dependencies)

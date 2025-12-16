@@ -1,6 +1,20 @@
+<<<<<<< HEAD
 // @ts-nocheck
 /* eslint-disable no-loss-of-precision */
 
+=======
+/**
+ * Test for atanh - AssemblyScript-friendly TypeScript
+ */
+/* eslint-disable no-loss-of-precision */
+
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -16,13 +30,22 @@ const predmath = math.create({ predictable: true })
 const atanhBig = bigmath.atanh
 const Big = bigmath.bignumber
 
+<<<<<<< HEAD
 describe('atanh', function () {
   it('should return the hyperbolic arctan of a boolean', function () {
+=======
+describe('atanh', function (): void {
+  it('should return the hyperbolic arctan of a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(atanh(true), Infinity)
     assert.strictEqual(atanh(false), 0)
   })
 
+<<<<<<< HEAD
   it('should return the hyperbolic arctan of a number', function () {
+=======
+  it('should return the hyperbolic arctan of a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(atanh(-2), complex(-0.54930614433405485, pi / 2))
     approxDeepEqual(atanh(2), complex(0.54930614433405485, -pi / 2))
     // assert.ok(isNaN(atanh(-2)))
@@ -35,12 +58,20 @@ describe('atanh', function () {
     approxEqual(atanh(1), Infinity)
   })
 
+<<<<<<< HEAD
   it('should return the hyperbolic arctan of a number when predictable:true', function () {
+=======
+  it('should return the hyperbolic arctan of a number when predictable:true', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(typeof predmath.atanh(-2), 'number')
     assert(isNaN(predmath.atanh(-2)))
   })
 
+<<<<<<< HEAD
   it('should return the hyperbolic arctan of a bignumber', function () {
+=======
+  it('should return the hyperbolic arctan of a bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arg1 = Big(-1)
     const arg2 = Big(-0.5)
     assert.deepStrictEqual(atanhBig(arg1).toString(), '-Infinity')
@@ -54,14 +85,22 @@ describe('atanh', function () {
     assert.deepStrictEqual(arg2, Big(-0.5))
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of hyperbolic tan', function () {
+=======
+  it('should be the inverse function of hyperbolic tan', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(atanh(tanh(-1)), -1)
     approxEqual(atanh(tanh(0)), 0)
     approxEqual(atanh(tanh(0.1)), 0.1)
     approxEqual(atanh(tanh(0.5)), 0.5)
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of bignumber tanh', function () {
+=======
+  it('should be the inverse function of bignumber tanh', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(atanhBig(bigmath.tanh(Big(-0.5))), Big(-0.5))
     assert.deepStrictEqual(atanhBig(bigmath.tanh(Big(0))), Big(0))
     assert.deepStrictEqual(atanhBig(bigmath.tanh(Big(0.5))), Big(0.5))
@@ -75,7 +114,11 @@ describe('atanh', function () {
     assert.ok(atanh(Big(1.1)).isNaN())
   })
 
+<<<<<<< HEAD
   it('should return the arctanh of a complex number', function () {
+=======
+  it('should return the arctanh of a complex number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       atanh(complex('2+3i')),
       complex(0.1469466662255, 1.33897252229449)
@@ -104,22 +147,39 @@ describe('atanh', function () {
     approxDeepEqual(atanh(complex('-2')), complex(-0.54930614433405485, pi / 2))
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a unit', function () {
     assert.throws(function () {
       atanh(unit('45deg'))
     })
     assert.throws(function () {
+=======
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
+      atanh(unit('45deg'))
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       atanh(unit('5 celsius'))
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a string', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       atanh('string')
     })
   })
 
+<<<<<<< HEAD
   it('should not operate on arrays and matrices', function () {
+=======
+  it('should not operate on arrays and matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.throws(() => atanh([-1, 0, 1]), TypeError)
     assert.throws(() => atanh(matrix([-1, 0, 1])), TypeError)
     const atanh101 = [-Infinity, 0, Infinity]
@@ -130,16 +190,28 @@ describe('atanh', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       atanh()
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      atanh()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       atanh(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX atanh', function () {
+=======
+  it('should LaTeX atanh', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('atanh(0.5)')
     assert.strictEqual(expression.toTex(), '\\tanh^{-1}\\left(0.5\\right)')
   })

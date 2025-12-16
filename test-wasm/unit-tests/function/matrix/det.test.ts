@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for det - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const BigNumber = math.BigNumber
@@ -9,8 +15,18 @@ const det = math.det
 const diag = math.diag
 const identity = math.identity
 
+<<<<<<< HEAD
 describe('det', function () {
   it('should calculate correctly the determinant of a NxN matrix', function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('det', function (): void {
+  it('should calculate correctly the determinant of a NxN matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(det([5]), 5)
     assert.strictEqual(
       det([
@@ -75,7 +91,11 @@ describe('det', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return the determinant of a sparse matrix', function () {
+=======
+  it('should return the determinant of a sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       det(
         new SparseMatrix([
@@ -90,13 +110,21 @@ describe('det', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return 1 for the identity matrix', function () {
+=======
+  it('should return 1 for the identity matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(det(identity(7)), 1)
     assert.strictEqual(det(identity(2)), 1)
     assert.strictEqual(det(identity(1)), 1)
   })
 
+<<<<<<< HEAD
   it('should return 0 for a singular matrix', function () {
+=======
+  it('should return 0 for a singular matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       det([
         [1, 0],
@@ -128,7 +156,11 @@ describe('det', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should calculate the determinant for a scalar', function () {
+=======
+  it('should calculate the determinant for a scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(det(7), 7)
 
     const c1 = new Complex(2, 3)
@@ -141,7 +173,11 @@ describe('det', function () {
     assert.strictEqual(c2.re, 2)
   })
 
+<<<<<<< HEAD
   it('should calculate the determinant for a 1x1 matrix', function () {
+=======
+  it('should calculate the determinant for a 1x1 matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const c1 = new Complex(2, 3)
     const c2 = det([[c1]])
     assert.deepStrictEqual(c1, c2)
@@ -152,7 +188,11 @@ describe('det', function () {
     assert.strictEqual(c2.re, 2)
   })
 
+<<<<<<< HEAD
   it('should calculate correctly the determinant of a matrix with bignumbers', function () {
+=======
+  it('should calculate correctly the determinant of a matrix with bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // 1x1
     assert.deepStrictEqual(det([new BigNumber(5)]), new BigNumber(5))
 
@@ -185,7 +225,11 @@ describe('det', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should calculate the determinant of a matrix with mixed numbers and bignumbers', function () {
+=======
+  it('should calculate the determinant of a matrix with mixed numbers and bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       det([
         [1, new BigNumber(2)],
@@ -195,7 +239,11 @@ describe('det', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return 1 for an empty array or matrix', function () {
+=======
+  it('should return 1 for an empty array or matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(det([]), 1)
     assert.deepStrictEqual(det([[]]), 1)
     assert.deepStrictEqual(det([[], []]), 1)
@@ -205,7 +253,11 @@ describe('det', function () {
     assert.deepStrictEqual(det(math.matrix([[], []])), 1)
   })
 
+<<<<<<< HEAD
   it('should not change the value of the initial matrix', function () {
+=======
+  it('should not change the value of the initial matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = [
       [1, 2, 3],
       [4, 5, 6],
@@ -219,31 +271,55 @@ describe('det', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should not accept a non-square matrix', function () {
     assert.throws(function () {
       det([1, 2])
     })
     assert.throws(function () {
+=======
+  it('should not accept a non-square matrix', function (): void {
+    assert.throws(function (): void {
+      det([1, 2])
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       det([
         [1, 2, 3],
         [1, 2, 3]
       ])
     })
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       det([0, 1], [0, 1], [0, 1])
     })
   })
 
+<<<<<<< HEAD
   it('should not accept arrays with dimensions higher than 2', function () {
     assert.throws(function () {
       det([[[1]]])
     }, RangeError)
     assert.throws(function () {
+=======
+  it('should not accept arrays with dimensions higher than 2', function (): void {
+    assert.throws(function (): void {
+      det([[[1]]])
+    }, RangeError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       det(new DenseMatrix([[[1]]]))
     }, RangeError)
   })
 
+<<<<<<< HEAD
   it('should LaTeX det', function () {
+=======
+  it('should LaTeX det', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('det([1])')
     assert.strictEqual(
       expression.toTex(),

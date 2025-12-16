@@ -1,9 +1,23 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test ceil
+=======
+/**
+ * Test for ceil - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+<<<<<<< HEAD
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const {
   bignumber,
   ceil,
@@ -18,13 +32,22 @@ const {
   sparse
 } = math
 
+<<<<<<< HEAD
 describe('ceil', function () {
   it('should return the ceil of a boolean', function () {
+=======
+describe('ceil', function (): void {
+  it('should return the ceil of a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(ceil(true), 1)
     assert.strictEqual(ceil(false), 0)
   })
 
+<<<<<<< HEAD
   it('should return the ceil of a number', function () {
+=======
+  it('should return the ceil of a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(ceil(0), 0)
     approxEqual(ceil(1), 1)
     approxEqual(ceil(1.3), 2)
@@ -38,7 +61,11 @@ describe('ceil', function () {
     approxEqual(ceil(pi), 4)
   })
 
+<<<<<<< HEAD
   it('should return the ceil of a number with a given number of decimals', function () {
+=======
+  it('should return the ceil of a number with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(ceil(0, 5), 0)
     approxEqual(ceil(2, 3), 2)
     approxEqual(ceil(math.pi, 3), 3.142)
@@ -50,13 +77,21 @@ describe('ceil', function () {
     approxEqual(ceil(-2.178, 2), -2.17)
   })
 
+<<<<<<< HEAD
   it('should be safe to call with a bigint', function () {
+=======
+  it('should be safe to call with a bigint', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = 12345678901234567890n
     assert.strictEqual(ceil(b), b)
     assert.strictEqual(ceil(b, 7), b)
   })
 
+<<<<<<< HEAD
   it('should return the ceil of a big number', function () {
+=======
+  it('should return the ceil of a big number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(ceil(bignumber(0)), bignumber(0))
     assert.deepStrictEqual(ceil(bignumber(1)), bignumber(1))
     assert.deepStrictEqual(ceil(bignumber(1.3)), bignumber(2))
@@ -69,7 +104,11 @@ describe('ceil', function () {
     assert.deepStrictEqual(ceil(bignumber(-2.1)), bignumber(-2))
   })
 
+<<<<<<< HEAD
   it('should return the ceil of a big number with a given number of decimals', function () {
+=======
+  it('should return the ceil of a big number with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(ceil(bignumber(0), 3), bignumber(0))
     assert.deepStrictEqual(ceil(bignumber(1), 3), bignumber(1))
     assert.deepStrictEqual(ceil(bignumber(1.315), 2), bignumber(1.32))
@@ -86,14 +125,22 @@ describe('ceil', function () {
     assert.deepStrictEqual(ceil(bignumber(-2.1), 0), bignumber(-2))
   })
 
+<<<<<<< HEAD
   it('should return the ceil of real and imag part of a complex', function () {
+=======
+  it('should return the ceil of real and imag part of a complex', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(ceil(complex(0, 0)), complex(0, 0))
     approxDeepEqual(ceil(complex(1.3, 1.8)), complex(2, 2))
     approxDeepEqual(ceil(i), complex(0, 1))
     approxDeepEqual(ceil(complex(-1.3, -1.8)), complex(-1, -1))
   })
 
+<<<<<<< HEAD
   it('should return the ceil of real and imag part of a complex with a given number of decimals', function () {
+=======
+  it('should return the ceil of real and imag part of a complex with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(ceil(complex(0, 0), 3), complex(0, 0))
     approxDeepEqual(ceil(complex(1.3, 1.8), 0), complex(2, 2))
     approxDeepEqual(ceil(complex(1.3, 1.8), 1), complex(1.3, 1.8))
@@ -109,7 +156,11 @@ describe('ceil', function () {
     approxDeepEqual(ceil(complex(-1.315, -1.878), 2), complex(-1.31, -1.87))
   })
 
+<<<<<<< HEAD
   it('should return the ceil of a fraction', function () {
+=======
+  it('should return the ceil of a fraction', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = fraction('2/3')
     assert(isFraction(ceil(a)))
     assert.strictEqual(a.toString(), '0.(6)')
@@ -126,7 +177,11 @@ describe('ceil', function () {
     assert.strictEqual(ceil(fraction(-2.1)).toString(), '-2')
   })
 
+<<<<<<< HEAD
   it('should return the ceil of a fraction with a given number of decimals', function () {
+=======
+  it('should return the ceil of a fraction with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = fraction('2/3')
     assert(isFraction(ceil(a, 0)))
     assert.strictEqual(a.toString(), '0.(6)')
@@ -142,7 +197,11 @@ describe('ceil', function () {
     assert.strictEqual(ceil(fraction(-1.315), 2).toString(), '-1.31')
   })
 
+<<<<<<< HEAD
   it('should gracefully handle round-off errors', function () {
+=======
+  it('should gracefully handle round-off errors', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(ceil(3.0000000000000004), 3)
     assert.strictEqual(ceil(7.999999999999999), 8)
     assert.strictEqual(ceil(-3.0000000000000004), -3)
@@ -162,7 +221,11 @@ describe('ceil', function () {
     assert.strictEqual(ceil(-799999.9999999999, 2), -800000)
   })
 
+<<<<<<< HEAD
   it('should gracefully handle round-off errors with bignumbers', function () {
+=======
+  it('should gracefully handle round-off errors with bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(ceil(bignumber(3.0000000000000004)), bignumber(3))
     assert.deepStrictEqual(ceil(bignumber(7.999999999999999)), bignumber(8))
     assert.deepStrictEqual(ceil(bignumber(-3.0000000000000004)), bignumber(-3))
@@ -185,7 +248,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should not be confused by default tolerances', function () {
+=======
+  it('should not be confused by default tolerances', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(ceil(1234567890123.4), 1234567890124)
     assert.strictEqual(
       ceil(bignumber('12345678901234567890.4')).toFixed(),
@@ -193,7 +260,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil units', function () {
+=======
+  it('should ceil units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       ceil(unit('5.01 inch'), unit('inch')),
       unit('6 inch')
@@ -231,23 +302,36 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if used with a unit without valueless unit', function () {
     assert.throws(
       function () {
+=======
+  it('should throw an error if used with a unit without valueless unit', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ceil(unit('5cm'))
       },
       TypeError,
       'Function ceil(unit) not supported'
     )
+<<<<<<< HEAD
     assert.throws(
       function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ceil(unit('5cm'), 2)
       },
       TypeError,
       'Function ceil(unit) not supported'
     )
+<<<<<<< HEAD
     assert.throws(
       function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ceil(unit('5cm'), bignumber(2))
       },
       TypeError,
@@ -255,18 +339,31 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if used with a unit with a second unit that is not valueless', function () {
     assert.throws(function () {
       ceil(unit('2 inch'), 1, unit('10 cm'))
     }, Error)
     assert.throws(function () {
+=======
+  it('should throw an error if used with a unit with a second unit that is not valueless', function (): void {
+    assert.throws(function (): void {
+      ceil(unit('2 inch'), 1, unit('10 cm'))
+    }, Error)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       ceil(unit('2 inch'), unit('10 cm'))
     }, Error)
   })
 
+<<<<<<< HEAD
   it('should throw an error for units', function () {
     assert.throws(
       function () {
+=======
+  it('should throw an error for units', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ceil(unit('5cm'))
       },
       TypeError,
@@ -274,23 +371,36 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if requested number of decimals is incorrect', function () {
     assert.throws(
       function () {
+=======
+  it('should throw an error if requested number of decimals is incorrect', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ceil(2.5, 1.5)
       },
       Error,
       'Number of decimals in function round must be an integer'
     )
+<<<<<<< HEAD
     assert.throws(
       function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ceil(2.5, -2)
       },
       Error,
       ' Number of decimals in function round must be in the range of 0-15'
     )
+<<<<<<< HEAD
     assert.throws(
       function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ceil(2.5, Infinity)
       },
       Error,
@@ -298,7 +408,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should convert a string to a number', function () {
+=======
+  it('should convert a string to a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(ceil('1.8'), 2)
     assert.strictEqual(ceil('1.815', '2'), 1.82)
     assert.strictEqual(ceil('1.815', 2).toString(), '1.82')
@@ -313,7 +427,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil each element in a matrix with a given number of decimals', function () {
+=======
+  it('should ceil each element in a matrix with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       ceil([1.282, 3.415, -5.121, -10.128], 2),
       [1.29, 3.42, -5.12, -10.12]
@@ -328,11 +446,19 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil when number of decimals is provided in an array', function () {
     assert.deepStrictEqual(ceil(3.12385, [2, 3]), [3.13, 3.124])
   })
 
   it('should ceil when number of decimals is provided in a matrix', function () {
+=======
+  it('should ceil when number of decimals is provided in an array', function (): void {
+    assert.deepStrictEqual(ceil(3.12385, [2, 3]), [3.13, 3.124])
+  })
+
+  it('should ceil when number of decimals is provided in a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(ceil(3.12385, matrix([2, 3])), matrix([3.13, 3.124]))
     assert.deepStrictEqual(ceil(0, matrix([2, 9, 12])), matrix([0, 0, 0]))
     assert.deepStrictEqual(
@@ -341,7 +467,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil dense matrix', function () {
+=======
+  it('should ceil dense matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       ceil(
         matrix([
@@ -357,7 +487,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil dense matrix and scalar', function () {
+=======
+  it('should ceil dense matrix and scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       ceil(
         matrix([
@@ -373,7 +507,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil dense matrix with given bignumber decimals', function () {
+=======
+  it('should ceil dense matrix with given bignumber decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expected = matrix([
       [1.778, 2.346],
       [-90.827, 0]
@@ -390,7 +528,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil sparse matrix', function () {
+=======
+  it('should ceil sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       ceil(
         sparse([
@@ -406,7 +548,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil sparse matrix and scalar', function () {
+=======
+  it('should ceil sparse matrix and scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       ceil(
         sparse([
@@ -422,7 +568,11 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should ceil sparse matrix with given bignumber decimals', function () {
+=======
+  it('should ceil sparse matrix with given bignumber decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expected = bignumber(
       sparse([
         [1.778, 2.346],
@@ -441,25 +591,45 @@ describe('ceil', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       ceil()
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      ceil()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       ceil(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should throw an in case of wrong type of arguments', function () {
     assert.throws(function () {
       ceil(null)
     }, /TypeError: Unexpected type of argument/)
     assert.throws(function () {
+=======
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
+      ceil(null)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       ceil(42, null)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX ceil', function () {
+=======
+  it('should LaTeX ceil', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = parse('ceil(0.5)')
     assert.strictEqual(expression.toTex(), '\\left\\lceil0.5\\right\\rceil')
   })

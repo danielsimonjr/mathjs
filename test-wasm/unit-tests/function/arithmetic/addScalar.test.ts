@@ -1,45 +1,83 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test add
+=======
+/**
+ * Test for addScalar - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 import Decimal from 'decimal.js'
+<<<<<<< HEAD
 const { add, BigNumber } = math
 
 // TODO: make unit tests independent of math
 describe('addScalar', function () {
   it('should add two numbers', function () {
+=======
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+const { add, BigNumber } = math
+
+// TODO: make unit tests independent of math
+describe('addScalar', function (): void {
+  it('should add two numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(add(2, 3), 5)
     assert.strictEqual(add(-2, 3), 1)
     assert.strictEqual(add(2, -3), -1)
     assert.strictEqual(add(-5, -3), -8)
   })
 
+<<<<<<< HEAD
   it('should add bigint', function () {
     assert.strictEqual(add(2n, 3n), 5n)
   })
 
   it('should add booleans', function () {
+=======
+  it('should add bigint', function (): void {
+    assert.strictEqual(add(2n, 3n), 5n)
+  })
+
+  it('should add booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(add(true, true), 2)
     assert.strictEqual(add(true, false), 1)
     assert.strictEqual(add(false, true), 1)
     assert.strictEqual(add(false, false), 0)
   })
 
+<<<<<<< HEAD
   it('does not support null', function () {
     assert.throws(function () {
+=======
+  it('does not support null', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(null, 0)
     }, /Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
   it('should add mixed numbers and booleans', function () {
+=======
+  it('should add mixed numbers and booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(add(2, true), 3)
     assert.strictEqual(add(2, false), 2)
     assert.strictEqual(add(true, 2), 3)
     assert.strictEqual(add(false, 2), 2)
   })
 
+<<<<<<< HEAD
   it('should add mixed numbers and bigint', function () {
     assert.strictEqual(add(2, 3n), 5)
     assert.strictEqual(add(2n, 3), 5)
@@ -48,11 +86,25 @@ describe('addScalar', function () {
       add(123123123123123123123n, 1)
     }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
     assert.throws(function () {
+=======
+  it('should add mixed numbers and bigint', function (): void {
+    assert.strictEqual(add(2, 3n), 5)
+    assert.strictEqual(add(2n, 3), 5)
+
+    assert.throws(function (): void {
+      add(123123123123123123123n, 1)
+    }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(1, 123123123123123123123n)
     }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
   })
 
+<<<<<<< HEAD
   it('should add BigNumbers', function () {
+=======
+  it('should add BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       add(new BigNumber(0.1), new BigNumber(0.2)),
       new BigNumber(0.3)
@@ -67,27 +119,46 @@ describe('addScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should add mixed numbers and BigNumbers', function () {
+=======
+  it('should add mixed numbers and BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(add(new BigNumber(0.1), 0.2), new BigNumber(0.3))
     assert.deepStrictEqual(
       add(0.1, new BigNumber(0.2)),
       new math.BigNumber(0.3)
     )
 
+<<<<<<< HEAD
     assert.throws(function () {
       add(1 / 3, new BigNumber(1))
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      add(1 / 3, new BigNumber(1))
+    }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(new BigNumber(1), 1 / 3)
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
   })
 
+<<<<<<< HEAD
   it('should add mixed bigints and BigNumbers', function () {
+=======
+  it('should add mixed bigints and BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(add(new BigNumber(2), 3n), new BigNumber(5))
     assert.deepStrictEqual(add(2n, new BigNumber(3)), new BigNumber(5))
   })
 
+<<<<<<< HEAD
   it('should add mixed booleans and BigNumbers', function () {
+=======
+  it('should add mixed booleans and BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(add(new BigNumber(0.1), true), new BigNumber(1.1))
     assert.deepStrictEqual(add(new BigNumber(0.1), false), new BigNumber(0.1))
     assert.deepStrictEqual(
@@ -100,14 +171,22 @@ describe('addScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should add mixed booleans and bigint', function () {
+=======
+  it('should add mixed booleans and bigint', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(add(2n, true), 3n)
     assert.deepStrictEqual(add(2n, false), 2n)
     assert.deepStrictEqual(add(true, 2n), 3n)
     assert.deepStrictEqual(add(false, 2n), 2n)
   })
 
+<<<<<<< HEAD
   it('should add mixed complex numbers and BigNumbers', function () {
+=======
+  it('should add mixed complex numbers and BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       add(math.complex(3, -4), new BigNumber(2)),
       math.complex(5, -4)
@@ -118,7 +197,11 @@ describe('addScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should add Decimals', function () {
+=======
+  it('should add Decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(add(Decimal(0.1), Decimal(0.2)), Decimal(0.3))
     assert.deepStrictEqual(add(Decimal(0.1), 0.2), Decimal(0.3))
     assert.deepStrictEqual(
@@ -131,7 +214,11 @@ describe('addScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should add two complex numbers', function () {
+=======
+  it('should add two complex numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       add(math.complex(3, -4), math.complex(8, 2)),
       math.complex('11 - 2i')
@@ -146,7 +233,11 @@ describe('addScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should add two fractions', function () {
+=======
+  it('should add two fractions', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = math.fraction(1, 3)
     assert.strictEqual(add(a, math.fraction(1, 6)).toString(), '0.5')
     assert.strictEqual(a.toString(), '0.(3)')
@@ -160,53 +251,95 @@ describe('addScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should add mixed fractions and numbers', function () {
+=======
+  it('should add mixed fractions and numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(add(1, math.fraction(1, 3)), math.fraction(4, 3))
     assert.deepStrictEqual(add(math.fraction(1, 3), 1), math.fraction(4, 3))
   })
 
+<<<<<<< HEAD
   it('should add mixed fractions and bigints', function () {
+=======
+  it('should add mixed fractions and bigints', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(add(1n, math.fraction(1, 3)), math.fraction(4, 3))
     assert.deepStrictEqual(add(math.fraction(1, 3), 1n), math.fraction(4, 3))
   })
 
+<<<<<<< HEAD
   it('should throw an error when converting a number to a fraction that is not an exact representation', function () {
     assert.throws(function () {
+=======
+  it('should throw an error when converting a number to a fraction that is not an exact representation', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(math.pi, math.fraction(1, 3))
     }, /Cannot implicitly convert a number to a Fraction when there will be a loss of precision/)
   })
 
+<<<<<<< HEAD
   it('should add strings to numbers', function () {
+=======
+  it('should add strings to numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(add('2', '3'), 5)
     assert.strictEqual(add(2, '3'), 5)
     assert.strictEqual(add('2', 3), 5)
   })
 
+<<<<<<< HEAD
   it('should add strings to BigNumbers', function () {
     assert.deepStrictEqual(add('2', math.bignumber(3)), math.bignumber(5))
     assert.deepStrictEqual(add(math.bignumber(3), '2'), math.bignumber(5))
     assert.throws(function () {
+=======
+  it('should add strings to BigNumbers', function (): void {
+    assert.deepStrictEqual(add('2', math.bignumber(3)), math.bignumber(5))
+    assert.deepStrictEqual(add(math.bignumber(3), '2'), math.bignumber(5))
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add('foo', math.bignumber(3))
     }, /Error: Cannot convert "foo" to BigNumber/)
   })
 
+<<<<<<< HEAD
   it('should add strings to Fractions', function () {
     assert.deepStrictEqual(add('2', math.fraction(3)), math.fraction(5))
     assert.deepStrictEqual(add(math.fraction(3), '2'), math.fraction(5))
     assert.throws(function () {
+=======
+  it('should add strings to Fractions', function (): void {
+    assert.deepStrictEqual(add('2', math.fraction(3)), math.fraction(5))
+    assert.deepStrictEqual(add(math.fraction(3), '2'), math.fraction(5))
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add('foo', math.fraction(3))
     }, /Error: Cannot convert "foo" to Fraction/)
   })
 
+<<<<<<< HEAD
   it('should add strings to Complex numbers', function () {
     assert.deepStrictEqual(add('2', math.complex(0, 3)), math.complex(2, 3))
     assert.deepStrictEqual(add(math.complex(0, 3), '2'), math.complex(2, 3))
     assert.throws(function () {
+=======
+  it('should add strings to Complex numbers', function (): void {
+    assert.deepStrictEqual(add('2', math.complex(0, 3)), math.complex(2, 3))
+    assert.deepStrictEqual(add(math.complex(0, 3), '2'), math.complex(2, 3))
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add('foo', math.complex(0, 3))
     }, /Error: Cannot convert "foo" to Complex/)
   })
 
+<<<<<<< HEAD
   it('should add two measures of the same unit', function () {
+=======
+  it('should add two measures of the same unit', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       add(math.unit(5, 'km'), math.unit(100, 'mile')),
       math.unit(165.93, 'km')
@@ -229,7 +362,11 @@ describe('addScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should add units properly even when they have offsets', function () {
+=======
+  it('should add units properly even when they have offsets', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     let t = math.unit(20, 'degC')
     assert.deepStrictEqual(add(t, math.unit(1, 'degC')), math.unit(21, 'degC'))
     t = math.unit(68, 'degF')
@@ -237,21 +374,35 @@ describe('addScalar', function () {
     approxDeepEqual(add(t, math.unit(1, 'degC')), math.unit(69.8, 'degF'))
   })
 
+<<<<<<< HEAD
   it('should throw an error for two measures of different units', function () {
     assert.throws(function () {
+=======
+  it('should throw an error for two measures of different units', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(math.unit(5, 'km'), math.unit(100, 'gram'))
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error when one of the two units has undefined value', function () {
     assert.throws(function () {
       add(math.unit('km'), math.unit('5gram'))
     }, /Parameter x contains a unit with undefined value/)
     assert.throws(function () {
+=======
+  it('should throw an error when one of the two units has undefined value', function (): void {
+    assert.throws(function (): void {
+      add(math.unit('km'), math.unit('5gram'))
+    }, /Parameter x contains a unit with undefined value/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(math.unit('5 km'), math.unit('gram'))
     }, /Parameter y contains a unit with undefined value/)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of a unit and non-unit argument', function () {
     assert.throws(function () {
       add(math.unit('5cm'), 2)
@@ -260,23 +411,47 @@ describe('addScalar', function () {
       add(math.unit('5cm'), new Date())
     }, /TypeError: Unexpected type of argument in function add/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of a unit and non-unit argument', function (): void {
+    assert.throws(function (): void {
+      add(math.unit('5cm'), 2)
+    }, /TypeError: Unexpected type of argument in function add/)
+    assert.throws(function (): void {
+      add(math.unit('5cm'), new Date())
+    }, /TypeError: Unexpected type of argument in function add/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(new Date(), math.unit('5cm'))
     }, /TypeError: Unexpected type of argument in function add/)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(1)
     }, /TypeError: Too few arguments/)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid type of arguments', function () {
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       add(null, 1)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX add', function () {
+=======
+  it('should LaTeX add', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('add(1,2)')
     assert.strictEqual(expression.toTex(), '\\left(1+2\\right)')
   })

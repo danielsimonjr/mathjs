@@ -1,11 +1,22 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test lyapunov equation solver
+=======
+/**
+ * Test for lyap - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
+<<<<<<< HEAD
 describe('lyap', function () {
   it('should solve lyapunov equation of order 5 with Matrices', function () {
+=======
+describe('lyap', function (): void {
+  it('should solve lyapunov equation of order 5 with Matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.ok(
       math.norm(
         math.subtract(
@@ -53,7 +64,11 @@ describe('lyap', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should solve lyapunov equation of order 5 with Arrays', function () {
+=======
+  it('should solve lyapunov equation of order 5 with Arrays', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.ok(
       math.norm(
         math.subtract(

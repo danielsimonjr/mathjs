@@ -1,4 +1,15 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for acot - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -13,13 +24,22 @@ const acotBig = bigmath.acot
 const cotBig = bigmath.cot
 const Big = bigmath.bignumber
 
+<<<<<<< HEAD
 describe('acot', function () {
   it('should return the arccot of a boolean', function () {
+=======
+describe('acot', function (): void {
+  it('should return the arccot of a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(acot(true), pi / 4)
     assert.strictEqual(acot(false), pi / 2)
   })
 
+<<<<<<< HEAD
   it('should return the arccot of a number', function () {
+=======
+  it('should return the arccot of a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(acot(-1) / pi, -0.25)
     approxEqual(acot(-0.5), -1.107148717794)
     assert.strictEqual(acot(0), pi / 2)
@@ -30,7 +50,11 @@ describe('acot', function () {
     assert.strictEqual(acot(Infinity), 0)
   })
 
+<<<<<<< HEAD
   it('should return the arccot of a bignumber', function () {
+=======
+  it('should return the arccot of a bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arg2 = Big(-1)
     const arg3 = Big(-0.5)
     const arg4 = Big(0)
@@ -62,7 +86,11 @@ describe('acot', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of cot', function () {
+=======
+  it('should be the inverse function of cot', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(acot(cot(-1)), -1)
     approxEqual(acot(cot(0)), 0)
     approxEqual(acot(cot(0.1)), 0.1)
@@ -70,7 +98,11 @@ describe('acot', function () {
     approxEqual(acot(cot(2)), -1.14159265358979)
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of bignumber cot', function () {
+=======
+  it('should be the inverse function of bignumber cot', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     bigmath.config({ precision: 20 })
     assert.deepStrictEqual(acotBig(cotBig(Big(-1))), Big(-1))
     assert.deepStrictEqual(acotBig(cotBig(Big(0))), Big(0))
@@ -90,7 +122,11 @@ describe('acot', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return the arccot of a complex number', function () {
+=======
+  it('should return the arccot of a complex number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const re = 0.160875277198321
     const im = 0.229072682968539
     approxDeepEqual(acot(complex('2+3i')), complex(re, -im))
@@ -105,22 +141,39 @@ describe('acot', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a unit', function () {
     assert.throws(function () {
       acot(unit('45deg'))
     })
     assert.throws(function () {
+=======
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
+      acot(unit('45deg'))
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       acot(unit('5 celsius'))
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a string', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       acot('string')
     })
   })
 
+<<<<<<< HEAD
   it('should not operate on arrays and matrices', function () {
+=======
+  it('should not operate on arrays and matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.throws(() => acot([1, 2, 3]), TypeError)
     assert.throws(() => acot(matrix([1, 2, 3])), TypeError)
     // matrix, array, range
@@ -129,16 +182,28 @@ describe('acot', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), acot), matrix(acot123))
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       acot()
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      acot()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       acot(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX acot', function () {
+=======
+  it('should LaTeX acot', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('acot(2)')
     assert.strictEqual(expression.toTex(), '\\cot^{-1}\\left(2\\right)')
   })

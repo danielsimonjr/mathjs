@@ -1,9 +1,25 @@
+<<<<<<< HEAD
 // @ts-nocheck
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
 describe('filter', function () {
   it('should filter an array with a filter function', function () {
+=======
+/**
+ * Test for filter - AssemblyScript-friendly TypeScript
+ */
+import assert from 'assert'
+import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('filter', function (): void {
+  it('should filter an array with a filter function', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     function isPositive(x) {
       return x > 0
     }
@@ -13,7 +29,11 @@ describe('filter', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should filter a Matrix with a filter function', function () {
+=======
+  it('should filter a Matrix with a filter function', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     function isPositive(x) {
       return x > 0
     }
@@ -23,7 +43,11 @@ describe('filter', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should invoke callback with parameters value, index, obj', function () {
+=======
+  it('should invoke callback with parameters value, index, obj', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arr = [1, 2, 3]
     const log = []
 
@@ -41,7 +65,11 @@ describe('filter', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should invoke a typed function with correct number of arguments (1)', function () {
+=======
+  it('should invoke a typed function with correct number of arguments (1)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const output = []
     math.filter(
       [1, 2, 3],
@@ -54,7 +82,11 @@ describe('filter', function () {
     assert.deepStrictEqual(output, [3, 4, 5])
   })
 
+<<<<<<< HEAD
   it('should invoke a typed function with correct number of arguments (2)', function () {
+=======
+  it('should invoke a typed function with correct number of arguments (2)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const output = []
     math.filter(
       [1, 2, 3],
@@ -67,7 +99,11 @@ describe('filter', function () {
     assert.deepStrictEqual(output, [3, 4, 5])
   })
 
+<<<<<<< HEAD
   it('should invoke a typed function with correct number of arguments (3)', function () {
+=======
+  it('should invoke a typed function with correct number of arguments (3)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const output = []
     math.filter(
       [1, 2, 3],
@@ -80,36 +116,60 @@ describe('filter', function () {
     assert.deepStrictEqual(output, [3, 4, 5])
   })
 
+<<<<<<< HEAD
   it('should filter an array with a regexp', function () {
+=======
+  it('should filter an array with a regexp', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       math.filter(['23', 'foo', '100', '55', 'bar'], /[0-9]+/),
       ['23', '100', '55']
     )
   })
 
+<<<<<<< HEAD
   it('should filter a Matrix with a regexp', function () {
+=======
+  it('should filter a Matrix with a regexp', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       math.filter(math.matrix(['23', 'foo', '100', '55', 'bar']), /[0-9]+/),
       math.matrix(['23', '100', '55'])
     )
   })
 
+<<<<<<< HEAD
   it('should return an empty array when called with an empty array and a typed callback', function () {
     assert.deepStrictEqual(math.filter([], math.square), [])
   })
 
   it('should return an empty matrix when called with an empty matrix and a typed callback', function () {
+=======
+  it('should return an empty array when called with an empty array and a typed callback', function (): void {
+    assert.deepStrictEqual(math.filter([], math.square), [])
+  })
+
+  it('should return an empty matrix when called with an empty matrix and a typed callback', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       math.filter(math.matrix([]), math.square),
       math.matrix([])
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a multi dimensional matrix', function () {
     function isPositive(x) {
       return x > 0
     }
     assert.throws(function () {
+=======
+  it('should throw an error if called with a multi dimensional matrix', function (): void {
+    function isPositive(x) {
+      return x > 0
+    }
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.filter(
         math.matrix([
           [6, -2],
@@ -120,6 +180,7 @@ describe('filter', function () {
     }, /Only one dimensional matrices supported/)
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with unsupported type', function () {
     assert.throws(function () {
       math.filter(2, /regexp/)
@@ -131,20 +192,45 @@ describe('filter', function () {
       math.filter([], 'string')
     })
     assert.throws(function () {
+=======
+  it('should throw an error if called with unsupported type', function (): void {
+    assert.throws(function (): void {
+      math.filter(2, /regexp/)
+    })
+    assert.throws(function (): void {
+      math.filter('string', /regexp/)
+    })
+    assert.throws(function (): void {
+      math.filter([], 'string')
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.filter([], {})
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with invalid number of arguments', function () {
     assert.throws(function () {
       math.filter([], /reg/, 'foo')
     })
     assert.throws(function () {
+=======
+  it('should throw an error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      math.filter([], /reg/, 'foo')
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.filter([])
     })
   })
 
+<<<<<<< HEAD
   it('should LaTeX filter', function () {
+=======
+  it('should LaTeX filter', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('filter(1,test)')
     assert.strictEqual(
       expression.toTex(),

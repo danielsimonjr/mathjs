@@ -1,6 +1,20 @@
+<<<<<<< HEAD
 // @ts-nocheck
 /* eslint-disable no-loss-of-precision */
 
+=======
+/**
+ * Test for acoth - AssemblyScript-friendly TypeScript
+ */
+/* eslint-disable no-loss-of-precision */
+
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -16,14 +30,23 @@ const predmath = math.create({ predictable: true })
 const acothBig = bigmath.acoth
 const Big = bigmath.bignumber
 
+<<<<<<< HEAD
 describe('acoth', function () {
   it('should return the hyperbolic arccot of a boolean', function () {
+=======
+describe('acoth', function (): void {
+  it('should return the hyperbolic arccot of a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(acoth(true), Infinity)
     approxDeepEqual(acoth(false), complex(0, pi / 2))
     // assert.ok(isNaN(acoth(false)))
   })
 
+<<<<<<< HEAD
   it('should return the hyperbolic arccot of a number', function () {
+=======
+  it('should return the hyperbolic arccot of a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(acoth(0), complex(0, pi / 2))
     approxDeepEqual(acoth(0.5), complex(0.5493061443340548, -1.5707963267949))
     // assert.ok(isNaN(acoth(0)))
@@ -36,12 +59,20 @@ describe('acoth', function () {
     assert.strictEqual(acoth(Infinity), 0)
   })
 
+<<<<<<< HEAD
   it('should return the hyperbolic arccot of a number when predictable:true', function () {
+=======
+  it('should return the hyperbolic arccot of a number when predictable:true', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(typeof predmath.acoth(0.5), 'number')
     assert(isNaN(predmath.acoth(0.5)))
   })
 
+<<<<<<< HEAD
   it('should return the hyperbolic arccot of a bignumber', function () {
+=======
+  it('should return the hyperbolic arccot of a bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arg2 = Big(-2)
     const arg3 = Big(-1)
     assert.deepStrictEqual(acothBig(Big(-Infinity)), Big('-0'))
@@ -60,7 +91,11 @@ describe('acoth', function () {
     assert.ok(acothBig(Big(0.5)).isNaN())
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of hyperbolic cot', function () {
+=======
+  it('should be the inverse function of hyperbolic cot', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(acoth(coth(-2)), -2)
     approxEqual(acoth(coth(-1)), -1)
     approxEqual(acoth(coth(0)), 0)
@@ -68,7 +103,11 @@ describe('acoth', function () {
     approxEqual(acoth(coth(2)), 2)
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of bignumber coth', function () {
+=======
+  it('should be the inverse function of bignumber coth', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(acothBig(bigmath.coth(Big(-1))), Big(-1))
     assert.deepStrictEqual(acothBig(bigmath.coth(Big(0))), Big(0))
     assert.deepStrictEqual(acothBig(bigmath.coth(Big(1))), Big(1))
@@ -84,7 +123,11 @@ describe('acoth', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return the arccoth of a complex number', function () {
+=======
+  it('should return the arccoth of a complex number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       acoth(complex('2+3i')),
       complex(0.1469466662255, -0.2318238045004)
@@ -114,22 +157,39 @@ describe('acoth', function () {
     approxDeepEqual(acoth(complex('0')), complex(0, pi / 2))
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a unit', function () {
     assert.throws(function () {
       acoth(unit('45deg'))
     })
     assert.throws(function () {
+=======
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
+      acoth(unit('45deg'))
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       acoth(unit('5 celsius'))
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a string', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       acoth('string')
     })
   })
 
+<<<<<<< HEAD
   it('should not operate on arrays and matrices', function () {
+=======
+  it('should not operate on arrays and matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.throws(() => acoth([1, 2, 3]), TypeError)
     assert.throws(() => acoth(matrix([1, 2, 3])), TypeError)
     const acoth123 = [Infinity, 0.54930614433405, 0.34657359027997]
@@ -137,16 +197,28 @@ describe('acoth', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), acoth), matrix(acoth123))
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       acoth()
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      acoth()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       acoth(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX acoth', function () {
+=======
+  it('should LaTeX acoth', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('acoth(2)')
     assert.strictEqual(expression.toTex(), '\\coth^{-1}\\left(2\\right)')
   })

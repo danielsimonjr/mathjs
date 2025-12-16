@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for rotationMatrix - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxDeepEqual } from '../../../../tools/approx.js'
@@ -12,11 +18,24 @@ const cos = math.cos
 const sin = math.sin
 const rotationMatrix = math.rotationMatrix
 
+<<<<<<< HEAD
 describe('rotationMatrix', function () {
   const sqrtTwoInv = 0.7071067811865476 // = 1 / sqrt(2)
   const minusSqrtTwoInv = -0.7071067811865476 // = - 1 / sqrt(2)
 
   it('should create an empty matrix', function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('rotationMatrix', function (): void {
+  const sqrtTwoInv = 0.7071067811865476 // = 1 / sqrt(2)
+  const minusSqrtTwoInv = -0.7071067811865476 // = - 1 / sqrt(2)
+
+  it('should create an empty matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(rotationMatrix(), matrix())
     assert.deepStrictEqual(rotationMatrix('sparse'), matrix('sparse'))
     assert.deepStrictEqual(rotationMatrix('dense'), matrix('dense'))
@@ -25,7 +44,11 @@ describe('rotationMatrix', function () {
     assert.deepStrictEqual(mathArray.rotationMatrix(), [])
   })
 
+<<<<<<< HEAD
   it('should create a 2D rotation matrix of given angle', function () {
+=======
+  it('should create a 2D rotation matrix of given angle', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       rotationMatrix(0.0),
       matrix([
@@ -56,7 +79,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return a 2D rotation array if requesting results as array', function () {
+=======
+  it('should return a 2D rotation array if requesting results as array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const mathArray = math.create({ matrix: 'Array' })
     approxDeepEqual(mathArray.rotationMatrix(0.0), [
       [1, 0.0],
@@ -76,7 +103,11 @@ describe('rotationMatrix', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should create a 2D rotation matrix of given bignumber angle', function () {
+=======
+  it('should create a 2D rotation matrix of given bignumber angle', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       rotationMatrix(bignumber(0.0)),
       matrix([
@@ -110,7 +141,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should create a 2D rotation matrix of given complex angle', function () {
+=======
+  it('should create a 2D rotation matrix of given complex angle', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const reI = 1.54308063481524
     const imI = 1.1752011936438
     approxDeepEqual(
@@ -136,7 +171,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should create a 2D rotation matrix of given unit angle', function () {
+=======
+  it('should create a 2D rotation matrix of given unit angle', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       rotationMatrix(unit('45deg')),
       matrix([
@@ -163,7 +202,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should create a 2D rotation matrix of given angle and given storage type', function () {
+=======
+  it('should create a 2D rotation matrix of given angle and given storage type', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       rotationMatrix(0.0, 'sparse'),
       matrix(
@@ -196,7 +239,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should create a 3D rotation matrix by given angle around given axis provided as array', function () {
+=======
+  it('should create a 3D rotation matrix by given angle around given axis provided as array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(math.rotationMatrix(0.0, [1, 1, 1]), [
       [1.0, 0.0, 0.0],
       [0.0, 1.0, 0.0],
@@ -241,7 +288,11 @@ describe('rotationMatrix', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should create a 3D rotation matrix by given angle around given vector provided as matrix', function () {
+=======
+  it('should create a 3D rotation matrix by given angle around given vector provided as matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       math.rotationMatrix(0.0, matrix([1, 1, 1])),
       matrix([
@@ -310,7 +361,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should create a unitary 3D rotation matrix around non-unit vector', function () {
+=======
+  it('should create a unitary 3D rotation matrix around non-unit vector', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       math.rotationMatrix(math.pi / 2, matrix([1000, 0, 0])),
       matrix([
@@ -342,7 +397,11 @@ describe('rotationMatrix', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should create a 3D rotation matrix by given bignumber angle around given axis', function () {
+=======
+  it('should create a 3D rotation matrix by given bignumber angle around given axis', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const zero = bignumber(0)
     const one = bignumber(1)
     const cos2 = cos(bignumber(2))
@@ -384,7 +443,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should create a 3D rotation matrix by given complex angle around given axis', function () {
+=======
+  it('should create a 3D rotation matrix by given complex angle around given axis', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const complexZero = math.complex(0)
     const cosTheta = math.cos(complex('2+3i'))
     const sinTheta = math.sin(complex('2+3i'))
@@ -429,7 +492,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should create a 3D rotation matrix by given unit angle around given axis', function () {
+=======
+  it('should create a 3D rotation matrix by given unit angle around given axis', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(math.rotationMatrix(unit('45deg'), [1, 0, 0]), [
       [1.0, 0.0, 0.0],
       [0.0, sqrtTwoInv, minusSqrtTwoInv],
@@ -490,7 +557,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should create a 3D rotation matrix of given angle around given axis and given storage type', function () {
+=======
+  it('should create a 3D rotation matrix of given angle around given axis and given storage type', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       rotationMatrix(0.0, [0, 0, 1], 'sparse'),
       matrix(
@@ -537,7 +608,11 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return an array when mathjs is configured for this', function () {
+=======
+  it('should return an array when mathjs is configured for this', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const mathArray = math.create({ matrix: 'Array' })
     approxDeepEqual(mathArray.rotationMatrix(mathArray.pi / 4), [
       [sqrtTwoInv, minusSqrtTwoInv],
@@ -558,6 +633,7 @@ describe('rotationMatrix', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error with an invalid input', function () {
     assert.throws(function () {
       rotationMatrix('')
@@ -581,11 +657,40 @@ describe('rotationMatrix', function () {
       rotationMatrix(0, [0, 1, 0], 'sparse', 4)
     }, /TypeError: Too many arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error with an invalid input', function (): void {
+    assert.throws(function (): void {
+      rotationMatrix('')
+    }, /TypeError: Unknown matrix type /)
+    assert.throws(function (): void {
+      rotationMatrix(null)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+      rotationMatrix(0, [])
+    }, /RangeError: Vector must be of dimensions 1x3/)
+    assert.throws(function (): void {
+      rotationMatrix(0, [1])
+    }, /RangeError: Vector must be of dimensions 1x3/)
+    assert.throws(function (): void {
+      rotationMatrix(0, [0, 1])
+    }, /RangeError: Vector must be of dimensions 1x3/)
+    assert.throws(function (): void {
+      rotationMatrix(0, [0, 1, 0], 'something')
+    }, /TypeError: Unknown matrix type/)
+    assert.throws(function (): void {
+      rotationMatrix(0, [0, 1, 0], 'sparse', 4)
+    }, /TypeError: Too many arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       rotationMatrix(1, [0.0, 0.0, 0.0])
     }, /Rotation around zero vector/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX rotationMatrix', function () {
+=======
+  it('should LaTeX rotationMatrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('rotationMatrix(1)')
     assert.strictEqual(
       expression.toTex(),

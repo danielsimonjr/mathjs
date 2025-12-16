@@ -1,14 +1,33 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test subtractScalar
+=======
+/**
+ * Test for subtractScalar - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+<<<<<<< HEAD
 import Decimal from 'decimal.js'
 const { subtractScalar, BigNumber } = math
 
 describe('subtractScalar', function () {
   it('should subtractScalar two numbers correctly', function () {
+=======
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+import Decimal from 'decimal.js'
+const { subtractScalar, BigNumber } = math
+
+describe('subtractScalar', function (): void {
+  it('should subtractScalar two numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subtractScalar(4, 2), 2)
     assert.deepStrictEqual(subtractScalar(4, -4), 8)
     assert.deepStrictEqual(subtractScalar(-4, -4), 0)
@@ -20,24 +39,37 @@ describe('subtractScalar', function () {
     assert.deepStrictEqual(subtractScalar(0, 3), -3)
   })
 
+<<<<<<< HEAD
   it('should subtractScalar bigint', function () {
     assert.strictEqual(subtractScalar(7n, 3n), 4n)
   })
 
   it('should subtractScalar booleans', function () {
+=======
+  it('should subtractScalar bigint', function (): void {
+    assert.strictEqual(subtractScalar(7n, 3n), 4n)
+  })
+
+  it('should subtractScalar booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(subtractScalar(true, true), 0)
     assert.strictEqual(subtractScalar(true, false), 1)
     assert.strictEqual(subtractScalar(false, true), -1)
     assert.strictEqual(subtractScalar(false, false), 0)
   })
 
+<<<<<<< HEAD
   it('should subtractScalar mixed numbers and booleans', function () {
+=======
+  it('should subtractScalar mixed numbers and booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(subtractScalar(2, true), 1)
     assert.strictEqual(subtractScalar(2, false), 2)
     assert.strictEqual(subtractScalar(true, 2), -1)
     assert.strictEqual(subtractScalar(false, 2), -2)
   })
 
+<<<<<<< HEAD
   it('should subtractScalar mixed numbers and bigint', function () {
     assert.strictEqual(subtractScalar(7, 3n), 4)
     assert.strictEqual(subtractScalar(7n, 3), 4)
@@ -46,11 +78,25 @@ describe('subtractScalar', function () {
       subtractScalar(123123123123123123123n, 1)
     }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
     assert.throws(function () {
+=======
+  it('should subtractScalar mixed numbers and bigint', function (): void {
+    assert.strictEqual(subtractScalar(7, 3n), 4)
+    assert.strictEqual(subtractScalar(7n, 3), 4)
+
+    assert.throws(function (): void {
+      subtractScalar(123123123123123123123n, 1)
+    }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(1, 123123123123123123123n)
     }, /Cannot implicitly convert bigint to number: value exceeds the max safe integer value/)
   })
 
+<<<<<<< HEAD
   it('should subtractScalar new BigNumbers', function () {
+=======
+  it('should subtractScalar new BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(new BigNumber(0.3), new BigNumber(0.2)),
       new BigNumber(0.1)
@@ -65,7 +111,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should subtractScalar mixed numbers and new BigNumbers', function () {
+=======
+  it('should subtractScalar mixed numbers and new BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(new BigNumber(0.3), 0.2),
       new BigNumber(0.1)
@@ -75,15 +125,26 @@ describe('subtractScalar', function () {
       new BigNumber(0.1)
     )
 
+<<<<<<< HEAD
     assert.throws(function () {
       subtractScalar(1 / 3, new BigNumber(1).div(3))
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      subtractScalar(1 / 3, new BigNumber(1).div(3))
+    }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(new BigNumber(1).div(3), 1 / 3)
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
   })
 
+<<<<<<< HEAD
   it('should subtractScalar mixed bigints and BigNumbers', function () {
+=======
+  it('should subtractScalar mixed bigints and BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(new BigNumber(7), 3n),
       new BigNumber(4)
@@ -94,7 +155,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should add Decimals', function () {
+=======
+  it('should add Decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(Decimal(0.2), Decimal(0.1)),
       Decimal(0.1)
@@ -110,7 +175,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should subtractScalar mixed booleans and new BigNumbers', function () {
+=======
+  it('should subtractScalar mixed booleans and new BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(new BigNumber(1.1), true),
       new BigNumber(0.1)
@@ -129,7 +198,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should subtractScalar two complex numbers correctly', function () {
+=======
+  it('should subtractScalar two complex numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(math.complex(3, 2), math.complex(8, 4)),
       math.complex('-5 - 2i')
@@ -162,7 +235,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error for mixed complex numbers and big numbers', function () {
+=======
+  it('should throw an error for mixed complex numbers and big numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(math.complex(3, 4), new BigNumber(10)),
       math.complex(-7, 4)
@@ -173,7 +250,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should subtractScalar two fractions', function () {
+=======
+  it('should subtractScalar two fractions', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = math.fraction(1, 3)
     assert.strictEqual(
       subtractScalar(a, math.fraction(1, 6)).toString(),
@@ -191,7 +272,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should subtractScalar mixed fractions and numbers', function () {
+=======
+  it('should subtractScalar mixed fractions and numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(1, math.fraction(1, 3)),
       math.fraction(2, 3)
@@ -202,7 +287,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should subtractScalar mixed fractions and numbers', function () {
+=======
+  it('should subtractScalar mixed fractions and numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtractScalar(1n, math.fraction(1, 3)),
       math.fraction(2, 3)
@@ -213,7 +302,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should subtractScalar two quantities of the same unit', function () {
+=======
+  it('should subtractScalar two quantities of the same unit', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       subtractScalar(math.unit(5, 'km'), math.unit(100, 'mile')),
       math.unit(-155.93, 'km')
@@ -240,7 +333,11 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should subtractScalar units even when they have offsets', function () {
+=======
+  it('should subtractScalar units even when they have offsets', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     let t = math.unit(20, 'degC')
     assert.deepStrictEqual(
       subtractScalar(t, math.unit(1, 'degC')),
@@ -257,39 +354,69 @@ describe('subtractScalar', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if subtracting two quantities of different units', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if subtracting two quantities of different units', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(math.unit(5, 'km'), math.unit(100, 'gram'))
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error when one of the two units has undefined value', function () {
     assert.throws(function () {
       subtractScalar(math.unit('km'), math.unit('5gram'))
     }, /Parameter x contains a unit with undefined value/)
     assert.throws(function () {
+=======
+  it('should throw an error when one of the two units has undefined value', function (): void {
+    assert.throws(function (): void {
+      subtractScalar(math.unit('km'), math.unit('5gram'))
+    }, /Parameter x contains a unit with undefined value/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(math.unit('5 km'), math.unit('gram'))
     }, /Parameter y contains a unit with undefined value/)
   })
 
+<<<<<<< HEAD
   it('should throw an error if subtracting numbers from units', function () {
     assert.throws(function () {
       subtractScalar(math.unit(5, 'km'), 2)
     }, TypeError)
     assert.throws(function () {
+=======
+  it('should throw an error if subtracting numbers from units', function (): void {
+    assert.throws(function (): void {
+      subtractScalar(math.unit(5, 'km'), 2)
+    }, TypeError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(2, math.unit(5, 'km'))
     }, TypeError)
   })
 
+<<<<<<< HEAD
   it('should throw an error if subtracting numbers from units', function () {
     assert.throws(function () {
       subtractScalar(math.unit(5, 'km'), new BigNumber(2))
     }, TypeError)
     assert.throws(function () {
+=======
+  it('should throw an error if subtracting numbers from units', function (): void {
+    assert.throws(function (): void {
+      subtractScalar(math.unit(5, 'km'), new BigNumber(2))
+    }, TypeError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(new BigNumber(2), math.unit(5, 'km'))
     }, TypeError)
   })
 
+<<<<<<< HEAD
   it('should throw an error when used with a string', function () {
     assert.throws(function () {
       subtractScalar('hello ', 'world')
@@ -298,26 +425,53 @@ describe('subtractScalar', function () {
       subtractScalar('str', 123)
     })
     assert.throws(function () {
+=======
+  it('should throw an error when used with a string', function (): void {
+    assert.throws(function (): void {
+      subtractScalar('hello ', 'world')
+    })
+    assert.throws(function (): void {
+      subtractScalar('str', 123)
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(123, 'str')
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       subtractScalar(1)
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      subtractScalar(1)
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should throw an in case of wrong type of arguments', function () {
     assert.throws(function () {
+=======
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtractScalar(null, 2)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX subtractScalar', function () {
+=======
+  it('should LaTeX subtractScalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('subtractScalar(2,1)')
     assert.strictEqual(
       expression.toTex(),

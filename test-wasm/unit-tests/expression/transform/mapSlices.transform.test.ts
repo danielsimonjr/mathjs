@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for mapSlices.transform - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
@@ -35,7 +41,11 @@ describe('mapSlices.transform', function () {
   })
 
   it('should throw an error if the dimension is below the range for one based indices', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       mapSlices(
         [
           [1, 2],
@@ -48,7 +58,11 @@ describe('mapSlices.transform', function () {
   })
 
   it('should throw an error if the dimension is above the range for one based indices', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       mapSlices(
         [
           [1, 2],

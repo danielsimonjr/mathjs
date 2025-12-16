@@ -1,5 +1,17 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test atan2
+=======
+/**
+ * Test for atan2 - AssemblyScript-friendly TypeScript
+ */
+// test atan2
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -15,8 +27,13 @@ const bigmath = math.create({ precision: 20 })
 const Big = bigmath.bignumber
 const atan2Big = bigmath.atan2
 
+<<<<<<< HEAD
 describe('atan2', function () {
   it('should calculate atan2 correctly', function () {
+=======
+describe('atan2', function (): void {
+  it('should calculate atan2 correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(atan2(0, 0) / pi, 0)
     assert.strictEqual(atan2(0, 1) / pi, 0)
     assert.strictEqual(atan2(1, 1) / pi, 0.25)
@@ -28,21 +45,33 @@ describe('atan2', function () {
     assert.strictEqual(atan2(-1, 1) / pi, -0.25)
   })
 
+<<<<<<< HEAD
   it('should calculate atan2 for booleans', function () {
+=======
+  it('should calculate atan2 for booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(atan2(true, true), 0.25 * pi)
     assert.strictEqual(atan2(true, false), 0.5 * pi)
     assert.strictEqual(atan2(false, true), 0)
     assert.strictEqual(atan2(false, false), 0)
   })
 
+<<<<<<< HEAD
   it('should calculate atan2 with mixed numbers and booleans', function () {
+=======
+  it('should calculate atan2 with mixed numbers and booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(atan2(1, true), 0.25 * pi)
     assert.strictEqual(atan2(1, false), 0.5 * pi)
     assert.strictEqual(atan2(true, 1), 0.25 * pi)
     assert.strictEqual(atan2(false, 1), 0)
   })
 
+<<<<<<< HEAD
   it('should return the arctan of for bignumbers', function () {
+=======
+  it('should return the arctan of for bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(atan2Big(Big(0), Big(0)), Big(0))
     assert.deepStrictEqual(atan2Big(Big(0), Big(1)), Big(0))
     assert.deepStrictEqual(
@@ -75,12 +104,20 @@ describe('atan2', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return the arctan of for mixed numbers and bignumbers', function () {
+=======
+  it('should return the arctan of for mixed numbers and bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(atan2Big(1, Big(1)), Big('0.78539816339744830962'))
     assert.deepStrictEqual(atan2Big(Big(1), 1), Big('0.78539816339744830962'))
   })
 
+<<<<<<< HEAD
   it('should return the arctan of for mixed bignumbers and booleans', function () {
+=======
+  it('should return the arctan of for mixed bignumbers and booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       atan2Big(Big(1), true),
       Big('0.78539816339744830962')
@@ -96,26 +133,46 @@ describe('atan2', function () {
     assert.deepStrictEqual(atan2Big(false, Big(1)), Big(0))
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a complex', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if called with a complex', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       atan2(complex('2+3i'), complex('1-2i'))
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a string', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       atan2('string', 1)
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a unit', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       atan2(unit('5cm'), 1)
     })
   })
 
+<<<<<<< HEAD
   describe('Array', function () {
     it('should calculate atan2 array - scalar', function () {
+=======
+  describe('Array', function (): void {
+    it('should calculate atan2 array - scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(atan2(1, [1, -1, 0]), pi),
         [0.25, 0.75, 0.5]
@@ -123,7 +180,11 @@ describe('atan2', function () {
       assert.deepStrictEqual(divide(atan2([1, -1, 0], 1), pi), [0.25, -0.25, 0])
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 array - array', function () {
+=======
+    it('should calculate atan2 array - array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -145,7 +206,11 @@ describe('atan2', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 between broadcastable arrays', function () {
+=======
+    it('should calculate atan2 between broadcastable arrays', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(divide(atan2([[1, -1, 0]], [[-1], [1]]), pi), [
         [0.75, -0.75, 1],
         [0.25, -0.25, 0]
@@ -156,7 +221,11 @@ describe('atan2', function () {
       ])
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 array - dense matrix', function () {
+=======
+    it('should calculate atan2 array - dense matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -178,7 +247,11 @@ describe('atan2', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 array - sparse matrix', function () {
+=======
+    it('should calculate atan2 array - sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -201,8 +274,13 @@ describe('atan2', function () {
     })
   })
 
+<<<<<<< HEAD
   describe('DenseMatrix', function () {
     it('should calculate atan2 dense matrix - scalar', function () {
+=======
+  describe('DenseMatrix', function (): void {
+    it('should calculate atan2 dense matrix - scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(atan2(1, matrix([1, -1, 0])), pi),
         matrix([0.25, 0.75, 0.5])
@@ -213,7 +291,11 @@ describe('atan2', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 dense matrix - array', function () {
+=======
+    it('should calculate atan2 dense matrix - array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -235,7 +317,11 @@ describe('atan2', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 dense matrix - dense matrix', function () {
+=======
+    it('should calculate atan2 dense matrix - dense matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -257,7 +343,11 @@ describe('atan2', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 dense matrix - sparse matrix', function () {
+=======
+    it('should calculate atan2 dense matrix - sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -280,8 +370,13 @@ describe('atan2', function () {
     })
   })
 
+<<<<<<< HEAD
   describe('SparseMatrix', function () {
     it('should calculate atan2 sparse matrix - scalar', function () {
+=======
+  describe('SparseMatrix', function (): void {
+    it('should calculate atan2 sparse matrix - scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -316,7 +411,11 @@ describe('atan2', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 sparse matrix - array', function () {
+=======
+    it('should calculate atan2 sparse matrix - array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -338,7 +437,11 @@ describe('atan2', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 sparse matrix - dense matrix', function () {
+=======
+    it('should calculate atan2 sparse matrix - dense matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -360,7 +463,11 @@ describe('atan2', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should calculate atan2 sparse matrix - sparse matrix', function () {
+=======
+    it('should calculate atan2 sparse matrix - sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         divide(
           atan2(
@@ -383,7 +490,11 @@ describe('atan2', function () {
     })
   })
 
+<<<<<<< HEAD
   it('should calculate the atan2 element-wise for arrays and matrices', function () {
+=======
+  it('should calculate the atan2 element-wise for arrays and matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // array, matrix, range
     approxDeepEqual(divide(atan2([1, 0, -1], [1, 0, -1]), pi), [0.25, 0, -0.75])
     approxDeepEqual(
@@ -394,22 +505,39 @@ describe('atan2', function () {
     assert.strictEqual(atan2(0, -2) / pi, 1)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       atan2(1)
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      atan2(1)
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       atan2(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid type of arguments', function () {
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       atan2(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX atan2', function () {
+=======
+  it('should LaTeX atan2', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('atan2(1,1)')
     assert.strictEqual(expression.toTex(), '\\mathrm{atan2}\\left(1,1\\right)')
   })

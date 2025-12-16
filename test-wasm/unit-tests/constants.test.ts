@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for constants - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual } from '../../tools/approx.js'
 import { createBigNumberClass } from '../../src/type/bignumber/BigNumber.js'
@@ -22,8 +24,8 @@ import {
   createTrue
 } from '../../src/constants.js'
 
-describe('constants', function () {
-  describe('number', function () {
+describe('constants', function (): void {
+  describe('number', function (): void {
     const config = { number: 'number', precision: 64, relTol: 1e-12 }
     const BigNumber = createBigNumberClass({ config })
     const Complex = createComplexClass({ config })
@@ -33,60 +35,60 @@ describe('constants', function () {
       Complex
     }
 
-    it('should create pi', function () {
+    it('should create pi', function (): void {
       approxEqual(createPi(dependencies), 3.14159265358979)
     })
 
-    it('should create tau', function () {
+    it('should create tau', function (): void {
       approxEqual(createTau(dependencies), 6.28318530717959)
     })
 
-    it('should create phi, golden ratio', function () {
+    it('should create phi, golden ratio', function (): void {
       approxEqual(createPhi(dependencies), 1.61803398874989)
     })
 
-    it('should create e (euler constant)', function () {
+    it('should create e (euler constant)', function (): void {
       approxEqual(createE(dependencies), 2.71828182845905)
     })
 
-    it('should create LN2', function () {
+    it('should create LN2', function (): void {
       approxEqual(createLN2(dependencies), 0.69314718055995)
     })
 
-    it('should create LN10', function () {
+    it('should create LN10', function (): void {
       approxEqual(createLN10(dependencies), 2.30258509299405)
     })
 
-    it('should create LOG2E', function () {
+    it('should create LOG2E', function (): void {
       approxEqual(createLOG2E(dependencies), 1.44269504088896)
     })
 
-    it('should create LOG10E', function () {
+    it('should create LOG10E', function (): void {
       approxEqual(createLOG10E(dependencies), 0.43429448190325)
     })
 
-    it('should create PI', function () {
+    it('should create PI', function (): void {
       approxEqual(createPi(dependencies), 3.14159265358979)
     })
 
-    it('should create SQRT1_2', function () {
+    it('should create SQRT1_2', function (): void {
       approxEqual(createSQRT1_2(dependencies), 0.70710678118655)
     })
 
-    it('should create SQRT2', function () {
+    it('should create SQRT2', function (): void {
       approxEqual(createSQRT2(dependencies), 1.4142135623731)
     })
 
-    it('should create Infinity', function () {
+    it('should create Infinity', function (): void {
       assert.strictEqual(createInfinity(dependencies), Infinity)
     })
 
-    it('should create NaN', function () {
+    it('should create NaN', function (): void {
       assert.ok(isNaN(createNaN(dependencies)))
     })
   })
 
-  describe('bignumbers', function () {
+  describe('bignumbers', function (): void {
     const config = { number: 'BigNumber', precision: 64, relTol: 1e-12 }
     const BigNumber = createBigNumberClass({ config })
     const Complex = createComplexClass({ config })
@@ -96,90 +98,90 @@ describe('constants', function () {
       Complex
     }
 
-    it('should create bignumber pi', function () {
+    it('should create bignumber pi', function (): void {
       assert.strictEqual(
         createPi(dependencies).toString(),
         '3.141592653589793238462643383279502884197169399375105820974944592'
       )
     })
 
-    it('should create bignumber tau', function () {
+    it('should create bignumber tau', function (): void {
       assert.strictEqual(
         createTau(dependencies).toString(),
         '6.283185307179586476925286766559005768394338798750211641949889184'
       )
     })
 
-    it('should create bignumber phi, golden ratio', function () {
+    it('should create bignumber phi, golden ratio', function (): void {
       assert.strictEqual(
         createPhi(dependencies).toString(),
         '1.618033988749894848204586834365638117720309179805762862135448623'
       )
     })
 
-    it('should create bignumber e', function () {
+    it('should create bignumber e', function (): void {
       assert.strictEqual(
         createE(dependencies).toString(),
         '2.718281828459045235360287471352662497757247093699959574966967628'
       )
     })
 
-    it('should create bignumber LN2', function () {
+    it('should create bignumber LN2', function (): void {
       assert.strictEqual(
         createLN2(dependencies).toString(),
         '0.6931471805599453094172321214581765680755001343602552541206800095'
       )
     })
 
-    it('should create bignumber LN10', function () {
+    it('should create bignumber LN10', function (): void {
       assert.strictEqual(
         createLN10(dependencies).toString(),
         '2.302585092994045684017991454684364207601101488628772976033327901'
       )
     })
 
-    it('should create bignumber LOG2E', function () {
+    it('should create bignumber LOG2E', function (): void {
       assert.strictEqual(
         createLOG2E(dependencies).toString(),
         '1.442695040888963407359924681001892137426645954152985934135449407'
       )
     })
 
-    it('should create bignumber LOG10E', function () {
+    it('should create bignumber LOG10E', function (): void {
       assert.strictEqual(
         createLOG10E(dependencies).toString(),
         '0.4342944819032518276511289189166050822943970058036665661144537832'
       )
     })
 
-    it('should create bignumber PI (upper case)', function () {
+    it('should create bignumber PI (upper case)', function (): void {
       assert.strictEqual(
         createPi(dependencies).toString(),
         '3.141592653589793238462643383279502884197169399375105820974944592'
       )
     })
 
-    it('should create bignumber SQRT1_2', function () {
+    it('should create bignumber SQRT1_2', function (): void {
       assert.strictEqual(
         createSQRT1_2(dependencies).toString(),
         '0.707106781186547524400844362104849039284835937688474036588339869'
       )
     })
 
-    it('should create bignumber SQRT2', function () {
+    it('should create bignumber SQRT2', function (): void {
       assert.strictEqual(
         createSQRT2(dependencies).toString(),
         '1.414213562373095048801688724209698078569671875376948073176679738'
       )
     })
 
-    it('should create bignumber Infinity', function () {
+    it('should create bignumber Infinity', function (): void {
       const inf = createInfinity(dependencies)
       assert(inf instanceof BigNumber)
       assert.strictEqual(inf.toString(), 'Infinity')
     })
 
-    it('should create bignumber NaN', function () {
+    it('should create bignumber NaN', function (): void {
       const nan = createNaN(dependencies)
       assert(nan instanceof BigNumber)
       assert.strictEqual(nan.toString(), 'NaN')
@@ -187,8 +189,8 @@ describe('constants', function () {
     })
   })
 
-  describe('complex', function () {
-    it('should create i', function () {
+  describe('complex', function (): void {
+    it('should create i', function (): void {
       const Complex = createComplexClass()
       const i = createI({ Complex })
 
@@ -196,13 +198,13 @@ describe('constants', function () {
     })
   })
 
-  describe('universal behavior', function () {
-    it('should create true and false', function () {
+  describe('universal behavior', function (): void {
+    it('should create true and false', function (): void {
       assert.strictEqual(createTrue(), true)
       assert.strictEqual(createFalse(), false)
     })
 
-    it('should create null', function () {
+    it('should create null', function (): void {
       assert.strictEqual(createNull(), null)
     })
   })

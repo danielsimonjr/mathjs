@@ -1,11 +1,26 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for sqrtm - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 // test sqrtm
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 
+<<<<<<< HEAD
 describe('sqrtm', function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('sqrtm', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
   const A = [
     [5, 2],
     [4, 7]
@@ -24,7 +39,11 @@ describe('sqrtm', function () {
     [15, 22]
   ]
 
+<<<<<<< HEAD
   it('should return the principal square root of a matrix', function () {
+=======
+  it('should return the principal square root of a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(math.sqrtm(AA), A)
     approxDeepEqual(math.sqrtm(BB), B)
 
@@ -61,26 +80,39 @@ describe('sqrtm', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return the principal square root of a matrix with just one value', function () {
+=======
+  it('should return the principal square root of a matrix with just one value', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(math.sqrtm([4]), [2])
     assert.deepStrictEqual(math.sqrtm([16]), [4])
     assert.deepStrictEqual(math.sqrtm([20.25]), [4.5])
   })
 
+<<<<<<< HEAD
   it('should return the principal square root of a matrix of big numbers', function () {
+=======
+  it('should return the principal square root of a matrix of big numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       math.round(math.sqrtm(math.bignumber(AA)), 20),
       math.bignumber(A)
     )
   })
 
+<<<<<<< HEAD
   it('math.pow(math.sqrtm(A), 2) should equal A', function () {
+=======
+  it('math.pow(math.sqrtm(A), 2) should equal A', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(math.pow(math.sqrtm(A), 2), A)
     approxDeepEqual(math.pow(math.sqrtm(B), 2), B)
     approxDeepEqual(math.pow(math.sqrtm(AA), 2), AA)
     approxDeepEqual(math.pow(math.sqrtm(BB), 2), BB)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of non-square matrices', function () {
     assert.throws(function () {
       math.sqrtm([1, 2, 3])
@@ -89,6 +121,16 @@ describe('sqrtm', function () {
       math.sqrtm([[1, 2, 3]])
     }, /Matrix must be square/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of non-square matrices', function (): void {
+    assert.throws(function (): void {
+      math.sqrtm([1, 2, 3])
+    }, /Matrix must be square/)
+    assert.throws(function (): void {
+      math.sqrtm([[1, 2, 3]])
+    }, /Matrix must be square/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.sqrtm([
         [1, 2, 3],
         [4, 5, 6]
@@ -96,6 +138,7 @@ describe('sqrtm', function () {
     }, /Matrix must be square/)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of matrices with dimension greater than two', function () {
     const errorRegex = /Matrix must be at most two dimensional/
     assert.throws(function () {
@@ -105,11 +148,26 @@ describe('sqrtm', function () {
       math.sqrtm(math.zeros(2, 2, 2))
     }, errorRegex)
     assert.throws(function () {
+=======
+  it('should throw an error in case of matrices with dimension greater than two', function (): void {
+    const errorRegex = /Matrix must be at most two dimensional/
+    assert.throws(function (): void {
+      math.sqrtm(math.zeros(1, 1, 1))
+    }, errorRegex)
+    assert.throws(function (): void {
+      math.sqrtm(math.zeros(2, 2, 2))
+    }, errorRegex)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.sqrtm(math.zeros(3, 3, 3, 3))
     }, errorRegex)
   })
 
+<<<<<<< HEAD
   it('should LaTeX sqrtm', function () {
+=======
+  it('should LaTeX sqrtm', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('sqrtm([[33, 24], [48, 57]])')
     assert.strictEqual(
       expression.toTex(),
@@ -117,7 +175,11 @@ describe('sqrtm', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return the result in the same format as the input', function () {
+=======
+  it('should return the result in the same format as the input', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(math.typeOf(math.sqrtm(A)), 'Array')
     assert.strictEqual(math.typeOf(math.sqrtm(B)), 'Array')
     assert.strictEqual(math.typeOf(math.sqrtm(AA)), 'Array')

@@ -1,11 +1,18 @@
-// @ts-nocheck
+/**
+ * Test for bignumber - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../../src/defaultInstance.ts'
 const bignumber = math.bignumber
 const BigNumber = math.BigNumber
 
-describe('bignumber', function () {
-  it('should create a bignumber', function () {
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('bignumber', function (): void {
+  it('should create a bignumber', function (): void {
     // no arguments
     const n = bignumber()
     assert.ok(n instanceof BigNumber)
@@ -66,7 +73,7 @@ describe('bignumber', function () {
     assert.strictEqual(f.valueOf(), '1.2e+500')
   })
 
-  it('should create a bignumber from a fraction', function () {
+  it('should create a bignumber from a fraction', function (): void {
     const f = math.fraction(2, 3)
     const b = math.bignumber(f)
     assert.strictEqual(
@@ -75,21 +82,21 @@ describe('bignumber', function () {
     )
   })
 
-  it('should create a bignumber from a bigint', function () {
+  it('should create a bignumber from a bigint', function (): void {
     assert.deepStrictEqual(
       math.bignumber(12345678901234567890n),
       new BigNumber('12345678901234567890')
     )
   })
 
-  it('should convert the number value of a Unit to BigNumber', function () {
+  it('should convert the number value of a Unit to BigNumber', function (): void {
     const b = math.bignumber(math.unit(10, 'inch')).toNumeric('cm')
 
     assert.ok(b instanceof BigNumber)
     assert.strictEqual(b.valueOf(), '25.4')
   })
 
-  it('should convert the Fraction value of a Unit to BigNumber', function () {
+  it('should convert the Fraction value of a Unit to BigNumber', function (): void {
     const b = math
       .bignumber(math.unit(math.fraction(1, 2), 'cm'))
       .toNumeric('cm')
@@ -98,7 +105,7 @@ describe('bignumber', function () {
     assert.strictEqual(b.valueOf(), '0.5')
   })
 
-  it('should apply precision setting to bignumbers', function () {
+  it('should apply precision setting to bignumbers', function (): void {
     const mymath = math.create({
       precision: 32
     })
@@ -107,7 +114,7 @@ describe('bignumber', function () {
     assert.strictEqual(a.toString(), '0.33333333333333333333333333333333')
   })
 
-  it('should support very high precisions', function () {
+  it('should support very high precisions', function (): void {
     const mymath = math.create({
       precision: 2000
     })
@@ -118,21 +125,21 @@ describe('bignumber', function () {
     assert.strictEqual(a.toString(), aStr)
   })
 
-  it('should throw an error in case of unsupported type of argument', function () {
-    assert.throws(function () {
+  it('should throw an error in case of unsupported type of argument', function (): void {
+    assert.throws(function (): void {
       math.bignumber(new Date())
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       math.bignumber(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX bignumber', function () {
-    const expr1 = math.parse('bignumber()')
-    const expr2 = math.parse('bignumber(1)')
+  it('should LaTeX bignumber', function (): void {
+    const expr1 = math.parse('bignumber()') as MathNode
+    const expr2 = math.parse('bignumber(1)') as MathNode
 
     assert.strictEqual(expr1.toTex(), '0')
     assert.strictEqual(expr2.toTex(), '\\left(1\\right)')

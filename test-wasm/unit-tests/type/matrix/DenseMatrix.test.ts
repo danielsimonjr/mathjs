@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for DenseMatrix - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const Matrix = math.Matrix
@@ -9,15 +11,15 @@ const Range = math.Range
 
 const index = math.index
 
-describe('DenseMatrix', function () {
-  describe('constructor', function () {
-    it('should create empty matrix if called with no argument', function () {
+describe('DenseMatrix', function (): void {
+  describe('constructor', function (): void {
+    it('should create empty matrix if called with no argument', function (): void {
       const m = new DenseMatrix()
       assert.deepStrictEqual(m._size, [0])
       assert.deepStrictEqual(m._data, [])
     })
 
-    it('should create a DenseMatrix from an array', function () {
+    it('should create a DenseMatrix from an array', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6],
@@ -33,7 +35,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create a DenseMatrix from an array, number datatype', function () {
+    it('should create a DenseMatrix from an array, number datatype', function (): void {
       const m = new DenseMatrix(
         [
           [1, 2, 3],
@@ -53,7 +55,7 @@ describe('DenseMatrix', function () {
       assert(m._datatype === 'number')
     })
 
-    it('should create a DenseMatrix an array containing matrices', function () {
+    it('should create a DenseMatrix an array containing matrices', function (): void {
       const m = new DenseMatrix([
         new DenseMatrix([1, 2]),
         new DenseMatrix([3, 4])
@@ -68,7 +70,7 @@ describe('DenseMatrix', function () {
       )
     })
 
-    it('should create a DenseMatrix from another DenseMatrix', function () {
+    it('should create a DenseMatrix from another DenseMatrix', function (): void {
       const m1 = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6],
@@ -80,7 +82,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m1._data, m2._data)
     })
 
-    it('should create a DenseMatrix from another DenseMatrix, number datatype', function () {
+    it('should create a DenseMatrix from another DenseMatrix, number datatype', function (): void {
       const m1 = new DenseMatrix(
         [
           [1, 2, 3],
@@ -96,7 +98,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m1._datatype, m2._datatype)
     })
 
-    it('should create a DenseMatrix from a SparseMatrix', function () {
+    it('should create a DenseMatrix from a SparseMatrix', function (): void {
       const m1 = new SparseMatrix([
         [1, 2, 3],
         [4, 5, 6],
@@ -108,7 +110,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m1.toArray(), m2.toArray())
     })
 
-    it('should create a DenseMatrix from a SparseMatrix, number datatype', function () {
+    it('should create a DenseMatrix from a SparseMatrix, number datatype', function (): void {
       const m1 = new SparseMatrix(
         [
           [1, 2, 3],
@@ -124,7 +126,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m1._datatype, m2._datatype)
     })
 
-    it('should create a DenseMatrix using method create', function () {
+    it('should create a DenseMatrix using method create', function (): void {
       const a = new DenseMatrix([1, 2, 3])
 
       const b = a.create([4, 5, 6])
@@ -135,23 +137,23 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(c, new DenseMatrix([7, 8, 9], 'number'))
     })
 
-    it('should have a property isMatrix', function () {
+    it('should have a property isMatrix', function (): void {
       const a = new DenseMatrix()
       assert.strictEqual(a.isMatrix, true)
     })
 
-    it('should have a property isDenseMatrix', function () {
+    it('should have a property isDenseMatrix', function (): void {
       const a = new DenseMatrix()
       assert.strictEqual(a.isDenseMatrix, true)
     })
 
-    it('should have a property type', function () {
+    it('should have a property type', function (): void {
       const a = new DenseMatrix()
       assert.strictEqual(a.type, 'DenseMatrix')
     })
 
-    it('should throw an error when the dimensions of the input array are invalid', function () {
-      assert.throws(function () {
+    it('should throw an error when the dimensions of the input array are invalid', function (): void {
+      assert.throws(function (): void {
         console.log(
           new DenseMatrix([
             [1, 2],
@@ -161,19 +163,19 @@ describe('DenseMatrix', function () {
       }, /DimensionError: Dimension mismatch \(3 != 2\)/)
     })
 
-    it('should throw an error when called without new keyword', function () {
-      assert.throws(function () {
+    it('should throw an error when called without new keyword', function (): void {
+      assert.throws(function (): void {
         DenseMatrix()
       }, /Constructor must be called with the new operator/)
     })
 
-    it('should throw an error when called with invalid datatype', function () {
-      assert.throws(function () {
+    it('should throw an error when called with invalid datatype', function (): void {
+      assert.throws(function (): void {
         console.log(new DenseMatrix([], 1))
       })
     })
 
-    it('should not mutate the input data when creating a Matrix (1)', function () {
+    it('should not mutate the input data when creating a Matrix (1)', function (): void {
       const data = [[1, 2]]
       Object.freeze(data)
 
@@ -182,7 +184,7 @@ describe('DenseMatrix', function () {
       assert.notStrictEqual(matrix.valueOf(), data)
     })
 
-    it('should not mutate the input data when creating a Matrix (2)', function () {
+    it('should not mutate the input data when creating a Matrix (2)', function (): void {
       const nestedMatrix = new DenseMatrix([1, 2])
       const data = [nestedMatrix]
 
@@ -191,7 +193,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(data, [nestedMatrix]) // should not have replaced the nestedMatrix in data itself
     })
 
-    it('should not mutate the input data operating on a Matrix', function () {
+    it('should not mutate the input data operating on a Matrix', function (): void {
       const data = [[1, 2]]
 
       const matrix = new DenseMatrix(data)
@@ -202,8 +204,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('size', function () {
-    it('should return the expected size', function () {
+  describe('size', function (): void {
+    it('should return the expected size', function (): void {
       assert.deepStrictEqual(new DenseMatrix().size(), [0])
       assert.deepStrictEqual(new DenseMatrix([[23]]).size(), [1, 1])
       assert.deepStrictEqual(
@@ -223,7 +225,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(new DenseMatrix([[]]).size(), [1, 0])
     })
 
-    it('should return a clone of the size', function () {
+    it('should return a clone of the size', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -239,8 +241,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('toString', function () {
-    it('should return string representation of matrix', function () {
+  describe('toString', function (): void {
+    it('should return string representation of matrix', function (): void {
       assert.strictEqual(
         new DenseMatrix([
           [1, 2],
@@ -258,8 +260,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('toJSON', function () {
-    it('should serialize Matrix', function () {
+  describe('toJSON', function (): void {
+    it('should serialize Matrix', function (): void {
       assert.deepStrictEqual(
         new DenseMatrix([
           [1, 2],
@@ -277,7 +279,7 @@ describe('DenseMatrix', function () {
       )
     })
 
-    it('should serialize Matrix, number datatype', function () {
+    it('should serialize Matrix, number datatype', function (): void {
       assert.deepStrictEqual(
         new DenseMatrix(
           [
@@ -299,8 +301,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('fromJSON', function () {
-    it('should deserialize Matrix', function () {
+  describe('fromJSON', function (): void {
+    it('should deserialize Matrix', function (): void {
       const json = {
         mathjs: 'DenseMatrix',
         data: [
@@ -319,7 +321,7 @@ describe('DenseMatrix', function () {
       assert.strictEqual(m._data[1][1], 4)
     })
 
-    it('should deserialize Matrix, number datatype', function () {
+    it('should deserialize Matrix, number datatype', function (): void {
       const json = {
         mathjs: 'DenseMatrix',
         data: [
@@ -340,7 +342,7 @@ describe('DenseMatrix', function () {
       assert.strictEqual(m._datatype, 'number')
     })
 
-    it('should throw an error when size is not correct', function () {
+    it('should throw an error when size is not correct', function (): void {
       const json = {
         mathjs: 'DenseMatrix',
         data: [
@@ -349,14 +351,14 @@ describe('DenseMatrix', function () {
         ],
         size: [4, 2] // wrong size
       }
-      assert.throws(() => {
+      assert.throws(function (): void {
         DenseMatrix.fromJSON(json)
       }, 'Bla')
     })
   })
 
-  describe('format', function () {
-    it('should format matrix', function () {
+  describe('format', function (): void {
+    it('should format matrix', function (): void {
       assert.strictEqual(
         new DenseMatrix([
           [1, 2],
@@ -381,8 +383,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('resize', function () {
-    it('should resize the matrix correctly', function () {
+  describe('resize', function (): void {
+    it('should resize the matrix correctly', function (): void {
       let m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -440,7 +442,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.valueOf(), [])
     })
 
-    it('should resize the matrix with DenseMatrix as input', function () {
+    it('should resize the matrix with DenseMatrix as input', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -452,7 +454,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should resize the matrix with SparseMatrix as input', function () {
+    it('should resize the matrix with SparseMatrix as input', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -464,13 +466,13 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should resize the matrix with null default value', function () {
+    it('should resize the matrix with null default value', function (): void {
       const m = new DenseMatrix([])
       m.resize([3], null)
       assert.deepStrictEqual(m.valueOf(), [null, null, null])
     })
 
-    it('should return a different matrix when copy=true', function () {
+    it('should return a different matrix when copy=true', function (): void {
       const m1 = new DenseMatrix([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -496,8 +498,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('reshape', function () {
-    it('should reshape the matrix properly', function () {
+  describe('reshape', function (): void {
+    it('should reshape the matrix properly', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -512,7 +514,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.valueOf(), [[1], [2], [3], [4], [5], [6]])
     })
 
-    it('should return a copy only when specified', function () {
+    it('should return a copy only when specified', function (): void {
       const m1 = new DenseMatrix([
         [1, 2],
         [3, 4]
@@ -529,7 +531,7 @@ describe('DenseMatrix', function () {
       assert.notDeepStrictEqual(m3.valueOf(), m2.valueOf())
     })
 
-    it('should update the size of the reshaped matrix', function () {
+    it('should update the size of the reshaped matrix', function (): void {
       const m1 = new DenseMatrix([
         [1, 2],
         [3, 4]
@@ -545,59 +547,59 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('get', function () {
+  describe('get', function (): void {
     const m = new DenseMatrix([
       [0, 1],
       [2, 3]
     ])
 
-    it('should get a value from the matrix', function () {
+    it('should get a value from the matrix', function (): void {
       assert.strictEqual(m.get([1, 0]), 2)
       assert.strictEqual(m.get([0, 1]), 1)
     })
 
-    it('should throw an error when getting a value out of range', function () {
-      assert.throws(function () {
+    it('should throw an error when getting a value out of range', function (): void {
+      assert.throws(function (): void {
         m.get([3, 0])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.get([1, 5])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.get([1])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.get([])
       })
     })
 
-    it('should throw an error in case of dimension mismatch', function () {
-      assert.throws(function () {
+    it('should throw an error in case of dimension mismatch', function (): void {
+      assert.throws(function (): void {
         m.get([0, 2, 0, 2, 0, 2])
       }, /Dimension mismatch/)
     })
 
-    it('should throw an error when getting a value given a invalid index', function () {
-      assert.throws(function () {
+    it('should throw an error when getting a value given a invalid index', function (): void {
+      assert.throws(function (): void {
         m.get([1.2, 2])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.get([1, -2])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.get(1, 1)
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.get(math.index(1, 1))
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.get([[1, 1]])
       })
     })
   })
 
-  describe('set', function () {
-    it('should set a value in a matrix', function () {
+  describe('set', function (): void {
+    it('should set a value in a matrix', function (): void {
       const m = new DenseMatrix([
         [0, 0],
         [0, 0]
@@ -638,35 +640,35 @@ describe('DenseMatrix', function () {
       )
     })
 
-    it('should set a value in a matrix with defaultValue for new elements', function () {
+    it('should set a value in a matrix with defaultValue for new elements', function (): void {
       const m = new DenseMatrix()
       const defaultValue = 0
       m.set([2], 4, defaultValue)
       assert.deepStrictEqual(m, new DenseMatrix([0, 0, 4]))
     })
 
-    it('should throw an error when setting a value given a invalid index', function () {
+    it('should throw an error when setting a value given a invalid index', function (): void {
       const m = new DenseMatrix([
         [0, 0],
         [0, 0]
       ])
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.set([2.5, 0], 5)
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.set([1], 5)
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.set([-1, 1], 5)
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.set(math.index(new Range(0, 0)), 5)
       })
     })
   })
 
-  describe('get subset', function () {
-    it('should get the right subset of the matrix', function () {
+  describe('get subset', function (): void {
+    it('should get the right subset of the matrix', function (): void {
       let m
 
       // get 1-dimensional
@@ -748,7 +750,7 @@ describe('DenseMatrix', function () {
       )
     })
 
-    it('should squeeze the output when index contains a scalar', function () {
+    it('should squeeze the output when index contains a scalar', function (): void {
       let m = new DenseMatrix(math.range(0, 10))
       assert.deepStrictEqual(m.subset(index(1)), 1)
       assert.deepStrictEqual(
@@ -775,9 +777,9 @@ describe('DenseMatrix', function () {
       )
     })
 
-    it('should throw an error if the given subset is invalid', function () {
+    it('should throw an error if the given subset is invalid', function (): void {
       let m = new DenseMatrix()
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset([-1])
       })
 
@@ -785,40 +787,40 @@ describe('DenseMatrix', function () {
         [1, 2, 3],
         [4, 5, 6]
       ])
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset([1, 2, 3])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset([3, 0])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset([1])
       })
     })
 
-    it('should throw an error in case of wrong number of arguments', function () {
+    it('should throw an error in case of wrong number of arguments', function (): void {
       const m = new DenseMatrix()
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset()
       }, /Wrong number of arguments/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset(1, 2, 3, 4)
       }, /Wrong number of arguments/)
     })
 
-    it('should throw an error in case of dimension mismatch', function () {
+    it('should throw an error in case of dimension mismatch', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
       ])
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset(index(new Range(0, 2)))
       }, /Dimension mismatch/)
     })
   })
 
-  describe('set subset', function () {
-    it('should set the given subset', function () {
+  describe('set subset', function (): void {
+    it('should set the given subset', function (): void {
       // set 1-dimensional
       let m = new DenseMatrix(math.range(0, 7))
       m.subset(index(new Range(2, 4)), [20, 30])
@@ -869,7 +871,7 @@ describe('DenseMatrix', function () {
       )
     })
 
-    it('should set the given subset with defaultValue for new elements', function () {
+    it('should set the given subset with defaultValue for new elements', function (): void {
       // multiple values
       const m = new DenseMatrix()
       let defaultValue = 0
@@ -916,7 +918,7 @@ describe('DenseMatrix', function () {
       )
     })
 
-    it('should unsqueeze the replacement subset if needed', function () {
+    it('should unsqueeze the replacement subset if needed', function (): void {
       let m = new DenseMatrix([
         [0, 0],
         [0, 0]
@@ -952,7 +954,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m, new DenseMatrix([[[1]], [[2]], [[3]]]))
     })
 
-    it('should leave the subset unchanged when unsqueezing it', function () {
+    it('should leave the subset unchanged when unsqueezing it', function (): void {
       const m = new DenseMatrix([
         [0, 0],
         [0, 0]
@@ -971,7 +973,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(r, new DenseMatrix([1, 2]))
     })
 
-    it('should resize the matrix if the replacement subset is different size than selected subset', function () {
+    it('should resize the matrix if the replacement subset is different size than selected subset', function (): void {
       // set 2-dimensional with resize
       let m = new DenseMatrix([[123]])
       m.subset(index(new Range(1, 3), new Range(1, 3)), [
@@ -1048,34 +1050,34 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m, res)
     })
 
-    it('should throw an error in case of wrong type of index', function () {
-      assert.throws(function () {
+    it('should throw an error in case of wrong type of index', function (): void {
+      assert.throws(function (): void {
         console.log(new DenseMatrix().subset('no index', 2))
       }, /Invalid index/)
     })
 
-    it('should throw an error in case of wrong size of submatrix', function () {
-      assert.throws(function () {
+    it('should throw an error in case of wrong size of submatrix', function (): void {
+      assert.throws(function (): void {
         console.log(new DenseMatrix().subset(index(0), [2, 3]))
       }, /Scalar expected/)
     })
 
-    it('should throw an error in case of dimension mismatch', function () {
+    it('should throw an error in case of dimension mismatch', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
       ])
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset(index(new Range(0, 2)), [100, 100])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         m.subset(index(new Range(0, 2), new Range(0, 2)), [100, 100, 100])
       }, /Dimension mismatch/)
     })
   })
 
-  describe('map', function () {
-    it('should apply the given function to all elements in the matrix', function () {
+  describe('map', function (): void {
+    it('should apply the given function to all elements in the matrix', function (): void {
       let m = new DenseMatrix([
         [
           [1, 2],
@@ -1129,7 +1131,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m2.valueOf(), [2, 4, 6])
     })
 
-    it('should work on empty matrices', function () {
+    it('should work on empty matrices', function (): void {
       const m = new DenseMatrix([])
       const m2 = m.map(function (value) {
         return value * 2
@@ -1137,7 +1139,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m2.toArray(), [])
     })
 
-    it('should invoke callback with parameters value, index, obj', function () {
+    it('should invoke callback with parameters value, index, obj', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -1160,22 +1162,21 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it("should throw an error if it the typed function doesn't accept the type of argument", function () {
+    it("should throw an error if it the typed function doesn't accept the type of argument", function (): void {
       const matrix = new DenseMatrix([1, 'two'])
       const callback = math.typed({
         number: function (value) {
           return value + 1
         }
       })
-      assert.throws(
-        () => matrix.map(callback),
+      assert.throws(function (): void { m }atrix.map(callback),
         /TypeError: Function map cannot apply callback arguments/
       )
     })
   })
 
-  describe('forEach', function () {
-    it('should run on all elements of the matrix, last dimension first', function () {
+  describe('forEach', function (): void {
+    it('should run on all elements of the matrix, last dimension first', function (): void {
       let m, output
 
       m = new DenseMatrix([
@@ -1220,7 +1221,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(output, [1, 2, 3])
     })
 
-    it('should work on empty matrices', function () {
+    it('should work on empty matrices', function (): void {
       const m = new DenseMatrix([])
       const output = []
       m.forEach(function (value) {
@@ -1229,7 +1230,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(output, [])
     })
 
-    it('should invoke callback with parameters value, index, obj', function () {
+    it('should invoke callback with parameters value, index, obj', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -1249,8 +1250,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('iterable', function () {
-    it('should iterate in the same order as forEach', function () {
+  describe('iterable', function (): void {
+    it('should iterate in the same order as forEach', function (): void {
       let m, expected
 
       m = new DenseMatrix([
@@ -1300,8 +1301,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('clone', function () {
-    it('should clone the matrix properly', function () {
+  describe('clone', function (): void {
+    it('should clone the matrix properly', function (): void {
       const m1 = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6]
@@ -1313,8 +1314,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('toArray', function () {
-    it('should return array', function () {
+  describe('toArray', function (): void {
+    it('should return array', function (): void {
       const m = new DenseMatrix({
         data: [
           [1, 2, 3],
@@ -1335,7 +1336,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should return array, complex numbers', function () {
+    it('should return array, complex numbers', function (): void {
       const m = new DenseMatrix({
         data: [
           new Complex(1, 1),
@@ -1361,8 +1362,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('diagonal', function () {
-    it('should create matrix (n x n)', function () {
+  describe('diagonal', function (): void {
+    it('should create matrix (n x n)', function (): void {
       const m = DenseMatrix.diagonal([3, 3], 1)
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1373,7 +1374,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (n x n), k > 0', function () {
+    it('should create matrix (n x n), k > 0', function (): void {
       const m = DenseMatrix.diagonal([3, 3], 1, 1)
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1384,7 +1385,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (n x n), k < 0', function () {
+    it('should create matrix (n x n), k < 0', function (): void {
       const m = DenseMatrix.diagonal([3, 3], 1, -1)
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1395,7 +1396,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (n x n), vector value', function () {
+    it('should create matrix (n x n), vector value', function (): void {
       const m = DenseMatrix.diagonal([3, 3], [1, 2, 3])
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1406,7 +1407,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (n x n), vector value, k > 0', function () {
+    it('should create matrix (n x n), vector value, k > 0', function (): void {
       const m = DenseMatrix.diagonal([3, 3], [1, 2], 1)
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1417,7 +1418,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (n x n), vector value, k < 0', function () {
+    it('should create matrix (n x n), vector value, k < 0', function (): void {
       const m = DenseMatrix.diagonal([3, 3], [1, 2], -1)
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1428,7 +1429,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (n x n), matrix vector value', function () {
+    it('should create matrix (n x n), matrix vector value', function (): void {
       const m = DenseMatrix.diagonal([3, 3], math.matrix([1, 2, 3]))
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1439,7 +1440,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (n x n), matrix vector value, k > 0', function () {
+    it('should create matrix (n x n), matrix vector value, k > 0', function (): void {
       const m = DenseMatrix.diagonal([3, 3], math.matrix([1, 2]), 1)
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1450,7 +1451,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (n x n), matrix vector value, k < 0', function () {
+    it('should create matrix (n x n), matrix vector value, k < 0', function (): void {
       const m = DenseMatrix.diagonal([3, 3], math.matrix([1, 2]), -1)
 
       assert.deepStrictEqual(m._size, [3, 3])
@@ -1461,7 +1462,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m > n', function () {
+    it('should create matrix (m x n), m > n', function (): void {
       const m = DenseMatrix.diagonal([4, 3], 1)
 
       assert.deepStrictEqual(m._size, [4, 3])
@@ -1473,7 +1474,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m > n, k > 0', function () {
+    it('should create matrix (m x n), m > n, k > 0', function (): void {
       const m = DenseMatrix.diagonal([4, 3], 1, 1)
 
       assert.deepStrictEqual(m._size, [4, 3])
@@ -1485,7 +1486,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m > n, k < 0', function () {
+    it('should create matrix (m x n), m > n, k < 0', function (): void {
       const m = DenseMatrix.diagonal([4, 3], 1, -1)
 
       assert.deepStrictEqual(m._size, [4, 3])
@@ -1497,7 +1498,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m > n, vector value', function () {
+    it('should create matrix (m x n), m > n, vector value', function (): void {
       const m = DenseMatrix.diagonal([4, 3], [1, 2, 3])
 
       assert.deepStrictEqual(m._size, [4, 3])
@@ -1509,7 +1510,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m > n, vector value, k > 0', function () {
+    it('should create matrix (m x n), m > n, vector value, k > 0', function (): void {
       const m = DenseMatrix.diagonal([4, 3], [1, 2], 1)
 
       assert.deepStrictEqual(m._size, [4, 3])
@@ -1521,7 +1522,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m > n, vector value, k < 0', function () {
+    it('should create matrix (m x n), m > n, vector value, k < 0', function (): void {
       const m = DenseMatrix.diagonal([4, 3], [1, 2, 3], -1)
 
       assert.deepStrictEqual(m._size, [4, 3])
@@ -1533,7 +1534,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m < n', function () {
+    it('should create matrix (m x n), m < n', function (): void {
       const m = DenseMatrix.diagonal([3, 4], 1)
 
       assert.deepStrictEqual(m._size, [3, 4])
@@ -1544,7 +1545,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m < n, k > 0', function () {
+    it('should create matrix (m x n), m < n, k > 0', function (): void {
       const m = DenseMatrix.diagonal([3, 4], 1, 1)
 
       assert.deepStrictEqual(m._size, [3, 4])
@@ -1555,7 +1556,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m < n, k < 0', function () {
+    it('should create matrix (m x n), m < n, k < 0', function (): void {
       const m = DenseMatrix.diagonal([3, 4], 1, -1)
 
       assert.deepStrictEqual(m._size, [3, 4])
@@ -1566,7 +1567,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m < n, vector value', function () {
+    it('should create matrix (m x n), m < n, vector value', function (): void {
       const m = DenseMatrix.diagonal([3, 4], [1, 2, 3])
 
       assert.deepStrictEqual(m._size, [3, 4])
@@ -1577,7 +1578,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m < n, vector value, k > 0', function () {
+    it('should create matrix (m x n), m < n, vector value, k > 0', function (): void {
       const m = DenseMatrix.diagonal([3, 4], [1, 2, 3], 1)
 
       assert.deepStrictEqual(m._size, [3, 4])
@@ -1588,7 +1589,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should create matrix (m x n), m < n, vector value, k < 0', function () {
+    it('should create matrix (m x n), m < n, vector value, k < 0', function (): void {
       const m = DenseMatrix.diagonal([3, 4], [1, 2], -1)
 
       assert.deepStrictEqual(m._size, [3, 4])
@@ -1599,7 +1600,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should get matrix diagonal (n x n)', function () {
+    it('should get matrix diagonal (n x n)', function (): void {
       const m = new DenseMatrix([
         [1, 0, 0],
         [0, 1, 0],
@@ -1609,7 +1610,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.diagonal(), new DenseMatrix([1, 1, 1]))
     })
 
-    it('should get matrix diagonal (n x n), k > 0', function () {
+    it('should get matrix diagonal (n x n), k > 0', function (): void {
       const m = new DenseMatrix([
         [1, 2, 0],
         [0, 1, 3],
@@ -1619,7 +1620,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.diagonal(1), new DenseMatrix([2, 3]))
     })
 
-    it('should get matrix diagonal (n x n), k < 0', function () {
+    it('should get matrix diagonal (n x n), k < 0', function (): void {
       const m = new DenseMatrix([
         [1, 0, 0],
         [2, 1, 0],
@@ -1629,7 +1630,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.diagonal(-1), new DenseMatrix([2, 3]))
     })
 
-    it('should get matrix diagonal (m x n), m > n', function () {
+    it('should get matrix diagonal (m x n), m > n', function (): void {
       const m = new DenseMatrix([
         [1, 0, 0],
         [0, 1, 0],
@@ -1640,7 +1641,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.diagonal(), new DenseMatrix([1, 1, 1]))
     })
 
-    it('should get matrix diagonal (m x n), m > n, k > 0', function () {
+    it('should get matrix diagonal (m x n), m > n, k > 0', function (): void {
       const m = new DenseMatrix([
         [1, 2, 0],
         [0, 1, 3],
@@ -1651,7 +1652,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.diagonal(1), new DenseMatrix([2, 3]))
     })
 
-    it('should get matrix diagonal (m x n), m > n, k < 0', function () {
+    it('should get matrix diagonal (m x n), m > n, k < 0', function (): void {
       const m = new DenseMatrix([
         [1, 0, 0],
         [2, 1, 0],
@@ -1662,7 +1663,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.diagonal(-1), new DenseMatrix([2, 3, 4]))
     })
 
-    it('should get matrix diagonal (m x n), m < n', function () {
+    it('should get matrix diagonal (m x n), m < n', function (): void {
       const m = new DenseMatrix([
         [1, 0, 0, 0],
         [0, 1, 0, 0],
@@ -1672,7 +1673,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.diagonal(), new DenseMatrix([1, 1, 1]))
     })
 
-    it('should get matrix diagonal (m x n), m < n, k > 0', function () {
+    it('should get matrix diagonal (m x n), m < n, k > 0', function (): void {
       const m = new DenseMatrix([
         [1, 2, 0, 0],
         [0, 1, 3, 0],
@@ -1682,7 +1683,7 @@ describe('DenseMatrix', function () {
       assert.deepStrictEqual(m.diagonal(1), new DenseMatrix([2, 3, 4]))
     })
 
-    it('should get matrix diagonal (m x n), m < n, k < 0', function () {
+    it('should get matrix diagonal (m x n), m < n, k < 0', function (): void {
       const m = new DenseMatrix([
         [1, 0, 0, 0],
         [2, 1, 0, 0],
@@ -1695,8 +1696,8 @@ describe('DenseMatrix', function () {
     })
   })
 
-  describe('swapRows', function () {
-    it('should swap rows with values', function () {
+  describe('swapRows', function (): void {
+    it('should swap rows with values', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6],
@@ -1712,7 +1713,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should swap row with value and no values', function () {
+    it('should swap row with value and no values', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6],
@@ -1728,7 +1729,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should swap row with no value and values', function () {
+    it('should swap row with no value and values', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [4, 5, 6],
@@ -1744,7 +1745,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should swap rows with missing values', function () {
+    it('should swap rows with missing values', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [0, 5, 0],
@@ -1760,7 +1761,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should swap last row with another row', function () {
+    it('should swap last row with another row', function (): void {
       const m = new DenseMatrix([
         [1, 2, 3],
         [0, 5, 0],
@@ -1776,7 +1777,7 @@ describe('DenseMatrix', function () {
       ])
     })
 
-    it('should swap first row with another row', function () {
+    it('should swap first row with another row', function (): void {
       const m = new DenseMatrix([
         [0, 2, 0],
         [0, 5, 0],

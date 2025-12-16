@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // @ts-nocheck
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
@@ -5,24 +6,52 @@ import math from '../../../src/defaultInstance.ts'
 describe('security', function () {
   it('should not allow calling Function via constructor', function () {
     assert.throws(function () {
+=======
+/**
+ * Test for security - AssemblyScript-friendly TypeScript
+ */
+import assert from 'assert'
+import math from '../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('security', function () {
+  it('should not allow calling Function via constructor', function () {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('f=[].map.constructor("console.log(\'hacked...\')"); f()')
     }, /Error: Cannot access method "map" as a property/)
   })
 
   it('should not allow calling Function via constructor (2)', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('f=sqrt.constructor("console.log(\'hacked...\')"); f()')
     }, /Error: No access to method "constructor"/)
   })
 
   it('should not allow calling Function via call/apply', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f=[].map.constructor.call(null, "console.log(\'hacked...\')"); f()'
       )
     }, /Error: Cannot access method "map" as a property/)
 
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f=[].map.constructor.apply(null, ["console.log(\'hacked...\')"]); f()'
       )
@@ -30,27 +59,47 @@ describe('security', function () {
   })
 
   it('should not allow calling constructor of a class', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('[].constructor()')
     }, /Error: No access to method "constructor"/)
   })
 
   it('should not allow calling constructor', function () {
+<<<<<<< HEAD
     assert.throws(function () {
       math.evaluate('constructor', {})
     }, /Error: No access to property "constructor"/)
 
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      math.evaluate('constructor', {})
+    }, /Error: No access to property "constructor"/)
+
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('toString', {})
     }, /Cannot access method "toString" as a property/)
   })
 
   it('should not allow calling Function via constructor', function () {
+<<<<<<< HEAD
     assert.throws(function () {
       math.evaluate('f=[].map.constructor("console.log(\'hacked...\')"); f()')
     }, /Error: Cannot access method "map" as a property/)
 
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      math.evaluate('f=[].map.constructor("console.log(\'hacked...\')"); f()')
+    }, /Error: Cannot access method "map" as a property/)
+
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f=[].map["constructor"]("console.log(\'hacked...\')"); f()'
       )
@@ -58,13 +107,21 @@ describe('security', function () {
   })
 
   it('should not allow calling Function via a disguised constructor', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'prop="constructor"; f=[].map[prop]("console.log(\'hacked...\')"); f()'
       )
     }, /Error: Cannot access method "map" as a property/)
 
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f=[].map[concat("constr", "uctor")]("console.log(\'hacked...\')"); f()'
       )
@@ -72,7 +129,11 @@ describe('security', function () {
   })
 
   it('should not allow calling Function via bind', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f=[].map.constructor.bind()("console.log(\'hacked...\')"); f()'
       )
@@ -81,7 +142,11 @@ describe('security', function () {
 
   it('should not allow calling Function via map/forEach', function () {
     // TODO: simplify this test case, let it output console.log('hacked...')
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         '["//","a/*\\nreturn process.mainModule.require"]._data.map(cos.constructor)[1]()("child_process").execSync("ps >&2")'
       )
@@ -90,7 +155,11 @@ describe('security', function () {
 
   it('should not allow calling Function via Object.assign', function () {
     // TODO: simplify this test case, let it output console.log('hacked...')
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         '{}.constructor.assign(cos.constructor, {binding: cos.bind})\n' +
           '{}.constructor.assign(cos.constructor, {bind: null})\n' +
@@ -105,6 +174,7 @@ describe('security', function () {
       a: {}
     }
 
+<<<<<<< HEAD
     assert.throws(function () {
       math.evaluate('a.co\u006Estructor', scope)
     }, /Error: No access to property "constructor"/)
@@ -133,12 +203,46 @@ describe('security', function () {
       math.evaluate('a = {"co\\u006Estructor": 2}', scope)
     }, /Error: No access to property "constructor"/)
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      math.evaluate('a.co\u006Estructor', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+      math.evaluate('a["co\\u006Estructor"]', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+      math.evaluate('a.constructor', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+      math.evaluate('a.constructor = 2', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+      math.evaluate('a["constructor"] = 2', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+      math.evaluate('a["co\\u006Estructor"] = 2', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+      math.evaluate('a = {"constructor": 2}', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+      math.evaluate('a = {constructor: 2}', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+      math.evaluate('a = {"co\\u006Estructor": 2}', scope)
+    }, /Error: No access to property "constructor"/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('a = {co\u006Estructor: 2}', scope)
     }, /Error: No access to property "constructor"/)
   })
 
   it('should not allow calling Function via imported, overridden function', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const math2 = math.create()
       math2.evaluate(
         'import({matrix:cos.constructor},{override:1});x=["console.log(\'hacked...\')"];x()'
@@ -147,7 +251,11 @@ describe('security', function () {
   })
 
   it('should not allow calling Function via index retrieval', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'a=["console.log(\'hacked...\')"]._data;a.isRange=true;x={subset:cos.constructor}[a];x()'
       )
@@ -155,7 +263,11 @@ describe('security', function () {
   })
 
   it('should not allow calling Function via getOwnPropertyDescriptor', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'p = parser()\n' +
           'p.evaluate("", [])\n' +
@@ -168,7 +280,11 @@ describe('security', function () {
   })
 
   it('should not allow calling Function via a symbol', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'O = {}.constructor\n' +
           'd = O.getOwnPropertyDescriptor(O.__proto__, "constructor")\n' +
@@ -179,7 +295,11 @@ describe('security', function () {
   })
 
   it('should not allow calling Function via a specially encoded constructor property name', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f=[].map["\\u0063onstructor"]("console.log(\'hacked...\')"); f()'
       )
@@ -187,6 +307,7 @@ describe('security', function () {
   })
 
   it('should not allow creating an Object with forbidden properties', function () {
+<<<<<<< HEAD
     assert.throws(function () {
       math.evaluate('{hasOwnProperty: 2}')
     }, /Error: No access to property "hasOwnProperty/)
@@ -196,12 +317,27 @@ describe('security', function () {
     }, /Error: No access to property "constructor/)
 
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      math.evaluate('{hasOwnProperty: 2}')
+    }, /Error: No access to property "hasOwnProperty/)
+
+    assert.throws(function (): void {
+      math.evaluate('{constructor: 2}')
+    }, /Error: No access to property "constructor/)
+
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('{toString: 2}')
     }, /Error: No access to property "toString/)
   })
 
   it('should not allow calling Object via a an object constructor', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         '{}.constructor.assign(expression.node.AssignmentNode.prototype, ' +
           '{_compile: "".toString.bind("console.log(\'hacked...\')")})\n' +
@@ -211,7 +347,11 @@ describe('security', function () {
   })
 
   it('should not allow calling Object via a __defineGetter__', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'expression.node.AssignmentNode.prototype.__defineGetter__("_compile", ' +
           '{}.valueOf.bind("".toString.bind("console.log(\'hacked...\')"))); evaluate("a = 2")'
@@ -220,7 +360,11 @@ describe('security', function () {
   })
 
   it('should not allow calling evaluate via a custom compiled SymbolNode', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         's={};s.__proto__=expression.node.SymbolNode["prototype"];expression.node.SymbolNode.apply(s,["\\");},\\"exec\\":function(a){return global.eval}};//"]._data);s.compile().exec()("console.log(\'hacked...\')")'
       )
@@ -228,7 +372,11 @@ describe('security', function () {
   })
 
   it('should not allow calling evaluate via parse', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'x=parse("cos");x.name = "\\");},\\"evaluate\\": function(a) {return global.eval}};//a"; x.compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -236,7 +384,11 @@ describe('security', function () {
   })
 
   it('should not allow calling evaluate via parse (2)', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'p = parse("{}[\\"console.log(\'hacked...\')\\"]"); p.index.dimensions["0"].valueType = "boolean"; p.evaluate()'
       )
@@ -244,7 +396,11 @@ describe('security', function () {
   })
 
   it('should not allow calling evaluate via function.syntax', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'cos.syntax="global.eval";s=unit("5 cm");s.units=[]._data;s.value=cos;s._compile=s.toString;expression.node.Node.prototype.compile.call(s).evaluate()("console.log(\'hacked...\')")'
       )
@@ -252,7 +408,11 @@ describe('security', function () {
   })
 
   it('should not allow calling evaluate via clone', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'expression.node.ConstantNode.prototype.clone.call({"value":"evaluate"}).evaluate()("console.log(\'hacked...\')")'
       )
@@ -260,7 +420,11 @@ describe('security', function () {
   })
 
   it('should not allow replacing _compile', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'c(x,y)="console.log(\'hacked...\')";expression.node.Node.prototype.compile.apply({_compile:c}).evaluate()'
       )
@@ -268,7 +432,11 @@ describe('security', function () {
   })
 
   it('should not allow using restricted properties via subset (1)', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f()=false;' +
           'g()={length:3};' +
@@ -290,7 +458,11 @@ describe('security', function () {
   })
 
   it('should not allow using restricted properties via subset (2)', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'scope={}; setter = evaluate("f(obj, name, newValue, assign) = (obj[name] = newValue)", scope); o = parse("1"); setter(o, "value", "evaluate", subset); scope.obj.compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -300,7 +472,11 @@ describe('security', function () {
   it('should not allow using restricted properties via subset (3)', function () {
     // this exploit does no longer work because parse("1") returns a ConstantNode
     // and subset doesn't accept that anymore (expects a plain Object)
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'subset(parse("1"), index("value"), "evaluate").compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -308,13 +484,21 @@ describe('security', function () {
   })
 
   it('should not allow inserting fake nodes with bad code via node.map or node.transform', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'badValue = {"isNode": true, "_compile": evaluate("f(a, b) = \\"evaluate\\"")}; x = evaluate("f(child, path, parent) = path ==\\"value\\" ? newChild : child", {"newChild": badValue}); parse("x = 1").map(x).compile().evaluate()("console.log(\'hacked\')")'
       )
     }, /Error: Cannot convert "object" to a number/)
 
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'badValue = {"isNode": true, "type": "ConstantNode", "valueType": "string", "_compile": evaluate("f(a, b) = \\"evaluate\\"")}; x = evaluate("f(child, path, parent) = path ==\\"value\\" ? newChild : child", {"newChild": badValue}); parse("x = 1").map(x).compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -322,7 +506,11 @@ describe('security', function () {
   })
 
   it('should not allow replacing validateSafeMethod with a local variant', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'evaluate("f(validateSafeMethod)=cos.constructor(\\"return evaluate\\")()")(evaluate("f(x,y)=0"))("console.log(\'hacked...\')")'
       )
@@ -330,7 +518,11 @@ describe('security', function () {
   })
 
   it('should not allow abusing toString', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'badToString = evaluate("f() = 1"); badReplace = evaluate("f(a, b) = \\"evaluate\\""); badNumber = {toString:badToString, replace:badReplace}; badNode = {"isNode": true, "type": "ConstantNode", "valueType": "number", "value": badNumber}; x = evaluate("f(child, path, parent) = badNode", {badNode:badNode}); parse("(1)").map(x).compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -338,7 +530,11 @@ describe('security', function () {
   })
 
   it('should not allow creating a bad FunctionAssignmentNode', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'badNode={isNode:true,type:"FunctionAssignmentNode",expr:parse("1"),types:{join:evaluate("f(a)=\\"\\"")},params:{"forEach":evaluate("f(x)=1"),"join":evaluate("f(x)=\\"){return evaluate;}});return fn;})())}});return fn;})());}};//\\"")}};parse("f()=x").map(evaluate("f(a,b,c)=badNode",{"badNode":badNode})).compile().evaluate()()()("console.log(\'hacked...\')")'
       )
@@ -346,7 +542,11 @@ describe('security', function () {
   })
 
   it('should not allow creating a bad OperatorNode (1)', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'badNode={isNode:true,type:"FunctionAssignmentNode",expr:parse("1"),types:{join:evaluate("f(a)=\\"\\"")},params:{"forEach":evaluate("f(x)=1"),"join":evaluate("f(x)=\\"){return evaluate;}});return fn;})())}});return fn;})());}};//\\"")}};parse("f()=x").map(evaluate("f(a,b,c)=badNode",{"badNode":badNode})).compile().evaluate()()()("console.log(\'hacked...\')")'
       )
@@ -354,7 +554,11 @@ describe('security', function () {
   })
 
   it('should not allow creating a bad OperatorNode (2)', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'parse("(0)").map(evaluate("f(a,b,c)=d",{d:{isNode:true,type:"OperatorNode",fn:"__lookupGetter__",args:{map:evaluate("f(a)=b",{b:{join:evaluate("f(a)=\\"1)||evaluate;}};//\\"")}})}}})).compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -362,7 +566,11 @@ describe('security', function () {
   })
 
   it('should not allow creating a bad ConstantNode', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f(x,y)="evaluate";g()=3;fakeConstantNode={"isNode": true, "type": "ConstantNode", "valueType": "number", "value": {"replace": f, "toString": g}};injectFakeConstantNode(child,path,parent)=path=="value"?fakeConstantNode:child;parse("a=3").map(injectFakeConstantNode).compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -370,7 +578,11 @@ describe('security', function () {
   })
 
   it('should not allow creating a bad ArrayNode', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'g(x)="evaluate";f(x)=({join: g});fakeArrayNode={isNode: true, type: "ArrayNode", items: {map: f}};injectFakeArrayNode(child,path,parent)=path=="value"?fakeArrayNode:child;parse("a=3").map(injectFakeArrayNode).compile().evaluate()[1]("console.log(\'hacked...\')")'
       )
@@ -381,7 +593,11 @@ describe('security', function () {
     // exploits:
     // 1) A bug in validateSafeMethod which allows to call any method in Object.prototype
     // 2) A bug in stringify
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'x=parse("\\"a\\"");x.__defineGetter__("value",evaluate("f()=\\"false\\\\\\\\\\\\\\\\\\\\\\"&&evaluate;}};\\/\\/\\"")); x.compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -389,7 +605,11 @@ describe('security', function () {
   })
 
   it('should not allow using method chain', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'f=chain("a(){return evaluate;};function b").typed({"":f()=0}).done();' +
           'g=f();' +
@@ -399,7 +619,11 @@ describe('security', function () {
   })
 
   it('should not allow using method chain (2)', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'evilMath=chain().create().done();evilMath.import({"_compile":f(a,b,c)="evaluate","isNode":f()=true}); parse("(1)").map(g(a,b,c)=evilMath.chain()).compile().evaluate()("console.log(\'hacked...\')")'
       )
@@ -407,7 +631,11 @@ describe('security', function () {
   })
 
   it('should not allow using method Chain', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate(
         'x=parse("a",{nodes:{a:Chain}});Chain.bind(x,{})();' +
           'evilMath=x.create().done();' +
@@ -426,11 +654,19 @@ describe('security', function () {
     //
     //         const fn = typed("(){}+console.log(`hacked...`);function a", { "": function () { } })
 
+<<<<<<< HEAD
     assert.throws(function () {
       math.evaluate('[]["(){}+console.log(`hacked...`);function a"]()=0')
     }, /SyntaxError: Invalid left hand side of assignment operator =/)
 
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      math.evaluate('[]["(){}+console.log(`hacked...`);function a"]()=0')
+    }, /SyntaxError: Invalid left hand side of assignment operator =/)
+
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('{}["(){}+console.log(`hacked...`);function a"]()=0')
     }, /SyntaxError: Invalid left hand side of assignment operator =/)
   })
@@ -451,28 +687,47 @@ describe('security', function () {
   })
 
   it('should not allow accessing inherited properties on an object', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('obj.constructor', { obj: { a: 42 } })
     }, /Error: No access to property "constructor"/)
   })
 
   it('should not allow accessing __proto__', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('{}.__proto__')
     }, /Error: No access to property "__proto__"/)
   })
 
   it('should not allow getting properties from non plain objects', function () {
+<<<<<<< HEAD
     assert.throws(function () {
       math.evaluate('[]._data')
     }, /No access to property "_data"/)
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      math.evaluate('[]._data')
+    }, /No access to property "_data"/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('unit("5cm").valueOf')
     }, /Cannot access method "valueOf" as a property/)
   })
 
   it('should not allow accessing constructor via FunctionNode.name', function () {
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       // could execute a nodejs script like "return process.mainModule.require(child_process).execSync(whoami)"
       const result = math.evaluate(
         'evalFunctionNode=parse("constructor(\'return process.version\')")._compile({},{});' +
@@ -510,6 +765,7 @@ describe('security', function () {
       }
     })
 
+<<<<<<< HEAD
     assert.throws(function () {
       math.evaluate('expression')
     }, /Undefined symbol/)
@@ -520,6 +776,18 @@ describe('security', function () {
       math.evaluate('error')
     }, /Undefined symbol/)
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      math.evaluate('expression')
+    }, /Undefined symbol/)
+    assert.throws(function (): void {
+      math.evaluate('type')
+    }, /Undefined symbol/)
+    assert.throws(function (): void {
+      math.evaluate('error')
+    }, /Undefined symbol/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('json')
     }, /Undefined symbol/)
 

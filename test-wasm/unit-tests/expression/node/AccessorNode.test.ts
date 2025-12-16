@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test AccessorNode
+=======
+/**
+ * Test for AccessorNode - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -13,19 +19,29 @@ const IndexNode = math.IndexNode
 const RangeNode = math.RangeNode
 const ConditionalNode = math.ConditionalNode
 
+<<<<<<< HEAD
 describe('AccessorNode', function () {
   it('should create a AccessorNode', function () {
+=======
+describe('AccessorNode', function (): void {
+  it('should create a AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new AccessorNode(new Node(), new IndexNode([]))
     assert(n instanceof AccessorNode)
     assert(n instanceof Node)
     assert.strictEqual(n.type, 'AccessorNode')
   })
 
+<<<<<<< HEAD
   it('should have isAccessorNode', function () {
+=======
+  it('should have isAccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const node = new AccessorNode(new Node(), new IndexNode([]))
     assert(node.isAccessorNode)
   })
 
+<<<<<<< HEAD
   it('should throw an error when calling with wrong arguments', function () {
     assert.throws(function () {
       console.log(new AccessorNode())
@@ -37,15 +53,36 @@ describe('AccessorNode', function () {
       console.log(new AccessorNode(new Node(), new IndexNode([2, 3])))
     }, TypeError)
     assert.throws(function () {
+=======
+  it('should throw an error when calling with wrong arguments', function (): void {
+    assert.throws(function (): void {
+      console.log(new AccessorNode())
+    }, TypeError)
+    assert.throws(function (): void {
+      console.log(new AccessorNode('a', new IndexNode([])))
+    }, TypeError)
+    assert.throws(function (): void {
+      console.log(new AccessorNode(new Node(), new IndexNode([2, 3])))
+    }, TypeError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       console.log(new AccessorNode(new Node(), new IndexNode([new Node(), 3])))
     }, TypeError)
   })
 
+<<<<<<< HEAD
   it('should throw an error when calling without new operator', function () {
     assert.throws(() => AccessorNode(new Node(), new IndexNode([])), TypeError)
   })
 
   it('should get the name of an AccessorNode', function () {
+=======
+  it('should throw an error when calling without new operator', function (): void {
+    assert.throws(() => AccessorNode(new Node(), new IndexNode([])), TypeError)
+  })
+
+  it('should get the name of an AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n1 = new AccessorNode(
       new SymbolNode('a'),
       new IndexNode([new ConstantNode('toString')])
@@ -59,7 +96,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(n2.name, '')
   })
 
+<<<<<<< HEAD
   it('should compile a AccessorNode', function () {
+=======
+  it('should compile a AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new bigmath.SymbolNode('a')
     const index = new bigmath.IndexNode([
       new bigmath.ConstantNode(2),
@@ -77,7 +118,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(expr.evaluate(scope), 3)
   })
 
+<<<<<<< HEAD
   it('should compile a AccessorNode with range and context parameters', function () {
+=======
+  it('should compile a AccessorNode with range and context parameters', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([
       new ConstantNode(2),
@@ -95,7 +140,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), [3, 4])
   })
 
+<<<<<<< HEAD
   it('should compile a AccessorNode with "end" in an expression', function () {
+=======
+  it('should compile a AccessorNode with "end" in an expression', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([
       new OperatorNode('-', 'subtract', [
@@ -112,7 +161,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), 2)
   })
 
+<<<<<<< HEAD
   it('should compile a AccessorNode with a property', function () {
+=======
+  it('should compile a AccessorNode with a property', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode('b')])
     const n = new AccessorNode(a, index)
@@ -124,7 +177,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), 42)
   })
 
+<<<<<<< HEAD
   it('should compile a AccessorNode with an not existing property and optional chaining', function () {
+=======
+  it('should compile a AccessorNode with an not existing property and optional chaining', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode('b')])
     const n = new AccessorNode(a, index, true)
@@ -136,7 +193,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), undefined)
   })
 
+<<<<<<< HEAD
   it('should compile a nested AccessorNode with an not existing property and optional chaining', function () {
+=======
+  it('should compile a nested AccessorNode with an not existing property and optional chaining', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode('b')])
     const n = new AccessorNode(a, index, true)
@@ -150,7 +211,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), undefined)
   })
 
+<<<<<<< HEAD
   it('should throw a one-based index error when out of range (Array)', function () {
+=======
+  it('should throw a one-based index error when out of range (Array)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(4)])
     const n = new AccessorNode(a, index)
@@ -159,12 +224,20 @@ describe('AccessorNode', function () {
     const scope = {
       a: [1, 2, 3]
     }
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       expr.evaluate(scope)
     }, /Index out of range \(4 > 3\)/)
   })
 
+<<<<<<< HEAD
   it('should throw a one-based index error when out of range (Matrix)', function () {
+=======
+  it('should throw a one-based index error when out of range (Matrix)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(4)])
     const n = new AccessorNode(a, index)
@@ -173,12 +246,20 @@ describe('AccessorNode', function () {
     const scope = {
       a: math.matrix([1, 2, 3])
     }
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       expr.evaluate(scope)
     }, /Index out of range \(4 > 3\)/)
   })
 
+<<<<<<< HEAD
   it('should throw a one-based index error when out of range (string)', function () {
+=======
+  it('should throw a one-based index error when out of range (string)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(4)])
     const n = new AccessorNode(a, index)
@@ -187,12 +268,20 @@ describe('AccessorNode', function () {
     const scope = {
       a: 'hey'
     }
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       expr.evaluate(scope)
     }, /Index out of range \(4 > 3\)/)
   })
 
+<<<<<<< HEAD
   it('should throw an error when applying a matrix index onto an object', function () {
+=======
+  it('should throw an error when applying a matrix index onto an object', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(4)])
     const n = new AccessorNode(a, index)
@@ -201,12 +290,20 @@ describe('AccessorNode', function () {
     const scope = {
       a: {}
     }
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       expr.evaluate(scope)
     }, /Cannot apply a numeric index as object property/)
   })
 
+<<<<<<< HEAD
   it('should throw an error when applying an index onto a scalar', function () {
+=======
+  it('should throw an error when applying an index onto a scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(4)])
     const n = new AccessorNode(a, index)
@@ -215,12 +312,20 @@ describe('AccessorNode', function () {
     const scope = {
       a: 42
     }
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       expr.evaluate(scope)
     }, /Cannot apply index: unsupported type of object/)
   })
 
+<<<<<<< HEAD
   it('should compile a AccessorNode with negative step range and context parameters', function () {
+=======
+  it('should compile a AccessorNode with negative step range and context parameters', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([
       new ConstantNode(2),
@@ -242,7 +347,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), [4, 3])
   })
 
+<<<<<<< HEAD
   it('should compile a AccessorNode with "end" both as value and in a range', function () {
+=======
+  it('should compile a AccessorNode with "end" both as value and in a range', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([
       new SymbolNode('end'),
@@ -260,7 +369,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), [3, 4])
   })
 
+<<<<<<< HEAD
   it('should use the inner context when using "end" in a nested index', function () {
+=======
+  it('should use the inner context when using "end" in a nested index', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // A[B[end]]
     const node = new AccessorNode(
       new SymbolNode('A'),
@@ -281,22 +394,38 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), 6)
   })
 
+<<<<<<< HEAD
   it('should give a proper error message when using "end" inside the index of an object', function () {
+=======
+  it('should give a proper error message when using "end" inside the index of an object', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const obj = new SymbolNode('value')
     const index = new IndexNode([new SymbolNode('end')])
     const n = new AccessorNode(obj, index)
     const expr = n.compile()
 
+<<<<<<< HEAD
     assert.throws(function () {
       expr.evaluate({ value: { end: true } })
     }, /TypeError: Cannot resolve "end": context must be a Matrix, Array, or string but is Object/)
 
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      expr.evaluate({ value: { end: true } })
+    }, /TypeError: Cannot resolve "end": context must be a Matrix, Array, or string but is Object/)
+
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       expr.evaluate({ value: 42 })
     }, /TypeError: Cannot resolve "end": context must be a Matrix, Array, or string but is number/)
   })
 
+<<<<<<< HEAD
   it('should compile a AccessorNode with bignumber setting', function () {
+=======
+  it('should compile a AccessorNode with bignumber setting', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new bigmath.SymbolNode('a')
     const b = new bigmath.ConstantNode(2)
     const c = new bigmath.ConstantNode(1)
@@ -312,7 +441,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(expr.evaluate(scope), 3)
   })
 
+<<<<<<< HEAD
   it('should filter an AccessorNode', function () {
+=======
+  it('should filter an AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -357,7 +490,11 @@ describe('AccessorNode', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should filter an empty AccessorNode', function () {
+=======
+  it('should filter an empty AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new AccessorNode(new SymbolNode('a'), new IndexNode([]))
 
     assert.deepStrictEqual(
@@ -374,7 +511,11 @@ describe('AccessorNode', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should run forEach on an AccessorNode', function () {
+=======
+  it('should run forEach on an AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -395,7 +536,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(paths, ['object', 'index'])
   })
 
+<<<<<<< HEAD
   it('should map an AccessorNode', function () {
+=======
+  it('should map an AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -424,20 +569,32 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(f.index.dimensions[1], c)
   })
 
+<<<<<<< HEAD
   it('should throw an error when the map callback does not return a node', function () {
+=======
+  it('should throw an error when the map callback does not return a node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
     const n = new AccessorNode(a, new IndexNode([b, c]))
 
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       n.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
+<<<<<<< HEAD
   it('should transform an IndexNodes object', function () {
+=======
+  it('should transform an IndexNodes object', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -454,7 +611,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(f.index.dimensions[1], c)
   })
 
+<<<<<<< HEAD
   it('should transform an IndexNodes (nested) parameters', function () {
+=======
+  it('should transform an IndexNodes (nested) parameters', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -471,7 +632,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(f.index.dimensions[1], e)
   })
 
+<<<<<<< HEAD
   it('should transform an AccessorNode itself', function () {
+=======
+  it('should transform an AccessorNode itself', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -486,7 +651,11 @@ describe('AccessorNode', function () {
     assert.deepStrictEqual(f, e)
   })
 
+<<<<<<< HEAD
   it('should clone an AccessorNode', function () {
+=======
+  it('should clone an AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -502,7 +671,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(d.index.dimensions[1], n.index.dimensions[1])
   })
 
+<<<<<<< HEAD
   it('should clone an AccessorNode with optional chaining', function () {
+=======
+  it('should clone an AccessorNode with optional chaining', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
@@ -512,7 +685,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(n.dotNotation, d.dotNotation)
   })
 
+<<<<<<< HEAD
   it('should test equality of an Node', function () {
+=======
+  it('should test equality of an Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new SymbolNode('b')
     const two = new ConstantNode(2)
@@ -528,7 +705,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(node1.equals(node3), true)
   })
 
+<<<<<<< HEAD
   it('should stringify an AccessorNode', function () {
+=======
+  it('should stringify an AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(2), new ConstantNode(1)])
 
@@ -542,7 +723,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(n3.toString(), 'a?.[]')
   })
 
+<<<<<<< HEAD
   it('should stringify an AccessorNode with parentheses', function () {
+=======
+  it('should stringify an AccessorNode with parentheses', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new SymbolNode('b')
     const add = new OperatorNode('+', 'add', [a, b])
@@ -550,7 +735,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(bar.toString(), '(a + b)["bar"]')
   })
 
+<<<<<<< HEAD
   it('should stringify an AccessorNode with parentheses and optional chaining', function () {
+=======
+  it('should stringify an AccessorNode with parentheses and optional chaining', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const condition = new ConstantNode(1)
     const obj1 = new SymbolNode('obj1')
     const obj2 = new SymbolNode('obj2')
@@ -563,14 +752,22 @@ describe('AccessorNode', function () {
     assert.strictEqual(bar.toString(), '(1 ? obj1 : obj2)?.["bar"]')
   })
 
+<<<<<<< HEAD
   it('should stringify nested AccessorNode', function () {
+=======
+  it('should stringify nested AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const foo = new AccessorNode(a, new IndexNode([new ConstantNode('foo')]))
     const bar = new AccessorNode(foo, new IndexNode([new ConstantNode('bar')]))
     assert.strictEqual(bar.toString(), 'a["foo"]["bar"]')
   })
 
+<<<<<<< HEAD
   it('should stringify nested AccessorNode using optional chaining', function () {
+=======
+  it('should stringify nested AccessorNode using optional chaining', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const foo = new AccessorNode(
       a,
@@ -585,7 +782,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(bar.toString(), 'a?.["foo"]?.["bar"]')
   })
 
+<<<<<<< HEAD
   it('should stringify nested AccessorNode with dot-notation', function () {
+=======
+  it('should stringify nested AccessorNode with dot-notation', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const foo = new AccessorNode(
       a,
@@ -598,7 +799,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(bar.toString(), 'a.foo.bar')
   })
 
+<<<<<<< HEAD
   it('should stringify nested AccessorNode with dot-notation using optional chaining', function () {
+=======
+  it('should stringify nested AccessorNode with dot-notation using optional chaining', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const foo = new AccessorNode(
       a,
@@ -613,7 +818,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(bar.toString(), 'a?.foo?.bar')
   })
 
+<<<<<<< HEAD
   it('should stringify an AccessorNode with custom toString', function () {
+=======
+  it('should stringify an AccessorNode with custom toString', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'AccessorNode') {
@@ -640,7 +849,11 @@ describe('AccessorNode', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should LaTeX an AccessorNode', function () {
+=======
+  it('should LaTeX an AccessorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const index = new IndexNode([new ConstantNode(2), new ConstantNode(1)])
 
@@ -651,7 +864,11 @@ describe('AccessorNode', function () {
     assert.strictEqual(n2.toTex(), ' a_{}')
   })
 
+<<<<<<< HEAD
   it('should LaTeX an AccessorNode with custom toTex', function () {
+=======
+  it('should LaTeX an AccessorNode with custom toTex', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'AccessorNode') {
@@ -684,7 +901,11 @@ describe('AccessorNode', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should stringify an AccessorNode with custom toHTML', function () {
+=======
+  it('should stringify an AccessorNode with custom toHTML', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'AccessorNode') {
@@ -711,7 +932,11 @@ describe('AccessorNode', function () {
     )
   })
 
+<<<<<<< HEAD
   it('toJSON and fromJSON', function () {
+=======
+  it('toJSON and fromJSON', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new SymbolNode('a')
     const b = new ConstantNode(1)
     const c = new ConstantNode(2)

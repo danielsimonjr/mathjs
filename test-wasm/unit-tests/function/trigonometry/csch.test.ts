@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for csch - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -10,13 +17,13 @@ const csch = math.csch
 const bigmath = math.create({ precision: 20 })
 const biggermath = math.create({ number: 'BigNumber', precision: 22 })
 
-describe('csch', function () {
-  it('should return the csch of a boolean', function () {
+describe('csch', function (): void {
+  it('should return the csch of a boolean', function (): void {
     approxEqual(csch(true), 0.85091812823932)
     approxEqual(csch(false), Number.POSITIVE_INFINITY)
   })
 
-  it('should return the csch of a number', function () {
+  it('should return the csch of a number', function (): void {
     approxEqual(csch(0), Number.POSITIVE_INFINITY)
     approxEqual(csch(pi), 0.086589537530047)
     approxEqual(csch(1), 0.85091812823932)
@@ -26,7 +33,7 @@ describe('csch', function () {
     approxEqual(csch(-1e-22), Number.NEGATIVE_INFINITY)
   })
 
-  it('should return the csch of a bignumber', function () {
+  it('should return the csch of a bignumber', function (): void {
     const cschBig = bigmath.csch
     const Big = bigmath.bignumber
 
@@ -42,7 +49,7 @@ describe('csch', function () {
     )
   })
 
-  it('should return the csch of a complex number', function () {
+  it('should return the csch of a complex number', function (): void {
     approxDeepEqual(csch(complex('1')), complex(0.85091812823932, 0))
     approxDeepEqual(csch(complex('i')), complex(0, -1.1883951057781))
     approxDeepEqual(
@@ -51,44 +58,44 @@ describe('csch', function () {
     )
   })
 
-  it('should throw an error on an angle', function () {
+  it('should throw an error on an angle', function (): void {
     assert.throws(() => csch(unit('90deg')), TypeError)
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       csch(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       csch('string')
     })
   })
 
   const csch123 = [0.85091812823932, 0.27572056477178, 0.099821569668823]
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => csch([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], csch), csch123)
   })
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => csch(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), csch), matrix(csch123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       csch()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       csch(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX csch', function () {
+  it('should LaTeX csch', function (): void {
     const expression = math.parse('csch(1)')
     assert.strictEqual(expression.toTex(), '\\mathrm{csch}\\left(1\\right)')
   })

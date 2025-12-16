@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for bignumber/constants - AssemblyScript-friendly TypeScript
+ */
 // test bignumber utils
 import assert from 'assert'
 
@@ -13,8 +15,8 @@ import {
 const Big32 = BigNumber.clone({ precision: 32 })
 const Big64 = BigNumber.clone({ precision: 64 })
 
-describe('bignumber', function () {
-  it('should calculate a bignumber e', function () {
+describe('bignumber', function (): void {
+  it('should calculate a bignumber e', function (): void {
     assert.strictEqual(
       createBigNumberE(Big32).toString(),
       '2.7182818284590452353602874713527'
@@ -25,7 +27,7 @@ describe('bignumber', function () {
     )
   })
 
-  it('should calculate a bignumber pi', function () {
+  it('should calculate a bignumber pi', function (): void {
     assert.strictEqual(
       createBigNumberPi(Big32).toString(),
       '3.1415926535897932384626433832795'
@@ -36,7 +38,7 @@ describe('bignumber', function () {
     )
   })
 
-  it('should calculate a bignumber tau', function () {
+  it('should calculate a bignumber tau', function (): void {
     assert.strictEqual(
       createBigNumberTau(Big32).toString(),
       '6.283185307179586476925286766559'
@@ -47,7 +49,7 @@ describe('bignumber', function () {
     )
   })
 
-  it('should calculate a bignumber phi', function () {
+  it('should calculate a bignumber phi', function (): void {
     // FIXME: round-off error
     // assert.strictEqual(bignumber.phi(32), '1.6180339887498948482045868343656')
     assert.strictEqual(

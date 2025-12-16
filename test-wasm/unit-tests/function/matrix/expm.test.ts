@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for expm - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 // test expm
 import assert from 'assert'
 
@@ -6,6 +12,7 @@ import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 const expm = math.expm
 
+<<<<<<< HEAD
 describe('expm', function () {
   it('should only accept a square matrix', function () {
     assert.throws(function () {
@@ -18,6 +25,25 @@ describe('expm', function () {
       expm([[1, 2]])
     }, /Matrix must be square/)
     assert.throws(function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('expm', function (): void {
+  it('should only accept a square matrix', function (): void {
+    assert.throws(function (): void {
+      expm(5)
+    }, /Unexpected type/)
+    assert.throws(function (): void {
+      expm([1, 2])
+    }, /Matrix must be square/)
+    assert.throws(function (): void {
+      expm([[1, 2]])
+    }, /Matrix must be square/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       expm([
         [1, 2, 3],
         [4, 5, 6]
@@ -25,7 +51,11 @@ describe('expm', function () {
     }, /Matrix must be square/)
   })
 
+<<<<<<< HEAD
   it('should compute the exponential of a matrix', function () {
+=======
+  it('should compute the exponential of a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Trivial example
     approxDeepEqual(
       expm([
@@ -91,7 +121,11 @@ describe('expm', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should work on SparseMatrix', function () {
+=======
+  it('should work on SparseMatrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       expm(
         math.sparse([
@@ -110,7 +144,11 @@ describe('expm', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should LaTeX transpose', function () {
+=======
+  it('should LaTeX transpose', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('expm([[1,2],[3,4]])')
     assert.strictEqual(
       expression.toTex(),

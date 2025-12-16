@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for compareNatural - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 // test compareNatural
 import assert from 'assert'
 
@@ -10,8 +16,18 @@ const sparse = math.sparse
 const unit = math.unit
 const compareNatural = math.compareNatural
 
+<<<<<<< HEAD
 describe('compareNatural', function () {
   it('should compare two numbers correctly', function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('compareNatural', function (): void {
+  it('should compare two numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(compareNatural(2, 3), -1)
     assert.strictEqual(compareNatural(2, 2), 0)
     assert.strictEqual(compareNatural(2, 1), 1)
@@ -21,7 +37,11 @@ describe('compareNatural', function () {
     assert.strictEqual(compareNatural(-3, -2), -1)
   })
 
+<<<<<<< HEAD
   it('should compare two floating point numbers correctly', function () {
+=======
+  it('should compare two floating point numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Infinity
     assert.strictEqual(
       compareNatural(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
@@ -47,14 +67,22 @@ describe('compareNatural', function () {
     assert.strictEqual(compareNatural(0.3 - 0.2, 0.1), 0)
   })
 
+<<<<<<< HEAD
   it('should compare two booleans', function () {
+=======
+  it('should compare two booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(compareNatural(true, true), 0)
     assert.strictEqual(compareNatural(true, false), 1)
     assert.strictEqual(compareNatural(false, true), -1)
     assert.strictEqual(compareNatural(false, false), 0)
   })
 
+<<<<<<< HEAD
   it('should compare bignumbers', function () {
+=======
+  it('should compare bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(compareNatural(bignumber(2), bignumber(3)), -1)
     assert.strictEqual(compareNatural(bignumber(2), bignumber(2)), 0)
     assert.strictEqual(compareNatural(bignumber(3), bignumber(2)), 1)
@@ -66,7 +94,11 @@ describe('compareNatural', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should compare two fractions', function () {
+=======
+  it('should compare two fractions', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = math.fraction(1, 3)
     const b = math.fraction(1, 6)
     assert.strictEqual(typeof compareNatural(a, b), 'number')
@@ -95,7 +127,11 @@ describe('compareNatural', function () {
     ) // this would fail with numbers
   })
 
+<<<<<<< HEAD
   it('should compare two measures of the same unit', function () {
+=======
+  it('should compare two measures of the same unit', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(compareNatural(unit('100cm'), unit('10inch')), 1)
     assert.strictEqual(compareNatural(unit('99cm'), unit('1m')), -1)
     assert.strictEqual(compareNatural(unit('1m'), unit('1m')), 0)
@@ -103,7 +139,11 @@ describe('compareNatural', function () {
     assert.strictEqual(compareNatural(unit('101cm'), unit('1m')), 1)
   })
 
+<<<<<<< HEAD
   it('should compare two measures of different unit', function () {
+=======
+  it('should compare two measures of different unit', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       compareNatural(math.unit(5, 'km'), math.unit(100, 'gram')),
       1
@@ -118,7 +158,11 @@ describe('compareNatural', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should compare mixed types (by type name)', function () {
+=======
+  it('should compare mixed types (by type name)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // booleans
     assert.strictEqual(compareNatural(2, true), 1)
     assert.strictEqual(compareNatural(0, false), 1)
@@ -169,7 +213,11 @@ describe('compareNatural', function () {
     assert.strictEqual(compareNatural('0', 0), 1)
   })
 
+<<<<<<< HEAD
   it('should perform natural comparison for two strings', function () {
+=======
+  it('should perform natural comparison for two strings', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(compareNatural('abd', 'abc'), 1)
     assert.strictEqual(compareNatural('abc', 'abc'), 0)
     assert.strictEqual(compareNatural('abc', 'abd'), -1)
@@ -178,7 +226,11 @@ describe('compareNatural', function () {
     assert.strictEqual(compareNatural('10', '2'), 1)
   })
 
+<<<<<<< HEAD
   it('should compare arrays', function () {
+=======
+  it('should compare arrays', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // mixed number/array
     assert.strictEqual(compareNatural(5, [1, 2, 3]), 1)
     assert.strictEqual(compareNatural([1, 2, 3], 5), -1)
@@ -211,7 +263,11 @@ describe('compareNatural', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should compare dense matrices', function () {
+=======
+  it('should compare dense matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // mixed number/matrix
     assert.strictEqual(compareNatural(5, matrix([1, 2, 3])), 1)
     assert.strictEqual(compareNatural(matrix([1, 2, 3]), 5), -1)
@@ -250,7 +306,11 @@ describe('compareNatural', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should compare sparse matrices', function () {
+=======
+  it('should compare sparse matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // mixed number/sparse
     assert.strictEqual(compareNatural(5, sparse([1, 2, 3])), 1)
     assert.strictEqual(compareNatural(sparse([1, 2, 3]), 5), -1)
@@ -289,7 +349,11 @@ describe('compareNatural', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should compare objects', function () {
+=======
+  it('should compare objects', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // different number of keys
     assert.strictEqual(compareNatural({ a: 2, b: 3 }, { a: 2 }), 1)
 
@@ -313,7 +377,11 @@ describe('compareNatural', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should apply configuration option relTol', function () {
+=======
+  it('should apply configuration option relTol', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const mymath = math.create()
 
     assert.strictEqual(mymath.compareNatural(1, 0.991), 1)
@@ -332,22 +400,38 @@ describe('compareNatural', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should compare complex numbers', function () {
+=======
+  it('should compare complex numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(compareNatural(complex(1, 1), complex(1, 1)), 0)
     assert.strictEqual(compareNatural(complex(2, 1), complex(1, 2)), 1)
     assert.strictEqual(compareNatural(complex(0, 1), complex(1, 2)), -1)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       compareNatural(1)
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      compareNatural(1)
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       compareNatural(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX compare', function () {
+=======
+  it('should LaTeX compare', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('compareNatural(1,2)')
     assert.strictEqual(
       expression.toTex(),

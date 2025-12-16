@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test nthRoots
+=======
+/**
+ * Test for nthRoots - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -8,8 +14,13 @@ import { approxDeepEqual } from '../../../../tools/approx.js'
 const complex = math.complex
 const nthRoots = math.nthRoots
 
+<<<<<<< HEAD
 describe('nthRoots', function () {
   it('should return an array of Complex roots', function () {
+=======
+describe('nthRoots', function (): void {
+  it('should return an array of Complex roots', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const roots = nthRoots(complex('-1'), 6)
     const roots1 = [
       complex({ r: 1, phi: Math.PI / 6 }),
@@ -25,7 +36,11 @@ describe('nthRoots', function () {
     })
   })
 
+<<<<<<< HEAD
   it('should return the correct answer for Complex values', function () {
+=======
+  it('should return the correct answer for Complex values', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const roots = nthRoots(complex(3, 4), 2)
 
     approxDeepEqual(roots, [
@@ -36,7 +51,11 @@ describe('nthRoots', function () {
 
   const twos = [complex(2, 0), complex(0, 2), complex(-2, 0), complex(0, -2)]
 
+<<<<<<< HEAD
   it('should return pure roots without artifacts', function () {
+=======
+  it('should return pure roots without artifacts', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const roots = nthRoots(complex('16'), 4)
 
     roots.forEach(function (value, index, _array) {
@@ -44,7 +63,11 @@ describe('nthRoots', function () {
     })
   })
 
+<<<<<<< HEAD
   it('should return roots for numeric arguments', function () {
+=======
+  it('should return roots for numeric arguments', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const roots = nthRoots(16, 4)
 
     roots.forEach(function (value, index, _array) {
@@ -52,7 +75,11 @@ describe('nthRoots', function () {
     })
   })
 
+<<<<<<< HEAD
   it('should return roots for string arguments', function () {
+=======
+  it('should return roots for string arguments', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const roots = nthRoots('16', 4)
 
     roots.forEach(function (value, index, _array) {
@@ -60,7 +87,11 @@ describe('nthRoots', function () {
     })
   })
 
+<<<<<<< HEAD
   it('should return zero exactly once', function () {
+=======
+  it('should return zero exactly once', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const roots2 = nthRoots(0)
     const roots4 = nthRoots(0, 4)
     const roots8 = nthRoots(0, 8)

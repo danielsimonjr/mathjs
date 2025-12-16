@@ -1,18 +1,20 @@
-// @ts-nocheck
+/**
+ * Test for deepMap - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../../src/defaultInstance.ts'
 import { deepMap } from '../../../../../src/utils/collection.js'
 
 const DenseMatrix = math.DenseMatrix
 
-describe('deepMap', function () {
-  it('should map all elements in a simple array', function () {
+describe('deepMap', function (): void {
+  it('should map all elements in a simple array', function (): void {
     const array = [1, 2, 3]
     const result = deepMap(array, (value) => value * 2)
     assert.deepStrictEqual(result, [2, 4, 6])
   })
 
-  it('should map all elements in a nested array', function () {
+  it('should map all elements in a nested array', function (): void {
     const array = [
       [1, 2],
       [3, [4, 5]]
@@ -24,7 +26,7 @@ describe('deepMap', function () {
     ])
   })
 
-  it('should map all elements in a mixed type array', function () {
+  it('should map all elements in a mixed type array', function (): void {
     const array = [1, 'two', [3, null, undefined, true]]
     const result = deepMap(array, (value) =>
       typeof value === 'number' ? value * 2 : value
@@ -32,19 +34,19 @@ describe('deepMap', function () {
     assert.deepStrictEqual(result, [2, 'two', [6, null, undefined, true]])
   })
 
-  it('should handle an empty array', function () {
+  it('should handle an empty array', function (): void {
     const array = []
     const result = deepMap(array, (value) => value * 2)
     assert.deepStrictEqual(result, [])
   })
 
-  it('should handle an array with empty nested arrays', function () {
+  it('should handle an array with empty nested arrays', function (): void {
     const array = [[], [1, []], [2, [3, []]]]
     const result = deepMap(array, (value) => value * 2)
     assert.deepStrictEqual(result, [[], [2, []], [4, [6, []]]])
   })
 
-  it('should map all elements in a DenseMatrix', function () {
+  it('should map all elements in a DenseMatrix', function (): void {
     const matrix = new DenseMatrix([
       [1, 2],
       [3, 4]
@@ -59,7 +61,7 @@ describe('deepMap', function () {
     )
   })
 
-  it('should call the callback with each element of a matrix after converting to array', function () {
+  it('should call the callback with each element of a matrix after converting to array', function (): void {
     const matrix = math.matrix([
       [1, 2],
       [3, 4]
@@ -74,21 +76,20 @@ describe('deepMap', function () {
     )
   })
 
-  it('should work with arrays containing complex numbers', function () {
+  it('should work with arrays containing complex numbers', function (): void {
     const array = [math.complex(2, 3), [math.complex(4, 5)]]
     const result = deepMap(array, (value) => value.mul(2))
     assert.deepStrictEqual(result, [math.complex(4, 6), [math.complex(8, 10)]])
   })
 
-  it("should throw an error if it the typed function doesn't accept the type of argument", function () {
+  it("should throw an error if it the typed function doesn't accept the type of argument", function (): void {
     const array = [1, 'two']
     const callback = math.typed('callback', {
       number: function (value) {
         return value + 1
       }
     })
-    assert.throws(
-      () => deepMap(array, callback),
+    assert.throws(function (): void { d }eepMap(array, callback),
       /Error: Cannot convert "two" to a number/
     )
   })

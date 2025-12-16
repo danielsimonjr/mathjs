@@ -1,6 +1,19 @@
+<<<<<<< HEAD
 // @ts-nocheck
 /* eslint-disable no-loss-of-precision */
 
+=======
+/**
+ * Test for asec - AssemblyScript-friendly TypeScript
+ */
+/* eslint-disable no-loss-of-precision */
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -15,14 +28,23 @@ const predmath = math.create({ predictable: true })
 const asecBig = bigmath.asec
 const Big = bigmath.bignumber
 
+<<<<<<< HEAD
 describe('asec', function () {
   it('should return the arcsec of a boolean', function () {
+=======
+describe('asec', function (): void {
+  it('should return the arcsec of a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(asec(true), 0)
     assert.deepStrictEqual(asec(false), complex(0, Infinity))
     // assert.ok(isNaN(asec(false)))
   })
 
+<<<<<<< HEAD
   it('should return the arcsec of a number', function () {
+=======
+  it('should return the arcsec of a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(asec(-2) / pi, 2 / 3)
     approxEqual(asec(-1) / pi, 1)
     approxEqual(asec(1) / pi, 0)
@@ -32,12 +54,20 @@ describe('asec', function () {
     approxDeepEqual(asec(0.5), complex(0, 1.3169578969248))
   })
 
+<<<<<<< HEAD
   it('should return the arcsec of a number when predictable:true', function () {
+=======
+  it('should return the arcsec of a number when predictable:true', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(typeof predmath.asec(0.5), 'number')
     assert(isNaN(predmath.asec(0.5)))
   })
 
+<<<<<<< HEAD
   it('should return the arcsec of a bignumber', function () {
+=======
+  it('should return the arcsec of a bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arg1 = Big(-2)
     const arg2 = Big(-1)
     assert.deepStrictEqual(
@@ -80,7 +110,11 @@ describe('asec', function () {
     assert.ok(asec(Big(-0.5)).isNaN())
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of sec', function () {
+=======
+  it('should be the inverse function of sec', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(asec(sec(-1)), 1)
     approxEqual(asec(sec(0)), 0)
     approxEqual(asec(sec(0.1)), 0.1)
@@ -88,7 +122,11 @@ describe('asec', function () {
     approxEqual(asec(sec(2)), 2)
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of bignumber sec', function () {
+=======
+  it('should be the inverse function of bignumber sec', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     bigmath.config({ precision: 20 })
     assert.deepStrictEqual(asecBig(bigmath.sec(Big(-1))), Big(1))
     assert.deepStrictEqual(asecBig(bigmath.sec(Big(0))), Big(0))
@@ -99,7 +137,11 @@ describe('asec', function () {
     assert.deepStrictEqual(asecBig(bigmath.sec(Big(2))), Big(2))
   })
 
+<<<<<<< HEAD
   it('should return the arcsec of a complex number', function () {
+=======
+  it('should return the arcsec of a complex number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       asec(complex('2+3i')),
       complex(1.42041072246703, 0.23133469857397)
@@ -130,22 +172,39 @@ describe('asec', function () {
     approxDeepEqual(asec(complex('-0.5')), complex(pi, -1.3169578969248))
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a unit', function () {
     assert.throws(function () {
       asec(unit('45deg'))
     })
     assert.throws(function () {
+=======
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
+      asec(unit('45deg'))
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       asec(unit('5 celsius'))
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a string', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       asec('string')
     })
   })
 
+<<<<<<< HEAD
   it('should not operate on arrays and matrices', function () {
+=======
+  it('should not operate on arrays and matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.throws(() => asec([1, 2, 3]), TypeError)
     assert.throws(() => asec(matrix([1, 2, 3])), TypeError)
     const asec123 = [0, pi / 3, 1.23095941734077468]
@@ -153,16 +212,28 @@ describe('asec', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), asec), matrix(asec123))
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       asec()
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      asec()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       asec(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX asec', function () {
+=======
+  it('should LaTeX asec', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('asec(2)')
     assert.strictEqual(expression.toTex(), '\\sec^{-1}\\left(2\\right)')
   })

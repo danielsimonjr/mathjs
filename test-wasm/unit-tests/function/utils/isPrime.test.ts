@@ -1,12 +1,15 @@
-// @ts-nocheck
+/**
+ * Test for isPrime function - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
+
 const isPrime = math.isPrime
 const bignumber = math.bignumber
 const complex = math.complex
 
-describe('isPrime', function () {
-  it('should test whether a number is prime', function () {
+describe('isPrime', function (): void {
+  it('should test whether a number is prime', function (): void {
     assert.strictEqual(isPrime(0), false)
     assert.strictEqual(isPrime(-0), false)
     assert.strictEqual(isPrime(-1), false)
@@ -21,7 +24,7 @@ describe('isPrime', function () {
     assert.strictEqual(isPrime(999), false)
   })
 
-  it('should test whether a bigint is prime', function () {
+  it('should test whether a bigint is prime', function (): void {
     assert.strictEqual(isPrime(0n), false)
     assert.strictEqual(isPrime(-0n), false)
     assert.strictEqual(isPrime(-1n), false)
@@ -36,7 +39,7 @@ describe('isPrime', function () {
     assert.strictEqual(isPrime(999n), false)
   })
 
-  it('should test whether a BigNumber is prime', function () {
+  it('should test whether a BigNumber is prime', function (): void {
     assert.strictEqual(isPrime(bignumber(0)), false)
     assert.strictEqual(isPrime(bignumber(-0)), false)
     assert.strictEqual(isPrime(bignumber(-1)), false)
@@ -51,7 +54,7 @@ describe('isPrime', function () {
     assert.strictEqual(isPrime(bignumber(999)), false)
   })
 
-  it('should test isPrime element wise on an Array', function () {
+  it('should test isPrime element wise on an Array', function (): void {
     assert.deepStrictEqual(isPrime([0, 1, 2, 5, 9]), [
       false,
       false,
@@ -61,19 +64,19 @@ describe('isPrime', function () {
     ])
   })
 
-  it('should throw an error in case of unsupported data types', function () {
-    assert.throws(function () {
+  it('should throw an error in case of unsupported data types', function (): void {
+    assert.throws(function (): void {
       isPrime(complex(2, 3))
     }, /TypeError: Unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       isPrime(new Date())
     }, /TypeError: Unexpected type of argument/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       isPrime({})
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should work fast for huge values', function () {
+  it('should work fast for huge values', function (): void {
     assert.strictEqual(isPrime(bignumber('2305843009213693951')), true)
     assert.strictEqual(isPrime(bignumber('230584300921369395')), false)
   })

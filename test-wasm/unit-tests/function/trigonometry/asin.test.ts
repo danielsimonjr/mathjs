@@ -1,4 +1,15 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for asin - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -14,13 +25,22 @@ const predmath = math.create({ predictable: true })
 const asinBig = bigmath.asin
 const Big = bigmath.bignumber
 
+<<<<<<< HEAD
 describe('asin', function () {
   it('should return the arcsin of a boolean', function () {
+=======
+describe('asin', function (): void {
+  it('should return the arcsin of a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(asin(true), 0.5 * pi)
     assert.strictEqual(asin(false), 0)
   })
 
+<<<<<<< HEAD
   it('should return the arcsin of a number', function () {
+=======
+  it('should return the arcsin of a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(asin(-1) / pi, -0.5)
     approxEqual(asin(-0.5) / pi, -1 / 6)
     approxEqual(asin(0) / pi, 0)
@@ -31,12 +51,20 @@ describe('asin', function () {
     approxDeepEqual(asin(2), complex('1.57079632679490 - 1.31695789692482i'))
   })
 
+<<<<<<< HEAD
   it('should return the arccos of a number when predictable:true', function () {
+=======
+  it('should return the arccos of a number when predictable:true', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(typeof predmath.asin(-2), 'number')
     assert(isNaN(predmath.asin(-2)))
   })
 
+<<<<<<< HEAD
   it('should return the arcsin of a bignumber', function () {
+=======
+  it('should return the arcsin of a bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arg1 = Big(-1)
     const arg2 = Big(-0.581)
     const arg3 = Big(-0.5)
@@ -67,7 +95,11 @@ describe('asin', function () {
     assert.deepStrictEqual(arg4, bigmath61.bignumber(0.00000001))
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of sin', function () {
+=======
+  it('should be the inverse function of sin', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(asin(sin(-1)), -1)
     approxEqual(asin(sin(0)), 0)
     approxEqual(asin(sin(0.1)), 0.1)
@@ -75,7 +107,11 @@ describe('asin', function () {
     approxEqual(asin(sin(2)), 1.14159265358979)
   })
 
+<<<<<<< HEAD
   it('should be the inverse function of bignumber sin', function () {
+=======
+  it('should be the inverse function of bignumber sin', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // More Newton's method test cases
     const bigmath61 = bigmath.create({ number: 'BigNumber', precision: 61 })
     assert.deepStrictEqual(
@@ -123,7 +159,11 @@ describe('asin', function () {
     assert.ok(asin(Big(1.1)).isNaN())
   })
 
+<<<<<<< HEAD
   it('should return the arcsin of a complex number', function () {
+=======
+  it('should return the arcsin of a complex number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const re = 0.570652784321099
     const im = 1.983387029916536
     approxDeepEqual(asin(complex('2+3i')), complex(re, im))
@@ -138,22 +178,39 @@ describe('asin', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a unit', function () {
     assert.throws(function () {
       asin(unit('45deg'))
     })
     assert.throws(function () {
+=======
+  it('should throw an error if called with a unit', function (): void {
+    assert.throws(function (): void {
+      asin(unit('45deg'))
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       asin(unit('5 celsius'))
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error if called with a string', function () {
     assert.throws(function () {
+=======
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       asin('string')
     })
   })
 
+<<<<<<< HEAD
   it('should not operate on arrays and matrices', function () {
+=======
+  it('should not operate on arrays and matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.throws(() => asin([1, 2, 3]), TypeError)
     assert.throws(() => asin(matrix([1, 2, 3])), TypeError)
     // note: the results of asin(2) and asin(3) differs in octave
@@ -167,16 +224,28 @@ describe('asin', function () {
     approxDeepEqual(math.map(matrix([1, 2, 3]), asin), matrix(asin123))
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       asin()
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      asin()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       asin(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX asin', function () {
+=======
+  it('should LaTeX asin', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('asin(0.5)')
     assert.strictEqual(expression.toTex(), '\\sin^{-1}\\left(0.5\\right)')
   })

@@ -1,11 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for broadcast - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../../../src/defaultInstance.ts'
 import { broadcast } from '../../../../../src/type/matrix/utils/broadcast.js'
 const matrix = math.matrix
 
-describe('broadcast', function () {
-  it('should return matrices as such if they are the same size', function () {
+describe('broadcast', function (): void {
+  it('should return matrices as such if they are the same size', function (): void {
     const A = matrix([1, 2])
     const B = matrix([3, 4])
     const r = broadcast(A, B)
@@ -13,15 +15,15 @@ describe('broadcast', function () {
     assert.deepStrictEqual(r[1].valueOf(), B.valueOf())
   })
 
-  it('should throw an error if they are not broadcastable', function () {
+  it('should throw an error if they are not broadcastable', function (): void {
     const A = matrix([1, 2])
     const B = matrix([3, 4, 5])
-    assert.throws(function () {
+    assert.throws(function (): void {
       broadcast(A, B)
     })
   })
 
-  it('should not mutate the original matrices', function () {
+  it('should not mutate the original matrices', function (): void {
     const A = matrix([1, 2])
     const B = matrix([[3], [4]])
     broadcast(A, B)
@@ -29,7 +31,7 @@ describe('broadcast', function () {
     assert.deepStrictEqual(B.valueOf(), [[3], [4]])
   })
 
-  it('should broadcast the first matrix', function () {
+  it('should broadcast the first matrix', function (): void {
     const A = matrix([1, 2])
     const B = matrix([
       [3, 3],
@@ -43,7 +45,7 @@ describe('broadcast', function () {
     assert.deepStrictEqual(r[1].valueOf(), B.valueOf())
   })
 
-  it('should broadcast the second matrix', function () {
+  it('should broadcast the second matrix', function (): void {
     const A = matrix([
       [1, 2],
       [1, 2]
@@ -57,7 +59,7 @@ describe('broadcast', function () {
     ])
   })
 
-  it('should broadcast both matrices', function () {
+  it('should broadcast both matrices', function (): void {
     const A = matrix([1, 2])
     const B = matrix([[3], [4]])
     const r = broadcast(A, B)
@@ -71,7 +73,7 @@ describe('broadcast', function () {
     ])
   })
 
-  it('should broadcast a scalar and a column vector', function () {
+  it('should broadcast a scalar and a column vector', function (): void {
     const A = matrix([1])
     const B = matrix([[3], [4]])
     const r = broadcast(A, B)
@@ -79,7 +81,7 @@ describe('broadcast', function () {
     assert.deepStrictEqual(r[1].valueOf(), B.valueOf())
   })
 
-  it('should broadcast a row vector and a scalar', function () {
+  it('should broadcast a row vector and a scalar', function (): void {
     const A = matrix([1, 2])
     const B = matrix([3])
     const r = broadcast(A, B)
@@ -87,7 +89,7 @@ describe('broadcast', function () {
     assert.deepStrictEqual(r[1].valueOf(), [3, 3])
   })
 
-  it('should broadcast higher dimensions', function () {
+  it('should broadcast higher dimensions', function (): void {
     const A = matrix([[[1, 2]]])
     const B = matrix([[[3]], [[4]]])
     const r = broadcast(A, B)

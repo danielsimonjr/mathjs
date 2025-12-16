@@ -1,7 +1,21 @@
+<<<<<<< HEAD
 // @ts-nocheck
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
+=======
+/**
+ * Test for cumsum.transform - AssemblyScript-friendly TypeScript
+ */
+import assert from 'assert'
+import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const cumsum = math.expression.transform.cumsum
 
 describe('cumsum.transform', function () {

@@ -1,13 +1,29 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test resolve
+=======
+/**
+ * Test for resolve - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
 import { simplifyAndCompare } from './simplify.test.js'
 
+<<<<<<< HEAD
 describe('resolve', function () {
   it('should substitute scoped constants', function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('resolve', function (): void {
+  it('should substitute scoped constants', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const sumxy = math.parse('x+y')
     const collapsingScope = { x: math.parse('y'), y: math.parse('z') }
     assert.strictEqual(math.resolve(sumxy, { x: 1 }).toString(), '1 + y') // direct
@@ -43,7 +59,11 @@ describe('resolve', function () {
     simplifyAndCompare('size(text)[1]', '11', { text: 'hello world' })
   })
 
+<<<<<<< HEAD
   it('should operate directly on strings', function () {
+=======
+  it('should operate directly on strings', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const collapsingScope = { x: math.parse('y'), y: math.parse('z') }
     assert.deepStrictEqual(math.resolve('x+y', { x: 1 }), math.parse('1 + y'))
     assert.deepStrictEqual(
@@ -56,7 +76,11 @@ describe('resolve', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should substitute scoped constants from Map like scopes', function () {
+=======
+  it('should substitute scoped constants from Map like scopes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       math.resolve(math.parse('x+y'), new Map([['x', 1]])).toString(),
       '1 + y'
@@ -70,7 +94,11 @@ describe('resolve', function () {
     simplifyAndCompare('x+y', 'y+1', new Map([['x', math.parse('1')]]))
   })
 
+<<<<<<< HEAD
   it('should resolve multiple nodes', function () {
+=======
+  it('should resolve multiple nodes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const parse = math.parse
     const scope = { x: 1, y: 2 }
     const expressions = [parse('x+z'), 'y+z', 'y-x']
@@ -87,14 +115,22 @@ describe('resolve', function () {
     assert.deepStrictEqual(math.resolve(nested, scope), results)
   })
 
+<<<<<<< HEAD
   it('should throw a readable error if one item is wrong type', function () {
+=======
+  it('should throw a readable error if one item is wrong type', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.throws(
       () => math.resolve([math.parse('x'), 'y', 7]),
       /TypeError: Unexpected.*actual: number, index: 0/
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of reference loop', function () {
+=======
+  it('should throw an error in case of reference loop', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const sumxy = math.parse('x+y')
     assert.throws(
       () => math.resolve(sumxy, { x: math.parse('x') }),

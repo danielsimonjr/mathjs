@@ -1,11 +1,13 @@
-// @ts-nocheck
+/**
+ * Test for bignumber/nearlyEqual - AssemblyScript-friendly TypeScript
+ */
 import { nearlyEqual } from '../../../../src/utils/bignumber/nearlyEqual.js'
 
 import assert from 'assert'
 import BigNumber from 'decimal.js'
 
-describe('nearlyEqual', function () {
-  it('should test whether two BigNumbers are nearly equal', function () {
+describe('nearlyEqual', function (): void {
+  it('should test whether two BigNumbers are nearly equal', function (): void {
     const relTol = 1e-2
     const absTol = 1e-5
     assert.strictEqual(
@@ -66,7 +68,7 @@ describe('nearlyEqual', function () {
     )
   })
 
-  it('should test whether a positive and negative number are nearly equal', function () {
+  it('should test whether a positive and negative number are nearly equal', function (): void {
     const relTol = 1e-3
     const absTol = 1e-6
     assert.strictEqual(
@@ -87,7 +89,7 @@ describe('nearlyEqual', function () {
     )
   })
 
-  it('should test whether two large numbers are nearly equal', function () {
+  it('should test whether two large numbers are nearly equal', function (): void {
     const relTol = 1e-2
     const absTol = 1e-5
     assert.strictEqual(
@@ -128,7 +130,7 @@ describe('nearlyEqual', function () {
     )
   })
 
-  it('should test whether two small numbers are nearly equal (always true)', function () {
+  it('should test whether two small numbers are nearly equal (always true)', function (): void {
     const relTol = 1e-2
     const absTol = 1e-5
     assert.strictEqual(
@@ -151,7 +153,7 @@ describe('nearlyEqual', function () {
     )
   })
 
-  it('should compare with zero', function () {
+  it('should compare with zero', function (): void {
     const relTol = 1e-3
     const absTol = 1e-6
     assert.strictEqual(
@@ -176,7 +178,7 @@ describe('nearlyEqual', function () {
     )
   })
 
-  it('should compare with Infinity', function () {
+  it('should compare with Infinity', function (): void {
     const relTol = 1e-3
     const absTol = 1e-6
     assert.strictEqual(
@@ -225,7 +227,7 @@ describe('nearlyEqual', function () {
     )
   })
 
-  it('should compare with NaN', function () {
+  it('should compare with NaN', function (): void {
     const relTol = 1e-3
     const absTol = 1e-6
     assert.strictEqual(
@@ -242,7 +244,7 @@ describe('nearlyEqual', function () {
     )
   })
 
-  it('should use default values when absTol and relTol are undefined', function () {
+  it('should use default values when absTol and relTol are undefined', function (): void {
     assert.strictEqual(
       nearlyEqual(new BigNumber(1.2), new BigNumber(1.2)),
       true

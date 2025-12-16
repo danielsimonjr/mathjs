@@ -1,10 +1,12 @@
-// @ts-nocheck
+/**
+ * Test for plain/number/arithmetic - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import { modNumber } from '../../../../src/plain/number/arithmetic.js'
 
-describe('mod', function () {
-  it('should calculate the modulus of two numbers', function () {
+describe('mod', function (): void {
+  it('should calculate the modulus of two numbers', function (): void {
     assert.strictEqual(modNumber(1, 1), 0)
     assert.strictEqual(modNumber(0, 1), 0)
     assert.strictEqual(modNumber(1, 0), 1)
@@ -22,7 +24,7 @@ describe('mod', function () {
     approxEqual(modNumber(-5, 3), 1)
   })
 
-  it('should calculate mod for negative divisor', function () {
+  it('should calculate mod for negative divisor', function (): void {
     assert.strictEqual(modNumber(10, -4), -2)
   })
 })

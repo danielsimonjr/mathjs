@@ -263,17 +263,19 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(
     }
 
     function _fractionToNode(f: any): MathNode {
-      // note: we convert await from bigint values, because bigint values gives issues with divisions: 1n/2n=0n and not 0.5
+      // note: we convert away from bigint values, because bigint values gives issues with divisions: 1n/2n=0n and not 0.5
       const fromBigInt = (value: bigint): any =>
         config.number === 'BigNumber' && bignumber
           ? bignumber(value)
           : Number(value)
 
-      const numeratorValue = f.s * f.n
+      // Convert sign to BigInt to avoid "Cannot mix BigInt and other types" error
+      const signBigInt = BigInt(f.s)
+      const numeratorValue = signBigInt * f.n
       const numeratorNode =
         numeratorValue < 0n
           ? new OperatorNode('-', 'unaryMinus', [
-              new ConstantNode(-fromBigInt(numeratorValue))
+              new ConstantNode(fromBigInt(-numeratorValue))
             ])
           : new ConstantNode(fromBigInt(numeratorValue))
 

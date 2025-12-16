@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for array - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
 import {
@@ -22,20 +24,20 @@ import {
   get
 } from '../../../src/utils/array.js'
 
-describe('util.array', function () {
-  describe('size', function () {
-    it('should calculate the size of a scalar', function () {
+describe('util.array', function (): void {
+  describe('size', function (): void {
+    it('should calculate the size of a scalar', function (): void {
       assert.deepStrictEqual(arraySize(2), [])
       assert.deepStrictEqual(arraySize('string'), [])
     })
 
-    it('should calculate the size of a 1-dimensional array', function () {
+    it('should calculate the size of a 1-dimensional array', function (): void {
       assert.deepStrictEqual(arraySize([]), [0])
       assert.deepStrictEqual(arraySize([1]), [1])
       assert.deepStrictEqual(arraySize([1, 2, 3]), [3])
     })
 
-    it('should calculate the size of a 2-dimensional array', function () {
+    it('should calculate the size of a 2-dimensional array', function (): void {
       assert.deepStrictEqual(arraySize([[]]), [1, 0])
       assert.deepStrictEqual(arraySize([[], []]), [2, 0])
       assert.deepStrictEqual(
@@ -54,7 +56,7 @@ describe('util.array', function () {
       )
     })
 
-    it('should calculate the size of a 3-dimensional array', function () {
+    it('should calculate the size of a 3-dimensional array', function (): void {
       assert.deepStrictEqual(arraySize([[[]]]), [1, 1, 0])
       assert.deepStrictEqual(arraySize([[[], []]]), [1, 2, 0])
       assert.deepStrictEqual(
@@ -103,7 +105,7 @@ describe('util.array', function () {
       )
     })
 
-    it('should not validate whether all dimensions match', function () {
+    it('should not validate whether all dimensions match', function (): void {
       assert.deepStrictEqual(
         arraySize([
           [1, 2],
@@ -114,13 +116,13 @@ describe('util.array', function () {
     })
   })
 
-  describe('resize', function () {
-    it('should resize a scalar', function () {
+  describe('resize', function (): void {
+    it('should resize a scalar', function (): void {
       const a = 0
       assert.deepStrictEqual(resize(a, [3]), [0, 0, 0])
     })
 
-    it('should resize a 1 dimensional array', function () {
+    it('should resize a 1 dimensional array', function (): void {
       let a = []
 
       // resize with a default value
@@ -135,7 +137,7 @@ describe('util.array', function () {
       assert.deepStrictEqual(a, [100, 100])
     })
 
-    it('should resize a 1 dimensional array with null as defaultValue', function () {
+    it('should resize a 1 dimensional array with null as defaultValue', function (): void {
       let a = []
 
       // resize with default value undefined
@@ -143,7 +145,7 @@ describe('util.array', function () {
       assert.deepStrictEqual(a, [null, null, null])
     })
 
-    it('should resize a 2 dimensional array', function () {
+    it('should resize a 2 dimensional array', function (): void {
       let a = [
         [0, 1],
         [2, 3]
@@ -181,7 +183,7 @@ describe('util.array', function () {
       assert.deepStrictEqual(a, [[0]])
     })
 
-    it('should resize a 2 dimensional array with default value', function () {
+    it('should resize a 2 dimensional array with default value', function (): void {
       let a = [
         [0, 1],
         [2, 3]
@@ -219,7 +221,7 @@ describe('util.array', function () {
       assert.deepStrictEqual(a, [[0]])
     })
 
-    it('should resize a 1 dimensional array to 2 dimensional', function () {
+    it('should resize a 1 dimensional array to 2 dimensional', function (): void {
       let a = [1, 2]
 
       a = resize(a, [4], 3)
@@ -249,7 +251,7 @@ describe('util.array', function () {
       // TODO: would be nicer if this returns uninit everywhere and not undefined in some places
     })
 
-    it('should resize a 2 dimensional array to 1 dimensional', function () {
+    it('should resize a 2 dimensional array to 1 dimensional', function (): void {
       let a = [
         [1, 2],
         [3, 4],
@@ -268,7 +270,7 @@ describe('util.array', function () {
       assert.deepStrictEqual(c, [8, 8])
     })
 
-    it('should resize a 3 dimensional array', function () {
+    it('should resize a 3 dimensional array', function (): void {
       let a = []
       a = resize(a, [2, 3], 5)
       assert.deepStrictEqual(a, [
@@ -298,7 +300,7 @@ describe('util.array', function () {
       ])
     })
 
-    it('should resize to an empty array', function () {
+    it('should resize to an empty array', function (): void {
       let a = []
       a = resize(a, [2, 3], 5)
       assert.deepStrictEqual(a, [
@@ -310,25 +312,25 @@ describe('util.array', function () {
       assert.deepStrictEqual(a, [])
     })
 
-    it('should throw an error when resizing to a scalar', function () {
+    it('should throw an error when resizing to a scalar', function (): void {
       let a = []
-      assert.throws(function () {
+      assert.throws(function (): void {
         a = resize(a, [])
       }, /Resizing to scalar is not supported/)
     })
 
-    it('should throw an error in case of wrong type of arguments', function () {
-      assert.throws(function () {
+    it('should throw an error in case of wrong type of arguments', function (): void {
+      assert.throws(function (): void {
         resize([], 2)
       }, /Array expected/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         resize(2)
       }, /Array expected/)
     })
   })
 
-  describe('reshape', function () {
-    it('should reshape a 1 dimensional array into a 2 dimensional array', function () {
+  describe('reshape', function (): void {
+    it('should reshape a 1 dimensional array into a 2 dimensional array', function (): void {
       const a = [1, 2, 3, 4, 5, 6, 7, 8]
 
       assert.deepStrictEqual(reshape(a, [2, 4]), [
@@ -347,7 +349,7 @@ describe('util.array', function () {
       ])
     })
 
-    it('should reshape a 2 dimensional array into a 1 dimensional array', function () {
+    it('should reshape a 2 dimensional array into a 1 dimensional array', function (): void {
       const a = [
         [0, 1],
         [2, 3]
@@ -356,7 +358,7 @@ describe('util.array', function () {
       assert.deepStrictEqual(reshape(a, [4]), [0, 1, 2, 3])
     })
 
-    it('should reshape a 3 dimensional array', function () {
+    it('should reshape a 3 dimensional array', function (): void {
       const a = [
         [
           [1, 2],
@@ -377,25 +379,25 @@ describe('util.array', function () {
       ])
     })
 
-    it('should throw an error when reshaping to a dimension with length 0', function () {
-      assert.throws(function () {
+    it('should throw an error when reshaping to a dimension with length 0', function (): void {
+      assert.throws(function (): void {
         reshape([1, 2], [0, 2])
       }, /DimensionError/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         reshape([1, 2], [2, 0])
       }, /DimensionError/)
     })
 
-    it('should throw an error when reshaping a non-empty array to an empty array', function () {
-      assert.throws(function () {
+    it('should throw an error when reshaping a non-empty array to an empty array', function (): void {
+      assert.throws(function (): void {
         reshape([1], [])
       }, /DimensionError/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         reshape([1, 2], [])
       }, /DimensionError/)
     })
 
-    it('should throw an error when reshaping to a size that differs from the original', function () {
+    it('should throw an error when reshaping to a size that differs from the original', function (): void {
       const a = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
       assert.deepStrictEqual(reshape(a, [3, 3]), [
@@ -403,41 +405,41 @@ describe('util.array', function () {
         [4, 5, 6],
         [7, 8, 9]
       ])
-      assert.throws(function () {
+      assert.throws(function (): void {
         reshape(a, [3, 2])
       }, /DimensionError/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         reshape(a, [2, 3])
       }, /DimensionError/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         reshape(a, [3, 3, 3])
       }, /DimensionError/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         reshape(a, [3, 4])
       }, /DimensionError/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         reshape(a, [4, 3])
       }, /DimensionError/)
     })
 
-    it('should throw an error in case of wrong type of arguments', function () {
-      assert.throws(function () {
+    it('should throw an error in case of wrong type of arguments', function (): void {
+      assert.throws(function (): void {
         reshape([], 2)
       }, /Array expected/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         reshape(2)
       }, /Array expected/)
     })
   })
 
-  describe('squeeze', function () {
-    it('should squeeze a scalar', function () {
+  describe('squeeze', function (): void {
+    it('should squeeze a scalar', function (): void {
       assert.deepStrictEqual(squeeze(2), 2)
       assert.deepStrictEqual(squeeze({}), {})
       assert.deepStrictEqual(squeeze('string'), 'string')
     })
 
-    it('should squeeze an array', function () {
+    it('should squeeze an array', function (): void {
       // leave zero dimensions as is
       assert.deepStrictEqual(squeeze([]), [])
       assert.deepStrictEqual(squeeze([[]]), [])
@@ -494,7 +496,7 @@ describe('util.array', function () {
       )
     })
 
-    it('should adjust size when squeezing an array', function () {
+    it('should adjust size when squeezing an array', function (): void {
       let a = [
         [[1], [2]],
         [[3], [4]]
@@ -521,15 +523,15 @@ describe('util.array', function () {
     })
   })
 
-  describe('unsqueeze', function () {
-    it('should unsqueeze a scalar', function () {
+  describe('unsqueeze', function (): void {
+    it('should unsqueeze a scalar', function (): void {
       assert.deepStrictEqual(unsqueeze(2, 0), 2)
       assert.deepStrictEqual(unsqueeze(2, 1), [2])
       assert.deepStrictEqual(unsqueeze(2, 2), [[2]])
       assert.deepStrictEqual(unsqueeze('string', 2), [['string']])
     })
 
-    it('should ignore empty arrays in unsqueeze', function () {
+    it('should ignore empty arrays in unsqueeze', function (): void {
       // should do nothing with empty arrays
       assert.deepStrictEqual(unsqueeze([], 0), [])
       assert.deepStrictEqual(unsqueeze([], 1), [])
@@ -541,7 +543,7 @@ describe('util.array', function () {
       assert.deepStrictEqual(unsqueeze([[]], 3), [[]])
     })
 
-    it('should unsqueeze an array', function () {
+    it('should unsqueeze an array', function (): void {
       assert.deepStrictEqual(unsqueeze([1, 2, 3], 1), [1, 2, 3])
       assert.deepStrictEqual(unsqueeze([1, 2, 3], 2), [[1], [2], [3]])
       assert.deepStrictEqual(unsqueeze([1, 2, 3], 3), [[[1]], [[2]], [[3]]])
@@ -589,7 +591,7 @@ describe('util.array', function () {
       )
     })
 
-    it('should adjust size when unsqueezing an array', function () {
+    it('should adjust size when unsqueezing an array', function (): void {
       let a = [
         [1, 2],
         [3, 4]
@@ -610,51 +612,51 @@ describe('util.array', function () {
     })
   })
 
-  describe('validateIndex', function () {
-    it('should validate whether an index contains integers', function () {
+  describe('validateIndex', function (): void {
+    it('should validate whether an index contains integers', function (): void {
       assert.strictEqual(validateIndex(2), undefined)
       assert.strictEqual(validateIndex(10), undefined)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex(2.3)
       }, /Index must be an integer/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex('str')
       }, /Index must be an integer/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex(true)
       }, /Index must be an integer/)
     })
 
-    it("should validate whether an index doesn't exceed the minimum 0", function () {
+    it("should validate whether an index doesn't exceed the minimum 0", function (): void {
       assert.strictEqual(validateIndex(2), undefined)
       assert.strictEqual(validateIndex(0), undefined)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex(-1)
       }, /Index out of range/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex(-100)
       }, /Index out of range/)
     })
 
-    it("should validate whether an index doesn't exceed both minimum and maximum", function () {
+    it("should validate whether an index doesn't exceed both minimum and maximum", function (): void {
       assert.strictEqual(validateIndex(0, 10), undefined)
       assert.strictEqual(validateIndex(4, 10), undefined)
       assert.strictEqual(validateIndex(9, 10), undefined)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex(-1, 10)
       }, /Index out of range/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex(10, 10)
       }, /Index out of range/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex(11, 10)
       }, /Index out of range/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validateIndex(100, 10)
       }, /Index out of range/)
     })
 
-    it('thrown IndexError should contain the right index, max, and min properties', function () {
+    it('thrown IndexError should contain the right index, max, and min properties', function (): void {
       try {
         validateIndex(4, 3)
         assert.ok(false, 'should not reach this point')
@@ -696,34 +698,34 @@ describe('util.array', function () {
     })
   })
 
-  describe('validate', function () {
-    it('should validate whether all elements in a vector have correct size', function () {
+  describe('validate', function (): void {
+    it('should validate whether all elements in a vector have correct size', function (): void {
       // valid vector with correct size
       assert.strictEqual(validate([], [0]), undefined)
       assert.strictEqual(validate([1], [1]), undefined)
       assert.strictEqual(validate([1, 2, 3], [3]), undefined)
 
       // valid matrix but wrong size
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([1, 2, 3], [2])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([1, 2, 3], [4])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([1, 2, 3], [])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([1, 2, 3], [3, 2])
       }, /Dimension mismatch/)
 
       // invalid vector
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([1, [2], 3], [3])
       }, /Dimension mismatch/)
     })
 
-    it('should validate whether all elements in a 2d matrix have correct size', function () {
+    it('should validate whether all elements in a 2d matrix have correct size', function (): void {
       // valid matrix with correct size
       assert.strictEqual(
         validate(
@@ -758,7 +760,7 @@ describe('util.array', function () {
       )
 
       // valid matrix with wrong size
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [1, 2],
@@ -767,7 +769,7 @@ describe('util.array', function () {
           [2, 1]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [1, 2],
@@ -776,7 +778,7 @@ describe('util.array', function () {
           [3, 2]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [1, 2, 3],
@@ -785,7 +787,7 @@ describe('util.array', function () {
           [2, 4]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [1, 2],
@@ -797,7 +799,7 @@ describe('util.array', function () {
       }, /Dimension mismatch/)
 
       // invalid matrix
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [1, 2],
@@ -806,16 +808,16 @@ describe('util.array', function () {
           [2, 2]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([[1, 2], [3]], [2, 2])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([[1, 2], 3], [2, 2])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([1, 2], [2, 2])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -828,7 +830,7 @@ describe('util.array', function () {
       }, /Dimension mismatch/)
     })
 
-    it('should validate whether all elements in a multi dimensional matrix have correct size', function () {
+    it('should validate whether all elements in a multi dimensional matrix have correct size', function (): void {
       // valid matrix with correct size
       assert.strictEqual(
         validate(
@@ -902,7 +904,7 @@ describe('util.array', function () {
       )
 
       // valid matrix with wrong size
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -917,7 +919,7 @@ describe('util.array', function () {
           [2, 2, 3]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -932,7 +934,7 @@ describe('util.array', function () {
           [2, 2]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -947,7 +949,7 @@ describe('util.array', function () {
           [2, 2, 2, 2]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -962,7 +964,7 @@ describe('util.array', function () {
           [3, 2, 2]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -979,7 +981,7 @@ describe('util.array', function () {
       }, /Dimension mismatch/)
 
       // invalid matrix
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -994,7 +996,7 @@ describe('util.array', function () {
           [2, 2, 2]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -1009,7 +1011,7 @@ describe('util.array', function () {
           [2, 2, 2]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -1021,7 +1023,7 @@ describe('util.array', function () {
           [2, 2, 2]
         )
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [
@@ -1035,18 +1037,18 @@ describe('util.array', function () {
       }, /Dimension mismatch/)
     })
 
-    it('should validate whether a variable contains a scalar', function () {
+    it('should validate whether a variable contains a scalar', function (): void {
       assert.strictEqual(validate(2.3, []), undefined)
       assert.strictEqual(validate(new Date(), []), undefined)
       assert.strictEqual(validate({}, []), undefined)
 
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([], [])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate([1, 2, 3], [])
       }, /Dimension mismatch/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         validate(
           [
             [1, 2],
@@ -1058,16 +1060,16 @@ describe('util.array', function () {
     })
   })
 
-  describe('flatten', function () {
-    it('should flatten a scalar', function () {
+  describe('flatten', function (): void {
+    it('should flatten a scalar', function (): void {
       assert.deepStrictEqual(flatten(1), 1)
     })
 
-    it('should flatten a 1 dimensional array', function () {
+    it('should flatten a 1 dimensional array', function (): void {
       assert.deepStrictEqual(flatten([1, 2, 3]), [1, 2, 3])
     })
 
-    it('should flatten a 2 dimensional array', function () {
+    it('should flatten a 2 dimensional array', function (): void {
       assert.deepStrictEqual(
         flatten([
           [1, 2],
@@ -1077,7 +1079,7 @@ describe('util.array', function () {
       )
     })
 
-    it('should flatten a 3 dimensional array', function () {
+    it('should flatten a 3 dimensional array', function (): void {
       assert.deepStrictEqual(
         flatten([
           [
@@ -1093,7 +1095,7 @@ describe('util.array', function () {
       )
     })
 
-    it('should return a new array', function () {
+    it('should return a new array', function (): void {
       const input = [3, 2, 1]
       const flat = flatten(input)
       flat.sort()
@@ -1101,8 +1103,8 @@ describe('util.array', function () {
     })
   })
 
-  describe('identify', function () {
-    it('should append a unique identifier to every element of the array', function () {
+  describe('identify', function (): void {
+    it('should append a unique identifier to every element of the array', function (): void {
       assert.deepStrictEqual(identify([]), [])
       assert.deepStrictEqual(identify([1, 1, 2]), [
         { value: 1, identifier: 0 },
@@ -1112,8 +1114,8 @@ describe('util.array', function () {
     })
   })
 
-  describe('generalize', function () {
-    it('should remove the unique identifier from every element of the array', function () {
+  describe('generalize', function (): void {
+    it('should remove the unique identifier from every element of the array', function (): void {
       assert.deepStrictEqual(generalize([]), [])
       assert.deepStrictEqual(
         generalize([
@@ -1126,28 +1128,28 @@ describe('util.array', function () {
     })
   })
 
-  describe('broadcastSizes', function () {
-    it('should calculate the broadcasted sizes', function () {
+  describe('broadcastSizes', function (): void {
+    it('should calculate the broadcasted sizes', function (): void {
       assert.deepStrictEqual(broadcastSizes([1, 2], [2, 2]), [2, 2])
       assert.deepStrictEqual(broadcastSizes([3, 2], [1, 2], [3, 1]), [3, 2])
     })
 
-    it('should throw an error when the broadcasting rules are not followed', function () {
-      assert.throws(function () {
+    it('should throw an error when the broadcasting rules are not followed', function (): void {
+      assert.throws(function (): void {
         broadcastSizes([2, 2], [3, 2])
       }, /Error: shape mismatch: mismatch is found in arg with shape.*/)
     })
   })
 
-  describe('broadcastTo', function () {
-    it('should leave an array as such when broadcasting to the same size', function () {
+  describe('broadcastTo', function (): void {
+    it('should leave an array as such when broadcasting to the same size', function (): void {
       const a = [10, 20]
       const b = [[10, 20]]
       assert.deepStrictEqual(broadcastTo(a, [2]), a)
       assert.deepStrictEqual(broadcastTo(b, [1, 2]), b)
     })
 
-    it('should broadcast an array to a certain size', function () {
+    it('should broadcast an array to a certain size', function (): void {
       assert.deepStrictEqual(broadcastTo([10, 20], [2, 2]), [
         [10, 20],
         [10, 20]
@@ -1165,15 +1167,15 @@ describe('util.array', function () {
       ])
     })
 
-    it('should throw an error when not possible to broadcast to', function () {
-      assert.throws(function () {
+    it('should throw an error when not possible to broadcast to', function (): void {
+      assert.throws(function (): void {
         broadcastTo([10, 20], [1])
       })
     })
   })
 
-  describe('concat', function () {
-    it('should concat arrays', function () {
+  describe('concat', function (): void {
+    it('should concat arrays', function (): void {
       assert.deepStrictEqual(concat([[1, 2]], [[1, 2]], 0), [
         [1, 2],
         [1, 2]
@@ -1181,7 +1183,7 @@ describe('util.array', function () {
       assert.deepStrictEqual(concat([[1, 2]], [[1, 2]], 1), [[1, 2, 1, 2]])
     })
 
-    it('should return arrays as such if only one is supplied', function () {
+    it('should return arrays as such if only one is supplied', function (): void {
       assert.deepStrictEqual(
         concat(
           [
@@ -1198,24 +1200,24 @@ describe('util.array', function () {
       assert.deepStrictEqual(concat([1, 2], 0), [1, 2])
     })
 
-    it('should throw an error when the wrong number of arguments is supplied', function () {
-      assert.throws(function () {
+    it('should throw an error when the wrong number of arguments is supplied', function (): void {
+      assert.throws(function (): void {
         concat([
           [1, 2],
           [3, 4]
         ])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         concat(1)
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         concat()
       })
     })
   })
 
-  describe('stretch', function () {
-    it('should stretch arrays in the specified direction', function () {
+  describe('stretch', function (): void {
+    it('should stretch arrays in the specified direction', function (): void {
       assert.deepStrictEqual(stretch([[1, 2]], 3, 0), [
         [1, 2],
         [1, 2],
@@ -1225,59 +1227,59 @@ describe('util.array', function () {
     })
   })
 
-  describe('get', function () {
+  describe('get', function (): void {
     const m = [
       [0, 1],
       [2, 3]
     ]
 
-    it('should get a value from the array', function () {
+    it('should get a value from the array', function (): void {
       assert.strictEqual(get(m, [1, 0]), 2)
       assert.strictEqual(get(m, [0, 1]), 1)
     })
 
-    it('should throw an error when getting a value out of range', function () {
-      assert.throws(function () {
+    it('should throw an error when getting a value out of range', function (): void {
+      assert.throws(function (): void {
         get(m, [3, 0])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         get(m, [1, 5])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         get(m, [1])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         get(m, [])
       })
     })
 
-    it('should throw an error in case of dimension mismatch', function () {
-      assert.throws(function () {
+    it('should throw an error in case of dimension mismatch', function (): void {
+      assert.throws(function (): void {
         get(m, [0, 2, 0, 2, 0, 2])
       }, /Dimension mismatch/)
     })
 
-    it('should throw an error when getting a value given a invalid index', function () {
-      assert.throws(function () {
+    it('should throw an error when getting a value given a invalid index', function (): void {
+      assert.throws(function (): void {
         get(m, [1.2, 2])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         get(m, [1, -2])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         get(m, 1, 1)
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         get(m, null)
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         get(m, [[1, 1]])
       })
     })
   })
 
-  describe('checkBroadcastingRules', function () {
-    it('should not throw an error if the broadcasting rules are ok', function () {
+  describe('checkBroadcastingRules', function (): void {
+    it('should not throw an error if the broadcasting rules are ok', function (): void {
       assert.doesNotThrow(function () {
         checkBroadcastingRules([1, 2], [1, 2])
       })
@@ -1289,21 +1291,21 @@ describe('util.array', function () {
       })
     })
 
-    it('should throw an error if the broadcasting rules are not ok', function () {
-      assert.throws(function () {
+    it('should throw an error if the broadcasting rules are not ok', function (): void {
+      assert.throws(function (): void {
         checkBroadcastingRules([2, 2], [3, 2])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         checkBroadcastingRules([2, 2], [2, 3])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         checkBroadcastingRules([2, 2], [1, 2])
       })
     })
   })
 
-  describe('broadcastArrays', function () {
-    it('should broadcast many arrays', function () {
+  describe('broadcastArrays', function (): void {
+    it('should broadcast many arrays', function (): void {
       assert.deepStrictEqual(broadcastArrays([1, 2], [3, 4]), [
         [1, 2],
         [3, 4]
@@ -1334,20 +1336,20 @@ describe('util.array', function () {
       ])
     })
 
-    it('should broadcast leave arrays as such when only one is supplied', function () {
+    it('should broadcast leave arrays as such when only one is supplied', function (): void {
       assert.deepStrictEqual(broadcastArrays([1, 2]), [1, 2], [3, 4])
       assert.deepStrictEqual(broadcastArrays([[3], [4]]), [[3], [4]])
       assert.deepStrictEqual(broadcastArrays([[5, 6]]), [[5, 6]])
     })
 
-    it("should throw an arryor when the broadcasting rules don't apply", function () {
-      assert.throws(function () {
+    it("should throw an arryor when the broadcasting rules don't apply", function (): void {
+      assert.throws(function (): void {
         broadcastArrays([1, 2], [1, 2, 3])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         broadcastArrays([1, 2], [1, 2, 3], [4, 5])
       })
-      assert.throws(function () {
+      assert.throws(function (): void {
         broadcastArrays(
           [
             [1, 2],
@@ -1358,22 +1360,22 @@ describe('util.array', function () {
       })
     })
 
-    it('should throw an arryor when not enough arguments are supplied', function () {
-      assert.throws(function () {
+    it('should throw an arryor when not enough arguments are supplied', function (): void {
+      assert.throws(function (): void {
         broadcastArrays()
       })
     })
   })
 
-  describe('isEmptyIndex', function () {
-    it('should detect an empty index in arrays', function () {
+  describe('isEmptyIndex', function (): void {
+    it('should detect an empty index in arrays', function (): void {
       assert.deepStrictEqual(isEmptyIndex(math.index([])), true)
       assert.deepStrictEqual(isEmptyIndex(math.index(1)), false)
       assert.deepStrictEqual(isEmptyIndex(math.index([], 1)), true)
       assert.deepStrictEqual(isEmptyIndex(math.index(0, 1)), false)
     })
 
-    it('should detect an empty index in ranges', function () {
+    it('should detect an empty index in ranges', function (): void {
       assert.deepStrictEqual(
         isEmptyIndex(math.index(new math.Range(0, 0))),
         true
@@ -1392,7 +1394,7 @@ describe('util.array', function () {
       )
     })
 
-    it('should detect an empty index in text', function () {
+    it('should detect an empty index in text', function (): void {
       assert.deepStrictEqual(isEmptyIndex(math.index('')), true)
       assert.deepStrictEqual(isEmptyIndex(math.index('someText')), false)
       assert.deepStrictEqual(isEmptyIndex(math.index('', 1)), true)

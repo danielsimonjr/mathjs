@@ -1,13 +1,29 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test derivative
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
+=======
+/**
+ * Test for derivative - AssemblyScript-friendly TypeScript
+ */
+import assert from 'assert'
+
+import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const OperatorNode = math.OperatorNode
 const ConstantNode = math.ConstantNode
 const SymbolNode = math.SymbolNode
 const derivative = math.derivative
 
+<<<<<<< HEAD
 describe('derivative', function () {
   function derivativeWithoutSimplify(expr, value) {
     return math.derivative(expr, value, { simplify: false })
@@ -18,16 +34,33 @@ describe('derivative', function () {
   }
 
   it('should take the derivative of a constant', function () {
+=======
+describe('derivative', function (): void {
+  function derivativeWithoutSimplify(expr: any, value: any): any {
+    return math.derivative(expr, value, { simplify: false })
+  }
+
+  function compareString(left: any, right: any): void {
+    assert.strictEqual(left.toString(), right.toString())
+  }
+
+  it('should take the derivative of a constant', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     compareString(derivativeWithoutSimplify('1', 'x'), '0')
     compareString(derivativeWithoutSimplify('10000000', 'x'), '0')
   })
 
+<<<<<<< HEAD
   it('should reckon with option simplify', function () {
+=======
+  it('should reckon with option simplify', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     compareString(derivative('2x', 'x'), '2') // default of simplify is true
     compareString(derivative('2x', 'x', { simplify: true }), '2')
     compareString(derivative('2x', 'x', { simplify: false }), '2 * 1')
   })
 
+<<<<<<< HEAD
   it('should create a function node', function () {
     compareString(derivative('sin(2x)', 'x'), '2 * cos(2 x)')
   })
@@ -37,11 +70,26 @@ describe('derivative', function () {
   })
 
   it('should maintain parenthesis of ParenthesisNodes', function () {
+=======
+  it('should create a function node', function (): void {
+    compareString(derivative('sin(2x)', 'x'), '2 * cos(2 x)')
+  })
+
+  it('should take the derivative of a SymbolNodes', function (): void {
+    compareString(derivativeWithoutSimplify('x', 'x'), '1')
+  })
+
+  it('should maintain parenthesis of ParenthesisNodes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     compareString(derivativeWithoutSimplify('(1)', 'x'), '(0)')
     compareString(derivativeWithoutSimplify('(x)', 'x'), '(1)')
   })
 
+<<<<<<< HEAD
   it('should take the derivative of FunctionAssignmentNodes', function () {
+=======
+  it('should take the derivative of FunctionAssignmentNodes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     compareString(
       derivativeWithoutSimplify('f(x) = 5x + x + 2', 'x'),
       '5 * 1 + 1 + 0'
@@ -55,7 +103,11 @@ describe('derivative', function () {
     compareString(derivativeWithoutSimplify(newFunc, 'x'), '5 * 1 + 1 + 0')
   })
 
+<<<<<<< HEAD
   it('should take the derivative of a OperatorNodes with ConstantNodes', function () {
+=======
+  it('should take the derivative of a OperatorNodes with ConstantNodes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     compareString(derivativeWithoutSimplify('1 + 2', 'x'), '0')
     compareString(derivativeWithoutSimplify('-100^2 + 3*3/2 - 12', 'x'), '0')
     const threeArgMultiplyConstant = new OperatorNode('*', 'multiply', [
@@ -66,7 +118,11 @@ describe('derivative', function () {
     compareString(derivativeWithoutSimplify(threeArgMultiplyConstant, 'x'), 0)
   })
 
+<<<<<<< HEAD
   it('should take the derivative of a OperatorNodes with SymbolNodes', function () {
+=======
+  it('should take the derivative of a OperatorNodes with SymbolNodes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // d/dx(-4x) = -4*1 = -4
     compareString(derivativeWithoutSimplify('-4x', 'x'), '-4 * 1')
     // d/dx(+4x) = +4*1 = +4
@@ -170,7 +226,11 @@ describe('derivative', function () {
     compareString(derivativeWithoutSimplify('1 - (-x)', 'x'), '0 - (-1)')
   })
 
+<<<<<<< HEAD
   it('should properly take the derivative of mathematical functions', function () {
+=======
+  it('should properly take the derivative of mathematical functions', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     compareString(
       derivativeWithoutSimplify('cbrt(6x)', 'x'),
       '6 * 1 / (3 * (6 x) ^ (2 / 3))'
@@ -335,7 +395,11 @@ describe('derivative', function () {
     compareString(derivativeWithoutSimplify('exp(2x)', 'x'), '2 * 1 * exp(2 x)')
   })
 
+<<<<<<< HEAD
   it('should take the partial derivative of an expression', function () {
+=======
+  it('should take the partial derivative of an expression', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     compareString(derivativeWithoutSimplify('x + y', 'x'), '1 + 0')
     compareString(derivativeWithoutSimplify('x + log(y)*y', 'x'), '1 + 0')
 
@@ -354,7 +418,11 @@ describe('derivative', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should function properly even without being called within an evaluate', function () {
+=======
+  it('should function properly even without being called within an evaluate', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const f = math.parse('2x^3')
 
     // 2*3*1*x^(3-1) = 6x^2
@@ -364,7 +432,11 @@ describe('derivative', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should accept string and Node input', function () {
+=======
+  it('should accept string and Node input', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // NOTE: we use `parse` here on purpose to see whether derivative accepts it
     compareString(derivative('x^2', 'x'), '2 * x')
     compareString(derivative(math.parse('x^2'), 'x'), '2 * x')
@@ -372,21 +444,34 @@ describe('derivative', function () {
     compareString(derivative(math.parse('x^2'), math.parse('x')), '2 * x')
   })
 
+<<<<<<< HEAD
   it('should accept string input containing special characters', function () {
+=======
+  it('should accept string input containing special characters', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // NOTE: we use `parse` here on purpose to see whether derivative accepts it
     compareString(derivative('1 + x', 'x'), '1')
     compareString(derivative('1 + $x', '$x'), '1')
   })
 
+<<<<<<< HEAD
   describe('expression parser', function () {
     it('should evaluate a derivative containing string value', function () {
+=======
+  describe('expression parser', function (): void {
+    it('should evaluate a derivative containing string value', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const res = math.evaluate('derivative("x^2", "x")')
       assert.ok(res && res.isNode)
 
       assert.strictEqual(res.toString(), '2 * x')
     })
 
+<<<<<<< HEAD
     it('should evaluate a derivative containing nodes', function () {
+=======
+    it('should evaluate a derivative containing nodes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const res = math.evaluate('derivative(parse("x^2"), parse("x"))')
       assert.ok(res && res.isNode)
 
@@ -394,7 +479,11 @@ describe('derivative', function () {
     })
   })
 
+<<<<<<< HEAD
   it('should not drop any additional operator arguments', function () {
+=======
+  it('should not drop any additional operator arguments', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // This case cannot happen when parsing via the expression parser,
     // but it can when you create your own operator nodes. See #1014
 
@@ -402,18 +491,30 @@ describe('derivative', function () {
     const c4 = new ConstantNode(4)
     const x = new SymbolNode('x')
 
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const node = new OperatorNode('/', 'myDivide', [c12, c4, x])
       derivative(node, 'x')
     }, /Error: Cannot process operator "\/" in derivative: the operator is not supported, undefined, or the number of arguments passed to it are not supported/)
 
+<<<<<<< HEAD
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const node = new OperatorNode('^', 'myPow', [c12, c4, x])
       derivative(node, 'x')
     }, /Error: Cannot process operator "\^" in derivative: the operator is not supported, undefined, or the number of arguments passed to it are not supported/)
   })
 
+<<<<<<< HEAD
   it('should not mutate the input expression', function () {
+=======
+  it('should not mutate the input expression', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expr = math.parse('min(x, y)')
     assert.strictEqual(expr.toString(), 'min(x, y)')
 
@@ -424,6 +525,7 @@ describe('derivative', function () {
     assert.strictEqual(expr.toString(), 'min(x, y)')
   })
 
+<<<<<<< HEAD
   it('should throw error if expressions contain unsupported operators or functions', function () {
     assert.throws(function () {
       derivative('x << 2', 'x')
@@ -441,10 +543,30 @@ describe('derivative', function () {
       derivative('max(x, 1)', 'x')
     }, /Error: Cannot process function "max" in derivative: the function is not supported, undefined, or the number of arguments passed to it are not supported/)
     assert.throws(function () {
+=======
+  it('should throw error if expressions contain unsupported operators or functions', function (): void {
+    assert.throws(function (): void {
+      derivative('x << 2', 'x')
+    }, /Error: Cannot process operator "<<" in derivative: the operator is not supported, undefined, or the number of arguments passed to it are not supported/)
+    assert.throws(function (): void {
+      derivative('subset(x)', 'x')
+    }, /Error: Cannot process function "subset" in derivative: the function is not supported, undefined, or the number of arguments passed to it are not supported/)
+    assert.throws(function (): void {
+      derivative('max(x)', 'x')
+    }, /Error: Cannot process function "max" in derivative: the function is not supported, undefined, or the number of arguments passed to it are not supported/)
+    assert.throws(function (): void {
+      derivative('max(x, y)', 'x')
+    }, /Error: Cannot process function "max" in derivative: the function is not supported, undefined, or the number of arguments passed to it are not supported/)
+    assert.throws(function (): void {
+      derivative('max(x, 1)', 'x')
+    }, /Error: Cannot process function "max" in derivative: the function is not supported, undefined, or the number of arguments passed to it are not supported/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       derivative('add(2,3,x)', 'x')
     }, /Error: Cannot process function "add" in derivative: the function is not supported, undefined, or the number of arguments passed to it are not supported/)
   })
 
+<<<<<<< HEAD
   it('should throw error for incorrect argument types', function () {
     assert.throws(function () {
       derivative('42', '42')
@@ -455,27 +577,57 @@ describe('derivative', function () {
     }, /TypeError: Unexpected type of argument in function _derivative \(expected: ConstantNode or FunctionNode or FunctionAssignmentNode or OperatorNode or ParenthesisNode or SymbolNode, actual:.*ArrayNode.*, index: 0\)/)
 
     assert.throws(function () {
+=======
+  it('should throw error for incorrect argument types', function (): void {
+    assert.throws(function (): void {
+      derivative('42', '42')
+    }, /TypeError: Invalid variable. Cannot parse "42" into a variable in function derivative/)
+
+    assert.throws(function (): void {
+      derivative('[1, 2; 3, 4]', 'x')
+    }, /TypeError: Unexpected type of argument in function _derivative \(expected: ConstantNode or FunctionNode or FunctionAssignmentNode or OperatorNode or ParenthesisNode or SymbolNode, actual:.*ArrayNode.*, index: 0\)/)
+
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       derivative('x + [1, 2; 3, 4]', 'x')
     }, /TypeError: Unexpected type of argument in function _derivative \(expected: ConstantNode or FunctionNode or FunctionAssignmentNode or OperatorNode or ParenthesisNode or SymbolNode, actual:.*ArrayNode.*, index: 0\)/)
   })
 
+<<<<<<< HEAD
   it('should throw error if incorrect number of arguments', function () {
     assert.throws(function () {
       derivative('x + 2')
     }, /TypeError: Too few arguments in function derivative \(expected: string or SymbolNode or boolean, index: 1\)/)
 
     assert.throws(function () {
+=======
+  it('should throw error if incorrect number of arguments', function (): void {
+    assert.throws(function (): void {
+      derivative('x + 2')
+    }, /TypeError: Too few arguments in function derivative \(expected: string or SymbolNode or boolean, index: 1\)/)
+
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       derivative('x + 2', 'x', {}, true, 42)
     }, /TypeError: Too many arguments in function derivative \(expected: 3, actual: 5\)/)
   })
 
+<<<<<<< HEAD
   it('should throw error in case of an unknown function', function () {
     assert.throws(function () {
+=======
+  it('should throw error in case of an unknown function', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       derivative('foo(x)', 'x')
     }, /Error: Cannot process function "foo" in derivative: the function is not supported, undefined, or the number of arguments passed to it are not supported/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX expressions involving derivative', function () {
+=======
+  it('should LaTeX expressions involving derivative', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     compareString(
       math.parse('derivative(x*y,x)').toTex(),
       '{d\\over dx}\\left[ x\\cdot y\\right]'

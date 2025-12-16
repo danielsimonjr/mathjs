@@ -1,18 +1,20 @@
-// @ts-nocheck
+/**
+ * Test for approx - AssemblyScript-friendly TypeScript
+ */
 // test approx itself...
 import assert from 'assert'
 
 import { approxEqual, approxDeepEqual } from '../../tools/approx.js'
 
-describe('approx', function () {
-  it('should test equality of positive values', function () {
+describe('approx', function (): void {
+  it('should test equality of positive values', function (): void {
     approxEqual(1 / 3, 0.33333333)
     approxEqual(2, 2.000001)
     approxEqual(2, 1.999999)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(2, 2.001)
     }, assert.AssertionError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(2, 1.999)
     }, assert.AssertionError)
 
@@ -28,13 +30,13 @@ describe('approx', function () {
     )
   })
 
-  it('should test equality of negative values', function () {
+  it('should test equality of negative values', function (): void {
     approxEqual(-2, -2.000001)
     approxEqual(-2, -1.999999)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(-2, -2.001)
     }, assert.AssertionError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(-2, -1.999)
     }, assert.AssertionError)
 
@@ -50,13 +52,13 @@ describe('approx', function () {
     )
   })
 
-  it('should test equality of very large values', function () {
+  it('should test equality of very large values', function (): void {
     approxEqual(2e100, 2.000001e100)
     approxEqual(2e100, 1.999999e100)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(2e100, 2.001e100)
     }, assert.AssertionError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(2e100, 1.999e100)
     }, assert.AssertionError)
 
@@ -72,13 +74,13 @@ describe('approx', function () {
     )
   })
 
-  it('should test equality of very small values', function () {
+  it('should test equality of very small values', function (): void {
     approxEqual(2e-100, 2.000001e-100)
     approxEqual(2e-100, 1.999999e-100)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(2e-100, 2.001e-100)
     }, assert.AssertionError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(2e-100, 1.999e-100)
     }, assert.AssertionError)
 
@@ -94,24 +96,24 @@ describe('approx', function () {
     )
   })
 
-  it('should test equality of NaN numbers', function () {
+  it('should test equality of NaN numbers', function (): void {
     // NaN values
     const a = NaN
     const b = NaN
     approxEqual(a, b)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(NaN, 3)
     }, assert.AssertionError)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(NaN, 'nonumber')
     }, assert.AssertionError)
   })
 
-  it('should test equality when one of the values is zero', function () {
+  it('should test equality when one of the values is zero', function (): void {
     // zero as one of the two values
     approxEqual(0, 1e-15)
     approxEqual(1e-15, 0)
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxEqual(0, 0.001)
     }, assert.AssertionError)
 
@@ -124,7 +126,7 @@ describe('approx', function () {
 
   // TODO: test approx.equal for (mixed) numbers, BigNumbers, Fractions, Complex numbers
 
-  it('should test deep equality of arrays and objects', function () {
+  it('should test deep equality of arrays and objects', function (): void {
     approxDeepEqual(
       {
         a: [1, 2, 3],
@@ -136,7 +138,7 @@ describe('approx', function () {
       }
     )
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxDeepEqual(
         {
           a: [1, 2, 3],
@@ -149,7 +151,7 @@ describe('approx', function () {
       )
     }, assert.AssertionError)
 
-    assert.throws(function () {
+    assert.throws(function (): void {
       approxDeepEqual(
         {
           a: [1, 2, 3],

@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for sec - AssemblyScript-friendly TypeScript
+ */
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -10,13 +17,13 @@ const sec = math.sec
 const bigmath = math.create({ number: 'BigNumber', precision: 20 })
 const biggermath = math.create({ number: 'BigNumber', precision: 21 })
 
-describe('sec', function () {
-  it('should return the secant of a boolean', function () {
+describe('sec', function (): void {
+  it('should return the secant of a boolean', function (): void {
     approxEqual(sec(true), 1.85081571768093)
     assert.strictEqual(sec(false), 1)
   })
 
-  it('should return the secant of a number', function () {
+  it('should return the secant of a number', function (): void {
     approxEqual(1 / sec(0), 1)
     approxEqual(1 / sec((pi * 1) / 4), 0.707106781186548)
     approxEqual(1 / sec((pi * 1) / 8), 0.923879532511287)
@@ -38,7 +45,7 @@ describe('sec', function () {
     approxEqual(sec(-2 * pi), 1)
   })
 
-  it('should return the secant of a bignumber', function () {
+  it('should return the secant of a bignumber', function (): void {
     const Big = bigmath.bignumber
     let bigPi = bigmath.pi
     const sqrt2 = bigmath.SQRT2.toString()
@@ -70,7 +77,7 @@ describe('sec', function () {
     )
   })
 
-  it('should return the secant of a complex number', function () {
+  it('should return the secant of a complex number', function (): void {
     const re = 0.0416749644111443
     const im = 0.0906111371962376
     approxDeepEqual(sec(complex('2+3i')), complex(-re, im))
@@ -85,7 +92,7 @@ describe('sec', function () {
     )
   })
 
-  it('should return the secant of an angle', function () {
+  it('should return the secant of an angle', function (): void {
     approxEqual(sec(unit('45deg')), 1.4142135623731)
     approxEqual(sec(unit('-45deg')), 1.4142135623731)
 
@@ -101,40 +108,40 @@ describe('sec', function () {
     )
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       sec(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       sec('string')
     })
   })
 
   const sec123 = [1.85081571768093, -2.40299796172238, -1.01010866590799]
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => sec([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], sec), sec123)
   })
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => sec(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), sec), matrix(sec123))
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       sec()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       sec(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should LaTeX sec', function () {
+  it('should LaTeX sec', function (): void {
     const expression = math.parse('sec(1)')
     assert.strictEqual(expression.toTex(), '\\sec\\left(1\\right)')
   })

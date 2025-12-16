@@ -1,9 +1,11 @@
-// @ts-nocheck
+/**
+ * Test for error/DimensionError - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import { DimensionError } from '../../../src/error/DimensionError.js'
 
-describe('DimensionError', function () {
-  it('should construct a DimensionError with numbers', function () {
+describe('DimensionError', function (): void {
+  it('should construct a DimensionError with numbers', function (): void {
     const err = new DimensionError(3, 5)
     assert(err instanceof Error)
     assert(err instanceof RangeError)
@@ -17,7 +19,7 @@ describe('DimensionError', function () {
     )
   })
 
-  it('should construct a DimensionError with numbers and a custom relation', function () {
+  it('should construct a DimensionError with numbers and a custom relation', function (): void {
     const err = new DimensionError(3, 5, '<')
     assert(err instanceof Error)
     assert(err instanceof RangeError)
@@ -31,7 +33,7 @@ describe('DimensionError', function () {
     )
   })
 
-  it('should construct a DimensionError with arrays', function () {
+  it('should construct a DimensionError with arrays', function (): void {
     const err = new DimensionError([2, 3], [1, 3])
     assert(err instanceof Error)
     assert(err instanceof RangeError)
@@ -45,7 +47,7 @@ describe('DimensionError', function () {
     )
   })
 
-  it('should construct a DimensionError with arrays and a custom relation', function () {
+  it('should construct a DimensionError with arrays and a custom relation', function (): void {
     const err = new DimensionError([2, 3], [1, 3], '<')
     assert(err instanceof Error)
     assert(err instanceof RangeError)
@@ -59,8 +61,8 @@ describe('DimensionError', function () {
     )
   })
 
-  it('should throw an error when operator new is missing', function () {
-    assert.throws(function () {
+  it('should throw an error when operator new is missing', function (): void {
+    assert.throws(function (): void {
       DimensionError(3, 5)
     }, SyntaxError)
   })

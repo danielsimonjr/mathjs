@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * Test for object - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import {
   canDefineProperty,
@@ -16,34 +18,34 @@ import {
   hasOwnProperty
 } from '../../../src/utils/object.js'
 
-describe('object', function () {
-  describe('clone', function () {
-    it('should clone undefined', function () {
+describe('object', function (): void {
+  describe('clone', function (): void {
+    it('should clone undefined', function (): void {
       assert.strictEqual(clone(undefined), undefined)
     })
 
-    it('should clone null', function () {
+    it('should clone null', function (): void {
       assert.strictEqual(clone(null), null)
     })
 
-    it('should clone booleans', function () {
+    it('should clone booleans', function (): void {
       assert.strictEqual(clone(true), true)
       assert.strictEqual(clone(false), false)
     })
 
-    it('should clone numbers', function () {
+    it('should clone numbers', function (): void {
       assert.strictEqual(clone(2.3), 2.3)
     })
 
-    it('should clone bigint', function () {
+    it('should clone bigint', function (): void {
       assert.strictEqual(clone(4n), 4n)
     })
 
-    it('should clone strings', function () {
+    it('should clone strings', function (): void {
       assert.strictEqual(clone('hello'), 'hello')
     })
 
-    it('should (deep) clone objects', function () {
+    it('should (deep) clone objects', function (): void {
       const obj = { a: { b: 'c', d: new Date(2014, 0, 1) } }
       const c = clone(obj)
 
@@ -58,7 +60,7 @@ describe('object', function () {
       assert.strictEqual(c.a.d.valueOf(), new Date(2014, 0, 1).valueOf())
     })
 
-    it('should clone dates', function () {
+    it('should clone dates', function (): void {
       const d1 = new Date(2014, 1, 1)
       const d2 = clone(d1)
       assert.strictEqual(d1.valueOf(), d2.valueOf())
@@ -66,7 +68,7 @@ describe('object', function () {
       assert.notStrictEqual(d1, d2)
     })
 
-    it('should (deep) clone arrays', function () {
+    it('should (deep) clone arrays', function (): void {
       const d = new Date(2014, 0, 1)
       const arr = [1, 2, d, { a: 3 }]
       const c = clone(arr)
@@ -84,15 +86,15 @@ describe('object', function () {
       assert.strictEqual(c[3].a, 3)
     })
 
-    it('should throw an error in case of an unsupported type', function () {
-      assert.throws(function () {
+    it('should throw an error in case of an unsupported type', function (): void {
+      assert.throws(function (): void {
         clone(/a regexp/)
       }, /Cannot clone: unknown type of value/)
     })
   })
 
-  describe('extend', function () {
-    it('should extend an object with all properties of an other object', function () {
+  describe('extend', function (): void {
+    it('should extend an object with all properties of an other object', function (): void {
       const e = {}
       const o1 = { a: 2, b: 3 }
       const o2 = { a: 4, b: null, c: undefined, d: 5, e }
@@ -104,7 +106,7 @@ describe('object', function () {
       assert.deepStrictEqual(o2, { a: 4, b: null, c: undefined, d: 5, e }) // should be unchanged
     })
 
-    it('should ignore inherited properties when extending an object', function () {
+    it('should ignore inherited properties when extending an object', function (): void {
       Object.prototype.foo = 'bar' // eslint-disable-line no-extend-native
       const o1 = { a: 2, b: 3 }
       const o2 = extend({}, o1)
@@ -116,8 +118,8 @@ describe('object', function () {
     })
   })
 
-  describe('deepExtend', function () {
-    it('should deep extend an object with all properties of an other object', function () {
+  describe('deepExtend', function (): void {
+    it('should deep extend an object with all properties of an other object', function (): void {
       const e = { f: { g: 3 } }
       const o1 = { a: 2, b: 3 }
       const o2 = { a: 4, b: null, c: undefined, d: 5, e }
@@ -157,19 +159,19 @@ describe('object', function () {
       }) // should be changed
     })
 
-    it('should throw an error when deep extending an array (is not yet supported)', function () {
-      assert.throws(function () {
+    it('should throw an error when deep extending an array (is not yet supported)', function (): void {
+      assert.throws(function (): void {
         deepExtend({}, [])
       }, /Arrays are not supported by deepExtend/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         deepExtend({}, { a: [] })
       }, /Arrays are not supported by deepExtend/)
-      assert.throws(function () {
+      assert.throws(function (): void {
         deepExtend({}, { a: { b: [] } })
       }, /Arrays are not supported by deepExtend/)
     })
 
-    it('should ignore inherited properties when deep extending an object', function () {
+    it('should ignore inherited properties when deep extending an object', function (): void {
       Object.prototype.foo = 'bar' // eslint-disable-line no-extend-native
       const o1 = { a: 2, b: 3 }
       const o2 = deepExtend({}, o1)
@@ -180,7 +182,7 @@ describe('object', function () {
       delete Object.prototype.foo
     })
 
-    it('should not pollute Object.__proto__', function () {
+    it('should not pollute Object.__proto__', function (): void {
       const obj = {}
       assert.strictEqual(obj.polluted, undefined)
 
@@ -188,7 +190,7 @@ describe('object', function () {
       assert.strictEqual(obj.polluted, undefined)
     })
 
-    it('should not pollute Object.constructor (1)', function () {
+    it('should not pollute Object.constructor (1)', function (): void {
       const obj = {}
       const originalConstructor = obj.constructor
       assert.strictEqual(obj.polluted, undefined)
@@ -201,7 +203,7 @@ describe('object', function () {
       assert.strictEqual(obj.polluted, undefined)
     })
 
-    it('should not pollute Object.constructor (2)', function () {
+    it('should not pollute Object.constructor (2)', function (): void {
       const obj = {}
       const originalConstructor = obj.constructor
 
@@ -211,8 +213,8 @@ describe('object', function () {
     })
   })
 
-  describe('deepEqual', function () {
-    it('should deep compare two objects', function () {
+  describe('deepEqual', function (): void {
+    it('should deep compare two objects', function (): void {
       assert.strictEqual(deepStrictEqual({}, {}), true)
 
       assert.strictEqual(deepStrictEqual({ a: 2, b: 3 }, { a: 2, b: 3 }), true)
@@ -254,7 +256,7 @@ describe('object', function () {
       )
     })
 
-    it('should deep compare values and functions strictly', function () {
+    it('should deep compare values and functions strictly', function (): void {
       assert.strictEqual(deepStrictEqual({ a: 2 }, { a: '2' }), false)
       assert.strictEqual(deepStrictEqual(2, '2'), false)
 
@@ -272,7 +274,7 @@ describe('object', function () {
       )
     })
 
-    it('should deep compare two arrays', function () {
+    it('should deep compare two arrays', function (): void {
       assert.strictEqual(deepStrictEqual([], []), true)
       assert.strictEqual(deepStrictEqual([1, 2], [1, 2]), true)
       assert.strictEqual(deepStrictEqual([1, 2], [1, 2, 3]), false)
@@ -287,7 +289,7 @@ describe('object', function () {
       assert.strictEqual(deepStrictEqual([1, 2, [3]], [1, 2, 3]), false)
     })
 
-    it('should deep compare mixed objects an arrays', function () {
+    it('should deep compare mixed objects an arrays', function (): void {
       assert.strictEqual(deepStrictEqual({}, []), false)
       assert.strictEqual(deepStrictEqual({ a: {} }, { a: [] }), false)
 
@@ -333,7 +335,7 @@ describe('object', function () {
       )
     })
 
-    it('should not ignore inherited properties during comparison', function () {
+    it('should not ignore inherited properties during comparison', function (): void {
       Object.prototype.foo = 'bar' // eslint-disable-line no-extend-native
 
       assert.strictEqual(deepStrictEqual({}, {}), true)
@@ -343,14 +345,14 @@ describe('object', function () {
     })
   })
 
-  describe('canDefineProperty', function () {
-    it('should test whether defineProperty is available', function () {
+  describe('canDefineProperty', function (): void {
+    it('should test whether defineProperty is available', function (): void {
       assert.strictEqual(canDefineProperty(), true)
     })
   })
 
-  describe('lazy', function () {
-    it('should get a lazy property', function () {
+  describe('lazy', function (): void {
+    it('should get a lazy property', function (): void {
       const obj = {}
       let count = 0
       lazy(obj, 'x', function () {
@@ -367,7 +369,7 @@ describe('object', function () {
       assert.strictEqual(count, 1)
     })
 
-    it('should set a lazy property', function () {
+    it('should set a lazy property', function (): void {
       const obj = {}
       lazy(obj, 'x', function () {
         return 2
@@ -379,8 +381,8 @@ describe('object', function () {
     })
   })
 
-  describe('traverse', function () {
-    it('should traverse an existing path into an object', function () {
+  describe('traverse', function (): void {
+    it('should traverse an existing path into an object', function (): void {
       const a = {}
       const b = { a }
       const c = { b }
@@ -392,7 +394,7 @@ describe('object', function () {
       assert.strictEqual(traverse(c, ['b', 'a']), a)
     })
 
-    it('should append missing piece of a path', function () {
+    it('should append missing piece of a path', function (): void {
       const a = {}
       const b = { a }
       const c = { b }
@@ -406,8 +408,8 @@ describe('object', function () {
     })
   })
 
-  describe('isFactory', function () {
-    it('should test whether an object is a factory', function () {
+  describe('isFactory', function (): void {
+    it('should test whether an object is a factory', function (): void {
       assert.strictEqual(isLegacyFactory({}), false)
       assert.strictEqual(isLegacyFactory({ foo: true }), false)
       assert.strictEqual(isLegacyFactory({ name: 'foo' }), false)
@@ -432,8 +434,8 @@ describe('object', function () {
     })
   })
 
-  describe('get', function () {
-    it('should get nested properties from an object', function () {
+  describe('get', function (): void {
+    it('should get nested properties from an object', function (): void {
       const object = {
         a: 2,
         b: {
@@ -452,8 +454,8 @@ describe('object', function () {
     })
   })
 
-  describe('set', function () {
-    it('should set a nested property in an object', function () {
+  describe('set', function (): void {
+    it('should set a nested property in an object', function (): void {
       assert.deepStrictEqual(set({}, [], 2), {})
       assert.deepStrictEqual(set({}, 'a', 2), { a: 2 })
       assert.deepStrictEqual(set({ a: 2 }, 'b.c', 3), { a: 2, b: { c: 3 } })
@@ -464,13 +466,13 @@ describe('object', function () {
     })
   })
 
-  describe('pick', function () {
-    it('should pick the selected properties', function () {
+  describe('pick', function (): void {
+    it('should pick the selected properties', function (): void {
       const object = { a: 1, b: 2, c: 3 }
       assert.deepStrictEqual(pick(object, ['a', 'c', 'd']), { a: 1, c: 3 })
     })
 
-    it('should pick nested properties', function () {
+    it('should pick nested properties', function (): void {
       const object = {
         a: 1,
         b: {
@@ -491,7 +493,7 @@ describe('object', function () {
       })
     })
 
-    it('should pick and transform nested properties', function () {
+    it('should pick and transform nested properties', function (): void {
       const object = {
         a: 1,
         b: {
@@ -513,8 +515,8 @@ describe('object', function () {
     })
   })
 
-  describe('deepFlatten', function () {
-    it('should flatten nested object properties', function () {
+  describe('deepFlatten', function (): void {
+    it('should flatten nested object properties', function (): void {
       assert.deepStrictEqual(
         deepFlatten({
           obj: { a: 2, b: 3 },
@@ -525,7 +527,7 @@ describe('object', function () {
       )
     })
 
-    it('should merge duplicate values when flatting nested object properties', function () {
+    it('should merge duplicate values when flatting nested object properties', function (): void {
       assert.deepStrictEqual(
         deepFlatten({
           obj: { a: 2 },

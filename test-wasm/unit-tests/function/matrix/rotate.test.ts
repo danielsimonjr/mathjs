@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for rotate - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
@@ -12,8 +18,18 @@ const multiply = math.multiply
 const matrix = math.matrix
 const rotate = math.rotate
 
+<<<<<<< HEAD
 describe('rotate', function () {
   it('should return a rotated 1x2 vector when it is provided as array', function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('rotate', function (): void {
+  it('should return a rotated 1x2 vector when it is provided as array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(rotate([1, 0], 0), [1, 0])
 
     assert.deepStrictEqual(rotate([100, 0], 1), [100 * cos(1), 100 * sin(1)])
@@ -41,7 +57,11 @@ describe('rotate', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should return a rotated 1x2 vector when it is provided as matrix', function () {
+=======
+  it('should return a rotated 1x2 vector when it is provided as matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(rotate(matrix([100, 200]), 0), matrix([100, 200]))
 
     assert.deepStrictEqual(
@@ -75,7 +95,11 @@ describe('rotate', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return a rotated 1x2 bignumber vector', function () {
+=======
+  it('should return a rotated 1x2 bignumber vector', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bigmath = math.create({ number: 'BigNumber' })
     const minusOne = bigmath.bignumber(-1)
     const cos1 = bigmath.cos(bigmath.bignumber(1))
@@ -97,7 +121,11 @@ describe('rotate', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return a rotated 1x3 vector when it is provided as an array', function () {
+=======
+  it('should return a rotated 1x3 vector when it is provided as an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(rotate([11, 12, 13], 0.7, [0, 0, 1]), [
       11 * cos(0.7) - 12 * sin(0.7),
       11 * sin(0.7) + 12 * cos(0.7),
@@ -135,7 +163,11 @@ describe('rotate', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should return a rotated 1x3 vector when it is provided as matrix', function () {
+=======
+  it('should return a rotated 1x3 vector when it is provided as matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       rotate(matrix([11, 12, 13]), 0.7, [0, 0, 1]),
       matrix([11 * cos(0.7) - 12 * sin(0.7), 11 * sin(0.7) + 12 * cos(0.7), 13])
@@ -176,7 +208,11 @@ describe('rotate', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return a rotated 1x3 bignumber vector', function () {
+=======
+  it('should return a rotated 1x3 bignumber vector', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bigmath = math.create({ number: 'BigNumber' })
     const minusOne = bigmath.bignumber(-1)
     const cos1 = bigmath.cos(bigmath.bignumber(1))
@@ -208,7 +244,11 @@ describe('rotate', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return an object of predictable type', function () {
+=======
+  it('should return an object of predictable type', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(rotate([1, 0], 1), [cos(1), sin(1)])
     assert.deepStrictEqual(rotate([1, 0, 0], -1, [0, 0, 1]), [
       cos(-1),
@@ -223,7 +263,11 @@ describe('rotate', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return a rotated 1x3 vector as sparse matrix', function () {
+=======
+  it('should return a rotated 1x3 vector as sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expectedX = 4 * cos(unit('-90deg')) - 5 * sin(unit('-90deg'))
     const expectedY = 4 * sin(unit('-90deg')) + 5 * cos(unit('-90deg'))
     assert.deepStrictEqual(
@@ -232,6 +276,7 @@ describe('rotate', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error with invalid number of arguments', function () {
     assert.throws(function () {
       rotate()
@@ -243,10 +288,24 @@ describe('rotate', function () {
       rotate([], null)
     }, /TypeError: Unexpected type of argument/)
     assert.throws(function () {
+=======
+  it('should throw an error with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      rotate()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+      rotate(1)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+      rotate([], null)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       rotate([], 1, [], 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should throw an error with invalid type of arguments', function () {
     assert.throws(function () {
       rotate(1)
@@ -265,6 +324,26 @@ describe('rotate', function () {
       rotate(matrix([[[1]], [[0]]]), math.pi / 2, [0, 0, 1])
     }, /RangeError: Vector must be of dimensions 1x3/)
     assert.throws(function () {
+=======
+  it('should throw an error with invalid type of arguments', function (): void {
+    assert.throws(function (): void {
+      rotate(1)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function (): void {
+      rotate([], 1, [], 2)
+    }, /TypeError: Too many arguments/)
+
+    assert.throws(function (): void {
+      rotate([1, 0], math.pi / 2, [0, 0, 1])
+    }, /RangeError: Vector must be of dimensions 1x3/)
+    assert.throws(function (): void {
+      rotate(matrix([1, 0]), math.pi / 2, [0, 0, 1])
+    }, /RangeError: Vector must be of dimensions 1x3/)
+    assert.throws(function (): void {
+      rotate(matrix([[[1]], [[0]]]), math.pi / 2, [0, 0, 1])
+    }, /RangeError: Vector must be of dimensions 1x3/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       rotate(
         matrix([
           [1, 0],
@@ -274,6 +353,7 @@ describe('rotate', function () {
         [0, 0, 1]
       )
     }, /RangeError: Vector must be of dimensions 1x3/)
+<<<<<<< HEAD
     assert.throws(function () {
       rotate([1, 0, 0, 0], math.pi / 2, [0, 0, 1])
     }, /RangeError: Vector must be of dimensions 1x3/)
@@ -282,11 +362,25 @@ describe('rotate', function () {
     }, /RangeError: Vector must be of dimensions 1x3/)
 
     assert.throws(function () {
+=======
+    assert.throws(function (): void {
+      rotate([1, 0, 0, 0], math.pi / 2, [0, 0, 1])
+    }, /RangeError: Vector must be of dimensions 1x3/)
+    assert.throws(function (): void {
+      rotate(matrix([1, 0, 0, 0]), math.pi / 2, [0, 0, 1])
+    }, /RangeError: Vector must be of dimensions 1x3/)
+
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       rotate([1, 0, 0], 1, [0.0, 0.0, 0.0])
     }, /Rotation around zero vector/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX rotationMatrix', function () {
+=======
+  it('should LaTeX rotationMatrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression1 = math.parse('rotate([1, 2, 3], 1)')
     assert.strictEqual(
       expression1.toTex(),

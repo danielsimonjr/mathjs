@@ -1,12 +1,23 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test lup
+=======
+/**
+ * Test for lup - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../../tools/approx.js'
 import math from '../../../../../src/defaultInstance.ts'
 
+<<<<<<< HEAD
 describe('lup', function () {
   it('should decompose matrix, n x n, no permutations, array', function () {
+=======
+describe('lup', function (): void {
+  it('should decompose matrix, n x n, no permutations, array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = [
       [2, 1],
       [1, 4]
@@ -32,7 +43,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, n x n, no permutations, sparse', function () {
+=======
+  it('should decompose matrix, n x n, no permutations, sparse', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix(
       [
         [2, 1],
@@ -61,7 +76,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, n x n, no permutations, dense format', function () {
+=======
+  it('should decompose matrix, n x n, no permutations, dense format', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix(
       [
         [2, 1],
@@ -90,7 +109,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, m x n, m < n, no permutations, dense format', function () {
+=======
+  it('should decompose matrix, m x n, m < n, no permutations, dense format', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix([
       [2, 1, 1],
       [1, 4, 5]
@@ -122,7 +145,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, m x n, m > n, no permutations, dense format', function () {
+=======
+  it('should decompose matrix, m x n, m > n, no permutations, dense format', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix([
       [8, 2],
       [6, 4],
@@ -156,7 +183,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, n x n, dense format', function () {
+=======
+  it('should decompose matrix, n x n, dense format', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix([
       [16, -120, 240, -140],
       [-120, 1200, -2700, 1680],
@@ -188,7 +219,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, 3 x 3, zero pivote value, dense format', function () {
+=======
+  it('should decompose matrix, 3 x 3, zero pivote value, dense format', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix([
       [1, 2, 3],
       [2, 4, 6],
@@ -217,7 +252,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, 3 x 2, complex numbers, dense format', function () {
+=======
+  it('should decompose matrix, 3 x 2, complex numbers, dense format', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix([
       [math.complex(0, 3), 10],
       [math.complex(0, 1), 1],
@@ -245,7 +284,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, m x n, m < n, no permutations, sparse', function () {
+=======
+  it('should decompose matrix, m x n, m < n, no permutations, sparse', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix(
       [
         [2, 1, 1],
@@ -274,7 +317,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, m x n, m > n, no permutations, sparse', function () {
+=======
+  it('should decompose matrix, m x n, m > n, no permutations, sparse', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix(
       [
         [8, 2],
@@ -305,7 +352,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, n x n, sparse', function () {
+=======
+  it('should decompose matrix, n x n, sparse', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix(
       [
         [16, -120, 240, -140],
@@ -340,7 +391,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, 3 x 3, zero pivote value, sparse', function () {
+=======
+  it('should decompose matrix, 3 x 3, zero pivote value, sparse', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix(
       [
         [1, 2, 3],
@@ -372,7 +427,11 @@ describe('lup', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should decompose matrix, 3 x 2, complex numbers, sparse', function () {
+=======
+  it('should decompose matrix, 3 x 2, complex numbers, sparse', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix(
       [
         [math.complex(0, 3), 10],

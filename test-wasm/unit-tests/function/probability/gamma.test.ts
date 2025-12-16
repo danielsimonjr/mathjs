@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for gamma - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 /* eslint-disable no-loss-of-precision */
 
 import assert from 'assert'
@@ -7,8 +13,18 @@ import math from '../../../../src/defaultInstance.ts'
 const bignumber = math.bignumber
 const gamma = math.gamma
 
+<<<<<<< HEAD
 describe('gamma', function () {
   it('should calculate the gamma of an integer number', function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('gamma', function (): void {
+  it('should calculate the gamma of an integer number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(gamma(1), 1)
     assert.strictEqual(gamma(2), 1)
     assert.strictEqual(gamma(3), 2)
@@ -18,7 +34,11 @@ describe('gamma', function () {
     assert.strictEqual(gamma(Infinity), Infinity) // shouldn't stall
   })
 
+<<<<<<< HEAD
   it('should calculate the gamma of a nonpositive integer', function () {
+=======
+  it('should calculate the gamma of a nonpositive integer', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(gamma(0), Infinity)
     assert.strictEqual(gamma(-1), Infinity)
     assert.strictEqual(gamma(-2), Infinity)
@@ -26,7 +46,11 @@ describe('gamma', function () {
     assert.ok(isNaN(gamma(-Infinity)))
   })
 
+<<<<<<< HEAD
   it('should calculate the gamma of a rational number', function () {
+=======
+  it('should calculate the gamma of a rational number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(gamma(0.125), 7.5339415987976119046992)
     approxEqual(gamma(0.25), 3.625609908221908311930685)
     approxEqual(gamma(0.5), 1.77245385090551602729816748)
@@ -42,7 +66,11 @@ describe('gamma', function () {
     approxEqual(gamma(-144.9), -2.078523735791760166777e-251)
   })
 
+<<<<<<< HEAD
   it('should calculate the gamma of an irrational number', function () {
+=======
+  it('should calculate the gamma of an irrational number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(gamma(Math.SQRT2), 0.8865814287192591250809176)
     approxEqual(gamma(Math.PI), 2.2880377953400324179595889)
     approxEqual(gamma(Math.E), 1.56746825577405307486334)
@@ -52,7 +80,11 @@ describe('gamma', function () {
     approxEqual(gamma(-Math.E), -0.952681729748073099220537210195)
   })
 
+<<<<<<< HEAD
   it('should calculate the gamma of an integer bignumber', function () {
+=======
+  it('should calculate the gamma of an integer bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(gamma(bignumber(1)), bignumber(1))
     assert.deepStrictEqual(gamma(bignumber(2)), bignumber(1))
     assert.deepStrictEqual(gamma(bignumber(3)), bignumber(2))
@@ -66,7 +98,11 @@ describe('gamma', function () {
     assert.deepStrictEqual(gamma(bignumber(Infinity)).toString(), 'Infinity')
   })
 
+<<<<<<< HEAD
   it('should calculate the gamma of a nonpositive integer bignumber', function () {
+=======
+  it('should calculate the gamma of a nonpositive integer bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(gamma(bignumber(0)).toString(), 'Infinity')
     assert.deepStrictEqual(gamma(bignumber(-1)).toString(), 'Infinity')
     assert.deepStrictEqual(gamma(bignumber(-2)).toString(), 'Infinity')
@@ -100,7 +136,11 @@ describe('gamma', function () {
     assert.deepStrictEqual(gamma(bigmath.SQRT2.neg()), bignumber('2.59945990753'))
   })
 */
+<<<<<<< HEAD
   it('should calculate the gamma of an imaginary unit', function () {
+=======
+  it('should calculate the gamma of an imaginary unit', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       gamma(math.i),
       math.complex(
@@ -110,7 +150,11 @@ describe('gamma', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should calculate the gamma of a complex number', function () {
+=======
+  it('should calculate the gamma of a complex number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(gamma(math.complex(0, 0)), math.complex(Infinity))
     approxDeepEqual(
       gamma(math.complex(0.0001, 0.0001)),
@@ -183,14 +227,24 @@ describe('gamma', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should calculate the gamma of a boolean', function () {
+=======
+  it('should calculate the gamma of a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(gamma(true), 1)
     assert.strictEqual(gamma(false), Infinity)
   })
 
+<<<<<<< HEAD
   it('should not operate on a matrix', function () {
     assert.throws(
       () => gamma(math.matrix([0, 1, 2, 3, 4, 5])),
+=======
+  it('should not operate on a matrix', function (): void {
+    assert.throws(
+      function (): void { gamma(math.matrix([0, 1, 2, 3, 4, 5])) },
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       /Function 'gamma' doesn't apply to matrices/
     )
     assert.deepStrictEqual(
@@ -199,8 +253,13 @@ describe('gamma', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should not operate on an array', function () {
     assert.throws(() => gamma([0, 1, 2, 3, 4, 5]), TypeError)
+=======
+  it('should not operate on an array', function (): void {
+    assert.throws(function (): void { gamma([0, 1, 2, 3, 4, 5]) }, TypeError)
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(math.map([0, 1, 2, 3, 4, 5], gamma), [
       Infinity,
       1,
@@ -211,26 +270,47 @@ describe('gamma', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should throw en error if called with invalid number of arguments', function () {
     assert.throws(function () {
       gamma()
     })
     assert.throws(function () {
+=======
+  it('should throw en error if called with invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      gamma()
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       gamma(1, 3)
     })
   })
 
+<<<<<<< HEAD
   it('should throw en error if called with invalid type of argument', function () {
     assert.throws(function () {
       gamma(new Date())
     })
     assert.throws(function () {
+=======
+  it('should throw en error if called with invalid type of argument', function (): void {
+    assert.throws(function (): void {
+      gamma(new Date())
+    })
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       gamma('a string')
     })
   })
 
+<<<<<<< HEAD
   it('should LaTeX gamma', function () {
     const expression = math.parse('gamma(2.5)')
+=======
+  it('should LaTeX gamma', function (): void {
+    const expression = math.parse('gamma(2.5)') as MathNode
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(expression.toTex(), '\\Gamma\\left(2.5\\right)')
   })
 })

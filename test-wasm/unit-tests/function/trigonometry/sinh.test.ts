@@ -1,5 +1,12 @@
-// @ts-nocheck
+/**
+ * Test for sinh - AssemblyScript-friendly TypeScript
+ */
 /* eslint-disable no-loss-of-precision */
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
 
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
@@ -12,13 +19,13 @@ const bigmath = math.create({ number: 'BigNumber', precision: 20 })
 
 const EPSILON = 1e-14
 
-describe('sinh', function () {
-  it('should return the sinh of a boolean', function () {
+describe('sinh', function (): void {
+  it('should return the sinh of a boolean', function (): void {
     assert.strictEqual(sinh(true), 1.1752011936438014)
     assert.strictEqual(sinh(false), 0)
   })
 
-  it('should return the sinh of a number', function () {
+  it('should return the sinh of a number', function (): void {
     approxEqual(
       sinh(-2),
       -3.6268604078470187676682139828012617048863420123211357213,
@@ -61,13 +68,13 @@ describe('sinh', function () {
     // we only do these tests on node.js
     // skip this test on node v0.10 and v0.12 and IE 11, which have a numerical issue
 
-    it('should return the sinh of very small numbers (avoid returning zero)', function () {
+    it('should return the sinh of very small numbers (avoid returning zero)', function (): void {
       // If sinh returns 0, that is bad, so we are using assert, not approx.equal
       assert(sinh(-1e-10) !== 0)
       assert(Math.abs(sinh(-1e-10) - -1e-10) < EPSILON)
     })
 
-    it('should return the sinh of very large numbers (avoid returning zero)', function () {
+    it('should return the sinh of very large numbers (avoid returning zero)', function (): void {
       // If sinh returns 0, that is bad, so we are using assert.strictEqual, not approx.equal
       // console.log('process.version=', process.version)
       assert(sinh(1e-50) !== 0)
@@ -75,7 +82,7 @@ describe('sinh', function () {
     })
   }
 
-  it('should return the sinh of a bignumber', function () {
+  it('should return the sinh of a bignumber', function (): void {
     const sinhBig = bigmath.sinh
     const Big = bigmath.bignumber
 
@@ -102,7 +109,7 @@ describe('sinh', function () {
     assert.deepStrictEqual(sinhBig(Big(1e-50)), Big(1e-50))
   })
 
-  it('should return the sinh of a complex number', function () {
+  it('should return the sinh of a complex number', function (): void {
     approxDeepEqual(sinh(complex('1')), complex(1.1752011936438014, 0), EPSILON)
     approxDeepEqual(sinh(complex('i')), complex(0, 0.8414709848079), EPSILON)
     approxDeepEqual(
@@ -112,50 +119,50 @@ describe('sinh', function () {
     )
   })
 
-  it('should throw an error on an angle', function () {
+  it('should throw an error on an angle', function (): void {
     assert.throws(() => sinh(unit('90deg')), TypeError)
   })
 
-  it('should throw an error if called with an invalid unit', function () {
-    assert.throws(function () {
+  it('should throw an error if called with an invalid unit', function (): void {
+    assert.throws(function (): void {
       sinh(unit('5 celsius'))
     })
   })
 
-  it('should throw an error if called with a string', function () {
-    assert.throws(function () {
+  it('should throw an error if called with a string', function (): void {
+    assert.throws(function (): void {
       sinh('string')
     })
   })
 
   const sinh123 = [1.1752011936438014, 3.626860407847, 10.01787492741]
 
-  it('should not operate on an array', function () {
+  it('should not operate on an array', function (): void {
     assert.throws(() => sinh([1, 2, 3]), TypeError)
     approxDeepEqual(math.map([1, 2, 3], sinh), sinh123, EPSILON)
   })
 
-  it('should not operate on a matrix', function () {
+  it('should not operate on a matrix', function (): void {
     assert.throws(() => sinh(matrix([1, 2, 3])), TypeError)
     approxDeepEqual(math.map(matrix([1, 2, 3]), sinh), matrix(sinh123), EPSILON)
   })
 
-  it('should throw an error in case of invalid number of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
       sinh()
     }, /TypeError: Too few arguments/)
-    assert.throws(function () {
+    assert.throws(function (): void {
       sinh(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
-  it('should throw an error in case of invalid type of arguments', function () {
-    assert.throws(function () {
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
       sinh(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
-  it('should LaTeX sinh', function () {
+  it('should LaTeX sinh', function (): void {
     const expression = math.parse('sinh(1)')
     assert.strictEqual(expression.toTex(), '\\sinh\\left(1\\right)')
   })

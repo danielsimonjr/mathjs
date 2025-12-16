@@ -1,17 +1,19 @@
-// @ts-nocheck
+/**
+ * Test for json/reviver - AssemblyScript-friendly TypeScript
+ */
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
 const reviver = math.reviver
 const Range = math.Range
 
-describe('reviver', function () {
-  it('should parse generic JSON', function () {
+describe('reviver', function (): void {
+  it('should parse generic JSON', function (): void {
     const json = '{"foo":[1,2,3],"bar":null,"baz":"str"}'
     const data = { foo: [1, 2, 3], bar: null, baz: 'str' }
     assert.deepStrictEqual(JSON.parse(json, reviver), data)
   })
 
-  it('should parse a stringified numbers', function () {
+  it('should parse a stringified numbers', function (): void {
     assert.strictEqual(JSON.parse('2.3', reviver), 2.3)
     assert.strictEqual(
       JSON.parse('{"mathjs":"number","value":"2.3"}', reviver),
@@ -28,7 +30,7 @@ describe('reviver', function () {
     assert(isNaN(JSON.parse('{"mathjs":"number","value":"NaN"}', reviver)))
   })
 
-  it('should parse a stringified complex number', function () {
+  it('should parse a stringified complex number', function (): void {
     const json = '{"mathjs":"Complex","re":2,"im":4}'
     const c = new math.Complex(2, 4)
 
@@ -38,7 +40,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, c)
   })
 
-  it('should parse a stringified BigNumber', function () {
+  it('should parse a stringified BigNumber', function (): void {
     const json = '{"mathjs":"BigNumber","value":"0.2"}'
     const b = new math.BigNumber(0.2)
 
@@ -48,13 +50,13 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, b)
   })
 
-  it('should parse a stringified bigint', function () {
+  it('should parse a stringified bigint', function (): void {
     const json = '{"mathjs":"bigint","value":"12345678901234567890"}'
 
     assert.deepStrictEqual(JSON.parse(json, reviver), 12345678901234567890n)
   })
 
-  it('should parse a stringified Fraction (fraction.js v4 with numbers)', function () {
+  it('should parse a stringified Fraction (fraction.js v4 with numbers)', function (): void {
     const json = '{"mathjs":"Fraction","n":3,"d":8}'
     const b = new math.Fraction(0.375)
 
@@ -66,7 +68,7 @@ describe('reviver', function () {
     assert.strictEqual(obj.d, b.d)
   })
 
-  it('should parse a stringified Fraction', function () {
+  it('should parse a stringified Fraction', function (): void {
     const json =
       '{"mathjs":"Fraction","n":{"mathjs":"bigint","value":"3"},"d":{"mathjs":"bigint","value":"8"}}'
     const b = new math.Fraction(0.375)
@@ -79,7 +81,7 @@ describe('reviver', function () {
     assert.strictEqual(obj.d, b.d)
   })
 
-  it('should parse a stringified Range', function () {
+  it('should parse a stringified Range', function (): void {
     const json = '{"mathjs":"Range","start":2,"end":10}'
     const r = new math.Range(2, 10)
 
@@ -89,7 +91,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, r)
   })
 
-  it('should parse a stringified Unit', function () {
+  it('should parse a stringified Unit', function (): void {
     const json =
       '{"mathjs":"Unit","value":5,"unit":"cm","fixPrefix":false,"skipSimp":true}'
     const u = new math.Unit(5, 'cm')
@@ -100,7 +102,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, u)
   })
 
-  it('should parse a stringified Unit with a value only', function () {
+  it('should parse a stringified Unit with a value only', function (): void {
     const json =
       '{"mathjs":"Unit","value":5,"unit":null,"fixPrefix":false,"skipSimp":true}'
     const u = new math.Unit(5)
@@ -111,7 +113,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, u)
   })
 
-  it('should parse a stringified Unit without a value', function () {
+  it('should parse a stringified Unit without a value', function (): void {
     const json =
       '{"mathjs":"Unit","value":null,"unit":"cm","fixPrefix":false,"skipSimp":true}'
     const u = new math.Unit(null, 'cm')
@@ -122,7 +124,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, u)
   })
 
-  it('should parse a stringified Range (2)', function () {
+  it('should parse a stringified Range (2)', function (): void {
     const json = '{"mathjs":"Range","start":2,"end":10,"step":2}'
     const r = new math.Range(2, 10, 2)
 
@@ -132,7 +134,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, r)
   })
 
-  it('should parse a stringified ResultSet', function () {
+  it('should parse a stringified ResultSet', function (): void {
     const json =
       '{"mathjs":"ResultSet","entries":[1,2,{"mathjs":"Complex","re":3,"im":4}]}'
     const r = new math.ResultSet([1, 2, new math.Complex(3, 4)])
@@ -143,7 +145,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, r)
   })
 
-  it('should parse a stringified Index', function () {
+  it('should parse a stringified Index', function (): void {
     const json =
       '{"mathjs":"Index","dimensions":[' +
       '{"mathjs":"Range","start":0,"end":10,"step":1},' +
@@ -157,7 +159,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, i)
   })
 
-  it('should parse a stringified Index (2)', function () {
+  it('should parse a stringified Index (2)', function (): void {
     const json = '{"mathjs":"Index","dimensions":[[0, 10],2]}'
     const i = new math.Index([0, 10], 2)
 
@@ -167,7 +169,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, i)
   })
 
-  it('should parse a stringified Matrix, dense storage format', function () {
+  it('should parse a stringified Matrix, dense storage format', function (): void {
     const json = '{"mathjs":"DenseMatrix","data":[[1,2],[3,4]],"size":[2,2]}'
     const m = math.matrix(
       [
@@ -183,7 +185,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, m)
   })
 
-  it('should parse a stringified Matrix containing a complex number, dense storage format', function () {
+  it('should parse a stringified Matrix containing a complex number, dense storage format', function (): void {
     const json =
       '{"mathjs":"DenseMatrix","data":[[1,2],[3,{"mathjs":"Complex","re":4,"im":5}]],"size":[2,2]}'
     const c = new math.Complex(4, 5)
@@ -202,7 +204,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, m)
   })
 
-  it('should parse a Matrix, sparse', function () {
+  it('should parse a Matrix, sparse', function (): void {
     const json =
       '{"mathjs":"SparseMatrix","values":[1,3,2,4],"index":[0,1,0,1],"ptr":[0,2,4],"size":[2,2]}'
     const m = math.matrix(
@@ -220,7 +222,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, m)
   })
 
-  it('should parse a stringified Help', function () {
+  it('should parse a stringified Help', function (): void {
     const json = '{"mathjs":"Help","name":"foo","description":"bar"}'
     const h = new math.Help({ name: 'foo', description: 'bar' })
     const obj = JSON.parse(json, reviver)
@@ -229,7 +231,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, h)
   })
 
-  it('should parse a stringified Chain', function () {
+  it('should parse a stringified Chain', function (): void {
     const json = '{"mathjs":"Chain","value":2.3}'
     const c = math.chain(2.3)
     const obj = JSON.parse(json, reviver)
@@ -238,7 +240,7 @@ describe('reviver', function () {
     assert.deepStrictEqual(obj, c)
   })
 
-  it('should parse a stringified node tree', function () {
+  it('should parse a stringified node tree', function (): void {
     const json = JSON.stringify({
       mathjs: 'OperatorNode',
       op: '+',
@@ -283,7 +285,7 @@ describe('reviver', function () {
     assert.strictEqual(node.toString(), '2 + sin(3 x)')
   })
 
-  it('should parse a stringified Parser', function () {
+  it('should parse a stringified Parser', function (): void {
     const json = JSON.stringify({
       mathjs: 'Parser',
       variables: {

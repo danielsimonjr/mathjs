@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+/**
+ * Test for subset - AssemblyScript-friendly TypeScript
+ */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { DimensionError } from '../../../../src/error/DimensionError.js'
@@ -9,14 +15,27 @@ const matrix = math.matrix
 const Range = math.Range
 const index = math.index
 
+<<<<<<< HEAD
 describe('subset', function () {
+=======
+interface MathNode {
+  type: string
+  toTex(): string
+}
+
+describe('subset', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
   const a = [
     [1, 2],
     [3, 4]
   ]
   const b = math.matrix(a)
 
+<<<<<<< HEAD
   it('should get the right subset of an array', function () {
+=======
+  it('should get the right subset of an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subset(a, index(new Range(0, 2), 1)), [2, 4])
     assert.deepStrictEqual(subset(a, index(1, 0)), 3)
     assert.deepStrictEqual(
@@ -25,7 +44,11 @@ describe('subset', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should get the right subset of an array of booleans', function () {
+=======
+  it('should get the right subset of an array of booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subset(a, index([true, true], [1])), [[2], [4]])
     assert.deepStrictEqual(subset(a, index([false, true], [true, false])), [
       [3]
@@ -35,7 +58,11 @@ describe('subset', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should return an empty value with an empty index', function () {
+=======
+  it('should return an empty value with an empty index', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subset(a, index([], 1)), [])
     assert.deepStrictEqual(subset(a, index(new math.Range(0, 0), 1)), [])
     assert.deepStrictEqual(subset(b, index([], 1)), math.matrix())
@@ -47,7 +74,11 @@ describe('subset', function () {
     assert.deepStrictEqual(subset('hello', index('')), '')
   })
 
+<<<<<<< HEAD
   it('should get the right subset of an array of booleans in the parser', function () {
+=======
+  it('should get the right subset of an array of booleans in the parser', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(math.evaluate('a[[true, true], 2]', { a }), [2, 4])
     assert.deepStrictEqual(
       math.evaluate('a[[false, true], [true, false]]', { a }),
@@ -59,6 +90,7 @@ describe('subset', function () {
     )
   })
 
+<<<<<<< HEAD
   it("should throw an error if the array of booleans doesn't have the same size as the array", function () {
     assert.throws(function () {
       subset(a, index([true], 0))
@@ -82,16 +114,46 @@ describe('subset', function () {
       subset(b, index(0, [true]))
     }, DimensionError)
     assert.throws(function () {
+=======
+  it("should throw an error if the array of booleans doesn't have the same size as the array", function (): void {
+    assert.throws(function (): void {
+      subset(a, index([true], 0))
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(a, index([true, true, false], 1))
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(a, index(0, [true]))
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(a, index(0, [true, true, false]))
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(b, index([true], 0))
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(b, index([true, true, false], 1))
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(b, index(0, [true]))
+    }, DimensionError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subset(b, index(0, [true, true, false]))
     }, DimensionError)
   })
 
+<<<<<<< HEAD
   it('should return an empty value with an empty index in the parser', function () {
+=======
+  it('should return an empty value with an empty index in the parser', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(math.evaluate('a[[],1]', { a }), [])
     assert.deepStrictEqual(math.evaluate('b[[],1]', { b }), math.matrix())
     // TODO: add test for objects and strings: currently throws no access property when it's ""
   })
 
+<<<<<<< HEAD
   it('should throw an error if trying to access an invalid subset of an array', function () {
     assert.throws(function () {
       subset(a, index(6, 0))
@@ -103,16 +165,34 @@ describe('subset', function () {
       subset(a, index(1, 0, 0))
     }, RangeError)
     assert.throws(function () {
+=======
+  it('should throw an error if trying to access an invalid subset of an array', function (): void {
+    assert.throws(function (): void {
+      subset(a, index(6, 0))
+    }, RangeError)
+    assert.throws(function (): void {
+      subset(a, index(1))
+    }, RangeError)
+    assert.throws(function (): void {
+      subset(a, index(1, 0, 0))
+    }, RangeError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subset(a, index(1.3, 0))
     }, TypeError)
   })
 
+<<<<<<< HEAD
   it('should get the right subset of an object', function () {
+=======
+  it('should get the right subset of an object', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const obj = { foo: 'bar' }
     assert.deepStrictEqual(subset(obj, index('foo')), 'bar')
     assert.deepStrictEqual(subset(obj, index('bla')), undefined)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of an invalid subset for an object', function () {
     const obj = { foo: 'bar' }
     const i = index('a', 'b')
@@ -120,16 +200,33 @@ describe('subset', function () {
       subset(obj, i)
     }, /DimensionError/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of an invalid subset for an object', function (): void {
+    const obj = { foo: 'bar' }
+    const i = index('a', 'b')
+    assert.throws(function (): void {
+      subset(obj, i)
+    }, /DimensionError/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subset(obj, 'notAnIndex')
     }, /TypeError.*/)
   })
 
+<<<<<<< HEAD
   it('should get the right subset of a matrix', function () {
+=======
+  it('should get the right subset of a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subset(b, index(new Range(0, 2), 1)), matrix([2, 4]))
     assert.deepStrictEqual(subset(b, index(1, 0)), 3)
   })
 
+<<<<<<< HEAD
   it('should get a subset of a matrix returning a null or undefined value', function () {
+=======
+  it('should get a subset of a matrix returning a null or undefined value', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subset([0], index(0)), 0)
     assert.deepStrictEqual(subset([null], index(0)), null)
     assert.deepStrictEqual(subset([undefined], index(0)), undefined)
@@ -140,6 +237,7 @@ describe('subset', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should throw an error if trying to access an invalid subset of a matrix', function () {
     assert.throws(function () {
       subset(b, index(6, 0))
@@ -151,6 +249,19 @@ describe('subset', function () {
       subset(b, index(1, 0, 0))
     }, RangeError)
     assert.throws(function () {
+=======
+  it('should throw an error if trying to access an invalid subset of a matrix', function (): void {
+    assert.throws(function (): void {
+      subset(b, index(6, 0))
+    }, RangeError)
+    assert.throws(function (): void {
+      subset(b, index(1))
+    }, RangeError)
+    assert.throws(function (): void {
+      subset(b, index(1, 0, 0))
+    }, RangeError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subset(b, index(1.3, 0))
     }, TypeError)
   })
@@ -166,7 +277,11 @@ describe('subset', function () {
 
   // TODO: test getting subset of an array and matrix
 
+<<<<<<< HEAD
   it('should set the right subset of an array', function () {
+=======
+  it('should set the right subset of an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(d, [
       [1, 2],
       [3, 4]
@@ -194,7 +309,11 @@ describe('subset', function () {
     ])
   })
 
+<<<<<<< HEAD
   it('should leave arrays as such if the index is empty', function () {
+=======
+  it('should leave arrays as such if the index is empty', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subset(d, index([], 1), 1), d)
     assert.deepStrictEqual(subset(d, index(1, new Range(0, 0)), 1), d)
     assert.deepStrictEqual(subset(d, index([], 1), 1, 1), d)
@@ -207,7 +326,11 @@ describe('subset', function () {
     assert.deepStrictEqual(subset('hello', index([]), 'x', 'x'), 'hello')
   })
 
+<<<<<<< HEAD
   it('should set the right subset of an array if the replacement can be broadcasted to the index', function () {
+=======
+  it('should set the right subset of an array if the replacement can be broadcasted to the index', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(d, [
       [1, 2],
       [3, 4]
@@ -235,7 +358,11 @@ describe('subset', function () {
     ])
   })
 
+<<<<<<< HEAD
   it("should set the right subset of an array or matrix with default value if the replacement can't be broadcasted to the index", function () {
+=======
+  it("should set the right subset of an array or matrix with default value if the replacement can't be broadcasted to the index", function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subset(d, index(2, 1), 7, 0), [
       [1, 2],
       [3, 4],
@@ -262,13 +389,21 @@ describe('subset', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should set a subset of an array with undefined default value', function () {
+=======
+  it('should set a subset of an array with undefined default value', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = []
     assert.deepStrictEqual(subset(a, index(2), 1), [0, 0, 1])
     assert.deepStrictEqual(subset(a, index(2), 1, null), [null, null, 1])
   })
 
+<<<<<<< HEAD
   it('should set a subset of an array or matrix by broadcasting the replacement', function () {
+=======
+  it('should set a subset of an array or matrix by broadcasting the replacement', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subset(d, index([0, 1], 1), -2), [
       [1, -2],
       [3, -2]
@@ -293,6 +428,7 @@ describe('subset', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if setting the subset of an array with an invalid array of booleans', function () {
     assert.throws(function () {
       subset(d, index([true], 0), 123)
@@ -316,20 +452,57 @@ describe('subset', function () {
       subset(g, index([true], 0), 123, 1)
     }, DimensionError)
     assert.throws(function () {
+=======
+  it('should throw an error if setting the subset of an array with an invalid array of booleans', function (): void {
+    assert.throws(function (): void {
+      subset(d, index([true], 0), 123)
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(d, index(0, [true, false, true]), 123)
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(g, index([true], 0), 123)
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(g, index(0, [true, false, true]), 123)
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(d, index([true], 0), 123, 1)
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(d, index(0, [true, false, true]), 123, 1)
+    }, DimensionError)
+    assert.throws(function (): void {
+      subset(g, index([true], 0), 123, 1)
+    }, DimensionError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subset(g, index(0, [true, false, true]), 123, 1)
     }, DimensionError)
   })
 
+<<<<<<< HEAD
   it('should throw an error if setting the subset of an array with an invalid index', function () {
     assert.throws(function () {
       subset(d, index(1), 123)
     }, RangeError)
     assert.throws(function () {
+=======
+  it('should throw an error if setting the subset of an array with an invalid index', function (): void {
+    assert.throws(function (): void {
+      subset(d, index(1), 123)
+    }, RangeError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subset(d, index(1.3, 0), 123)
     }, TypeError)
   })
 
+<<<<<<< HEAD
   it('should set the right subset of a matrix', function () {
+=======
+  it('should set the right subset of a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       g,
       matrix([
@@ -361,17 +534,30 @@ describe('subset', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error if setting the subset of a matrix with an invalid replacement', function () {
     assert.throws(function () {
       subset(d, index(1), 123)
     }, RangeError)
     assert.throws(function () {
+=======
+  it('should throw an error if setting the subset of a matrix with an invalid replacement', function (): void {
+    assert.throws(function (): void {
+      subset(d, index(1), 123)
+    }, RangeError)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subset(d, index(1.3, 0), 123)
     }, TypeError)
   })
 
+<<<<<<< HEAD
   describe('string', function () {
     it('should get the right subset of a string', function () {
+=======
+  describe('string', function (): void {
+    it('should get the right subset of a string', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(subset('hello', index(1)), 'e')
       assert.deepStrictEqual(
         subset('hello', index(new Range(4, -1, -1))),
@@ -379,6 +565,7 @@ describe('subset', function () {
       )
     })
 
+<<<<<<< HEAD
     it('should throw an error if trying to access an invalid subset of a string', function () {
       // assert.throws(function () {subset('hello', 1);}, TypeError)
       assert.throws(function () {
@@ -388,11 +575,26 @@ describe('subset', function () {
         subset('hello', index([-2]))
       }, RangeError)
       assert.throws(function () {
+=======
+    it('should throw an error if trying to access an invalid subset of a string', function (): void {
+      // assert.throws(function (): void {subset('hello', 1);}, TypeError)
+      assert.throws(function (): void {
+        subset('hello', index([6]))
+      }, RangeError)
+      assert.throws(function (): void {
+        subset('hello', index([-2]))
+      }, RangeError)
+      assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         subset('hello', index([1.3]))
       }, TypeError)
     })
 
+<<<<<<< HEAD
     it('should set the right subset of a string', function () {
+=======
+    it('should set the right subset of a string', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const j = 'hello'
       assert.deepStrictEqual(subset(j, index(0), 'H'), 'Hello')
       assert.deepStrictEqual(j, 'hello')
@@ -405,22 +607,38 @@ describe('subset', function () {
       assert.deepStrictEqual(j, 'hello')
     })
 
+<<<<<<< HEAD
     it('should throw an error when index is out of range for a string', function () {
       assert.throws(function () {
         subset('hello', index(5))
       }, /Index out of range/)
       assert.throws(function () {
+=======
+    it('should throw an error when index is out of range for a string', function (): void {
+      assert.throws(function (): void {
+        subset('hello', index(5))
+      }, /Index out of range/)
+      assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         subset('hello', index(-1))
       }, /Index out of range/)
     })
 
+<<<<<<< HEAD
     it('should set the right subset of a string with resizing', function () {
+=======
+    it('should set the right subset of a string with resizing', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const j = ''
       const defaultValue = 'i'
       assert.deepStrictEqual(subset(j, index(5), '!', defaultValue), 'iiiii!')
     })
 
+<<<<<<< HEAD
     it('should set a property of an object', function () {
+=======
+    it('should set a property of an object', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const obj = {}
       const res = subset(obj, index('foo'), 'bar')
       assert.deepStrictEqual(res, { foo: 'bar' })
@@ -429,6 +647,7 @@ describe('subset', function () {
       assert.deepStrictEqual(res2, {}) // should leave the original object untouched
     })
 
+<<<<<<< HEAD
     it('should throw an error when attempting to index an object with something other than a string', function () {
       const obj = { foo: 'bar' }
       assert.throws(function () {
@@ -438,34 +657,67 @@ describe('subset', function () {
         subset(obj, index([1]), 1)
       }, /TypeError/)
       assert.throws(function () {
+=======
+    it('should throw an error when attempting to index an object with something other than a string', function (): void {
+      const obj = { foo: 'bar' }
+      assert.throws(function (): void {
+        subset(obj, index(1))
+      }, /TypeError/)
+      assert.throws(function (): void {
+        subset(obj, index([1]), 1)
+      }, /TypeError/)
+      assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         subset(obj, index([true]), 1, 1)
       }, /TypeError/)
     })
 
+<<<<<<< HEAD
     it('should throw an error if setting the subset of a string with an invalid replacement', function () {
       assert.throws(function () {
         subset('hello', index([1, 2]), '1234')
       }, RangeError)
       assert.throws(function () {
+=======
+    it('should throw an error if setting the subset of a string with an invalid replacement', function (): void {
+      assert.throws(function (): void {
+        subset('hello', index([1, 2]), '1234')
+      }, RangeError)
+      assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         subset('hello', index(1, 2), 'a')
       }, RangeError)
     })
 
+<<<<<<< HEAD
     it('should throw an error if in case of dimensions mismatch', function () {
       assert.throws(function () {
         subset('hello', index(1, 2))
       }, /Dimension mismatch/)
       assert.throws(function () {
+=======
+    it('should throw an error if in case of dimensions mismatch', function (): void {
+      assert.throws(function (): void {
+        subset('hello', index(1, 2))
+      }, /Dimension mismatch/)
+      assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         subset('hello', index(1, 2), 'a')
       }, /Dimension mismatch/)
     })
 
+<<<<<<< HEAD
     it('should throw an error if in case of a default value with length > 0', function () {
       assert.throws(function () {
+=======
+    it('should throw an error if in case of a default value with length > 0', function (): void {
+      assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         subset('hello', index(10), '!', 'foo')
       }, /Single character expected as defaultValue/)
     })
 
+<<<<<<< HEAD
     it('should throw an error if in case of an invalid index type', function () {
       assert.throws(function () {
         subset('hello', 2)
@@ -474,11 +726,22 @@ describe('subset', function () {
         subset('hello', 2, 'A')
       }, /TypeError: Unexpected type of argument/)
       assert.throws(function () {
+=======
+    it('should throw an error if in case of an invalid index type', function (): void {
+      assert.throws(function (): void {
+        subset('hello', 2)
+      }, /TypeError: Unexpected type of argument/)
+      assert.throws(function (): void {
+        subset('hello', 2, 'A')
+      }, /TypeError: Unexpected type of argument/)
+      assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         subset('hello', 2, 'A', 'B')
       }, /TypeError: Unexpected type of argument/)
     })
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       subset()
@@ -487,10 +750,21 @@ describe('subset', function () {
       subset(d)
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      subset()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+      subset(d)
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subset(d, index(0, 0), 1, 0, 5)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid type of arguments', function () {
     assert.throws(function () {
       subset([1, 2], [0])
@@ -500,6 +774,17 @@ describe('subset', function () {
   })
 
   it('should LaTeX subset', function () {
+=======
+  it('should throw an error in case of invalid type of arguments', function (): void {
+    assert.throws(function (): void {
+      subset([1, 2], [0])
+    }, /TypeError: Unexpected type of argument/)
+    // assert.throws(function (): void {subset(new Date(), index(0))}, /TypeError: Unexpected type of argument/) // FIXME: should fail too. Problem is, Date is also an Object
+    // assert.throws(function (): void {subset(/foo/, index(0))}, /TypeError: Unexpected type of argument/) // FIXME: should fail too. Problem is, Date is also an Object
+  })
+
+  it('should LaTeX subset', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('subset([1],index(0,0))')
     assert.strictEqual(
       expression.toTex(),
@@ -507,7 +792,11 @@ describe('subset', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should work with config legacySubset during deprecation', function () {
+=======
+  it('should work with config legacySubset during deprecation', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const math2 = math.create()
     // Add a spy to temporarily disable console.warn
     const warnStub = sinon.stub(console, 'warn')

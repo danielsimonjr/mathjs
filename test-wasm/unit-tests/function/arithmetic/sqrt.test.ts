@@ -1,19 +1,42 @@
+<<<<<<< HEAD
 // @ts-nocheck
 // test sqrt
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
+=======
+/**
+ * Test for sqrt - AssemblyScript-friendly TypeScript
+ */
+import assert from 'assert'
+
+import math from '../../../../src/defaultInstance.ts'
+
+interface MathNode {
+  type: string
+  toTex(): string
+}
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const mathPredictable = math.create({ predictable: true })
 const sqrt = math.sqrt
 const bignumber = math.bignumber
 
+<<<<<<< HEAD
 describe('sqrt', function () {
   it('should return the square root of a boolean', function () {
+=======
+describe('sqrt', function (): void {
+  it('should return the square root of a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(sqrt(true), 1)
     assert.strictEqual(sqrt(false), 0)
   })
 
+<<<<<<< HEAD
   it('should return the square root of a positive number', function () {
+=======
+  it('should return the square root of a positive number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(sqrt(0), 0)
     assert.strictEqual(sqrt(1), 1)
     assert.strictEqual(sqrt(4), 2)
@@ -22,18 +45,30 @@ describe('sqrt', function () {
     assert.strictEqual(sqrt(25), 5)
   })
 
+<<<<<<< HEAD
   it('should return the square root of a negative number', function () {
+=======
+  it('should return the square root of a negative number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(sqrt(-4), math.complex(0, 2))
     assert.deepStrictEqual(sqrt(-16), math.complex(0, 4))
   })
 
+<<<<<<< HEAD
   it('should return the square root of a negative number when predictable:true', function () {
+=======
+  it('should return the square root of a negative number when predictable:true', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(mathPredictable.sqrt(4), 2)
     assert(typeof mathPredictable.sqrt(-4), 'number')
     assert(isNaN(mathPredictable.sqrt(-4)))
   })
 
+<<<<<<< HEAD
   it('should return the square root of a positive bignumber', function () {
+=======
+  it('should return the square root of a positive bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(sqrt(bignumber(0)), bignumber(0))
     assert.deepStrictEqual(sqrt(bignumber(1)), bignumber(1))
     assert.deepStrictEqual(sqrt(bignumber(4)), bignumber(2))
@@ -51,16 +86,28 @@ describe('sqrt', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return the square root of a negative bignumber', function () {
     assert.deepStrictEqual(sqrt(bignumber(-4)), math.complex(0, 2))
   })
 
   it('should return the square root of a negative bignumber when predictable:true', function () {
+=======
+  it('should return the square root of a negative bignumber', function (): void {
+    assert.deepStrictEqual(sqrt(bignumber(-4)), math.complex(0, 2))
+  })
+
+  it('should return the square root of a negative bignumber when predictable:true', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(mathPredictable.sqrt(bignumber(4)), bignumber(2))
     assert.ok(mathPredictable.sqrt(bignumber(-4)).isNaN())
   })
 
+<<<<<<< HEAD
   it('should return the square root of a complex number', function () {
+=======
+  it('should return the square root of a complex number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(sqrt(math.complex(3, -4)), math.complex(2, -1))
     assert.deepStrictEqual(
       sqrt(math.complex(1e10, 1e-10)),
@@ -68,12 +115,20 @@ describe('sqrt', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return the square root of a unit', function () {
+=======
+  it('should return the square root of a unit', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(sqrt(math.unit('25 m^2/s^2')).toString(), '5 m / s')
     assert.strictEqual(sqrt(math.unit('4 kg')).toString(), '2 kg^0.5')
   })
 
+<<<<<<< HEAD
   it('should return a Unit with a Complex value when computing the square root of a negative unit', function () {
+=======
+  it('should return a Unit with a Complex value when computing the square root of a negative unit', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Update this when support for complex units is added
     // assert.strictEqual(sqrt(math.unit('-25 m^2/s^2')).toString(), 'NaN m / s')
     assert.strictEqual(
@@ -82,17 +137,30 @@ describe('sqrt', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should return NaN if input is NaN', function () {
     assert(isNaN(sqrt(NaN)))
   })
 
   it('should throw an error when used with a string', function () {
     assert.throws(function () {
+=======
+  it('should return NaN if input is NaN', function (): void {
+    assert(isNaN(sqrt(NaN)))
+  })
+
+  it('should throw an error when used with a string', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       sqrt('a string')
     })
   })
 
+<<<<<<< HEAD
   it('should not operate on a matrix', function () {
+=======
+  it('should not operate on a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.throws(() => sqrt([4, 9, 16, 25]), TypeError)
     assert.deepStrictEqual(math.map([4, 9, 16, 25], sqrt), [2, 3, 4, 5])
     assert.deepStrictEqual(
@@ -123,22 +191,39 @@ describe('sqrt', function () {
     )
   })
 
+<<<<<<< HEAD
   it('should throw an error in case of invalid number of arguments', function () {
     assert.throws(function () {
       sqrt()
     }, /TypeError: Too few arguments/)
     assert.throws(function () {
+=======
+  it('should throw an error in case of invalid number of arguments', function (): void {
+    assert.throws(function (): void {
+      sqrt()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       sqrt(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
   it('should throw an in case of wrong type of arguments', function () {
     assert.throws(function () {
+=======
+  it('should throw an in case of wrong type of arguments', function (): void {
+    assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       sqrt(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
   it('should LaTeX sqrt', function () {
+=======
+  it('should LaTeX sqrt', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('sqrt(2)')
     assert.strictEqual(expression.toTex(), '\\sqrt{2}')
   })
