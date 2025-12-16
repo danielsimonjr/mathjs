@@ -515,6 +515,198 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
   })
 
   // ============================================
+  // PROBABILITY DISTRIBUTIONS
+  // ============================================
+  describe('Probability Distributions (direct import)', function () {
+    it('should import and run probability distribution functions', async function () {
+      const prob = await import('../../../src-wasm/probability/distributions')
+
+      // Test seed setting (deterministic)
+      prob.setSeed(12345)
+
+      // Test random number generation exists
+      const r1 = prob.random()
+      assert.ok(r1 >= 0 && r1 < 1)
+
+      // Test randomInt
+      const ri = prob.randomInt(1, 10)
+      assert.ok(ri >= 1 && ri <= 10)
+
+      // Test randomRange
+      const rr = prob.randomRange(5.0, 10.0)
+      assert.ok(rr >= 5.0 && rr < 10.0)
+
+      // Test bernoulli
+      prob.setSeed(99999)
+      const bern = prob.bernoulli(0.5)
+      assert.ok(bern === 0 || bern === 1)
+
+      // Test binomial
+      prob.setSeed(12345)
+      const bin = prob.binomial(10, 0.5)
+      assert.ok(bin >= 0 && bin <= 10)
+
+      // Test normal PDF
+      approxEqual(prob.normalPDF(0, 0, 1), 1 / Math.sqrt(2 * Math.PI), 1e-10)
+
+      // Test standard normal CDF
+      approxEqual(prob.standardNormalCDF(0), 0.5, 1e-6)
+
+      // Test normal CDF
+      approxEqual(prob.normalCDF(0, 0, 1), 0.5, 1e-6)
+
+      // Test exponential PDF
+      approxEqual(prob.exponentialPDF(0, 1), 1, 1e-10)
+      approxEqual(prob.exponentialPDF(1, 1), Math.exp(-1), 1e-10)
+
+      // Test exponential CDF
+      approxEqual(prob.exponentialCDF(0, 1), 0, 1e-10)
+      approxEqual(prob.exponentialCDF(1, 1), 1 - Math.exp(-1), 1e-10)
+
+      // Test KL divergence
+      const p = new Float64Array([0.5, 0.5])
+      const q = new Float64Array([0.25, 0.75])
+      const kl = prob.klDivergence(p, q, 2)
+      assert.ok(kl > 0) // KL divergence is always non-negative
+
+      // Test entropy
+      const uniform = new Float64Array([0.25, 0.25, 0.25, 0.25])
+      const ent = prob.entropy(uniform, 4)
+      approxEqual(ent, Math.log(4), 1e-10) // Uniform has max entropy
+
+      console.log('  ✓ probability/distributions')
+    })
+  })
+
+  // ============================================
+  // UTILS/CHECKS
+  // ============================================
+  describe('Utils Checks (direct import)', function () {
+    it('should import and run utility check functions', async function () {
+      const checks = await import('../../../src-wasm/utils/checks')
+
+      // Test isNaN
+      assert.strictEqual(checks.isNaN(NaN), 1)
+      assert.strictEqual(checks.isNaN(5), 0)
+
+      // Test isFinite
+      assert.strictEqual(checks.isFinite(5), 1)
+      assert.strictEqual(checks.isFinite(Infinity), 0)
+      assert.strictEqual(checks.isFinite(NaN), 0)
+
+      // Test isInteger
+      assert.strictEqual(checks.isInteger(5), 1)
+      assert.strictEqual(checks.isInteger(5.5), 0)
+
+      // Test isPositive/isNegative/isZero
+      assert.strictEqual(checks.isPositive(5), 1)
+      assert.strictEqual(checks.isPositive(-5), 0)
+      assert.strictEqual(checks.isNegative(-5), 1)
+      assert.strictEqual(checks.isNegative(5), 0)
+      assert.strictEqual(checks.isZero(0), 1)
+      assert.strictEqual(checks.isZero(5), 0)
+
+      // Test isPrimeF64 (using f64 version which works in JS)
+      assert.strictEqual(checks.isPrimeF64(2), 1)
+      assert.strictEqual(checks.isPrimeF64(3), 1)
+      assert.strictEqual(checks.isPrimeF64(4), 0)
+      assert.strictEqual(checks.isPrimeF64(17), 1)
+      assert.strictEqual(checks.isPrimeF64(1), 0)
+
+      // Test isPrimeF64
+      assert.strictEqual(checks.isPrimeF64(7), 1)
+      assert.strictEqual(checks.isPrimeF64(8), 0)
+      assert.strictEqual(checks.isPrimeF64(7.5), 0) // Non-integer
+
+      // Test isEven/isOdd
+      assert.strictEqual(checks.isEven(4), 1)
+      assert.strictEqual(checks.isEven(5), 0)
+      assert.strictEqual(checks.isOdd(5), 1)
+      assert.strictEqual(checks.isOdd(4), 0)
+
+      // Test isBounded
+      assert.strictEqual(checks.isBounded(5, 0, 10), 1)
+      assert.strictEqual(checks.isBounded(15, 0, 10), 0)
+
+      // Test isPerfectSquare (requires i64 in AS, skip in JS pre-compile)
+      // These functions use i64 which needs BigInt in JavaScript
+      // Skip these tests in pre-compile mode
+
+      // Test gcd and lcm (requires i64 in AS, skip in JS pre-compile)
+      // Using regular numbers won't work due to type constraints
+
+      // Test sign
+      approxEqual(checks.sign(5), 1)
+      approxEqual(checks.sign(-5), -1)
+      approxEqual(checks.sign(0), 0)
+
+      // Test array checks
+      const data = new Float64Array([1, 2, 3, 4, 5])
+      assert.strictEqual(checks.allFinite(data, 5), 1)
+      assert.strictEqual(checks.anyNaN(data, 5), 0)
+      assert.strictEqual(checks.allPositive(data, 5), 1)
+      assert.strictEqual(checks.allIntegers(data, 5), 1)
+
+      console.log('  ✓ utils/checks')
+    })
+  })
+
+  // ============================================
+  // ALGEBRA SOLVER (Triangular Systems)
+  // ============================================
+  describe('Algebra Solver (direct import)', function () {
+    it('should import and run triangular solver functions', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // Test lsolve: L * x = b where L is lower triangular
+      // L = [2, 0; 3, 4], b = [4, 11]
+      // x = [2, 1.25] because 2*2 = 4, 3*2 + 4*1.25 = 6 + 5 = 11
+      const L = new Float64Array([2, 0, 3, 4])
+      const b = new Float64Array([4, 11])
+      const x = solver.lsolve(L, b, 2)
+      approxEqual(x[0], 2)
+      approxEqual(x[1], 1.25)
+
+      // Test usolve: U * x = b where U is upper triangular
+      // U = [2, 3; 0, 4], b = [11, 4]
+      // x = [4, 1] because 2*4 + 3*1 = 11, 4*1 = 4
+      const U = new Float64Array([2, 3, 0, 4])
+      const b2 = new Float64Array([11, 4])
+      const x2 = solver.usolve(U, b2, 2)
+      approxEqual(x2[0], 4)
+      approxEqual(x2[1], 1)
+
+      // Test lsolveHasSolution
+      assert.strictEqual(solver.lsolveHasSolution(L, 2), 1)
+      const singularL = new Float64Array([0, 0, 3, 4])
+      assert.strictEqual(solver.lsolveHasSolution(singularL, 2), 0)
+
+      // Test usolveHasSolution
+      assert.strictEqual(solver.usolveHasSolution(U, 2), 1)
+
+      // Test triangularDeterminant
+      approxEqual(solver.triangularDeterminant(L, 2), 8) // 2 * 4 = 8
+
+      // Test solveTridiagonal
+      // Tridiagonal system: -x[i-1] + 2*x[i] - x[i+1] = RHS
+      const a = new Float64Array([0, -1, -1]) // sub-diagonal
+      const diag = new Float64Array([2, 2, 2]) // main diagonal
+      const c = new Float64Array([-1, -1, 0]) // super-diagonal
+      const d = new Float64Array([1, 0, 1]) // RHS
+      const tri = solver.solveTridiagonal(a, diag, c, d, 3)
+      // Verify Ax = d
+      const Ax0 = 2 * tri[0] - tri[1]
+      const Ax1 = -tri[0] + 2 * tri[1] - tri[2]
+      const Ax2 = -tri[1] + 2 * tri[2]
+      approxEqual(Ax0, 1, 1e-8)
+      approxEqual(Ax1, 0, 1e-8)
+      approxEqual(Ax2, 1, 1e-8)
+
+      console.log('  ✓ algebra/solver')
+    })
+  })
+
+  // ============================================
   // SIGNAL PROCESSING (freqz, zpk2tf)
   // ============================================
   describe('Signal Processing Functions (direct import)', function () {

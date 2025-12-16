@@ -158,6 +158,74 @@ export function sign(x: f64): f64 {
 }
 
 /**
+ * Addition
+ * @param x First operand
+ * @param y Second operand
+ * @returns x + y
+ */
+export function add(x: f64, y: f64): f64 {
+  return x + y
+}
+
+/**
+ * Subtraction
+ * @param x First operand
+ * @param y Second operand
+ * @returns x - y
+ */
+export function subtract(x: f64, y: f64): f64 {
+  return x - y
+}
+
+/**
+ * Multiplication
+ * @param x First operand
+ * @param y Second operand
+ * @returns x * y
+ */
+export function multiply(x: f64, y: f64): f64 {
+  return x * y
+}
+
+/**
+ * Division
+ * @param x Dividend
+ * @param y Divisor
+ * @returns x / y
+ */
+export function divide(x: f64, y: f64): f64 {
+  return x / y
+}
+
+/**
+ * Integer addition
+ */
+export function addInt(x: i32, y: i32): i32 {
+  return x + y
+}
+
+/**
+ * Integer subtraction
+ */
+export function subtractInt(x: i32, y: i32): i32 {
+  return x - y
+}
+
+/**
+ * Integer multiplication
+ */
+export function multiplyInt(x: i32, y: i32): i32 {
+  return x * y
+}
+
+/**
+ * Integer division
+ */
+export function divideInt(x: i32, y: i32): i32 {
+  return x / y
+}
+
+/**
  * Vectorized unary minus operation
  * @param input Input array
  * @param output Output array (must be same length as input)
@@ -217,5 +285,59 @@ export function signArray(input: Float64Array, output: Float64Array, length: i32
   for (let i: i32 = 0; i < length; i++) {
     const x = unchecked(input[i])
     unchecked(output[i] = x > 0 ? 1.0 : (x < 0 ? -1.0 : 0.0))
+  }
+}
+
+/**
+ * Vectorized addition
+ */
+export function addArray(a: Float64Array, b: Float64Array, output: Float64Array, length: i32): void {
+  for (let i: i32 = 0; i < length; i++) {
+    unchecked(output[i] = unchecked(a[i]) + unchecked(b[i]))
+  }
+}
+
+/**
+ * Vectorized subtraction
+ */
+export function subtractArray(a: Float64Array, b: Float64Array, output: Float64Array, length: i32): void {
+  for (let i: i32 = 0; i < length; i++) {
+    unchecked(output[i] = unchecked(a[i]) - unchecked(b[i]))
+  }
+}
+
+/**
+ * Vectorized multiplication
+ */
+export function multiplyArray(a: Float64Array, b: Float64Array, output: Float64Array, length: i32): void {
+  for (let i: i32 = 0; i < length; i++) {
+    unchecked(output[i] = unchecked(a[i]) * unchecked(b[i]))
+  }
+}
+
+/**
+ * Vectorized division
+ */
+export function divideArray(a: Float64Array, b: Float64Array, output: Float64Array, length: i32): void {
+  for (let i: i32 = 0; i < length; i++) {
+    unchecked(output[i] = unchecked(a[i]) / unchecked(b[i]))
+  }
+}
+
+/**
+ * Scalar addition to array
+ */
+export function addScalarArray(input: Float64Array, scalar: f64, output: Float64Array, length: i32): void {
+  for (let i: i32 = 0; i < length; i++) {
+    unchecked(output[i] = unchecked(input[i]) + scalar)
+  }
+}
+
+/**
+ * Scalar multiplication to array
+ */
+export function multiplyScalarArray(input: Float64Array, scalar: f64, output: Float64Array, length: i32): void {
+  for (let i: i32 = 0; i < length; i++) {
+    unchecked(output[i] = unchecked(input[i]) * scalar)
   }
 }

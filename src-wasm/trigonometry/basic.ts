@@ -180,6 +180,78 @@ export function coth(x: f64): f64 {
 }
 
 /**
+ * Arcsecant (inverse secant)
+ * @param x Value (|x| >= 1)
+ * @returns asec(x) in radians
+ */
+export function asec(x: f64): f64 {
+  return Math.acos(1.0 / x)
+}
+
+/**
+ * Arccosecant (inverse cosecant)
+ * @param x Value (|x| >= 1)
+ * @returns acsc(x) in radians
+ */
+export function acsc(x: f64): f64 {
+  return Math.asin(1.0 / x)
+}
+
+/**
+ * Arccotangent (inverse cotangent)
+ * @param x The value
+ * @returns acot(x) in radians
+ */
+export function acot(x: f64): f64 {
+  return Math.atan(1.0 / x)
+}
+
+/**
+ * Inverse hyperbolic secant
+ * @param x Value in (0, 1]
+ * @returns asech(x)
+ */
+export function asech(x: f64): f64 {
+  return Math.acosh(1.0 / x)
+}
+
+/**
+ * Inverse hyperbolic cosecant
+ * @param x Value (x != 0)
+ * @returns acsch(x)
+ */
+export function acsch(x: f64): f64 {
+  return Math.asinh(1.0 / x)
+}
+
+/**
+ * Inverse hyperbolic cotangent
+ * @param x Value (|x| > 1)
+ * @returns acoth(x)
+ */
+export function acoth(x: f64): f64 {
+  return Math.atanh(1.0 / x)
+}
+
+/**
+ * Convert degrees to radians
+ * @param deg Angle in degrees
+ * @returns Angle in radians
+ */
+export function degToRad(deg: f64): f64 {
+  return deg * (Math.PI / 180.0)
+}
+
+/**
+ * Convert radians to degrees
+ * @param rad Angle in radians
+ * @returns Angle in degrees
+ */
+export function radToDeg(rad: f64): f64 {
+  return rad * (180.0 / Math.PI)
+}
+
+/**
  * Vectorized sine operation
  * @param input Input array (angles in radians)
  * @param output Output array
