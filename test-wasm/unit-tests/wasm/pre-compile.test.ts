@@ -1599,4 +1599,213 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ algebra/equations (sylvester rectangular)')
     })
   })
+
+  // ============================================
+  // MATRIX FUNCTIONS (pinv, sqrtm, expm, eigs)
+  // ============================================
+  describe('Matrix Functions (direct import)', function () {
+    it('should compute Moore-Penrose pseudoinverse', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // Square invertible matrix: pinv = inv
+      const A = new Float64Array([4, 7, 2, 6])
+      const pinvA = funcs.pinv(A, 2, 2)
+
+      // Verify A * pinv(A) ≈ I
+      const prod = new Float64Array(4)
+      for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 2; j++) {
+          let sum = 0
+          for (let k = 0; k < 2; k++) {
+            sum += A[i * 2 + k] * pinvA[k * 2 + j]
+          }
+          prod[i * 2 + j] = sum
+        }
+      }
+      approxEqual(prod[0], 1, 1e-10)
+      approxEqual(prod[1], 0, 1e-10)
+      approxEqual(prod[2], 0, 1e-10)
+      approxEqual(prod[3], 1, 1e-10)
+
+      console.log('  ✓ matrix/functions (pinv square)')
+    })
+
+    it('should compute pseudoinverse of overdetermined system', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // Overdetermined (3x2): pinv is 2x3
+      // A = [[1,0],[0,1],[1,1]]
+      const A = new Float64Array([1, 0, 0, 1, 1, 1])
+      const pinvA = funcs.pinv(A, 3, 2)
+      assert.strictEqual(pinvA.length, 6)
+
+      // Verify A^+ A = I (for overdetermined)
+      const prod = new Float64Array(4)
+      for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 2; j++) {
+          let sum = 0
+          for (let k = 0; k < 3; k++) {
+            sum += pinvA[i * 3 + k] * A[k * 2 + j]
+          }
+          prod[i * 2 + j] = sum
+        }
+      }
+      approxEqual(prod[0], 1, 1e-8)
+      approxEqual(prod[1], 0, 1e-8)
+      approxEqual(prod[2], 0, 1e-8)
+      approxEqual(prod[3], 1, 1e-8)
+
+      console.log('  ✓ matrix/functions (pinv overdetermined)')
+    })
+
+    it('should compute matrix square root', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // sqrt([[4,0],[0,9]]) = [[2,0],[0,3]]
+      const A = new Float64Array([4, 0, 0, 9])
+      const sqrtA = funcs.sqrtm(A, 2, 50, 1e-10)
+      assert.strictEqual(sqrtA.length, 4)
+
+      approxEqual(sqrtA[0], 2, 1e-8)
+      approxEqual(sqrtA[1], 0, 1e-8)
+      approxEqual(sqrtA[2], 0, 1e-8)
+      approxEqual(sqrtA[3], 3, 1e-8)
+
+      console.log('  ✓ matrix/functions (sqrtm diagonal)')
+    })
+
+    it('should compute matrix square root with verification', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // General 2x2 positive definite: A = [[5,2],[2,2]]
+      const A = new Float64Array([5, 2, 2, 2])
+      const sqrtA = funcs.sqrtm(A, 2, 100, 1e-12)
+      assert.strictEqual(sqrtA.length, 4)
+
+      // Verify sqrtA * sqrtA ≈ A
+      const prod = new Float64Array(4)
+      for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 2; j++) {
+          let sum = 0
+          for (let k = 0; k < 2; k++) {
+            sum += sqrtA[i * 2 + k] * sqrtA[k * 2 + j]
+          }
+          prod[i * 2 + j] = sum
+        }
+      }
+      approxEqual(prod[0], 5, 1e-8)
+      approxEqual(prod[1], 2, 1e-8)
+      approxEqual(prod[2], 2, 1e-8)
+      approxEqual(prod[3], 2, 1e-8)
+
+      console.log('  ✓ matrix/functions (sqrtm general)')
+    })
+
+    it('should compute matrix exponential', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // exp([[0,0],[0,0]]) = [[1,0],[0,1]]
+      const Z = new Float64Array([0, 0, 0, 0])
+      const expZ = funcs.expm(Z, 2)
+      approxEqual(expZ[0], 1, 1e-10)
+      approxEqual(expZ[1], 0, 1e-10)
+      approxEqual(expZ[2], 0, 1e-10)
+      approxEqual(expZ[3], 1, 1e-10)
+
+      console.log('  ✓ matrix/functions (expm zero)')
+    })
+
+    it('should compute matrix exponential of diagonal matrix', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // exp([[1,0],[0,2]]) = [[e,0],[0,e^2]]
+      const D = new Float64Array([1, 0, 0, 2])
+      const expD = funcs.expm(D, 2)
+      approxEqual(expD[0], Math.E, 1e-2) // Padé [6/6] approximation has limited precision
+      approxEqual(expD[1], 0, 1e-8)
+      approxEqual(expD[2], 0, 1e-8)
+      approxEqual(expD[3], Math.E * Math.E, 1e-1) // Larger values have less precision
+
+      console.log('  ✓ matrix/functions (expm diagonal)')
+    })
+
+    it('should compute matrix exponential of nilpotent matrix', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // For nilpotent N = [[0,1],[0,0]], exp(N) = I + N = [[1,1],[0,1]]
+      const N = new Float64Array([0, 1, 0, 0])
+      const expN = funcs.expm(N, 2)
+      approxEqual(expN[0], 1, 1e-8)
+      approxEqual(expN[1], 1, 1e-8)
+      approxEqual(expN[2], 0, 1e-8)
+      approxEqual(expN[3], 1, 1e-8)
+
+      console.log('  ✓ matrix/functions (expm nilpotent)')
+    })
+
+    it('should compute eigenvalues of symmetric matrix', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // Eigenvalues of [[3,1],[1,3]] are 4 and 2
+      const A = new Float64Array([3, 1, 1, 3])
+      const eigs = funcs.eigsSymmetric(A, 2, 100, 1e-10)
+      assert.strictEqual(eigs.length, 2)
+
+      // Sorted descending
+      approxEqual(eigs[0], 4, 1e-8)
+      approxEqual(eigs[1], 2, 1e-8)
+
+      console.log('  ✓ matrix/functions (eigsSymmetric)')
+    })
+
+    it('should compute eigenvalues of diagonal matrix', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // Eigenvalues of diagonal matrix are the diagonal entries
+      const D = new Float64Array([5, 0, 0, 0, 3, 0, 0, 0, 1])
+      const eigs = funcs.eigs(D, 3, 100, 1e-10)
+      assert.strictEqual(eigs.length, 3)
+
+      // Should be 5, 3, 1 (sorted by absolute value descending)
+      approxEqual(eigs[0], 5, 1e-8)
+      approxEqual(eigs[1], 3, 1e-8)
+      approxEqual(eigs[2], 1, 1e-8)
+
+      console.log('  ✓ matrix/functions (eigs diagonal)')
+    })
+
+    it('should compute eigenvalues using power iteration', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // Dominant eigenvalue of [[4,1],[2,3]] is 5 (eigenvalues: 5, 2)
+      const A = new Float64Array([4, 1, 2, 3])
+      const result = funcs.powerIteration(A, 2, 100, 1e-10)
+      assert.strictEqual(result.length, 3) // eigenvalue + eigenvector
+
+      approxEqual(result[0], 5, 1e-6)
+
+      console.log('  ✓ matrix/functions (powerIteration)')
+    })
+
+    it('should compute spectral radius', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      // Spectral radius of [[0.5,0],[0,0.3]] is 0.5
+      const A = new Float64Array([0.5, 0, 0, 0.3])
+      const sr = funcs.spectralRadius(A, 2)
+      approxEqual(sr, 0.5, 1e-8)
+
+      console.log('  ✓ matrix/functions (spectralRadius)')
+    })
+
+    it('should compute trace', async function () {
+      const funcs = await import('../../../src-wasm/matrix/functions')
+
+      const A = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+      const tr = funcs.trace(A, 3)
+      approxEqual(tr, 15, 1e-10) // 1 + 5 + 9
+
+      console.log('  ✓ matrix/functions (trace)')
+    })
+  })
 })

@@ -446,3 +446,204 @@ export function kurtosis(data: Float64Array, length: i32): f64 {
   const term2 = (3 * (n - 1) * (n - 1)) / ((n - 2) * (n - 3))
   return term1 * sum4 - term2
 }
+
+// ============================================
+// ADDITIONAL STATISTICS FUNCTIONS
+// ============================================
+
+/**
+ * Calculate multiple quantiles at once
+ * Note: The data array will be sorted in place
+ * @param data Input array (will be sorted)
+ * @param length Length of data array
+ * @param probs Array of probabilities (each 0 to 1)
+ * @param numProbs Number of probabilities
+ * @returns Array of quantile values
+ */
+export function quantileSeq(
+  data: Float64Array,
+  length: i32,
+  probs: Float64Array,
+  numProbs: i32
+): Float64Array {
+  if (length === 0) return new Float64Array(0)
+
+  // Sort the data
+  quicksort(data, 0, length - 1)
+
+  const result = new Float64Array(numProbs)
+  for (let i: i32 = 0; i < numProbs; i++) {
+    result[i] = quantile(data, length, probs[i])
+  }
+  return result
+}
+
+/**
+ * Calculate interquartile range (IQR = Q3 - Q1)
+ * Note: The data array will be sorted in place
+ * @param data Input array (will be sorted)
+ * @param length Length of array
+ * @returns IQR value
+ */
+export function interquartileRange(data: Float64Array, length: i32): f64 {
+  if (length === 0) return NaN
+
+  quicksort(data, 0, length - 1)
+  const q1 = quantile(data, length, 0.25)
+  const q3 = quantile(data, length, 0.75)
+  return q3 - q1
+}
+
+/**
+ * Calculate z-scores (standardized values)
+ * @param data Input array
+ * @param length Length of array
+ * @returns Array of z-scores
+ */
+export function zscore(data: Float64Array, length: i32): Float64Array {
+  const result = new Float64Array(length)
+  if (length === 0) return result
+
+  const m = mean(data, length)
+  const s = std(data, length, false)
+
+  if (s === 0) {
+    // All values are the same
+    for (let i: i32 = 0; i < length; i++) {
+      result[i] = 0
+    }
+    return result
+  }
+
+  for (let i: i32 = 0; i < length; i++) {
+    result[i] = (data[i] - m) / s
+  }
+  return result
+}
+
+/**
+ * Calculate percentile (same as quantile but takes 0-100 instead of 0-1)
+ * Note: The data array must be pre-sorted
+ * @param data Input array (must be sorted)
+ * @param length Length of array
+ * @param p Percentile (0 to 100)
+ * @returns Percentile value
+ */
+export function percentile(data: Float64Array, length: i32, p: f64): f64 {
+  return quantile(data, length, p / 100.0)
+}
+
+/**
+ * Calculate median without requiring pre-sorted data
+ * Note: The data array will be sorted in place
+ * @param data Input array (will be sorted)
+ * @param length Length of array
+ * @returns Median value
+ */
+export function medianUnsorted(data: Float64Array, length: i32): f64 {
+  if (length === 0) return NaN
+  quicksort(data, 0, length - 1)
+  return median(data, length)
+}
+
+/**
+ * Calculate weighted mean
+ * @param data Values array
+ * @param weights Weights array
+ * @param length Length of arrays
+ * @returns Weighted mean
+ */
+export function weightedMean(
+  data: Float64Array,
+  weights: Float64Array,
+  length: i32
+): f64 {
+  if (length === 0) return NaN
+
+  let sumWeighted: f64 = 0
+  let sumWeights: f64 = 0
+
+  for (let i: i32 = 0; i < length; i++) {
+    sumWeighted += data[i] * weights[i]
+    sumWeights += weights[i]
+  }
+
+  if (sumWeights === 0) return NaN
+  return sumWeighted / sumWeights
+}
+
+/**
+ * Calculate root mean square (RMS)
+ * @param data Input array
+ * @param length Length of array
+ * @returns RMS value
+ */
+export function rms(data: Float64Array, length: i32): f64 {
+  if (length === 0) return NaN
+
+  let sumSquares: f64 = 0
+  for (let i: i32 = 0; i < length; i++) {
+    sumSquares += data[i] * data[i]
+  }
+  return Math.sqrt(sumSquares / f64(length))
+}
+
+/**
+ * Calculate mean absolute deviation
+ * @param data Input array
+ * @param length Length of array
+ * @returns Mean absolute deviation
+ */
+export function meanAbsoluteDeviation(data: Float64Array, length: i32): f64 {
+  if (length === 0) return NaN
+
+  const m = mean(data, length)
+  let sumAbs: f64 = 0
+
+  for (let i: i32 = 0; i < length; i++) {
+    sumAbs += Math.abs(data[i] - m)
+  }
+  return sumAbs / f64(length)
+}
+
+/**
+ * Calculate coefficient of variation (CV = std/mean)
+ * @param data Input array
+ * @param length Length of array
+ * @returns Coefficient of variation
+ */
+export function coefficientOfVariation(data: Float64Array, length: i32): f64 {
+  const m = mean(data, length)
+  if (m === 0) return NaN
+  return std(data, length, false) / Math.abs(m)
+}
+
+/**
+ * Calculate standard error of the mean (SEM = std/sqrt(n))
+ * @param data Input array
+ * @param length Length of array
+ * @returns Standard error
+ */
+export function standardError(data: Float64Array, length: i32): f64 {
+  if (length === 0) return NaN
+  return std(data, length, false) / Math.sqrt(f64(length))
+}
+
+/**
+ * Calculate sum of squares (SS = Σ(x - mean)²)
+ * @param data Input array
+ * @param length Length of array
+ * @returns Sum of squares
+ */
+export function sumOfSquares(data: Float64Array, length: i32): f64 {
+  if (length === 0) return 0
+
+  const m = mean(data, length)
+  let ss: f64 = 0
+
+  for (let i: i32 = 0; i < length; i++) {
+    const diff = data[i] - m
+    ss += diff * diff
+  }
+  return ss
+}
