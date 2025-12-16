@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test RangeNode
+import assert from 'assert'
+
+import math from '../../../../src/defaultInstance.ts'
+=======
 /**
  * Test for RangeNode - AssemblyScript-friendly TypeScript
  */
@@ -6,14 +13,20 @@ import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
 interface MathNode { type: string; toTex(): string }
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const Node = math.Node
 const ConstantNode = math.ConstantNode
 const SymbolNode = math.SymbolNode
 const RangeNode = math.RangeNode
 const OperatorNode = math.OperatorNode
 
+<<<<<<< HEAD
+describe('RangeNode', function () {
+  it('should create a RangeNode', function () {
+=======
 describe('RangeNode', function (): void {
   it('should create a RangeNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const n = new RangeNode(start, end)
@@ -22,7 +35,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(n.type, 'RangeNode')
   })
 
+<<<<<<< HEAD
+  it('should have isRangeNode', function () {
+=======
   it('should have isRangeNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const node = new RangeNode(start, end)
@@ -30,14 +47,40 @@ describe('RangeNode', function (): void {
     assert(node.isRangeNode)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when calling without new operator', function () {
+    const start = new ConstantNode(0)
+    const end = new ConstantNode(10)
+    assert.throws(function () {
+=======
   it('should throw an error when calling without new operator', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       RangeNode([start, end])
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should throw an error creating a RangeNode with wrong number or type of arguments', function () {
+    const start = new ConstantNode(0)
+    const end = new ConstantNode(10)
+
+    assert.throws(function () {
+      console.log(new RangeNode())
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RangeNode(start))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RangeNode([]))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RangeNode(start, end, start, end))
+    }, Error)
+    assert.throws(function () {
+=======
   it('should throw an error creating a RangeNode with wrong number or type of arguments', function (): void {
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
@@ -55,11 +98,16 @@ describe('RangeNode', function (): void {
       console.log(new RangeNode(start, end, start, end))
     }, Error)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       console.log(new RangeNode(0, 10))
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should compile a RangeNode', function () {
+=======
   it('should compile a RangeNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -69,7 +117,11 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(expr.evaluate(), math.matrix([0, 2, 4, 6, 8, 10]))
   })
 
+<<<<<<< HEAD
+  it('should filter a RangeNode', function () {
+=======
   it('should filter a RangeNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -107,7 +159,11 @@ describe('RangeNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should run forEach on a RangeNode', function () {
+=======
   it('should run forEach on a RangeNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -128,7 +184,11 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(paths, ['start', 'end', 'step'])
   })
 
+<<<<<<< HEAD
+  it('should map a RangeNode', function () {
+=======
   it('should map a RangeNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -157,20 +217,32 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(f.step, step)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when the map callback does not return a node', function () {
+=======
   it('should throw an error when the map callback does not return a node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
     const n = new RangeNode(start, end, step)
 
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       n.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
+<<<<<<< HEAD
+  it('should transform a RangeNodes start', function () {
+=======
   it('should transform a RangeNodes start', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -187,7 +259,11 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(f.step, step)
   })
 
+<<<<<<< HEAD
+  it('should transform a RangeNodes end', function () {
+=======
   it('should transform a RangeNodes end', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -204,7 +280,11 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(f.step, step)
   })
 
+<<<<<<< HEAD
+  it('should transform a RangeNodes step', function () {
+=======
   it('should transform a RangeNodes step', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -221,7 +301,11 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(f.step, e)
   })
 
+<<<<<<< HEAD
+  it('should transform a RangeNodes without step', function () {
+=======
   it('should transform a RangeNodes without step', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const n = new RangeNode(start, end)
@@ -236,7 +320,11 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(f.end, e)
   })
 
+<<<<<<< HEAD
+  it('should transform a RangeNode itself', function () {
+=======
   it('should transform a RangeNode itself', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -250,7 +338,11 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(f, e)
   })
 
+<<<<<<< HEAD
+  it('should clone a RangeNode', function () {
+=======
   it('should clone a RangeNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -265,7 +357,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(d.step, c.step)
   })
 
+<<<<<<< HEAD
+  it('should clone a RangeNode without step', function () {
+=======
   it('should clone a RangeNode without step', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const c = new RangeNode(start, end)
@@ -281,7 +377,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(d.step, null)
   })
 
+<<<<<<< HEAD
+  it('test equality another Node', function () {
+=======
   it('test equality another Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       createRangeNode(2, 4).equals(createRangeNode(2, 4)),
       true
@@ -314,7 +414,11 @@ describe('RangeNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should stringify a RangeNode without step', function () {
+=======
   it('should stringify a RangeNode without step', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const n = new RangeNode(start, end)
@@ -322,7 +426,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(n.toString(), '0:10')
   })
 
+<<<<<<< HEAD
+  it('should stringify a RangeNode with step', function () {
+=======
   it('should stringify a RangeNode with step', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -331,7 +439,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(n.toString(), '0:2:10')
   })
 
+<<<<<<< HEAD
+  it('should stringify a RangeNode with an OperatorNode', function () {
+=======
   it('should stringify a RangeNode with an OperatorNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
 
@@ -343,7 +455,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(n.toString(), '1 + 2:(1 < 2):1 + 2')
   })
 
+<<<<<<< HEAD
+  it('should stringify a RangeNode with a RangeNode', function () {
+=======
   it('should stringify a RangeNode with a RangeNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start1 = new ConstantNode(0)
     const end1 = new ConstantNode(10)
     const step2 = new ConstantNode(2)
@@ -355,7 +471,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(n.toString(), '(0:10):2:100')
   })
 
+<<<<<<< HEAD
+  it('should stringify a RangeNode with custom toString', function () {
+=======
   it('should stringify a RangeNode with custom toString', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'RangeNode') {
@@ -384,7 +504,11 @@ describe('RangeNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should stringify a RangeNode with custom toHTML', function () {
+=======
   it('should stringify a RangeNode with custom toHTML', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'RangeNode') {
@@ -413,7 +537,11 @@ describe('RangeNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it("should respect the 'all' parenthesis option", function () {
+=======
   it("should respect the 'all' parenthesis option", function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       math.parse('1:2:3').toString({ parenthesis: 'all' }),
       '(1):(2):(3)'
@@ -424,7 +552,11 @@ describe('RangeNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('toJSON and fromJSON', function () {
+=======
   it('toJSON and fromJSON', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(0)
     const b = new ConstantNode(10)
     const c = new ConstantNode(2)
@@ -443,7 +575,11 @@ describe('RangeNode', function (): void {
     assert.deepStrictEqual(parsed, node)
   })
 
+<<<<<<< HEAD
+  it('should LaTeX a RangeNode without step', function () {
+=======
   it('should LaTeX a RangeNode without step', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const n = new RangeNode(start, end)
@@ -451,7 +587,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(n.toTex(), '0:10')
   })
 
+<<<<<<< HEAD
+  it('should LaTeX a RangeNode with step', function () {
+=======
   it('should LaTeX a RangeNode with step', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const start = new ConstantNode(0)
     const end = new ConstantNode(10)
     const step = new ConstantNode(2)
@@ -460,7 +600,11 @@ describe('RangeNode', function (): void {
     assert.strictEqual(n.toTex(), '0:2:10')
   })
 
+<<<<<<< HEAD
+  it('should LaTeX a RangeNode with custom toTex', function () {
+=======
   it('should LaTeX a RangeNode with custom toTex', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'RangeNode') {

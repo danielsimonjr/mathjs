@@ -1,12 +1,22 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test schur decomposition
+=======
 /**
  * Test for schur - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../../src/defaultInstance.ts'
 
+<<<<<<< HEAD
+describe('schur', function () {
+  it('should calculate schur decomposition of order 5 Array with numbers', function () {
+=======
 describe('schur', function (): void {
   it('should calculate schur decomposition of order 5 Array with numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.ok(
       math.norm(
         math.subtract(
@@ -80,7 +90,11 @@ describe('schur', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should calculate schur decomposition of order 5 Matrix with numbers', function () {
+=======
   it('should calculate schur decomposition of order 5 Matrix with numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.ok(
       math.norm(
         math.subtract(

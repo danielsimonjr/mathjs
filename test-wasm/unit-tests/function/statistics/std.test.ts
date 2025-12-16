@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for std - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
@@ -10,6 +14,10 @@ const DenseMatrix = math.DenseMatrix
 const Unit = math.Unit
 const std = math.std
 
+<<<<<<< HEAD
+describe('std', function () {
+  it('should return the standard deviation of numbers', function () {
+=======
 interface MathNode {
   type: string
   toTex(): string
@@ -17,18 +25,27 @@ interface MathNode {
 
 describe('std', function (): void {
   it('should return the standard deviation of numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(std(5), 0)
     assert.strictEqual(std(2, 4, 6), 2)
   })
 
+<<<<<<< HEAD
+  it('should return the standard deviation of big numbers', function () {
+=======
   it('should return the standard deviation of big numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       std(new BigNumber(2), new BigNumber(4), new BigNumber(6)),
       new math.BigNumber(2)
     )
   })
 
+<<<<<<< HEAD
+  it('should return the standard deviation of complex numbers', function () {
+=======
   it('should return the standard deviation of complex numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     //
     approxDeepEqual(
       std(new Complex(2, 4), new Complex(4, 2)),
@@ -36,26 +53,46 @@ describe('std', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the standard deviation of mixed numbers and complex numbers', function () {
+    approxDeepEqual(std(2, new Complex(6, 4)), new Complex(2.82842, 2.82842))
+  })
+
+  it('should return the standard deviation from an array', function () {
+=======
   it('should return the standard deviation of mixed numbers and complex numbers', function (): void {
     approxDeepEqual(std(2, new Complex(6, 4)), new Complex(2.82842, 2.82842))
   })
 
   it('should return the standard deviation from an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(std([2, 4, 6]), 2)
     assert.strictEqual(std([5]), 0)
   })
 
+<<<<<<< HEAD
+  it('should return the uncorrected standard deviation from an array', function () {
+=======
   it('should return the uncorrected standard deviation from an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(std([2, 4], 'uncorrected'), 1)
     assert.strictEqual(std([2, 4, 6, 8], 'uncorrected'), Math.sqrt(5))
   })
 
+<<<<<<< HEAD
+  it('should return the biased standard deviation from an array', function () {
+=======
   it('should return the biased standard deviation from an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(std([2, 8], 'biased'), Math.sqrt(6))
     assert.strictEqual(std([2, 4, 6, 8], 'biased'), 2)
   })
 
+<<<<<<< HEAD
+  it('should return NaN if any of the inputs contains NaN', function () {
+=======
   it('should return NaN if any of the inputs contains NaN', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert(isNaN(std([NaN])))
     assert(isNaN(std([1, NaN])))
     assert(isNaN(std([NaN, 1])))
@@ -64,14 +101,24 @@ describe('std', function (): void {
     assert(isNaN(std(NaN, NaN, NaN)))
   })
 
+<<<<<<< HEAD
+  it('should throw an error in case of unknown type of normalization', function () {
+    assert.throws(function () {
+=======
   it('should throw an error in case of unknown type of normalization', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std([2, 8], 'foo')
     }, /Unknown normalization/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error in case the dimension exceeds the matrix dimension', function () {
+    assert.throws(function () {
+=======
   it('should throw an error in case the dimension exceeds the matrix dimension', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std(
         [
           [2, 4, 6],
@@ -82,12 +129,20 @@ describe('std', function (): void {
     }, /Index out of range/)
   })
 
+<<<<<<< HEAD
+  it('should return the standard deviation from an 1d matrix', function () {
+=======
   it('should return the standard deviation from an 1d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(std(new DenseMatrix([2, 4, 6])), 2)
     assert.strictEqual(std(new DenseMatrix([5])), 0)
   })
 
+<<<<<<< HEAD
+  it('should return the standard deviation element from a 2d array', function () {
+=======
   it('should return the standard deviation element from a 2d array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       std([
         [2, 4, 6],
@@ -97,7 +152,11 @@ describe('std', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the standard deviation element from a 2d matrix', function () {
+=======
   it('should return the standard deviation element from a 2d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       std(
         new DenseMatrix([
@@ -133,7 +192,11 @@ describe('std', function (): void {
     ]
   ]
 
+<<<<<<< HEAD
+  it('should return the standard deviation value along a dimension on a matrix', function () {
+=======
   it('should return the standard deviation value along a dimension on a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       std(
         [
@@ -173,12 +236,30 @@ describe('std', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid number of arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid number of arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std()
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid type of arguments', function () {
+    assert.throws(function () {
+      std(new Date(), 2)
+    }, /Cannot calculate std, unexpected type of argument/)
+    assert.throws(function () {
+      std(2, 3, null)
+    }, /Cannot calculate std, unexpected type of argument/)
+    assert.throws(function () {
+      std([2, 3, null])
+    }, /Cannot calculate std, unexpected type of argument/)
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid type of arguments', function (): void {
     assert.throws(function (): void {
       std(new Date(), 2)
@@ -190,6 +271,7 @@ describe('std', function (): void {
       std([2, 3, null])
     }, /Cannot calculate std, unexpected type of argument/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std(
         [
           [2, 4, 6],
@@ -199,7 +281,11 @@ describe('std', function (): void {
         0
       )
     }, /Cannot convert "biased" to a number/)
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std(
         [
           [2, 4, 6],
@@ -211,18 +297,32 @@ describe('std', function (): void {
     }, /Cannot calculate std, unexpected type of argument/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with an empty array', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with an empty array', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std([])
     })
   })
 
+<<<<<<< HEAD
+  it('should LaTeX std', function () {
+    const expression = math.parse('std(1,2,3)')
+    assert.strictEqual(expression.toTex(), '\\mathrm{std}\\left(1,2,3\\right)')
+  })
+
+  it('should compute the standard deviation value of quantities with units', function () {
+=======
   it('should LaTeX std', function (): void {
     const expression = math.parse('std(1,2,3)') as MathNode
     assert.strictEqual(expression.toTex(), '\\mathrm{std}\\left(1,2,3\\right)')
   })
 
   it('should compute the standard deviation value of quantities with units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new Unit(2, 'cm')
     const b = new Unit(5, 'cm')
     const c = new Unit(8, 'cm')
@@ -230,17 +330,28 @@ describe('std', function (): void {
     approxEqual(std([a, b, c]).toNumber('cm'), res.toNumber('cm'))
   })
 
+<<<<<<< HEAD
+  it('should compute the standard deviation value of quantities with compatible units', function () {
+=======
   it('should compute the standard deviation value of quantities with compatible units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'cm')
     const c = math.unit(math.sqrt(1250), 'cm')
     approxEqual(std([a, b]).toNumber('cm'), c.toNumber('cm'))
   })
 
+<<<<<<< HEAD
+  it('should not compute the standard deviation value of quantities with incompatible units', function () {
+    const a = math.unit(1, 'm')
+    const b = math.unit(50, 'kg')
+    assert.throws(function () {
+=======
   it('should not compute the standard deviation value of quantities with incompatible units', function (): void {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'kg')
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std([a, b])
     }, /Units do not match/)
   })

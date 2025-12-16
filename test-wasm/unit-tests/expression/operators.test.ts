@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for operators - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
 import {
@@ -9,11 +13,14 @@ import {
   isAssociativeWith,
   getOperator
 } from '../../../src/expression/operators.js'
+<<<<<<< HEAD
+=======
 
 interface MathNode {
   type: string
   toTex(): string
 }
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const OperatorNode = math.OperatorNode
 const AssignmentNode = math.AssignmentNode
 const SymbolNode = math.SymbolNode
@@ -21,8 +28,13 @@ const ConstantNode = math.ConstantNode
 const Node = math.Node
 const ParenthesisNode = math.ParenthesisNode
 
+<<<<<<< HEAD
+describe('operators', function () {
+  it('should return the precedence of a node', function () {
+=======
 describe('operators', function (): void {
   it('should return the precedence of a node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
 
@@ -37,13 +49,21 @@ describe('operators', function (): void {
     assert.strictEqual(getPrecedence(n4, 'keep'), 19)
   })
 
+<<<<<<< HEAD
+  it('should return null if precedence is not defined for a node', function () {
+=======
   it('should return null if precedence is not defined for a node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new Node()
 
     assert.strictEqual(getPrecedence(n, 'keep'), null)
   })
 
+<<<<<<< HEAD
+  it('should return the precedence of a ParenthesisNode', function () {
+=======
   it('should return the precedence of a ParenthesisNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const c = new ConstantNode(1)
 
     const op = new OperatorNode('or', 'or', [c, c])
@@ -55,7 +75,11 @@ describe('operators', function (): void {
     assert.strictEqual(getPrecedence(p, 'keep'), null)
   })
 
+<<<<<<< HEAD
+  it('should return the associativity of a node', function () {
+=======
   it('should return the associativity of a node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(1)
 
     const n1 = new OperatorNode('+', 'add', [a, a])
@@ -73,7 +97,11 @@ describe('operators', function (): void {
     assert.strictEqual(getAssociativity(n5, 'keep'), 'left')
   })
 
+<<<<<<< HEAD
+  it('should return the associativity of a ParenthesisNode', function () {
+=======
   it('should return the associativity of a ParenthesisNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const c = new ConstantNode(1)
 
     const op = new OperatorNode('or', 'or', [c, c])
@@ -88,7 +116,11 @@ describe('operators', function (): void {
     assert.strictEqual(getAssociativity(p, 'keep'), null)
   })
 
+<<<<<<< HEAD
+  it('should return null if associativity is not defined for a node', function () {
+=======
   it('should return null if associativity is not defined for a node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(1)
 
     const n1 = new Node()
@@ -98,7 +130,11 @@ describe('operators', function (): void {
     assert.strictEqual(getAssociativity(n2, 'keep'), null)
   })
 
+<<<<<<< HEAD
+  it('should return if a Node is associative with another Node', function () {
+=======
   it('should return if a Node is associative with another Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(1)
 
     const n1 = new OperatorNode('+', 'add', [a, a])
@@ -110,7 +146,11 @@ describe('operators', function (): void {
     assert.strictEqual(isAssociativeWith(n2, n1, 'keep'), false)
   })
 
+<<<<<<< HEAD
+  it('should return null if the associativity between two Nodes is not defined', function () {
+=======
   it('should return null if the associativity between two Nodes is not defined', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(1)
 
     const n1 = new Node()
@@ -122,7 +162,11 @@ describe('operators', function (): void {
     assert.strictEqual(isAssociativeWith(n2, n1, 'keep'), null)
   })
 
+<<<<<<< HEAD
+  it('should return if a ParenthesisNode is associative with another Node', function () {
+=======
   it('should return if a ParenthesisNode is associative with another Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(1)
 
     const add = new OperatorNode('+', 'add', [a, a])
@@ -135,7 +179,11 @@ describe('operators', function (): void {
     assert.strictEqual(isAssociativeWith(p, sub, 'keep'), null)
   })
 
+<<<<<<< HEAD
+  it('should get the operator of a function name', function () {
+=======
   it('should get the operator of a function name', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(getOperator('multiply'), '*')
     assert.strictEqual(getOperator('ctranspose'), "'")
     assert.strictEqual(getOperator('mod'), 'mod')

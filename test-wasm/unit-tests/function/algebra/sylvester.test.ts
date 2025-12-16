@@ -1,13 +1,23 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test schur decomposition
+=======
 // test schur decomposition
 /**
  * Test for sylvester - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import sinon from 'sinon'
 
+<<<<<<< HEAD
+describe('sylvester', function () {
+  it('should solve sylvester equation of order 5 with Arrays', function () {
+=======
 describe('sylvester', function (): void {
   it('should solve sylvester equation of order 5 with Arrays', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.ok(
       math.norm(
         math.subtract(
@@ -56,7 +66,11 @@ describe('sylvester', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should solve sylvester equation of order 5 with Matrices', function () {
+=======
   it('should solve sylvester equation of order 5 with Matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.ok(
       math.norm(
         math.subtract(
@@ -105,7 +119,11 @@ describe('sylvester', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should work with config legacySubset during deprecation', function () {
+=======
   it('should work with config legacySubset during deprecation', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const math2 = math.create()
     // Add a spy to temporarily disable console.warn
     const warnStub = sinon.stub(console, 'warn')
@@ -113,7 +131,11 @@ describe('sylvester', function (): void {
     math2.config({ legacySubset: true })
 
     // Test legacy syntax with sylvester
+<<<<<<< HEAD
+    // This is not strictly necessary and shoudl be removed after the deprecation period
+=======
     // This is not strictly necessary and should be removed after the deprecation period
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const sylvesterA = [
       [-5.3, -1.4, -0.2, 0.7],
       [-0.4, -1.0, -0.1, -1.2],

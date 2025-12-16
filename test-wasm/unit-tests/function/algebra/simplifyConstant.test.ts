@@ -1,10 +1,24 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test simplifyConstant
+=======
 /**
  * Test for simplifyConstant - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
+<<<<<<< HEAD
+describe('simplifyConstant', function () {
+  const testSimplifyConstant = function (
+    expr,
+    expected,
+    opts = {},
+    simpOpts = {}
+  ) {
+=======
 interface MathNode {
   type: string
   toTex(): string
@@ -17,6 +31,7 @@ describe('simplifyConstant', function (): void {
     opts = {},
     simpOpts = {}
   ): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     let actual = math
       .simplifyConstant(math.parse(expr), simpOpts)
       .toString(opts)
@@ -25,19 +40,32 @@ describe('simplifyConstant', function (): void {
     assert.strictEqual(actual, expected)
   }
 
+<<<<<<< HEAD
+  it('should evaluate constant subexpressions', function () {
+=======
   it('should evaluate constant subexpressions', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     testSimplifyConstant('2+2', '4')
     testSimplifyConstant('x+3*5', 'x + 15')
     testSimplifyConstant('f(sin(0))', 'f(0)')
     testSimplifyConstant('[10/2, y, 8-4]', '[5, y, 4]')
   })
 
+<<<<<<< HEAD
+  it('should by default convert decimals into fractions', function () {
+    testSimplifyConstant('0.5 x', '1 / 2 x')
+  })
+
+  describe('should coalesce constants in a multi-argument expression', function () {
+    it('in the default context', function () {
+=======
   it('should by default convert decimals into fractions', function (): void {
     testSimplifyConstant('0.5 x', '1 / 2 x')
   })
 
   describe('should coalesce constants in a multi-argument expression', function (): void {
     it('in the default context', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       testSimplifyConstant('3 + x + 7 + y', '10 + x + y')
       testSimplifyConstant('3 * x * 7 * y', '21 * x * y')
 
@@ -50,7 +78,11 @@ describe('simplifyConstant', function (): void {
       // constant such as 'foo')
     })
 
+<<<<<<< HEAD
+    it('in non-commutative contexts', function () {
+=======
     it('in non-commutative contexts', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const context = {
         add: { commutative: false },
         multiply: { commutative: false }
@@ -104,7 +136,11 @@ describe('simplifyConstant', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  it('should respect simplify options', function () {
+=======
   it('should respect simplify options', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     testSimplifyConstant(
       '0.5 x',
       '0.5 * x',

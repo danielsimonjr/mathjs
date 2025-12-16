@@ -1,13 +1,22 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for corr - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const corr = math.corr
 const BigNumber = math.BigNumber
 
+<<<<<<< HEAD
+describe('correlation', function () {
+  it('should return the correlation coefficient from array', function () {
+=======
 describe('correlation', function (): void {
   it('should return the correlation coefficient from array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       corr(
         [
@@ -47,7 +56,11 @@ describe('correlation', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the correlation coefficient from matrix', function () {
+=======
   it('should return the correlation coefficient from matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       corr(math.matrix([2, 4, 6, 8]), math.matrix([1, 2, 3, 6])),
       0.9561828874675149
@@ -67,26 +80,46 @@ describe('correlation', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with zero arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with zero arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       corr()
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with an empty array', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with an empty array', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       corr([])
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with different number of arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with different number of arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       corr(math.matrix([2, 4, 6, 8]), math.matrix([1, 2, 3]))
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with number of arguments do not have same size', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with number of arguments do not have same size', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       corr(
         math.matrix([
           [1, 2.2, 3, 4.8, 5],
@@ -97,8 +130,13 @@ describe('correlation', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with different number of arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with different number of arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       corr(
         [
           [1, 2, 3, 4, 5],
@@ -113,8 +151,13 @@ describe('correlation', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with number of arguments do not have same size', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with number of arguments do not have same size', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       corr(
         [
           [1, 2, 3, 4, 5],
@@ -125,8 +168,13 @@ describe('correlation', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with number of arguments do not have same size', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with number of arguments do not have same size', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       corr([1, 2, 3, 4, 5], [1, 2, 3, 4])
     })
   })

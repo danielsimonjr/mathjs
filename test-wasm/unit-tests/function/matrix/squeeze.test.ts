@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for squeeze - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 // test squeeze
 import assert from 'assert'
 
@@ -9,6 +13,10 @@ const squeeze = math.squeeze
 const size = math.size
 const matrix = math.matrix
 
+<<<<<<< HEAD
+describe('squeeze', function () {
+  it('should squeeze an matrix', function () {
+=======
 interface MathNode {
   type: string
   toTex(): string
@@ -16,6 +24,7 @@ interface MathNode {
 
 describe('squeeze', function (): void {
   it('should squeeze an matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     let m = math.ones(matrix([1, 3, 2]))
     assert.deepStrictEqual(size(m), [1, 3, 2])
     assert.deepStrictEqual(size(m.valueOf()), [1, 3, 2])
@@ -30,6 +39,17 @@ describe('squeeze', function (): void {
     assert.deepStrictEqual(squeeze(matrix([[5]])), 5)
   })
 
+<<<<<<< HEAD
+  it('should squeeze an array', function () {
+    assert.deepStrictEqual(squeeze([[2, 3]]), [2, 3])
+  })
+
+  it('should throw an error if called with an invalid number of arguments', function () {
+    assert.throws(function () {
+      squeeze()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+=======
   it('should squeeze an array', function (): void {
     assert.deepStrictEqual(squeeze([[2, 3]]), [2, 3])
   })
@@ -39,11 +59,16 @@ describe('squeeze', function (): void {
       squeeze()
     }, /TypeError: Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       squeeze(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
+  it('should LaTeX squeeze', function () {
+=======
   it('should LaTeX squeeze', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('squeeze([[0],[0]])')
     assert.strictEqual(
       expression.toTex(),

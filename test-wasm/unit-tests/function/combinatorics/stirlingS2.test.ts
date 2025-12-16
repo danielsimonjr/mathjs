@@ -1,10 +1,18 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for stirlingS2 - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const stirlingS2 = math.stirlingS2
 
+<<<<<<< HEAD
+describe('stirlingS2', function () {
+  it('should calculate the number of ways to partition a set of n objects into k non-empty subsets', function () {
+=======
 interface MathNode {
   type: string
   toTex(): string
@@ -12,6 +20,7 @@ interface MathNode {
 
 describe('stirlingS2', function (): void {
   it('should calculate the number of ways to partition a set of n objects into k non-empty subsets', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(stirlingS2(5, 3), 25)
     assert.strictEqual(stirlingS2(0, 0), 1)
     assert.strictEqual(stirlingS2(8, 7), 28)
@@ -22,7 +31,11 @@ describe('stirlingS2', function (): void {
     // and that's about as big as we can go with the number type
   })
 
+<<<<<<< HEAD
+  it('should calculate the stirlingS2 of n items taken k at a time with BigNumbers', function () {
+=======
   it('should calculate the stirlingS2 of n items taken k at a time with BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bn = math.bignumber
     assert.deepStrictEqual(stirlingS2(bn(7), bn(5)), bn(140))
     assert.deepStrictEqual(stirlingS2(bn(8), bn(6)), bn(266))
@@ -38,6 +51,26 @@ describe('stirlingS2', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should not work with non-integer and negative input', function () {
+    assert.throws(function () {
+      stirlingS2(0.5, 3)
+    }, /Non-negative integer value expected/)
+    assert.throws(function () {
+      stirlingS2(-2, 3)
+    }, /Non-negative integer value expected/)
+
+    assert.throws(function () {
+      stirlingS2(3, 5)
+    }, /k must be less than or equal to n in function stirlingS2/)
+    assert.throws(function () {
+      stirlingS2(math.bignumber(3), math.bignumber(5))
+    }, /k must be less than or equal to n in function stirlingS2/)
+    assert.throws(function () {
+      stirlingS2(math.bignumber(3.5), math.bignumber(-3))
+    }, /Non-negative integer value expected/)
+    assert.throws(function () {
+=======
   it('should not work with non-integer and negative input', function (): void {
     assert.throws(function (): void {
       stirlingS2(0.5, 3)
@@ -56,21 +89,35 @@ describe('stirlingS2', function (): void {
       stirlingS2(math.bignumber(3.5), math.bignumber(-3))
     }, /Non-negative integer value expected/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       stirlingS2(math.bignumber(3.5), 1 / 3)
     }, /Non-negative integer value expected/)
   })
 
+<<<<<<< HEAD
+  it('should not work with the wrong number or type of arguments', function () {
+    assert.throws(function () {
+      stirlingS2(5, 3, 2)
+    })
+    assert.throws(function () {
+=======
   it('should not work with the wrong number or type of arguments', function (): void {
     assert.throws(function (): void {
       stirlingS2(5, 3, 2)
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       stirlingS2(true, 'hello world')
     })
   })
 
+<<<<<<< HEAD
+  it('should LaTeX stirlingS2', function () {
+    const expression = math.parse('stirlingS2(3,2)')
+=======
   it('should LaTeX stirlingS2', function (): void {
     const expression = math.parse('stirlingS2(3,2)') as MathNode
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(expression.toTex(), '\\mathrm{S}\\left(3,2\\right)')
   })
 })

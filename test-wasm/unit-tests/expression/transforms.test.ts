@@ -1,15 +1,23 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test transforms
+=======
 /**
  * Test for transforms - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
 import { createMap } from '../../../src/utils/map.js'
 
+<<<<<<< HEAD
+=======
 interface MathNode {
   type: string
   toTex(): string
 }
 
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const parse = math.parse
 
 describe('transforms', function () {
@@ -262,7 +270,11 @@ describe('transforms', function () {
 
       it('forEach should not throw on empty input', function () {
         testCases.forEach(function (testCase) {
+<<<<<<< HEAD
+          assert.doesNotThrow(() => {
+=======
           assert.doesNotThrow((): void => {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
             parseAndEval(`forEach(${testCase}, x > 0)`)
           })
         })
@@ -288,7 +300,11 @@ describe('transforms', function () {
 
       it('forEach should not throw on empty input', function () {
         testCases.forEach(function (testCase) {
+<<<<<<< HEAD
+          assert.doesNotThrow(() => {
+=======
           assert.doesNotThrow((): void => {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
             parseAndEval(`forEach(${testCase}, f(x) = x > 0)`)
           })
         })

@@ -1,15 +1,22 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for help - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDocs.js'
 
+<<<<<<< HEAD
+=======
 interface MathNode {
   type: string
   toTex(): string
 }
 
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 let mathDocs = math.create(math.all)
 const originalConfig = mathDocs.config()
 // Add names to the skipDocs array if they are not meant to have embedded docs
@@ -95,10 +102,17 @@ describe('help', function () {
   })
 
   it('should throw an error on wrong number of arguments', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+      math.help()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       math.help()
     }, /TypeError: Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.help('sin', 2)
     }, /TypeError: Too many arguments/)
   })
@@ -135,12 +149,26 @@ describe('help', function () {
   })
 
   it('should not allow accessing unsafe properties ', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.help('constructor')
     }, /No access/)
   })
 
   it('should throw an error when no help is found', function () {
+<<<<<<< HEAD
+    // assert.throws(function () {math.help(undefined)}, /No documentation found/);
+    assert.throws(function () {
+      math.help(new Date())
+    }, /No documentation found/)
+    assert.throws(function () {
+      math.help('nonExistingFunction')
+    }, /No documentation found/)
+    assert.throws(function () {
+=======
     // assert.throws(function (): void {math.help(undefined)}, /No documentation found/);
     assert.throws(function (): void {
       math.help(new Date())
@@ -149,6 +177,7 @@ describe('help', function () {
       math.help('nonExistingFunction')
     }, /No documentation found/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.help('addScalar')
     }, /No documentation found/)
   })

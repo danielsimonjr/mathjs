@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for min - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const BigNumber = math.BigNumber
@@ -10,6 +14,10 @@ const fraction = math.fraction
 const min = math.min
 const unit = math.unit
 
+<<<<<<< HEAD
+describe('min', function () {
+  it('should return the min between several numbers', function () {
+=======
 interface MathNode {
   type: string
   toTex(): string
@@ -17,6 +25,7 @@ interface MathNode {
 
 describe('min', function (): void {
   it('should return the min between several numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(min(5), 5)
     assert.strictEqual(min(1, 3), 1)
     assert.strictEqual(min(3, 1), 1)
@@ -24,12 +33,20 @@ describe('min', function (): void {
     assert.strictEqual(min(0, 0, 0, 0), 0)
   })
 
+<<<<<<< HEAD
+  it('should return the min of strings by their numerical value', function () {
+=======
   it('should return the min of strings by their numerical value', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(min('10', '3', '4', '2'), 2)
     assert.strictEqual(min('10'), 10)
   })
 
+<<<<<<< HEAD
+  it('should return the max of strings by their numerical value (with BigNumber config)', function () {
+=======
   it('should return the max of strings by their numerical value (with BigNumber config)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bigmath = math.create({ number: 'BigNumber' })
     assert.deepStrictEqual(
       bigmath.min('10', '3', '4', '2'),
@@ -38,7 +55,11 @@ describe('min', function (): void {
     assert.deepStrictEqual(bigmath.min('10'), bigmath.bignumber(10))
   })
 
+<<<<<<< HEAD
+  it('should return the max of strings by their numerical value (with bigint config)', function () {
+=======
   it('should return the max of strings by their numerical value (with bigint config)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bigmath = math.create({ number: 'bigint' })
     assert.strictEqual(bigmath.min('10', '3', '4', '2'), 2n)
     assert.strictEqual(bigmath.min('10'), 10n)
@@ -46,11 +67,19 @@ describe('min', function (): void {
     assert.strictEqual(bigmath.min('2.5', '4'), 2.5) // fallback to number
   })
 
+<<<<<<< HEAD
+  it('should return the min element from a vector', function () {
+    assert.strictEqual(min([1, 3, 5, -5, 2]), -5)
+  })
+
+  it('should return the min of big numbers', function () {
+=======
   it('should return the min element from a vector', function (): void {
     assert.strictEqual(min([1, 3, 5, -5, 2]), -5)
   })
 
   it('should return the min of big numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       min(
         new BigNumber(1),
@@ -63,11 +92,19 @@ describe('min', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the min element from a vector array', function () {
+    assert.strictEqual(min(new DenseMatrix([1, 3, 5, -5, 2])), -5)
+  })
+
+  it('should return the max element from a 2d matrix', function () {
+=======
   it('should return the min element from a vector array', function (): void {
     assert.strictEqual(min(new DenseMatrix([1, 3, 5, -5, 2])), -5)
   })
 
   it('should return the max element from a 2d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       min([
         [1, 4, 7],
@@ -88,7 +125,11 @@ describe('min', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return a reduced n-1 matrix from a n matrix', function () {
+=======
   it('should return a reduced n-1 matrix from a n matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       min(
         [
@@ -192,7 +233,11 @@ describe('min', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return NaN if any of the inputs contains NaN', function () {
+=======
   it('should return NaN if any of the inputs contains NaN', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert(isNaN(min([NaN])))
     assert(isNaN(min([1, NaN])))
     assert(isNaN(min([NaN, 1])))
@@ -221,7 +266,11 @@ describe('min', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the smallest of mixed types', function () {
+=======
   it('should return the smallest of mixed types', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(min(1n, 3, new BigNumber(7), fraction(5, 4)), 1n)
     assert.deepStrictEqual(min(3n, 1, new BigNumber(7), fraction(5, 4)), 1)
     const big1 = new BigNumber(1)
@@ -231,39 +280,88 @@ describe('min', function (): void {
     assert.strictEqual(min(3n, 7, big1, threeq, -Infinity), -Infinity)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when called multiple arrays or matrices', function () {
+    assert.throws(function () {
+      min([1, 2], [3, 4])
+    }, /Scalar values expected/)
+    assert.throws(function () {
+=======
   it('should throw an error when called multiple arrays or matrices', function (): void {
     assert.throws(function (): void {
       min([1, 2], [3, 4])
     }, /Scalar values expected/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       min(math.matrix([1, 2]), math.matrix([3, 4]))
     }, /Scalar values expected/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called a dimension out of range', function () {
+    assert.throws(function () {
+      min([1, 2, 3], -1)
+    }, /IndexError: Index out of range \(-1 < 0\)/)
+    assert.throws(function () {
+=======
   it('should throw an error if called a dimension out of range', function (): void {
     assert.throws(function (): void {
       min([1, 2, 3], -1)
     }, /IndexError: Index out of range \(-1 < 0\)/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       min([1, 2, 3], 1)
     }, /IndexError: Index out of range \(1 > 0\)/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid number of arguments', function () {
+    assert.throws(function () {
+      min()
+    })
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid number of arguments', function (): void {
     assert.throws(function (): void {
       min()
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       min([], 2, 3)
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with an empty array', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with an empty array', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       min([])
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid type of arguments', function () {
+    assert.throws(function () {
+      min(2, new Complex(2, 5))
+    }, /TypeError: Cannot calculate min, no ordering relation is defined for complex numbers/)
+    assert.throws(function () {
+      min(new Complex(2, 3), new Complex(2, 1))
+    }, /TypeError: Cannot calculate min, no ordering relation is defined for complex numbers/)
+
+    assert.throws(function () {
+      min([[2, undefined, 4]])
+    }, /TypeError: Cannot calculate min, unexpected type of argument/)
+    assert.throws(function () {
+      min([[2, new Date(), 4]])
+    }, /TypeError: Cannot calculate min, unexpected type of argument/)
+    assert.throws(function () {
+      min([2, null, 4])
+    }, /TypeError: Cannot calculate min, unexpected type of argument/)
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid type of arguments', function (): void {
     assert.throws(function (): void {
       min(2, new Complex(2, 5))
@@ -282,6 +380,7 @@ describe('min', function (): void {
       min([2, null, 4])
     }, /TypeError: Cannot calculate min, unexpected type of argument/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       min(
         [
           [2, 5],
@@ -291,16 +390,28 @@ describe('min', function (): void {
         0
       )
     }, /TypeError: Cannot calculate min, unexpected type of argument/)
+<<<<<<< HEAD
+    assert.throws(function () {
+      min('a', 'b')
+    }, /Error: Cannot convert "a" to a number/)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       min('a', 'b')
     }, /Error: Cannot convert "a" to a number/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       min('a')
     }, /Error: Cannot convert "a" to a number/)
   })
 
+<<<<<<< HEAD
+  it('should LaTeX min', function () {
+    const expression = math.parse('min(1,2,3)')
+=======
   it('should LaTeX min', function (): void {
     const expression = math.parse('min(1,2,3)') as MathNode
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(expression.toTex(), '\\min\\left(1,2,3\\right)')
   })
 })

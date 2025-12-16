@@ -90,7 +90,7 @@ export function matrixMultiply(
 | **Set** | `operations.ts` | createSet, setUnion, setIntersect, setDifference, setSymDifference, setIsSubset, setPowerset |
 | **Geometry** | `operations.ts` | distance2D, distance3D, manhattanDistance, cross3D, dot3D |
 | **Special** | `functions.ts` | erf, erfc, gamma, lgamma, beta, zeta, besselJ0, besselJ1, besselY0, besselY1 |
-| **Statistics** | `basic.ts` | sum, mean, min, max, prod, variance, std, median, mode, range, covariance, correlation, skewness, kurtosis, quantile, quantileSeq, mad, interquartileRange, zscore, percentile, medianUnsorted, weightedMean, rms, meanAbsoluteDeviation, coefficientOfVariation, standardError, sumOfSquares |
+| **Statistics** | `basic.ts` | sum, mean, min, max, prod, variance, std, median, mode, range, covariance, correlation, skewness, kurtosis |
 | **Combinatorics** | `basic.ts` | factorial, permutations, combinations, combinationsWithRep, stirlingS2, bellNumbers, catalan, fibonacci, lucas |
 | **Signal** | `fft.ts` | fft, ifft, ifft2d, isPowerOf2, powerSpectrum, magnitudeSpectrum, phaseSpectrum, crossCorrelation, autoCorrelation |
 | **Signal** | `processing.ts` | freqzUniform, magnitude, phase, polyMultiply |
@@ -108,7 +108,7 @@ export function matrixMultiply(
 | **Plain** | `operations.ts` | Comprehensive scalar operations mirror |
 
 ### Test Coverage
-- **Pre-compile tests**: 52 individual tests passing across 38 test suites
+- **Pre-compile tests**: 47 individual tests passing across 33 test suites
 - **All modules tested** via `test-wasm/unit-tests/wasm/pre-compile.test.ts`
 - **WASM validation**: All modules pass AssemblyScript compilation check
 
@@ -226,38 +226,30 @@ Sparse matrix algorithms, eigenvalue problems.
 - [x] Set operations
 - [x] Pre-compile test infrastructure
 
-### Phase 2: Matrix Basics (Week 3-4) ✅ COMPLETE
-- [x] `matrix/basic.ts` - All basic matrix operations:
-  - zeros, ones, identity, fill, diag, diagFromVector
-  - trace, traceRect, transpose, flatten, reshape
-  - getRow, getColumn, setRow, setColumn, swapRows
-  - dotMultiply, dotDivide, dotPow, abs, sqrt, square
-  - sum, prod, min, max, argmin, argmax, sumRows, sumCols
-  - concatHorizontal, concatVertical
+### Phase 2: Matrix Basics (Week 3-4)
+- [ ] `matrix/trace.ts` - Diagonal sum
+- [ ] `matrix/transpose.ts` - Transposition
+- [ ] `matrix/identity.ts` - Identity matrix
+- [ ] `matrix/zeros.ts` - Zero matrix
+- [ ] `matrix/ones.ts` - Ones matrix
+- [ ] `matrix/diag.ts` - Diagonal operations
+- [ ] `matrix/flatten.ts` - Flatten to 1D
+- [ ] `matrix/reshape.ts` - Reshape dimensions
 
-### Phase 3: Linear Algebra Core (Week 5-7) ✅ COMPLETE
-- [x] `matrix/linalg.ts` - Linear algebra operations:
-  - det (determinant via LU decomposition)
-  - inv, inv2x2, inv3x3 (matrix inverse)
-  - dot, cross, outer (vector products)
-  - kron (Kronecker product)
-  - norm1, norm2, normP, normInf, normFro (vector norms)
-  - matrixNorm1, matrixNormInf (matrix norms)
-  - normalize, solve, rank, cond1, condInf
-- [x] `signal/fft.ts` - Enhanced FFT functions:
-  - ifft, ifft2d (inverse FFT)
-  - powerSpectrum, magnitudeSpectrum, phaseSpectrum
-  - crossCorrelation, autoCorrelation
+### Phase 3: Linear Algebra Core (Week 5-7)
+- [ ] `matrix/det.ts` - Determinant
+- [ ] `matrix/inv.ts` - Matrix inverse
+- [ ] `matrix/dot.ts` - Dot product (vectors)
+- [ ] `matrix/cross.ts` - Cross product
+- [ ] `matrix/kron.ts` - Kronecker product
+- [ ] `arithmetic/norm.ts` - Vector/matrix norms
+- [ ] `signal/ifft.ts` - Inverse FFT
 
-### Phase 4: Advanced Statistics (Week 8-9) ✅ COMPLETE
-- [x] `statistics/basic.ts` - Enhanced statistics:
-  - quantileSeq (multiple quantiles)
-  - interquartileRange (IQR)
-  - zscore (standardization)
-  - percentile, medianUnsorted
-  - weightedMean, rms
-  - meanAbsoluteDeviation, coefficientOfVariation
-  - standardError, sumOfSquares
+### Phase 4: Advanced Statistics (Week 8-9)
+- [ ] `statistics/variance.ts` - Variance calculation
+- [ ] `statistics/std.ts` - Standard deviation
+- [ ] `statistics/quantileSeq.ts` - Quantiles/percentiles
+- [ ] `statistics/mad.ts` - Median absolute deviation
 
 ### Phase 5: Advanced Solvers (Week 10-12)
 - [ ] `algebra/solver/lusolve.ts` - LU system solve

@@ -1,6 +1,11 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test IndexNode
+=======
 /**
  * Test for IndexNode - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -10,19 +15,41 @@ const SymbolNode = math.SymbolNode
 const IndexNode = math.IndexNode
 const RangeNode = math.RangeNode
 
+<<<<<<< HEAD
+describe('IndexNode', function () {
+  it('should create a IndexNode', function () {
+=======
 describe('IndexNode', function (): void {
   it('should create a IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new IndexNode([])
     assert(n instanceof IndexNode)
     assert(n instanceof Node)
     assert.strictEqual(n.type, 'IndexNode')
   })
 
+<<<<<<< HEAD
+  it('should have isIndexNode', function () {
+=======
   it('should have isIndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const node = new IndexNode([])
     assert(node.isIndexNode)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when calling with wrong arguments', function () {
+    assert.throws(function () {
+      console.log(new IndexNode())
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new IndexNode('a'))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new IndexNode(new Node()))
+    }, TypeError)
+    assert.throws(function () {
+=======
   it('should throw an error when calling with wrong arguments', function (): void {
     assert.throws(function (): void {
       console.log(new IndexNode())
@@ -34,17 +61,27 @@ describe('IndexNode', function (): void {
       console.log(new IndexNode(new Node()))
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       console.log(new IndexNode([new Node(), 3]))
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when calling without new operator', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when calling without new operator', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       IndexNode([])
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should filter an IndexNode', function () {
+=======
   it('should filter an IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
     const n = new IndexNode([b, c])
@@ -81,7 +118,11 @@ describe('IndexNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should filter an empty IndexNode', function () {
+=======
   it('should filter an empty IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new IndexNode([])
 
     assert.deepStrictEqual(
@@ -98,7 +139,11 @@ describe('IndexNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should run forEach on an IndexNode', function () {
+=======
   it('should run forEach on an IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode(2n)
     const c = new ConstantNode(1n)
     const n = new IndexNode([b, c])
@@ -117,7 +162,11 @@ describe('IndexNode', function (): void {
     assert.deepStrictEqual(paths, ['dimensions[0]', 'dimensions[1]'])
   })
 
+<<<<<<< HEAD
+  it('should map an IndexNode', function () {
+=======
   it('should map an IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
     const n = new IndexNode([b, c])
@@ -143,7 +192,11 @@ describe('IndexNode', function (): void {
     assert.deepStrictEqual(f.dimensions[1], e)
   })
 
+<<<<<<< HEAD
+  it('should copy dotNotation property when mapping an IndexNode', function () {
+=======
   it('should copy dotNotation property when mapping an IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode('objprop')
     const n = new IndexNode([b], true)
     const f = n.map(function (node, _path, _parent) {
@@ -153,19 +206,31 @@ describe('IndexNode', function (): void {
     assert.strictEqual(n.dotNotation, f.dotNotation)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when the map callback does not return a node', function () {
+=======
   it('should throw an error when the map callback does not return a node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
     const n = new IndexNode([b, c])
 
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       n.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
+<<<<<<< HEAD
+  it('should transform an IndexNodes (nested) parameters', function () {
+=======
   it('should transform an IndexNodes (nested) parameters', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
     const n = new IndexNode([b, c])
@@ -180,7 +245,11 @@ describe('IndexNode', function (): void {
     assert.deepStrictEqual(f.dimensions[1], e)
   })
 
+<<<<<<< HEAD
+  it('should transform an IndexNode itself', function () {
+=======
   it('should transform an IndexNode itself', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
     const n = new IndexNode([b, c])
@@ -194,7 +263,11 @@ describe('IndexNode', function (): void {
     assert.deepStrictEqual(f, e)
   })
 
+<<<<<<< HEAD
+  it('should clone an IndexNode', function () {
+=======
   it('should clone an IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode(2)
     const c = new ConstantNode(1)
     const n = new IndexNode([b, c])
@@ -208,7 +281,11 @@ describe('IndexNode', function (): void {
     assert.strictEqual(d.dimensions[1], n.dimensions[1])
   })
 
+<<<<<<< HEAD
+  it('should clone an IndexNode with dotNotation property', function () {
+=======
   it('should clone an IndexNode with dotNotation property', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode('objprop')
     const n = new IndexNode([b], true)
     const f = n.clone()
@@ -216,7 +293,11 @@ describe('IndexNode', function (): void {
     assert.strictEqual(n.dotNotation, f.dotNotation)
   })
 
+<<<<<<< HEAD
+  it('test equality another Node', function () {
+=======
   it('test equality another Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new IndexNode([new ConstantNode(2), new ConstantNode(1)])
     const b = new IndexNode([new ConstantNode(2), new ConstantNode(1)])
     const c = new IndexNode([new ConstantNode(2)])
@@ -237,7 +318,11 @@ describe('IndexNode', function (): void {
     assert.strictEqual(a.equals(f), false)
   })
 
+<<<<<<< HEAD
+  it('should stringify an IndexNode', function () {
+=======
   it('should stringify an IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const dimensions = [new ConstantNode(2), new ConstantNode(1)]
 
     const n = new IndexNode(dimensions)
@@ -247,14 +332,22 @@ describe('IndexNode', function (): void {
     assert.strictEqual(n2.toString(), '[]')
   })
 
+<<<<<<< HEAD
+  it('should stringify an IndexNode with dot notation', function () {
+=======
   it('should stringify an IndexNode with dot notation', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const dimensions = [new ConstantNode('a')]
 
     const n = new IndexNode(dimensions, true)
     assert.strictEqual(n.toString(), '.a')
   })
 
+<<<<<<< HEAD
+  it('should stringify an IndexNode with custom toString', function () {
+=======
   it('should stringify an IndexNode with custom toString', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'IndexNode') {
@@ -279,7 +372,11 @@ describe('IndexNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should stringify an IndexNode with custom toHTML', function () {
+=======
   it('should stringify an IndexNode with custom toHTML', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'IndexNode') {
@@ -304,7 +401,11 @@ describe('IndexNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('toJSON and fromJSON', function () {
+=======
   it('toJSON and fromJSON', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const prop = new ConstantNode('prop')
     const node = new IndexNode([prop], true)
 
@@ -320,7 +421,11 @@ describe('IndexNode', function (): void {
     assert.deepStrictEqual(parsed, node)
   })
 
+<<<<<<< HEAD
+  it('should LaTeX an IndexNode', function () {
+=======
   it('should LaTeX an IndexNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const dimensions = [new ConstantNode(2), new ConstantNode(1)]
 
     const n = new IndexNode(dimensions)
@@ -330,14 +435,22 @@ describe('IndexNode', function (): void {
     assert.strictEqual(n2.toTex(), '_{}')
   })
 
+<<<<<<< HEAD
+  it('should LaTeX an IndexNode with dot notation', function () {
+=======
   it('should LaTeX an IndexNode with dot notation', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const dimensions = [new ConstantNode('a')]
 
     const n = new IndexNode(dimensions, true)
     assert.strictEqual(n.toString(), '.a')
   })
 
+<<<<<<< HEAD
+  it('should LaTeX an IndexNode with custom toTex', function () {
+=======
   it('should LaTeX an IndexNode with custom toTex', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'IndexNode') {

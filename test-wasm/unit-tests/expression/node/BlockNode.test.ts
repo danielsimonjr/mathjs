@@ -1,6 +1,11 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test BlockNode
+=======
 /**
  * Test for BlockNode - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
@@ -13,25 +18,52 @@ const OperatorNode = math.OperatorNode
 const BlockNode = math.BlockNode
 const ResultSet = math.ResultSet
 
+<<<<<<< HEAD
+describe('BlockNode', function () {
+  it('should create a BlockNode', function () {
+=======
 describe('BlockNode', function (): void {
   it('should create a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new BlockNode([])
     assert(n instanceof BlockNode)
     assert(n instanceof Node)
     assert.strictEqual(n.type, 'BlockNode')
   })
 
+<<<<<<< HEAD
+  it('should have isBlockNode', function () {
+=======
   it('should have isBlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const node = new BlockNode([])
     assert(node.isBlockNode)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when calling without new operator', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when calling without new operator', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       BlockNode()
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when adding invalid blocks', function () {
+    assert.throws(function () {
+      console.log(new BlockNode())
+    }, /Array expected/)
+    assert.throws(function () {
+      console.log(new BlockNode([2]))
+    }, /Property "node" must be a Node/)
+    assert.throws(function () {
+      console.log(new BlockNode([{ node: 2, visible: true }]))
+    }, /Property "node" must be a Node/)
+    assert.throws(function () {
+=======
   it('should throw an error when adding invalid blocks', function (): void {
     assert.throws(function (): void {
       console.log(new BlockNode())
@@ -43,11 +75,16 @@ describe('BlockNode', function (): void {
       console.log(new BlockNode([{ node: 2, visible: true }]))
     }, /Property "node" must be a Node/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       console.log(new BlockNode([{ node: new Node(), visible: 2 }]))
     }, /Property "visible" must be a boolean/)
   })
 
+<<<<<<< HEAD
+  it('should compile and evaluate a BlockNode', function () {
+=======
   it('should compile and evaluate a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new BlockNode([
       {
         node: new ConstantNode(5),
@@ -68,13 +105,21 @@ describe('BlockNode', function (): void {
     assert.deepStrictEqual(scope, { foo: 3 })
   })
 
+<<<<<<< HEAD
+  it('expressions should be visible by default', function () {
+=======
   it('expressions should be visible by default', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new BlockNode([{ node: new ConstantNode(5) }])
 
     assert.deepStrictEqual(n.compile().evaluate(), new ResultSet([5]))
   })
 
+<<<<<<< HEAD
+  it('should filter a BlockNode', function () {
+=======
   it('should filter a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(5)
     const b2 = new ConstantNode(3)
     const foo = new SymbolNode('foo')
@@ -118,7 +163,11 @@ describe('BlockNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should run forEach on a BlockNode', function () {
+=======
   it('should run forEach on a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // [x, 2]
     const x = new SymbolNode('x')
     const two = new ConstantNode(2)
@@ -139,7 +188,11 @@ describe('BlockNode', function (): void {
     assert.deepStrictEqual(paths, ['blocks[0].node', 'blocks[1].node'])
   })
 
+<<<<<<< HEAD
+  it('should map a BlockNode', function () {
+=======
   it('should map a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // [x, 2]
     const x = new SymbolNode('x')
     const two = new ConstantNode(2)
@@ -170,20 +223,32 @@ describe('BlockNode', function (): void {
     assert.strictEqual(e.blocks[1].node.args[1], x)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when the map callback does not return a node', function () {
+=======
   it('should throw an error when the map callback does not return a node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const x = new SymbolNode('x')
     const two = new ConstantNode(2)
     const c = new OperatorNode('+', 'add', [two, x])
     const a = new BlockNode([{ node: x }, { node: c }])
 
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       a.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
+<<<<<<< HEAD
+  it('should transform a BlockNodes parameters', function () {
+=======
   it('should transform a BlockNodes parameters', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // [x, 2]
     const b = new SymbolNode('x')
     const c = new ConstantNode(2)
@@ -199,7 +264,11 @@ describe('BlockNode', function (): void {
     assert.deepStrictEqual(e.blocks[1].node, c)
   })
 
+<<<<<<< HEAD
+  it('should transform a BlockNode itself', function () {
+=======
   it('should transform a BlockNode itself', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // [x, 2]
     const a = new BlockNode([])
 
@@ -212,7 +281,11 @@ describe('BlockNode', function (): void {
     assert.deepStrictEqual(e, d)
   })
 
+<<<<<<< HEAD
+  it('should traverse a BlockNode', function () {
+=======
   it('should traverse a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new ConstantNode(1)
     const b = new ConstantNode(2)
     const c = new BlockNode([
@@ -248,7 +321,11 @@ describe('BlockNode', function (): void {
     assert.strictEqual(count, 3)
   })
 
+<<<<<<< HEAD
+  it('should clone a BlockNode', function () {
+=======
   it('should clone a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // [x, 2]
     const b = new SymbolNode('x')
     const c = new ConstantNode(2)
@@ -265,7 +342,11 @@ describe('BlockNode', function (): void {
     assert.strictEqual(a.blocks[1].node, d.blocks[1].node)
   })
 
+<<<<<<< HEAD
+  it('test equality another Node', function () {
+=======
   it('test equality another Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new BlockNode([
       { node: new SymbolNode('x') },
       { node: new ConstantNode(2) }
@@ -296,7 +377,11 @@ describe('BlockNode', function (): void {
     assert.strictEqual(a.equals(e), false)
   })
 
+<<<<<<< HEAD
+  it('should stringify a BlockNode', function () {
+=======
   it('should stringify a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new BlockNode([
       { node: new ConstantNode(5), visible: true },
       {
@@ -309,7 +394,11 @@ describe('BlockNode', function (): void {
     assert.strictEqual(n.toString(), '5\nfoo = 3;\nfoo')
   })
 
+<<<<<<< HEAD
+  it('should stringify a BlockNode with custom toString', function () {
+=======
   it('should stringify a BlockNode with custom toString', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'BlockNode') {
@@ -335,7 +424,11 @@ describe('BlockNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should stringify a BlockNode with custom toHML', function () {
+=======
   it('should stringify a BlockNode with custom toHML', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'BlockNode') {
@@ -361,7 +454,11 @@ describe('BlockNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('toJSON and fromJSON', function () {
+=======
   it('toJSON and fromJSON', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = new ConstantNode(1)
     const c = new ConstantNode(2)
 
@@ -381,7 +478,11 @@ describe('BlockNode', function (): void {
     assert.deepStrictEqual(parsed, node)
   })
 
+<<<<<<< HEAD
+  it('should LaTeX a BlockNode', function () {
+=======
   it('should LaTeX a BlockNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new BlockNode([
       { node: new ConstantNode(5), visible: true },
       {
@@ -394,7 +495,11 @@ describe('BlockNode', function (): void {
     assert.strictEqual(n.toTex(), '5\\;\\;\n foo=3;\\;\\;\n foo')
   })
 
+<<<<<<< HEAD
+  it('should LaTeX a BlockNode with custom toTex', function () {
+=======
   it('should LaTeX a BlockNode with custom toTex', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'BlockNode') {

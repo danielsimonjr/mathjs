@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test fix
+import assert from 'assert'
+
+import math from '../../../../src/defaultInstance.ts'
+=======
 /**
  * Test for fix - AssemblyScript-friendly TypeScript
  */
@@ -9,6 +16,7 @@ interface MathNode {
   toTex(): string
 }
 
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const bignumber = math.bignumber
 const complex = math.complex
 const fraction = math.fraction
@@ -17,13 +25,22 @@ const sparse = math.sparse
 const unit = math.unit
 const fix = math.fix
 
+<<<<<<< HEAD
+describe('fix', function () {
+  it('should round booleans correctly', function () {
+=======
 describe('fix', function (): void {
   it('should round booleans correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(fix(true), 1)
     assert.strictEqual(fix(false), 0)
   })
 
+<<<<<<< HEAD
+  it('should round numbers correctly', function () {
+=======
   it('should round numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(fix(0), 0)
     assert.strictEqual(fix(1), 1)
     assert.strictEqual(fix(1.3), 1)
@@ -37,7 +54,11 @@ describe('fix', function (): void {
     assert.strictEqual(fix(math.pi), 3)
   })
 
+<<<<<<< HEAD
+  it('should round numbers with a given number of decimals', function () {
+=======
   it('should round numbers with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(fix(0, 5), 0)
     assert.strictEqual(fix(1, 5), 1)
     assert.strictEqual(fix(1.3, 5), 1.3)
@@ -57,13 +78,21 @@ describe('fix', function (): void {
     assert.deepStrictEqual(fix(-1.888, bignumber(2)), bignumber(-1.88))
   })
 
+<<<<<<< HEAD
+  it('should be safe to call with a bigint', function () {
+=======
   it('should be safe to call with a bigint', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = 12345678901234567890n
     assert.strictEqual(fix(b), b)
     assert.strictEqual(fix(b, 7), b)
   })
 
+<<<<<<< HEAD
+  it('should round big numbers correctly', function () {
+=======
   it('should round big numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(fix(bignumber(0)), bignumber(0))
     assert.deepStrictEqual(fix(bignumber(1)), bignumber(1))
     assert.deepStrictEqual(fix(bignumber(1.3)), bignumber(1))
@@ -76,7 +105,11 @@ describe('fix', function (): void {
     assert.deepStrictEqual(fix(bignumber(-2.1)), bignumber(-2))
   })
 
+<<<<<<< HEAD
+  it('should round big numbers with a given number of decimals', function () {
+=======
   it('should round big numbers with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(fix(bignumber(0), 5), bignumber(0))
     assert.deepStrictEqual(fix(bignumber(1), 5), bignumber(1))
     assert.deepStrictEqual(fix(bignumber(1.315), 2), bignumber(1.31))
@@ -97,7 +130,11 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should round complex numbers correctly', function () {
+=======
   it('should round complex numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // complex
     assert.deepStrictEqual(fix(complex(0, 0)), complex(0, 0))
     assert.deepStrictEqual(fix(complex(1.3, 1.8)), complex(1, 1))
@@ -105,7 +142,11 @@ describe('fix', function (): void {
     assert.deepStrictEqual(fix(complex(-1.3, -1.8)), complex(-1, -1))
   })
 
+<<<<<<< HEAD
+  it('should round complex numbers with a given number of decimals', function () {
+=======
   it('should round complex numbers with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(fix(complex(0, 0), 5), complex(0, 0))
     assert.deepStrictEqual(fix(complex(1.335, 2.835), 2), complex(1.33, 2.83))
     assert.deepStrictEqual(fix(math.i, 5), complex(0, 1))
@@ -126,7 +167,11 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should round fractions correctly', function () {
+=======
   it('should round fractions correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = fraction('2/3')
     assert(fix(a) instanceof math.Fraction)
     assert.strictEqual(a.toString(), '0.(6)')
@@ -143,7 +188,11 @@ describe('fix', function (): void {
     assert.strictEqual(fix(fraction(-2.1)).toString(), '-2')
   })
 
+<<<<<<< HEAD
+  it('should round fractions with a given number of decimals', function () {
+=======
   it('should round fractions with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = fraction('2/3')
     assert(fix(a, 3) instanceof math.Fraction)
     assert.strictEqual(a.toString(), '0.(6)')
@@ -165,7 +214,11 @@ describe('fix', function (): void {
     assert.strictEqual(fix(fraction(-1.381), bignumber(2)).toString(), '-1.38')
   })
 
+<<<<<<< HEAD
+  it('should gracefully handle round-off errors', function () {
+=======
   it('should gracefully handle round-off errors', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(fix(3.0000000000000004), 3)
     assert.strictEqual(fix(7.999999999999999), 8)
     assert.strictEqual(fix(-3.0000000000000004), -3)
@@ -176,7 +229,11 @@ describe('fix', function (): void {
     assert.strictEqual(fix(-799999.9999999999), -800000)
   })
 
+<<<<<<< HEAD
+  it('should gracefully handle round-off errors with bignumbers', function () {
+=======
   it('should gracefully handle round-off errors with bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(fix(bignumber(3.0000000000000004)), bignumber(3))
     assert.deepStrictEqual(fix(bignumber(7.999999999999999)), bignumber(8))
     assert.deepStrictEqual(fix(bignumber(-3.0000000000000004)), bignumber(-3))
@@ -193,7 +250,11 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should gracefully handle round-off errors with given number of decimals', function () {
+=======
   it('should gracefully handle round-off errors with given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(fix(3.0000000000000004, 3), 3)
     assert.strictEqual(fix(7.999999999999999, 3), 8)
     assert.strictEqual(fix(-3.0000000000000004, 3), -3)
@@ -204,7 +265,11 @@ describe('fix', function (): void {
     assert.strictEqual(fix(-799999.9999999999, 3), -800000)
   })
 
+<<<<<<< HEAD
+  it('should fix units', function () {
+=======
   it('should fix units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(fix(unit('5.99 inch'), unit('inch')), unit('5 inch'))
     assert.deepStrictEqual(
       fix(unit('3.12345 cm'), 3, unit('cm')),
@@ -240,20 +305,36 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error if used with a unit without valueless unit', function () {
+    assert.throws(
+      function () {
+=======
   it('should throw an error if used with a unit without valueless unit', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         fix(unit('5cm'))
       },
       TypeError,
       'Function fix(unit) not supported'
     )
+<<<<<<< HEAD
+    assert.throws(
+      function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         fix(unit('5cm'), 2)
       },
       TypeError,
       'Function fix(unit) not supported'
     )
+<<<<<<< HEAD
+    assert.throws(
+      function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         fix(unit('5cm'), bignumber(2))
       },
       TypeError,
@@ -261,17 +342,31 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error if used with a unit with a second unit that is not valueless', function () {
+    assert.throws(function () {
+      fix(unit('2 inch'), 1, unit('10 cm'))
+    }, Error)
+    assert.throws(function () {
+=======
   it('should throw an error if used with a unit with a second unit that is not valueless', function (): void {
     assert.throws(function (): void {
       fix(unit('2 inch'), 1, unit('10 cm'))
     }, Error)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       fix(unit('2 inch'), unit('10 cm'))
     }, Error)
   })
 
+<<<<<<< HEAD
+  it('should throw an error with a unit', function () {
+    assert.throws(
+      function () {
+=======
   it('should throw an error with a unit', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         fix(unit('5cm'))
       },
       TypeError,
@@ -279,9 +374,16 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error on unit as parameter', function () {
+    // unit
+    assert.throws(
+      function () {
+=======
   it('should throw an error on unit as parameter', function (): void {
     // unit
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         fix(unit('5cm'))
       },
       TypeError,
@@ -289,14 +391,22 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should convert a string to a number', function () {
+=======
   it('should convert a string to a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(fix('1.81'), 1)
     assert.strictEqual(fix('1.815', '2').toString(), '1.81')
     assert.strictEqual(fix('1.815', 2).toString(), '1.81')
     assert.strictEqual(fix(1.815, '2').toString(), '1.81')
   })
 
+<<<<<<< HEAD
+  it('should correctly round all values of a matrix element-wise', function () {
+=======
   it('should correctly round all values of a matrix element-wise', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // matrix, array, range
     assert.deepStrictEqual(fix([1.2, 3.4, 5.6, 7.8, 10.0]), [1, 3, 5, 7, 10])
     assert.deepStrictEqual(
@@ -305,7 +415,11 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should round all values of a matrix element-wise with a given number of decimals', function () {
+=======
   it('should round all values of a matrix element-wise with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       fix([1.234, 3.456, 5.678, 7.891, 10.01], 2),
       [1.23, 3.45, 5.67, 7.89, 10.01]
@@ -325,7 +439,11 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should round correctly with decimals provided in an array', function () {
+=======
   it('should round correctly with decimals provided in an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       fix(1.234567, [0, 1, 2, 3, 4]),
       [1, 1.2, 1.23, 1.234, 1.2345]
@@ -340,7 +458,11 @@ describe('fix', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should round correctly with decimals provided in a matrix', function () {
+=======
   it('should round correctly with decimals provided in a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       fix(1.234567, matrix([0, 1, 2, 3, 4])),
       matrix([1, 1.2, 1.23, 1.234, 1.2345])
@@ -356,25 +478,45 @@ describe('fix', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error in case of invalid number of arguments', function () {
+    assert.throws(function () {
+      fix()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+=======
   it('should throw an error in case of invalid number of arguments', function (): void {
     assert.throws(function (): void {
       fix()
     }, /TypeError: Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       fix(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
+  it('should throw an in case of wrong type of arguments', function () {
+    assert.throws(function () {
+      fix(null)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+=======
   it('should throw an in case of wrong type of arguments', function (): void {
     assert.throws(function (): void {
       fix(null)
     }, /TypeError: Unexpected type of argument/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       fix(1, null)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
+  it('should LaTeX fix', function () {
+=======
   it('should LaTeX fix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('fix(0.6)')
     assert.strictEqual(expression.toTex(), '\\mathrm{fix}\\left(0.6\\right)')
   })

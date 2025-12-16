@@ -1,6 +1,11 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test parse
+=======
 /**
  * Test for parse - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../src/defaultInstance.ts'
 import {
@@ -12,11 +17,14 @@ import { PartitionedMap } from '../../../src/utils/map.js'
 
 import { approxDeepEqual, approxEqual } from '../../../tools/approx.js'
 
+<<<<<<< HEAD
+=======
 interface MathNode {
   type: string
   toTex(): string
 }
 
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const parse = math.parse
 const ConditionalNode = math.ConditionalNode
 const ConstantNode = math.ConstantNode
@@ -124,7 +132,11 @@ describe('parse', function () {
     assert.strictEqual(scope.x, 6)
 
     // should not allow the "holes"
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.evaluate('\uD835\uDCA3 = 1', scope)
     })
   })
@@ -258,30 +270,57 @@ describe('parse', function () {
     const scope = {
       end: 2
     }
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       parse('2+3').compile().evaluate(scope)
     }, /Scope contains an illegal symbol/)
   })
 
   it('should give informative syntax errors', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+      parse('2 +')
+    }, /Unexpected end of expression \(char 4\)/)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       parse('2 +')
     }, /Unexpected end of expression \(char 4\)/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       parse('2 + 3 + *')
     }, /Value expected \(char 9\)/)
   })
 
   it('should throw an error if called with wrong number of arguments', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+      parse()
+    }, /Too few arguments/)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       parse()
     }, /Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       parse('2 + 3', {}, 3)
     }, /Too many arguments/)
   })
 
   it('should throw an error if called with a wrong type of argument', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+      parse(math.unit('5cm'))
+    }, TypeError)
+    assert.throws(function () {
+      parse(new Complex(2, 3))
+    }, TypeError)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       parse(math.unit('5cm'))
     }, TypeError)
@@ -289,12 +328,17 @@ describe('parse', function () {
       parse(new Complex(2, 3))
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       parse(new Date())
     }, TypeError)
   })
 
   it('should throw an error in case of unsupported characters', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       parse('2\u00A1')
     }, /Syntax error in part "\u00A1"/)
   })
@@ -431,6 +475,83 @@ describe('parse', function () {
     })
 
     it('should throw an error with invalid numbers', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('.')
+      }, /Value expected/)
+      assert.throws(function () {
+        parseAndEval('3.2.2')
+      }, SyntaxError)
+      assert.throws(function () {
+        parseAndEval('3.2e2.2')
+      }, SyntaxError)
+
+      assert.throws(function () {
+        parseAndEval('3e0.5')
+      }, /Digit expected, got "."/)
+      assert.throws(function () {
+        parseAndEval('3e.5')
+      }, /Digit expected, got "."/)
+      assert.throws(function () {
+        parseAndEval('-3e0.5')
+      }, /Digit expected, got "."/)
+      assert.throws(function () {
+        parseAndEval('-3e.5')
+      }, /Digit expected, got "."/)
+      assert.throws(function () {
+        parseAndEval('3e-0.5')
+      }, /Digit expected, got "."/)
+      assert.throws(function () {
+        parseAndEval('3e-.5')
+      }, /Digit expected, got "."/)
+      assert.throws(function () {
+        parseAndEval('-3e-0.5')
+      }, /Digit expected, got "."/)
+      assert.throws(function () {
+        parseAndEval('-3e-.5')
+      }, /Digit expected, got "."/)
+
+      assert.throws(function () {
+        parseAndEval('2e+a')
+      }, /Digit expected, got "a"/)
+
+      assert.throws(function () {
+        parseAndEval('0b')
+      }, SyntaxError)
+      assert.throws(function () {
+        parseAndEval('0o')
+      }, SyntaxError)
+      assert.throws(function () {
+        parseAndEval('0x')
+      }, SyntaxError)
+      assert.throws(function () {
+        parseAndEval('0b2')
+      }, SyntaxError)
+      assert.throws(function () {
+        parseAndEval('0o8')
+      }, SyntaxError)
+      assert.throws(function () {
+        parseAndEval('0xg')
+      }, SyntaxError)
+
+      assert.throws(function () {
+        parseAndEval('0x12ii')
+      })
+      assert.throws(function () {
+        parseAndEval('0x12u')
+      })
+      assert.throws(function () {
+        parseAndEval('0x12i-8')
+      })
+
+      assert.throws(function () {
+        parseAndEval('0b123.45')
+      }, /SyntaxError: String "0b123\.45" is not a valid number/)
+      assert.throws(function () {
+        parseAndEval('0o89.89')
+      }, /SyntaxError: String "0o89\.89" is not a valid number/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('.')
       }, /Value expected/)
@@ -506,6 +627,7 @@ describe('parse', function () {
         parseAndEval('0o89.89')
       }, /SyntaxError: String "0o89\.89" is not a valid number/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('0xghji.xyz')
       }, /SyntaxError: String "0xghji.xyz" is not a valid number/)
     })
@@ -683,6 +805,17 @@ describe('parse', function () {
     })
 
     it('should throw an error on an invalid escape character', function () {
+<<<<<<< HEAD
+      assert.throws(() => parseAndEval('"\\y'), /Bad escape character \\y/)
+      assert.throws(() => parseAndEval('"\\v'), /Bad escape character \\v/)
+    })
+
+    it('should throw an error with invalid strings', function () {
+      assert.throws(function () {
+        parseAndEval('"hi')
+      }, SyntaxError)
+      assert.throws(function () {
+=======
       assert.throws((): void => parseAndEval('"\\y'), /Bad escape character \\y/)
       assert.throws((): void => parseAndEval('"\\v'), /Bad escape character \\v/)
     })
@@ -692,6 +825,7 @@ describe('parse', function () {
         parseAndEval('"hi')
       }, SyntaxError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval(' hi" ')
       }, Error)
     })
@@ -776,10 +910,17 @@ describe('parse', function () {
     })
 
     it('should throw an error with invalid strings', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval("'hi")
+      }, SyntaxError)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval("'hi")
       }, SyntaxError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval(" hi' ")
       }, Error)
     })
@@ -1042,6 +1183,21 @@ describe('parse', function () {
     })
 
     it('should throw an error when multiple trailing commas/semicolons are in a matrix', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('[1,2,3,,] ')
+      }, /SyntaxError: Value expected/)
+
+      assert.throws(function () {
+        parseAndEval('[1,2;3,4;,] ')
+      }, /SyntaxError: Value expected/)
+
+      assert.throws(function () {
+        parseAndEval('[1;2;3;;]')
+      }, /SyntaxError: Value expected/)
+
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('[1,2,3,,] ')
       }, /SyntaxError: Value expected/)
@@ -1055,6 +1211,7 @@ describe('parse', function () {
       }, /SyntaxError: Value expected/)
 
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('[[[1],[2]],[[3],[4]],,]')
       }, /SyntaxError: Value expected/)
     })
@@ -1431,36 +1588,59 @@ describe('parse', function () {
         ]
       }
 
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('a[2, 2+3i]', scope)
       }, /TypeError: Dimension must be an Array,.*or Range/)
     })
 
     it('should throw an error for invalid matrix', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('[1, 2')
+      }, /End of matrix ] expected/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('[1, 2')
       }, /End of matrix ] expected/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('[1; 2')
       }, /End of matrix ] expected/)
     })
 
     it('should throw an error when matrix rows mismatch', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('[1, 2; 1, 2, 3]')
       }, /Column dimensions mismatch/)
     })
 
     it('should throw an error for invalid matrix subsets', function () {
       const scope = { a: [1, 2, 3] }
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('a[1', scope)
       }, /Parenthesis ] expected/)
     })
 
     it('should throw an error for invalid matrix concatenations', function () {
       const scope = {}
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('c=concat(a, [1,2,3])', scope)
       })
     })
@@ -1537,19 +1717,33 @@ describe('parse', function () {
     })
 
     it('should throw an error accessing a nested property of undefined using optional chaining', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('obj["foo"]?.["bar"]', { obj: undefined })
+      }, TypeError)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('obj["foo"]?.["bar"]', { obj: undefined })
       }, TypeError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('obj?.["foo"]["bar"]', { obj: { foo: undefined } })
       }, TypeError)
     })
 
     it('should throw an error accessing a nested null of null using optional chaining', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('obj["foo"]?.["bar"]', { obj: null })
+      }, TypeError)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('obj["foo"]?.["bar"]', { obj: null })
       }, TypeError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('obj?.["foo"]["bar"]', { obj: { foo: null } })
       }, TypeError)
     })
@@ -1601,7 +1795,11 @@ describe('parse', function () {
     })
 
     it('should not set an object property through optional chaining', function () {
+<<<<<<< HEAD
+      assert.throws(() => parseAndEval('obj = {a: 2}; obj?.b = 7'), SyntaxError)
+=======
       assert.throws((): void => parseAndEval('obj = {a: 2}; obj?.b = 7'), SyntaxError)
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.throws(
         () => parseAndEval('obj = {a: 2}; obj?.["b"] = 7'),
         SyntaxError
@@ -1614,7 +1812,11 @@ describe('parse', function () {
 
     it('should throw an error when trying to apply a matrix index as object property', function () {
       const scope = { a: {} }
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('a[2] = 6', scope)
       }, /Cannot apply a numeric index as object property/)
     })
@@ -1725,19 +1927,33 @@ describe('parse', function () {
     })
 
     it('should throw an error accessing a nested property of undefined with dot notation using optional chaining', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('obj.foo?.bar', { obj: undefined })
+      }, TypeError)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('obj.foo?.bar', { obj: undefined })
       }, TypeError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('obj?.foo.bar', { obj: { foo: undefined } })
       }, TypeError)
     })
 
     it('should throw an error accessing a nested property of null with dot notation using optional chaining', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('obj.foo?.bar', { obj: null })
+      }, TypeError)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('obj.foo?.bar', { obj: null })
       }, TypeError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('obj?.foo.bar', { obj: { foo: null } })
       }, TypeError)
     })
@@ -1944,6 +2160,15 @@ describe('parse', function () {
     })
 
     it('should throw an error accessing a nested property of undefined with mixed dot- and index-notation using optional chaining', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('obj.foo?.["bar"]?.baz', { obj: undefined })
+      }, TypeError)
+      assert.throws(function () {
+        parseAndEval('obj.foo["bar"]?.baz', { obj: { foo: undefined } })
+      }, TypeError)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('obj.foo?.["bar"]?.baz', { obj: undefined })
       }, TypeError)
@@ -1951,11 +2176,21 @@ describe('parse', function () {
         parseAndEval('obj.foo["bar"]?.baz', { obj: { foo: undefined } })
       }, TypeError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('obj.foo["bar"].baz', { obj: { foo: { bar: undefined } } })
       }, TypeError)
     })
 
     it('should throw an error accessing a nested property of null with mixed dot- and index-notation using optional chaining', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('obj.foo?.["bar"]?.baz', { obj: null })
+      }, TypeError)
+      assert.throws(function () {
+        parseAndEval('obj.foo["bar"]?.baz', { obj: { foo: null } })
+      }, TypeError)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('obj.foo?.["bar"]?.baz', { obj: null })
       }, TypeError)
@@ -1963,12 +2198,22 @@ describe('parse', function () {
         parseAndEval('obj.foo["bar"]?.baz', { obj: { foo: null } })
       }, TypeError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('obj.foo["bar"].baz', { obj: { foo: { bar: null } } })
       }, TypeError)
     })
 
     it('should throw an error when using double-dot after optional chaining operator', function () {
       // ?.. is not valid in JavaScript and should be rejected
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('{a: 3}?..a')
+      }, /SyntaxError: Property name expected after optional chain \(char 9\)/)
+      assert.throws(function () {
+        parseAndEval('obj?..foo', { obj: { foo: 2 } })
+      }, /SyntaxError: Property name expected after optional chain \(char 6\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('{a: 3}?..a')
       }, /SyntaxError: Property name expected after optional chain \(char 9\)/)
@@ -1976,6 +2221,7 @@ describe('parse', function () {
         parseAndEval('obj?..foo', { obj: { foo: 2 } })
       }, /SyntaxError: Property name expected after optional chain \(char 6\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('obj?.["a"]?..b', { obj: { a: { b: 2 } } })
       }, /SyntaxError: Property name expected after optional chain \(char 13\)/)
     })
@@ -1999,10 +2245,17 @@ describe('parse', function () {
     })
 
     it('should throw an error in case of invalid property with dot notation', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('obj. +foo')
+      }, /SyntaxError: Property name expected after dot \(char 6\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('obj. +foo')
       }, /SyntaxError: Property name expected after dot \(char 6\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('obj.["foo"]')
       }, /SyntaxError: Property name expected after dot \(char 5\)/)
     })
@@ -2058,7 +2311,11 @@ describe('parse', function () {
     })
 
     it('should not parse a function assignment in an accessor node', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         const scope = {}
         parseAndEval('a["b"](x)=x^2', scope)
       }, /SyntaxError: Invalid left hand side of assignment operator =/)
@@ -2071,10 +2328,17 @@ describe('parse', function () {
     })
 
     it('should throw an exception in case of invalid object key', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        parseAndEval('{a b: 2}')
+      }, /SyntaxError: Colon : expected after object key \(char 4\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         parseAndEval('{a b: 2}')
       }, /SyntaxError: Colon : expected after object key \(char 4\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('{a: }')
       }, /SyntaxError: Value expected \(char 5\)/)
     })
@@ -2145,14 +2409,23 @@ describe('parse', function () {
     })
 
     it('should throw an error on undefined symbol', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('qqq + 2')
       })
     })
 
     it('should throw an error on invalid assignments', function () {
+<<<<<<< HEAD
+      // assert.throws(function () {parseAndEval('sin(2) = 0.75')}, SyntaxError); // TODO: should this throw an exception?
+      assert.throws(function () {
+=======
       // assert.throws(function (): void {parseAndEval('sin(2) = 0.75')}, SyntaxError); // TODO: should this throw an exception?
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('sin + 2 = 3')
       }, SyntaxError)
     })
@@ -2294,12 +2567,20 @@ describe('parse', function () {
     })
 
     it('should throw an error on invalid left hand side of a function assignment', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         const scope = {}
         parseAndEval('g(x, 2) = x^2', scope)
       }, SyntaxError)
 
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         const scope = {}
         parseAndEval('2(x, 2) = x^2', scope)
       }, SyntaxError)
@@ -2334,12 +2615,21 @@ describe('parse', function () {
     it('should throw with optional chain call on non-function', function () {
       // I guess it is OK to consider this a syntax error since we know just
       // by reading the expression that the function call can't succeed.
+<<<<<<< HEAD
+      assert.throws(() => parseAndEval('7?.(2)'), SyntaxError)
+      assert.throws(() => parseAndEval('a = 7; a?.(2)'), TypeError)
+      assert.throws(() => parseAndEval('(3+4)?.(2)'), TypeError)
+      assert.throws(() => parseAndEval('add(3,4)?.(2)'), TypeError)
+      assert.throws(() => parseAndEval('{a: true}.a?.(2)'), Error)
+      assert.throws(() => parseAndEval('[3, 4]?.(2)'), TypeError)
+=======
       assert.throws((): void => parseAndEval('7?.(2)'), SyntaxError)
       assert.throws((): void => parseAndEval('a = 7; a?.(2)'), TypeError)
       assert.throws((): void => parseAndEval('(3+4)?.(2)'), TypeError)
       assert.throws((): void => parseAndEval('add(3,4)?.(2)'), TypeError)
       assert.throws((): void => parseAndEval('{a: true}.a?.(2)'), Error)
       assert.throws((): void => parseAndEval('[3, 4]?.(2)'), TypeError)
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     })
   })
 
@@ -2352,7 +2642,11 @@ describe('parse', function () {
     })
 
     it('should throw an error in case of unclosed parentheses', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('3 * (1 + 2')
       }, /Parenthesis \) expected/)
     })
@@ -2462,7 +2756,11 @@ describe('parse', function () {
     it('should parse % with multiplication', function () {
       approxEqual(parseAndEval('100*50%'), 50)
       approxEqual(parseAndEval('50%*100'), 50)
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('50%(*100)')
       }, SyntaxError)
     })
@@ -2472,7 +2770,11 @@ describe('parse', function () {
       approxEqual(parseAndEval('100/50%*2'), 400) // should be treated as (100/(50%))×2
       approxEqual(parseAndEval('50%/100'), 0.005)
       approxEqual(parseAndEval('50%(13)'), 11) // should be treated as 50 % (13)
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('50%(/100)')
       }, SyntaxError)
     })
@@ -2482,6 +2784,15 @@ describe('parse', function () {
     })
 
     it('should reject repeated unary percentage operators', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.parse('17%%')
+      }, SyntaxError)
+      assert.throws(function () {
+        math.parse('17%%*5')
+      }, SyntaxError)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.parse('17%%')
       }, SyntaxError)
@@ -2489,6 +2800,7 @@ describe('parse', function () {
         math.parse('17%%*5')
       }, SyntaxError)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.parse('10/200%%%3')
       }, SyntaxError)
     })
@@ -2498,6 +2810,15 @@ describe('parse', function () {
     })
 
     it('should reject repeated unary percentage operators', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.parse('17%%')
+      }, /Unexpected end of expression/)
+      assert.throws(function () {
+        math.parse('17%%*5')
+      }, /Value expected \(char 5\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.parse('17%%')
       }, /Unexpected end of expression/)
@@ -2505,6 +2826,7 @@ describe('parse', function () {
         math.parse('17%%*5')
       }, /Value expected \(char 5\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.parse('10/200%%%3')
       }, /Value expected \(char 9\)/)
     })
@@ -2674,7 +2996,11 @@ describe('parse', function () {
 
       assert.deepStrictEqual(parseAndEval('[1,2;3,4] [2,2]'), 4) // index
       assert.deepStrictEqual(parseAndEval('([1,2;3,4])[2,2]'), 4) // index
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('2[1,2,3]')
       }, /Unexpected operator/) // index
     })
@@ -2823,6 +3149,30 @@ describe('parse', function () {
     })
 
     it('should throw an error when having an implicit multiplication between two numbers', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.parse('2 3')
+      }, /Unexpected part "3"/)
+      assert.throws(function () {
+        math.parse('2 * 3 4')
+      }, /Unexpected part "4"/)
+      assert.throws(function () {
+        math.parse('2 * 3 4 * 5')
+      }, /Unexpected part "4"/)
+      assert.throws(function () {
+        math.parse('2 / 3 4 5')
+      }, /Unexpected part "4"/)
+      assert.throws(function () {
+        math.parse('2 + 3 4')
+      }, /Unexpected part "4"/)
+      assert.throws(function () {
+        math.parse('-2 2')
+      }, /Unexpected part "2"/)
+      assert.throws(function () {
+        math.parse('+3 3')
+      }, /Unexpected part "3"/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.parse('2 3')
       }, /Unexpected part "3"/)
@@ -2845,6 +3195,7 @@ describe('parse', function () {
         math.parse('+3 3')
       }, /Unexpected part "3"/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.parse('2^3 4')
       }, /Unexpected part "4"/)
     })
@@ -2877,7 +3228,11 @@ describe('parse', function () {
 
       assert.strictEqual(parseAndEval('0 & undefined'), 0)
       assert.strictEqual(parseAndEval('false & undefined'), 0)
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('true & undefined')
       }, TypeError)
     })
@@ -2907,7 +3262,11 @@ describe('parse', function () {
 
       assert.strictEqual(parseAndEval('-1 | undefined'), -1)
       assert.strictEqual(parseAndEval('true | undefined'), 1)
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('false | undefined')
       }, TypeError)
     })
@@ -2942,7 +3301,11 @@ describe('parse', function () {
 
       assert.strictEqual(parseAndEval('0 and undefined'), false)
       assert.strictEqual(parseAndEval('false and undefined'), false)
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('true and undefined')
       }, TypeError)
     })
@@ -3033,7 +3396,11 @@ describe('parse', function () {
 
       assert.strictEqual(parseAndEval('2 or undefined'), true)
       assert.strictEqual(parseAndEval('true or undefined'), true)
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('false or undefined')
       }, TypeError)
     })
@@ -3211,14 +3578,23 @@ describe('parse', function () {
     })
 
     it('should throw an error when false part of conditional expression is missing', function () {
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         parseAndEval('2 ? true')
       }, /False part of conditional expression expected/)
     })
 
     it('should forbid empty true part of conditional (#3578)', function () {
+<<<<<<< HEAD
+      assert.throws(() => parseAndEval('true ? : 3'), SyntaxError)
+      assert.throws(() => parseAndEval('0?:false'), SyntaxError)
+=======
       assert.throws((): void => parseAndEval('true ? : 3'), SyntaxError)
       assert.throws((): void => parseAndEval('0?:false'), SyntaxError)
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     })
 
     it('should allow a range with implicit start as the false expr', function () {
@@ -3766,18 +4142,30 @@ describe('parse', function () {
     it('should parse undefined symbols, defining symbols, and removing symbols', function () {
       const scope = {}
       let n = parse('q')
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         n.compile().evaluate(scope)
       })
       parse('q=33').compile().evaluate(scope)
       assert.strictEqual(n.compile().evaluate(scope), 33)
       delete scope.q
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         n.compile().evaluate(scope)
       })
 
       n = parse('qq[1,1]=33')
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         n.compile().evaluate(scope)
       })
       parse('qq=[1,2;3,4]').compile().evaluate(scope)
@@ -3793,7 +4181,11 @@ describe('parse', function () {
       n.compile().evaluate(scope)
       assert.deepStrictEqual(scope.qq, math.matrix([[33]]))
       delete scope.qq
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         n.compile().evaluate(scope)
       })
     })
@@ -3810,18 +4202,32 @@ describe('parse', function () {
   describe('errors', function () {
     it('should return IndexErrors with one based indices', function () {
       // functions throw a zero-based error
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.subset([1, 2, 3], math.index(4))
+      }, /Index out of range \(4 > 2\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.subset([1, 2, 3], math.index(4))
       }, /Index out of range \(4 > 2\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.subset([1, 2, 3], math.index(-2))
       }, /Index out of range \(-2 < 0\)/)
 
       // evaluation via parser throws one-based error
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.evaluate('A[4]', { A: [1, 2, 3] })
+      }, /Index out of range \(4 > 3\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.evaluate('A[4]', { A: [1, 2, 3] })
       }, /Index out of range \(4 > 3\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.evaluate('A[-2]', { A: [1, 2, 3] })
       }, /IndexError: Index out of range \(-2 < 1\)/)
     })
@@ -3830,12 +4236,20 @@ describe('parse', function () {
       // TODO: it would be more clear when all errors where DimensionErrors
 
       // functions throw a zero-based error
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.subset([1, 2, 3], math.index(1, 1))
       }, /DimensionError: Dimension mismatch \(2 != 1\)/)
 
       // evaluation via parser throws one-based error
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.evaluate('A[1,1]', { A: [1, 2, 3] })
       }, /DimensionError: Dimension mismatch \(2 != 1\)/)
     })
@@ -3844,6 +4258,15 @@ describe('parse', function () {
       // TODO: it would be more clear when all errors where DimensionErrors
 
       // functions throw a zero-based error
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.concat([1, 2], [[3, 4]])
+      }, /DimensionError: Dimension mismatch \(1 != 2\)/)
+      assert.throws(function () {
+        math.concat([[1, 2]], [[3, 4]], 2)
+      }, /IndexError: Index out of range \(2 > 1\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.concat([1, 2], [[3, 4]])
       }, /DimensionError: Dimension mismatch \(1 != 2\)/)
@@ -3851,10 +4274,20 @@ describe('parse', function () {
         math.concat([[1, 2]], [[3, 4]], 2)
       }, /IndexError: Index out of range \(2 > 1\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.concat([[1, 2]], [[3, 4]], -1)
       }, /IndexError: Index out of range \(-1 < 0\)/)
 
       // evaluation via parser throws one-based error
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.evaluate('concat([1,2], [[3,4]])')
+      }, /DimensionError: Dimension mismatch \(1 != 2\)/)
+      assert.throws(function () {
+        math.evaluate('concat([[1,2]], [[3,4]], 3)')
+      }, /IndexError: Index out of range \(3 > 2\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.evaluate('concat([1,2], [[3,4]])')
       }, /DimensionError: Dimension mismatch \(1 != 2\)/)
@@ -3862,6 +4295,7 @@ describe('parse', function () {
         math.evaluate('concat([[1,2]], [[3,4]], 3)')
       }, /IndexError: Index out of range \(3 > 2\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.evaluate('concat([[1,2]], [[3,4]], 0)')
       }, /IndexError: Index out of range \(0 < 1\)/)
     })
@@ -3882,10 +4316,17 @@ describe('parse', function () {
         math.evaluate('max([[1,2], [3,4]], 2)'),
         math.matrix([2, 4])
       )
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.evaluate('max([[1,2], [3,4]], 3)')
+      }, /IndexError: Index out of range \(3 > 2\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.evaluate('max([[1,2], [3,4]], 3)')
       }, /IndexError: Index out of range \(3 > 2\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.evaluate('max([[1,2], [3,4]], 0)')
       }, /IndexError: Index out of range \(0 < 1\)/)
     })
@@ -3906,10 +4347,17 @@ describe('parse', function () {
         math.evaluate('min([[1,2], [3,4]], 2)'),
         math.matrix([1, 3])
       )
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.evaluate('min([[1,2], [3,4]], 3)')
+      }, /IndexError: Index out of range \(3 > 2\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.evaluate('min([[1,2], [3,4]], 3)')
       }, /IndexError: Index out of range \(3 > 2\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.evaluate('min([[1,2], [3,4]], 0)')
       }, /IndexError: Index out of range \(0 < 1\)/)
     })
@@ -3930,10 +4378,17 @@ describe('parse', function () {
         math.evaluate('mean([[1,2], [3,4]], 2)'),
         math.matrix([1.5, 3.5])
       )
+<<<<<<< HEAD
+      assert.throws(function () {
+        math.evaluate('mean([[1,2], [3,4]], 3)')
+      }, /IndexError: Index out of range \(3 > 2\)/)
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
         math.evaluate('mean([[1,2], [3,4]], 3)')
       }, /IndexError: Index out of range \(3 > 2\)/)
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         math.evaluate('mean([[1,2], [3,4]], 0)')
       }, /IndexError: Index out of range \(0 < 1\)/)
     })
@@ -4023,10 +4478,17 @@ describe('parse', function () {
       })
 
       it('should throw an error on syntax errors in using custom nodes', function () {
+<<<<<<< HEAD
+        assert.throws(function () {
+          parse('custom(x', options)
+        }, /Parenthesis \) expected/)
+        assert.throws(function () {
+=======
         assert.throws(function (): void {
           parse('custom(x', options)
         }, /Parenthesis \) expected/)
         assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
           parse('custom(x, ', options)
         }, /Unexpected end of expression/)
       })

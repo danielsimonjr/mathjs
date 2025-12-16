@@ -1,12 +1,22 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test setIntersect
+=======
 /**
  * Test for setIntersect - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 
+<<<<<<< HEAD
+describe('setIntersect', function () {
+  it('should return the intersection of two sets', function () {
+=======
 describe('setIntersect', function (): void {
   it('should return the intersection of two sets', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(math.setIntersect([1, 2, 3], [3, 4]), [3])
     assert.deepStrictEqual(math.setIntersect([1, 2], [3, 4]), [])
     assert.deepStrictEqual(math.setIntersect(['a', 'b', 'c'], ['c', 'd']), [
@@ -23,7 +33,11 @@ describe('setIntersect', function (): void {
     assert.deepStrictEqual(math.setIntersect([], []), [])
   })
 
+<<<<<<< HEAD
+  it('should return the intersection of two multisets', function () {
+=======
   it('should return the intersection of two multisets', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       math.setIntersect([1, 1, 2, 3, 4, 4], [1, 2, 3, 4, 4, 4]),
       [1, 2, 3, 4, 4]
@@ -34,7 +48,11 @@ describe('setIntersect', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the same type of output as the inputs', function () {
+=======
   it('should return the same type of output as the inputs', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       math.typeOf(math.setIntersect([1, 2, 3], [3, 4, 5])),
       'Array'
@@ -47,11 +65,19 @@ describe('setIntersect', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error in case of invalid number of arguments', function () {
+    assert.throws(function () {
+      math.setIntersect()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+=======
   it('should throw an error in case of invalid number of arguments', function (): void {
     assert.throws(function (): void {
       math.setIntersect()
     }, /TypeError: Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.setIntersect([], [], [])
     }, /TypeError: Too many arguments/)
   })

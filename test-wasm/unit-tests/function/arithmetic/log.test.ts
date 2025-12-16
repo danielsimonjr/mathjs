@@ -1,15 +1,23 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test log
+=======
 /**
  * Test for log - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+<<<<<<< HEAD
+=======
 
 interface MathNode {
   type: string
   toTex(): string
 }
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const mathPredictable = math.create({ predictable: true })
 const complex = math.complex
 const matrix = math.matrix
@@ -17,58 +25,100 @@ const unit = math.unit
 const fraction = math.fraction
 const log = math.log
 
+<<<<<<< HEAD
+describe('log', function () {
+  it('should return the log of a boolean value', function () {
+=======
 describe('log', function (): void {
   it('should return the log of a boolean value', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(log(true), 0)
     assert.strictEqual(log(false), -Infinity)
     assert.strictEqual(log(1, false), -0)
   })
 
+<<<<<<< HEAD
+  it('should return the log of positive numbers', function () {
+=======
   it('should return the log of positive numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(log(1), 0)
     approxDeepEqual(log(2), 0.693147180559945)
     approxDeepEqual(log(3), 1.09861228866811)
     approxDeepEqual(math.exp(log(100)), 100)
   })
 
+<<<<<<< HEAD
+  it('should return the log of negative numbers', function () {
+=======
   it('should return the log of negative numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(log(-1), complex('0.000000000000000 + 3.141592653589793i'))
     approxDeepEqual(log(-2), complex('0.693147180559945 + 3.141592653589793i'))
     approxDeepEqual(log(-3), complex('1.098612288668110 + 3.141592653589793i'))
   })
 
+<<<<<<< HEAD
+  it('should return the log of negative numbers with predictable: true', function () {
+=======
   it('should return the log of negative numbers with predictable: true', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(typeof mathPredictable.log(-1), 'number')
     assert(isNaN(mathPredictable.log(-1)))
   })
 
+<<<<<<< HEAD
+  it('should return the log of zero', function () {
+    approxDeepEqual(log(0), -Infinity)
+  })
+
+  it('should return the log base N of a number', function () {
+=======
   it('should return the log of zero', function (): void {
     approxDeepEqual(log(0), -Infinity)
   })
 
   it('should return the log base N of a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(log(100, 10), 2)
     approxDeepEqual(log(1000, 10), 3)
     approxDeepEqual(log(8, 2), 3)
     approxDeepEqual(log(16, 2), 4)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if invalid number of arguments', function () {
+    assert.throws(function () {
+      log()
+    }, /TypeError: Too few arguments in function log \(expected: any, index: 0\)/)
+    assert.throws(function () {
+=======
   it('should throw an error if invalid number of arguments', function (): void {
     assert.throws(function (): void {
       log()
     }, /TypeError: Too few arguments in function log \(expected: any, index: 0\)/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       log(1, 2, 3)
     }, /TypeError: Too many arguments in function log \(expected: 2, actual: 3\)/)
   })
 
+<<<<<<< HEAD
+  it('should throw an in case of wrong type of arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an in case of wrong type of arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       log(null)
     }, /Too few arguments/) // TODO: this is a misleading error message
   })
 
+<<<<<<< HEAD
+  it('should return the log of positive bignumbers', function () {
+=======
   it('should return the log of positive bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bigmath = math.create({ precision: 100 })
 
     assert.deepStrictEqual(
@@ -95,7 +145,11 @@ describe('log', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the log of negative bignumbers', function () {
+=======
   it('should return the log of negative bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bigmath = math.create({ precision: 100 })
 
     approxDeepEqual(
@@ -112,11 +166,19 @@ describe('log', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the log of negative bignumbers with predictable:true', function () {
+    assert.ok(mathPredictable.log(math.bignumber(-1)).isNaN())
+  })
+
+  it('should return the log of a bignumber with value zero', function () {
+=======
   it('should return the log of negative bignumbers with predictable:true', function (): void {
     assert.ok(mathPredictable.log(math.bignumber(-1)).isNaN())
   })
 
   it('should return the log of a bignumber with value zero', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bigmath = math.create({ precision: 100 })
 
     assert.deepStrictEqual(
@@ -125,7 +187,11 @@ describe('log', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the log of a complex number', function () {
+=======
   it('should return the log of a complex number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(log(math.i), complex('1.570796326794897i'))
     approxDeepEqual(log(complex(0, -1)), complex('-1.570796326794897i'))
     approxDeepEqual(
@@ -147,7 +213,11 @@ describe('log', function (): void {
     approxDeepEqual(log(complex(1, 0)), complex(0, 0))
   })
 
+<<<<<<< HEAD
+  it('should return the log of a Fraction', function () {
+=======
   it('should return the log of a Fraction', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(log(fraction(27, 8), fraction(9, 4)), fraction(3, 2))
     assert.throws(
       () => log(fraction(27, 8), fraction(-2, 5)),
@@ -155,7 +225,11 @@ describe('log', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should handle complex number with large imaginary part', function () {
+=======
   it('should handle complex number with large imaginary part', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const tau4 = math.tau / 4
     const real = [0, -1, 1]
     const imaginary = [1e15, 1e17, 1e20, 1e30]
@@ -166,24 +240,42 @@ describe('log', function (): void {
     }
   })
 
+<<<<<<< HEAD
+  it('should return the log of a large bigint', function () {
+=======
   it('should return the log of a large bigint', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const ten16 = 10000000000000000n
     approxDeepEqual(log(ten16), 16 * log(10n))
   })
 
+<<<<<<< HEAD
+  it('should throw an error when used on a unit', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when used on a unit', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       log(unit('5cm'))
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error when used on a string', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when used on a string', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       log('text')
     })
   })
 
+<<<<<<< HEAD
+  it('should not operate on a matrix', function () {
+=======
   it('should not operate on a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const res = [0, 0.693147180559945, 1.09861228866811, 1.386294361119891]
     assert.throws(() => log([1, 2, 3, 4]), TypeError)
     approxDeepEqual(
@@ -209,7 +301,11 @@ describe('log', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should LaTeX log', function () {
+=======
   it('should LaTeX log', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expr1 = math.parse('log(e)')
     const expr2 = math.parse('log(32,2)')
 

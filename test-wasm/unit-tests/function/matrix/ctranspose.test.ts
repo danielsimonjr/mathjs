@@ -1,12 +1,28 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for ctranspose - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 // test transpose
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 const ctranspose = math.ctranspose
 
+<<<<<<< HEAD
+describe('ctranspose', function () {
+  it('should transpose a real scalar', function () {
+    assert.deepStrictEqual(ctranspose(3), 3)
+  })
+
+  it('should conjugate a complex scalar', function () {
+    assert.deepStrictEqual(ctranspose(math.complex(3, 4)), math.complex(3, -4))
+  })
+
+  it('should transpose a vector', function () {
+=======
 interface MathNode {
   type: string
   toTex(): string
@@ -22,6 +38,7 @@ describe('ctranspose', function (): void {
   })
 
   it('should transpose a vector', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(ctranspose([1, 2, 3]), [1, 2, 3])
     assert.deepStrictEqual(
       ctranspose(math.matrix([1, 2, 3]).toArray()),
@@ -29,7 +46,11 @@ describe('ctranspose', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should conjugate a complex vector', function () {
+=======
   it('should conjugate a complex vector', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = math.complex(1, 2)
     const b = math.complex(3, 4)
     const c = math.complex(5, 6)
@@ -44,7 +65,11 @@ describe('ctranspose', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should transpose a 2d matrix', function () {
+=======
   it('should transpose a 2d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       ctranspose([
         [1, 2, 3],
@@ -84,7 +109,11 @@ describe('ctranspose', function (): void {
     assert.deepStrictEqual(ctranspose([[1, 2, 3, 4]]), [[1], [2], [3], [4]])
   })
 
+<<<<<<< HEAD
+  it('should conjugate transpose a 2d complex matrix', function () {
+=======
   it('should conjugate transpose a 2d complex matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = math.complex(1, 2)
     const b = math.complex(3, 4)
     const c = math.complex(5, 6)
@@ -134,11 +163,19 @@ describe('ctranspose', function (): void {
     assert.deepStrictEqual(ctranspose([[a, b, c, d]]), [[aH], [bH], [cH], [dH]])
   })
 
+<<<<<<< HEAD
+  it('should throw an error for invalid matrix transpose', function () {
+    assert.throws(function () {
+      assert.deepStrictEqual(ctranspose([[]]), [[]]) // size [2,0]
+    })
+    assert.throws(function () {
+=======
   it('should throw an error for invalid matrix transpose', function (): void {
     assert.throws(function (): void {
       assert.deepStrictEqual(ctranspose([[]]), [[]]) // size [2,0]
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       ctranspose([
         [[1], [2]],
         [[3], [4]]
@@ -146,17 +183,30 @@ describe('ctranspose', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with an invalid number of arguments', function () {
+    assert.throws(function () {
+      ctranspose()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+=======
   it('should throw an error if called with an invalid number of arguments', function (): void {
     assert.throws(function (): void {
       ctranspose()
     }, /TypeError: Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       ctranspose([1, 2], 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
+  describe('DenseMatrix', function () {
+    it('should transpose a 2d matrix', function () {
+=======
   describe('DenseMatrix', function (): void {
     it('should transpose a 2d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = math.complex(1, 2)
       const b = math.complex(3, 4)
       const c = math.complex(5, 6)
@@ -221,9 +271,15 @@ describe('ctranspose', function (): void {
       assert.strictEqual(t.datatype(), 'Complex')
     })
 
+<<<<<<< HEAD
+    it('should throw an error for invalid matrix transpose', function () {
+      let m = math.matrix([[]])
+      assert.throws(function () {
+=======
     it('should throw an error for invalid matrix transpose', function (): void {
       let m = math.matrix([[]])
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ctranspose(m)
       })
 
@@ -231,14 +287,23 @@ describe('ctranspose', function (): void {
         [[1], [2]],
         [[3], [4]]
       ])
+<<<<<<< HEAD
+      assert.throws(function () {
+=======
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ctranspose(m)
       })
     })
   })
 
+<<<<<<< HEAD
+  describe('SparseMatrix', function () {
+    it('should transpose a 2d matrix', function () {
+=======
   describe('SparseMatrix', function (): void {
     it('should transpose a 2d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = math.complex(1, 2)
       const b = math.complex(3, 4)
       const c = math.complex(5, 6)
@@ -292,15 +357,25 @@ describe('ctranspose', function (): void {
       */
     })
 
+<<<<<<< HEAD
+    it('should throw an error for invalid matrix transpose', function () {
+      const m = math.matrix([[]], 'sparse')
+      assert.throws(function () {
+=======
     it('should throw an error for invalid matrix transpose', function (): void {
       const m = math.matrix([[]], 'sparse')
       assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         ctranspose(m)
       })
     })
   })
 
+<<<<<<< HEAD
+  it('should LaTeX transpose', function () {
+=======
   it('should LaTeX transpose', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('ctranspose([[1+2i,3+4i],[5+6i,7+8i]])')
     assert.strictEqual(
       expression.toTex(),

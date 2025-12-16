@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for cumsum - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const BigNumber = math.BigNumber
@@ -9,8 +13,13 @@ const DenseMatrix = math.DenseMatrix
 const Unit = math.Unit
 const cumsum = math.cumsum
 
+<<<<<<< HEAD
+describe('cumsum', function () {
+  it('should return the cumsum of numbers', function () {
+=======
 describe('cumsum', function (): void {
   it('should return the cumsum of numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(cumsum(5), [5])
     assert.deepStrictEqual(cumsum(3, 1), [3, 4])
     assert.deepStrictEqual(cumsum(1, 3), [1, 4])
@@ -18,7 +27,11 @@ describe('cumsum', function (): void {
     assert.deepStrictEqual(cumsum(0, 0, 0, 0), [0, 0, 0, 0])
   })
 
+<<<<<<< HEAD
+  it('should return the cumulative sum of big numbers', function () {
+=======
   it('should return the cumulative sum of big numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       cumsum(
         new BigNumber(1),
@@ -30,7 +43,11 @@ describe('cumsum', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the cumulative sum of strings (convert them to numbers)', function () {
+=======
   it('should return the cumulative sum of strings (convert them to numbers)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(cumsum('2', '3', '4', '5'), [2, 5, 9, 14])
     assert.deepStrictEqual(
       cumsum([
@@ -57,32 +74,52 @@ describe('cumsum', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the cumulative sum of complex numbers', function () {
+=======
   it('should return the cumulative sum of complex numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(cumsum(new Complex(2, 3), new Complex(-1, 2)), [
       new Complex(2, 3),
       new Complex(1, 5)
     ])
   })
 
+<<<<<<< HEAD
+  it('should return the cumulative sum of mixed numbers and complex numbers', function () {
+=======
   it('should return the cumulative sum of mixed numbers and complex numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(cumsum(2, new Complex(-1, 3)), [
       2,
       new Complex(1, 3)
     ])
   })
 
+<<<<<<< HEAD
+  it('should return the cumulative sum from an array', function () {
+    assert.deepStrictEqual(cumsum([1, 3, 5, 2, -5]), [1, 4, 9, 11, 6])
+  })
+
+  it('should return the cumulative sum of units', function () {
+=======
   it('should return the cumulative sum from an array', function (): void {
     assert.deepStrictEqual(cumsum([1, 3, 5, 2, -5]), [1, 4, 9, 11, 6])
   })
 
   it('should return the cumulative sum of units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       cumsum([new Unit(5, 'm'), new Unit(10, 'm'), new Unit(15, 'm')]),
       [new Unit(5, 'm'), new Unit(15, 'm'), new Unit(30, 'm')]
     )
   })
 
+<<<<<<< HEAD
+  it('should return the cumulative sum from a 1d matrix', function () {
+=======
   it('should return the cumulative sum from a 1d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       cumsum(new DenseMatrix([1, 3, 5, 2, -5])),
       new DenseMatrix([1, 4, 9, 11, 6])
@@ -93,7 +130,11 @@ describe('cumsum', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the cumulative sum element from a 2d array', function () {
+=======
   it('should return the cumulative sum element from a 2d array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       cumsum([
         [1, 4, 7],
@@ -108,7 +149,11 @@ describe('cumsum', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the cumulative sum element from a 2d matrix', function () {
+=======
   it('should return the cumulative sum element from a 2d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       cumsum(
         new DenseMatrix([
@@ -125,14 +170,23 @@ describe('cumsum', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return NaN for all values after a NaN', function () {
+=======
   it('should return NaN for all values after a NaN', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert(isNaN(cumsum([NaN])[0]))
     assert(!isNaN(cumsum([1, NaN])[0]))
     assert(isNaN(cumsum([1, NaN])[1]))
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid number of arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid number of arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       cumsum()
     })
   })
@@ -161,7 +215,11 @@ describe('cumsum', function (): void {
     ]
   ]
 
+<<<<<<< HEAD
+  it('should return the sum value along a dimension of a matrix', function () {
+=======
   it('should return the sum value along a dimension of a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       cumsum(
         [
@@ -254,6 +312,17 @@ describe('cumsum', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should return zero if called with an empty array', function () {
+    assert.deepStrictEqual(cumsum([]), [])
+  })
+
+  it('should throw an error if called with invalid dimension', function () {
+    assert.throws(function () {
+      cumsum([1, 2, 3], 1)
+    }, /IndexError: Index out of range \(1 > 0\)/)
+    assert.throws(function () {
+=======
   it('should return zero if called with an empty array', function (): void {
     assert.deepStrictEqual(cumsum([]), [])
   })
@@ -263,10 +332,21 @@ describe('cumsum', function (): void {
       cumsum([1, 2, 3], 1)
     }, /IndexError: Index out of range \(1 > 0\)/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       cumsum([1, 2, 3], -1)
     }, /IndexError: Index out of range \(-1 < 0\)/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid type of arguments', function () {
+    assert.throws(function () {
+      cumsum(new Date(), 2)
+    }, /Cannot calculate cumsum, unexpected type of argument/)
+    assert.throws(function () {
+      cumsum(2, 3, null)
+    }, /Cannot calculate cumsum, unexpected type of argument/)
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid type of arguments', function (): void {
     assert.throws(function (): void {
       cumsum(new Date(), 2)
@@ -275,6 +355,7 @@ describe('cumsum', function (): void {
       cumsum(2, 3, null)
     }, /Cannot calculate cumsum, unexpected type of argument/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       cumsum([2, 3, null])
     }, /Cannot calculate cumsum, unexpected type of argument/)
   })

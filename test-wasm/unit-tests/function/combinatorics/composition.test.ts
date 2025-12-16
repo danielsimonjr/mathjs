@@ -1,18 +1,31 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for composition - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const composition = math.composition
 
+<<<<<<< HEAD
+describe('composition', function () {
+  it('should calculate the number of ways to compose a set of n objects into k non-empty subsets', function () {
+=======
 describe('composition', function (): void {
   it('should calculate the number of ways to compose a set of n objects into k non-empty subsets', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(composition(5, 3), 6)
     assert.strictEqual(composition(1, 1), 1)
     assert.strictEqual(composition(8, 3), 21)
   })
 
+<<<<<<< HEAD
+  it('should calculate the composition of n items taken k at a time with BigNumbers', function () {
+=======
   it('should calculate the composition of n items taken k at a time with BigNumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       composition(math.bignumber(7), math.bignumber(5)),
       math.bignumber(15)
@@ -27,6 +40,28 @@ describe('composition', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should not work with non-integer and negative input', function () {
+    assert.throws(function () {
+      composition(0.5, 3)
+    }, /TypeError: Positive integer value expected in function composition/)
+    assert.throws(function () {
+      composition(-2, 3)
+    }, /TypeError: Positive integer value expected in function composition/)
+    assert.throws(function () {
+      composition(6, -2)
+    }, /TypeError: Positive integer value expected in function composition/)
+    assert.throws(function () {
+      composition(3, 5)
+    }, /TypeError: k must be less than or equal to n in function composition/)
+    assert.throws(function () {
+      composition(math.bignumber(3), math.bignumber(5))
+    }, /TypeError: k must be less than or equal to n in function composition/)
+    assert.throws(function () {
+      composition(math.bignumber(3.5), math.bignumber(-3))
+    }, /TypeError: Positive integer value expected in function composition/)
+    assert.throws(function () {
+=======
   it('should not work with non-integer and negative input', function (): void {
     assert.throws(function (): void {
       composition(0.5, 3)
@@ -47,15 +82,24 @@ describe('composition', function (): void {
       composition(math.bignumber(3.5), math.bignumber(-3))
     }, /TypeError: Positive integer value expected in function composition/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       composition(math.bignumber(3.5), 0.25)
     }, /TypeError: Positive integer value expected in function composition/)
   })
 
+<<<<<<< HEAD
+  it('should not work with the wrong number or type of arguments', function () {
+    assert.throws(function () {
+      composition(5, 3, 2)
+    })
+    assert.throws(function () {
+=======
   it('should not work with the wrong number or type of arguments', function (): void {
     assert.throws(function (): void {
       composition(5, 3, 2)
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       composition(true, 'hello world')
     })
   })

@@ -1,14 +1,23 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for matrixFrom - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 // test zeros
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.ts'
 const matrix = math.matrix
 
+<<<<<<< HEAD
+describe('matrixFrom...', function () {
+  it('...Function', function () {
+=======
 describe('matrixFrom...', function (): void {
   it('...Function', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     let expected, actual
 
     // an antisymmetric matrix (array)
@@ -60,7 +69,11 @@ describe('matrixFrom...', function (): void {
     // TODO test datatype
   })
 
+<<<<<<< HEAD
+  it('...Rows', function () {
+=======
   it('...Rows', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expected = [
       [1, 2, 3],
       [4, 5, 6],
@@ -105,7 +118,11 @@ describe('matrixFrom...', function (): void {
     assert.deepStrictEqual(actual, expected)
   })
 
+<<<<<<< HEAD
+  it('...Columns', function () {
+=======
   it('...Columns', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expected = [
       [1, 4, 7],
       [2, 5, 8],

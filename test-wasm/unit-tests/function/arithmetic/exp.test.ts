@@ -1,29 +1,46 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test exp
+=======
 /**
  * Test for exp - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+<<<<<<< HEAD
+=======
 
 interface MathNode {
   type: string
   toTex(): string
 }
 
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const complex = math.complex
 const matrix = math.matrix
 const sparse = math.sparse
 const unit = math.unit
 const exp = math.exp
 
+<<<<<<< HEAD
+describe('exp', function () {
+  it('should exponentiate a boolean', function () {
+=======
 describe('exp', function (): void {
   it('should exponentiate a boolean', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(exp(true), 2.71828182845905)
     approxEqual(exp(false), 1)
   })
 
+<<<<<<< HEAD
+  it('should exponentiate a number', function () {
+=======
   it('should exponentiate a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(exp(-3), 0.0497870683678639)
     approxEqual(exp(-2), 0.1353352832366127)
     approxEqual(exp(-1), 0.3678794411714423)
@@ -34,7 +51,11 @@ describe('exp', function (): void {
     approxEqual(exp(math.log(100)), 100)
   })
 
+<<<<<<< HEAD
+  it('should exponentiate a bignumber', function () {
+=======
   it('should exponentiate a bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const bigmath = math.create({ precision: 100 })
 
     assert.deepStrictEqual(
@@ -45,22 +66,39 @@ describe('exp', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it("should throw an error if there's wrong number of arguments", function () {
+    assert.throws(function () {
+      exp()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+=======
   it("should throw an error if there's wrong number of arguments", function (): void {
     assert.throws(function (): void {
       exp()
     }, /TypeError: Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       exp(1, 2)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
+  it('should throw an in case of wrong type of arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an in case of wrong type of arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       exp(null)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
+  it('should exponentiate a complex number correctly', function () {
+=======
   it('should exponentiate a complex number correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       exp(math.i),
       complex('0.540302305868140 + 0.841470984807897i')
@@ -100,19 +138,33 @@ describe('exp', function (): void {
     approxDeepEqual(exp(multiply(-1.5, multiply(pi, i))), complex(0, 1))
   })
 
+<<<<<<< HEAD
+  it('should throw an error on a unit', function () {
+    assert.throws(function () {
+=======
   it('should throw an error on a unit', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       exp(unit('5cm'))
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error with a string', function () {
+    assert.throws(function () {
+=======
   it('should throw an error with a string', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       exp('text')
     })
   })
 
+<<<<<<< HEAD
+  it('should not operate on matrices, arrays and ranges', function () {
+=======
   it('should not operate on matrices, arrays and ranges', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // array
     assert.throws(() => exp([0, 1, 2, 3]), /Function 'exp' doesn't apply/)
     approxDeepEqual(
@@ -167,7 +219,11 @@ describe('exp', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should LaTeX exp', function () {
+=======
   it('should LaTeX exp', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('exp(0)')
     assert.strictEqual(expression.toTex(), '\\exp\\left(0\\right)')
   })

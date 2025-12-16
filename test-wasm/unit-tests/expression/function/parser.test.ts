@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+// @ts-nocheck
+import assert from 'assert'
+import math from '../../../../src/defaultInstance.ts'
+=======
 /**
  * Test for parser - AssemblyScript-friendly TypeScript
  */
@@ -8,6 +13,7 @@ interface MathNode {
   type: string
   toTex(): string
 }
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const Parser = math.Parser
 
 describe('parser', function () {

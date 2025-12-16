@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for eigs - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
@@ -23,14 +27,23 @@ const {
   Complex
 } = math
 
+<<<<<<< HEAD
+describe('eigs', function () {
+=======
 describe('eigs', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
   // helper to examine eigenvectors
   function testEigenvectors(soln, predicate) {
     soln.eigenvectors.forEach((ev, i) => predicate(ev.vector, i))
   }
 
+<<<<<<< HEAD
+  it('only accepts a square matrix', function () {
+    assert.throws(function () {
+=======
   it('only accepts a square matrix', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       eigs(
         matrix([
           [1, 2, 3],
@@ -38,18 +51,35 @@ describe('eigs', function (): void {
         ])
       )
     }, /Matrix must be square/)
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       eigs([
         [1, 2, 3],
         [4, 5, 6]
       ])
     }, /Matrix must be square/)
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       eigs([
         [1, 2],
         [4, 5, 6]
       ])
     }, /DimensionError: Dimension mismatch/)
+<<<<<<< HEAD
+    assert.throws(function () {
+      eigs([4, 5, 6])
+    }, /Matrix must be square/)
+    assert.throws(function () {
+      eigs(1.0)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       eigs([4, 5, 6])
     }, /Matrix must be square/)
@@ -57,11 +87,16 @@ describe('eigs', function (): void {
       eigs(1.0)
     }, /TypeError: Unexpected type of argument/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       eigs('random')
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
+  it('follows aiao-mimo', function () {
+=======
   it('follows aiao-mimo', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const realSymArray = eigs([
       [1, 0],
       [0, 1]
@@ -114,8 +149,13 @@ describe('eigs', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  it('only accepts a matrix with valid element type', function () {
+    assert.throws(function () {
+=======
   it('only accepts a matrix with valid element type', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       eigs([
         ['x', 2],
         [4, 5]
@@ -123,7 +163,11 @@ describe('eigs', function (): void {
     }, /Cannot convert "x" to a number/)
   })
 
+<<<<<<< HEAD
+  it('eigenvalue check for diagonal matrix', function () {
+=======
   it('eigenvalue check for diagonal matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // trivial test
     approxDeepEqual(
       eigs([
@@ -150,7 +194,11 @@ describe('eigs', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('calculates eigenvalues for 2x2 simple matrix', function () {
+=======
   it('calculates eigenvalues for 2x2 simple matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // 2x2 test
     approxDeepEqual(
       eigs([
@@ -177,7 +225,11 @@ describe('eigs', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('calculates eigenvalues for 2x2 matrix with complex entries', function () {
+=======
   it('calculates eigenvalues for 2x2 matrix with complex entries', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       eigs([
         [3, -2],
@@ -194,7 +246,11 @@ describe('eigs', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('calculates eigenvalues for 3x3 and 4x4 matrix', function () {
+=======
   it('calculates eigenvalues for 3x3 and 4x4 matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // 3x3 test and 4x4
     approxDeepEqual(
       eigs([
@@ -235,7 +291,11 @@ describe('eigs', function (): void {
     assert.ok(!('eigenvectors' in justEigs))
   })
 
+<<<<<<< HEAD
+  it('calculates eigenvalues and eigenvectors for 5x5 matrix', function () {
+=======
   it('calculates eigenvalues and eigenvectors for 5x5 matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = zeros([5, 5])
     m[4][3] = m[3][4] = m[3][2] = m[2][4] = 1
 
@@ -273,7 +333,11 @@ describe('eigs', function (): void {
     }
   })
 
+<<<<<<< HEAD
+  it('eigenvector check', function () {
+=======
   it('eigenvector check', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const H = [
       [-4.78, -1.0, -2.59, -3.26, 4.24, 4.14],
       [-1.0, -2.45, -0.92, -2.33, -4.68, 4.27],
@@ -300,7 +364,11 @@ describe('eigs', function (): void {
     approxDeepEqual(Ei, E)
   })
 
+<<<<<<< HEAD
+  it('complex matrix eigenvector check', function () {
+=======
   it('complex matrix eigenvector check', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Example from issue #2478
     const A = [
       [1, 2, 3],
@@ -316,7 +384,11 @@ describe('eigs', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('supports fractions', function () {
+=======
   it('supports fractions', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const aij = fraction('1/2')
     approxDeepEqual(
       eigs([
@@ -328,7 +400,11 @@ describe('eigs', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('handles some 2x2 defective matrices', function () {
+=======
   it('handles some 2x2 defective matrices', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const check = eigs([
       [2.0, 1.0],
       [0.0, 2.0]
@@ -346,7 +422,11 @@ describe('eigs', function (): void {
     approxEqual(vec[0], vec[1])
   })
 
+<<<<<<< HEAD
+  it('handles a 3x3 defective matrix', function () {
+=======
   it('handles a 3x3 defective matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const fromWeb = eigs([
       [2, -5, 0],
       [0, 2, 0],
@@ -377,7 +457,11 @@ describe('eigs', function (): void {
     approxEqual(ev2[1].vector[1], 2 * ev2[1].vector[0])
   })
 
+<<<<<<< HEAD
+  it('accepts a precision argument', function () {
+=======
   it('accepts a precision argument', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // The following is a matrix with an algebraically triple eigenvalue
     // equal to 2 which has a unique eigenvector (up to scale, of course).
     // It is from https://web.uvic.ca/~tbazett/diffyqs/sec_multeigen.html
@@ -405,7 +489,11 @@ describe('eigs', function (): void {
     assert.ok(!('eigenvectors' in stillbad))
   })
 
+<<<<<<< HEAD
+  it('diagonalizes matrix with bigNumber', function () {
+=======
   it('diagonalizes matrix with bigNumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const x = [
       [bignum(1), bignum(0)],
       [bignum(0), bignum(1)]
@@ -441,7 +529,11 @@ describe('eigs', function (): void {
     approxDeepEqual(Ei, E)
   })
 
+<<<<<<< HEAD
+  it('actually calculates BigNumbers input with BigNumber precision', function () {
+=======
   it('actually calculates BigNumbers input with BigNumber precision', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const B = bignum([
       [0, 1],
       [1, 0]

@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for pickRandom - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { flatten } from '../../../../src/utils/array.js'
@@ -9,6 +13,14 @@ const math2 = math.create({ randomSeed: 'test2' })
 const pickRandom = math2.pickRandom
 const matrix = math2.matrix
 
+<<<<<<< HEAD
+describe('pickRandom', function () {
+  it('should have a function pickRandom', function () {
+    assert.strictEqual(typeof math.pickRandom, 'function')
+  })
+
+  it('should throw an error if the length of the weights does not match the length of the possibles', function () {
+=======
 interface MathNode {
   type: string
   toTex(): string
@@ -20,10 +32,22 @@ describe('pickRandom', function (): void {
   })
 
   it('should throw an error if the length of the weights does not match the length of the possibles', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4]
     const number = 2
 
+<<<<<<< HEAD
+    assert.throws(function () {
+      pickRandom(possibles, weights)
+    }, /Weights must have the same length as possibles/)
+
+    assert.throws(function () {
+      pickRandom(possibles, number, weights)
+    }, /Weights must have the same length as possibles/)
+
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       pickRandom(possibles, weights)
     }, /Weights must have the same length as possibles/)
@@ -33,26 +57,43 @@ describe('pickRandom', function (): void {
     }, /Weights must have the same length as possibles/)
 
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       pickRandom(possibles, weights, number)
     }, /Weights must have the same length as possibles/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if the weights array contains a non number or negative value', function () {
+    const possibles = [11, 22, 33, 44, 55]
+    let weights = [1, 5, 2, -1, 6]
+
+    assert.throws(function () {
+=======
   it('should throw an error if the weights array contains a non number or negative value', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     let weights = [1, 5, 2, -1, 6]
 
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       pickRandom(possibles, weights)
     }, /Weights must be an array of positive numbers/)
 
     weights = [1, 5, 2, 'stinky', 6]
 
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       pickRandom(possibles, weights)
     }, /Weights must be an array of positive numbers/)
   })
 
+<<<<<<< HEAD
+  it('should return a single value if no number argument was passed', function () {
+=======
   it('should return a single value if no number argument was passed', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
 
@@ -60,13 +101,21 @@ describe('pickRandom', function (): void {
     assert.notStrictEqual(possibles.indexOf(pickRandom(possibles, weights)), -1)
   })
 
+<<<<<<< HEAD
+  it('should return a single value if no number argument was passed (2)', function () {
+=======
   it('should return a single value if no number argument was passed (2)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [5]
 
     assert.strictEqual(pickRandom(possibles), 5)
   })
 
+<<<<<<< HEAD
+  it('should return an empty array if the given number is 0', function () {
+=======
   it('should return an empty array if the given number is 0', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 0
@@ -77,7 +126,11 @@ describe('pickRandom', function (): void {
     assert.strictEqual(pickRandom(possibles, { weights, number }).length, 0)
   })
 
+<<<<<<< HEAD
+  it('should return an array of length 1 if the number passed is 1', function () {
+=======
   it('should return an array of length 1 if the number passed is 1', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 1
@@ -92,7 +145,11 @@ describe('pickRandom', function (): void {
     assert.strictEqual(pickRandom(possibles, { weights, number }).length, 1)
   })
 
+<<<<<<< HEAD
+  it('should pick the given number of values from the given array', function () {
+=======
   it('should pick the given number of values from the given array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 3
@@ -106,7 +163,11 @@ describe('pickRandom', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should pick the given number of values from the given array also when this is more than the number of possibles', function () {
+=======
   it('should pick the given number of values from the given array also when this is more than the number of possibles', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 10
@@ -120,7 +181,11 @@ describe('pickRandom', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should pick the given number of values element-wise', function () {
+=======
   it('should pick the given number of values element-wise', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [
       [1, 2],
       [3, 4]
@@ -137,7 +202,11 @@ describe('pickRandom', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return a matrix when input was a matrix', function () {
+=======
   it('should return a matrix when input was a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 5, 2, 4, 6]
     const number = 2
@@ -167,7 +236,11 @@ describe('pickRandom', function (): void {
     assert.strictEqual(result6.size()[0], 2)
   })
 
+<<<<<<< HEAD
+  it('should pick a number from the given multi dimensional array following an uniform distribution', function () {
+=======
   it('should pick a number from the given multi dimensional array following an uniform distribution', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const possibles = [
       [11, 12],
       [22, 23],
@@ -175,17 +248,30 @@ describe('pickRandom', function (): void {
       [44, 45],
       [55, 56]
     ]
+<<<<<<< HEAD
+    const picked = []
+
+    times(1000, () => picked.push(pickRandom(possibles)))
+
+    flatten(possibles).forEach((possible) => {
+      const count = flatten(picked).filter((val) => val === possible).length
+=======
     const picked: any[] = []
 
     times(1000, function (): void { picked.push(pickRandom(possibles)) })
 
     flatten(possibles).forEach(function (possible): void {
       const count = flatten(picked).filter(function (val): boolean { return val === possible }).length
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.strictEqual(math.round(count / picked.length, 1), 0.1)
     })
   })
 
+<<<<<<< HEAD
+  it('should pick a value from the given multi dimensional array following an uniform distribution', function () {
+=======
   it('should pick a value from the given multi dimensional array following an uniform distribution', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // just to be sure that works for any kind of array
     const possibles = [
       [[11], [12]],
@@ -195,21 +281,38 @@ describe('pickRandom', function (): void {
       false,
       [1.3, 4.5, true]
     ]
+<<<<<<< HEAD
+    const picked = []
+
+    times(1000, () => picked.push(pickRandom(possibles)))
+    flatten(possibles).forEach((possible) => {
+      const count = picked.filter((val) => val === possible).length
+=======
     const picked: any[] = []
 
     times(1000, function (): void { picked.push(pickRandom(possibles)) })
     flatten(possibles).forEach(function (possible): void {
       const count = picked.filter(function (val): boolean { return val === possible }).length
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.strictEqual(math.round(count / picked.length, 1), 0.1)
     })
   })
 
+<<<<<<< HEAD
+  it('should pick a value from the given array following an uniform distribution if only possibles are passed', function () {
+    const possibles = [11, 22, 33, 44, 55]
+    const picked = []
+    let count
+
+    times(1000, function () {
+=======
   it('should pick a value from the given array following an uniform distribution if only possibles are passed', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const picked: number[] = []
     let count
 
     times(1000, function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       picked.push(pickRandom(possibles))
     })
 
@@ -239,6 +342,15 @@ describe('pickRandom', function (): void {
     assert.strictEqual(math.round(count / picked.length, 1), 0.2)
   })
 
+<<<<<<< HEAD
+  it('should pick a given number of values from the given array following an uniform distribution if no weights were passed', function () {
+    const possibles = [11, 22, 33, 44, 55]
+    const number = 2
+    const picked = []
+    let count
+
+    times(1000, function () {
+=======
   it('should pick a given number of values from the given array following an uniform distribution if no weights were passed', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const number = 2
@@ -246,6 +358,7 @@ describe('pickRandom', function (): void {
     let count
 
     times(1000, function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       picked.push.apply(picked, pickRandom(possibles, number))
     })
 
@@ -277,6 +390,15 @@ describe('pickRandom', function (): void {
     assert.strictEqual(math.round(count / picked.length, 1), 0.2)
   })
 
+<<<<<<< HEAD
+  it('should pick a value from the given array following a weighted distribution', function () {
+    const possibles = [11, 22, 33, 44, 55]
+    const weights = [1, 4, 0, 2, 3]
+    const picked = []
+    let count
+
+    times(1000, function () {
+=======
   it('should pick a value from the given array following a weighted distribution', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 4, 0, 2, 3]
@@ -284,6 +406,7 @@ describe('pickRandom', function (): void {
     let count
 
     times(1000, function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       picked.push(pickRandom(possibles, weights))
     })
 
@@ -313,6 +436,16 @@ describe('pickRandom', function (): void {
     assert.strictEqual(math.round(count / picked.length, 1), 0.3)
   })
 
+<<<<<<< HEAD
+  it('should return an array of values from the given array following a weighted distribution', function () {
+    const possibles = [11, 22, 33, 44, 55]
+    const weights = [1, 4, 0, 2, 3]
+    const number = 2
+    const picked = []
+    let count
+
+    times(1000, function () {
+=======
   it('should return an array of values from the given array following a weighted distribution', function (): void {
     const possibles = [11, 22, 33, 44, 55]
     const weights = [1, 4, 0, 2, 3]
@@ -321,6 +454,7 @@ describe('pickRandom', function (): void {
     let count
 
     times(1000, function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       picked.push.apply(picked, pickRandom(possibles, number, weights))
     })
 
@@ -349,7 +483,11 @@ describe('pickRandom', function (): void {
     }).length
     assert.strictEqual(math.round(count / picked.length, 1), 0.3)
 
+<<<<<<< HEAD
+    times(1000, function () {
+=======
     times(1000, function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       picked.push.apply(picked, pickRandom(possibles, weights, number))
     })
 
@@ -379,6 +517,16 @@ describe('pickRandom', function (): void {
     assert.strictEqual(math.round(count / picked.length, 1), 0.3)
   })
 
+<<<<<<< HEAD
+  it('should throw an error in case of wrong type of arguments', function () {
+    assert.throws(function () {
+      pickRandom(23)
+    }, /Unexpected type of argument/)
+    assert.throws(function () {
+      pickRandom()
+    }, /Too few arguments/)
+    assert.throws(function () {
+=======
   it('should throw an error in case of wrong type of arguments', function (): void {
     assert.throws(function (): void {
       pickRandom(23)
@@ -387,14 +535,20 @@ describe('pickRandom', function (): void {
       pickRandom()
     }, /Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       pickRandom([], 23, [], 9)
     }, /Too many arguments/)
 
     // TODO: more type testing...
   })
 
+<<<<<<< HEAD
+  it('should LaTeX pickRandom', function () {
+    const expression = math.parse('pickRandom([1,2,3])')
+=======
   it('should LaTeX pickRandom', function (): void {
     const expression = math.parse('pickRandom([1,2,3])') as MathNode
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       expression.toTex(),
       '\\mathrm{pickRandom}\\left(\\begin{bmatrix}1\\\\2\\\\3\\end{bmatrix}\\right)'
@@ -402,7 +556,11 @@ describe('pickRandom', function (): void {
   })
 })
 
+<<<<<<< HEAD
+function times(n, callback) {
+=======
 function times(n: number, callback: () => void): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
   for (let i = 0; i < n; i++) {
     callback()
   }

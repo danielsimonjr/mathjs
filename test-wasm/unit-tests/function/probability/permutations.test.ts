@@ -1,10 +1,18 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for permutations - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 const permutations = math.permutations
 
+<<<<<<< HEAD
+describe('permutations', function () {
+  it('should calculate the permutations of a number', function () {
+=======
 interface MathNode {
   type: string
   toTex(): string
@@ -12,6 +20,7 @@ interface MathNode {
 
 describe('permutations', function (): void {
   it('should calculate the permutations of a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(permutations(0), 1)
     assert.strictEqual(permutations(1), 1)
     assert.strictEqual(permutations(2), 2)
@@ -20,7 +29,11 @@ describe('permutations', function (): void {
     assert.strictEqual(permutations(5), 120)
   })
 
+<<<<<<< HEAD
+  it('should calculate the permutations of a BigNumber', function () {
+=======
   it('should calculate the permutations of a BigNumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(permutations(math.bignumber(4)), math.bignumber(24))
     assert.deepStrictEqual(permutations(math.bignumber(5)), math.bignumber(120))
     assert.deepStrictEqual(
@@ -29,7 +42,11 @@ describe('permutations', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should calculate the permutations of a BigNumber, taking k at a time', function () {
+=======
   it('should calculate the permutations of a BigNumber, taking k at a time', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       permutations(math.bignumber(5), math.bignumber(4)),
       math.bignumber(120)
@@ -44,21 +61,55 @@ describe('permutations', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should calculate the permutations of a number, taking k at a time', function () {
+=======
   it('should calculate the permutations of a number, taking k at a time', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(permutations(5, 4), 120)
     assert.strictEqual(permutations(9, 8), 362880)
     assert.strictEqual(permutations(7, 5), 2520)
   })
 
+<<<<<<< HEAD
+  it('should fail loudly when k is larger than x', function () {
+    assert.throws(function () {
+      permutations(5, 6)
+    }, TypeError)
+    assert.throws(function () {
+=======
   it('should fail loudly when k is larger than x', function (): void {
     assert.throws(function (): void {
       permutations(5, 6)
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       permutations(math.bignumber(5), math.bignumber(6))
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should not accept negative or non-integer arguments', function () {
+    assert.throws(function () {
+      permutations(12, -6)
+    }, TypeError)
+    assert.throws(function () {
+      permutations(-12, 6)
+    }, TypeError)
+    assert.throws(function () {
+      permutations(4.5, 2)
+    }, TypeError)
+    assert.throws(function () {
+      permutations(4, 0.5)
+    }, TypeError)
+    assert.throws(function () {
+      permutations(math.bignumber(-12), -6)
+    }, TypeError)
+    assert.throws(function () {
+      permutations(math.bignumber(12.5), math.bignumber(6))
+    }, TypeError)
+    assert.throws(function () {
+=======
   it('should not accept negative or non-integer arguments', function (): void {
     assert.throws(function (): void {
       permutations(12, -6)
@@ -79,30 +130,52 @@ describe('permutations', function (): void {
       permutations(math.bignumber(12.5), math.bignumber(6))
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       permutations(math.bignumber(12.5), math.pi)
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should not accept more than two arguments', function () {
+    assert.throws(function () {
+      permutations(12, 6, 13)
+    })
+    assert.throws(function () {
+=======
   it('should not accept more than two arguments', function (): void {
     assert.throws(function (): void {
       permutations(12, 6, 13)
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       permutations(-12, 6, 13)
     })
   })
 
+<<<<<<< HEAD
+  it('should not accept arguments of the wrong type', function () {
+    assert.throws(function () {
+      permutations('baa baa black sheep', true)
+    })
+    assert.throws(function () {
+=======
   it('should not accept arguments of the wrong type', function (): void {
     assert.throws(function (): void {
       permutations('baa baa black sheep', true)
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       permutations(new Array(12))
     })
   })
 
+<<<<<<< HEAD
+  it('should LaTeX permutations', function () {
+    const expression = math.parse('permutations(2)')
+=======
   it('should LaTeX permutations', function (): void {
     const expression = math.parse('permutations(2)') as MathNode
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       expression.toTex(),
       '\\mathrm{permutations}\\left(2\\right)'

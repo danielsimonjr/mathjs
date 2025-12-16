@@ -1,14 +1,23 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for quantileSeq - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 const bignumber = math.bignumber
 const quantileSeq = math.quantileSeq
 
+<<<<<<< HEAD
+describe('quantileSeq', function () {
+  it('should return the quantileSeq from an array with number probability', function () {
+=======
 describe('quantileSeq', function (): void {
   it('should return the quantileSeq from an array with number probability', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     assert.strictEqual(quantileSeq(lst, 0), 1.3)
     assert.strictEqual(quantileSeq(lst, 0.1), 1.75)
@@ -26,7 +35,11 @@ describe('quantileSeq', function (): void {
     assert.strictEqual(quantileSeq(lst, 1), 3.7)
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from a multidimensional array in the specified dimension', function () {
+=======
   it('should return the quantileSeq from a multidimensional array in the specified dimension', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arr = [
       [3.7, 2.7, 3.3, 1.3, 2.2, 3.1],
       [3.8, 2.5, 3.2, 1.2, 3.2, 4.1]
@@ -52,7 +65,11 @@ describe('quantileSeq', function (): void {
     assert.deepStrictEqual(quantileSeq(arr, 1, false, 1), [3.7, 4.1])
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from a multidimensional array in the specified dimension in the parser', function () {
+=======
   it('should return the quantileSeq from a multidimensional array in the specified dimension in the parser', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arr = [
       [3.7, 2.7, 3.3, 1.3, 2.2, 3.1],
       [3.8, 2.5, 3.2, 1.2, 3.2, 4.1]
@@ -81,7 +98,11 @@ describe('quantileSeq', function (): void {
     assert.deepStrictEqual(quantileSeq(arr, 1, false, 1), [3.7, 4.1])
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from an ascending array with number probability', function () {
+=======
   it('should return the quantileSeq from an ascending array with number probability', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const lst = [1.3, 2.2, 2.7, 3.1, 3.3, 3.7]
     assert.strictEqual(quantileSeq(lst, 0, true), 1.3)
     assert.strictEqual(quantileSeq(lst, 0.1, true), 1.75)
@@ -98,7 +119,11 @@ describe('quantileSeq', function (): void {
     assert.strictEqual(quantileSeq(lst, 1, true), 3.7)
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from an array with BigNumber probability', function () {
+=======
   it('should return the quantileSeq from an array with BigNumber probability', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // FIXME: why does quantileSeq sometimes return bignumber and sometimes not?
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     assert.deepStrictEqual(quantileSeq(lst, bignumber(0)), bignumber(1.3))
@@ -118,7 +143,11 @@ describe('quantileSeq', function (): void {
 
   // FIXME: should return the quantileSeq of an array of bignumbers with number probability
   // eslint-disable-next-line mocha/no-skipped-tests
+<<<<<<< HEAD
+  it.skip('should return the quantileSeq of an array of bignumbers with number probability', function () {
+=======
   it.skip('should return the quantileSeq of an array of bignumbers with number probability', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(
       quantileSeq(
         [
@@ -139,7 +168,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq of an array of bignumbers with BigNumber probability', function () {
+=======
   it('should return the quantileSeq of an array of bignumbers with BigNumber probability', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       quantileSeq(
         [
@@ -160,7 +193,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq of units', function () {
+=======
   it('should return the quantileSeq of units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       quantileSeq(
         [math.unit('5mm'), math.unit('15mm'), math.unit('10mm')],
@@ -170,14 +207,22 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from a 1d matrix', function () {
+=======
   it('should return the quantileSeq from a 1d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       quantileSeq(math.matrix([2, 4, 6, 8, 10, 12, 14]), 0.25),
       5
     )
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from a 2d array', function () {
+=======
   it('should return the quantileSeq from a 2d array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(
       quantileSeq(
         [
@@ -190,7 +235,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from an ascending 2d array', function () {
+=======
   it('should return the quantileSeq from an ascending 2d array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(
       quantileSeq(
         [
@@ -204,7 +253,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from a 2d matrix', function () {
+=======
   it('should return the quantileSeq from a 2d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(
       quantileSeq(
         math.matrix([
@@ -217,7 +270,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the quantileSeq from an ascending 2d matrix', function () {
+=======
   it('should return the quantileSeq from an ascending 2d matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxEqual(
       quantileSeq(
         math.matrix([
@@ -231,7 +288,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return list quantiles for list of number probabilities', function () {
+=======
   it('should return list quantiles for list of number probabilities', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     approxDeepEqual(quantileSeq(lst, [0.25, 0.5, 0.75]), [2.325, 2.9, 3.25])
     approxDeepEqual(
@@ -240,7 +301,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return list quantiles for list of number probabilities being a matrix', function () {
+=======
   it('should return list quantiles for list of number probabilities being a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       quantileSeq(math.matrix([3, -1, 5, 7]), math.matrix([1 / 3, 2 / 3])),
       [3, 5]
@@ -248,7 +313,11 @@ describe('quantileSeq', function (): void {
     // FIXME: should return a matrix as output when the input is a matrix
   })
 
+<<<<<<< HEAD
+  it('should return list quantiles for list of BigNumber probabilities', function () {
+=======
   it('should return list quantiles for list of BigNumber probabilities', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     assert.deepStrictEqual(
       quantileSeq(lst, [bignumber(0.25), bignumber(0.5), bignumber(0.75)]),
@@ -270,7 +339,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return list quantiles for list of number and BigNumber probabilities', function () {
+=======
   it('should return list quantiles for list of number and BigNumber probabilities', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     approxDeepEqual(
       quantileSeq(lst, [0.25, bignumber(0.5), 0.75]),
@@ -292,7 +365,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the evenly number spaced quantiles of an array', function () {
+=======
   it('should return the evenly number spaced quantiles of an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     approxDeepEqual(quantileSeq(lst, 3), [2.325, 2.9, 3.25])
     approxDeepEqual(
@@ -301,7 +378,11 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return the evenly BigNumber spaced quantiles of an array', function () {
+=======
   it('should return the evenly BigNumber spaced quantiles of an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const lst = [3.7, 2.7, 3.3, 1.3, 2.2, 3.1]
     assert.deepStrictEqual(quantileSeq(lst, bignumber(3)), [
       bignumber(2.325),
@@ -314,6 +395,16 @@ describe('quantileSeq', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid number of arguments', function () {
+    assert.throws(function () {
+      quantileSeq()
+    }, TypeError)
+    assert.throws(function () {
+      quantileSeq(2)
+    }, TypeError)
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid number of arguments', function (): void {
     assert.throws(function (): void {
       quantileSeq()
@@ -322,10 +413,34 @@ describe('quantileSeq', function (): void {
       quantileSeq(2)
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       quantileSeq([], 2, 3, 1)
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with unsupported type of arguments', function () {
+    assert.throws(function () {
+      quantileSeq([2, 4, 6, 8, 10, 12, 14], 0.25, 10)
+    }, math.UnsupportedTypeError)
+    assert.throws(function () {
+      quantileSeq([2, 4, 6, 8, 10, 12, 14], [0.25, 2])
+    }, math.UnsuppoError)
+    assert.throws(function () {
+      quantileSeq('A', 'C', 'B')
+    }, math.UnsupportedTypeError)
+    assert.throws(function () {
+      quantileSeq(true, false, true)
+    }, math.UnsupportedTypeError)
+    assert.throws(function () {
+      quantileSeq(0, 'B')
+    }, math.UnsupportedTypeError)
+
+    assert.throws(function () {
+      quantileSeq(math.complex(2, 3), math.complex(-1, 2))
+    }, /TypeError: Unexpected type of argument in function quantileSeq/)
+    assert.throws(function () {
+=======
   it('should throw an error if called with unsupported type of arguments', function (): void {
     assert.throws(function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], 0.25, 10)
@@ -347,15 +462,33 @@ describe('quantileSeq', function (): void {
       quantileSeq(math.complex(2, 3), math.complex(-1, 2))
     }, /TypeError: Unexpected type of argument in function quantileSeq/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       quantileSeq(2, null)
     }, /TypeError: Unexpected type of argument in function quantileSeq/)
 
     // TODO: improve error messages of quantileSeq
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       quantileSeq([2, null], 2)
     }, /TypeError: Unexpected type of argument in function compare/)
   })
 
+<<<<<<< HEAD
+  it('should throw error for bad probabilities and splits', function () {
+    assert.throws(function () {
+      quantileSeq([2, 4, 6, 8, 10, 12, 14], [0.23, 2, 0.2])
+    }, Error)
+    assert.throws(function () {
+      quantileSeq([2, 4, 6, 8, 10, 12, 14], [0.23, bignumber(2), 0.2])
+    }, Error)
+    assert.throws(function () {
+      quantileSeq([2, 4, 6, 8, 10, 12, 14], -2)
+    }, Error)
+    assert.throws(function () {
+=======
   it('should throw error for bad probabilities and splits', function (): void {
     assert.throws(function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], [0.23, 2, 0.2])
@@ -367,17 +500,27 @@ describe('quantileSeq', function (): void {
       quantileSeq([2, 4, 6, 8, 10, 12, 14], -2)
     }, Error)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       quantileSeq([2, 4, 6, 8, 10, 12, 14], bignumber(-2))
     }, Error)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with an empty array', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with an empty array', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       quantileSeq([])
     })
   })
 
+<<<<<<< HEAD
+  it('should not mutate the input', function () {
+=======
   it('should not mutate the input', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = [3, 2, 1]
     quantileSeq(a, 0.2)
     quantileSeq(a, 2)
@@ -386,7 +529,11 @@ describe('quantileSeq', function (): void {
   })
 
   /*
+<<<<<<< HEAD
+  it('should LaTeX quantileSeq', function () {
+=======
   it('should LaTeX quantileSeq', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('quantileSeq(1,2,3,4,0.3)')
     assert.strictEqual(expression.toTex(), '\\mathrm{quantile}\\left(1,2,3,4,0.3\\right)')
   })

@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test floor
+import assert from 'assert'
+
+import math from '../../../../src/defaultInstance.ts'
+=======
 /**
  * Test for floor - AssemblyScript-friendly TypeScript
  */
@@ -9,6 +16,7 @@ interface MathNode {
   toTex(): string
 }
 
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const bignumber = math.bignumber
 const complex = math.complex
 const fraction = math.fraction
@@ -18,13 +26,22 @@ const floor = math.floor
 const i = math.i
 const sparse = math.sparse
 
+<<<<<<< HEAD
+describe('floor', function () {
+  it('should floor booleans correctly', function () {
+=======
 describe('floor', function (): void {
   it('should floor booleans correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(floor(true), 1)
     assert.strictEqual(floor(false), 0)
   })
 
+<<<<<<< HEAD
+  it('should floor numbers correctly', function () {
+=======
   it('should floor numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(floor(0), 0)
     assert.strictEqual(floor(1), 1)
     assert.strictEqual(floor(1.3), 1)
@@ -38,7 +55,11 @@ describe('floor', function (): void {
     assert.strictEqual(floor(math.pi), 3)
   })
 
+<<<<<<< HEAD
+  it('should return the floor of a number with a given number of decimals', function () {
+=======
   it('should return the floor of a number with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(floor(0, 5), 0)
     assert.strictEqual(floor(2, 3), 2)
     assert.strictEqual(floor(1.3216, 2), 1.32)
@@ -52,13 +73,21 @@ describe('floor', function (): void {
     assert.strictEqual(floor(-2.178, 2), -2.18)
   })
 
+<<<<<<< HEAD
+  it('should be safe to call with a bigint', function () {
+=======
   it('should be safe to call with a bigint', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const b = 12345678901234567890n
     assert.strictEqual(floor(b), b)
     assert.strictEqual(floor(b, 7), b)
   })
 
+<<<<<<< HEAD
+  it('should floor big numbers correctly', function () {
+=======
   it('should floor big numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(floor(bignumber(0)), bignumber(0))
     assert.deepStrictEqual(floor(bignumber(1)), bignumber(1))
     assert.deepStrictEqual(floor(bignumber(1.3)), bignumber(1))
@@ -71,7 +100,11 @@ describe('floor', function (): void {
     assert.deepStrictEqual(floor(bignumber(-2.1)), bignumber(-3))
   })
 
+<<<<<<< HEAD
+  it('should return the floor of a big number with a given number of decimals', function () {
+=======
   it('should return the floor of a big number with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(floor(bignumber(0), 3), bignumber(0))
     assert.deepStrictEqual(floor(bignumber(1), 3), bignumber(1))
     assert.deepStrictEqual(floor(bignumber(1.315), 2), bignumber(1.31))
@@ -88,14 +121,22 @@ describe('floor', function (): void {
     assert.deepStrictEqual(floor(bignumber(-2.1), 0), bignumber(-3))
   })
 
+<<<<<<< HEAD
+  it('should floor complex numbers correctly', function () {
+=======
   it('should floor complex numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(floor(complex(0, 0)), complex(0, 0))
     assert.deepStrictEqual(floor(complex(1.3, 1.8)), complex(1, 1))
     assert.deepStrictEqual(floor(i), complex(0, 1))
     assert.deepStrictEqual(floor(complex(-1.3, -1.8)), complex(-2, -2))
   })
 
+<<<<<<< HEAD
+  it('should return the floor of real and imag part of a complex with a given number of decimals', function () {
+=======
   it('should return the floor of real and imag part of a complex with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(floor(complex(0, 0), 3), complex(0, 0))
     assert.deepStrictEqual(floor(complex(1.3, 1.8), 0), complex(1, 1))
     assert.deepStrictEqual(floor(complex(1.3, 1.8), 1), complex(1.3, 1.8))
@@ -114,7 +155,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor fractions correctly', function () {
+=======
   it('should floor fractions correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = fraction('2/3')
     assert(floor(a) instanceof math.Fraction)
     assert.strictEqual(a.toString(), '0.(6)')
@@ -131,7 +176,11 @@ describe('floor', function (): void {
     assert.strictEqual(floor(fraction(-2.1)).toString(), '-3')
   })
 
+<<<<<<< HEAD
+  it('should return the floor of a fraction with a given number of decimals', function () {
+=======
   it('should return the floor of a fraction with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(floor(fraction(0), 0).toString(), '0')
     assert.strictEqual(floor(fraction(0), 3).toString(), '0')
     assert.strictEqual(floor(fraction(1), 4).toString(), '1')
@@ -145,7 +194,11 @@ describe('floor', function (): void {
     assert.strictEqual(floor(fraction(-1.315), 2).toString(), '-1.32')
   })
 
+<<<<<<< HEAD
+  it('should gracefully handle round-off errors', function () {
+=======
   it('should gracefully handle round-off errors', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(floor(3.0000000000000004), 3)
     assert.strictEqual(floor(7.999999999999999), 8)
     assert.strictEqual(floor(-3.0000000000000004), -3)
@@ -165,7 +218,11 @@ describe('floor', function (): void {
     assert.strictEqual(floor(-30000.000000000004, 2), -30000)
   })
 
+<<<<<<< HEAD
+  it('should not be confused by default tolerances', function () {
+=======
   it('should not be confused by default tolerances', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(floor(1234567890123.5), 1234567890123)
     assert.strictEqual(
       floor(bignumber('12345678901234567890.5')).toFixed(),
@@ -173,7 +230,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should gracefully handle round-off errors with bignumbers', function () {
+=======
   it('should gracefully handle round-off errors with bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(floor(bignumber(3.0000000000000004)), bignumber(3))
     assert.deepStrictEqual(floor(bignumber(7.999999999999999)), bignumber(8))
     assert.deepStrictEqual(floor(bignumber(-3.0000000000000004)), bignumber(-3))
@@ -192,7 +253,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor units', function () {
+=======
   it('should floor units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       floor(unit('5.99 inch'), unit('inch')),
       unit('5 inch')
@@ -230,20 +295,36 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error if used with a unit without valueless unit', function () {
+    assert.throws(
+      function () {
+=======
   it('should throw an error if used with a unit without valueless unit', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         floor(unit('5cm'))
       },
       TypeError,
       'Function floor(unit) not supported'
     )
+<<<<<<< HEAD
+    assert.throws(
+      function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         floor(unit('5cm'), 2)
       },
       TypeError,
       'Function floor(unit) not supported'
     )
+<<<<<<< HEAD
+    assert.throws(
+      function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         floor(unit('5cm'), bignumber(2))
       },
       TypeError,
@@ -251,17 +332,31 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error if used with a unit with a second unit that is not valueless', function () {
+    assert.throws(function () {
+      floor(unit('2 inch'), 1, unit('10 cm'))
+    }, Error)
+    assert.throws(function () {
+=======
   it('should throw an error if used with a unit with a second unit that is not valueless', function (): void {
     assert.throws(function (): void {
       floor(unit('2 inch'), 1, unit('10 cm'))
     }, Error)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       floor(unit('2 inch'), unit('10 cm'))
     }, Error)
   })
 
+<<<<<<< HEAD
+  it('should throw an error with a unit', function () {
+    assert.throws(
+      function () {
+=======
   it('should throw an error with a unit', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         floor(unit('5cm'))
       },
       TypeError,
@@ -269,14 +364,22 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should convert a string to a number', function () {
+=======
   it('should convert a string to a number', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(floor('1.8'), 1)
     assert.strictEqual(floor('1.812', '2'), 1.81)
     assert.strictEqual(floor('1.812', 2).toString(), '1.81')
     assert.strictEqual(floor(1.812, '2').toString(), '1.81')
   })
 
+<<<<<<< HEAD
+  it('should floor all elements in a matrix', function () {
+=======
   it('should floor all elements in a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(floor([1.2, 3.4, 5.6, 7.8, 10.0]), [1, 3, 5, 7, 10])
     assert.deepStrictEqual(
       floor(matrix([1.2, 3.4, 5.6, 7.8, 10.0])),
@@ -284,7 +387,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor each element in a matrix with a given number of decimals', function () {
+=======
   it('should floor each element in a matrix with a given number of decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       floor([1.282, 3.415, -5.121, -10.128], 2),
       [1.28, 3.41, -5.13, -10.13]
@@ -308,7 +415,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor when number of decimals is provided in an array', function () {
+=======
   it('should floor when number of decimals is provided in an array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(floor(3.12385, [2, 3]), [3.12, 3.123])
     assert.deepStrictEqual(
       floor(bignumber(3.12385), [2, 3]),
@@ -324,7 +435,11 @@ describe('floor', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should floor when number of decimals is provided in a matrix', function () {
+=======
   it('should floor when number of decimals is provided in a matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       floor(3.12385, matrix([2, 3])),
       matrix([3.12, 3.123])
@@ -344,7 +459,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor dense matrix', function () {
+=======
   it('should floor dense matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       floor(
         matrix([
@@ -360,7 +479,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor dense matrix and scalar', function () {
+=======
   it('should floor dense matrix and scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       floor(
         matrix([
@@ -376,7 +499,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor dense matrix with given bignumber decimals', function () {
+=======
   it('should floor dense matrix with given bignumber decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expected = bignumber(
       matrix([
         [1.777, 2.345],
@@ -396,7 +523,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor sparse matrix', function () {
+=======
   it('should floor sparse matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       floor(
         sparse([
@@ -412,7 +543,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor sparse matrix and scalar', function () {
+=======
   it('should floor sparse matrix and scalar', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       floor(
         sparse([
@@ -428,7 +563,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should floor sparse matrix with given bignumber decimals', function () {
+=======
   it('should floor sparse matrix with given bignumber decimals', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expected = bignumber(
       sparse([
         [1.777, 2.345],
@@ -448,15 +587,33 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error in case of invalid number of arguments', function () {
+    assert.throws(function () {
+      floor()
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+=======
   it('should throw an error in case of invalid number of arguments', function (): void {
     assert.throws(function (): void {
       floor()
     }, /TypeError: Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       floor(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
+  it('should throw an in case of wrong type of arguments', function () {
+    assert.throws(function () {
+      floor(null)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+      floor(42, null)
+    }, /TypeError: Unexpected type of argument/)
+    assert.throws(function () {
+=======
   it('should throw an in case of wrong type of arguments', function (): void {
     assert.throws(function (): void {
       floor(null)
@@ -465,24 +622,41 @@ describe('floor', function (): void {
       floor(42, null)
     }, /TypeError: Unexpected type of argument/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       floor([3.82, 3.15], [1, 2])
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if requested number of decimals is incorrect', function () {
+    assert.throws(
+      function () {
+=======
   it('should throw an error if requested number of decimals is incorrect', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         floor(2.5, 1.5)
       },
       Error,
       'Number of decimals in function floor must be an integer'
     )
+<<<<<<< HEAD
+    assert.throws(
+      function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         floor(2.5, -2)
       },
       Error,
       ' Number of decimals in function floor must be in the range of 0-15'
     )
+<<<<<<< HEAD
+    assert.throws(
+      function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
         floor(2.5, Infinity)
       },
       Error,
@@ -490,7 +664,11 @@ describe('floor', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should LaTeX floor', function () {
+=======
   it('should LaTeX floor', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('floor(0.6)')
     assert.strictEqual(expression.toTex(), '\\left\\lfloor0.6\\right\\rfloor')
   })

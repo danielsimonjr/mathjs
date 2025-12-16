@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test RelationalNode
+import assert from 'assert'
+
+import math from '../../../../src/defaultInstance.ts'
+=======
 /**
  * Test for RelationalNode - AssemblyScript-friendly TypeScript
  */
@@ -6,35 +13,69 @@ import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
 interface MathNode { type: string; toTex(): string }
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const Node = math.Node
 const ConstantNode = math.ConstantNode
 const SymbolNode = math.SymbolNode
 const RelationalNode = math.RelationalNode
 
+<<<<<<< HEAD
+describe('RelationalNode', function () {
+=======
 describe('RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
   const one = new ConstantNode(1)
   const two = new ConstantNode(2)
   const three = new ConstantNode(3)
   const four = new ConstantNode(4)
 
+<<<<<<< HEAD
+  it('should create a RelationalNode', function () {
+=======
   it('should create a RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
     assert(n instanceof RelationalNode)
     assert(n instanceof Node)
     assert.strictEqual(n.type, 'RelationalNode')
   })
 
+<<<<<<< HEAD
+  it('should have isRelationalNode', function () {
+=======
   it('should have isRelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const node = new RelationalNode(['smaller', 'smaller'], [one, two, three])
     assert(node.isRelationalNode)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when calling without new operator', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when calling without new operator', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       RelationalNode()
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when creating without arguments', function () {
+    assert.throws(function () {
+      console.log(new RelationalNode())
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RelationalNode('smaller'))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RelationalNode(['smaller']))
+    }, TypeError)
+    assert.throws(function () {
+      console.log(new RelationalNode(['smaller'], one))
+    }, TypeError)
+    assert.throws(function () {
+=======
   it('should throw an error when creating without arguments', function (): void {
     assert.throws(function (): void {
       console.log(new RelationalNode())
@@ -49,11 +90,16 @@ describe('RelationalNode', function (): void {
       console.log(new RelationalNode(['smaller'], one))
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       console.log(new RelationalNode(['smaller'], [one]))
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should evaluate a RelationalNode', function () {
+=======
   it('should evaluate a RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     let n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
     let expr = n.compile()
     const scope = {}
@@ -64,7 +110,11 @@ describe('RelationalNode', function (): void {
     assert.strictEqual(expr.evaluate(scope), false)
   })
 
+<<<<<<< HEAD
+  it('should filter a RelationalNode', function () {
+=======
   it('should filter a RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
     assert.deepStrictEqual(
@@ -87,7 +137,11 @@ describe('RelationalNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should run forEach on a RelationalNode', function () {
+=======
   it('should run forEach on a RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
     const nodes = []
@@ -105,7 +159,11 @@ describe('RelationalNode', function (): void {
     assert.deepStrictEqual(paths, ['params[0]', 'params[1]', 'params[2]'])
   })
 
+<<<<<<< HEAD
+  it('should map a RelationalNode', function () {
+=======
   it('should map a RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
     const nodes = []
@@ -130,17 +188,28 @@ describe('RelationalNode', function (): void {
     assert.strictEqual(f.params[2], three)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when the map callback does not return a node', function () {
+    const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
+
+    assert.throws(function () {
+=======
   it('should throw an error when the map callback does not return a node', function (): void {
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       n.map(function () {
         return undefined
       })
     }, /Callback function must return a Node/)
   })
 
+<<<<<<< HEAD
+  it('should transform a RelationalNodes param', function () {
+=======
   it('should transform a RelationalNodes param', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
     const f = n.transform(function (node) {
@@ -153,7 +222,11 @@ describe('RelationalNode', function (): void {
     assert.deepStrictEqual(f.params[2], three)
   })
 
+<<<<<<< HEAD
+  it('should transform a RelationalNode itself', function () {
+=======
   it('should transform a RelationalNode itself', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
     const f = n.transform(function (node) {
@@ -164,7 +237,11 @@ describe('RelationalNode', function (): void {
     assert.deepStrictEqual(f, four)
   })
 
+<<<<<<< HEAD
+  it('should clone a RelationalNode itself', function () {
+=======
   it('should clone a RelationalNode itself', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new RelationalNode(['smaller', 'smaller'], [one, two, three])
 
     const m = n.clone()
@@ -179,7 +256,11 @@ describe('RelationalNode', function (): void {
     assert.strictEqual(m.conditionals[1], n.conditionals[1])
   })
 
+<<<<<<< HEAD
+  it('test equality another Node', function () {
+=======
   it('test equality another Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n1 = new RelationalNode(['smaller', 'smaller'], [one, two, three])
     const n2 = new RelationalNode(['smaller', 'smaller'], [one, two, three])
     const m = new RelationalNode(['smaller', 'larger'], [one, two, three])
@@ -197,7 +278,11 @@ describe('RelationalNode', function (): void {
     assert.strictEqual(n1.equals(q), false)
   })
 
+<<<<<<< HEAD
+  it('should perform short-circuit evaluation', function () {
+=======
   it('should perform short-circuit evaluation', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = math.parse('(a = a+1) > (b = b+1) > (c = c+1) > (d = d+1)')
     const scope = { a: 0, b: 0, c: 0, d: 0 }
     const result = n.evaluate(scope)
@@ -208,7 +293,11 @@ describe('RelationalNode', function (): void {
     assert.strictEqual(result, false)
   })
 
+<<<<<<< HEAD
+  it('should not evaluate params more than once', function () {
+=======
   it('should not evaluate params more than once', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = math.parse('(a = a+1) >= (b = b+1) >= (c = c+1) >= (d = d+1)')
     const scope = { a: 0, b: 0, c: 0, d: 0 }
     const result = n.evaluate(scope)
@@ -219,14 +308,22 @@ describe('RelationalNode', function (): void {
     assert.strictEqual(result, true)
   })
 
+<<<<<<< HEAD
+  it("should respect the 'all' parenthesis option", function () {
+=======
   it("should respect the 'all' parenthesis option", function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(
       math.parse('a<b<c').toString({ parenthesis: 'all' }),
       '(a) < (b) < (c)'
     )
   })
 
+<<<<<<< HEAD
+  it('should stringify a RelationalNode', function () {
+=======
   it('should stringify a RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n1 = new RelationalNode(['smaller', 'smaller'], [one, two, three])
     const n2 = new RelationalNode(
       ['smaller', 'larger', 'smallerEq', 'largerEq', 'equal', 'unequal'],
@@ -242,7 +339,11 @@ describe('RelationalNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should stringify a RelationalNode with custom toString', function () {
+=======
   it('should stringify a RelationalNode with custom toString', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'RelationalNode') {
@@ -280,7 +381,11 @@ describe('RelationalNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should stringify a RelationalNode with custom toHTML', function () {
+=======
   it('should stringify a RelationalNode with custom toHTML', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Also checks if the custom functions get passed on to the children
     const customFunction = function (node, options) {
       if (node.type === 'RelationalNode') {
@@ -318,7 +423,11 @@ describe('RelationalNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('toJSON and fromJSON', function () {
+=======
   it('toJSON and fromJSON', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const x = new SymbolNode('x')
     const n = new RelationalNode(['smaller', 'smaller'], [one, x, three])
 
@@ -334,7 +443,11 @@ describe('RelationalNode', function (): void {
     assert.deepStrictEqual(parsed, n)
   })
 
+<<<<<<< HEAD
+  it('should LaTeX a RelationalNode', function () {
+=======
   it('should LaTeX a RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const x = new SymbolNode('x')
     const n = new RelationalNode(['smaller', 'smaller'], [one, x, three])
 
@@ -346,7 +459,11 @@ describe('RelationalNode', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should HTML a RelationalNode', function () {
+=======
   it('should HTML a RelationalNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const x = new SymbolNode('x')
     const n = new RelationalNode(['smaller', 'smaller'], [one, x, three])
 

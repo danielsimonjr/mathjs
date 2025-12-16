@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test Node
+import assert from 'assert'
+
+import math from '../../../../src/defaultInstance.ts'
+const Node = math.Node
+
+describe('Node', function () {
+=======
 /**
  * Test for Node - AssemblyScript-friendly TypeScript
  */
@@ -9,6 +19,7 @@ interface MathNode { type: string; toTex(): string }
 const Node = math.Node
 
 describe('Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
   function MyNode(value) {
     this.value = value
   }
@@ -18,23 +29,40 @@ describe('Node', function (): void {
     return new MyNode(this.value)
   }
 
+<<<<<<< HEAD
+  it('should create a Node', function () {
+=======
   it('should create a Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new Node()
     assert(n instanceof Node)
   })
 
+<<<<<<< HEAD
+  it('should have isNode', function () {
+=======
   it('should have isNode', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const node = new Node()
     assert(node.isNode)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when calling without new operator', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when calling without new operator', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       Node()
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should filter a Node', function () {
+=======
   it('should filter a Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const n = new MyNode(2)
 
     assert.deepStrictEqual(
@@ -57,7 +85,11 @@ describe('Node', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should transform a Node', function () {
+=======
   it('should transform a Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     let a = new MyNode(2)
     let b = new MyNode(3)
     let c = a.transform(function (_node) {
@@ -74,7 +106,11 @@ describe('Node', function (): void {
     assert.deepStrictEqual(c, a)
   })
 
+<<<<<<< HEAD
+  it('should transform a Node using a replacement function', function () {
+=======
   it('should transform a Node using a replacement function', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new MyNode(2)
     const b = new MyNode(3)
     const c = a.transform(function (_node) {
@@ -84,7 +120,11 @@ describe('Node', function (): void {
     assert.deepStrictEqual(c, b)
   })
 
+<<<<<<< HEAD
+  it('transform should iterate over unchanged nodes', function () {
+=======
   it('transform should iterate over unchanged nodes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const logs = []
 
     function TestNode(value) {
@@ -105,7 +145,11 @@ describe('Node', function (): void {
     assert.deepStrictEqual(logs, ['transform a', 'map a'])
   })
 
+<<<<<<< HEAD
+  it('transform should not iterate over replaced nodes', function () {
+=======
   it('transform should not iterate over replaced nodes', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const logs = []
 
     function TestNode(value) {
@@ -131,14 +175,23 @@ describe('Node', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should throw an error when cloning a Node interface', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when cloning a Node interface', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = new Node()
       a.clone()
     }, /Cannot clone a Node interface/)
   })
 
+<<<<<<< HEAD
+  it('should shallow clone the content of a Node', function () {
+=======
   it('should shallow clone the content of a Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new math.ConstantNode(1)
     const b = new math.ConstantNode(2)
     const c = new math.OperatorNode('+', 'add', [a, b])
@@ -151,7 +204,11 @@ describe('Node', function (): void {
     assert.strictEqual(clone.args[1], c.args[1])
   })
 
+<<<<<<< HEAD
+  it('should deepClone the content of a Node', function () {
+=======
   it('should deepClone the content of a Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = new math.ConstantNode(1)
     const b = new math.ConstantNode(2)
     const c = new math.OperatorNode('+', 'add', [a, b])
@@ -164,35 +221,58 @@ describe('Node', function (): void {
     assert.notStrictEqual(clone.args[1], c.args[1])
   })
 
+<<<<<<< HEAD
+  it('test equality with another Node', function () {
+=======
   it('test equality with another Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(new Node().equals(new Node()), true)
     assert.strictEqual(new Node().equals(null), false)
     assert.strictEqual(new Node().equals(undefined), false)
     assert.strictEqual(new Node().equals({}), false)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when stringifying a Node interface', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when stringifying a Node interface', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const node = new Node()
       node.toString()
     }, /_toString not implemented for Node/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when calling toJSON on a Node interface', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when calling toJSON on a Node interface', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = new Node()
       a.toJSON()
     }, /Cannot serialize object: toJSON not implemented/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when calling _toTex', function () {
+    assert.throws(function () {
+=======
   it('should throw an error when calling _toTex', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const node = new Node()
       node._toTex()
     }, /_toTex not implemented for Node/)
   })
 
+<<<<<<< HEAD
+  it('should ignore custom toString if it returns nothing', function () {
+=======
   it('should ignore custom toString if it returns nothing', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const callback1 = function (_node, _callback) {}
     const callback2 = {
       bla: function (_node, _callbacks) {}
@@ -209,7 +289,11 @@ describe('Node', function (): void {
     assert.strictEqual(n2.toString(callback2), 'bla()')
   })
 
+<<<<<<< HEAD
+  it('should ignore custom toTex if it returns nothing', function () {
+=======
   it('should ignore custom toTex if it returns nothing', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const callback1 = function (_node, _callback) {}
     const callback2 = {
       bla: function (_node, _callbacks) {}
@@ -226,20 +310,34 @@ describe('Node', function (): void {
     assert.strictEqual(n2.toTex(callback2), '\\mathrm{bla}\\left(\\right)')
   })
 
+<<<<<<< HEAD
+  it('should throw an error when compiling an abstract node', function () {
+    const node = new Node()
+    assert.throws(function () {
+=======
   it('should throw an error when compiling an abstract node', function (): void {
     const node = new Node()
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       node.compile()
     }, /Error: Method _compile must be implemented by type Node/)
   })
 
+<<<<<<< HEAD
+  it('should have an identifier', function () {
+=======
   it('should have an identifier', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const node = new Node()
 
     assert.strictEqual(node.getIdentifier(), 'Node')
   })
 
+<<<<<<< HEAD
+  it('should get the content of a Node', function () {
+=======
   it('should get the content of a Node', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const c = new math.ConstantNode(1)
 
     assert.strictEqual(c.getContent(), c)

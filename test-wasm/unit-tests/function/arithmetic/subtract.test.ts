@@ -1,10 +1,22 @@
+<<<<<<< HEAD
+// @ts-nocheck
+// test subtract
+=======
 /**
  * Test for subtract - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
+<<<<<<< HEAD
+const bignumber = math.bignumber
+const subtract = math.subtract
+
+describe('subtract', function () {
+  it('should subtract two numbers correctly', function () {
+=======
 
 interface MathNode {
   type: string
@@ -15,6 +27,7 @@ const subtract = math.subtract
 
 describe('subtract', function (): void {
   it('should subtract two numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subtract(4, 2), 2)
     assert.deepStrictEqual(subtract(4, -4), 8)
     assert.deepStrictEqual(subtract(-4, -4), 0)
@@ -26,21 +39,33 @@ describe('subtract', function (): void {
     assert.deepStrictEqual(subtract(0, 3), -3)
   })
 
+<<<<<<< HEAD
+  it('should subtract booleans', function () {
+=======
   it('should subtract booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(subtract(true, true), 0)
     assert.strictEqual(subtract(true, false), 1)
     assert.strictEqual(subtract(false, true), -1)
     assert.strictEqual(subtract(false, false), 0)
   })
 
+<<<<<<< HEAD
+  it('should subtract mixed numbers and booleans', function () {
+=======
   it('should subtract mixed numbers and booleans', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.strictEqual(subtract(2, true), 1)
     assert.strictEqual(subtract(2, false), 2)
     assert.strictEqual(subtract(true, 2), -1)
     assert.strictEqual(subtract(false, 2), -2)
   })
 
+<<<<<<< HEAD
+  it('should subtract bignumbers', function () {
+=======
   it('should subtract bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtract(bignumber(0.3), bignumber(0.2)),
       bignumber(0.1)
@@ -55,6 +80,16 @@ describe('subtract', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should subtract mixed numbers and bignumbers', function () {
+    assert.deepStrictEqual(subtract(bignumber(0.3), 0.2), bignumber(0.1))
+    assert.deepStrictEqual(subtract(0.3, bignumber(0.2)), bignumber(0.1))
+
+    assert.throws(function () {
+      subtract(1 / 3, bignumber(1).div(3))
+    }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
+    assert.throws(function () {
+=======
   it('should subtract mixed numbers and bignumbers', function (): void {
     assert.deepStrictEqual(subtract(bignumber(0.3), 0.2), bignumber(0.1))
     assert.deepStrictEqual(subtract(0.3, bignumber(0.2)), bignumber(0.1))
@@ -63,18 +98,27 @@ describe('subtract', function (): void {
       subtract(1 / 3, bignumber(1).div(3))
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtract(bignumber(1).div(3), 1 / 3)
     }, /Cannot implicitly convert a number with >15 significant digits to BigNumber/)
   })
 
+<<<<<<< HEAD
+  it('should subtract mixed booleans and bignumbers', function () {
+=======
   it('should subtract mixed booleans and bignumbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(subtract(bignumber(1.1), true), bignumber(0.1))
     assert.deepStrictEqual(subtract(bignumber(1.1), false), bignumber(1.1))
     assert.deepStrictEqual(subtract(false, bignumber(0.2)), bignumber(-0.2))
     assert.deepStrictEqual(subtract(true, bignumber(0.2)), bignumber(0.8))
   })
 
+<<<<<<< HEAD
+  it('should subtract two complex numbers correctly', function () {
+=======
   it('should subtract two complex numbers correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtract(math.complex(3, 2), math.complex(8, 4)),
       math.complex('-5 - 2i')
@@ -107,7 +151,11 @@ describe('subtract', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error for mixed complex numbers and big numbers', function () {
+=======
   it('should throw an error for mixed complex numbers and big numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtract(math.complex(3, 4), math.bignumber(10)),
       math.complex(-7, 4)
@@ -118,7 +166,11 @@ describe('subtract', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should subtract two fractions', function () {
+=======
   it('should subtract two fractions', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const a = math.fraction(1, 3)
     assert.strictEqual(subtract(a, math.fraction(1, 6)).toString(), '0.1(6)')
     assert.strictEqual(a.toString(), '0.(3)')
@@ -133,7 +185,11 @@ describe('subtract', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should subtract mixed fractions and numbers', function () {
+=======
   it('should subtract mixed fractions and numbers', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       subtract(1, math.fraction(1, 3)),
       math.fraction(2, 3)
@@ -144,7 +200,11 @@ describe('subtract', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should subtract two quantities of the same unit', function () {
+=======
   it('should subtract two quantities of the same unit', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     approxDeepEqual(
       subtract(math.unit(5, 'km'), math.unit(100, 'mile')),
       math.unit(-155.93, 'km')
@@ -171,7 +231,11 @@ describe('subtract', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should subtract units even when they have offsets', function () {
+=======
   it('should subtract units even when they have offsets', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     let t = math.unit(20, 'degC')
     assert.deepStrictEqual(
       subtract(t, math.unit(1, 'degC')),
@@ -182,39 +246,78 @@ describe('subtract', function (): void {
     approxDeepEqual(subtract(t, math.unit(1, 'degC')), math.unit(66.2, 'degF'))
   })
 
+<<<<<<< HEAD
+  it('should throw an error if subtracting two quantities of different units', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if subtracting two quantities of different units', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtract(math.unit(5, 'km'), math.unit(100, 'gram'))
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error when one of the two units has undefined value', function () {
+    assert.throws(function () {
+      subtract(math.unit('km'), math.unit('5gram'))
+    }, /Parameter x contains a unit with undefined value/)
+    assert.throws(function () {
+=======
   it('should throw an error when one of the two units has undefined value', function (): void {
     assert.throws(function (): void {
       subtract(math.unit('km'), math.unit('5gram'))
     }, /Parameter x contains a unit with undefined value/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtract(math.unit('5 km'), math.unit('gram'))
     }, /Parameter y contains a unit with undefined value/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if subtracting numbers from units', function () {
+    assert.throws(function () {
+      subtract(math.unit(5, 'km'), 2)
+    }, TypeError)
+    assert.throws(function () {
+=======
   it('should throw an error if subtracting numbers from units', function (): void {
     assert.throws(function (): void {
       subtract(math.unit(5, 'km'), 2)
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtract(2, math.unit(5, 'km'))
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if subtracting numbers from units', function () {
+    assert.throws(function () {
+      subtract(math.unit(5, 'km'), bignumber(2))
+    }, TypeError)
+    assert.throws(function () {
+=======
   it('should throw an error if subtracting numbers from units', function (): void {
     assert.throws(function (): void {
       subtract(math.unit(5, 'km'), bignumber(2))
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtract(bignumber(2), math.unit(5, 'km'))
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should throw an error when used with a string', function () {
+    assert.throws(function () {
+      subtract('hello ', 'world')
+    })
+    assert.throws(function () {
+      subtract('str', 123)
+    })
+    assert.throws(function () {
+=======
   it('should throw an error when used with a string', function (): void {
     assert.throws(function (): void {
       subtract('hello ', 'world')
@@ -223,12 +326,18 @@ describe('subtract', function (): void {
       subtract('str', 123)
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtract(123, 'str')
     })
   })
 
+<<<<<<< HEAD
+  describe('Array', function () {
+    it('should subtract arrays correctly', function () {
+=======
   describe('Array', function (): void {
     it('should subtract arrays correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a2 = [
         [10, 20],
         [30, 40]
@@ -244,14 +353,22 @@ describe('subtract', function (): void {
       ])
     })
 
+<<<<<<< HEAD
+    it('should subtract a scalar and an array correctly', function () {
+=======
     it('should subtract a scalar and an array correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(subtract(2, [3, 4]), [-1, -2])
       assert.deepStrictEqual(subtract(2, [3, 0]), [-1, 2])
       assert.deepStrictEqual(subtract([3, 4], 2), [1, 2])
       assert.deepStrictEqual(subtract([3, 0], 2), [1, -2])
     })
 
+<<<<<<< HEAD
+    it('should substract broadcastable arrays correctly', function () {
+=======
     it('should substract broadcastable arrays correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a2 = [1, 2]
       const a3 = [[3], [4]]
       const a4 = subtract(a2, a3)
@@ -266,7 +383,11 @@ describe('subtract', function (): void {
       ])
     })
 
+<<<<<<< HEAD
+    it('should subtract array and dense matrix correctly', function () {
+=======
     it('should subtract array and dense matrix correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = [1, 2, 3]
       const b = math.matrix([3, 2, 1])
       const c = subtract(a, b)
@@ -275,7 +396,11 @@ describe('subtract', function (): void {
       assert.deepStrictEqual(c, math.matrix([-2, 0, 2]))
     })
 
+<<<<<<< HEAD
+    it('should subtract array and dense matrix correctly', function () {
+=======
     it('should subtract array and dense matrix correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = [
         [1, 2, 3],
         [4, 5, 6]
@@ -297,8 +422,13 @@ describe('subtract', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  describe('DenseMatrix', function () {
+    it('should subtract matrices correctly', function () {
+=======
   describe('DenseMatrix', function (): void {
     it('should subtract matrices correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a2 = math.matrix([
         [10, 20],
         [30, 40]
@@ -316,7 +446,11 @@ describe('subtract', function (): void {
       ])
     })
 
+<<<<<<< HEAD
+    it('should subtract a scalar and a matrix correctly', function () {
+=======
     it('should subtract a scalar and a matrix correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         subtract(2, math.matrix([3, 4])),
         math.matrix([-1, -2])
@@ -327,7 +461,11 @@ describe('subtract', function (): void {
       )
     })
 
+<<<<<<< HEAD
+    it('should subtract matrix and array correctly', function () {
+=======
     it('should subtract matrix and array correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = math.matrix([1, 2, 3])
       const b = [3, 2, 1]
       const c = subtract(a, b)
@@ -336,7 +474,11 @@ describe('subtract', function (): void {
       assert.deepStrictEqual(c, math.matrix([-2, 0, 2]))
     })
 
+<<<<<<< HEAD
+    it('should subtract dense and sparse matrices correctly', function () {
+=======
     it('should subtract dense and sparse matrices correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = math.matrix([
         [1, 2, 3],
         [1, 0, 0]
@@ -358,8 +500,13 @@ describe('subtract', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  describe('SparseMatrix', function () {
+    it('should subtract matrices correctly', function () {
+=======
   describe('SparseMatrix', function (): void {
     it('should subtract matrices correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a2 = math.matrix(
         [
           [10, 20],
@@ -385,7 +532,11 @@ describe('subtract', function (): void {
       )
     })
 
+<<<<<<< HEAD
+    it('should subtract a scalar and a matrix correctly', function () {
+=======
     it('should subtract a scalar and a matrix correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       assert.deepStrictEqual(
         subtract(
           2,
@@ -452,7 +603,11 @@ describe('subtract', function (): void {
       )
     })
 
+<<<<<<< HEAD
+    it('should subtract matrix and array correctly', function () {
+=======
     it('should subtract matrix and array correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = math.matrix(
         [
           [1, 2, 3],
@@ -473,7 +628,11 @@ describe('subtract', function (): void {
       ])
     })
 
+<<<<<<< HEAD
+    it('should subtract sparse and dense matrices correctly', function () {
+=======
     it('should subtract sparse and dense matrices correctly', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       const a = math.sparse([
         [1, 2, 3],
         [1, 0, 0]
@@ -495,22 +654,39 @@ describe('subtract', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error in case of invalid number of arguments', function () {
+    assert.throws(function () {
+      subtract(1)
+    }, /TypeError: Too few arguments/)
+    assert.throws(function () {
+=======
   it('should throw an error in case of invalid number of arguments', function (): void {
     assert.throws(function (): void {
       subtract(1)
     }, /TypeError: Too few arguments/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtract(1, 2, 3)
     }, /TypeError: Too many arguments/)
   })
 
+<<<<<<< HEAD
+  it('should throw an in case of wrong type of arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an in case of wrong type of arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       subtract(null, 2)
     }, /TypeError: Unexpected type of argument/)
   })
 
+<<<<<<< HEAD
+  it('should LaTeX subtract', function () {
+=======
   it('should LaTeX subtract', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('subtract(2,1)')
     assert.strictEqual(expression.toTex(), '\\left(2-1\\right)')
   })

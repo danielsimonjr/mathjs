@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+// @ts-nocheck
+import assert from 'assert'
+import math from '../../../../src/defaultInstance.ts'
+
+describe('forEach', function () {
+  it('should iterate over all elements of the matrix', function () {
+=======
 /**
  * Test for forEach - AssemblyScript-friendly TypeScript
  */
@@ -11,6 +19,7 @@ interface MathNode {
 
 describe('forEach', function (): void {
   it('should iterate over all elements of the matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.matrix([1, 2, 3])
     const output = []
     math.forEach(m, function (value) {
@@ -19,7 +28,11 @@ describe('forEach', function (): void {
     assert.deepStrictEqual(output, [1, 2, 3])
   })
 
+<<<<<<< HEAD
+  it('should iterate deep over all elements in the array', function () {
+=======
   it('should iterate deep over all elements in the array', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arr = [1, 2, 3]
     const output = []
     math.forEach(arr, function (value) {
@@ -28,7 +41,11 @@ describe('forEach', function (): void {
     assert.deepStrictEqual(output, [1, 2, 3])
   })
 
+<<<<<<< HEAD
+  it('should invoke a typed function with correct number of arguments (1)', function () {
+=======
   it('should invoke a typed function with correct number of arguments (1)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const output = []
     math.forEach(
       [1, 2, 3],
@@ -45,7 +62,11 @@ describe('forEach', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should invoke a typed function with correct number of arguments (2)', function () {
+=======
   it('should invoke a typed function with correct number of arguments (2)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arr = [1, 2, 3]
     const output = []
     math.forEach(
@@ -63,7 +84,11 @@ describe('forEach', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should invoke callback with 3 parameters (value, index, obj)', function () {
+=======
   it('should invoke callback with 3 parameters (value, index, obj)', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arr = [
       [1, 2, 3],
       [4, 5, 6]
@@ -84,7 +109,11 @@ describe('forEach', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should invoke callback with 3 parameters when not providing explicit arguments', function () {
+=======
   it('should invoke callback with 3 parameters when not providing explicit arguments', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const arr = [1, 2, 3]
     const output = []
 
@@ -95,7 +124,11 @@ describe('forEach', function (): void {
     assert.deepStrictEqual(output, [3, 3, 3])
   })
 
+<<<<<<< HEAD
+  it('should not throw on empty arrays/matrices, with a typed callback', function () {
+=======
   it('should not throw on empty arrays/matrices, with a typed callback', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const testCases = [
       [],
       [[]],
@@ -142,34 +175,59 @@ describe('forEach', function (): void {
     })
   })
 
+<<<<<<< HEAD
+  it('should not throw an error on an empty array with a typed function', function () {
+=======
   it('should not throw an error on an empty array with a typed function', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.doesNotThrow(function () {
       math.forEach([], math.square)
     })
   })
 
+<<<<<<< HEAD
+  it('should not throw an error on an empty matrix with a typed function', function () {
+=======
   it('should not throw an error on an empty matrix with a typed function', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.doesNotThrow(function () {
       math.forEach(math.matrix([]), math.square)
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with unsupported type', function () {
+    assert.throws(function () {
+      math.forEach(1, function () {})
+    })
+    assert.throws(function () {
+=======
   it('should throw an error if called with unsupported type', function (): void {
     assert.throws(function (): void {
       math.forEach(1, function () {})
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.forEach('arr', function () {})
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid number of arguments', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid number of arguments', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.forEach([1, 2, 3])
     })
   })
 
+<<<<<<< HEAD
+  it('should LaTeX forEach', function () {
+=======
   it('should LaTeX forEach', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('forEach([1,2,3],callback)')
     assert.strictEqual(
       expression.toTex(),

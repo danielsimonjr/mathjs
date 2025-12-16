@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for diff - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
@@ -253,8 +257,13 @@ const largeTestArrayDimension3 = [
   ]
 ]
 
+<<<<<<< HEAD
+describe('diff', function () {
+  it('should return an empty array/matrix for less than 2 elements, with and without specified dimension', function () {
+=======
 describe('diff', function (): void {
   it('should return an empty array/matrix for less than 2 elements, with and without specified dimension', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // With Dim = 0 specified
     assert.deepStrictEqual(diff([], 0), [])
     assert.deepStrictEqual(diff(matrix([]), 0), matrix([]))
@@ -285,7 +294,11 @@ describe('diff', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should return difference between elements of a 1-dimensional array, with and without specified dimension', function () {
+=======
   it('should return difference between elements of a 1-dimensional array, with and without specified dimension', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // With Dim = 0
     assert.deepStrictEqual(diff([1, 2, 4, 7, 0], 0), [1, 2, 3, -7])
 
@@ -293,7 +306,11 @@ describe('diff', function (): void {
     assert.deepStrictEqual(diff([1, 2, 4, 7, 0]), [1, 2, 3, -7])
   })
 
+<<<<<<< HEAD
+  it('should return difference between elements of a 1-dimensional matrix, with and without specified dimension', function () {
+=======
   it('should return difference between elements of a 1-dimensional matrix, with and without specified dimension', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // With Dim = 0
     assert.deepStrictEqual(
       diff(matrix([1, 2, 4, 7, 0]), 0),
@@ -304,7 +321,11 @@ describe('diff', function (): void {
     assert.deepStrictEqual(diff(matrix([1, 2, 4, 7, 0])), matrix([1, 2, 3, -7]))
   })
 
+<<<<<<< HEAD
+  it('should return difference between elements of a 2-dimensional array, with and without specified dimension', function () {
+=======
   it('should return difference between elements of a 2-dimensional array, with and without specified dimension', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // With Dim specified
     assert.deepStrictEqual(diff(smallTestArray, 0), smallTestArrayDimension0)
     assert.deepStrictEqual(diff(smallTestArray, 1), smallTestArrayDimension1)
@@ -317,7 +338,11 @@ describe('diff', function (): void {
     assert.deepStrictEqual(diff(smallTestArray), smallTestArrayDimension0)
   })
 
+<<<<<<< HEAD
+  it('should return difference between elements of a 2-dimensional matrix, with and without specified dimension', function () {
+=======
   it('should return difference between elements of a 2-dimensional matrix, with and without specified dimension', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // With Dim specified
     assert.deepStrictEqual(
       diff(matrix(smallTestArray), 0),
@@ -335,7 +360,11 @@ describe('diff', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should return difference between elements of a 4-dimensional array, with and without specified dimension', function () {
+=======
   it('should return difference between elements of a 4-dimensional array, with and without specified dimension', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // With Dim specified
     assert.deepStrictEqual(diff(largeTestArray, 0), largeTestArrayDimension0)
     assert.deepStrictEqual(diff(largeTestArray, 1), largeTestArrayDimension1)
@@ -358,7 +387,11 @@ describe('diff', function (): void {
     assert.deepStrictEqual(diff(largeTestArray), largeTestArrayDimension0)
   })
 
+<<<<<<< HEAD
+  it('should return difference between elements of a 4-dimensional matrix, with and without specified dimension', function () {
+=======
   it('should return difference between elements of a 4-dimensional matrix, with and without specified dimension', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // With Dim specified
     assert.deepStrictEqual(
       diff(matrix(largeTestArray), 0),
@@ -384,7 +417,11 @@ describe('diff', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should treat an array of matrices as an array of arrays', function () {
+=======
   it('should treat an array of matrices as an array of arrays', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // With Dim = 0
     assert.deepStrictEqual(diff([matrix([1, 2]), matrix([3, 4])], 0), [[2, 2]])
     assert.deepStrictEqual(diff([matrix([1, 2]), matrix([3, 4])], 1), [
@@ -402,7 +439,11 @@ describe('diff', function (): void {
     assert.deepStrictEqual(diff([matrix([1, 2]), [3, 4]]), [[2, 2]])
   })
 
+<<<<<<< HEAD
+  it('should be consistent with bignumber', function () {
+=======
   it('should be consistent with bignumber', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // 4-dim array but done with bignumber
     assert.deepStrictEqual(
       diff(math.bignumber(largeTestArray), 0),
@@ -428,7 +469,11 @@ describe('diff', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should be consistent with fraction', function () {
+=======
   it('should be consistent with fraction', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // 4-dim array but done with bignumber
     assert.deepStrictEqual(
       diff(math.fraction(largeTestArray), 0),
@@ -454,7 +499,11 @@ describe('diff', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should be consistent with units', function () {
+=======
   it('should be consistent with units', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     // Derived from previous smallTestArray
     const smallUnitsArray = [
       [
@@ -525,64 +574,127 @@ describe('diff', function (): void {
     approxDeepEqual(diff(smallUnitsArray), smallUnitsArrayDimension0)
   })
 
+<<<<<<< HEAD
+  it('should throw if input is not an array or matrix', function () {
+    assert.throws(function () {
+=======
   it('should throw if input is not an array or matrix', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(1, 0)
     }, TypeError)
   })
 
+<<<<<<< HEAD
+  it('should throw if dimension is too large, negative or not an integer', function () {
+    // Not enough dimensions in the array
+    assert.throws(function () {
+      diff([1, 2, 3, 4], 1)
+    }, RangeError)
+    assert.throws(function () {
+=======
   it('should throw if dimension is too large, negative or not an integer', function (): void {
     // Not enough dimensions in the array
     assert.throws(function (): void {
       diff([1, 2, 3, 4], 1)
     }, RangeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(matrix([1, 2, 3, 4]), 1)
     }, RangeError)
 
     // No negative dimensions
+<<<<<<< HEAD
+    assert.throws(function () {
+      diff([1, 2, 3, 4], -1)
+    }, RangeError)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       diff([1, 2, 3, 4], -1)
     }, RangeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(matrix([1, 2, 3, 4]), -1)
     }, RangeError)
 
     // No decimal dimensions
+<<<<<<< HEAD
+    assert.throws(function () {
+      diff(matrix([1, 2, 3, 4]), 0.5)
+    }, RangeError)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       diff(matrix([1, 2, 3, 4]), 0.5)
     }, RangeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(matrix([1, 2, 3, 4]), -0.5)
     }, RangeError)
   })
 
+<<<<<<< HEAD
+  it('should throw if bignumber is not a valid index', function () {
+    // Not enough dimensions in the array
+    assert.throws(function () {
+      diff([1, 2, 3, 4], math.bignumber(1))
+    }, RangeError)
+    assert.throws(function () {
+=======
   it('should throw if bignumber is not a valid index', function (): void {
     // Not enough dimensions in the array
     assert.throws(function (): void {
       diff([1, 2, 3, 4], math.bignumber(1))
     }, RangeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(matrix([1, 2, 3, 4]), math.bignumber(1))
     }, RangeError)
 
     // No negative dimensions
+<<<<<<< HEAD
+    assert.throws(function () {
+      diff([1, 2, 3, 4], math.bignumber(-1))
+    }, RangeError)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       diff([1, 2, 3, 4], math.bignumber(-1))
     }, RangeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(matrix([1, 2, 3, 4]), math.bignumber(-1))
     }, RangeError)
 
     // No decimal dimensions
+<<<<<<< HEAD
+    assert.throws(function () {
+      diff(matrix([1, 2, 3, 4]), math.bignumber(0.5))
+    }, RangeError)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       diff(matrix([1, 2, 3, 4]), math.bignumber(0.5))
     }, RangeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(matrix([1, 2, 3, 4]), math.bignumber(-0.5))
     }, RangeError)
 
     // Infinity
+<<<<<<< HEAD
+    assert.throws(function () {
+      diff(matrix([1, 2, 3, 4]), Infinity)
+    }, RangeError)
+    assert.throws(function () {
+      diff(matrix([1, 2, 3, 4]), -Infinity)
+    }, RangeError)
+    assert.throws(function () {
+      diff(matrix([1, 2, 3, 4]), math.bignumber('Infinity'))
+    }, RangeError)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       diff(matrix([1, 2, 3, 4]), Infinity)
     }, RangeError)
@@ -593,10 +705,20 @@ describe('diff', function (): void {
       diff(matrix([1, 2, 3, 4]), math.bignumber('Infinity'))
     }, RangeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(matrix([1, 2, 3, 4]), math.bignumber('-Infinity'))
     }, RangeError)
   })
 
+<<<<<<< HEAD
+  it("should throw if array is not 'rectangular'", function () {
+    // Matrices are already 'rectangular' so this error doesnt apply to them
+    // The first one throws TypeError for trying to do 2 - [3,4] whereas the second one throws RangeError as [1,2].length != [3,4,3].length
+    assert.throws(function () {
+      diff([1, 2, [3, 4]], 0)
+    }, TypeError)
+    assert.throws(function () {
+=======
   it("should throw if array is not 'rectangular'", function (): void {
     // Matrices are already 'rectangular' so this error doesnt apply to them
     // The first one throws TypeError for trying to do 2 - [3,4] whereas the second one throws RangeError as [1,2].length != [3,4,3].length
@@ -604,6 +726,7 @@ describe('diff', function (): void {
       diff([1, 2, [3, 4]], 0)
     }, TypeError)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       diff(
         [
           [1, 2],

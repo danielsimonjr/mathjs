@@ -1,3 +1,15 @@
+<<<<<<< HEAD
+// @ts-nocheck
+import assert from 'assert'
+import math from '../../../../src/defaultInstance.ts'
+
+describe('sort', function () {
+  it('should sort an array with numbers', function () {
+    assert.deepStrictEqual(math.sort([5, 10, 1]), [1, 5, 10])
+  })
+
+  it('should sort an array with strings', function () {
+=======
 /**
  * Test for sort - AssemblyScript-friendly TypeScript
  */
@@ -15,6 +27,7 @@ describe('sort', function (): void {
   })
 
   it('should sort an array with strings', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(math.sort(['C', 'B', 'A', 'D'], 'natural'), [
       'A',
       'B',
@@ -29,13 +42,28 @@ describe('sort', function (): void {
     ])
   })
 
+<<<<<<< HEAD
+  it('should sort a Matrix', function () {
+=======
   it('should sort a Matrix', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       math.sort(math.matrix([5, 10, 1])),
       math.matrix([1, 5, 10])
     )
   })
 
+<<<<<<< HEAD
+  it('should sort an array in ascending order', function () {
+    assert.deepStrictEqual(math.sort([5, 10, 1], 'asc'), [1, 5, 10])
+  })
+
+  it('should sort an array in descending order', function () {
+    assert.deepStrictEqual(math.sort([5, 10, 1], 'desc'), [10, 5, 1])
+  })
+
+  it('should sort an array naturally', function () {
+=======
   it('should sort an array in ascending order', function (): void {
     assert.deepStrictEqual(math.sort([5, 10, 1], 'asc'), [1, 5, 10])
   })
@@ -45,13 +73,18 @@ describe('sort', function (): void {
   })
 
   it('should sort an array naturally', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     assert.deepStrictEqual(
       math.sort([{ a: 4 }, { a: 2 }, { a: 3 }], 'natural'),
       [{ a: 2 }, { a: 3 }, { a: 4 }]
     )
   })
 
+<<<<<<< HEAD
+  it('should sort an array with a custom compare function', function () {
+=======
   it('should sort an array with a custom compare function', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     function sortByLength(a, b) {
       return a.length - b.length
     }
@@ -61,8 +94,13 @@ describe('sort', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with a multi dimensional matrix', function () {
+    assert.throws(function () {
+=======
   it('should throw an error if called with a multi dimensional matrix', function (): void {
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.sort(
         math.matrix([
           [1, 2],
@@ -72,6 +110,19 @@ describe('sort', function (): void {
     }, /One dimensional matrix expected/)
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with unsupported type', function () {
+    assert.throws(function () {
+      math.sort(2)
+    })
+    assert.throws(function () {
+      math.sort('string')
+    })
+    assert.throws(function () {
+      math.sort([], 'string')
+    }, /String "asc", "desc", or "natural" expected/)
+    assert.throws(function () {
+=======
   it('should throw an error if called with unsupported type', function (): void {
     assert.throws(function (): void {
       math.sort(2)
@@ -83,20 +134,33 @@ describe('sort', function (): void {
       math.sort([], 'string')
     }, /String "asc", "desc", or "natural" expected/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.sort([], {})
     })
   })
 
+<<<<<<< HEAD
+  it('should throw an error if called with invalid number of arguments', function () {
+    assert.throws(function () {
+      math.sort([], 'asc', 'foo')
+    })
+    assert.throws(function () {
+=======
   it('should throw an error if called with invalid number of arguments', function (): void {
     assert.throws(function (): void {
       math.sort([], 'asc', 'foo')
     })
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       math.sort()
     })
   })
 
+<<<<<<< HEAD
+  it('should LaTeX sort', function () {
+=======
   it('should LaTeX sort', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const expression = math.parse('sort([3,2,1])')
     assert.strictEqual(
       expression.toTex(),

@@ -1,15 +1,22 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for std.transform - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
 import math from '../../../../src/defaultInstance.ts'
 
+<<<<<<< HEAD
+=======
 interface MathNode {
   type: string
   toTex(): string
 }
 
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 const Unit = math.Unit
 const std = math.expression.transform.std
 
@@ -79,15 +86,34 @@ describe('std.transform', function () {
   })
 
   it('should throw an error if called with an invalid one based index', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+      std(inputMatrix, 0)
+    }, /Index out of range/)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       std(inputMatrix, 0)
     }, /Index out of range/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std(inputMatrix, 4)
     }, /Index out of range/)
   })
 
   it('should throw an error if called with invalid type of arguments', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+      std(new Date(), 2)
+    }, /Cannot calculate std, unexpected type of argument/)
+    assert.throws(function () {
+      std(2, 3, null)
+    }, /Cannot calculate std, unexpected type of argument/)
+    assert.throws(function () {
+      std([2, 3, null])
+    }, /Cannot calculate std, unexpected type of argument/)
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
       std(new Date(), 2)
     }, /Cannot calculate std, unexpected type of argument/)
@@ -98,6 +124,7 @@ describe('std.transform', function () {
       std([2, 3, null])
     }, /Cannot calculate std, unexpected type of argument/)
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std(
         [
           [2, 4, 6],
@@ -107,7 +134,11 @@ describe('std.transform', function () {
         0
       )
     }, /Cannot convert "biased" to a number/)
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std(
         [
           [2, 4, 6],
@@ -120,7 +151,11 @@ describe('std.transform', function () {
   })
 
   it('should throw an error if called with an empty array', function () {
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std([])
     })
   })
@@ -148,7 +183,11 @@ describe('std.transform', function () {
   it('should not compute the standard deviation value of quantities with incompatible units', function () {
     const a = math.unit(1, 'm')
     const b = math.unit(50, 'kg')
+<<<<<<< HEAD
+    assert.throws(function () {
+=======
     assert.throws(function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
       std([a, b])
     }, /Units do not match/)
   })

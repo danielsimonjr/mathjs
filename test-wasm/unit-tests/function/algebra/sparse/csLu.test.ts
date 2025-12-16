@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+// @ts-nocheck
+=======
 /**
  * Test for csLu - AssemblyScript-friendly TypeScript
  */
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
 import assert from 'assert'
 import { approxDeepEqual } from '../../../../../tools/approx.js'
 import math from '../../../../../src/defaultInstance.ts'
@@ -31,8 +35,13 @@ const csLu = createCsLu({
 })
 const csSqr = createCsSqr({ add, multiply, transpose })
 
+<<<<<<< HEAD
+describe('csLu', function () {
+  it('should decompose matrix, 2 x 2, no symbolic ordering and analysis, partial pivoting', function () {
+=======
 describe('csLu', function (): void {
   it('should decompose matrix, 2 x 2, no symbolic ordering and analysis, partial pivoting', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.sparse([
       [2, 1],
       [1, 4]
@@ -57,7 +66,11 @@ describe('csLu', function (): void {
     approxDeepEqual(csPermute(m, r.pinv, null, true), math.multiply(r.L, r.U))
   })
 
+<<<<<<< HEAD
+  it('should decompose matrix, 4 x 4, natural ordering (order=0), partial pivoting', function () {
+=======
   it('should decompose matrix, 4 x 4, natural ordering (order=0), partial pivoting', function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -78,7 +91,11 @@ describe('csLu', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it("should decompose matrix, 4 x 4, amd(A+A') (order=1), partial pivoting", function () {
+=======
   it("should decompose matrix, 4 x 4, amd(A+A') (order=1), partial pivoting", function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -99,7 +116,11 @@ describe('csLu', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it("should decompose matrix, 4 x 4, amd(A'*A) (order=2), partial pivoting", function () {
+=======
   it("should decompose matrix, 4 x 4, amd(A'*A) (order=2), partial pivoting", function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
@@ -120,7 +141,11 @@ describe('csLu', function (): void {
     )
   })
 
+<<<<<<< HEAD
+  it("should decompose matrix, 4 x 4, amd(A'*A) (order=3), partial pivoting", function () {
+=======
   it("should decompose matrix, 4 x 4, amd(A'*A) (order=3), partial pivoting", function (): void {
+>>>>>>> claude/review-sprints-quality-checks-Rlfec
     const m = math.sparse([
       [4.5, 0, 3.2, 0],
       [3.1, 2.9, 0, 0.9],
