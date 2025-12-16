@@ -2290,4 +2290,495 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ geometry/operations (polygon centroid)')
     })
   })
+
+  // ============================================
+  // NUMERICAL CALCULUS
+  // ============================================
+  describe('Numerical Calculus (direct import)', function () {
+    it('should compute numerical derivatives', async function () {
+      const calculus = await import('../../../src-wasm/numeric/calculus')
+
+      // Test central difference for f(x) = x^2 at x = 2
+      // f'(x) = 2x, so f'(2) = 4
+      const h = 0.001
+      const x = 2
+      const fxph = (x + h) * (x + h) // f(x+h)
+      const fxmh = (x - h) * (x - h) // f(x-h)
+
+      const deriv = calculus.centralDifference(fxph, fxmh, h)
+      approxEqual(deriv, 4, 1e-6)
+
+      console.log('  ✓ numeric/calculus (central difference)')
+    })
+
+    it('should compute five-point stencil derivative', async function () {
+      const calculus = await import('../../../src-wasm/numeric/calculus')
+
+      // Test five-point stencil for f(x) = x^3 at x = 1
+      // f'(x) = 3x^2, so f'(1) = 3
+      const h = 0.01
+      const x = 1
+      const fxp2h = Math.pow(x + 2 * h, 3)
+      const fxph = Math.pow(x + h, 3)
+      const fxmh = Math.pow(x - h, 3)
+      const fxm2h = Math.pow(x - 2 * h, 3)
+
+      const deriv = calculus.fivePointStencil(fxp2h, fxph, fxmh, fxm2h, h)
+      approxEqual(deriv, 3, 1e-6)
+
+      console.log('  ✓ numeric/calculus (five-point stencil)')
+    })
+
+    it('should compute numerical integration with Simpson rule', async function () {
+      const calculus = await import('../../../src-wasm/numeric/calculus')
+
+      // Integrate f(x) = x^2 from 0 to 1
+      // Exact result = 1/3
+      const nIntervals = 10 // Number of intervals (even)
+      const nPoints = nIntervals + 1 // Simpson's rule needs odd number of points (11)
+      const h = 1.0 / nIntervals
+      const fValues = new Float64Array(nPoints)
+
+      for (let i = 0; i < nPoints; i++) {
+        const x = i * h
+        fValues[i] = x * x
+      }
+
+      const integral = calculus.simpsonsRule(fValues, h, nPoints)
+      approxEqual(integral, 1 / 3, 0.01) // Relaxed tolerance
+
+      console.log('  ✓ numeric/calculus (Simpson integration)')
+    })
+
+    it('should compute second derivative', async function () {
+      const calculus = await import('../../../src-wasm/numeric/calculus')
+
+      // Test second derivative of f(x) = x^3 at x = 2
+      // f''(x) = 6x, so f''(2) = 12
+      const h = 0.01
+      const x = 2
+      const fx = Math.pow(x, 3)
+      const fxph = Math.pow(x + h, 3)
+      const fxmh = Math.pow(x - h, 3)
+
+      const deriv2 = calculus.secondDerivative(fxph, fx, fxmh, h)
+      approxEqual(deriv2, 12, 1e-4)
+
+      console.log('  ✓ numeric/calculus (second derivative)')
+    })
+  })
+
+  // ============================================
+  // ROOT FINDING
+  // ============================================
+  describe('Root Finding (direct import)', function () {
+    it('should compute bisection setup', async function () {
+      const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
+
+      // Find root of f(x) = x^2 - 2 (sqrt(2))
+      // Initial interval [1, 2]
+      const a = 1, b = 2
+      const fa = a * a - 2 // -1
+      const fb = b * b - 2 // 2
+
+      const state = rootfinding.bisectionSetup(fa, fb, a, b)
+
+      // State should be [midpoint, a, b, fa, fb, status]
+      approxEqual(state[0], 1.5, 1e-10) // Midpoint
+      approxEqual(state[1], 1, 1e-10)   // a
+      approxEqual(state[2], 2, 1e-10)   // b
+      approxEqual(state[5], 1.0, 1e-10) // Status = continue
+
+      console.log('  ✓ numeric/rootfinding (bisection setup)')
+    })
+
+    it('should compute Newton-Raphson step', async function () {
+      const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
+
+      // Find root of f(x) = x^2 - 2 using Newton's method
+      // f'(x) = 2x
+      let x = 1.5
+      const state = new Float64Array([x, 1])
+
+      for (let i = 0; i < 10; i++) {
+        const fx = x * x - 2
+        const fpx = 2 * x
+        const newState = rootfinding.newtonStep(state, fx, fpx, 1e-15)
+        x = newState[0]
+        state[0] = x
+        if (newState[1] === 0) break // Converged
+      }
+
+      approxEqual(x, Math.sqrt(2), 1e-10)
+
+      console.log('  ✓ numeric/rootfinding (Newton-Raphson)')
+    })
+
+    it('should compute secant method with proper state', async function () {
+      const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
+
+      // Find root of f(x) = x^2 - 2
+      const x0 = 1, x1 = 2
+      const fx0 = x0 * x0 - 2
+      const fx1 = x1 * x1 - 2
+
+      // Setup state
+      let state = rootfinding.secantSetup(x0, x1, fx0, fx1)
+
+      // Run iterations
+      for (let i = 0; i < 20; i++) {
+        const newState = rootfinding.secantStep(state, 1e-15)
+        if (newState[4] === 0 || newState[4] === -1) break // Converged or failed
+
+        if (newState[4] === 2) {
+          // Need function evaluation
+          const fNewX = newState[0] * newState[0] - 2
+          state = rootfinding.secantUpdate(newState, fNewX)
+        }
+      }
+
+      approxEqual(state[0], Math.sqrt(2), 1e-6)
+
+      console.log('  ✓ numeric/rootfinding (secant)')
+    })
+
+    it('should compute Halley step', async function () {
+      const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
+
+      // Find root of f(x) = x^3 - 2 (cube root of 2)
+      // f'(x) = 3x^2, f''(x) = 6x
+      let x = 1.5
+
+      for (let i = 0; i < 5; i++) {
+        const fx = x * x * x - 2
+        const fpx = 3 * x * x
+        const fppx = 6 * x
+        const newState = rootfinding.halleyStep(x, fx, fpx, fppx, 1e-15)
+        x = newState[0]
+        if (newState[1] === 0) break // Converged
+      }
+
+      approxEqual(x, Math.cbrt(2), 1e-10)
+
+      console.log('  ✓ numeric/rootfinding (Halley)')
+    })
+  })
+
+  // ============================================
+  // INTERPOLATION
+  // ============================================
+  describe('Interpolation (direct import)', function () {
+    it('should perform linear interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Linear interpolation between (0, 0) and (1, 2)
+      const result = interp.linearInterp(0, 0, 1, 2, 0.5)
+      approxEqual(result, 1, 1e-10)
+
+      // Test table interpolation
+      const xValues = new Float64Array([0, 1, 2, 3])
+      const yValues = new Float64Array([0, 1, 4, 9]) // y = x^2
+
+      const y = interp.linearInterpTable(xValues, yValues, 1.5, 4)
+      approxEqual(y, 2.5, 1e-10) // Linear interp between 1 and 4
+
+      console.log('  ✓ numeric/interpolation (linear)')
+    })
+
+    it('should perform Lagrange interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Interpolate quadratic: (0, 0), (1, 1), (2, 4)
+      const xValues = new Float64Array([0, 1, 2])
+      const yValues = new Float64Array([0, 1, 4])
+
+      // Should recover f(x) = x^2
+      const y1 = interp.lagrangeInterp(xValues, yValues, 1.5, 3)
+      approxEqual(y1, 2.25, 1e-10) // 1.5^2 = 2.25
+
+      const y2 = interp.lagrangeInterp(xValues, yValues, 0.5, 3)
+      approxEqual(y2, 0.25, 1e-10) // 0.5^2 = 0.25
+
+      console.log('  ✓ numeric/interpolation (Lagrange)')
+    })
+
+    it('should perform Newton divided differences interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Interpolate: (0, 1), (1, 2), (2, 5), (3, 10) - f(x) = x^2 + 1
+      const xValues = new Float64Array([0, 1, 2, 3])
+      const yValues = new Float64Array([1, 2, 5, 10])
+
+      const coeffs = interp.dividedDifferences(xValues, yValues, 4)
+      const y = interp.newtonInterp(xValues, coeffs, 1.5, 4)
+      approxEqual(y, 3.25, 1e-10) // 1.5^2 + 1 = 3.25
+
+      console.log('  ✓ numeric/interpolation (Newton)')
+    })
+
+    it('should perform cubic spline interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Interpolate sin function
+      const n = 5
+      const xValues = new Float64Array(n)
+      const yValues = new Float64Array(n)
+
+      for (let i = 0; i < n; i++) {
+        xValues[i] = (i / (n - 1)) * Math.PI
+        yValues[i] = Math.sin(xValues[i])
+      }
+
+      const coeffs = interp.naturalCubicSplineCoeffs(xValues, yValues, n)
+
+      // Test at midpoint
+      const x = Math.PI / 2
+      const y = interp.cubicSplineEval(xValues, coeffs, x, n)
+      approxEqual(y, 1, 0.01) // sin(π/2) = 1
+
+      console.log('  ✓ numeric/interpolation (cubic spline)')
+    })
+
+    it('should perform Hermite interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Hermite with f(0) = 0, f'(0) = 1, f(1) = 1, f'(1) = 1
+      // This should approximate a linear function
+      const y = interp.hermiteInterp(0, 0, 1, 1, 1, 1, 0.5)
+      approxEqual(y, 0.5, 1e-10)
+
+      console.log('  ✓ numeric/interpolation (Hermite)')
+    })
+
+    it('should perform barycentric interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Same test as Lagrange
+      const xValues = new Float64Array([0, 1, 2])
+      const yValues = new Float64Array([0, 1, 4])
+
+      const weights = interp.barycentricWeights(xValues, 3)
+      const y = interp.barycentricInterp(xValues, yValues, weights, 1.5, 3)
+      approxEqual(y, 2.25, 1e-10)
+
+      console.log('  ✓ numeric/interpolation (barycentric)')
+    })
+
+    it('should perform polynomial evaluation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Test polyEval for polynomial p(x) = 1 + 2x + 3x^2
+      // coeffs = [1, 2, 3]
+      const coeffs = new Float64Array([1, 2, 3])
+
+      // p(0) = 1
+      approxEqual(interp.polyEval(coeffs, 0, 2), 1, 1e-10)
+
+      // p(1) = 1 + 2 + 3 = 6
+      approxEqual(interp.polyEval(coeffs, 1, 2), 6, 1e-10)
+
+      // p(2) = 1 + 4 + 12 = 17
+      approxEqual(interp.polyEval(coeffs, 2, 2), 17, 1e-10)
+
+      console.log('  ✓ numeric/interpolation (polynomial evaluation)')
+    })
+  })
+
+  // ============================================
+  // RATIONAL ARITHMETIC
+  // ============================================
+  // Note: Rational arithmetic tests are skipped in pre-compile mode because they use
+  // AssemblyScript-specific types (i64, StaticArray) that are not available in Node.js.
+  // These functions are tested when running the full WASM build (npm run test:wasm).
+  describe('Rational Arithmetic (direct import)', function () {
+    it.skip('should compute GCD (uses AssemblyScript i64 types)', async function () {
+      // Skipped: i64 maps to BigInt but bitwise operations differ
+      console.log('  ⊘ numeric/rational (skipped - AS types)')
+    })
+
+    it.skip('should reduce fractions (uses AssemblyScript StaticArray)', async function () {
+      // Skipped: StaticArray is not available in Node.js
+      console.log('  ⊘ numeric/rational (skipped - AS types)')
+    })
+
+    it('should verify module exports exist', async function () {
+      const rational = await import('../../../src-wasm/numeric/rational')
+
+      // Just verify the functions are exported
+      assert.ok(typeof rational.gcd === 'function')
+      assert.ok(typeof rational.lcm === 'function')
+      assert.ok(typeof rational.reduce === 'function')
+      assert.ok(typeof rational.add === 'function')
+      assert.ok(typeof rational.subtract === 'function')
+      assert.ok(typeof rational.multiply === 'function')
+      assert.ok(typeof rational.divide === 'function')
+      assert.ok(typeof rational.compare === 'function')
+      assert.ok(typeof rational.toFloat === 'function')
+      assert.ok(typeof rational.fromFloat === 'function')
+      assert.ok(typeof rational.pow === 'function')
+      assert.ok(typeof rational.mediant === 'function')
+
+      console.log('  ✓ numeric/rational (exports verified)')
+    })
+  })
+
+  // ============================================
+  // UNIT CONVERSION
+  // ============================================
+  describe('Unit Conversion (direct import)', function () {
+    it('should convert length units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 meter = 100 centimeters
+      const cm = units.convert(1, units.UNIT_METER, units.UNIT_CENTIMETER)
+      approxEqual(cm, 100, 1e-10)
+
+      // 1 mile = 1609.344 meters
+      const m = units.convert(1, units.UNIT_MILE, units.UNIT_METER)
+      approxEqual(m, 1609.344, 1e-6)
+
+      // 1 foot = 12 inches
+      const inches = units.convert(1, units.UNIT_FOOT, units.UNIT_INCH)
+      approxEqual(inches, 12, 1e-10)
+
+      console.log('  ✓ unit/conversion (length)')
+    })
+
+    it('should convert mass units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 kg = 1000 grams
+      const g = units.convert(1, units.UNIT_KILOGRAM, units.UNIT_GRAM)
+      approxEqual(g, 1000, 1e-10)
+
+      // 1 pound = 0.45359237 kg
+      const kg = units.convert(1, units.UNIT_POUND, units.UNIT_KILOGRAM)
+      approxEqual(kg, 0.45359237, 1e-10)
+
+      console.log('  ✓ unit/conversion (mass)')
+    })
+
+    it('should convert time units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 hour = 3600 seconds
+      const sec = units.convert(1, units.UNIT_HOUR, units.UNIT_SECOND)
+      approxEqual(sec, 3600, 1e-10)
+
+      // 1 day = 24 hours
+      const hrs = units.convert(1, units.UNIT_DAY, units.UNIT_HOUR)
+      approxEqual(hrs, 24, 1e-10)
+
+      console.log('  ✓ unit/conversion (time)')
+    })
+
+    it('should convert temperature units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 0°C = 273.15 K
+      const k1 = units.convert(0, units.UNIT_CELSIUS, units.UNIT_KELVIN)
+      approxEqual(k1, 273.15, 1e-10)
+
+      // 100°C = 373.15 K
+      const k2 = units.convert(100, units.UNIT_CELSIUS, units.UNIT_KELVIN)
+      approxEqual(k2, 373.15, 1e-10)
+
+      // 32°F = 0°C
+      const c = units.convert(32, units.UNIT_FAHRENHEIT, units.UNIT_CELSIUS)
+      approxEqual(c, 0, 1e-10)
+
+      // 212°F = 100°C
+      const c2 = units.convert(212, units.UNIT_FAHRENHEIT, units.UNIT_CELSIUS)
+      approxEqual(c2, 100, 1e-10)
+
+      console.log('  ✓ unit/conversion (temperature)')
+    })
+
+    it('should convert energy units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 kJ = 1000 J
+      const j = units.convert(1, units.UNIT_KILOJOULE, units.UNIT_JOULE)
+      approxEqual(j, 1000, 1e-10)
+
+      // 1 cal = 4.184 J
+      const j2 = units.convert(1, units.UNIT_CALORIE, units.UNIT_JOULE)
+      approxEqual(j2, 4.184, 1e-10)
+
+      console.log('  ✓ unit/conversion (energy)')
+    })
+
+    it('should convert speed units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 m/s = 3.6 km/h
+      const kmh = units.convert(1, units.UNIT_METER_PER_SECOND, units.UNIT_KILOMETER_PER_HOUR)
+      approxEqual(kmh, 3.6, 1e-10)
+
+      // 60 mph ≈ 96.56 km/h
+      const kmh2 = units.convert(60, units.UNIT_MILE_PER_HOUR, units.UNIT_KILOMETER_PER_HOUR)
+      approxEqual(kmh2, 96.56064, 1e-4)
+
+      console.log('  ✓ unit/conversion (speed)')
+    })
+
+    it('should convert angle units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 180° = π radians
+      const rad = units.convert(180, units.UNIT_DEGREE, units.UNIT_RADIAN)
+      approxEqual(rad, Math.PI, 1e-10)
+
+      // 1 turn = 360°
+      const deg = units.convert(1, units.UNIT_TURN, units.UNIT_DEGREE)
+      approxEqual(deg, 360, 1e-10)
+
+      console.log('  ✓ unit/conversion (angle)')
+    })
+
+    it('should get unit dimensions', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // Force = kg·m/s²
+      const forceDims = units.getDimensions(units.UNIT_NEWTON)
+      assert.strictEqual(forceDims[1], 1) // mass
+      assert.strictEqual(forceDims[0], 1) // length
+      assert.strictEqual(forceDims[2], -2) // time^-2
+
+      // Check compatibility
+      assert.ok(units.areCompatible(units.UNIT_METER, units.UNIT_FOOT))
+      assert.ok(!units.areCompatible(units.UNIT_METER, units.UNIT_SECOND))
+
+      console.log('  ✓ unit/conversion (dimensions)')
+    })
+
+    it('should handle SI prefixes', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // kilo = 10^3
+      approxEqual(units.getPrefixMultiplier(units.PREFIX_KILO), 1000, 1e-10)
+
+      // milli = 10^-3
+      approxEqual(units.getPrefixMultiplier(units.PREFIX_MILLI), 0.001, 1e-15)
+
+      // Apply prefix
+      approxEqual(units.applyPrefix(5, units.PREFIX_KILO), 5000, 1e-10)
+
+      console.log('  ✓ unit/conversion (prefixes)')
+    })
+
+    it('should convert array of values', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      const values = new Float64Array([0, 10, 20, 30])
+      const converted = units.convertArray(values, units.UNIT_CELSIUS, units.UNIT_KELVIN, 4)
+
+      approxEqual(converted[0], 273.15, 1e-10)
+      approxEqual(converted[1], 283.15, 1e-10)
+      approxEqual(converted[2], 293.15, 1e-10)
+      approxEqual(converted[3], 303.15, 1e-10)
+
+      console.log('  ✓ unit/conversion (array conversion)')
+    })
+  })
 })
