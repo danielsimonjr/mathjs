@@ -226,3 +226,49 @@ export {
   utf8ByteLength,
   isNumericString
 } from './string/operations'
+
+// SIMD-optimized operations
+export {
+  // Vector operations (f64x2)
+  simdAddF64,
+  simdSubF64,
+  simdMulF64,
+  simdDivF64,
+  simdScaleF64,
+  simdDotF64,
+  simdSumF64,
+  simdSumSquaresF64,
+  simdNormF64,
+  simdMinF64,
+  simdMaxF64,
+  simdAbsF64,
+  simdSqrtF64,
+  simdNegF64,
+  // Matrix operations (SIMD)
+  simdMatVecMulF64,
+  simdMatAddF64,
+  simdMatSubF64,
+  simdMatDotMulF64,
+  simdMatScaleF64,
+  simdMatMulF64,
+  simdMatTransposeF64,
+  // Statistical operations (SIMD)
+  simdMeanF64,
+  simdVarianceF64,
+  simdStdF64,
+  // f32x4 operations (4-wide SIMD)
+  simdAddF32,
+  simdMulF32,
+  simdDotF32,
+  simdSumF32,
+  // i32x4 operations
+  simdAddI32,
+  simdMulI32,
+  // Complex operations (SIMD)
+  simdComplexMulF64,
+  simdComplexAddF64,
+  // Utilities
+  simdSupported,
+  simdVectorSizeF64,
+  simdVectorSizeF32
+} from './simd/operations'

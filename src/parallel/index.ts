@@ -9,6 +9,8 @@
  * - SharedArrayBuffer support for zero-copy data transfer
  * - Automatic fallback to sequential processing for small datasets
  * - Cross-platform support (Node.js and browsers)
+ * - WASM acceleration support
+ * - SIMD optimization support
  */
 
 // Core worker pool implementation
@@ -20,6 +22,16 @@ export {
   createMathWorker,
   workerpool
 } from './WorkerPool.js'
+
+// WASM-accelerated worker pool
+export {
+  WasmWorkerPool,
+  WasmWorkerPoolOptions,
+  ExecutionMode,
+  BenchmarkResult,
+  createMatrixPool,
+  createStatsPool
+} from './WasmWorkerPool.js'
 
 // Parallel matrix operations
 export { ParallelMatrix, MatrixData, ParallelConfig } from './ParallelMatrix.js'

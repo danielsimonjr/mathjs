@@ -26,10 +26,22 @@
       "importMemory": true,
       "initialMemory": 256,
       "maximumMemory": 16384
+    },
+    "simd": {
+      "outFile": "lib/wasm/index.simd.wasm",
+      "textFile": "lib/wasm/index.simd.wat",
+      "sourceMap": true,
+      "optimizeLevel": 3,
+      "shrinkLevel": 1,
+      "converge": true,
+      "noAssert": false,
+      "runtime": "incremental",
+      "enable": ["simd"]
     }
   },
   "options": {
     "bindings": "esm",
-    "exportStart": "_start"
+    "exportStart": "_start",
+    "enable": ["simd"]
   }
 }
