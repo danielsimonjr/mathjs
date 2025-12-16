@@ -2515,18 +2515,50 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
   })
 
   // RATIONAL ARITHMETIC
-  // Note: Rational arithmetic tests are skipped in pre-compile mode because they use
-  // AssemblyScript-specific types (i64, StaticArray) that are not available in Node.js.
-  // These functions are tested when running the full WASM build (npm run test:wasm).
+  // Using f64 alternatives for pre-compile testing (works with regular JS numbers)
+  // The i64 versions are tested in full WASM build (npm run test:wasm)
   describe('Rational Arithmetic (direct import)', function () {
-    it.skip('should compute GCD (uses AssemblyScript i64 types)', async function () {
-      // Skipped: i64 maps to BigInt but bitwise operations differ
-      console.log('  ⊘ numeric/rational (skipped - AS types)')
+    it('should compute GCD using f64 alternative', async function () {
+      const rational = await import('../../../src-wasm/numeric/rational')
+
+      // Test basic GCD
+      assert.strictEqual(rational.gcdF64(12, 8), 4)
+      assert.strictEqual(rational.gcdF64(48, 18), 6)
+      assert.strictEqual(rational.gcdF64(17, 13), 1) // coprime
+      assert.strictEqual(rational.gcdF64(0, 5), 5)
+      assert.strictEqual(rational.gcdF64(5, 0), 5)
+      assert.strictEqual(rational.gcdF64(-12, 8), 4) // negative
+      assert.strictEqual(rational.gcdF64(100, 100), 100)
+
+      console.log('  ✓ numeric/rational (gcdF64)')
     })
 
-    it.skip('should reduce fractions (uses AssemblyScript StaticArray)', async function () {
-      // Skipped: StaticArray is not available in Node.js
-      console.log('  ⊘ numeric/rational (skipped - AS types)')
+    it('should reduce fractions using f64 alternative', async function () {
+      const rational = await import('../../../src-wasm/numeric/rational')
+
+      const result = new Float64Array(2)
+
+      // 6/8 = 3/4
+      rational.reduceF64(6, 8, result)
+      assert.strictEqual(result[0], 3)
+      assert.strictEqual(result[1], 4)
+
+      // -6/8 = -3/4
+      rational.reduceF64(-6, 8, result)
+      assert.strictEqual(result[0], -3)
+      assert.strictEqual(result[1], 4)
+
+      // 6/-8 = -3/4
+      rational.reduceF64(6, -8, result)
+      assert.strictEqual(result[0], -3)
+      assert.strictEqual(result[1], 4)
+
+      // 0/5 = 0/1
+      rational.reduceF64(0, 5, result)
+      assert.strictEqual(result[0], 0)
+      assert.strictEqual(result[1], 1)
+
+      console.log('  ✓ numeric/rational (reduceF64)')
     })
 
     it('should verify module exports exist', async function () {
@@ -2545,6 +2577,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       assert.ok(typeof rational.fromFloat === 'function')
       assert.ok(typeof rational.pow === 'function')
       assert.ok(typeof rational.mediant === 'function')
+      // f64 alternatives
+      assert.ok(typeof rational.gcdF64 === 'function')
+      assert.ok(typeof rational.lcmF64 === 'function')
+      assert.ok(typeof rational.reduceF64 === 'function')
+      assert.ok(typeof rational.addF64 === 'function')
+      assert.ok(typeof rational.multiplyF64 === 'function')
+      assert.ok(typeof rational.compareF64 === 'function')
 
       console.log('  ✓ numeric/rational (exports verified)')
     })
@@ -3016,22 +3055,64 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
 
     // Note: GCD, LCM, xgcd, invmod use i64 (BigInt) types which have
-    // compatibility issues in Node.js pre-compile mode. These are tested
-    // when running the full WASM build (npm run test:wasm).
-    it.skip('should compute GCD (uses AS i64 types)', async function () {
-      console.log('  ⊘ arithmetic/advanced (gcd - skipped, AS types)')
+    // compatibility issues in Node.js pre-compile mode. Using f64 alternatives
+    // that work with regular JS numbers. i64 versions are tested in full WASM build.
+    it('should compute GCD using f64 alternative', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      assert.strictEqual(advanced.gcdF64(12, 8), 4)
+      assert.strictEqual(advanced.gcdF64(48, 18), 6)
+      assert.strictEqual(advanced.gcdF64(17, 13), 1)
+      assert.strictEqual(advanced.gcdF64(0, 5), 5)
+      assert.strictEqual(advanced.gcdF64(-12, 8), 4)
+
+      console.log('  ✓ arithmetic/advanced (gcdF64)')
     })
 
-    it.skip('should compute LCM (uses AS i64 types)', async function () {
-      console.log('  ⊘ arithmetic/advanced (lcm - skipped, AS types)')
+    it('should compute LCM using f64 alternative', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      assert.strictEqual(advanced.lcmF64(4, 6), 12)
+      assert.strictEqual(advanced.lcmF64(3, 5), 15)
+      assert.strictEqual(advanced.lcmF64(12, 18), 36)
+      assert.strictEqual(advanced.lcmF64(0, 5), 0)
+      assert.strictEqual(advanced.lcmF64(7, 7), 7)
+
+      console.log('  ✓ arithmetic/advanced (lcmF64)')
     })
 
-    it.skip('should compute extended GCD (uses AS i64 types)', async function () {
-      console.log('  ⊘ arithmetic/advanced (xgcd - skipped, AS types)')
+    it('should compute extended GCD using f64 alternative', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      const result = new Float64Array(3)
+
+      // xgcd(35, 15) = gcd=5, x=-1, y=3 because -1*35 + 3*15 = 5
+      advanced.xgcdF64(35, 15, result)
+      assert.strictEqual(result[0], 5) // gcd
+      // Verify: x*35 + y*15 = gcd
+      assert.strictEqual(result[1] * 35 + result[2] * 15, 5)
+
+      // xgcd(120, 23)
+      advanced.xgcdF64(120, 23, result)
+      assert.strictEqual(result[0], 1) // coprime
+      assert.strictEqual(result[1] * 120 + result[2] * 23, 1)
+
+      console.log('  ✓ arithmetic/advanced (xgcdF64)')
     })
 
-    it.skip('should compute modular inverse (uses AS i64 types)', async function () {
-      console.log('  ⊘ arithmetic/advanced (invmod - skipped, AS types)')
+    it('should compute modular inverse using f64 alternative', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // invmod(3, 7) = 5 because 3*5 = 15 ≡ 1 (mod 7)
+      assert.strictEqual(advanced.invmodF64(3, 7), 5)
+
+      // invmod(5, 11) = 9 because 5*9 = 45 ≡ 1 (mod 11)
+      assert.strictEqual(advanced.invmodF64(5, 11), 9)
+
+      // No inverse exists when gcd(a, m) != 1
+      assert.strictEqual(advanced.invmodF64(6, 9), 0) // gcd(6,9) = 3
+
+      console.log('  ✓ arithmetic/advanced (invmodF64)')
     })
 
     it('should compute norms', async function () {

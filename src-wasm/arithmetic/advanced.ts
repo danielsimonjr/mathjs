@@ -391,3 +391,108 @@ export function nthRootSigned(x: f64, n: i32): f64 {
   }
   return absRoot
 }
+
+// ============================================================================
+// F64 ALTERNATIVES FOR PRE-COMPILE TESTING
+// These use f64 instead of i64 for compatibility with Node.js imports
+// Works correctly for integers up to Number.MAX_SAFE_INTEGER (2^53 - 1)
+// ============================================================================
+
+/**
+ * Greatest Common Divisor using Euclidean algorithm (f64 version)
+ * For pre-compile testing compatibility - works with regular JS numbers
+ * @param a First integer (as f64)
+ * @param b Second integer (as f64)
+ * @returns GCD(a, b)
+ */
+export function gcdF64(a: f64, b: f64): f64 {
+  // Make both positive and round to integers
+  a = Math.abs(Math.floor(a))
+  b = Math.abs(Math.floor(b))
+
+  if (a === 0) return b
+  if (b === 0) return a
+
+  // Euclidean algorithm
+  while (b !== 0) {
+    const temp = b
+    b = a % b
+    a = temp
+  }
+  return a
+}
+
+/**
+ * Least Common Multiple (f64 version)
+ * @param a First integer (as f64)
+ * @param b Second integer (as f64)
+ * @returns LCM(a, b)
+ */
+export function lcmF64(a: f64, b: f64): f64 {
+  a = Math.abs(Math.floor(a))
+  b = Math.abs(Math.floor(b))
+  if (a === 0 || b === 0) return 0
+  const g = gcdF64(a, b)
+  return (a / g) * b // Divide first to reduce overflow risk
+}
+
+/**
+ * Extended Euclidean Algorithm (f64 version)
+ * Computes gcd(a, b) and coefficients x, y such that ax + by = gcd(a, b)
+ * @param a First integer (as f64)
+ * @param b Second integer (as f64)
+ * @param result Float64Array to store [gcd, x, y]
+ */
+export function xgcdF64(a: f64, b: f64, result: Float64Array): void {
+  a = Math.floor(a)
+  b = Math.floor(b)
+
+  let oldR: f64 = a
+  let r: f64 = b
+  let oldS: f64 = 1
+  let s: f64 = 0
+  let oldT: f64 = 0
+  let t: f64 = 1
+
+  while (r !== 0) {
+    const quotient = Math.floor(oldR / r)
+
+    let temp = r
+    r = oldR - quotient * r
+    oldR = temp
+
+    temp = s
+    s = oldS - quotient * s
+    oldS = temp
+
+    temp = t
+    t = oldT - quotient * t
+    oldT = temp
+  }
+
+  // Store results: [gcd, x, y]
+  unchecked(result[0] = oldR)
+  unchecked(result[1] = oldS)
+  unchecked(result[2] = oldT)
+}
+
+/**
+ * Modular multiplicative inverse (f64 version)
+ * Returns x such that (a * x) mod m = 1
+ * @param a The value (as f64)
+ * @param m The modulus (as f64)
+ * @returns Modular inverse or 0 if not exists
+ */
+export function invmodF64(a: f64, m: f64): f64 {
+  const result = new Float64Array(3)
+  xgcdF64(a, m, result)
+
+  const gcdVal = unchecked(result[0])
+  const x = unchecked(result[1])
+
+  // Inverse exists only if gcd(a, m) = 1
+  if (Math.abs(gcdVal - 1) > 0.5) return 0
+
+  // Make sure result is positive
+  return ((x % m) + m) % m
+}
