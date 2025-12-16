@@ -251,3 +251,143 @@ export function lcmArray(inputA: Int64Array, inputB: Int64Array, output: Int64Ar
     unchecked(output[i] = lcm(unchecked(inputA[i]), unchecked(inputB[i])))
   }
 }
+
+/**
+ * Compute the nth roots of unity
+ * Returns n complex numbers e^(2πik/n) for k = 0, 1, ..., n-1
+ * @param n Number of roots
+ * @param output Output array of size 2*n [re0, im0, re1, im1, ...]
+ */
+export function nthRootsOfUnity(n: i32, output: Float64Array): void {
+  const twoPiOverN = 2.0 * Math.PI / f64(n)
+
+  for (let k: i32 = 0; k < n; k++) {
+    const angle = twoPiOverN * f64(k)
+    unchecked(output[k * 2] = Math.cos(angle))      // Real part
+    unchecked(output[k * 2 + 1] = Math.sin(angle))  // Imaginary part
+  }
+}
+
+/**
+ * Compute the nth roots of a real number
+ * Returns n complex numbers: x^(1/n) * e^(2πik/n) for k = 0, 1, ..., n-1
+ * @param x The real number
+ * @param n Root degree
+ * @param output Output array of size 2*n [re0, im0, re1, im1, ...]
+ */
+export function nthRootsReal(x: f64, n: i32, output: Float64Array): void {
+  // Handle special cases
+  if (n <= 0) {
+    for (let i: i32 = 0; i < n * 2; i++) {
+      unchecked(output[i] = f64.NaN)
+    }
+    return
+  }
+
+  if (x === 0) {
+    for (let i: i32 = 0; i < n * 2; i++) {
+      unchecked(output[i] = 0)
+    }
+    return
+  }
+
+  // Compute the principal root magnitude
+  const absX = Math.abs(x)
+  const r = Math.pow(absX, 1.0 / f64(n))
+
+  // Compute the principal argument
+  let theta: f64 = 0
+  if (x < 0) {
+    theta = Math.PI  // arg(-|x|) = π
+  }
+
+  const twoPiOverN = 2.0 * Math.PI / f64(n)
+
+  for (let k: i32 = 0; k < n; k++) {
+    const angle = (theta + twoPiOverN * f64(k)) / f64(n)
+    unchecked(output[k * 2] = r * Math.cos(angle))      // Real part
+    unchecked(output[k * 2 + 1] = r * Math.sin(angle))  // Imaginary part
+  }
+}
+
+/**
+ * Compute the nth roots of a complex number
+ * Given z = re + i*im, returns n roots: z^(1/n) * e^(2πik/n)
+ * @param re Real part of input
+ * @param im Imaginary part of input
+ * @param n Root degree
+ * @param output Output array of size 2*n [re0, im0, re1, im1, ...]
+ */
+export function nthRootsComplex(re: f64, im: f64, n: i32, output: Float64Array): void {
+  if (n <= 0) {
+    for (let i: i32 = 0; i < n * 2; i++) {
+      unchecked(output[i] = f64.NaN)
+    }
+    return
+  }
+
+  if (re === 0 && im === 0) {
+    for (let i: i32 = 0; i < n * 2; i++) {
+      unchecked(output[i] = 0)
+    }
+    return
+  }
+
+  // Compute magnitude and argument of input
+  const r = Math.sqrt(re * re + im * im)
+  const theta = Math.atan2(im, re)
+
+  // Principal root magnitude
+  const rootR = Math.pow(r, 1.0 / f64(n))
+
+  const twoPiOverN = 2.0 * Math.PI / f64(n)
+
+  for (let k: i32 = 0; k < n; k++) {
+    const angle = (theta + twoPiOverN * f64(k)) / f64(n)
+    unchecked(output[k * 2] = rootR * Math.cos(angle))      // Real part
+    unchecked(output[k * 2 + 1] = rootR * Math.sin(angle))  // Imaginary part
+  }
+}
+
+/**
+ * Compute the principal nth root of a real number
+ * @param x The real number
+ * @param n Root degree
+ * @returns The principal nth root (real if x >= 0 and n is odd/even, complex otherwise)
+ */
+export function nthRoot(x: f64, n: i32): f64 {
+  if (n === 0) return f64.NaN
+  if (x === 0) return 0
+
+  if (x > 0) {
+    return Math.pow(x, 1.0 / f64(n))
+  } else {
+    // x < 0
+    if (n % 2 === 1) {
+      // Odd root of negative number is real and negative
+      return -Math.pow(-x, 1.0 / f64(n))
+    } else {
+      // Even root of negative number is complex - return NaN for real result
+      return f64.NaN
+    }
+  }
+}
+
+/**
+ * Compute the principal nth root with sign preservation
+ * nthRootSigned(-8, 3) = -2 (real cube root)
+ * @param x The real number
+ * @param n Root degree
+ * @returns The principal nth root preserving sign for odd n
+ */
+export function nthRootSigned(x: f64, n: i32): f64 {
+  if (n === 0) return f64.NaN
+  if (x === 0) return 0
+
+  const absRoot = Math.pow(Math.abs(x), 1.0 / f64(n))
+
+  if (x < 0 && n % 2 === 1) {
+    return -absRoot
+  }
+  return absRoot
+}

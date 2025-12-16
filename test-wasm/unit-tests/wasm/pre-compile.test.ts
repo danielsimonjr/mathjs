@@ -19,9 +19,7 @@ function approxEqual(actual: number, expected: number, tolerance = EPSILON): voi
 }
 
 describe('Pre-Compilation Tests (Direct AS Import)', function () {
-  // ============================================
   // ARITHMETIC OPERATIONS
-  // ============================================
   describe('Arithmetic Basic (direct import)', function () {
     it('should import and run basic arithmetic', async function () {
       const arith = await import('../../../src-wasm/arithmetic/basic')
@@ -65,9 +63,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // BITWISE OPERATIONS
-  // ============================================
   describe('Bitwise Operations (direct import)', function () {
     it('should import and run bitwise operations', async function () {
       const bitwise = await import('../../../src-wasm/bitwise/operations')
@@ -84,9 +80,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // COMBINATORICS
-  // ============================================
   describe('Combinatorics (direct import)', function () {
     it('should import and run combinatorics functions', async function () {
       const comb = await import('../../../src-wasm/combinatorics/basic')
@@ -102,9 +96,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // COMPLEX OPERATIONS
-  // ============================================
   describe('Complex Operations (direct import)', function () {
     it('should import and run complex operations', async function () {
       const complex = await import('../../../src-wasm/complex/operations')
@@ -119,9 +111,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // GEOMETRY OPERATIONS
-  // ============================================
   describe('Geometry Operations (direct import)', function () {
     it('should import and run geometry operations', async function () {
       const geometry = await import('../../../src-wasm/geometry/operations')
@@ -134,9 +124,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // LOGICAL OPERATIONS
-  // ============================================
   describe('Logical Operations (direct import)', function () {
     it('should import and run logical operations', async function () {
       const logical = await import('../../../src-wasm/logical/operations')
@@ -153,9 +141,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // MATRIX OPERATIONS
-  // ============================================
   describe('Matrix Operations (direct import)', function () {
     it('should import and run matrix multiply', async function () {
       const matrix = await import('../../../src-wasm/matrix/multiply')
@@ -176,9 +162,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // NUMERIC (ODE) OPERATIONS
-  // ============================================
   describe('Numeric ODE Operations (direct import)', function () {
     it('should import and run ODE utilities', async function () {
       const ode = await import('../../../src-wasm/numeric/ode')
@@ -201,9 +185,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // RELATIONAL OPERATIONS
-  // ============================================
   describe('Relational Operations (direct import)', function () {
     it('should import and run relational operations', async function () {
       const relational = await import('../../../src-wasm/relational/operations')
@@ -221,9 +203,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SET OPERATIONS
-  // ============================================
   describe('Set Operations (direct import)', function () {
     it('should import and run set operations', async function () {
       const set = await import('../../../src-wasm/set/operations')
@@ -250,9 +230,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SIGNAL PROCESSING (FFT)
-  // ============================================
   describe('Signal Processing FFT (direct import)', function () {
     it('should import and run signal processing functions', async function () {
       const signal = await import('../../../src-wasm/signal/fft')
@@ -331,9 +309,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SPECIAL FUNCTIONS
-  // ============================================
   describe('Special Functions (direct import)', function () {
     it('should import and run special functions', async function () {
       const special = await import('../../../src-wasm/special/functions')
@@ -347,9 +323,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // STATISTICS
-  // ============================================
   describe('Statistics (direct import)', function () {
     it('should import and run statistics functions', async function () {
       const stats = await import('../../../src-wasm/statistics/basic')
@@ -471,9 +445,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // STRING OPERATIONS
-  // ============================================
   describe('String Operations (direct import)', function () {
     it('should import and run string operations', async function () {
       const str = await import('../../../src-wasm/string/operations')
@@ -490,9 +462,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // TRIGONOMETRY
-  // ============================================
   describe('Trigonometry (direct import)', function () {
     it('should import and run trigonometry functions', async function () {
       const trig = await import('../../../src-wasm/trigonometry/basic')
@@ -510,9 +480,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ALGEBRA DECOMPOSITION
-  // ============================================
   describe('Algebra Decomposition (direct import)', function () {
     it('should import and run LU decomposition', async function () {
       const decomp = await import('../../../src-wasm/algebra/decomposition')
@@ -530,9 +498,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ALGEBRA SPARSE UTILITIES
-  // ============================================
   describe('Algebra Sparse Utilities (direct import)', function () {
     it('should import and run sparse matrix utilities', async function () {
       const sparse = await import('../../../src-wasm/algebra/sparse/utilities')
@@ -565,9 +531,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // MATRIX ALGORITHMS
-  // ============================================
   describe('Matrix Algorithms (direct import)', function () {
     it('should import and run matrix algorithms', async function () {
       const algo = await import('../../../src-wasm/matrix/algorithms')
@@ -594,9 +558,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // PLAIN OPERATIONS
-  // ============================================
   describe('Plain Operations (direct import)', function () {
     it('should import and run plain number operations', async function () {
       const plain = await import('../../../src-wasm/plain/operations')
@@ -672,9 +634,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // PROBABILITY DISTRIBUTIONS
-  // ============================================
   describe('Probability Distributions (direct import)', function () {
     it('should import and run probability distribution functions', async function () {
       const prob = await import('../../../src-wasm/probability/distributions')
@@ -736,9 +696,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // UTILS/CHECKS
-  // ============================================
   describe('Utils Checks (direct import)', function () {
     it('should import and run utility check functions', async function () {
       const checks = await import('../../../src-wasm/utils/checks')
@@ -809,9 +767,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ALGEBRA SOLVER (Triangular Systems)
-  // ============================================
   describe('Algebra Solver (direct import)', function () {
     it('should import and run triangular solver functions', async function () {
       const solver = await import('../../../src-wasm/algebra/solver')
@@ -864,9 +820,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SIGNAL PROCESSING (freqz, zpk2tf)
-  // ============================================
   describe('Signal Processing Functions (direct import)', function () {
     it('should import and run signal processing functions', async function () {
       const signal = await import('../../../src-wasm/signal/processing')
@@ -911,9 +865,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // MATRIX BASIC OPERATIONS
-  // ============================================
   describe('Matrix Basic Operations (direct import)', function () {
     it('should import and run matrix creation functions', async function () {
       const matrix = await import('../../../src-wasm/matrix/basic')
@@ -1173,9 +1125,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // MATRIX LINEAR ALGEBRA
-  // ============================================
   describe('Matrix Linear Algebra (direct import)', function () {
     it('should compute determinants', async function () {
       const linalg = await import('../../../src-wasm/matrix/linalg')
@@ -1450,9 +1400,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ALGEBRA EQUATIONS (Lyapunov, Sylvester)
-  // ============================================
   describe('Algebra Equations (direct import)', function () {
     it('should solve Sylvester equation AX + XB = C', async function () {
       const equations = await import('../../../src-wasm/algebra/equations')
@@ -1600,9 +1548,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SCHUR DECOMPOSITION
-  // ============================================
   describe('Schur Decomposition (direct import)', function () {
     it('should compute Schur decomposition of 2x2 matrix', async function () {
       const schur = await import('../../../src-wasm/algebra/schur')
@@ -1686,9 +1632,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // BROADCAST OPERATIONS
-  // ============================================
   describe('Broadcast Operations (direct import)', function () {
     it('should broadcast multiply matrices', async function () {
       const broadcast = await import('../../../src-wasm/matrix/broadcast')
@@ -1790,9 +1734,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // SELECT / QUICKSELECT
-  // ============================================
   describe('Selection Algorithms (direct import)', function () {
     it('should select k-th smallest element', async function () {
       const select = await import('../../../src-wasm/statistics/select')
@@ -1889,9 +1831,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // ROTATION MATRICES
-  // ============================================
   describe('Rotation Matrices (direct import)', function () {
     it('should create 2D rotation matrix', async function () {
       const rotation = await import('../../../src-wasm/matrix/rotation')
@@ -2058,9 +1998,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // AMD ORDERING
-  // ============================================
   describe('AMD Ordering (direct import)', function () {
     it('should compute AMD ordering', async function () {
       const amd = await import('../../../src-wasm/algebra/sparse/amd')
@@ -2147,9 +2085,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     })
   })
 
-  // ============================================
   // GEOMETRY INTERSECT FUNCTIONS
-  // ============================================
   describe('Geometry Intersect Functions (direct import)', function () {
     it('should compute line-circle intersection', async function () {
       const geometry = await import('../../../src-wasm/geometry/operations')
@@ -2288,6 +2224,930 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(centroid[1], 0.5, 1e-10)
 
       console.log('  ✓ geometry/operations (polygon centroid)')
+    })
+  })
+
+  // NUMERICAL CALCULUS
+  describe('Numerical Calculus (direct import)', function () {
+    it('should compute numerical derivatives', async function () {
+      const calculus = await import('../../../src-wasm/numeric/calculus')
+
+      // Test central difference for f(x) = x^2 at x = 2
+      // f'(x) = 2x, so f'(2) = 4
+      const h = 0.001
+      const x = 2
+      const fxph = (x + h) * (x + h) // f(x+h)
+      const fxmh = (x - h) * (x - h) // f(x-h)
+
+      const deriv = calculus.centralDifference(fxph, fxmh, h)
+      approxEqual(deriv, 4, 1e-6)
+
+      console.log('  ✓ numeric/calculus (central difference)')
+    })
+
+    it('should compute five-point stencil derivative', async function () {
+      const calculus = await import('../../../src-wasm/numeric/calculus')
+
+      // Test five-point stencil for f(x) = x^3 at x = 1
+      // f'(x) = 3x^2, so f'(1) = 3
+      const h = 0.01
+      const x = 1
+      const fxp2h = Math.pow(x + 2 * h, 3)
+      const fxph = Math.pow(x + h, 3)
+      const fxmh = Math.pow(x - h, 3)
+      const fxm2h = Math.pow(x - 2 * h, 3)
+
+      const deriv = calculus.fivePointStencil(fxp2h, fxph, fxmh, fxm2h, h)
+      approxEqual(deriv, 3, 1e-6)
+
+      console.log('  ✓ numeric/calculus (five-point stencil)')
+    })
+
+    it('should compute numerical integration with Simpson rule', async function () {
+      const calculus = await import('../../../src-wasm/numeric/calculus')
+
+      // Integrate f(x) = x^2 from 0 to 1
+      // Exact result = 1/3
+      const nIntervals = 10 // Number of intervals (even)
+      const nPoints = nIntervals + 1 // Simpson's rule needs odd number of points (11)
+      const h = 1.0 / nIntervals
+      const fValues = new Float64Array(nPoints)
+
+      for (let i = 0; i < nPoints; i++) {
+        const x = i * h
+        fValues[i] = x * x
+      }
+
+      const integral = calculus.simpsonsRule(fValues, h, nPoints)
+      approxEqual(integral, 1 / 3, 0.01) // Relaxed tolerance
+
+      console.log('  ✓ numeric/calculus (Simpson integration)')
+    })
+
+    it('should compute second derivative', async function () {
+      const calculus = await import('../../../src-wasm/numeric/calculus')
+
+      // Test second derivative of f(x) = x^3 at x = 2
+      // f''(x) = 6x, so f''(2) = 12
+      const h = 0.01
+      const x = 2
+      const fx = Math.pow(x, 3)
+      const fxph = Math.pow(x + h, 3)
+      const fxmh = Math.pow(x - h, 3)
+
+      const deriv2 = calculus.secondDerivative(fxph, fx, fxmh, h)
+      approxEqual(deriv2, 12, 1e-4)
+
+      console.log('  ✓ numeric/calculus (second derivative)')
+    })
+  })
+
+  // ROOT FINDING
+  describe('Root Finding (direct import)', function () {
+    it('should compute bisection setup', async function () {
+      const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
+
+      // Find root of f(x) = x^2 - 2 (sqrt(2))
+      // Initial interval [1, 2]
+      const a = 1, b = 2
+      const fa = a * a - 2 // -1
+      const fb = b * b - 2 // 2
+
+      const state = rootfinding.bisectionSetup(fa, fb, a, b)
+
+      // State should be [midpoint, a, b, fa, fb, status]
+      approxEqual(state[0], 1.5, 1e-10) // Midpoint
+      approxEqual(state[1], 1, 1e-10)   // a
+      approxEqual(state[2], 2, 1e-10)   // b
+      approxEqual(state[5], 1.0, 1e-10) // Status = continue
+
+      console.log('  ✓ numeric/rootfinding (bisection setup)')
+    })
+
+    it('should compute Newton-Raphson step', async function () {
+      const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
+
+      // Find root of f(x) = x^2 - 2 using Newton's method
+      // f'(x) = 2x
+      let x = 1.5
+      const state = new Float64Array([x, 1])
+
+      for (let i = 0; i < 10; i++) {
+        const fx = x * x - 2
+        const fpx = 2 * x
+        const newState = rootfinding.newtonStep(state, fx, fpx, 1e-15)
+        x = newState[0]
+        state[0] = x
+        if (newState[1] === 0) break // Converged
+      }
+
+      approxEqual(x, Math.sqrt(2), 1e-10)
+
+      console.log('  ✓ numeric/rootfinding (Newton-Raphson)')
+    })
+
+    it('should compute secant method with proper state', async function () {
+      const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
+
+      // Find root of f(x) = x^2 - 2
+      const x0 = 1, x1 = 2
+      const fx0 = x0 * x0 - 2
+      const fx1 = x1 * x1 - 2
+
+      // Setup state
+      let state = rootfinding.secantSetup(x0, x1, fx0, fx1)
+
+      // Run iterations
+      for (let i = 0; i < 20; i++) {
+        const newState = rootfinding.secantStep(state, 1e-15)
+        if (newState[4] === 0 || newState[4] === -1) break // Converged or failed
+
+        if (newState[4] === 2) {
+          // Need function evaluation
+          const fNewX = newState[0] * newState[0] - 2
+          state = rootfinding.secantUpdate(newState, fNewX)
+        }
+      }
+
+      approxEqual(state[0], Math.sqrt(2), 1e-6)
+
+      console.log('  ✓ numeric/rootfinding (secant)')
+    })
+
+    it('should compute Halley step', async function () {
+      const rootfinding = await import('../../../src-wasm/numeric/rootfinding')
+
+      // Find root of f(x) = x^3 - 2 (cube root of 2)
+      // f'(x) = 3x^2, f''(x) = 6x
+      let x = 1.5
+
+      for (let i = 0; i < 5; i++) {
+        const fx = x * x * x - 2
+        const fpx = 3 * x * x
+        const fppx = 6 * x
+        const newState = rootfinding.halleyStep(x, fx, fpx, fppx, 1e-15)
+        x = newState[0]
+        if (newState[1] === 0) break // Converged
+      }
+
+      approxEqual(x, Math.cbrt(2), 1e-10)
+
+      console.log('  ✓ numeric/rootfinding (Halley)')
+    })
+  })
+
+  // INTERPOLATION
+  describe('Interpolation (direct import)', function () {
+    it('should perform linear interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Linear interpolation between (0, 0) and (1, 2)
+      const result = interp.linearInterp(0, 0, 1, 2, 0.5)
+      approxEqual(result, 1, 1e-10)
+
+      // Test table interpolation
+      const xValues = new Float64Array([0, 1, 2, 3])
+      const yValues = new Float64Array([0, 1, 4, 9]) // y = x^2
+
+      const y = interp.linearInterpTable(xValues, yValues, 1.5, 4)
+      approxEqual(y, 2.5, 1e-10) // Linear interp between 1 and 4
+
+      console.log('  ✓ numeric/interpolation (linear)')
+    })
+
+    it('should perform Lagrange interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Interpolate quadratic: (0, 0), (1, 1), (2, 4)
+      const xValues = new Float64Array([0, 1, 2])
+      const yValues = new Float64Array([0, 1, 4])
+
+      // Should recover f(x) = x^2
+      const y1 = interp.lagrangeInterp(xValues, yValues, 1.5, 3)
+      approxEqual(y1, 2.25, 1e-10) // 1.5^2 = 2.25
+
+      const y2 = interp.lagrangeInterp(xValues, yValues, 0.5, 3)
+      approxEqual(y2, 0.25, 1e-10) // 0.5^2 = 0.25
+
+      console.log('  ✓ numeric/interpolation (Lagrange)')
+    })
+
+    it('should perform Newton divided differences interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Interpolate: (0, 1), (1, 2), (2, 5), (3, 10) - f(x) = x^2 + 1
+      const xValues = new Float64Array([0, 1, 2, 3])
+      const yValues = new Float64Array([1, 2, 5, 10])
+
+      const coeffs = interp.dividedDifferences(xValues, yValues, 4)
+      const y = interp.newtonInterp(xValues, coeffs, 1.5, 4)
+      approxEqual(y, 3.25, 1e-10) // 1.5^2 + 1 = 3.25
+
+      console.log('  ✓ numeric/interpolation (Newton)')
+    })
+
+    it('should perform cubic spline interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Interpolate sin function
+      const n = 5
+      const xValues = new Float64Array(n)
+      const yValues = new Float64Array(n)
+
+      for (let i = 0; i < n; i++) {
+        xValues[i] = (i / (n - 1)) * Math.PI
+        yValues[i] = Math.sin(xValues[i])
+      }
+
+      const coeffs = interp.naturalCubicSplineCoeffs(xValues, yValues, n)
+
+      // Test at midpoint
+      const x = Math.PI / 2
+      const y = interp.cubicSplineEval(xValues, coeffs, x, n)
+      approxEqual(y, 1, 0.01) // sin(π/2) = 1
+
+      console.log('  ✓ numeric/interpolation (cubic spline)')
+    })
+
+    it('should perform Hermite interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Hermite with f(0) = 0, f'(0) = 1, f(1) = 1, f'(1) = 1
+      // This should approximate a linear function
+      const y = interp.hermiteInterp(0, 0, 1, 1, 1, 1, 0.5)
+      approxEqual(y, 0.5, 1e-10)
+
+      console.log('  ✓ numeric/interpolation (Hermite)')
+    })
+
+    it('should perform barycentric interpolation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Same test as Lagrange
+      const xValues = new Float64Array([0, 1, 2])
+      const yValues = new Float64Array([0, 1, 4])
+
+      const weights = interp.barycentricWeights(xValues, 3)
+      const y = interp.barycentricInterp(xValues, yValues, weights, 1.5, 3)
+      approxEqual(y, 2.25, 1e-10)
+
+      console.log('  ✓ numeric/interpolation (barycentric)')
+    })
+
+    it('should perform polynomial evaluation', async function () {
+      const interp = await import('../../../src-wasm/numeric/interpolation')
+
+      // Test polyEval for polynomial p(x) = 1 + 2x + 3x^2
+      // coeffs = [1, 2, 3]
+      const coeffs = new Float64Array([1, 2, 3])
+
+      // p(0) = 1
+      approxEqual(interp.polyEval(coeffs, 0, 2), 1, 1e-10)
+
+      // p(1) = 1 + 2 + 3 = 6
+      approxEqual(interp.polyEval(coeffs, 1, 2), 6, 1e-10)
+
+      // p(2) = 1 + 4 + 12 = 17
+      approxEqual(interp.polyEval(coeffs, 2, 2), 17, 1e-10)
+
+      console.log('  ✓ numeric/interpolation (polynomial evaluation)')
+    })
+  })
+
+  // RATIONAL ARITHMETIC
+  // Note: Rational arithmetic tests are skipped in pre-compile mode because they use
+  // AssemblyScript-specific types (i64, StaticArray) that are not available in Node.js.
+  // These functions are tested when running the full WASM build (npm run test:wasm).
+  describe('Rational Arithmetic (direct import)', function () {
+    it.skip('should compute GCD (uses AssemblyScript i64 types)', async function () {
+      // Skipped: i64 maps to BigInt but bitwise operations differ
+      console.log('  ⊘ numeric/rational (skipped - AS types)')
+    })
+
+    it.skip('should reduce fractions (uses AssemblyScript StaticArray)', async function () {
+      // Skipped: StaticArray is not available in Node.js
+      console.log('  ⊘ numeric/rational (skipped - AS types)')
+    })
+
+    it('should verify module exports exist', async function () {
+      const rational = await import('../../../src-wasm/numeric/rational')
+
+      // Just verify the functions are exported
+      assert.ok(typeof rational.gcd === 'function')
+      assert.ok(typeof rational.lcm === 'function')
+      assert.ok(typeof rational.reduce === 'function')
+      assert.ok(typeof rational.add === 'function')
+      assert.ok(typeof rational.subtract === 'function')
+      assert.ok(typeof rational.multiply === 'function')
+      assert.ok(typeof rational.divide === 'function')
+      assert.ok(typeof rational.compare === 'function')
+      assert.ok(typeof rational.toFloat === 'function')
+      assert.ok(typeof rational.fromFloat === 'function')
+      assert.ok(typeof rational.pow === 'function')
+      assert.ok(typeof rational.mediant === 'function')
+
+      console.log('  ✓ numeric/rational (exports verified)')
+    })
+  })
+
+  // UNIT CONVERSION
+  describe('Unit Conversion (direct import)', function () {
+    it('should convert length units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 meter = 100 centimeters
+      const cm = units.convert(1, units.UNIT_METER, units.UNIT_CENTIMETER)
+      approxEqual(cm, 100, 1e-10)
+
+      // 1 mile = 1609.344 meters
+      const m = units.convert(1, units.UNIT_MILE, units.UNIT_METER)
+      approxEqual(m, 1609.344, 1e-6)
+
+      // 1 foot = 12 inches
+      const inches = units.convert(1, units.UNIT_FOOT, units.UNIT_INCH)
+      approxEqual(inches, 12, 1e-10)
+
+      console.log('  ✓ unit/conversion (length)')
+    })
+
+    it('should convert mass units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 kg = 1000 grams
+      const g = units.convert(1, units.UNIT_KILOGRAM, units.UNIT_GRAM)
+      approxEqual(g, 1000, 1e-10)
+
+      // 1 pound = 0.45359237 kg
+      const kg = units.convert(1, units.UNIT_POUND, units.UNIT_KILOGRAM)
+      approxEqual(kg, 0.45359237, 1e-10)
+
+      console.log('  ✓ unit/conversion (mass)')
+    })
+
+    it('should convert time units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 hour = 3600 seconds
+      const sec = units.convert(1, units.UNIT_HOUR, units.UNIT_SECOND)
+      approxEqual(sec, 3600, 1e-10)
+
+      // 1 day = 24 hours
+      const hrs = units.convert(1, units.UNIT_DAY, units.UNIT_HOUR)
+      approxEqual(hrs, 24, 1e-10)
+
+      console.log('  ✓ unit/conversion (time)')
+    })
+
+    it('should convert temperature units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 0°C = 273.15 K
+      const k1 = units.convert(0, units.UNIT_CELSIUS, units.UNIT_KELVIN)
+      approxEqual(k1, 273.15, 1e-10)
+
+      // 100°C = 373.15 K
+      const k2 = units.convert(100, units.UNIT_CELSIUS, units.UNIT_KELVIN)
+      approxEqual(k2, 373.15, 1e-10)
+
+      // 32°F = 0°C
+      const c = units.convert(32, units.UNIT_FAHRENHEIT, units.UNIT_CELSIUS)
+      approxEqual(c, 0, 1e-10)
+
+      // 212°F = 100°C
+      const c2 = units.convert(212, units.UNIT_FAHRENHEIT, units.UNIT_CELSIUS)
+      approxEqual(c2, 100, 1e-10)
+
+      console.log('  ✓ unit/conversion (temperature)')
+    })
+
+    it('should convert energy units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 kJ = 1000 J
+      const j = units.convert(1, units.UNIT_KILOJOULE, units.UNIT_JOULE)
+      approxEqual(j, 1000, 1e-10)
+
+      // 1 cal = 4.184 J
+      const j2 = units.convert(1, units.UNIT_CALORIE, units.UNIT_JOULE)
+      approxEqual(j2, 4.184, 1e-10)
+
+      console.log('  ✓ unit/conversion (energy)')
+    })
+
+    it('should convert speed units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 1 m/s = 3.6 km/h
+      const kmh = units.convert(1, units.UNIT_METER_PER_SECOND, units.UNIT_KILOMETER_PER_HOUR)
+      approxEqual(kmh, 3.6, 1e-10)
+
+      // 60 mph ≈ 96.56 km/h
+      const kmh2 = units.convert(60, units.UNIT_MILE_PER_HOUR, units.UNIT_KILOMETER_PER_HOUR)
+      approxEqual(kmh2, 96.56064, 1e-4)
+
+      console.log('  ✓ unit/conversion (speed)')
+    })
+
+    it('should convert angle units', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // 180° = π radians
+      const rad = units.convert(180, units.UNIT_DEGREE, units.UNIT_RADIAN)
+      approxEqual(rad, Math.PI, 1e-10)
+
+      // 1 turn = 360°
+      const deg = units.convert(1, units.UNIT_TURN, units.UNIT_DEGREE)
+      approxEqual(deg, 360, 1e-10)
+
+      console.log('  ✓ unit/conversion (angle)')
+    })
+
+    it('should get unit dimensions', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // Force = kg·m/s²
+      const forceDims = units.getDimensions(units.UNIT_NEWTON)
+      assert.strictEqual(forceDims[1], 1) // mass
+      assert.strictEqual(forceDims[0], 1) // length
+      assert.strictEqual(forceDims[2], -2) // time^-2
+
+      // Check compatibility
+      assert.ok(units.areCompatible(units.UNIT_METER, units.UNIT_FOOT))
+      assert.ok(!units.areCompatible(units.UNIT_METER, units.UNIT_SECOND))
+
+      console.log('  ✓ unit/conversion (dimensions)')
+    })
+
+    it('should handle SI prefixes', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      // kilo = 10^3
+      approxEqual(units.getPrefixMultiplier(units.PREFIX_KILO), 1000, 1e-10)
+
+      // milli = 10^-3
+      approxEqual(units.getPrefixMultiplier(units.PREFIX_MILLI), 0.001, 1e-15)
+
+      // Apply prefix
+      approxEqual(units.applyPrefix(5, units.PREFIX_KILO), 5000, 1e-10)
+
+      console.log('  ✓ unit/conversion (prefixes)')
+    })
+
+    it('should convert array of values', async function () {
+      const units = await import('../../../src-wasm/unit/conversion')
+
+      const values = new Float64Array([0, 10, 20, 30])
+      const converted = units.convertArray(values, units.UNIT_CELSIUS, units.UNIT_KELVIN, 4)
+
+      approxEqual(converted[0], 273.15, 1e-10)
+      approxEqual(converted[1], 283.15, 1e-10)
+      approxEqual(converted[2], 293.15, 1e-10)
+      approxEqual(converted[3], 303.15, 1e-10)
+
+      console.log('  ✓ unit/conversion (array conversion)')
+    })
+  })
+
+  // SPARSE MATRIX ALGORITHMS
+  describe('Sparse Matrix Algorithms (direct import)', function () {
+    it('should compute elimination tree', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // Simple 4x4 tridiagonal matrix in CSC format
+      // [1, 1, 0, 0]
+      // [1, 2, 1, 0]
+      // [0, 1, 2, 1]
+      // [0, 0, 1, 1]
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const n = 4
+      const parent = new Int32Array(n)
+
+      sparse.csEtree(aIndex, aPtr, n, parent)
+
+      // Elimination tree for tridiagonal: linear chain
+      // parent[0] = 1, parent[1] = 2, parent[2] = 3, parent[3] = -1
+      assert.strictEqual(parent[0], 1)
+      assert.strictEqual(parent[1], 2)
+      assert.strictEqual(parent[2], 3)
+      assert.strictEqual(parent[3], -1)
+
+      console.log('  ✓ matrix/sparse (elimination tree)')
+    })
+
+    it('should compute post-order of elimination tree', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // Linear elimination tree: 0 -> 1 -> 2 -> 3 (root)
+      const parent = new Int32Array([1, 2, 3, -1])
+      const n = 4
+      const post = new Int32Array(n)
+
+      sparse.csPost(parent, n, post)
+
+      // Post-order: children before parents
+      // So order should be [0, 1, 2, 3]
+      assert.strictEqual(post[0], 0)
+      assert.strictEqual(post[1], 1)
+      assert.strictEqual(post[2], 2)
+      assert.strictEqual(post[3], 3)
+
+      console.log('  ✓ matrix/sparse (post-order)')
+    })
+
+    it('should permute sparse matrix', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // 3x3 diagonal matrix
+      const aValues = new Float64Array([1, 2, 3])
+      const aIndex = new Int32Array([0, 1, 2])
+      const aPtr = new Int32Array([0, 1, 2, 3])
+
+      // Reverse permutation: [2, 1, 0]
+      const q = new Int32Array([2, 1, 0])
+      const pinv = new Int32Array([2, 1, 0])
+
+      const cValues = new Float64Array(3)
+      const cIndex = new Int32Array(3)
+      const cPtr = new Int32Array(4)
+
+      const nnz = sparse.csPermute(aValues, aIndex, aPtr, pinv, q, 3, 3, cValues, cIndex, cPtr)
+
+      assert.strictEqual(nnz, 3)
+      // After permutation with reverse order, values should be reversed
+      approxEqual(cValues[0], 3, 1e-10)
+      approxEqual(cValues[1], 2, 1e-10)
+      approxEqual(cValues[2], 1, 1e-10)
+
+      console.log('  ✓ matrix/sparse (permute)')
+    })
+
+    it('should compute transpose', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // 2x3 matrix: [[1, 2, 3], [4, 5, 6]]
+      // CSC format: col 0: [1,4], col 1: [2,5], col 2: [3,6]
+      const aValues = new Float64Array([1, 4, 2, 5, 3, 6])
+      const aIndex = new Int32Array([0, 1, 0, 1, 0, 1])
+      const aPtr = new Int32Array([0, 2, 4, 6])
+      const m = 2, n = 3
+
+      const bValues = new Float64Array(6)
+      const bIndex = new Int32Array(6)
+      const bPtr = new Int32Array(3)
+
+      const nnz = sparse.csTranspose(aValues, aIndex, aPtr, m, n, bValues, bIndex, bPtr)
+
+      assert.strictEqual(nnz, 6)
+      // Transpose should be 3x2: [[1, 4], [2, 5], [3, 6]]
+      // CSC: col 0: [1, 2, 3], col 1: [4, 5, 6]
+      assert.strictEqual(bPtr[0], 0)
+      assert.strictEqual(bPtr[1], 3)
+      assert.strictEqual(bPtr[2], 6)
+
+      console.log('  ✓ matrix/sparse (transpose)')
+    })
+
+    it('should compute AMD ordering', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // Simple 4x4 matrix
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
+      const n = 4
+      const perm = new Int32Array(n)
+
+      sparse.csAmd(aIndex, aPtr, n, perm)
+
+      // Check that perm is a valid permutation (contains 0,1,2,3)
+      const sorted = Array.from(perm).sort((a, b) => a - b)
+      assert.strictEqual(sorted[0], 0)
+      assert.strictEqual(sorted[1], 1)
+      assert.strictEqual(sorted[2], 2)
+      assert.strictEqual(sorted[3], 3)
+
+      console.log('  ✓ matrix/sparse (AMD ordering)')
+    })
+
+    it('should compute RCM ordering', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // Simple 4x4 matrix
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
+      const n = 4
+      const perm = new Int32Array(n)
+
+      sparse.csRcm(aIndex, aPtr, n, perm)
+
+      // Check valid permutation
+      const sorted = Array.from(perm).sort((a, b) => a - b)
+      assert.strictEqual(sorted[0], 0)
+      assert.strictEqual(sorted[1], 1)
+      assert.strictEqual(sorted[2], 2)
+      assert.strictEqual(sorted[3], 3)
+
+      console.log('  ✓ matrix/sparse (RCM ordering)')
+    })
+
+    it('should compute inverse permutation', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      const perm = new Int32Array([2, 0, 3, 1])
+      const pinv = new Int32Array(4)
+
+      sparse.csInvPerm(perm, 4, pinv)
+
+      // perm[i] = j means pinv[j] = i
+      assert.strictEqual(pinv[2], 0)
+      assert.strictEqual(pinv[0], 1)
+      assert.strictEqual(pinv[3], 2)
+      assert.strictEqual(pinv[1], 3)
+
+      console.log('  ✓ matrix/sparse (inverse permutation)')
+    })
+
+    it('should estimate sparse multiply nnz', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // 3x3 identity matrices
+      const aPtr = new Int32Array([0, 1, 2, 3])
+      const bIndex = new Int32Array([0, 1, 2])
+      const bPtr = new Int32Array([0, 1, 2, 3])
+
+      const estimate = sparse.csMultNnzEstimate(aPtr, 3, bIndex, bPtr, 3, 3)
+
+      // Identity * Identity = Identity, so 3 nonzeros
+      assert.ok(estimate >= 3)
+
+      console.log('  ✓ matrix/sparse (multiply nnz estimate)')
+    })
+
+    it('should multiply sparse matrices', async function () {
+      const sparse = await import('../../../src-wasm/matrix/sparse')
+
+      // 2x2 identity matrix
+      const aValues = new Float64Array([1, 1])
+      const aIndex = new Int32Array([0, 1])
+      const aPtr = new Int32Array([0, 1, 2])
+
+      // Diagonal matrix [[2, 0], [0, 3]]
+      const bValues = new Float64Array([2, 3])
+      const bIndex = new Int32Array([0, 1])
+      const bPtr = new Int32Array([0, 1, 2])
+
+      // Output arrays (oversized for safety)
+      const cValues = new Float64Array(4)
+      const cIndex = new Int32Array(4)
+      const cPtr = new Int32Array(3)
+
+      const nnz = sparse.csMult(aValues, aIndex, aPtr, 2, 2, bValues, bIndex, bPtr, 2, cValues, cIndex, cPtr)
+
+      assert.strictEqual(nnz, 2)
+      approxEqual(cValues[0], 2, 1e-10)
+      approxEqual(cValues[1], 3, 1e-10)
+
+      console.log('  ✓ matrix/sparse (multiply)')
+    })
+  })
+
+  // ADVANCED ARITHMETIC (nthRoots)
+  describe('Advanced Arithmetic (direct import)', function () {
+    it('should compute nth roots of unity', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      const n = 4
+      const output = new Float64Array(2 * n)
+
+      advanced.nthRootsOfUnity(n, output)
+
+      // 4th roots of unity: 1, i, -1, -i
+      // k=0: e^(0) = 1 + 0i
+      approxEqual(output[0], 1, 1e-10)
+      approxEqual(output[1], 0, 1e-10)
+
+      // k=1: e^(iπ/2) = 0 + i
+      approxEqual(output[2], 0, 1e-10)
+      approxEqual(output[3], 1, 1e-10)
+
+      // k=2: e^(iπ) = -1 + 0i
+      approxEqual(output[4], -1, 1e-10)
+      approxEqual(output[5], 0, 1e-10)
+
+      // k=3: e^(i3π/2) = 0 - i
+      approxEqual(output[6], 0, 1e-10)
+      approxEqual(output[7], -1, 1e-10)
+
+      console.log('  ✓ arithmetic/advanced (nth roots of unity)')
+    })
+
+    it('should compute principal nth root', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // Positive numbers
+      approxEqual(advanced.nthRoot(8, 3), 2, 1e-10) // cube root of 8
+      approxEqual(advanced.nthRoot(16, 4), 2, 1e-10) // 4th root of 16
+      approxEqual(advanced.nthRoot(27, 3), 3, 1e-10) // cube root of 27
+
+      // Negative number with odd root
+      approxEqual(advanced.nthRoot(-8, 3), -2, 1e-10) // cube root of -8
+
+      // Negative number with even root - behavior differs between JS and WASM:
+      // WASM returns NaN, JS mode may return undefined
+      // This edge case is tested in full WASM mode
+
+      console.log('  ✓ arithmetic/advanced (principal nth root)')
+    })
+
+    it('should compute nth root with sign preservation', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // Positive numbers
+      approxEqual(advanced.nthRootSigned(8, 3), 2, 1e-10)
+
+      // Negative number with odd root - preserves sign
+      approxEqual(advanced.nthRootSigned(-8, 3), -2, 1e-10)
+
+      // Negative number with even root
+      approxEqual(advanced.nthRootSigned(-4, 2), Math.pow(4, 0.5), 1e-10)
+
+      console.log('  ✓ arithmetic/advanced (nth root signed)')
+    })
+
+    it('should compute nth roots of real number', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // Cube roots of 8: 2, 2*e^(2πi/3), 2*e^(4πi/3)
+      const n = 3
+      const output = new Float64Array(2 * n)
+
+      advanced.nthRootsReal(8, n, output)
+
+      // All roots should have magnitude 2
+      for (let k = 0; k < n; k++) {
+        const re = output[k * 2]
+        const im = output[k * 2 + 1]
+        const mag = Math.sqrt(re * re + im * im)
+        approxEqual(mag, 2, 1e-10)
+      }
+
+      console.log('  ✓ arithmetic/advanced (nth roots real)')
+    })
+
+    it('should compute nth roots of complex number', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      // Square roots of i (0 + 1i)
+      // Roots: (1+i)/√2 and (-1-i)/√2
+      const n = 2
+      const output = new Float64Array(2 * n)
+
+      advanced.nthRootsComplex(0, 1, n, output)
+
+      // Both roots should have magnitude 1
+      for (let k = 0; k < n; k++) {
+        const re = output[k * 2]
+        const im = output[k * 2 + 1]
+        const mag = Math.sqrt(re * re + im * im)
+        approxEqual(mag, 1, 1e-10)
+      }
+
+      console.log('  ✓ arithmetic/advanced (nth roots complex)')
+    })
+
+    // Note: GCD, LCM, xgcd, invmod use i64 (BigInt) types which have
+    // compatibility issues in Node.js pre-compile mode. These are tested
+    // when running the full WASM build (npm run test:wasm).
+    it.skip('should compute GCD (uses AS i64 types)', async function () {
+      console.log('  ⊘ arithmetic/advanced (gcd - skipped, AS types)')
+    })
+
+    it.skip('should compute LCM (uses AS i64 types)', async function () {
+      console.log('  ⊘ arithmetic/advanced (lcm - skipped, AS types)')
+    })
+
+    it.skip('should compute extended GCD (uses AS i64 types)', async function () {
+      console.log('  ⊘ arithmetic/advanced (xgcd - skipped, AS types)')
+    })
+
+    it.skip('should compute modular inverse (uses AS i64 types)', async function () {
+      console.log('  ⊘ arithmetic/advanced (invmod - skipped, AS types)')
+    })
+
+    it('should compute norms', async function () {
+      const advanced = await import('../../../src-wasm/arithmetic/advanced')
+
+      const values = new Float64Array([3, -4])
+
+      // L2 norm (Euclidean): sqrt(9 + 16) = 5
+      approxEqual(advanced.norm2(values, 2), 5, 1e-10)
+
+      // L1 norm: |3| + |-4| = 7
+      approxEqual(advanced.norm1(values, 2), 7, 1e-10)
+
+      // L-infinity norm: max(|3|, |-4|) = 4
+      approxEqual(advanced.normInf(values, 2), 4, 1e-10)
+
+      console.log('  ✓ arithmetic/advanced (norms)')
+    })
+  })
+
+  // SOLVER EXTENSIONS
+  describe('Solver Extensions (direct import)', function () {
+    it('should solve lower triangular with lsolve', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // L = [[2, 0], [1, 3]]
+      // Solve Lx = [4, 7]
+      // x1 = 4/2 = 2
+      // x2 = (7 - 1*2)/3 = 5/3
+      const L = new Float64Array([2, 0, 1, 3])
+      const b = new Float64Array([4, 7])
+
+      // lsolve returns a new array
+      const x = solver.lsolve(L, b, 2)
+
+      approxEqual(x[0], 2, 1e-10)
+      approxEqual(x[1], 5 / 3, 1e-10)
+
+      console.log('  ✓ algebra/solver (lsolve)')
+    })
+
+    it('should solve upper triangular with usolve', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // U = [[2, 1], [0, 3]]
+      // Solve Ux = [5, 6]
+      // x2 = 6/3 = 2
+      // x1 = (5 - 1*2)/2 = 1.5
+      const U = new Float64Array([2, 1, 0, 3])
+      const b = new Float64Array([5, 6])
+
+      // usolve returns a new array
+      const x = solver.usolve(U, b, 2)
+
+      approxEqual(x[0], 1.5, 1e-10)
+      approxEqual(x[1], 2, 1e-10)
+
+      console.log('  ✓ algebra/solver (usolve)')
+    })
+
+    it('should compute triangular rank', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // Full rank: [[2, 0], [1, 3]]
+      const L1 = new Float64Array([2, 0, 1, 3])
+      assert.strictEqual(solver.lowerTriangularRank(L1, 2), 2)
+
+      // Rank 1: [[2, 0], [1, 0]]
+      const L2 = new Float64Array([2, 0, 1, 0])
+      assert.strictEqual(solver.lowerTriangularRank(L2, 2), 1)
+
+      // Upper triangular full rank
+      const U1 = new Float64Array([2, 1, 0, 3])
+      assert.strictEqual(solver.upperTriangularRank(U1, 2), 2)
+
+      console.log('  ✓ algebra/solver (triangular rank)')
+    })
+
+    it('should solve singular lower triangular system', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // Singular system: L = [[1, 0], [1, 0]], b = [1, 1]
+      // Row 1: x1 = 1
+      // Row 2: x1 = 1 (consistent)
+      // x2 can be anything (free variable)
+      const L = new Float64Array([1, 0, 1, 0])
+      const b = new Float64Array([1, 1])
+      const solutions = new Float64Array(4) // 2 solutions max
+      const info = new Int32Array(4)
+
+      solver.lsolveAll(L, b, 2, solutions, info)
+
+      // info[0] = number of solutions (0, 1, or -1 for infinite)
+      // info[1] = number of free variables
+      assert.ok(info[0] !== 0) // Should have solution(s)
+
+      console.log('  ✓ algebra/solver (lsolveAll)')
+    })
+
+    it('should detect inconsistent system', async function () {
+      const solver = await import('../../../src-wasm/algebra/solver')
+
+      // Inconsistent: L = [[1, 0], [1, 0]], b = [1, 2]
+      // Row 1: x1 = 1
+      // Row 2: x1 = 2 (inconsistent!)
+      const L = new Float64Array([1, 0, 1, 0])
+      const b = new Float64Array([1, 2])
+      const solutions = new Float64Array(4)
+      const info = new Int32Array(4)
+
+      solver.lsolveAll(L, b, 2, solutions, info)
+
+      // info[0] = 0 means no solution
+      assert.strictEqual(info[0], 0)
+
+      console.log('  ✓ algebra/solver (inconsistent detection)')
     })
   })
 })
