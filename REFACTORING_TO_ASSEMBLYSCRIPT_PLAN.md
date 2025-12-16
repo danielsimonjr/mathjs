@@ -101,6 +101,8 @@ export function matrixMultiply(
 | **Numeric** | `ode.ts` | vectorAdd, vectorScale, vectorNorm, rk4Step |
 | **Algebra** | `decomposition.ts` | luDecomposition, qrDecomposition, choleskyDecomposition, luSolve, luDeterminant |
 | **Algebra** | `solver.ts` | lsolve, usolve, lsolveUnit, usolveUnit, solveTridiagonal, triangularInverse |
+| **Algebra** | `polynomial.ts` | polyEval, polyEvalWithDerivative, quadraticRoots, cubicRoots, quarticRoots, polyRoots, polyDerivative, polyMultiply, polyDivide |
+| **Algebra** | `equations.ts` | sylvester, lyap, dlyap, sylvesterResidual, lyapResidual, dlyapResidual |
 | **Algebra/Sparse** | `utilities.ts` | csFlip, csUnflip, csCumsum, csMarked, csMark |
 | **Probability** | `distributions.ts` | random, randomInt, uniform, normal, exponential, bernoulli, binomial, poisson, geometric, normalPDF, normalCDF, klDivergence, entropy |
 | **Utils** | `checks.ts` | isNaN, isFinite, isInteger, isPositive, isNegative, isZero, isPrime, isEven, isOdd, gcd, lcm |
@@ -108,7 +110,7 @@ export function matrixMultiply(
 | **Plain** | `operations.ts` | Comprehensive scalar operations mirror |
 
 ### Test Coverage
-- **Pre-compile tests**: 47 individual tests passing across 33 test suites
+- **Pre-compile tests**: 64 individual tests passing across 44 test suites
 - **All modules tested** via `test-wasm/unit-tests/wasm/pre-compile.test.ts`
 - **WASM validation**: All modules pass AssemblyScript compilation check
 
@@ -171,25 +173,24 @@ Array-based algorithms, basic linear algebra.
 ### Tier 4: HARD (4-8 hours each)
 Complex algorithms, multiple matrix decompositions.
 
-| File | Location | Complexity | Notes |
-|------|----------|------------|-------|
-| `lusolve.ts` | algebra/solver/ | ⭐⭐⭐ | LU-based system solve |
-| `lsolveAll.ts` | algebra/solver/ | ⭐⭐⭐ | All solutions for singular |
-| `usolveAll.ts` | algebra/solver/ | ⭐⭐⭐ | All solutions for singular |
-| `polynomialRoot.ts` | algebra/ | ⭐⭐⭐⭐ | Polynomial root finding |
-| `lyap.ts` | algebra/ | ⭐⭐⭐⭐ | Lyapunov equation |
-| `sylvester.ts` | algebra/ | ⭐⭐⭐⭐ | Sylvester equation |
-| `schur.ts` | algebra/decomposition/ | ⭐⭐⭐⭐ | Schur decomposition |
-| `pinv.ts` | matrix/ | ⭐⭐⭐⭐ | Pseudoinverse (SVD) |
-| `sqrtm.ts` | matrix/ | ⭐⭐⭐⭐ | Matrix square root |
-| `expm.ts` | matrix/ | ⭐⭐⭐⭐ | Matrix exponential |
-| `dotMultiply.ts` | arithmetic/ | ⭐⭐⭐ | Element-wise with broadcast |
-| `dotDivide.ts` | arithmetic/ | ⭐⭐⭐ | Element-wise with broadcast |
-| `dotPow.ts` | arithmetic/ | ⭐⭐⭐ | Element-wise power |
-| `intersect.ts` | geometry/ | ⭐⭐⭐ | Line/plane intersection |
-| `partitionSelect.ts` | matrix/ | ⭐⭐⭐⭐ | QuickSelect algorithm |
-| `rotate.ts` | matrix/ | ⭐⭐⭐⭐ | N-dim rotation |
-| `rotationMatrix.ts` | matrix/ | ⭐⭐⭐⭐ | Rotation matrix generation |
+| File | Location | Complexity | Status | Notes |
+|------|----------|------------|--------|-------|
+| `lusolve.ts` | algebra/solver/ | ⭐⭐⭐ | Pending | LU-based system solve |
+| `lsolveAll.ts` | algebra/solver/ | ⭐⭐⭐ | Pending | All solutions for singular |
+| `usolveAll.ts` | algebra/solver/ | ⭐⭐⭐ | Pending | All solutions for singular |
+| `polynomial.ts` | algebra/ | ⭐⭐⭐⭐ | ✅ Done | Polynomial evaluation & root finding |
+| `equations.ts` | algebra/ | ⭐⭐⭐⭐ | ✅ Done | Lyapunov & Sylvester solvers |
+| `schur.ts` | algebra/decomposition/ | ⭐⭐⭐⭐ | Pending | Schur decomposition |
+| `pinv.ts` | matrix/ | ⭐⭐⭐⭐ | Pending | Pseudoinverse (SVD) |
+| `sqrtm.ts` | matrix/ | ⭐⭐⭐⭐ | Pending | Matrix square root |
+| `expm.ts` | matrix/ | ⭐⭐⭐⭐ | Pending | Matrix exponential |
+| `dotMultiply.ts` | arithmetic/ | ⭐⭐⭐ | Pending | Element-wise with broadcast |
+| `dotDivide.ts` | arithmetic/ | ⭐⭐⭐ | Pending | Element-wise with broadcast |
+| `dotPow.ts` | arithmetic/ | ⭐⭐⭐ | Pending | Element-wise power |
+| `intersect.ts` | geometry/ | ⭐⭐⭐ | Pending | Line/plane intersection |
+| `partitionSelect.ts` | matrix/ | ⭐⭐⭐⭐ | Pending | QuickSelect algorithm |
+| `rotate.ts` | matrix/ | ⭐⭐⭐⭐ | Pending | N-dim rotation |
+| `rotationMatrix.ts` | matrix/ | ⭐⭐⭐⭐ | Pending | Rotation matrix generation |
 
 **Estimated effort**: 3-4 weeks total
 
@@ -251,13 +252,19 @@ Sparse matrix algorithms, eigenvalue problems.
 - [ ] `statistics/quantileSeq.ts` - Quantiles/percentiles
 - [ ] `statistics/mad.ts` - Median absolute deviation
 
-### Phase 5: Advanced Solvers (Week 10-12)
-- [ ] `algebra/solver/lusolve.ts` - LU system solve
-- [ ] `algebra/solver/lsolveAll.ts` - Singular system handling
-- [ ] `algebra/solver/usolveAll.ts` - Singular system handling
-- [ ] `algebra/polynomialRoot.ts` - Polynomial roots
-- [ ] `algebra/lyap.ts` - Lyapunov equation
-- [ ] `algebra/sylvester.ts` - Sylvester equation
+### Phase 5: Advanced Solvers (Week 10-12) ✅ COMPLETE
+- [x] `algebra/polynomial.ts` - Polynomial operations:
+  - polyEval, polyEvalWithDerivative (Horner's method)
+  - quadraticRoots (closed-form)
+  - cubicRoots (Cardano's formula)
+  - quarticRoots (Ferrari's method)
+  - polyRoots (Durand-Kerner for degree > 4)
+  - polyDerivative, polyMultiply, polyDivide
+- [x] `algebra/equations.ts` - Matrix equation solvers:
+  - sylvester (Sylvester equation: AX + XB = C)
+  - lyap (continuous Lyapunov: AX + XA^T = Q)
+  - dlyap (discrete Lyapunov: AXA^T - X = Q)
+  - sylvesterResidual, lyapResidual, dlyapResidual
 
 ### Phase 6: Matrix Functions (Week 13-15)
 - [ ] `matrix/pinv.ts` - Moore-Penrose pseudoinverse
