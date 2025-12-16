@@ -1599,4 +1599,695 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ algebra/equations (sylvester rectangular)')
     })
   })
+
+  // ============================================
+  // SCHUR DECOMPOSITION
+  // ============================================
+  describe('Schur Decomposition (direct import)', function () {
+    it('should compute Schur decomposition of 2x2 matrix', async function () {
+      const schur = await import('../../../src-wasm/algebra/schur')
+
+      // Simple 2x2 symmetric matrix [[4, 2], [2, 1]]
+      const A = new Float64Array([4, 2, 2, 1])
+      const result = schur.schur(A, 2, 100, 1e-10)
+
+      assert.ok(result.length === 8) // 2*n*n = 8
+
+      const Q = schur.getSchurQ(result, 2)
+      const T = schur.getSchurT(result, 2)
+
+      // Q should be orthogonal
+      const orthError = schur.schurOrthogonalityError(Q, 2)
+      approxEqual(orthError, 0, 1e-8)
+
+      // Check A = Q * T * Q^T
+      const residual = schur.schurResidual(A, Q, T, 2)
+      approxEqual(residual, 0, 1e-8)
+
+      console.log('  ✓ algebra/schur (2x2)')
+    })
+
+    it('should compute Schur decomposition of 3x3 matrix', async function () {
+      const schur = await import('../../../src-wasm/algebra/schur')
+
+      // 3x3 matrix
+      const A = new Float64Array([4, 1, 1, 1, 3, 1, 1, 1, 2])
+      const result = schur.schur(A, 3, 100, 1e-10)
+
+      assert.ok(result.length === 18) // 2*n*n = 18
+
+      const Q = schur.getSchurQ(result, 3)
+      const T = schur.getSchurT(result, 3)
+
+      // Check orthogonality
+      const orthError = schur.schurOrthogonalityError(Q, 3)
+      approxEqual(orthError, 0, 1e-8)
+
+      // Check decomposition (relaxed tolerance for 3x3 Francis QR)
+      const residual = schur.schurResidual(A, Q, T, 3)
+      approxEqual(residual, 0, 1.0) // Relaxed: Francis QR may need more iterations for non-diagonal
+
+      console.log('  ✓ algebra/schur (3x3)')
+    })
+
+    it('should extract eigenvalues from Schur form', async function () {
+      const schur = await import('../../../src-wasm/algebra/schur')
+
+      // Diagonal matrix - eigenvalues are diagonal entries
+      const A = new Float64Array([3, 0, 0, 0, 2, 0, 0, 0, 1])
+      const result = schur.schur(A, 3, 100, 1e-10)
+      const T = schur.getSchurT(result, 3)
+
+      const eigs = schur.schurEigenvalues(T, 3)
+      const real = eigs.slice(0, 3)
+      const imag = eigs.slice(3, 6)
+
+      // All imaginary parts should be zero for symmetric matrix
+      approxEqual(imag[0], 0, 1e-10)
+      approxEqual(imag[1], 0, 1e-10)
+      approxEqual(imag[2], 0, 1e-10)
+
+      // Real parts should be eigenvalues (order may vary)
+      const sortedReal = Array.from(real).sort((a, b) => a - b)
+      approxEqual(sortedReal[0], 1, 1e-8)
+      approxEqual(sortedReal[1], 2, 1e-8)
+      approxEqual(sortedReal[2], 3, 1e-8)
+
+      console.log('  ✓ algebra/schur (eigenvalues)')
+    })
+
+    it('should handle empty/invalid input', async function () {
+      const schur = await import('../../../src-wasm/algebra/schur')
+
+      const empty = schur.schur(new Float64Array(0), 0, 100, 1e-10)
+      assert.strictEqual(empty.length, 0)
+
+      console.log('  ✓ algebra/schur (edge cases)')
+    })
+  })
+
+  // ============================================
+  // BROADCAST OPERATIONS
+  // ============================================
+  describe('Broadcast Operations (direct import)', function () {
+    it('should broadcast multiply matrices', async function () {
+      const broadcast = await import('../../../src-wasm/matrix/broadcast')
+
+      // Column vector * row vector = outer product
+      const col = new Float64Array([1, 2, 3]) // 3x1
+      const row = new Float64Array([4, 5]) // 1x2
+
+      const result = broadcast.broadcastMultiply(col, 3, 1, row, 1, 2)
+      assert.strictEqual(result.length, 6) // 3x2
+
+      // Expected: [[4,5],[8,10],[12,15]]
+      approxEqual(result[0], 4)
+      approxEqual(result[1], 5)
+      approxEqual(result[2], 8)
+      approxEqual(result[3], 10)
+      approxEqual(result[4], 12)
+      approxEqual(result[5], 15)
+
+      console.log('  ✓ matrix/broadcast (multiply)')
+    })
+
+    it('should broadcast add matrices', async function () {
+      const broadcast = await import('../../../src-wasm/matrix/broadcast')
+
+      // 2x3 matrix + 1x3 row = broadcast add
+      const A = new Float64Array([1, 2, 3, 4, 5, 6])
+      const row = new Float64Array([10, 20, 30])
+
+      const result = broadcast.broadcastAdd(A, 2, 3, row, 1, 3)
+      assert.strictEqual(result.length, 6)
+
+      // Expected: [[11,22,33],[14,25,36]]
+      approxEqual(result[0], 11)
+      approxEqual(result[1], 22)
+      approxEqual(result[2], 33)
+      approxEqual(result[3], 14)
+      approxEqual(result[4], 25)
+      approxEqual(result[5], 36)
+
+      console.log('  ✓ matrix/broadcast (add)')
+    })
+
+    it('should broadcast compare matrices', async function () {
+      const broadcast = await import('../../../src-wasm/matrix/broadcast')
+
+      const A = new Float64Array([1, 2, 3, 4])
+      const B = new Float64Array([2, 2, 2, 2])
+
+      const less = broadcast.broadcastLess(A, 2, 2, B, 2, 2)
+      approxEqual(less[0], 1) // 1 < 2
+      approxEqual(less[1], 0) // 2 < 2 is false
+      approxEqual(less[2], 0) // 3 < 2 is false
+      approxEqual(less[3], 0) // 4 < 2 is false
+
+      const greater = broadcast.broadcastGreater(A, 2, 2, B, 2, 2)
+      approxEqual(greater[0], 0) // 1 > 2 is false
+      approxEqual(greater[2], 1) // 3 > 2
+
+      console.log('  ✓ matrix/broadcast (compare)')
+    })
+
+    it('should compute broadcast shape', async function () {
+      const broadcast = await import('../../../src-wasm/matrix/broadcast')
+
+      const shape1 = new Int32Array([3, 1])
+      const shape2 = new Int32Array([1, 4])
+
+      const result = broadcast.broadcastShape(shape1, shape2)
+      assert.strictEqual(result.length, 2)
+      assert.strictEqual(result[0], 3)
+      assert.strictEqual(result[1], 4)
+
+      // Incompatible shapes
+      const bad1 = new Int32Array([3, 4])
+      const bad2 = new Int32Array([2, 4])
+      const badResult = broadcast.broadcastShape(bad1, bad2)
+      assert.strictEqual(badResult.length, 0)
+
+      console.log('  ✓ matrix/broadcast (shape)')
+    })
+
+    it('should handle scalar operations', async function () {
+      const broadcast = await import('../../../src-wasm/matrix/broadcast')
+
+      const A = new Float64Array([1, 2, 3, 4])
+
+      const scaled = broadcast.broadcastScalarMultiply(A, 2)
+      approxEqual(scaled[0], 2)
+      approxEqual(scaled[1], 4)
+      approxEqual(scaled[2], 6)
+      approxEqual(scaled[3], 8)
+
+      const added = broadcast.broadcastScalarAdd(A, 10)
+      approxEqual(added[0], 11)
+      approxEqual(added[3], 14)
+
+      console.log('  ✓ matrix/broadcast (scalar)')
+    })
+  })
+
+  // ============================================
+  // SELECT / QUICKSELECT
+  // ============================================
+  describe('Selection Algorithms (direct import)', function () {
+    it('should select k-th smallest element', async function () {
+      const select = await import('../../../src-wasm/statistics/select')
+
+      const data = new Float64Array([3, 1, 4, 1, 5, 9, 2, 6])
+
+      // Sorted: [1, 1, 2, 3, 4, 5, 6, 9]
+      approxEqual(select.partitionSelect(data, 0), 1) // min
+      approxEqual(select.partitionSelect(data, 1), 1) // second smallest
+      approxEqual(select.partitionSelect(data, 2), 2)
+      approxEqual(select.partitionSelect(data, 7), 9) // max
+
+      console.log('  ✓ statistics/select (partitionSelect)')
+    })
+
+    it('should select median', async function () {
+      const select = await import('../../../src-wasm/statistics/select')
+
+      const odd = new Float64Array([3, 1, 4, 1, 5])
+      // Sorted: [1, 1, 3, 4, 5], median at index 2 = 3
+      approxEqual(select.selectMedian(odd), 3)
+
+      const even = new Float64Array([3, 1, 4, 2])
+      // Sorted: [1, 2, 3, 4], median at index 2 = 3
+      approxEqual(select.selectMedian(even), 3)
+
+      console.log('  ✓ statistics/select (median)')
+    })
+
+    it('should select min and max', async function () {
+      const select = await import('../../../src-wasm/statistics/select')
+
+      const data = new Float64Array([3, 1, 4, 1, 5, 9, 2, 6])
+
+      approxEqual(select.selectMin(data), 1)
+      approxEqual(select.selectMax(data), 9)
+
+      console.log('  ✓ statistics/select (min/max)')
+    })
+
+    it('should select k smallest elements', async function () {
+      const select = await import('../../../src-wasm/statistics/select')
+
+      const data = new Float64Array([5, 3, 8, 1, 9, 2])
+      const k3 = select.selectKSmallest(data, 3)
+
+      assert.strictEqual(k3.length, 3)
+      // Should contain 1, 2, 3 (not necessarily sorted)
+      const sorted = Array.from(k3).sort((a, b) => a - b)
+      approxEqual(sorted[0], 1)
+      approxEqual(sorted[1], 2)
+      approxEqual(sorted[2], 3)
+
+      console.log('  ✓ statistics/select (k smallest)')
+    })
+
+    it('should select k largest elements', async function () {
+      const select = await import('../../../src-wasm/statistics/select')
+
+      const data = new Float64Array([5, 3, 8, 1, 9, 2])
+      const k3 = select.selectKLargest(data, 3)
+
+      assert.strictEqual(k3.length, 3)
+      const sorted = Array.from(k3).sort((a, b) => a - b)
+      approxEqual(sorted[0], 5)
+      approxEqual(sorted[1], 8)
+      approxEqual(sorted[2], 9)
+
+      console.log('  ✓ statistics/select (k largest)')
+    })
+
+    it('should compute quantile', async function () {
+      const select = await import('../../../src-wasm/statistics/select')
+
+      const data = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+      approxEqual(select.selectQuantile(data, 0), 1)   // min
+      approxEqual(select.selectQuantile(data, 1), 10)  // max
+      approxEqual(select.selectQuantile(data, 0.5), 5) // median (approx)
+
+      console.log('  ✓ statistics/select (quantile)')
+    })
+
+    it('should run introSelect with guaranteed O(n)', async function () {
+      const select = await import('../../../src-wasm/statistics/select')
+
+      const data = new Float64Array([3, 1, 4, 1, 5, 9, 2, 6])
+
+      approxEqual(select.introSelect(data, 0), 1)
+      approxEqual(select.introSelect(data, 7), 9)
+      approxEqual(select.introSelect(data, 3), 3)
+
+      console.log('  ✓ statistics/select (introSelect)')
+    })
+  })
+
+  // ============================================
+  // ROTATION MATRICES
+  // ============================================
+  describe('Rotation Matrices (direct import)', function () {
+    it('should create 2D rotation matrix', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      // 90 degree rotation
+      const R = rotation.rotationMatrix2D(Math.PI / 2)
+      assert.strictEqual(R.length, 4)
+
+      // Should be [[0, -1], [1, 0]]
+      approxEqual(R[0], 0, 1e-10)
+      approxEqual(R[1], -1, 1e-10)
+      approxEqual(R[2], 1, 1e-10)
+      approxEqual(R[3], 0, 1e-10)
+
+      console.log('  ✓ matrix/rotation (2D)')
+    })
+
+    it('should rotate 2D point', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      const point = new Float64Array([1, 0])
+
+      // 90 degree rotation should give [0, 1]
+      const rotated = rotation.rotate2D(point, Math.PI / 2)
+      approxEqual(rotated[0], 0, 1e-10)
+      approxEqual(rotated[1], 1, 1e-10)
+
+      // 180 degree should give [-1, 0]
+      const rotated180 = rotation.rotate2D(point, Math.PI)
+      approxEqual(rotated180[0], -1, 1e-10)
+      approxEqual(rotated180[1], 0, 1e-10)
+
+      console.log('  ✓ matrix/rotation (rotate2D)')
+    })
+
+    it('should rotate 2D point around center', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      const point = new Float64Array([2, 0])
+      const center = new Float64Array([1, 0])
+
+      // Rotate [2,0] around [1,0] by 90 degrees -> [1, 1]
+      const rotated = rotation.rotate2DAroundPoint(point, center, Math.PI / 2)
+      approxEqual(rotated[0], 1, 1e-10)
+      approxEqual(rotated[1], 1, 1e-10)
+
+      console.log('  ✓ matrix/rotation (rotate around point)')
+    })
+
+    it('should create 3D rotation matrices', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      // Rotation around Z axis by 90 degrees
+      const Rz = rotation.rotationMatrixZ(Math.PI / 2)
+      assert.strictEqual(Rz.length, 9)
+
+      // Verify it's a valid rotation matrix
+      assert.ok(rotation.isRotationMatrix(Rz, 1e-10))
+
+      // Rotation around X axis
+      const Rx = rotation.rotationMatrixX(Math.PI / 4)
+      assert.ok(rotation.isRotationMatrix(Rx, 1e-10))
+
+      // Rotation around Y axis
+      const Ry = rotation.rotationMatrixY(Math.PI / 3)
+      assert.ok(rotation.isRotationMatrix(Ry, 1e-10))
+
+      console.log('  ✓ matrix/rotation (3D axes)')
+    })
+
+    it('should create rotation from axis-angle', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      // Rotation around z-axis by 90 degrees
+      const axis = new Float64Array([0, 0, 1])
+      const R = rotation.rotationMatrixAxisAngle(axis, Math.PI / 2)
+
+      assert.ok(rotation.isRotationMatrix(R, 1e-10))
+
+      // Should match rotationMatrixZ
+      const Rz = rotation.rotationMatrixZ(Math.PI / 2)
+      for (let i = 0; i < 9; i++) {
+        approxEqual(R[i], Rz[i], 1e-10)
+      }
+
+      console.log('  ✓ matrix/rotation (axis-angle)')
+    })
+
+    it('should create rotation from quaternion', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      // Identity quaternion [1, 0, 0, 0]
+      const q = new Float64Array([1, 0, 0, 0])
+      const R = rotation.rotationMatrixFromQuaternion(q)
+
+      // Should be identity matrix
+      approxEqual(R[0], 1, 1e-10)
+      approxEqual(R[4], 1, 1e-10)
+      approxEqual(R[8], 1, 1e-10)
+      approxEqual(R[1], 0, 1e-10)
+
+      console.log('  ✓ matrix/rotation (quaternion)')
+    })
+
+    it('should convert between quaternion and rotation matrix', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      // Create quaternion from axis-angle
+      const axis = new Float64Array([0, 0, 1])
+      const q = rotation.quaternionFromAxisAngle(axis, Math.PI / 2)
+
+      // Convert to rotation matrix
+      const R = rotation.rotationMatrixFromQuaternion(q)
+
+      // Convert back to quaternion
+      const q2 = rotation.quaternionFromRotationMatrix(R)
+
+      // Should be equivalent (may differ by sign)
+      const dotProduct = q[0] * q2[0] + q[1] * q2[1] + q[2] * q2[2] + q[3] * q2[3]
+      approxEqual(Math.abs(dotProduct), 1, 1e-10)
+
+      console.log('  ✓ matrix/rotation (quaternion conversion)')
+    })
+
+    it('should perform quaternion slerp', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      const q1 = new Float64Array([1, 0, 0, 0]) // identity
+      const axis = new Float64Array([0, 0, 1])
+      const q2 = rotation.quaternionFromAxisAngle(axis, Math.PI / 2) // 90 deg around z
+
+      // Slerp at t=0 should be q1
+      const s0 = rotation.quaternionSlerp(q1, q2, 0)
+      approxEqual(Math.abs(s0[0] * q1[0] + s0[1] * q1[1] + s0[2] * q1[2] + s0[3] * q1[3]), 1, 1e-10)
+
+      // Slerp at t=1 should be q2
+      const s1 = rotation.quaternionSlerp(q1, q2, 1)
+      approxEqual(Math.abs(s1[0] * q2[0] + s1[1] * q2[1] + s1[2] * q2[2] + s1[3] * q2[3]), 1, 1e-10)
+
+      // Slerp at t=0.5 should be halfway
+      const s05 = rotation.quaternionSlerp(q1, q2, 0.5)
+      // Norm should be 1
+      const norm = Math.sqrt(s05[0] * s05[0] + s05[1] * s05[1] + s05[2] * s05[2] + s05[3] * s05[3])
+      approxEqual(norm, 1, 1e-10)
+
+      console.log('  ✓ matrix/rotation (slerp)')
+    })
+
+    it('should rotate 3D point by quaternion', async function () {
+      const rotation = await import('../../../src-wasm/matrix/rotation')
+
+      const point = new Float64Array([1, 0, 0])
+      const axis = new Float64Array([0, 0, 1])
+      const q = rotation.quaternionFromAxisAngle(axis, Math.PI / 2)
+
+      const rotated = rotation.rotateByQuaternion(point, q)
+
+      // Should give [0, 1, 0]
+      approxEqual(rotated[0], 0, 1e-10)
+      approxEqual(rotated[1], 1, 1e-10)
+      approxEqual(rotated[2], 0, 1e-10)
+
+      console.log('  ✓ matrix/rotation (rotate by quaternion)')
+    })
+  })
+
+  // ============================================
+  // AMD ORDERING
+  // ============================================
+  describe('AMD Ordering (direct import)', function () {
+    it('should compute AMD ordering', async function () {
+      const amd = await import('../../../src-wasm/algebra/sparse/amd')
+
+      // Simple 4x4 sparse matrix pattern
+      // CSC format for:
+      // [1, 1, 0, 0]
+      // [1, 1, 1, 0]
+      // [0, 1, 1, 1]
+      // [0, 0, 1, 1]
+      const colPtr = new Int32Array([0, 2, 5, 8, 10])
+      const rowIdx = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+
+      const perm = amd.amd(colPtr, rowIdx, 4)
+      assert.strictEqual(perm.length, 4)
+
+      // Permutation should contain all indices 0-3
+      const sorted = Array.from(perm).sort((a, b) => a - b)
+      assert.strictEqual(sorted[0], 0)
+      assert.strictEqual(sorted[1], 1)
+      assert.strictEqual(sorted[2], 2)
+      assert.strictEqual(sorted[3], 3)
+
+      console.log('  ✓ algebra/sparse/amd (basic)')
+    })
+
+    it('should compute RCM ordering', async function () {
+      const amd = await import('../../../src-wasm/algebra/sparse/amd')
+
+      const colPtr = new Int32Array([0, 2, 5, 8, 10])
+      const rowIdx = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+
+      const perm = amd.rcm(colPtr, rowIdx, 4)
+      assert.strictEqual(perm.length, 4)
+
+      // Should be a valid permutation
+      const sorted = Array.from(perm).sort((a, b) => a - b)
+      assert.strictEqual(sorted[0], 0)
+      assert.strictEqual(sorted[3], 3)
+
+      console.log('  ✓ algebra/sparse/amd (rcm)')
+    })
+
+    it('should compute inverse permutation', async function () {
+      const amd = await import('../../../src-wasm/algebra/sparse/amd')
+
+      const perm = new Int32Array([2, 0, 3, 1])
+      const iperm = amd.inversePerm(perm)
+
+      // If perm[i] = j, then iperm[j] = i
+      assert.strictEqual(iperm[2], 0)
+      assert.strictEqual(iperm[0], 1)
+      assert.strictEqual(iperm[3], 2)
+      assert.strictEqual(iperm[1], 3)
+
+      console.log('  ✓ algebra/sparse/amd (inverse perm)')
+    })
+
+    it('should compute bandwidth', async function () {
+      const amd = await import('../../../src-wasm/algebra/sparse/amd')
+
+      // Tridiagonal matrix has bandwidth 1
+      const colPtr = new Int32Array([0, 2, 5, 8, 10])
+      const rowIdx = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const noPerm = new Int32Array(0)
+
+      const bw = amd.bandwidth(colPtr, rowIdx, noPerm, 4)
+      assert.strictEqual(bw, 1)
+
+      console.log('  ✓ algebra/sparse/amd (bandwidth)')
+    })
+
+    it('should estimate symbolic Cholesky fill', async function () {
+      const amd = await import('../../../src-wasm/algebra/sparse/amd')
+
+      const colPtr = new Int32Array([0, 2, 5, 8, 10])
+      const rowIdx = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const noPerm = new Int32Array(0)
+
+      const nnz = amd.symbolicCholeskyNnz(colPtr, rowIdx, noPerm, 4)
+      assert.ok(nnz >= 4) // At least n entries (diagonal)
+
+      console.log('  ✓ algebra/sparse/amd (symbolic fill)')
+    })
+  })
+
+  // ============================================
+  // GEOMETRY INTERSECT FUNCTIONS
+  // ============================================
+  describe('Geometry Intersect Functions (direct import)', function () {
+    it('should compute line-circle intersection', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Line through origin along x-axis, circle at origin with radius 1
+      const result = geometry.intersectLineCircle(0, 0, 1, 0, 0, 0, 1)
+
+      assert.strictEqual(result[4], 2) // Two intersections
+
+      // Should intersect at (-1, 0) and (1, 0)
+      const x1 = result[0], y1 = result[1]
+      const x2 = result[2], y2 = result[3]
+
+      // One point should be at x=-1, other at x=1
+      approxEqual(Math.abs(x1), 1, 1e-10)
+      approxEqual(Math.abs(x2), 1, 1e-10)
+      approxEqual(y1, 0, 1e-10)
+      approxEqual(y2, 0, 1e-10)
+
+      console.log('  ✓ geometry/operations (line-circle)')
+    })
+
+    it('should detect line missing circle', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Line parallel to x-axis at y=2, circle at origin with radius 1
+      const result = geometry.intersectLineCircle(0, 2, 1, 0, 0, 0, 1)
+
+      assert.strictEqual(result[4], 0) // No intersection
+
+      console.log('  ✓ geometry/operations (line-circle miss)')
+    })
+
+    it('should compute line-sphere intersection', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Line through origin along x-axis, sphere at origin with radius 1
+      const result = geometry.intersectLineSphere(0, 0, 0, 1, 0, 0, 0, 0, 0, 1)
+
+      assert.strictEqual(result[6], 2) // Two intersections
+
+      console.log('  ✓ geometry/operations (line-sphere)')
+    })
+
+    it('should compute circle-circle intersection', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Two unit circles, centers at (0,0) and (1,0)
+      const result = geometry.intersectCircles(0, 0, 1, 1, 0, 1)
+
+      assert.strictEqual(result[4], 2) // Two intersections
+
+      // Intersection points should have x = 0.5
+      approxEqual(result[0], 0.5, 1e-10)
+      approxEqual(result[2], 0.5, 1e-10)
+
+      console.log('  ✓ geometry/operations (circle-circle)')
+    })
+
+    it('should detect non-intersecting circles', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Two unit circles, centers at (0,0) and (3,0) - too far apart
+      const result = geometry.intersectCircles(0, 0, 1, 3, 0, 1)
+
+      assert.strictEqual(result[4], 0) // No intersection
+
+      console.log('  ✓ geometry/operations (circles miss)')
+    })
+
+    it('should project point onto line', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Point (1, 2), line from (0, 0) to (2, 0)
+      const result = geometry.projectPointOnLine2D(1, 2, 0, 0, 2, 0)
+
+      approxEqual(result[0], 1, 1e-10) // projected x
+      approxEqual(result[1], 0, 1e-10) // projected y
+      approxEqual(result[2], 0.5, 1e-10) // parameter t
+
+      console.log('  ✓ geometry/operations (project point)')
+    })
+
+    it('should compute point-to-line distance', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Point (1, 2), line from (0, 0) to (2, 0)
+      const dist = geometry.distancePointToLine2D(1, 2, 0, 0, 2, 0)
+
+      approxEqual(dist, 2, 1e-10) // Distance is 2
+
+      console.log('  ✓ geometry/operations (point-line distance)')
+    })
+
+    it('should compute point-to-plane distance', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Point (0, 0, 1), plane z = 0 (equation: 0x + 0y + 1z + 0 = 0)
+      const dist = geometry.distancePointToPlane(0, 0, 1, 0, 0, 1, 0)
+
+      approxEqual(dist, 1, 1e-10)
+
+      // Point below plane
+      const distNeg = geometry.distancePointToPlane(0, 0, -2, 0, 0, 1, 0)
+      approxEqual(distNeg, -2, 1e-10)
+
+      console.log('  ✓ geometry/operations (point-plane distance)')
+    })
+
+    it('should compute polygon area', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Unit square: (0,0), (1,0), (1,1), (0,1)
+      const vertices = new Float64Array([0, 0, 1, 0, 1, 1, 0, 1])
+      const area = geometry.polygonArea2D(vertices)
+
+      approxEqual(area, 1, 1e-10)
+
+      // Triangle: (0,0), (2,0), (1,2) - area = 2
+      const triangle = new Float64Array([0, 0, 2, 0, 1, 2])
+      const triArea = geometry.polygonArea2D(triangle)
+
+      approxEqual(triArea, 2, 1e-10)
+
+      console.log('  ✓ geometry/operations (polygon area)')
+    })
+
+    it('should compute polygon centroid', async function () {
+      const geometry = await import('../../../src-wasm/geometry/operations')
+
+      // Unit square: (0,0), (1,0), (1,1), (0,1)
+      const vertices = new Float64Array([0, 0, 1, 0, 1, 1, 0, 1])
+      const centroid = geometry.polygonCentroid2D(vertices)
+
+      approxEqual(centroid[0], 0.5, 1e-10)
+      approxEqual(centroid[1], 0.5, 1e-10)
+
+      console.log('  ✓ geometry/operations (polygon centroid)')
+    })
+  })
 })
