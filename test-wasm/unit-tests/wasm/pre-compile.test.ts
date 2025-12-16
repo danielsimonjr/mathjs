@@ -1449,4 +1449,154 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ matrix/linalg (condition number)')
     })
   })
+
+  // ============================================
+  // ALGEBRA EQUATIONS (Lyapunov, Sylvester)
+  // ============================================
+  describe('Algebra Equations (direct import)', function () {
+    it('should solve Sylvester equation AX + XB = C', async function () {
+      const equations = await import('../../../src-wasm/algebra/equations')
+
+      // Simple test: A = [[1, 0], [0, 2]], B = [[3, 0], [0, 4]], find X
+      // such that AX + XB = C for some C
+      // Let's choose X = [[1, 0], [0, 1]] and compute C = AX + XB
+      // AX = [[1,0],[0,2]], XB = [[3,0],[0,4]], C = [[4,0],[0,6]]
+
+      const A = new Float64Array([1, 0, 0, 2])
+      const B = new Float64Array([3, 0, 0, 4])
+      const C = new Float64Array([4, 0, 0, 6])
+
+      const X = equations.sylvester(A, 2, B, 2, C)
+      assert.strictEqual(X.length, 4)
+
+      // Verify X ≈ [[1, 0], [0, 1]]
+      approxEqual(X[0], 1, 1e-10)
+      approxEqual(X[1], 0, 1e-10)
+      approxEqual(X[2], 0, 1e-10)
+      approxEqual(X[3], 1, 1e-10)
+
+      // Double-check with residual
+      const residual = equations.sylvesterResidual(A, 2, X, B, 2, C)
+      approxEqual(residual, 0, 1e-10)
+
+      console.log('  ✓ algebra/equations (sylvester)')
+    })
+
+    it('should solve non-trivial Sylvester equation', async function () {
+      const equations = await import('../../../src-wasm/algebra/equations')
+
+      // A = [[1, 2], [0, 3]], B = [[4, 0], [1, 5]]
+      // Choose a known X and compute C
+      const A = new Float64Array([1, 2, 0, 3])
+      const B = new Float64Array([4, 0, 1, 5])
+
+      // Known X = [[1, 2], [3, 4]]
+      // Compute AX + XB = C
+      // AX = [[1,2],[0,3]] * [[1,2],[3,4]] = [[7,10],[9,12]]
+      // XB = [[1,2],[3,4]] * [[4,0],[1,5]] = [[6,10],[16,20]]
+      // C = [[13,20],[25,32]]
+      const C = new Float64Array([13, 20, 25, 32])
+
+      const X = equations.sylvester(A, 2, B, 2, C)
+      assert.strictEqual(X.length, 4)
+
+      // Verify residual is small
+      const residual = equations.sylvesterResidual(A, 2, X, B, 2, C)
+      approxEqual(residual, 0, 1e-8)
+
+      console.log('  ✓ algebra/equations (sylvester non-trivial)')
+    })
+
+    it('should solve continuous Lyapunov equation AX + XA^T = Q', async function () {
+      const equations = await import('../../../src-wasm/algebra/equations')
+
+      // Simple test: A = [[0, 1], [-2, -3]] (stable matrix)
+      // Choose symmetric X and compute Q = AX + XA^T
+      const A = new Float64Array([0, 1, -2, -3])
+
+      // Let X = [[2, 0], [0, 1]] (symmetric)
+      // AX = [[0,1],[-2,-3]] * [[2,0],[0,1]] = [[0,1],[-4,-3]]
+      // XA^T = [[2,0],[0,1]] * [[0,-2],[1,-3]] = [[-0, -4],[1,-3]]
+      // Wait, let me recalculate:
+      // A^T = [[0, -2], [1, -3]]
+      // XA^T = [[2,0],[0,1]] * [[0,-2],[1,-3]] = [[0,-4],[1,-3]]
+      // Q = AX + XA^T = [[0,1],[-4,-3]] + [[0,-4],[1,-3]] = [[0,-3],[-3,-6]]
+
+      const Q = new Float64Array([0, -3, -3, -6])
+
+      const X = equations.lyap(A, 2, Q)
+      assert.strictEqual(X.length, 4)
+
+      // Verify residual is small
+      const residual = equations.lyapResidual(A, 2, X, Q)
+      approxEqual(residual, 0, 1e-8)
+
+      console.log('  ✓ algebra/equations (lyap)')
+    })
+
+    it('should solve discrete Lyapunov equation AXA^T - X = Q', async function () {
+      const equations = await import('../../../src-wasm/algebra/equations')
+
+      // Simple test with stable A (eigenvalues inside unit circle)
+      // A = [[0.5, 0], [0, 0.5]]
+      // Let X = [[1, 0], [0, 1]]
+      // AXA^T = [[0.25, 0], [0, 0.25]]
+      // Q = AXA^T - X = [[-0.75, 0], [0, -0.75]]
+
+      const A = new Float64Array([0.5, 0, 0, 0.5])
+      const Q = new Float64Array([-0.75, 0, 0, -0.75])
+
+      const X = equations.dlyap(A, 2, Q)
+      assert.strictEqual(X.length, 4)
+
+      // Verify residual is small
+      const residual = equations.dlyapResidual(A, 2, X, Q)
+      approxEqual(residual, 0, 1e-8)
+
+      console.log('  ✓ algebra/equations (dlyap)')
+    })
+
+    it('should handle 3x3 Sylvester equation', async function () {
+      const equations = await import('../../../src-wasm/algebra/equations')
+
+      // Diagonal matrices for simplicity
+      const A = new Float64Array([1, 0, 0, 0, 2, 0, 0, 0, 3])
+      const B = new Float64Array([4, 0, 0, 0, 5, 0, 0, 0, 6])
+
+      // X = I, then C = A + B (since A*I + I*B = A + B for diagonal)
+      const C = new Float64Array([5, 0, 0, 0, 7, 0, 0, 0, 9])
+
+      const X = equations.sylvester(A, 3, B, 3, C)
+      assert.strictEqual(X.length, 9)
+
+      // Verify residual
+      const residual = equations.sylvesterResidual(A, 3, X, B, 3, C)
+      approxEqual(residual, 0, 1e-8)
+
+      console.log('  ✓ algebra/equations (sylvester 3x3)')
+    })
+
+    it('should handle rectangular Sylvester equation', async function () {
+      const equations = await import('../../../src-wasm/algebra/equations')
+
+      // A is 2x2, B is 3x3, X is 2x3, C is 2x3
+      const A = new Float64Array([1, 0, 0, 2])
+      const B = new Float64Array([1, 0, 0, 0, 2, 0, 0, 0, 3])
+
+      // Choose X = [[1,0,0],[0,1,0]]
+      // AX = [[1,0,0],[0,2,0]]
+      // XB = [[1,0,0],[0,2,0]]
+      // C = AX + XB = [[2,0,0],[0,4,0]]
+      const C = new Float64Array([2, 0, 0, 0, 4, 0])
+
+      const X = equations.sylvester(A, 2, B, 3, C)
+      assert.strictEqual(X.length, 6)
+
+      // Verify residual
+      const residual = equations.sylvesterResidual(A, 2, X, B, 3, C)
+      approxEqual(residual, 0, 1e-8)
+
+      console.log('  ✓ algebra/equations (sylvester rectangular)')
+    })
+  })
 })
