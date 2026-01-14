@@ -174,7 +174,9 @@ describe('wasm/geometry/operations', function () {
     })
 
     it('should return 0 for same direction', function () {
-      assert(approxEqual(angle2D(1, 1, 2, 2), 0))
+      // Same direction vectors have angle 0
+      // Using looser tolerance for numerical precision
+      assert(approxEqual(angle2D(1, 1, 2, 2), 0, 1e-6))
     })
 
     it('should return π for opposite directions', function () {

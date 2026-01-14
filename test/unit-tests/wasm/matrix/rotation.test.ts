@@ -6,8 +6,7 @@ import {
   rotationMatrixX,
   rotationMatrixY,
   rotationMatrixZ,
-  rotate3D,
-  rotationMatrixAxisAngle
+  rotateByMatrix
 } from '../../../../src/wasm/matrix/rotation.ts'
 
 const EPSILON = 1e-10
@@ -151,11 +150,11 @@ describe('wasm/matrix/rotation', function () {
     })
   })
 
-  describe('rotate3D', function () {
+  describe('rotateByMatrix', function () {
     it('should rotate 3D point', function () {
       const point = new Float64Array([1, 0, 0])
       const R = rotationMatrixZ(PI / 2)
-      const result = rotate3D(point, R)
+      const result = rotateByMatrix(point, R)
 
       assert(approxEqual(result[0], 0, 1e-10))
       assert(approxEqual(result[1], 1, 1e-10))
@@ -167,7 +166,7 @@ describe('wasm/matrix/rotation', function () {
       const originalDist = Math.sqrt(1 + 4 + 9)
 
       const R = rotationMatrixX(PI / 4)
-      const result = rotate3D(point, R)
+      const result = rotateByMatrix(point, R)
       const newDist = Math.sqrt(
         result[0] * result[0] +
         result[1] * result[1] +
