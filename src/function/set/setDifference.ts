@@ -1,6 +1,6 @@
 import { flatten, generalize, identify } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
-import type { MathArray, Matrix } from '../../../types/index.js'
+import type { MathArray, Matrix } from '../../../types/index.ts'
 
 const name = 'setDifference'
 const dependencies = [

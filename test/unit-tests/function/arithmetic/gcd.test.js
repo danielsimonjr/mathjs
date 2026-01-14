@@ -1,8 +1,8 @@
 // test gcd
 import assert from 'assert'
-import { ArgumentsError } from '../../../../src/error/ArgumentsError.js'
+import { ArgumentsError } from '../../../../src/error/ArgumentsError.ts'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const matrix = math.matrix
 const sparse = math.sparse
 const gcd = math.gcd

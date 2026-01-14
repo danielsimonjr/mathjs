@@ -2,12 +2,8 @@ import typedFunction from '@danielsimonjr/typed-function'
 import { ArgumentsError } from '../error/ArgumentsError.ts'
 import { DimensionError } from '../error/DimensionError.ts'
 import { IndexError } from '../error/IndexError.ts'
-import {
-  factory,
-  isFactory,
-  FactoryFunction,
-  LegacyFactory
-} from '../utils/factory.ts'
+import { factory, isFactory } from '../utils/factory.ts'
+import type { FactoryFunction, LegacyFactory } from '../utils/factory.ts'
 import {
   isAccessorNode,
   isArray,
@@ -55,10 +51,11 @@ import {
 } from '../utils/is.ts'
 import { deepFlatten, isLegacyFactory } from '../utils/object.ts'
 import * as emitter from './../utils/emitter.ts'
-import { ConfigOptions, DEFAULT_CONFIG, MathJsConfig } from './config.ts'
+import { DEFAULT_CONFIG } from './config.ts'
+import type { ConfigOptions, MathJsConfig } from './config.ts'
 
 // Re-export MathJsConfig for backward compatibility
-export { MathJsConfig }
+export type { MathJsConfig }
 import { configFactory } from './function/config.ts'
 import { importFactory } from './function/import.ts'
 

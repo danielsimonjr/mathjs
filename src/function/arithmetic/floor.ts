@@ -1,4 +1,4 @@
-import { Decimal } from '../../type/local/Decimal.ts'
+import Decimal from 'decimal.js'
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
 import { isInteger, nearlyEqual } from '../../utils/number.ts'

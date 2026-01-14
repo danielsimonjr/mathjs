@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('distance', function () {
   it('should calculate the distance of two 1D points', function () {

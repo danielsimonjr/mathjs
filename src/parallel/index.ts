@@ -21,7 +21,7 @@ export {
   PoolStats,
   createMathWorker,
   workerpool
-} from './WorkerPool.js'
+} from './WorkerPool.ts'
 
 // WASM-accelerated worker pool
 export {
@@ -31,10 +31,10 @@ export {
   BenchmarkResult,
   createMatrixPool,
   createStatsPool
-} from './WasmWorkerPool.js'
+} from './WasmWorkerPool.ts'
 
 // Parallel matrix operations
-export { ParallelMatrix, MatrixData, ParallelConfig } from './ParallelMatrix.js'
+export { ParallelMatrix, MatrixData, ParallelConfig } from './ParallelMatrix.ts'
 
 // Re-export types for convenience
-export type { WorkerPoolOptions as PoolOptions } from './WorkerPool.js'
+export type { WorkerPoolOptions as PoolOptions } from './WorkerPool.ts'

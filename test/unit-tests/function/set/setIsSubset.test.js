@@ -1,7 +1,7 @@
 // test setIsSubset
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('setIsSubset', function () {
   it('should return true or false', function () {

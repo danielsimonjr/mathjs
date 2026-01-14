@@ -1,8 +1,8 @@
 // test FunctionNode
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
-import { toObject } from '../../../../src/utils/map.js'
+import math from '../../../../src/defaultInstance.ts'
+import { toObject } from '../../../../src/utils/map.ts'
 const Node = math.Node
 const ConstantNode = math.ConstantNode
 const SymbolNode = math.SymbolNode

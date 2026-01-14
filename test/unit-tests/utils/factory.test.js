@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { sortFactories, factory, isFactory } from '../../../src/utils/factory.js'
+import { sortFactories, factory, isFactory } from '../../../src/utils/factory.ts'
 
 describe('factory', function () {
   it('should test whether something is a factory', function () {

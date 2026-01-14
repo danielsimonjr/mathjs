@@ -1,13 +1,36 @@
-import { Complex as LocalComplex } from '../local/Complex.ts'
+import ComplexJs, { Complex as ComplexClass } from 'complex.js'
 import { format } from '../../utils/number.ts'
 import { isNumber, isUnit } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 
-// Re-export Complex type for use in other modules
-export type Complex = LocalComplex
+// Extended Complex type with mathjs additions
+export interface Complex extends ComplexClass {
+  type: string
+  isComplex: boolean
+  toJSON(): { mathjs: string; re: number; im: number }
+  toPolar(): { r: number; phi: number }
+  format(options?: any): string
+}
 
-// Use the local Complex class - cast to any for runtime manipulation
-const Complex = LocalComplex as any
+export interface ComplexConstructor {
+  new (a?: any, b?: number): Complex
+  (a?: any, b?: number): Complex
+  prototype: Complex
+  fromPolar: (args: any) => Complex
+  fromJSON: (json: any) => Complex
+  compare: (a: Complex, b: Complex) => number
+  ZERO: Complex
+  ONE: Complex
+  I: Complex
+  PI: Complex
+  E: Complex
+  INFINITY: Complex
+  NAN: Complex
+  EPSILON: number
+}
+
+// Cast to allow prototype access and static method additions
+const Complex = ComplexJs as unknown as ComplexConstructor
 
 const name = 'Complex'
 const dependencies: string[] = []
@@ -20,7 +43,7 @@ export const createComplexClass = /* #__PURE__ */ factory(
      * Attach type information
      */
     Object.defineProperty(Complex, 'name', { value: 'Complex' })
-    Complex.prototype.constructor = Complex
+    Complex.prototype.constructor = Complex as any
     Complex.prototype.type = 'Complex'
     Complex.prototype.isComplex = true
 
@@ -161,7 +184,7 @@ export const createComplexClass = /* #__PURE__ */ factory(
       }
     }
 
-    Complex.prototype.valueOf = Complex.prototype.toString
+    ;(Complex.prototype as any).valueOf = Complex.prototype.toString
 
     /**
      * Create a Complex number from a JSON object

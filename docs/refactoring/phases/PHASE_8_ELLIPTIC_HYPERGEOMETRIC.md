@@ -1490,7 +1490,7 @@ function validateComplexArgument(z: number, functionName: string): void {
 ### TypeScript Implementation Pattern
 
 ```typescript
-// src-wasm/elliptic/ellipticK.ts
+// src/wasm/elliptic/ellipticK.ts
 export function ellipticK(k: f64): f64 {
   if (k < 0 || k >= 1) return NaN
   if (k === 0) return Math.PI / 2

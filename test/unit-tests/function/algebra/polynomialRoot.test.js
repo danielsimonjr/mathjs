@@ -1,5 +1,5 @@
 import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 const complex = math.complex
 const pRoot = math.polynomialRoot

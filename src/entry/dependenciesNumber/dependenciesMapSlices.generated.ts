@@ -1,0 +1,13 @@
+/**
+ * THIS FILE IS AUTO-GENERATED
+ * DON'T MAKE CHANGES HERE
+ */
+import { isIntegerDependencies } from './dependenciesIsInteger.generated.js'
+import { typedDependencies } from './dependenciesTyped.generated.js'
+import { createMapSlices } from '../../factoriesNumber.js'
+
+export const mapSlicesDependencies: Record<string, unknown> = {
+  isIntegerDependencies,
+  typedDependencies,
+  createMapSlices
+}

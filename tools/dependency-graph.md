@@ -1,46 +1,69 @@
 # Math.js Dependency Graph
 
-Generated: 2025-12-09T05:05:00.986Z
+Generated: 2026-01-13T03:46:01.214Z
 
 ## Statistics
 
-- **Total Files**: 578
-- **Total Factory Functions**: 284
-- **Total Dependencies**: 1201
-- **Average Dependencies per File**: 2.08
+- **Total Files**: 673
+- **Total Factory Functions**: 328
+- **Total Dependencies**: 1385
+- **Average Dependencies per File**: 2.06
 
 ## Most Depended-On Files
 
 | Rank | File | Dependents |
 |------|------|------------|
-| 1 | utils/factory.js | 283 |
-| 2 | utils/is.js | 73 |
-| 3 | plain/number/index.js | 51 |
-| 4 | utils/number.js | 48 |
-| 5 | utils/array.js | 48 |
-| 6 | utils/object.js | 30 |
-| 7 | type/matrix/utils/matrixAlgorithmSuite.js | 28 |
-| 8 | type/matrix/utils/matAlgo12xSfs.js | 19 |
-| 9 | utils/string.js | 17 |
-| 10 | type/matrix/utils/matAlgo11xS0s.js | 17 |
-| 11 | type/matrix/utils/matAlgo03xDSf.js | 15 |
-| 12 | type/matrix/utils/matAlgo14xDs.js | 11 |
-| 13 | type/matrix/utils/matAlgo02xDS0.js | 11 |
-| 14 | type/matrix/utils/matAlgo07xSSf.js | 10 |
-| 15 | type/matrix/utils/matAlgo01xDSid.js | 8 |
-| 16 | type/matrix/utils/matAlgo10xSids.js | 7 |
-| 17 | function/algebra/solver/utils/solveValidation.js | 5 |
-| 18 | type/matrix/utils/matAlgo06xS0S0.js | 4 |
-| 19 | type/matrix/utils/matAlgo05xSfSf.js | 4 |
-| 20 | function/algebra/simplify/util.js | 3 |
+| 1 | utils/factory.js | 331 |
+| 2 | utils/is.js | 105 |
+| 3 | utils/array.js | 58 |
+| 4 | utils/number.js | 55 |
+| 5 | plain/number/index.js | 54 |
+| 6 | utils/collection.js | 47 |
+| 7 | utils/object.js | 40 |
+| 8 | utils/string.js | 28 |
+| 9 | type/matrix/utils/matrixAlgorithmSuite.js | 28 |
+| 10 | type/matrix/utils/matAlgo12xSfs.js | 19 |
+| 11 | error/DimensionError.js | 18 |
+| 12 | type/matrix/utils/matAlgo11xS0s.js | 17 |
+| 13 | type/matrix/utils/matAlgo03xDSf.js | 16 |
+| 14 | expression/transform/utils/errorTransform.js | 15 |
+| 15 | utils/customs.js | 13 |
+| 16 | type/matrix/utils/matAlgo14xDs.js | 12 |
+| 17 | utils/bignumber/nearlyEqual.js | 11 |
+| 18 | type/matrix/utils/matAlgo02xDS0.js | 11 |
+| 19 | type/matrix/utils/matAlgo07xSSf.js | 10 |
+| 20 | function/statistics/utils/improveErrorMessage.js | 9 |
 
 ## Folder Dependencies
+
+### `./`
+
+Depends on:
+- `core/`
+- `plain/number/`
+- `utils/`
+- `utils/bignumber/`
+
+### `core/`
+
+Depends on:
+- `core/function/`
+- `error/`
+- `utils/`
 
 ### `core/function/`
 
 Depends on:
 - `core/`
+- `error/`
 - `utils/`
+
+### `entry/`
+
+Depends on:
+- `./`
+- `core/`
+- `core/function/`
 
 ### `expression/`
 
@@ -79,9 +102,23 @@ Depends on:
 - `expression/embeddedDocs/`
 - `utils/`
 
+### `expression/node/`
+
+Depends on:
+- `expression/`
+- `expression/node/utils/`
+- `utils/`
+
+### `expression/node/utils/`
+
+Depends on:
+- `expression/transform/utils/`
+- `utils/`
+
 ### `expression/transform/`
 
 Depends on:
+- `expression/transform/utils/`
 - `function/bitwise/`
 - `function/logical/`
 - `function/matrix/`
@@ -89,9 +126,16 @@ Depends on:
 - `function/string/`
 - `utils/`
 
+### `expression/transform/utils/`
+
+Depends on:
+- `error/`
+- `utils/`
+
 ### `function/algebra/`
 
 Depends on:
+- `expression/`
 - `function/algebra/simplify/`
 - `utils/`
 
@@ -126,9 +170,11 @@ Depends on:
 ### `function/arithmetic/`
 
 Depends on:
+- `error/`
 - `plain/number/`
 - `type/matrix/utils/`
 - `utils/`
+- `utils/bignumber/`
 
 ### `function/bitwise/`
 
@@ -136,6 +182,7 @@ Depends on:
 - `plain/number/`
 - `type/matrix/utils/`
 - `utils/`
+- `utils/bignumber/`
 
 ### `function/combinatorics/`
 
@@ -155,6 +202,7 @@ Depends on:
 ### `function/logical/`
 
 Depends on:
+- `error/`
 - `plain/number/`
 - `type/matrix/utils/`
 - `utils/`
@@ -162,6 +210,7 @@ Depends on:
 ### `function/matrix/`
 
 Depends on:
+- `error/`
 - `function/matrix/eigs/`
 - `utils/`
 
@@ -178,6 +227,7 @@ Depends on:
 ### `function/probability/`
 
 Depends on:
+- `function/probability/util/`
 - `plain/number/`
 - `utils/`
 
@@ -186,6 +236,7 @@ Depends on:
 Depends on:
 - `type/matrix/utils/`
 - `utils/`
+- `utils/bignumber/`
 
 ### `function/set/`
 
@@ -203,6 +254,13 @@ Depends on:
 - `utils/`
 
 ### `function/statistics/`
+
+Depends on:
+- `error/`
+- `function/statistics/utils/`
+- `utils/`
+
+### `function/statistics/utils/`
 
 Depends on:
 - `utils/`
@@ -230,6 +288,12 @@ Depends on:
 Depends on:
 - `plain/number/`
 - `utils/`
+- `utils/bignumber/`
+
+### `json/`
+
+Depends on:
+- `utils/`
 
 ### `plain/number/`
 
@@ -252,6 +316,11 @@ Depends on:
 - `utils/`
 
 ### `type/chain/`
+
+Depends on:
+- `utils/`
+
+### `type/chain/function/`
 
 Depends on:
 - `utils/`
@@ -279,6 +348,7 @@ Depends on:
 ### `type/matrix/`
 
 Depends on:
+- `error/`
 - `utils/`
 
 ### `type/matrix/function/`
@@ -289,9 +359,33 @@ Depends on:
 ### `type/matrix/utils/`
 
 Depends on:
+- `error/`
 - `utils/`
 
+### `type/resultset/`
+
+Depends on:
+- `utils/`
+
+### `type/unit/`
+
+Depends on:
+- `utils/`
+- `utils/bignumber/`
+
 ### `type/unit/function/`
+
+Depends on:
+- `utils/`
+
+### `utils/`
+
+Depends on:
+- `core/`
+- `error/`
+- `utils/bignumber/`
+
+### `utils/bignumber/`
 
 Depends on:
 - `utils/`

@@ -1,7 +1,7 @@
 // test print
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('print', function () {
   it('should interpolate values in a template (object template)', function () {

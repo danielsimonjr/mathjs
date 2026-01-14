@@ -1,11 +1,11 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const Spa = math.Spa
 
 describe('Spa', function () {
   describe('constructor', function () {
     it('should throw an error when called without new keyword', function () {
-      assert.throws(function () { Spa() }, /Constructor must be called with the new operator/)
+      assert.throws(function () { Spa() }, /Constructor must be called with the new operator|cannot be invoked without 'new'/)
     })
 
     it('should have a property isSpa', function () {

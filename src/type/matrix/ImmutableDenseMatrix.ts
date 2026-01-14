@@ -78,7 +78,7 @@ export const createImmutableDenseMatrixClass = /* #__PURE__ */ factory(
      * @class ImmutableDenseMatrix
      * @extends DenseMatrix
      */
-    class ImmutableDenseMatrix {
+    class ImmutableDenseMatrix extends DenseMatrix {
       /**
        * Type identifier
        */
@@ -118,6 +118,7 @@ export const createImmutableDenseMatrixClass = /* #__PURE__ */ factory(
         data?: MatrixData | ImmutableDenseMatrixData | any,
         datatype?: string
       ) {
+        super()
         if (!(this instanceof ImmutableDenseMatrix)) {
           throw new SyntaxError(
             'Constructor must be called with the new operator'

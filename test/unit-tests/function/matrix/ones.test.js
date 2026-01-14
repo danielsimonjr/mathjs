@@ -1,7 +1,7 @@
 // test ones
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const ones = math.ones
 const matrix = math.matrix
 const size = math.size

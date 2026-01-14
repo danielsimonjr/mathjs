@@ -89,7 +89,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
      * format for two-dimensional sparse matrices.
      * @class SparseMatrix
      */
-    class SparseMatrix implements Matrix {
+    class SparseMatrix extends _Matrix implements Matrix {
       type: string = 'SparseMatrix'
       isSparseMatrix: boolean = true
       _values?: MatrixValue[]
@@ -102,6 +102,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
         data?: MatrixArray | Matrix | SparseMatrixData,
         datatype?: DataType
       ) {
+        super()
         if (datatype && !isString(datatype)) {
           throw new Error('Invalid datatype: ' + datatype)
         }
@@ -1335,12 +1336,14 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       const pv: { [key: number]: number } = []
 
       // loop rows in resulting matrix
-      rows.forEach(function (i: number, r: [number]) {
+      function rowsCallback(i: number, r: [number]) {
         // update permutation vector
         pv[i] = r[0]
         // mark i in workspace
         w[i] = true
-      })
+      }
+      if (Number.isInteger(rows)) rowsCallback(rows as number, [0])
+      else rows.forEach(rowsCallback)
 
       // result matrix arrays
       const values: any[] | undefined = mvalues ? [] : undefined
@@ -1348,7 +1351,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       const ptr: number[] = []
 
       // loop columns in result matrix
-      columns.forEach(function (j: number) {
+      function columnsCallback(j: number) {
         // update ptr
         ptr.push(index.length)
         // loop values in column j
@@ -1365,7 +1368,9 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
             }
           }
         }
-      })
+      }
+      if (Number.isInteger(columns)) columnsCallback(columns as number)
+      else columns.forEach(columnsCallback)
       // update ptr
       ptr.push(index.length)
 
@@ -1441,11 +1446,18 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
           throw new DimensionError(iSize, sSize, '>')
         }
 
+        // helper function to iterate over index dimensions
+        function _forEachIndex(idx: any, callback: (dataIndex: number, subIndex: [number]) => void) {
+          // iterate cases where index is a Matrix or a Number
+          if (isNumber(idx)) callback(idx, [0])
+          else idx.forEach(callback)
+        }
+
         // insert the sub matrix
         if (iSize.length === 1) {
           // if the replacement index only has 1 dimension, go trough each one and set its value
           const range = index.dimension(0)
-          range.forEach(function (dataIndex: number, subIndex: [number]) {
+          _forEachIndex(range, (dataIndex: number, subIndex: [number]) => {
             validateIndex(dataIndex)
             matrix.set(
               [dataIndex, 0],
@@ -1457,15 +1469,9 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
           // if the replacement index has 2 dimensions, go through each one and set the value in the correct index
           const firstDimensionRange = index.dimension(0)
           const secondDimensionRange = index.dimension(1)
-          firstDimensionRange.forEach(function (
-            firstDataIndex: number,
-            firstSubIndex: [number]
-          ) {
+          _forEachIndex(firstDimensionRange, (firstDataIndex: number, firstSubIndex: [number]) => {
             validateIndex(firstDataIndex)
-            secondDimensionRange.forEach(function (
-              secondDataIndex: number,
-              secondSubIndex: [number]
-            ) {
+            _forEachIndex(secondDimensionRange, (secondDataIndex: number, secondSubIndex: [number]) => {
               validateIndex(secondDataIndex)
               matrix.set(
                 [firstDataIndex, secondDataIndex],
@@ -1740,6 +1746,11 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
         }
       }
 
+      // For empty matrices with rows but no columns, ensure ptr has consistent structure
+      // This matches the behavior of _createFromArray which uses do-while
+      if (minRow <= maxRow && minColumn > maxColumn) {
+        ptr.push(values.length)
+      }
       // store number of values in ptr
       ptr.push(values.length)
       // return sparse matrix
@@ -1795,6 +1806,12 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       value: name,
       configurable: true
     })
+
+    // Set prototype properties for type checking (duck typing)
+    // These are needed because is.ts checks constructor.prototype.isMatrix and isSparseMatrix
+    ;(SparseMatrix.prototype as any).type = 'SparseMatrix'
+    ;(SparseMatrix.prototype as any).isSparseMatrix = true
+    ;(SparseMatrix.prototype as any).isMatrix = true
 
     return SparseMatrix
   },

@@ -171,9 +171,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       while (j < columns)
     }
     // store number of values in ptr
-    while (matrix._ptr.length <= columns) {
-      matrix._ptr.push(matrix._index.length)
-    }
+    matrix._ptr.push(matrix._index.length)
     // size
     matrix._size = [rows, columns]
   }
@@ -983,6 +981,11 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       }
     }
 
+    // For empty matrices with rows but no columns, ensure ptr has consistent structure
+    // This matches the behavior of _createFromArray which uses do-while
+    if (minRow <= maxRow && minColumn > maxColumn) {
+      ptr.push(values.length)
+    }
     // store number of values in ptr
     ptr.push(values.length)
     // return sparse matrix

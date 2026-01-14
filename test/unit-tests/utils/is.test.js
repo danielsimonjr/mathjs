@@ -1,6 +1,6 @@
 import assert from 'assert'
-import math from '../../../src/defaultInstance.js'
-import { isBigInt, isBoolean, isNumber, isObject, isString } from '../../../src/utils/is.js'
+import math from '../../../src/defaultInstance.ts'
+import { isBigInt, isBoolean, isNumber, isObject, isString } from '../../../src/utils/is.ts'
 
 const { bignumber, complex, fraction, matrix, parse } = math
 

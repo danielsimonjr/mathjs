@@ -1,6 +1,6 @@
 import assert from 'assert'
-import math from '../../../../../src/defaultInstance.js'
-import { broadcast } from '../../../../../src/type/matrix/utils/broadcast.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { broadcast } from '../../../../../src/type/matrix/utils/broadcast.ts'
 const matrix = math.matrix
 
 describe('broadcast', function () {

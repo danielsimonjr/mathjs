@@ -134,7 +134,7 @@ export function validateIndex(
       throw new TypeError('Index must be an integer (value: ' + index + ')')
     }
     if (index < 0 || (typeof length === 'number' && index >= length)) {
-      throw new IndexError(index, 0, length) as any
+      throw new IndexError(index, length) as any
     }
   }
 }
@@ -901,7 +901,7 @@ export function broadcastArrays<T>(
     )
   }
   if (arrays.length === 1) {
-    return arrays as any
+    return arrays[0] as any
   }
   const sizes = arrays.map(function (array) {
     return arraySize(array)

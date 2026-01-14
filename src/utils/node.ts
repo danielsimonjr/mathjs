@@ -18,4 +18,4 @@ export type {
   RangeNode,
   RelationalNode,
   SymbolNode
-} from '../../types/index.js'
+} from '../../types/index.ts'

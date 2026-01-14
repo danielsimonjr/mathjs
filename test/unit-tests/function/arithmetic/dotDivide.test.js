@@ -1,7 +1,7 @@
 // test dotDivide (element-wise divide)
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 const dotDivide = math.dotDivide
 const complex = math.complex

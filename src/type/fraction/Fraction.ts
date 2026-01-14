@@ -1,11 +1,22 @@
-import { Fraction as LocalFraction } from '../local/Fraction.ts'
+import FractionJs, { Fraction as FractionClass } from 'fraction.js'
 import { factory } from '../../utils/factory.ts'
 
-// Re-export Fraction type for use in other modules
-export type Fraction = LocalFraction
+// Extended Fraction type with mathjs additions
+export interface Fraction extends FractionClass {
+  type: string
+  isFraction: boolean
+  toJSON(): { mathjs: string; n: string; d: string }
+}
 
-// Use the local Fraction class - cast to any for runtime manipulation
-const Fraction = LocalFraction as any
+export interface FractionConstructor {
+  new (a?: any, b?: number): Fraction
+  (a?: any, b?: number): Fraction
+  prototype: Fraction
+  fromJSON: (json: { mathjs: string; n: string; d: string }) => Fraction
+}
+
+// Cast to allow prototype access and static method additions
+const Fraction = FractionJs as unknown as FractionConstructor
 
 const name = 'Fraction'
 const dependencies: string[] = []
@@ -18,7 +29,7 @@ export const createFractionClass = /* #__PURE__ */ factory(
      * Attach type information
      */
     Object.defineProperty(Fraction, 'name', { value: 'Fraction' })
-    Fraction.prototype.constructor = Fraction
+    Fraction.prototype.constructor = Fraction as any
     Fraction.prototype.type = 'Fraction'
     Fraction.prototype.isFraction = true
 

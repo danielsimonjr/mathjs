@@ -1,5 +1,8 @@
-import { Decimal, EUCLID } from '../local/Decimal.ts'
+import Decimal from 'decimal.js'
 import { factory } from '../../utils/factory.ts'
+
+// EUCLID constant for modulo rounding mode
+const EUCLID = 9
 
 const name = 'BigNumber'
 const dependencies = ['?on', 'config']
@@ -38,6 +41,9 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
       modulo: EUCLID
     }) as BigNumberClass
 
+    // Create new prototype to break instanceof chain with original Decimal
+    ;(BigNumber as any).prototype = Object.create((BigNumber as any).prototype)
+
     /**
      * Attach type information
      */
@@ -50,9 +56,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
      * @returns {Object} Returns a JSON object structured as:
      *                   `{"mathjs": "BigNumber", "value": "0.2"}`
      */
-    ;(BigNumber as any).prototype.toJSON = function (
-      this: Decimal
-    ): BigNumberJSON {
+    ;(BigNumber as any).prototype.toJSON = function (this: any): BigNumberJSON {
       return {
         mathjs: 'BigNumber',
         value: this.toString()
@@ -65,7 +69,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
      *                       `{"mathjs": "BigNumber", "value": "0.2"}`
      * @return {BigNumber}
      */
-    ;(BigNumber as any).fromJSON = function (json: BigNumberJSON): Decimal {
+    ;(BigNumber as any).fromJSON = function (json: BigNumberJSON): any {
       return new (BigNumber as any)(json.value)
     }
 

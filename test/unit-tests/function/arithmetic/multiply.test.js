@@ -1,7 +1,7 @@
 // test multiply
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 const multiply = math.multiply
 const divide = math.divide

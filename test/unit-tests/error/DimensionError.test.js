@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { DimensionError } from '../../../src/error/DimensionError.js'
+import { DimensionError } from '../../../src/error/DimensionError.ts'
 
 describe('DimensionError', function () {
   it('should construct a DimensionError with numbers', function () {
@@ -47,6 +47,6 @@ describe('DimensionError', function () {
   })
 
   it('should throw an error when operator new is missing', function () {
-    assert.throws(function () { DimensionError(3, 5) }, SyntaxError)
+    assert.throws(function () { DimensionError(3, 5) }, /Constructor must be called with the new operator|cannot be invoked without 'new'/)
   })
 })

@@ -1,7 +1,7 @@
 // test transforms
 import assert from 'assert'
-import math from '../../../src/defaultInstance.js'
-import { createMap } from '../../../src/utils/map.js'
+import math from '../../../src/defaultInstance.ts'
+import { createMap } from '../../../src/utils/map.ts'
 
 const parse = math.parse
 

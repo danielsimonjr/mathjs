@@ -8,7 +8,7 @@
  * - Parallel execution via WebWorkers
  */
 
-import { MathWorkerPool, WorkerPoolOptions, PoolStats } from './WorkerPool.js'
+import { MathWorkerPool, WorkerPoolOptions, PoolStats } from './WorkerPool.ts'
 
 export type ExecutionMode = 'js' | 'wasm' | 'wasm-simd' | 'parallel-js' | 'parallel-wasm'
 
@@ -75,8 +75,8 @@ export class WasmWorkerPool {
         // Try to load WASM module
         try {
           // Dynamic import for the WASM loader
-          const loader = await import('../wasm/WasmLoader.js')
-          this.wasmModule = await loader.loadWasmModule(wasmPath)
+          const loader = await import('../wasm/WasmLoader.ts')
+          this.wasmModule = await loader.initWasm(wasmPath)
         } catch (e) {
           console.warn('WASM module not available, falling back to JS:', e)
         }
@@ -85,8 +85,8 @@ export class WasmWorkerPool {
         if (this.options.enableSimd && this.isSimdSupported()) {
           try {
             const simdPath = wasmPath.replace('.wasm', '.simd.wasm')
-            const loader = await import('../wasm/WasmLoader.js')
-            this.wasmSimdModule = await loader.loadWasmModule(simdPath)
+            const loader = await import('../wasm/WasmLoader.ts')
+            this.wasmSimdModule = await loader.initWasm(simdPath)
           } catch (e) {
             console.warn('SIMD WASM module not available:', e)
           }

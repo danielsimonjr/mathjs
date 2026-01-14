@@ -13,7 +13,7 @@ export type {
   MathNumericType,
   MathScalarType,
   MathArray
-} from '../types/index.js'
+} from '../types/index.ts'
 
 // Type aliases for common types used internally
 export type BigNumber = import('./type/local/Decimal.ts').Decimal

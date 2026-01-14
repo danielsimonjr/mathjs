@@ -31,7 +31,7 @@ src/
   │   └── MatrixWasmBridge.ts # Bridge between JS and WASM
   └── [existing JS files]
 
-src-wasm/              # WASM source (AssemblyScript)
+src/wasm/              # WASM source (AssemblyScript)
   ├── matrix/
   │   └── multiply.ts      # WASM matrix operations
   ├── algebra/
@@ -54,7 +54,7 @@ lib/                   # Compiled output
 
 #### Build Process
 ```
-src-wasm/*.ts
+src/wasm/*.ts
     ↓ (AssemblyScript compiler)
 lib/wasm/index.wasm
     ↓ (WasmLoader.ts)
@@ -63,7 +63,7 @@ JavaScript/TypeScript code
 
 #### WASM Modules
 
-**Matrix Operations** (`src-wasm/matrix/multiply.ts`)
+**Matrix Operations** (`src/wasm/matrix/multiply.ts`)
 - `multiplyDense` - Cache-optimized blocked matrix multiplication
 - `multiplyDenseSIMD` - SIMD-accelerated multiplication (2x faster)
 - `multiplyVector` - Matrix-vector multiplication
@@ -71,14 +71,14 @@ JavaScript/TypeScript code
 - `add`, `subtract`, `scalarMultiply` - Element-wise operations
 - `dotProduct` - Vector dot product
 
-**Linear Algebra** (`src-wasm/algebra/decomposition.ts`)
+**Linear Algebra** (`src/wasm/algebra/decomposition.ts`)
 - `luDecomposition` - LU decomposition with partial pivoting
 - `qrDecomposition` - QR decomposition using Householder reflections
 - `choleskyDecomposition` - Cholesky decomposition for symmetric positive-definite matrices
 - `luSolve` - Linear system solver using LU
 - `luDeterminant` - Determinant computation from LU
 
-**Signal Processing** (`src-wasm/signal/fft.ts`)
+**Signal Processing** (`src/wasm/signal/fft.ts`)
 - `fft` - Cooley-Tukey radix-2 FFT
 - `fft2d` - 2D FFT for matrices/images
 - `convolve` - FFT-based convolution
@@ -426,7 +426,7 @@ describe('WASM Matrix Operations', () => {
 
 When adding new operations:
 
-1. Implement WASM version in `src-wasm/`
+1. Implement WASM version in `src/wasm/`
 2. Add JavaScript fallback in bridge
 3. Add parallel version if applicable
 4. Update tests

@@ -1,4 +1,4 @@
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 import assert from 'assert'
 
 const Unit = math.create().Unit

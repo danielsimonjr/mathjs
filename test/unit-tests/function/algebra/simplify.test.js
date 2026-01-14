@@ -1,7 +1,7 @@
 // test simplify
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 const expLibrary = []
 // eslint-disable-next-line mocha/no-exports

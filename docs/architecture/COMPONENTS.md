@@ -983,7 +983,7 @@ class MatrixWasmBridge {
 
 ---
 
-### WASM Modules (`src-wasm/`)
+### WASM Modules (`src/wasm/`)
 
 **Built with AssemblyScript, compiled to WebAssembly.**
 

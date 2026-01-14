@@ -142,5 +142,5 @@ npx tsx test/benchmark/performance-benchmark.ts
 npm run test:wasm
 
 # Run pre-compile tests (150 tests)
-npx vitest run test-wasm/unit-tests/wasm/pre-compile.test.ts
+npx vitest run test/wasm/unit-tests/wasm/pre-compile.test.ts
 ```

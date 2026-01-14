@@ -1,6 +1,6 @@
 import assert from 'assert'
-import { isMap } from '../../../src/utils/is.js'
-import { assign, createMap, ObjectWrappingMap, PartitionedMap, toObject } from '../../../src/utils/map.js'
+import { isMap } from '../../../src/utils/is.ts'
+import { assign, createMap, ObjectWrappingMap, PartitionedMap, toObject } from '../../../src/utils/map.ts'
 
 describe('maps', function () {
   it('should provide isMap, a function to tell maps from non-maps', function () {

@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const BigNumber = math.BigNumber
 const Complex = math.Complex
 const DenseMatrix = math.DenseMatrix

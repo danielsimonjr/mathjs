@@ -408,6 +408,11 @@ export const createRangeClass = /* #__PURE__ */ factory(
       }
     }
 
+    // Set prototype properties for type checking (duck typing)
+    // These are needed because is.ts checks constructor.prototype.isRange
+    ;(Range.prototype as any).type = 'Range'
+    ;(Range.prototype as any).isRange = true
+
     return Range
   },
   { isClass: true }

@@ -63,7 +63,7 @@ lib/
 
 ```bash
 $ npm run build:wasm
-> asc src-wasm/index.ts --config asconfig.json --target release
+> asc src/wasm/index.ts --config asconfig.json --target release
 Last converge was suboptimal.  # Warning only, not an error
 ```
 
@@ -78,15 +78,14 @@ Output files are correctly generated in `lib/wasm/`.
 The project has **correctly** implemented the dual-build architecture:
 
 1. **`src/`** - TypeScript/JavaScript source that compiles to JavaScript
-1. **`src-wasm/`** - AssemblyScript source that compiles to WebAssembly
-1. **`src/wasm/`** - Bridge layer connecting JS and WASM
-1. **`src/parallel/`** - Worker pool infrastructure for parallel computing
+2. **`src/wasm/`** - AssemblyScript source that compiles to WebAssembly (also contains bridge layer)
+3. **`src/parallel/`** - Worker pool infrastructure for parallel computing
 
 ### 2.2 The “AssemblyScript-Friendly TypeScript” Misconception
 
 The previous plans incorrectly criticized the concept. Here’s the **correct understanding**:
 
-**The `src-wasm/` directory contains pure AssemblyScript**, not “TypeScript that compiles to both targets.” This is the correct approach. The term “AssemblyScript-friendly” in documentation likely meant:
+**The `src/wasm/` directory contains pure AssemblyScript**, not "TypeScript that compiles to both targets." This is the correct approach. The term "AssemblyScript-friendly" in documentation likely meant:
 
 - Code written in AssemblyScript (TypeScript-like syntax)
 - Uses AssemblyScript-compatible types (`i32`, `f64`, `Float64Array`)
@@ -662,7 +661,7 @@ node -e "import('./lib/esm/index.js').then(m => console.log(Object.keys(m)))"
 |“node_modules missing”                 |Dependencies install correctly             |
 |“TypeScript coverage 9%”               |Coverage ~50.5%                            |
 |“Architecture fundamentally flawed”    |Architecture is correct, just incomplete   |
-|“AssemblyScript ≠ TypeScript confusion”|src-wasm correctly uses pure AssemblyScript|
+|"AssemblyScript ≠ TypeScript confusion"|src/wasm correctly uses pure AssemblyScript|
 
 -----
 

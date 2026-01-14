@@ -1,6 +1,6 @@
 import assert from 'assert'
-import math from '../../../src/defaultInstance.js'
-import { getAssociativity, getPrecedence, isAssociativeWith, getOperator } from '../../../src/expression/operators.js'
+import math from '../../../src/defaultInstance.ts'
+import { getAssociativity, getPrecedence, isAssociativeWith, getOperator } from '../../../src/expression/operators.ts'
 const OperatorNode = math.OperatorNode
 const AssignmentNode = math.AssignmentNode
 const SymbolNode = math.SymbolNode

@@ -82,12 +82,12 @@ export const createMatrixClass = /* #__PURE__ */ factory(
       /**
        * Type identifier
        */
-      readonly type: string = 'Matrix'
+      type: string = 'Matrix'
 
       /**
        * Matrix type flag
        */
-      readonly isMatrix: boolean = true
+      isMatrix: boolean = true
 
       constructor() {
         if (!(this instanceof Matrix)) {
@@ -307,6 +307,11 @@ export const createMatrixClass = /* #__PURE__ */ factory(
         throw new Error('Cannot invoke toString on a Matrix interface')
       }
     }
+
+    // Set prototype properties for type checking (duck typing)
+    // These are needed because is.ts checks constructor.prototype.isMatrix
+    Matrix.prototype.type = 'Matrix'
+    Matrix.prototype.isMatrix = true
 
     return Matrix
   },

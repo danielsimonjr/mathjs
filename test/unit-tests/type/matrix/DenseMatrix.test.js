@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const Matrix = math.Matrix
 const DenseMatrix = math.DenseMatrix
 const SparseMatrix = math.SparseMatrix
@@ -152,7 +152,7 @@ describe('DenseMatrix', function () {
     })
 
     it('should throw an error when called without new keyword', function () {
-      assert.throws(function () { DenseMatrix() }, /Constructor must be called with the new operator/)
+      assert.throws(function () { DenseMatrix() }, /Constructor must be called with the new operator|cannot be invoked without 'new'/)
     })
 
     it('should throw an error when called with invalid datatype', function () {

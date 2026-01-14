@@ -1,7 +1,7 @@
 import { Bench } from 'tinybench'
 import { DenseMatrix, map, ones, random, round, flatten } from '../../lib/esm/index.js'
 import { formatTaskResult } from './utils/formatTaskResult.js'
-import { flatten as flattenArray } from '../../src/utils/array.js'
+import { flatten as flattenArray } from '../../src/utils/array.ts'
 
 const genericMatrix = map(ones(10, 10, 'dense'), _ => round(random(-5, 5), 2))
 const numberMatrix = new DenseMatrix(genericMatrix, 'number')

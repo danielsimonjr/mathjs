@@ -1,7 +1,7 @@
 // test sqrt
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const mathPredictable = math.create({ predictable: true })
 const sqrt = math.sqrt
 const bignumber = math.bignumber

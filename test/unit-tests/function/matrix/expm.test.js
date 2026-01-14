@@ -2,7 +2,7 @@
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const expm = math.expm
 
 describe('expm', function () {

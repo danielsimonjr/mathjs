@@ -58,7 +58,7 @@ src/**/*.ts (TypeScript)
     ├─→ tsc → JavaScript (works)
     └─→ asc → WebAssembly (WILL NOT WORK)
 
-src-wasm/**/*.ts (AssemblyScript)
+src/wasm/**/*.ts (AssemblyScript)
     ├─→ asc → WebAssembly (works)
     └─→ tsc → JavaScript (PARTIAL - types differ)
 ```
@@ -69,7 +69,7 @@ src-wasm/**/*.ts (AssemblyScript)
 src/**/*.ts (TypeScript)
     └─→ tsc/babel → JavaScript (for normal use)
 
-src-wasm/**/*.ts (AssemblyScript)
+src/wasm/**/*.ts (AssemblyScript)
     └─→ asc → WebAssembly (for WASM acceleration)
 
 Runtime Integration:
@@ -301,7 +301,7 @@ CORRECT ARCHITECTURE:
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
-│              src-wasm/ (AssemblyScript)                     │
+│              src/wasm/ (AssemblyScript)                     │
 │                                                             │
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐ │
 │  │   Matrix    │    │   Algebra   │    │     Signal      │ │
@@ -347,7 +347,7 @@ CORRECT ARCHITECTURE:
 The term "AssemblyScript-friendly TypeScript" is misleading. There are two separate concerns:
 
 1. **TypeScript in `src/`** - Standard TypeScript that compiles to JavaScript
-2. **AssemblyScript in `src-wasm/`** - AssemblyScript that compiles to WebAssembly
+2. **AssemblyScript in `src/wasm/`** - AssemblyScript that compiles to WebAssembly
 
 These share:
 - Similar syntax (both TypeScript-like)
@@ -360,7 +360,7 @@ These do NOT share:
 
 **Recommendation:** Remove all references to "AssemblyScript-friendly TypeScript" from documentation. Instead document:
 - "TypeScript source code" for `src/`
-- "AssemblyScript WASM modules" for `src-wasm/`
+- "AssemblyScript WASM modules" for `src/wasm/`
 
 #### Action 2.3: Create Shared Interface Definitions
 
@@ -388,14 +388,14 @@ Bridge responsibility: Convert between formats
 
 Current `package.json`:
 ```json
-"build:wasm": "asc src-wasm/index.ts --config asconfig.json --target release"
+"build:wasm": "asc src/wasm/index.ts --config asconfig.json --target release"
 ```
 
 Problem: `asc` command not found (not installed or not in PATH).
 
 **Fix:** Ensure `npx` is used:
 ```json
-"build:wasm": "npx asc src-wasm/index.ts --config asconfig.json --target release"
+"build:wasm": "npx asc src/wasm/index.ts --config asconfig.json --target release"
 ```
 
 Or ensure `node_modules/.bin` is in PATH during npm scripts (default behavior when deps installed).
@@ -492,7 +492,7 @@ AssemblyScript 0.28+ uses the modern compiler API. Ensure `asconfig.json` uses c
 **Verify:**
 ```bash
 npx asc --version
-npx asc src-wasm/index.ts --config asconfig.json --target release --validate
+npx asc src/wasm/index.ts --config asconfig.json --target release --validate
 ```
 
 ---

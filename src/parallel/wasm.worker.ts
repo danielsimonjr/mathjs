@@ -418,4 +418,4 @@ workerpool.worker({
   processChunk,
   isWasmAvailable,
   isSimdAvailable
-})
+} as Record<string, (...args: any[]) => any>)

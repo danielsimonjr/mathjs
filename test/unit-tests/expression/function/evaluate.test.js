@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
-import { createMap } from '../../../../src/utils/map.js'
+import math from '../../../../src/defaultInstance.ts'
+import { createMap } from '../../../../src/utils/map.ts'
 
 const Complex = math.Complex
 const Unit = math.Unit

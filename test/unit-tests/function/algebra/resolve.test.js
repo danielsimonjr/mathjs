@@ -1,7 +1,7 @@
 // test resolve
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 import { simplifyAndCompare } from './simplify.test.js'
 

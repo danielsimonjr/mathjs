@@ -213,7 +213,7 @@ const jsImplementations = {
 }
 
 // ============================================================================
-// WASM IMPLEMENTATIONS (Import from src-wasm)
+// WASM IMPLEMENTATIONS (Import from src/wasm)
 // ============================================================================
 
 let wasmModule: any = null
@@ -222,23 +222,23 @@ let wasmExports: any = null
 async function loadWasmModule(): Promise<boolean> {
   try {
     // Load the compiled WASM module using the generated bindings
-    const wasm = await import('../../lib/wasm/index.js')
+    const wasm = await import('../../lib/wasm/index.js') as any
     wasmExports = wasm
 
     wasmModule = {
-      // SIMD-optimized operations (require actual WASM execution)
-      simdAddF64: wasm.simdAddF64,
-      simdMulF64: wasm.simdMulF64,
-      simdDotF64: wasm.simdDotF64,
-      simdSumF64: wasm.simdSumF64,
-      simdMeanF64: wasm.simdMeanF64,
-      simdVarianceF64: wasm.simdVarianceF64,
-      simdStdF64: wasm.simdStdF64,
-      simdNormF64: wasm.simdNormF64,
-      simdMinF64: wasm.simdMinF64,
-      simdMaxF64: wasm.simdMaxF64,
-      simdMatMulF64: wasm.simdMatMulF64,
-      simdMatVecMulF64: wasm.simdMatVecMulF64,
+      // SIMD-optimized operations (may not be available in all builds)
+      simdAddF64: wasm.simdAddF64 || null,
+      simdMulF64: wasm.simdMulF64 || null,
+      simdDotF64: wasm.simdDotF64 || null,
+      simdSumF64: wasm.simdSumF64 || null,
+      simdMeanF64: wasm.simdMeanF64 || null,
+      simdVarianceF64: wasm.simdVarianceF64 || null,
+      simdStdF64: wasm.simdStdF64 || null,
+      simdNormF64: wasm.simdNormF64 || null,
+      simdMinF64: wasm.simdMinF64 || null,
+      simdMaxF64: wasm.simdMaxF64 || null,
+      simdMatMulF64: wasm.simdMatMulF64 || null,
+      simdMatVecMulF64: wasm.simdMatVecMulF64 || null,
       // Non-SIMD WASM versions
       sum: wasm.sum,
       mean: wasm.mean,

@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const factorial = math.factorial
 
 describe('factorial', function () {

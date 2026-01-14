@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const { abs, bignumber, complex, fraction, matrix, Matrix, unit, parse } = math
 
 describe('abs', function () {

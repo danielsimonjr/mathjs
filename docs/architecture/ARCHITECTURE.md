@@ -766,7 +766,7 @@ class MatrixWasmBridge {
 ### WASM Module Structure (AssemblyScript)
 
 ```typescript
-// src-wasm/matrix/multiply.ts
+// src/wasm/matrix/multiply.ts
 export function multiplyDense(
   a: Float64Array, aRows: i32, aCols: i32,
   b: Float64Array, bRows: i32, bCols: i32

@@ -2,7 +2,7 @@
 
 import assert from 'assert'
 import { approxEqual as _approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 const zeta = math.zeta
 const epsilon = 1e-6 // FIXME: make zeta work with an epsilon of 1e-12

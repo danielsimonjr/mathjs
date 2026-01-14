@@ -209,9 +209,7 @@ export const createIndexClass = /* #__PURE__ */ factory(
        * @private
        */
       static create(ranges: any[]): Index {
-        const index = new Index()
-        Index.apply(index, ranges)
-        return index
+        return new Index(...ranges)
       }
 
       /**
@@ -400,6 +398,11 @@ export const createIndexClass = /* #__PURE__ */ factory(
         return Index.create(json.dimensions)
       }
     }
+
+    // Set prototype properties for type checking (duck typing)
+    // These are needed because is.ts checks constructor.prototype.isIndex
+    ;(Index.prototype as any).type = 'Index'
+    ;(Index.prototype as any).isIndex = true
 
     return Index
   },

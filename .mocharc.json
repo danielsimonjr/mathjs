@@ -2,5 +2,6 @@
   "reporter": "dot",
   "timeout": 60000,
   "forbid-only": true,
-  "recursive": true
+  "recursive": true,
+  "node-option": ["import=tsx"]
 }

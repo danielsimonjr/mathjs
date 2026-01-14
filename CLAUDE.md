@@ -9,7 +9,8 @@ Math.js is an extensive math library for JavaScript and Node.js featuring:
 - Large set of built-in functions and constants
 - Support for multiple data types: numbers, big numbers, complex numbers, fractions, units, matrices
 - ES modules codebase requiring all files to have real `.js` extensions
-- Currently undergoing TypeScript + WASM + parallel computing refactoring (53% source coverage)
+- Currently undergoing TypeScript + WASM + parallel computing refactoring
+- Uses forked packages: `@danielsimonjr/typed-function` and `@danielsimonjr/workerpool` for WASM acceleration
 
 ## Build Commands
 
@@ -126,7 +127,7 @@ src/
 ├── factoriesNumber.js       # Number-only factory functions (lightweight)
 └── defaultInstance.js       # Default math.js instance
 
-src-wasm/                    # TypeScript/AssemblyScript WASM modules
+src/wasm/                    # AssemblyScript WASM modules (compiled to lib/wasm/)
 ├── matrix/                  # Matrix operations for WASM
 ├── algebra/                 # Linear algebra for WASM
 ├── arithmetic/              # Arithmetic operations for WASM
@@ -136,6 +137,8 @@ src-wasm/                    # TypeScript/AssemblyScript WASM modules
 
 test/
 ├── unit-tests/              # Unit tests (main test suite)
+├── wasm/                    # WASM-specific tests (vitest)
+│   └── unit-tests/          # Direct WASM and pre-compile tests
 ├── generated-code-tests/    # Tests for generated entry files
 ├── node-tests/              # Node.js specific tests
 ├── typescript-tests/        # TypeScript type definition tests
@@ -157,19 +160,11 @@ tools/                       # Build and development tools
 
 The codebase is being gradually converted to TypeScript with WASM support:
 
-- **Source Status**: 685 TS / 596 JS (53% converted)
-- **Test Status**: 1 TS / 343 JS (0.3% converted)
-- **TypeScript Errors**: 1,330 remaining across 230+ files
+- **Source Status**: ~692 TS / ~1256 JS (~36% converted)
+- **TypeScript Errors**: ~11,600 remaining (run `npx tsc --noEmit 2>&1 | grep -c "error TS"` to check current count)
 - **Goal**: Type safety, 2-25x performance improvements, multi-core support
 - **Strategy**: Incremental conversion, 100% backward compatible
-- **See**: `README_TYPESCRIPT_WASM.md`, `REFACTORING_PLAN.md`, `docs/refactoring/REFACTORING_STATUS_REPORT.md`
-
-**Top Error Categories** (as of Dec 2025):
-- TS2339 (361): Property does not exist on type
-- TS7006 (267): Parameter implicitly has 'any' type
-- TS2322 (73): Type assignment errors
-- TS7053 (63): Element implicitly has 'any' type
-- TS2305 (60): Module has no exported member
+- **See**: `docs/architecture/README_TYPESCRIPT_WASM.md`, `docs/refactoring/REFACTORING_PLAN.md`
 
 **Three-tier performance system**:
 1. JavaScript fallback (always available)
@@ -363,174 +358,25 @@ node -e "import('./lib/wasm/index.js').then(wasm => console.log(wasm))"
 2. **Factory dependencies**: When adding function dependencies, ensure they're declared in factory function parameters
 3. **TypeScript definitions**: Must be added in **multiple** places (see `types/EXPLANATION.md`)
 4. **Don't commit generated files**: Only commit changes in `src/`, not `lib/` or `dist/`
-5. **Pull requests go to `develop` branch**, not `master`
+5. **Pull requests**: For the upstream josdejong/mathjs, PRs go to `develop` branch. For this fork (danielsimonjr/mathjs), PRs go to `master`
 
-## MCP Servers Available
+## MCP Servers (Environment-Specific)
 
-This project has access to several MCP (Model Context Protocol) servers configured in `.mcp.json`:
+If MCP servers are configured in `.mcp.json`, useful ones for this project include:
 
-### Core Development Tools
+- **memory-mcp** - Persistent knowledge graph for maintaining context across sessions
+- **everything-mcp** / **fzf-mcp** - Fast file system search
+- **playwright** - Browser automation for testing
 
-- **sequential-thinking-mcp** - Structured reasoning and problem-solving
-- **deepthinking-mcp** - 18 advanced reasoning modes with taxonomy-based classification
-  - Use for complex theoretical physics, mathematical proofs, algorithm design
-  - `mcp__deepthinking-mcp__deepthinking` tool with modes: sequential, mathematics, physics, hybrid, etc.
-
-### Mathematical Tools
-
-- **math-mcp** - WASM-accelerated mathematical operations server
-  - Provides matrix operations, statistics, and symbolic math tools
-  - Multi-tier acceleration: mathjs → WASM → WebWorkers
-  - Use for performance testing and validation of math.js implementations
-
-- **fermat-mcp** - Advanced mathematical theorem proving and symbolic computation
-
-### Knowledge Management
-
-- **memory-mcp** - Persistent knowledge graph with 45 tools
-  - **Critical**: Use this to maintain context across sessions
-  - Store project learnings, architectural decisions, refactoring progress
-  - See "Memory Usage Guidelines" section below
-
-### Search & Navigation
-
-- **everything-mcp** - Fast file system search (Windows Everything integration)
-- **fzf-mcp** - Fuzzy file finder
-
-### Other Tools
-
-- **playwright** - Browser automation and testing
-- **time** - Time and date utilities
-- **substack-mcp** - Substack API integration for documentation publishing
-
-## Memory Usage Guidelines
-
-**IMPORTANT**: Use `memory-mcp` tools to maintain continuity across sessions and prevent context loss.
-
-### Session Start Workflow
-
-```bash
-# 1. Search for existing context about mathjs
-mcp__memory-mcp__search_nodes with query "mathjs" or "Math.js"
-
-# 2. Review graph statistics
-mcp__memory-mcp__get_graph_stats
-
-# 3. Search for specific topics if working on focused areas
-mcp__memory-mcp__search_nodes with query "TypeScript refactoring"
-mcp__memory-mcp__search_nodes with query "WASM acceleration"
-```
-
-### During Development
-
-Store important discoveries and decisions:
-
-```bash
-# Create entity for new architectural patterns discovered
-mcp__memory-mcp__create_entities
-  entities: [{
-    name: "Math.js Factory Pattern Extension",
-    entityType: "architectural-pattern",
-    observations: ["Details about the pattern..."],
-    tags: ["mathjs", "architecture", "factory-pattern"]
-  }]
-
-# Add observations to existing "Math.js" entity
-mcp__memory-mcp__add_observations
-  entityName: "Math.js"
-  observations: ["Converted 5 more arithmetic functions to TypeScript", "WASM build now includes FFT operations"]
-
-# Create relations between concepts
-mcp__memory-mcp__create_relations
-  relations: [{
-    from: "Math.js WASM Integration",
-    to: "AssemblyScript Best Practices",
-    relationType: "implements"
-  }]
-```
-
-### Session End Workflow
-
-```bash
-# 1. Summarize accomplishments
-mcp__memory-mcp__add_observations
-  entityName: "Math.js TypeScript Refactoring"
-  observations: ["Session 2025-11-28: Converted 10 matrix operations to TS", "All unit tests passing"]
-
-# 2. Record next steps
-mcp__memory-mcp__add_observations
-  entityName: "Math.js Development Tasks"
-  observations: ["TODO: Convert sparse matrix algorithms", "TODO: Add WASM benchmarks"]
-
-# 3. Set importance for critical learnings
-mcp__memory-mcp__set_importance
-  entityName: "Math.js Build Pipeline"
-  importance: 9
-```
-
-### Recommended Memory Entities
-
-Create/update these entities for mathjs project:
-
-1. **"Math.js"** (importance: 10, tags: mathjs, library, mathematics, active-project)
-   - Main project entity with high-level observations
-
-2. **"Math.js TypeScript Refactoring"** (importance: 9, tags: mathjs, typescript, refactoring)
-   - Track refactoring progress, files converted, issues encountered
-
-3. **"Math.js WASM Integration"** (importance: 8, tags: mathjs, wasm, performance)
-   - WASM-specific learnings, performance metrics, build issues
-
-4. **"Math.js Factory Pattern"** (importance: 7, tags: mathjs, architecture, design-pattern)
-   - Document how dependency injection works, examples, gotchas
-
-5. **"Math.js Development Environment"** (importance: 6, tags: mathjs, development, tooling)
-   - Build commands, test workflows, common issues and solutions
-
-## Advanced Development Patterns
-
-### Using deepthinking-mcp for Complex Problems
-
-When working on complex architectural decisions or mathematical implementations:
-
-```bash
-# For theoretical physics or advanced math
-mcp__deepthinking-mcp__deepthinking
-  mode: "mathematics" or "physics"
-  prompt: "Design optimal WASM memory layout for sparse matrix operations"
-
-# For multi-faceted problems
-mcp__deepthinking-mcp__deepthinking
-  mode: "hybrid"
-  prompt: "Analyze trade-offs between WASM binary size and performance for matrix operations"
-
-# For step-by-step reasoning
-mcp__deepthinking-mcp__deepthinking
-  mode: "sequential"
-  prompt: "Design migration strategy for converting expression parser to TypeScript"
-```
-
-### Using math-mcp for Validation
-
-Cross-validate math.js implementations against the WASM-accelerated math-mcp server:
-
-```bash
-# Test matrix operations
-mcp__math-mcp__matrix_multiply with your test matrices
-
-# Compare performance characteristics
-# Use math-mcp results to validate your WASM implementations
-
-# Test statistical functions
-mcp__math-mcp__statistics with sample data
-```
+Check `.mcp.json` for the current configuration.
 
 ## Documentation References
 
 - **Main README**: `README.md` - Getting started, usage examples
-- **TypeScript/WASM Guide**: `README_TYPESCRIPT_WASM.md` - Complete refactoring overview
-- **Refactoring Plan**: `REFACTORING_PLAN.md` - Detailed conversion strategy
+- **TypeScript/WASM Guide**: `docs/architecture/README_TYPESCRIPT_WASM.md` - Complete refactoring overview
+- **Refactoring Plan**: `docs/refactoring/REFACTORING_PLAN.md` - Detailed conversion strategy
+- **Refactoring Tasks**: `docs/refactoring/REFACTORING_TASKS.md` - File-by-file task list
 - **Type Definitions**: `types/EXPLANATION.md` - TypeScript type system guide
-- **Migration Guide**: `MIGRATION_GUIDE.md` - User migration guide for TS/WASM
+- **Migration Guide**: `docs/migration/MIGRATION_GUIDE.md` - User migration guide for TS/WASM
 - **Contributing**: `CONTRIBUTING.md` - Contribution guidelines
 - **Online Docs**: https://mathjs.org/docs/ - Full user documentation

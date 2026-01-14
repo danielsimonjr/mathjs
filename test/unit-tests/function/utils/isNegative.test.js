@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const isNegative = math.isNegative
 const bignumber = math.bignumber
 const fraction = math.fraction

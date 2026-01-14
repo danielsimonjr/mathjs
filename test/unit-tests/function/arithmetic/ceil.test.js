@@ -2,7 +2,7 @@
 import assert from 'assert'
 
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const { bignumber, ceil, complex, fraction, i, isFraction, matrix, pi, unit, parse, sparse } = math
 
 describe('ceil', function () {

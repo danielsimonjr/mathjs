@@ -65,9 +65,7 @@ export const createIndexTransform = /* #__PURE__ */ factory(
         transformedArgs[i] = arg
       }
 
-      const res = new Index()
-      Index.apply(res, transformedArgs)
-      return res
+      return new Index(...transformedArgs)
     }
   },
   { isTransformFunction: true }

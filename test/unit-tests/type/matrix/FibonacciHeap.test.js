@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const FibonacciHeap = math.FibonacciHeap
 
 describe('FibonacciHeap', function () {
@@ -21,7 +21,7 @@ describe('FibonacciHeap', function () {
     })
 
     it('should throw an error when called without new keyword', function () {
-      assert.throws(function () { FibonacciHeap() }, /Constructor must be called with the new operator/)
+      assert.throws(function () { FibonacciHeap() }, /Constructor must be called with the new operator|cannot be invoked without 'new'/)
     })
   })
 

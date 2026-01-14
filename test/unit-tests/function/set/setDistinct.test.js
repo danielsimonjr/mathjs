@@ -1,7 +1,7 @@
 // test setDistinct
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('setDistinct', function () {
   it('should return the elements of a set', function () {

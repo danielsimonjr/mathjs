@@ -4,7 +4,7 @@
  * Supports SharedArrayBuffer for zero-copy data sharing between workers
  */
 
-import { MathWorkerPool, WorkerPoolOptions } from './WorkerPool.js'
+import { MathWorkerPool, WorkerPoolOptions } from './WorkerPool.ts'
 
 export interface MatrixData {
   data: Float64Array | SharedArrayBuffer

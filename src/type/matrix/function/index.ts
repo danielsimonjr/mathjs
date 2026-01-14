@@ -60,9 +60,7 @@ export const createIndex = /* #__PURE__ */ factory(
           }
         })
 
-        const res = new Index()
-        Index.apply(res, ranges)
-        return res
+        return new Index(...ranges)
       }
     })
   }

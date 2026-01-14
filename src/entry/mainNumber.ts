@@ -3,9 +3,9 @@ export { config } from './configReadonly.ts'
 
 // functions and constants
 // @ts-ignore - generated file
-export * from './pureFunctionsNumber.generated.js'
+export * from './pureFunctionsNumber.generated.ts'
 // @ts-ignore - generated file
-export * from './impureFunctionsNumber.generated.js'
+export * from './impureFunctionsNumber.generated.ts'
 export * from './typeChecks.ts'
 
 // error classes
@@ -15,7 +15,7 @@ export { ArgumentsError } from '../error/ArgumentsError.ts'
 
 // dependency groups
 // @ts-ignore - generated file
-export * from './dependenciesNumber.generated.js'
+export * from './dependenciesNumber.generated.ts'
 
 // factory functions
 export * from '../factoriesNumber.ts'

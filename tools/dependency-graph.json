@@ -1,5 +1,94 @@
 {
   "files": {
+    "constants.js": {
+      "path": "constants.js",
+      "imports": [
+        {
+          "source": "./utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "./version.js",
+          "specifiers": [
+            {
+              "imported": "version",
+              "local": "version"
+            }
+          ]
+        },
+        {
+          "source": "./utils/bignumber/constants.js",
+          "specifiers": [
+            {
+              "imported": "createBigNumberE",
+              "local": "createBigNumberE"
+            },
+            {
+              "imported": "createBigNumberPhi",
+              "local": "createBigNumberPhi"
+            },
+            {
+              "imported": "createBigNumberPi",
+              "local": "createBigNumberPi"
+            },
+            {
+              "imported": "createBigNumberTau",
+              "local": "createBigNumberTau"
+            }
+          ]
+        },
+        {
+          "source": "./plain/number/index.js",
+          "specifiers": [
+            {
+              "imported": "pi",
+              "local": "pi"
+            },
+            {
+              "imported": "tau",
+              "local": "tau"
+            },
+            {
+              "imported": "e",
+              "local": "e"
+            },
+            {
+              "imported": "phi",
+              "local": "phi"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createTrue",
+        "createFalse",
+        "createNull",
+        "createInfinity",
+        "createNaN",
+        "createPi",
+        "createTau",
+        "createE",
+        "createPhi",
+        "createLN2",
+        "createLN10",
+        "createLOG2E",
+        "createLOG10E",
+        "createSQRT1_2",
+        "createSQRT2",
+        "createI",
+        "createUppercasePi",
+        "createUppercaseE",
+        "createVersion"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createVersion",
+      "isFactory": true
+    },
     "core/config.js": {
       "path": "core/config.js",
       "imports": [],
@@ -14,7 +103,7 @@
       "path": "core/create.js",
       "imports": [
         {
-          "source": "typed-function",
+          "source": "@danielsimonjr/typed-function",
           "specifiers": [
             {
               "imported": "typedFunction",
@@ -23,7 +112,7 @@
           ]
         },
         {
-          "source": "../error/ArgumentsError.ts",
+          "source": "../error/ArgumentsError.js",
           "specifiers": [
             {
               "imported": "ArgumentsError",
@@ -32,7 +121,7 @@
           ]
         },
         {
-          "source": "../error/DimensionError.ts",
+          "source": "../error/DimensionError.js",
           "specifiers": [
             {
               "imported": "DimensionError",
@@ -41,7 +130,7 @@
           ]
         },
         {
-          "source": "../error/IndexError.ts",
+          "source": "../error/IndexError.js",
           "specifiers": [
             {
               "imported": "IndexError",
@@ -50,7 +139,7 @@
           ]
         },
         {
-          "source": "../utils/factory.ts",
+          "source": "../utils/factory.js",
           "specifiers": [
             {
               "imported": "factory",
@@ -63,7 +152,7 @@
           ]
         },
         {
-          "source": "../utils/is.ts",
+          "source": "../utils/is.js",
           "specifiers": [
             {
               "imported": "isAccessorNode",
@@ -240,7 +329,7 @@
           ]
         },
         {
-          "source": "../utils/object.ts",
+          "source": "../utils/object.js",
           "specifiers": [
             {
               "imported": "deepFlatten",
@@ -253,7 +342,7 @@
           ]
         },
         {
-          "source": "./../utils/emitter.ts",
+          "source": "./../utils/emitter.js",
           "specifiers": [
             {
               "imported": "emitter",
@@ -262,7 +351,7 @@
           ]
         },
         {
-          "source": "./config.ts",
+          "source": "./config.js",
           "specifiers": [
             {
               "imported": "DEFAULT_CONFIG",
@@ -271,7 +360,7 @@
           ]
         },
         {
-          "source": "./function/config.ts",
+          "source": "./function/config.js",
           "specifiers": [
             {
               "imported": "configFactory",
@@ -280,20 +369,11 @@
           ]
         },
         {
-          "source": "./function/import.ts",
+          "source": "./function/import.js",
           "specifiers": [
             {
               "imported": "importFactory",
               "local": "importFactory"
-            }
-          ]
-        },
-        {
-          "source": "../../types.ts",
-          "specifiers": [
-            {
-              "imported": "TypedFunction",
-              "local": "TypedFunction"
             }
           ]
         }
@@ -340,11 +420,86 @@
       "factoryName": null,
       "isFactory": false
     },
+    "core/function/import.js": {
+      "path": "core/function/import.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isBigNumber",
+              "local": "isBigNumber"
+            },
+            {
+              "imported": "isComplex",
+              "local": "isComplex"
+            },
+            {
+              "imported": "isFraction",
+              "local": "isFraction"
+            },
+            {
+              "imported": "isMatrix",
+              "local": "isMatrix"
+            },
+            {
+              "imported": "isObject",
+              "local": "isObject"
+            },
+            {
+              "imported": "isUnit",
+              "local": "isUnit"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "isFactory",
+              "local": "isFactory"
+            },
+            {
+              "imported": "stripOptionalNotation",
+              "local": "stripOptionalNotation"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/object.js",
+          "specifiers": [
+            {
+              "imported": "hasOwnProperty",
+              "local": "hasOwnProperty"
+            },
+            {
+              "imported": "lazy",
+              "local": "lazy"
+            }
+          ]
+        },
+        {
+          "source": "../../error/ArgumentsError.js",
+          "specifiers": [
+            {
+              "imported": "ArgumentsError",
+              "local": "ArgumentsError"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "importFactory"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
     "core/function/typed.js": {
       "path": "core/function/typed.js",
       "imports": [
         {
-          "source": "typed-function",
+          "source": "@danielsimonjr/typed-function",
           "specifiers": [
             {
               "imported": "typedFunction",
@@ -353,7 +508,7 @@
           ]
         },
         {
-          "source": "../../utils/factory.ts",
+          "source": "../../utils/factory.js",
           "specifiers": [
             {
               "imported": "factory",
@@ -362,7 +517,7 @@
           ]
         },
         {
-          "source": "../../utils/is.ts",
+          "source": "../../utils/is.js",
           "specifiers": [
             {
               "imported": "isAccessorNode",
@@ -531,7 +686,7 @@
           ]
         },
         {
-          "source": "../../utils/number.ts",
+          "source": "../../utils/number.js",
           "specifiers": [
             {
               "imported": "digits",
@@ -546,6 +701,160 @@
       "factoryDependencies": [],
       "factoryName": "createTyped",
       "isFactory": true
+    },
+    "defaultInstance.js": {
+      "path": "defaultInstance.js",
+      "imports": [
+        {
+          "source": "./factoriesAny.js",
+          "specifiers": [
+            {
+              "imported": "all",
+              "local": "all"
+            }
+          ]
+        },
+        {
+          "source": "./core/create.js",
+          "specifiers": [
+            {
+              "imported": "create",
+              "local": "create"
+            }
+          ]
+        }
+      ],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "entry/allFactoriesAny.js": {
+      "path": "entry/allFactoriesAny.js",
+      "imports": [
+        {
+          "source": "../factoriesAny.js",
+          "specifiers": [
+            {
+              "imported": "allFactories",
+              "local": "allFactories"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "all"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "entry/allFactoriesNumber.js": {
+      "path": "entry/allFactoriesNumber.js",
+      "imports": [
+        {
+          "source": "../factoriesNumber.js",
+          "specifiers": [
+            {
+              "imported": "allFactories",
+              "local": "allFactories"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "all"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "entry/configReadonly.js": {
+      "path": "entry/configReadonly.js",
+      "imports": [
+        {
+          "source": "../core/config.js",
+          "specifiers": [
+            {
+              "imported": "DEFAULT_CONFIG",
+              "local": "DEFAULT_CONFIG"
+            }
+          ]
+        },
+        {
+          "source": "../core/function/config.js",
+          "specifiers": [
+            {
+              "imported": "MATRIX_OPTIONS",
+              "local": "MATRIX_OPTIONS"
+            },
+            {
+              "imported": "NUMBER_OPTIONS",
+              "local": "NUMBER_OPTIONS"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "config"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "entry/mainAny.js": {
+      "path": "entry/mainAny.js",
+      "imports": [],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "entry/mainNumber.js": {
+      "path": "entry/mainNumber.js",
+      "imports": [],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "entry/typeChecks.js": {
+      "path": "entry/typeChecks.js",
+      "imports": [],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "error/ArgumentsError.js": {
+      "path": "error/ArgumentsError.js",
+      "imports": [],
+      "exports": [
+        "ArgumentsError"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "error/DimensionError.js": {
+      "path": "error/DimensionError.js",
+      "imports": [],
+      "exports": [
+        "DimensionError"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "error/IndexError.js": {
+      "path": "error/IndexError.js",
+      "imports": [],
+      "exports": [
+        "IndexError"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
     },
     "expression/embeddedDocs/constants/e.js": {
       "path": "expression/embeddedDocs/constants/e.js",
@@ -5509,6 +5818,1164 @@
       "factoryName": "createParser",
       "isFactory": true
     },
+    "expression/Help.js": {
+      "path": "expression/Help.js",
+      "imports": [
+        {
+          "source": "../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isHelp",
+              "local": "isHelp"
+            }
+          ]
+        },
+        {
+          "source": "../utils/object.js",
+          "specifiers": [
+            {
+              "imported": "clone",
+              "local": "clone"
+            }
+          ]
+        },
+        {
+          "source": "../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "format",
+              "local": "format"
+            }
+          ]
+        },
+        {
+          "source": "../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createHelpClass"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createHelpClass",
+      "isFactory": true
+    },
+    "expression/keywords.js": {
+      "path": "expression/keywords.js",
+      "imports": [],
+      "exports": [
+        "keywords"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "expression/node/AccessorNode.js": {
+      "path": "expression/node/AccessorNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isAccessorNode",
+              "local": "isAccessorNode"
+            },
+            {
+              "imported": "isArrayNode",
+              "local": "isArrayNode"
+            },
+            {
+              "imported": "isConstantNode",
+              "local": "isConstantNode"
+            },
+            {
+              "imported": "isFunctionNode",
+              "local": "isFunctionNode"
+            },
+            {
+              "imported": "isIndexNode",
+              "local": "isIndexNode"
+            },
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            },
+            {
+              "imported": "isObjectNode",
+              "local": "isObjectNode"
+            },
+            {
+              "imported": "isParenthesisNode",
+              "local": "isParenthesisNode"
+            },
+            {
+              "imported": "isSymbolNode",
+              "local": "isSymbolNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "./utils/access.js",
+          "specifiers": [
+            {
+              "imported": "accessFactory",
+              "local": "accessFactory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createAccessorNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createAccessorNode",
+      "isFactory": true
+    },
+    "expression/node/ArrayNode.js": {
+      "path": "expression/node/ArrayNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isArrayNode",
+              "local": "isArrayNode"
+            },
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/array.js",
+          "specifiers": [
+            {
+              "imported": "map",
+              "local": "map"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createArrayNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createArrayNode",
+      "isFactory": true
+    },
+    "expression/node/AssignmentNode.js": {
+      "path": "expression/node/AssignmentNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isAccessorNode",
+              "local": "isAccessorNode"
+            },
+            {
+              "imported": "isIndexNode",
+              "local": "isIndexNode"
+            },
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            },
+            {
+              "imported": "isSymbolNode",
+              "local": "isSymbolNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            },
+            {
+              "imported": "setSafeProperty",
+              "local": "setSafeProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "./utils/access.js",
+          "specifiers": [
+            {
+              "imported": "accessFactory",
+              "local": "accessFactory"
+            }
+          ]
+        },
+        {
+          "source": "./utils/assign.js",
+          "specifiers": [
+            {
+              "imported": "assignFactory",
+              "local": "assignFactory"
+            }
+          ]
+        },
+        {
+          "source": "../operators.js",
+          "specifiers": [
+            {
+              "imported": "getPrecedence",
+              "local": "getPrecedence"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createAssignmentNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createAssignmentNode",
+      "isFactory": true
+    },
+    "expression/node/BlockNode.js": {
+      "path": "expression/node/BlockNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/array.js",
+          "specifiers": [
+            {
+              "imported": "forEach",
+              "local": "forEach"
+            },
+            {
+              "imported": "map",
+              "local": "map"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createBlockNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createBlockNode",
+      "isFactory": true
+    },
+    "expression/node/ConditionalNode.js": {
+      "path": "expression/node/ConditionalNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isBigNumber",
+              "local": "isBigNumber"
+            },
+            {
+              "imported": "isComplex",
+              "local": "isComplex"
+            },
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            },
+            {
+              "imported": "isUnit",
+              "local": "isUnit"
+            },
+            {
+              "imported": "typeOf",
+              "local": "typeOf"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../operators.js",
+          "specifiers": [
+            {
+              "imported": "getPrecedence",
+              "local": "getPrecedence"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createConditionalNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createConditionalNode",
+      "isFactory": true
+    },
+    "expression/node/ConstantNode.js": {
+      "path": "expression/node/ConstantNode.js",
+      "imports": [
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "format",
+              "local": "format"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "typeOf",
+              "local": "typeOf"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/latex.js",
+          "specifiers": [
+            {
+              "imported": "escapeLatex",
+              "local": "escapeLatex"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createConstantNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createConstantNode",
+      "isFactory": true
+    },
+    "expression/node/FunctionAssignmentNode.js": {
+      "path": "expression/node/FunctionAssignmentNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            }
+          ]
+        },
+        {
+          "source": "../keywords.js",
+          "specifiers": [
+            {
+              "imported": "keywords",
+              "local": "keywords"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "escape",
+              "local": "escape"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/array.js",
+          "specifiers": [
+            {
+              "imported": "forEach",
+              "local": "forEach"
+            },
+            {
+              "imported": "join",
+              "local": "join"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/latex.js",
+          "specifiers": [
+            {
+              "imported": "toSymbol",
+              "local": "toSymbol"
+            }
+          ]
+        },
+        {
+          "source": "../operators.js",
+          "specifiers": [
+            {
+              "imported": "getPrecedence",
+              "local": "getPrecedence"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createFunctionAssignmentNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createFunctionAssignmentNode",
+      "isFactory": true
+    },
+    "expression/node/FunctionNode.js": {
+      "path": "expression/node/FunctionNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isAccessorNode",
+              "local": "isAccessorNode"
+            },
+            {
+              "imported": "isFunctionAssignmentNode",
+              "local": "isFunctionAssignmentNode"
+            },
+            {
+              "imported": "isIndexNode",
+              "local": "isIndexNode"
+            },
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            },
+            {
+              "imported": "isSymbolNode",
+              "local": "isSymbolNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "escape",
+              "local": "escape"
+            },
+            {
+              "imported": "format",
+              "local": "format"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/object.js",
+          "specifiers": [
+            {
+              "imported": "hasOwnProperty",
+              "local": "hasOwnProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            },
+            {
+              "imported": "getSafeMethod",
+              "local": "getSafeMethod"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/scope.js",
+          "specifiers": [
+            {
+              "imported": "createSubScope",
+              "local": "createSubScope"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/latex.js",
+          "specifiers": [
+            {
+              "imported": "defaultTemplate",
+              "local": "defaultTemplate"
+            },
+            {
+              "imported": "latexFunctions",
+              "local": "latexFunctions"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createFunctionNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createFunctionNode",
+      "isFactory": true
+    },
+    "expression/node/IndexNode.js": {
+      "path": "expression/node/IndexNode.js",
+      "imports": [
+        {
+          "source": "../../utils/array.js",
+          "specifiers": [
+            {
+              "imported": "map",
+              "local": "map"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isArray",
+              "local": "isArray"
+            },
+            {
+              "imported": "isConstantNode",
+              "local": "isConstantNode"
+            },
+            {
+              "imported": "isMatrix",
+              "local": "isMatrix"
+            },
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            },
+            {
+              "imported": "isString",
+              "local": "isString"
+            },
+            {
+              "imported": "typeOf",
+              "local": "typeOf"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "escape",
+              "local": "escape"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createIndexNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createIndexNode",
+      "isFactory": true
+    },
+    "expression/node/Node.js": {
+      "path": "expression/node/Node.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            }
+          ]
+        },
+        {
+          "source": "../keywords.js",
+          "specifiers": [
+            {
+              "imported": "keywords",
+              "local": "keywords"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/object.js",
+          "specifiers": [
+            {
+              "imported": "deepStrictEqual",
+              "local": "deepStrictEqual"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/map.js",
+          "specifiers": [
+            {
+              "imported": "createMap",
+              "local": "createMap"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createNode",
+      "isFactory": true
+    },
+    "expression/node/ObjectNode.js": {
+      "path": "expression/node/ObjectNode.js",
+      "imports": [
+        {
+          "source": "../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/object.js",
+          "specifiers": [
+            {
+              "imported": "hasOwnProperty",
+              "local": "hasOwnProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "escape",
+              "local": "escape"
+            },
+            {
+              "imported": "stringify",
+              "local": "stringify"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createObjectNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createObjectNode",
+      "isFactory": true
+    },
+    "expression/node/OperatorNode.js": {
+      "path": "expression/node/OperatorNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            },
+            {
+              "imported": "isConstantNode",
+              "local": "isConstantNode"
+            },
+            {
+              "imported": "isOperatorNode",
+              "local": "isOperatorNode"
+            },
+            {
+              "imported": "isParenthesisNode",
+              "local": "isParenthesisNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/array.js",
+          "specifiers": [
+            {
+              "imported": "map",
+              "local": "map"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/scope.js",
+          "specifiers": [
+            {
+              "imported": "createSubScope",
+              "local": "createSubScope"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "escape",
+              "local": "escape"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            },
+            {
+              "imported": "isSafeMethod",
+              "local": "isSafeMethod"
+            }
+          ]
+        },
+        {
+          "source": "../operators.js",
+          "specifiers": [
+            {
+              "imported": "getAssociativity",
+              "local": "getAssociativity"
+            },
+            {
+              "imported": "getPrecedence",
+              "local": "getPrecedence"
+            },
+            {
+              "imported": "isAssociativeWith",
+              "local": "isAssociativeWith"
+            },
+            {
+              "imported": "properties",
+              "local": "properties"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/latex.js",
+          "specifiers": [
+            {
+              "imported": "latexOperators",
+              "local": "latexOperators"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createOperatorNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createOperatorNode",
+      "isFactory": true
+    },
+    "expression/node/ParenthesisNode.js": {
+      "path": "expression/node/ParenthesisNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createParenthesisNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createParenthesisNode",
+      "isFactory": true
+    },
+    "expression/node/RangeNode.js": {
+      "path": "expression/node/RangeNode.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isNode",
+              "local": "isNode"
+            },
+            {
+              "imported": "isSymbolNode",
+              "local": "isSymbolNode"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../operators.js",
+          "specifiers": [
+            {
+              "imported": "getPrecedence",
+              "local": "getPrecedence"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createRangeNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createRangeNode",
+      "isFactory": true
+    },
+    "expression/node/RelationalNode.js": {
+      "path": "expression/node/RelationalNode.js",
+      "imports": [
+        {
+          "source": "../operators.js",
+          "specifiers": [
+            {
+              "imported": "getPrecedence",
+              "local": "getPrecedence"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "escape",
+              "local": "escape"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/latex.js",
+          "specifiers": [
+            {
+              "imported": "latexOperators",
+              "local": "latexOperators"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createRelationalNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createRelationalNode",
+      "isFactory": true
+    },
+    "expression/node/SymbolNode.js": {
+      "path": "expression/node/SymbolNode.js",
+      "imports": [
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "escape",
+              "local": "escape"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/latex.js",
+          "specifiers": [
+            {
+              "imported": "toSymbol",
+              "local": "toSymbol"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createSymbolNode"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createSymbolNode",
+      "isFactory": true
+    },
+    "expression/node/utils/access.js": {
+      "path": "expression/node/utils/access.js",
+      "imports": [
+        {
+          "source": "../../transform/utils/errorTransform.js",
+          "specifiers": [
+            {
+              "imported": "errorTransform",
+              "local": "errorTransform"
+            }
+          ]
+        },
+        {
+          "source": "../../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "accessFactory"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "expression/node/utils/assign.js": {
+      "path": "expression/node/utils/assign.js",
+      "imports": [
+        {
+          "source": "../../transform/utils/errorTransform.js",
+          "specifiers": [
+            {
+              "imported": "errorTransform",
+              "local": "errorTransform"
+            }
+          ]
+        },
+        {
+          "source": "../../../utils/customs.js",
+          "specifiers": [
+            {
+              "imported": "setSafeProperty",
+              "local": "setSafeProperty"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "assignFactory"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "expression/operators.js": {
+      "path": "expression/operators.js",
+      "imports": [
+        {
+          "source": "../utils/object.js",
+          "specifiers": [
+            {
+              "imported": "hasOwnProperty",
+              "local": "hasOwnProperty"
+            }
+          ]
+        },
+        {
+          "source": "../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isConstantNode",
+              "local": "isConstantNode"
+            },
+            {
+              "imported": "isParenthesisNode",
+              "local": "isParenthesisNode"
+            },
+            {
+              "imported": "rule2Node",
+              "local": "rule2Node"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "properties",
+        "getPrecedence",
+        "getAssociativity",
+        "isAssociativeWith",
+        "getOperator"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
     "expression/parse.js": {
       "path": "expression/parse.js",
       "imports": [
@@ -6722,6 +8189,133 @@
       "factoryName": "createSumTransform",
       "isFactory": true
     },
+    "expression/transform/utils/compileInlineExpression.js": {
+      "path": "expression/transform/utils/compileInlineExpression.js",
+      "imports": [
+        {
+          "source": "../../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isSymbolNode",
+              "local": "isSymbolNode"
+            }
+          ]
+        },
+        {
+          "source": "../../../utils/map.js",
+          "specifiers": [
+            {
+              "imported": "PartitionedMap",
+              "local": "PartitionedMap"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "compileInlineExpression"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "expression/transform/utils/dimToZeroBase.js": {
+      "path": "expression/transform/utils/dimToZeroBase.js",
+      "imports": [
+        {
+          "source": "../../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isNumber",
+              "local": "isNumber"
+            },
+            {
+              "imported": "isBigNumber",
+              "local": "isBigNumber"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "dimToZeroBase",
+        "isNumberOrBigNumber"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "expression/transform/utils/errorTransform.js": {
+      "path": "expression/transform/utils/errorTransform.js",
+      "imports": [
+        {
+          "source": "../../../error/IndexError.js",
+          "specifiers": [
+            {
+              "imported": "IndexError",
+              "local": "IndexError"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "errorTransform"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "expression/transform/utils/lastDimToZeroBase.js": {
+      "path": "expression/transform/utils/lastDimToZeroBase.js",
+      "imports": [
+        {
+          "source": "../../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isCollection",
+              "local": "isCollection"
+            }
+          ]
+        },
+        {
+          "source": "./dimToZeroBase.js",
+          "specifiers": [
+            {
+              "imported": "dimToZeroBase",
+              "local": "dimToZeroBase"
+            },
+            {
+              "imported": "isNumberOrBigNumber",
+              "local": "isNumberOrBigNumber"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "lastDimToZeroBase"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "expression/transform/utils/transformCallback.js": {
+      "path": "expression/transform/utils/transformCallback.js",
+      "imports": [
+        {
+          "source": "../../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createTransformCallback"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createTransformCallback",
+      "isFactory": true
+    },
     "expression/transform/variance.transform.js": {
       "path": "expression/transform/variance.transform.js",
       "imports": [
@@ -6767,6 +8361,413 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createVarianceTransform",
+      "isFactory": true
+    },
+    "factoriesAny.js": {
+      "path": "factoriesAny.js",
+      "imports": [],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "factoriesNumber.js": {
+      "path": "factoriesNumber.js",
+      "imports": [
+        {
+          "source": "./plain/number/index.js",
+          "specifiers": [
+            {
+              "imported": "absNumber",
+              "local": "absNumber"
+            },
+            {
+              "imported": "acoshNumber",
+              "local": "acoshNumber"
+            },
+            {
+              "imported": "acosNumber",
+              "local": "acosNumber"
+            },
+            {
+              "imported": "acothNumber",
+              "local": "acothNumber"
+            },
+            {
+              "imported": "acotNumber",
+              "local": "acotNumber"
+            },
+            {
+              "imported": "acschNumber",
+              "local": "acschNumber"
+            },
+            {
+              "imported": "acscNumber",
+              "local": "acscNumber"
+            },
+            {
+              "imported": "addNumber",
+              "local": "addNumber"
+            },
+            {
+              "imported": "andNumber",
+              "local": "andNumber"
+            },
+            {
+              "imported": "asechNumber",
+              "local": "asechNumber"
+            },
+            {
+              "imported": "asecNumber",
+              "local": "asecNumber"
+            },
+            {
+              "imported": "asinhNumber",
+              "local": "asinhNumber"
+            },
+            {
+              "imported": "asinNumber",
+              "local": "asinNumber"
+            },
+            {
+              "imported": "atan2Number",
+              "local": "atan2Number"
+            },
+            {
+              "imported": "atanhNumber",
+              "local": "atanhNumber"
+            },
+            {
+              "imported": "atanNumber",
+              "local": "atanNumber"
+            },
+            {
+              "imported": "bitAndNumber",
+              "local": "bitAndNumber"
+            },
+            {
+              "imported": "bitNotNumber",
+              "local": "bitNotNumber"
+            },
+            {
+              "imported": "bitOrNumber",
+              "local": "bitOrNumber"
+            },
+            {
+              "imported": "bitXorNumber",
+              "local": "bitXorNumber"
+            },
+            {
+              "imported": "cbrtNumber",
+              "local": "cbrtNumber"
+            },
+            {
+              "imported": "combinationsNumber",
+              "local": "combinationsNumber"
+            },
+            {
+              "imported": "coshNumber",
+              "local": "coshNumber"
+            },
+            {
+              "imported": "cosNumber",
+              "local": "cosNumber"
+            },
+            {
+              "imported": "cothNumber",
+              "local": "cothNumber"
+            },
+            {
+              "imported": "cotNumber",
+              "local": "cotNumber"
+            },
+            {
+              "imported": "cschNumber",
+              "local": "cschNumber"
+            },
+            {
+              "imported": "cscNumber",
+              "local": "cscNumber"
+            },
+            {
+              "imported": "cubeNumber",
+              "local": "cubeNumber"
+            },
+            {
+              "imported": "divideNumber",
+              "local": "divideNumber"
+            },
+            {
+              "imported": "expm1Number",
+              "local": "expm1Number"
+            },
+            {
+              "imported": "expNumber",
+              "local": "expNumber"
+            },
+            {
+              "imported": "gammaNumber",
+              "local": "gammaNumber"
+            },
+            {
+              "imported": "gcdNumber",
+              "local": "gcdNumber"
+            },
+            {
+              "imported": "isIntegerNumber",
+              "local": "isIntegerNumber"
+            },
+            {
+              "imported": "isNaNNumber",
+              "local": "isNaNNumber"
+            },
+            {
+              "imported": "isNegativeNumber",
+              "local": "isNegativeNumber"
+            },
+            {
+              "imported": "isPositiveNumber",
+              "local": "isPositiveNumber"
+            },
+            {
+              "imported": "isZeroNumber",
+              "local": "isZeroNumber"
+            },
+            {
+              "imported": "lcmNumber",
+              "local": "lcmNumber"
+            },
+            {
+              "imported": "leftShiftNumber",
+              "local": "leftShiftNumber"
+            },
+            {
+              "imported": "lgammaNumber",
+              "local": "lgammaNumber"
+            },
+            {
+              "imported": "log10Number",
+              "local": "log10Number"
+            },
+            {
+              "imported": "log1pNumber",
+              "local": "log1pNumber"
+            },
+            {
+              "imported": "log2Number",
+              "local": "log2Number"
+            },
+            {
+              "imported": "logNumber",
+              "local": "logNumber"
+            },
+            {
+              "imported": "modNumber",
+              "local": "modNumber"
+            },
+            {
+              "imported": "multiplyNumber",
+              "local": "multiplyNumber"
+            },
+            {
+              "imported": "normNumber",
+              "local": "normNumber"
+            },
+            {
+              "imported": "notNumber",
+              "local": "notNumber"
+            },
+            {
+              "imported": "nthRootNumber",
+              "local": "nthRootNumber"
+            },
+            {
+              "imported": "orNumber",
+              "local": "orNumber"
+            },
+            {
+              "imported": "powNumber",
+              "local": "powNumber"
+            },
+            {
+              "imported": "rightArithShiftNumber",
+              "local": "rightArithShiftNumber"
+            },
+            {
+              "imported": "rightLogShiftNumber",
+              "local": "rightLogShiftNumber"
+            },
+            {
+              "imported": "roundNumber",
+              "local": "roundNumber"
+            },
+            {
+              "imported": "sechNumber",
+              "local": "sechNumber"
+            },
+            {
+              "imported": "secNumber",
+              "local": "secNumber"
+            },
+            {
+              "imported": "signNumber",
+              "local": "signNumber"
+            },
+            {
+              "imported": "sinhNumber",
+              "local": "sinhNumber"
+            },
+            {
+              "imported": "sinNumber",
+              "local": "sinNumber"
+            },
+            {
+              "imported": "sqrtNumber",
+              "local": "sqrtNumber"
+            },
+            {
+              "imported": "squareNumber",
+              "local": "squareNumber"
+            },
+            {
+              "imported": "subtractNumber",
+              "local": "subtractNumber"
+            },
+            {
+              "imported": "tanhNumber",
+              "local": "tanhNumber"
+            },
+            {
+              "imported": "tanNumber",
+              "local": "tanNumber"
+            },
+            {
+              "imported": "unaryMinusNumber",
+              "local": "unaryMinusNumber"
+            },
+            {
+              "imported": "unaryPlusNumber",
+              "local": "unaryPlusNumber"
+            },
+            {
+              "imported": "xgcdNumber",
+              "local": "xgcdNumber"
+            },
+            {
+              "imported": "xorNumber",
+              "local": "xorNumber"
+            }
+          ]
+        },
+        {
+          "source": "./utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "./utils/noop.js",
+          "specifiers": [
+            {
+              "imported": "noIndex",
+              "local": "noIndex"
+            },
+            {
+              "imported": "noMatrix",
+              "local": "noMatrix"
+            },
+            {
+              "imported": "noSubset",
+              "local": "noSubset"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createUnaryMinus",
+        "createUnaryPlus",
+        "createAbs",
+        "createAddScalar",
+        "createSubtractScalar",
+        "createCbrt",
+        "createCube",
+        "createExp",
+        "createExpm1",
+        "createGcd",
+        "createLcm",
+        "createLog10",
+        "createLog2",
+        "createMod",
+        "createMultiplyScalar",
+        "createMultiply",
+        "createNthRoot",
+        "createSign",
+        "createSqrt",
+        "createSquare",
+        "createSubtract",
+        "createXgcd",
+        "createDivideScalar",
+        "createPow",
+        "createRound",
+        "createLog",
+        "createLog1p",
+        "createAdd",
+        "createNorm",
+        "createDivide",
+        "createBitAnd",
+        "createBitNot",
+        "createBitOr",
+        "createBitXor",
+        "createLeftShift",
+        "createRightArithShift",
+        "createRightLogShift",
+        "createAnd",
+        "createNot",
+        "createOr",
+        "createXor",
+        "createIndex",
+        "createMatrix",
+        "createSubset",
+        "createCombinations",
+        "createGamma",
+        "createLgamma",
+        "createAcos",
+        "createAcosh",
+        "createAcot",
+        "createAcoth",
+        "createAcsc",
+        "createAcsch",
+        "createAsec",
+        "createAsech",
+        "createAsin",
+        "createAsinh",
+        "createAtan",
+        "createAtan2",
+        "createAtanh",
+        "createCos",
+        "createCosh",
+        "createCot",
+        "createCoth",
+        "createCsc",
+        "createCsch",
+        "createSec",
+        "createSech",
+        "createSin",
+        "createSinh",
+        "createTan",
+        "createTanh",
+        "createSubsetTransform",
+        "createIsInteger",
+        "createIsNegative",
+        "createIsPositive",
+        "createIsZero",
+        "createIsNaN"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createSubsetTransform",
       "isFactory": true
     },
     "function/algebra/decomposition/lup.js": {
@@ -10605,6 +12606,26 @@
       "factoryName": "createRightLogShift",
       "isFactory": true
     },
+    "function/bitwise/useMatrixForArrayScalar.js": {
+      "path": "function/bitwise/useMatrixForArrayScalar.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createUseMatrixForArrayScalar"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createUseMatrixForArrayScalar",
+      "isFactory": true
+    },
     "function/combinatorics/bellNumbers.js": {
       "path": "function/combinatorics/bellNumbers.js",
       "imports": [
@@ -10969,6 +12990,62 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createNot",
+      "isFactory": true
+    },
+    "function/logical/nullish.js": {
+      "path": "function/logical/nullish.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../type/matrix/utils/matAlgo03xDSf.js",
+          "specifiers": [
+            {
+              "imported": "createMatAlgo03xDSf",
+              "local": "createMatAlgo03xDSf"
+            }
+          ]
+        },
+        {
+          "source": "../../type/matrix/utils/matAlgo14xDs.js",
+          "specifiers": [
+            {
+              "imported": "createMatAlgo14xDs",
+              "local": "createMatAlgo14xDs"
+            }
+          ]
+        },
+        {
+          "source": "../../type/matrix/utils/matAlgo13xDD.js",
+          "specifiers": [
+            {
+              "imported": "createMatAlgo13xDD",
+              "local": "createMatAlgo13xDD"
+            }
+          ]
+        },
+        {
+          "source": "../../error/DimensionError.js",
+          "specifiers": [
+            {
+              "imported": "DimensionError",
+              "local": "DimensionError"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createNullish"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createNullish",
       "isFactory": true
     },
     "function/logical/or.js": {
@@ -11390,6 +13467,44 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createDiag",
+      "isFactory": true
+    },
+    "function/matrix/diff.js": {
+      "path": "function/matrix/diff.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/number.js",
+          "specifiers": [
+            {
+              "imported": "isInteger",
+              "local": "isInteger"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isMatrix",
+              "local": "isMatrix"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createDiff"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createDiff",
       "isFactory": true
     },
     "function/matrix/dot.js": {
@@ -11962,6 +14077,53 @@
       "factoryName": "createMap",
       "isFactory": true
     },
+    "function/matrix/mapSlices.js": {
+      "path": "function/matrix/mapSlices.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/array.js",
+          "specifiers": [
+            {
+              "imported": "arraySize",
+              "local": "arraySize"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isMatrix",
+              "local": "isMatrix"
+            }
+          ]
+        },
+        {
+          "source": "../../error/IndexError.js",
+          "specifiers": [
+            {
+              "imported": "IndexError",
+              "local": "IndexError"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createMapSlices"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createMapSlices",
+      "isFactory": true
+    },
     "function/matrix/matrixFromColumns.js": {
       "path": "function/matrix/matrixFromColumns.js",
       "imports": [
@@ -11980,6 +14142,26 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createMatrixFromColumns",
+      "isFactory": true
+    },
+    "function/matrix/matrixFromFunction.js": {
+      "path": "function/matrix/matrixFromFunction.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createMatrixFromFunction"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createMatrixFromFunction",
       "isFactory": true
     },
     "function/matrix/matrixFromRows.js": {
@@ -12292,6 +14474,64 @@
       "factoryName": "createResize",
       "isFactory": true
     },
+    "function/matrix/rotate.js": {
+      "path": "function/matrix/rotate.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/array.js",
+          "specifiers": [
+            {
+              "imported": "arraySize",
+              "local": "arraySize"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createRotate"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createRotate",
+      "isFactory": true
+    },
+    "function/matrix/rotationMatrix.js": {
+      "path": "function/matrix/rotationMatrix.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isBigNumber",
+              "local": "isBigNumber"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createRotationMatrix"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createRotationMatrix",
+      "isFactory": true
+    },
     "function/matrix/row.js": {
       "path": "function/matrix/row.js",
       "imports": [
@@ -12366,6 +14606,35 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createSize",
+      "isFactory": true
+    },
+    "function/matrix/sort.js": {
+      "path": "function/matrix/sort.js",
+      "imports": [
+        {
+          "source": "../../utils/array.js",
+          "specifiers": [
+            {
+              "imported": "arraySize",
+              "local": "size"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createSort"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createSort",
       "isFactory": true
     },
     "function/matrix/sqrtm.js": {
@@ -12690,6 +14959,35 @@
       "factoryName": "createSolveODE",
       "isFactory": true
     },
+    "function/probability/bernoulli.js": {
+      "path": "function/probability/bernoulli.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/number.js",
+          "specifiers": [
+            {
+              "imported": "isInteger",
+              "local": "isInteger"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createBernoulli"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createBernoulli",
+      "isFactory": true
+    },
     "function/probability/combinations.js": {
       "path": "function/probability/combinations.js",
       "imports": [
@@ -12841,6 +15139,48 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createKldivergence",
+      "isFactory": true
+    },
+    "function/probability/lgamma.js": {
+      "path": "function/probability/lgamma.js",
+      "imports": [
+        {
+          "source": "../../plain/number/index.js",
+          "specifiers": [
+            {
+              "imported": "lgammaNumber",
+              "local": "lgammaNumber"
+            },
+            {
+              "imported": "lnSqrt2PI",
+              "local": "lnSqrt2PI"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/number.js",
+          "specifiers": [
+            {
+              "imported": "copysign",
+              "local": "copysign"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createLgamma"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createLgamma",
       "isFactory": true
     },
     "function/probability/multinomial.js": {
@@ -13056,6 +15396,36 @@
       "factoryName": "createRandomInt",
       "isFactory": true
     },
+    "function/probability/util/randomMatrix.js": {
+      "path": "function/probability/util/randomMatrix.js",
+      "imports": [],
+      "exports": [
+        "randomMatrix"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "function/probability/util/seededRNG.js": {
+      "path": "function/probability/util/seededRNG.js",
+      "imports": [
+        {
+          "source": "seedrandom",
+          "specifiers": [
+            {
+              "imported": "seedrandom",
+              "local": "seedrandom"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createRng"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
     "function/relational/compare.js": {
       "path": "function/relational/compare.js",
       "imports": [
@@ -13225,6 +15595,26 @@
       "factoryName": "createCompareTextNumber",
       "isFactory": true
     },
+    "function/relational/compareUnits.js": {
+      "path": "function/relational/compareUnits.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createCompareUnits"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createCompareUnits",
+      "isFactory": true
+    },
     "function/relational/deepEqual.js": {
       "path": "function/relational/deepEqual.js",
       "imports": [
@@ -13300,6 +15690,63 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createEqualNumber",
+      "isFactory": true
+    },
+    "function/relational/equalScalar.js": {
+      "path": "function/relational/equalScalar.js",
+      "imports": [
+        {
+          "source": "../../utils/bignumber/nearlyEqual.js",
+          "specifiers": [
+            {
+              "imported": "nearlyEqual",
+              "local": "bigNearlyEqual"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/number.js",
+          "specifiers": [
+            {
+              "imported": "nearlyEqual",
+              "local": "nearlyEqual"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/complex.js",
+          "specifiers": [
+            {
+              "imported": "complexEquals",
+              "local": "complexEquals"
+            }
+          ]
+        },
+        {
+          "source": "./compareUnits.js",
+          "specifiers": [
+            {
+              "imported": "createCompareUnits",
+              "local": "createCompareUnits"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createEqualScalar",
+        "createEqualScalarNumber"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createEqualScalarNumber",
       "isFactory": true
     },
     "function/relational/equalText.js": {
@@ -14123,6 +16570,26 @@
       "factoryName": "createZeta",
       "isFactory": true
     },
+    "function/statistics/corr.js": {
+      "path": "function/statistics/corr.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createCorr"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createCorr",
+      "isFactory": true
+    },
     "function/statistics/cumsum.js": {
       "path": "function/statistics/cumsum.js",
       "imports": [
@@ -14635,6 +17102,26 @@
       "factoryDependencies": [],
       "factoryName": "createSum",
       "isFactory": true
+    },
+    "function/statistics/utils/improveErrorMessage.js": {
+      "path": "function/statistics/utils/improveErrorMessage.js",
+      "imports": [
+        {
+          "source": "../../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "typeOf",
+              "local": "typeOf"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "improveErrorMessage"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
     },
     "function/statistics/variance.js": {
       "path": "function/statistics/variance.js",
@@ -15589,6 +18076,26 @@
       "factoryName": "createTanh",
       "isFactory": true
     },
+    "function/trigonometry/trigUnit.js": {
+      "path": "function/trigonometry/trigUnit.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createTrigUnit"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createTrigUnit",
+      "isFactory": true
+    },
     "function/unit/to.js": {
       "path": "function/unit/to.js",
       "imports": [
@@ -15616,6 +18123,26 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createTo",
+      "isFactory": true
+    },
+    "function/unit/toBest.js": {
+      "path": "function/unit/toBest.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createToBest"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createToBest",
       "isFactory": true
     },
     "function/utils/clone.js": {
@@ -15665,6 +18192,46 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createHasNumericValue",
+      "isFactory": true
+    },
+    "function/utils/isBounded.js": {
+      "path": "function/utils/isBounded.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createIsBounded"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createIsBounded",
+      "isFactory": true
+    },
+    "function/utils/isFinite.js": {
+      "path": "function/utils/isFinite.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createIsFinite"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createIsFinite",
       "isFactory": true
     },
     "function/utils/isInteger.js": {
@@ -15788,6 +18355,35 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createIsNegative",
+      "isFactory": true
+    },
+    "function/utils/isNumeric.js": {
+      "path": "function/utils/isNumeric.js",
+      "imports": [
+        {
+          "source": "../../utils/collection.js",
+          "specifiers": [
+            {
+              "imported": "deepMap",
+              "local": "deepMap"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createIsNumeric"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createIsNumeric",
       "isFactory": true
     },
     "function/utils/isPositive.js": {
@@ -15974,6 +18570,104 @@
       "factoryDependencies": [],
       "factoryName": "createTypeOf",
       "isFactory": true
+    },
+    "header.js": {
+      "path": "header.js",
+      "imports": [],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "index.js": {
+      "path": "index.js",
+      "imports": [],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "json/replacer.js": {
+      "path": "json/replacer.js",
+      "imports": [
+        {
+          "source": "../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createReplacer"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createReplacer",
+      "isFactory": true
+    },
+    "json/reviver.js": {
+      "path": "json/reviver.js",
+      "imports": [
+        {
+          "source": "../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createReviver"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createReviver",
+      "isFactory": true
+    },
+    "number.js": {
+      "path": "number.js",
+      "imports": [],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "plain/bignumber/arithmetic.js": {
+      "path": "plain/bignumber/arithmetic.js",
+      "imports": [],
+      "exports": [
+        "absBigNumber",
+        "addBigNumber",
+        "subtractBigNumber",
+        "multiplyBigNumber",
+        "divideBigNumber"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "plain/bignumber/index.js": {
+      "path": "plain/bignumber/index.js",
+      "imports": [
+        {
+          "source": "decimal.js",
+          "specifiers": [
+            {
+              "imported": "Decimal",
+              "local": "Decimal"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "bignumber"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
     },
     "plain/number/arithmetic.js": {
       "path": "plain/number/arithmetic.js",
@@ -16273,6 +18967,35 @@
       "factoryName": null,
       "isFactory": false
     },
+    "type/bigint.js": {
+      "path": "type/bigint.js",
+      "imports": [
+        {
+          "source": "../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../utils/collection.js",
+          "specifiers": [
+            {
+              "imported": "deepMap",
+              "local": "deepMap"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createBigint"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createBigint",
+      "isFactory": true
+    },
     "type/bignumber/BigNumber.js": {
       "path": "type/bignumber/BigNumber.js",
       "imports": [
@@ -16409,6 +19132,26 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createChainClass",
+      "isFactory": true
+    },
+    "type/chain/function/chain.js": {
+      "path": "type/chain/function/chain.js",
+      "imports": [
+        {
+          "source": "../../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createChain"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createChain",
       "isFactory": true
     },
     "type/complex/Complex.js": {
@@ -17592,7 +20335,7 @@
           ]
         },
         {
-          "source": "./broadcast.ts",
+          "source": "./broadcast.js",
           "specifiers": [
             {
               "imported": "broadcast",
@@ -17635,6 +20378,26 @@
       ],
       "factoryDependencies": [],
       "factoryName": "createNumber",
+      "isFactory": true
+    },
+    "type/resultset/ResultSet.js": {
+      "path": "type/resultset/ResultSet.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createResultSet"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createResultSet",
       "isFactory": true
     },
     "type/string.js": {
@@ -17744,6 +20507,154 @@
       "factoryName": "createUnitFunction",
       "isFactory": true
     },
+    "type/unit/physicalConstants.js": {
+      "path": "type/unit/physicalConstants.js",
+      "imports": [
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createSpeedOfLight",
+        "createGravitationConstant",
+        "createPlanckConstant",
+        "createReducedPlanckConstant",
+        "createMagneticConstant",
+        "createElectricConstant",
+        "createVacuumImpedance",
+        "createCoulomb",
+        "createCoulombConstant",
+        "createElementaryCharge",
+        "createBohrMagneton",
+        "createConductanceQuantum",
+        "createInverseConductanceQuantum",
+        "createMagneticFluxQuantum",
+        "createNuclearMagneton",
+        "createKlitzing",
+        "createJosephson",
+        "createBohrRadius",
+        "createClassicalElectronRadius",
+        "createElectronMass",
+        "createFermiCoupling",
+        "createFineStructure",
+        "createHartreeEnergy",
+        "createProtonMass",
+        "createDeuteronMass",
+        "createNeutronMass",
+        "createQuantumOfCirculation",
+        "createRydberg",
+        "createThomsonCrossSection",
+        "createWeakMixingAngle",
+        "createEfimovFactor",
+        "createAtomicMass",
+        "createAvogadro",
+        "createBoltzmann",
+        "createFaraday",
+        "createFirstRadiation",
+        "createLoschmidt",
+        "createGasConstant",
+        "createMolarPlanckConstant",
+        "createMolarVolume",
+        "createSackurTetrode",
+        "createSecondRadiation",
+        "createStefanBoltzmann",
+        "createWienDisplacement",
+        "createMolarMass",
+        "createMolarMassC12",
+        "createGravity",
+        "createPlanckLength",
+        "createPlanckMass",
+        "createPlanckTime",
+        "createPlanckCharge",
+        "createPlanckTemperature"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "type/unit/Unit.js": {
+      "path": "type/unit/Unit.js",
+      "imports": [
+        {
+          "source": "../../utils/is.js",
+          "specifiers": [
+            {
+              "imported": "isComplex",
+              "local": "isComplex"
+            },
+            {
+              "imported": "isUnit",
+              "local": "isUnit"
+            },
+            {
+              "imported": "typeOf",
+              "local": "typeOf"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/factory.js",
+          "specifiers": [
+            {
+              "imported": "factory",
+              "local": "factory"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/function.js",
+          "specifiers": [
+            {
+              "imported": "memoize",
+              "local": "memoize"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/string.js",
+          "specifiers": [
+            {
+              "imported": "endsWith",
+              "local": "endsWith"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/object.js",
+          "specifiers": [
+            {
+              "imported": "clone",
+              "local": "clone"
+            },
+            {
+              "imported": "hasOwnProperty",
+              "local": "hasOwnProperty"
+            }
+          ]
+        },
+        {
+          "source": "../../utils/bignumber/constants.js",
+          "specifiers": [
+            {
+              "imported": "createBigNumberPi",
+              "local": "createPi"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createUnitClass"
+      ],
+      "factoryDependencies": [],
+      "factoryName": "createUnitClass",
+      "isFactory": true
+    },
     "utils/array.js": {
       "path": "utils/array.js",
       "imports": [
@@ -17851,6 +20762,226 @@
       "factoryName": null,
       "isFactory": false
     },
+    "utils/bigint.js": {
+      "path": "utils/bigint.js",
+      "imports": [],
+      "exports": [
+        "promoteLogarithm"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/bignumber/bitwise.js": {
+      "path": "utils/bignumber/bitwise.js",
+      "imports": [],
+      "exports": [
+        "bitAndBigNumber",
+        "bitNotBigNumber",
+        "bitOrBigNumber",
+        "bitwise",
+        "bitXor",
+        "leftShiftBigNumber",
+        "rightArithShiftBigNumber"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/bignumber/constants.js": {
+      "path": "utils/bignumber/constants.js",
+      "imports": [
+        {
+          "source": "../function.js",
+          "specifiers": [
+            {
+              "imported": "memoize",
+              "local": "memoize"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createBigNumberE",
+        "createBigNumberPhi",
+        "createBigNumberPi",
+        "createBigNumberTau"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/bignumber/formatter.js": {
+      "path": "utils/bignumber/formatter.js",
+      "imports": [
+        {
+          "source": "../is.js",
+          "specifiers": [
+            {
+              "imported": "isBigNumber",
+              "local": "isBigNumber"
+            },
+            {
+              "imported": "isNumber",
+              "local": "isNumber"
+            }
+          ]
+        },
+        {
+          "source": "../number.js",
+          "specifiers": [
+            {
+              "imported": "isInteger",
+              "local": "isInteger"
+            },
+            {
+              "imported": "normalizeFormatOptions",
+              "local": "normalizeFormatOptions"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "format",
+        "toEngineering",
+        "toExponential",
+        "toFixed"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/bignumber/nearlyEqual.js": {
+      "path": "utils/bignumber/nearlyEqual.js",
+      "imports": [],
+      "exports": [
+        "nearlyEqual"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/collection.js": {
+      "path": "utils/collection.js",
+      "imports": [
+        {
+          "source": "./is.js",
+          "specifiers": [
+            {
+              "imported": "isCollection",
+              "local": "isCollection"
+            },
+            {
+              "imported": "isMatrix",
+              "local": "isMatrix"
+            }
+          ]
+        },
+        {
+          "source": "../error/IndexError.js",
+          "specifiers": [
+            {
+              "imported": "IndexError",
+              "local": "IndexError"
+            }
+          ]
+        },
+        {
+          "source": "./array.js",
+          "specifiers": [
+            {
+              "imported": "arraySize",
+              "local": "arraySize"
+            },
+            {
+              "imported": "deepMap",
+              "local": "arrayDeepMap"
+            },
+            {
+              "imported": "deepForEach",
+              "local": "arrayDeepForEach"
+            }
+          ]
+        },
+        {
+          "source": "./switch.js",
+          "specifiers": [
+            {
+              "imported": "_switch",
+              "local": "_switch"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "containsCollections",
+        "deepForEach",
+        "deepMap",
+        "reduce",
+        "scatter"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/complex.js": {
+      "path": "utils/complex.js",
+      "imports": [
+        {
+          "source": "./number.js",
+          "specifiers": [
+            {
+              "imported": "nearlyEqual",
+              "local": "nearlyEqual"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "complexEquals"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/customs.js": {
+      "path": "utils/customs.js",
+      "imports": [
+        {
+          "source": "./object.js",
+          "specifiers": [
+            {
+              "imported": "hasOwnProperty",
+              "local": "hasOwnProperty"
+            }
+          ]
+        }
+      ],
+      "exports": [],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/emitter.js": {
+      "path": "utils/emitter.js",
+      "imports": [
+        {
+          "source": "tiny-emitter",
+          "specifiers": [
+            {
+              "imported": "Emitter",
+              "local": "Emitter"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "mixin"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
     "utils/factory.js": {
       "path": "utils/factory.js",
       "imports": [
@@ -17872,6 +21003,27 @@
         "assertDependencies",
         "isOptionalDependency",
         "stripOptionalNotation"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/function.js": {
+      "path": "utils/function.js",
+      "imports": [
+        {
+          "source": "./lruQueue.js",
+          "specifiers": [
+            {
+              "imported": "lruQueue",
+              "local": "lruQueue"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "memoize",
+        "memoizeCompare"
       ],
       "factoryDependencies": [],
       "factoryName": null,
@@ -17936,6 +21088,118 @@
         "isSymbolNode",
         "isChain",
         "typeOf"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/latex.js": {
+      "path": "utils/latex.js",
+      "imports": [
+        {
+          "source": "escape-latex",
+          "specifiers": [
+            {
+              "imported": "escapeLatexLib",
+              "local": "escapeLatexLib"
+            }
+          ]
+        },
+        {
+          "source": "./object.js",
+          "specifiers": [
+            {
+              "imported": "hasOwnProperty",
+              "local": "hasOwnProperty"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "latexSymbols",
+        "latexOperators",
+        "latexFunctions",
+        "defaultTemplate",
+        "escapeLatex",
+        "toSymbol"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/log.js": {
+      "path": "utils/log.js",
+      "imports": [],
+      "exports": [
+        "warnOnce"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/lruQueue.js": {
+      "path": "utils/lruQueue.js",
+      "imports": [],
+      "exports": [
+        "lruQueue"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/map.js": {
+      "path": "utils/map.js",
+      "imports": [
+        {
+          "source": "./customs.js",
+          "specifiers": [
+            {
+              "imported": "getSafeProperty",
+              "local": "getSafeProperty"
+            },
+            {
+              "imported": "isSafeProperty",
+              "local": "isSafeProperty"
+            },
+            {
+              "imported": "setSafeProperty",
+              "local": "setSafeProperty"
+            }
+          ]
+        },
+        {
+          "source": "./is.js",
+          "specifiers": [
+            {
+              "imported": "isMap",
+              "local": "isMap"
+            },
+            {
+              "imported": "isObject",
+              "local": "isObject"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createEmptyMap",
+        "createMap",
+        "toObject",
+        "assign"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/noop.js": {
+      "path": "utils/noop.js",
+      "imports": [],
+      "exports": [
+        "noBignumber",
+        "noFraction",
+        "noMatrix",
+        "noIndex",
+        "noSubset"
       ],
       "factoryDependencies": [],
       "factoryName": null,
@@ -18031,6 +21295,141 @@
       "factoryName": null,
       "isFactory": false
     },
+    "utils/optimizeCallback.js": {
+      "path": "utils/optimizeCallback.js",
+      "imports": [
+        {
+          "source": "@danielsimonjr/typed-function",
+          "specifiers": [
+            {
+              "imported": "typed",
+              "local": "typed"
+            }
+          ]
+        },
+        {
+          "source": "./array.js",
+          "specifiers": [
+            {
+              "imported": "get",
+              "local": "get"
+            },
+            {
+              "imported": "arraySize",
+              "local": "arraySize"
+            }
+          ]
+        },
+        {
+          "source": "./is.js",
+          "specifiers": [
+            {
+              "imported": "typeOf",
+              "local": "_typeOf"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "optimizeCallback"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/print.js": {
+      "path": "utils/print.js",
+      "imports": [],
+      "exports": [
+        "printTemplate"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/product.js": {
+      "path": "utils/product.js",
+      "imports": [],
+      "exports": [
+        "product"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/scope.js": {
+      "path": "utils/scope.js",
+      "imports": [
+        {
+          "source": "./map.js",
+          "specifiers": [
+            {
+              "imported": "ObjectWrappingMap",
+              "local": "ObjectWrappingMap"
+            },
+            {
+              "imported": "PartitionedMap",
+              "local": "PartitionedMap"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "createSubScope"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "utils/snapshot.js": {
+      "path": "utils/snapshot.js",
+      "imports": [
+        {
+          "source": "assert",
+          "specifiers": [
+            {
+              "imported": "assert",
+              "local": "assert"
+            }
+          ]
+        },
+        {
+          "source": "./is.js",
+          "specifiers": [
+            {
+              "imported": "allIsFunctions",
+              "local": "allIsFunctions"
+            }
+          ]
+        },
+        {
+          "source": "../core/create.js",
+          "specifiers": [
+            {
+              "imported": "create",
+              "local": "create"
+            }
+          ]
+        },
+        {
+          "source": "./string.js",
+          "specifiers": [
+            {
+              "imported": "endsWith",
+              "local": "endsWith"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        "validateTypeOf",
+        "validateBundle",
+        "createSnapshotFromFactories"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
     "utils/string.js": {
       "path": "utils/string.js",
       "imports": [
@@ -18080,14 +21479,51 @@
       "factoryDependencies": [],
       "factoryName": null,
       "isFactory": false
+    },
+    "utils/switch.js": {
+      "path": "utils/switch.js",
+      "imports": [],
+      "exports": [
+        "_switch"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
+    },
+    "version.js": {
+      "path": "version.js",
+      "imports": [],
+      "exports": [
+        "version"
+      ],
+      "factoryDependencies": [],
+      "factoryName": null,
+      "isFactory": false
     }
   },
   "folders": {
-    "core": [],
-    "core/function": [
+    ".": [
       "core",
+      "plain/number",
+      "utils",
+      "utils/bignumber"
+    ],
+    "core": [
+      "core/function",
+      "error",
       "utils"
     ],
+    "core/function": [
+      "core",
+      "error",
+      "utils"
+    ],
+    "entry": [
+      ".",
+      "core",
+      "core/function"
+    ],
+    "error": [],
     "expression/embeddedDocs/constants": [],
     "expression/embeddedDocs/construction": [],
     "expression/embeddedDocs/core": [],
@@ -18141,7 +21577,17 @@
     "expression": [
       "utils"
     ],
+    "expression/node": [
+      "expression",
+      "expression/node/utils",
+      "utils"
+    ],
+    "expression/node/utils": [
+      "expression/transform/utils",
+      "utils"
+    ],
     "expression/transform": [
+      "expression/transform/utils",
       "function/bitwise",
       "function/logical",
       "function/matrix",
@@ -18149,11 +21595,16 @@
       "function/string",
       "utils"
     ],
+    "expression/transform/utils": [
+      "error",
+      "utils"
+    ],
     "function/algebra/decomposition": [
       "function/algebra/sparse",
       "utils"
     ],
     "function/algebra": [
+      "expression",
       "function/algebra/simplify",
       "utils"
     ],
@@ -18172,14 +21623,17 @@
       "utils"
     ],
     "function/arithmetic": [
+      "error",
       "plain/number",
       "type/matrix/utils",
-      "utils"
+      "utils",
+      "utils/bignumber"
     ],
     "function/bitwise": [
       "plain/number",
       "type/matrix/utils",
-      "utils"
+      "utils",
+      "utils/bignumber"
     ],
     "function/combinatorics": [
       "utils"
@@ -18191,11 +21645,13 @@
       "utils"
     ],
     "function/logical": [
+      "error",
       "plain/number",
       "type/matrix/utils",
       "utils"
     ],
     "function/matrix": [
+      "error",
       "function/matrix/eigs",
       "utils"
     ],
@@ -18206,12 +21662,15 @@
       "utils"
     ],
     "function/probability": [
+      "function/probability/util",
       "plain/number",
       "utils"
     ],
+    "function/probability/util": [],
     "function/relational": [
       "type/matrix/utils",
-      "utils"
+      "utils",
+      "utils/bignumber"
     ],
     "function/set": [
       "utils"
@@ -18223,6 +21682,11 @@
       "utils"
     ],
     "function/statistics": [
+      "error",
+      "function/statistics/utils",
+      "utils"
+    ],
+    "function/statistics/utils": [
       "utils"
     ],
     "function/string": [
@@ -18239,9 +21703,17 @@
     ],
     "function/utils": [
       "plain/number",
+      "utils",
+      "utils/bignumber"
+    ],
+    "json": [
       "utils"
     ],
+    "plain/bignumber": [],
     "plain/number": [
+      "utils"
+    ],
+    "type": [
       "utils"
     ],
     "type/bignumber": [
@@ -18250,10 +21722,10 @@
     "type/bignumber/function": [
       "utils"
     ],
-    "type": [
+    "type/chain": [
       "utils"
     ],
-    "type/chain": [
+    "type/chain/function": [
       "utils"
     ],
     "type/complex": [
@@ -18269,20 +21741,40 @@
       "utils"
     ],
     "type/matrix": [
+      "error",
       "utils"
     ],
     "type/matrix/function": [
       "utils"
     ],
     "type/matrix/utils": [
+      "error",
+      "utils"
+    ],
+    "type/resultset": [
       "utils"
     ],
     "type/unit/function": [
       "utils"
     ],
-    "utils": []
+    "type/unit": [
+      "utils",
+      "utils/bignumber"
+    ],
+    "utils": [
+      "core",
+      "error",
+      "utils/bignumber"
+    ],
+    "utils/bignumber": [
+      "utils"
+    ]
   },
   "functions": {
+    "createVersion": {
+      "file": "constants.js",
+      "dependencies": []
+    },
     "createTyped": {
       "file": "core/function/typed.js",
       "dependencies": []
@@ -18301,6 +21793,74 @@
     },
     "createParser": {
       "file": "expression/function/parser.js",
+      "dependencies": []
+    },
+    "createHelpClass": {
+      "file": "expression/Help.js",
+      "dependencies": []
+    },
+    "createAccessorNode": {
+      "file": "expression/node/AccessorNode.js",
+      "dependencies": []
+    },
+    "createArrayNode": {
+      "file": "expression/node/ArrayNode.js",
+      "dependencies": []
+    },
+    "createAssignmentNode": {
+      "file": "expression/node/AssignmentNode.js",
+      "dependencies": []
+    },
+    "createBlockNode": {
+      "file": "expression/node/BlockNode.js",
+      "dependencies": []
+    },
+    "createConditionalNode": {
+      "file": "expression/node/ConditionalNode.js",
+      "dependencies": []
+    },
+    "createConstantNode": {
+      "file": "expression/node/ConstantNode.js",
+      "dependencies": []
+    },
+    "createFunctionAssignmentNode": {
+      "file": "expression/node/FunctionAssignmentNode.js",
+      "dependencies": []
+    },
+    "createFunctionNode": {
+      "file": "expression/node/FunctionNode.js",
+      "dependencies": []
+    },
+    "createIndexNode": {
+      "file": "expression/node/IndexNode.js",
+      "dependencies": []
+    },
+    "createNode": {
+      "file": "expression/node/Node.js",
+      "dependencies": []
+    },
+    "createObjectNode": {
+      "file": "expression/node/ObjectNode.js",
+      "dependencies": []
+    },
+    "createOperatorNode": {
+      "file": "expression/node/OperatorNode.js",
+      "dependencies": []
+    },
+    "createParenthesisNode": {
+      "file": "expression/node/ParenthesisNode.js",
+      "dependencies": []
+    },
+    "createRangeNode": {
+      "file": "expression/node/RangeNode.js",
+      "dependencies": []
+    },
+    "createRelationalNode": {
+      "file": "expression/node/RelationalNode.js",
+      "dependencies": []
+    },
+    "createSymbolNode": {
+      "file": "expression/node/SymbolNode.js",
       "dependencies": []
     },
     "createParse": {
@@ -18400,11 +21960,15 @@
       "dependencies": []
     },
     "createSubsetTransform": {
-      "file": "expression/transform/subset.transform.js",
+      "file": "factoriesNumber.js",
       "dependencies": []
     },
     "createSumTransform": {
       "file": "expression/transform/sum.transform.js",
+      "dependencies": []
+    },
+    "createTransformCallback": {
+      "file": "expression/transform/utils/transformCallback.js",
       "dependencies": []
     },
     "createVarianceTransform": {
@@ -18707,6 +22271,10 @@
       "file": "function/bitwise/rightLogShift.js",
       "dependencies": []
     },
+    "createUseMatrixForArrayScalar": {
+      "file": "function/bitwise/useMatrixForArrayScalar.js",
+      "dependencies": []
+    },
     "createBellNumbers": {
       "file": "function/combinatorics/bellNumbers.js",
       "dependencies": []
@@ -18755,6 +22323,10 @@
       "file": "function/logical/not.js",
       "dependencies": []
     },
+    "createNullish": {
+      "file": "function/logical/nullish.js",
+      "dependencies": []
+    },
     "createOr": {
       "file": "function/logical/or.js",
       "dependencies": []
@@ -18789,6 +22361,10 @@
     },
     "createDiag": {
       "file": "function/matrix/diag.js",
+      "dependencies": []
+    },
+    "createDiff": {
+      "file": "function/matrix/diff.js",
       "dependencies": []
     },
     "createDot": {
@@ -18843,8 +22419,16 @@
       "file": "function/matrix/map.js",
       "dependencies": []
     },
+    "createMapSlices": {
+      "file": "function/matrix/mapSlices.js",
+      "dependencies": []
+    },
     "createMatrixFromColumns": {
       "file": "function/matrix/matrixFromColumns.js",
+      "dependencies": []
+    },
+    "createMatrixFromFunction": {
+      "file": "function/matrix/matrixFromFunction.js",
       "dependencies": []
     },
     "createMatrixFromRows": {
@@ -18875,12 +22459,24 @@
       "file": "function/matrix/resize.js",
       "dependencies": []
     },
+    "createRotate": {
+      "file": "function/matrix/rotate.js",
+      "dependencies": []
+    },
+    "createRotationMatrix": {
+      "file": "function/matrix/rotationMatrix.js",
+      "dependencies": []
+    },
     "createRow": {
       "file": "function/matrix/row.js",
       "dependencies": []
     },
     "createSize": {
       "file": "function/matrix/size.js",
+      "dependencies": []
+    },
+    "createSort": {
+      "file": "function/matrix/sort.js",
       "dependencies": []
     },
     "createSqrtm": {
@@ -18911,6 +22507,10 @@
       "file": "function/numeric/solveODE.js",
       "dependencies": []
     },
+    "createBernoulli": {
+      "file": "function/probability/bernoulli.js",
+      "dependencies": []
+    },
     "createCombinations": {
       "file": "function/probability/combinations.js",
       "dependencies": []
@@ -18929,6 +22529,10 @@
     },
     "createKldivergence": {
       "file": "function/probability/kldivergence.js",
+      "dependencies": []
+    },
+    "createLgamma": {
+      "file": "function/probability/lgamma.js",
       "dependencies": []
     },
     "createMultinomial": {
@@ -18963,12 +22567,20 @@
       "file": "function/relational/compareText.js",
       "dependencies": []
     },
+    "createCompareUnits": {
+      "file": "function/relational/compareUnits.js",
+      "dependencies": []
+    },
     "createDeepEqual": {
       "file": "function/relational/deepEqual.js",
       "dependencies": []
     },
     "createEqualNumber": {
       "file": "function/relational/equal.js",
+      "dependencies": []
+    },
+    "createEqualScalarNumber": {
+      "file": "function/relational/equalScalar.js",
       "dependencies": []
     },
     "createEqualText": {
@@ -19049,6 +22661,10 @@
     },
     "createZeta": {
       "file": "function/special/zeta.js",
+      "dependencies": []
+    },
+    "createCorr": {
+      "file": "function/statistics/corr.js",
       "dependencies": []
     },
     "createCumSum": {
@@ -19219,8 +22835,16 @@
       "file": "function/trigonometry/tanh.js",
       "dependencies": []
     },
+    "createTrigUnit": {
+      "file": "function/trigonometry/trigUnit.js",
+      "dependencies": []
+    },
     "createTo": {
       "file": "function/unit/to.js",
+      "dependencies": []
+    },
+    "createToBest": {
+      "file": "function/unit/toBest.js",
       "dependencies": []
     },
     "createClone": {
@@ -19229,6 +22853,14 @@
     },
     "createHasNumericValue": {
       "file": "function/utils/hasNumericValue.js",
+      "dependencies": []
+    },
+    "createIsBounded": {
+      "file": "function/utils/isBounded.js",
+      "dependencies": []
+    },
+    "createIsFinite": {
+      "file": "function/utils/isFinite.js",
       "dependencies": []
     },
     "createIsInteger": {
@@ -19241,6 +22873,10 @@
     },
     "createIsNegative": {
       "file": "function/utils/isNegative.js",
+      "dependencies": []
+    },
+    "createIsNumeric": {
+      "file": "function/utils/isNumeric.js",
       "dependencies": []
     },
     "createIsPositive": {
@@ -19263,6 +22899,18 @@
       "file": "function/utils/typeOf.js",
       "dependencies": []
     },
+    "createReplacer": {
+      "file": "json/replacer.js",
+      "dependencies": []
+    },
+    "createReviver": {
+      "file": "json/reviver.js",
+      "dependencies": []
+    },
+    "createBigint": {
+      "file": "type/bigint.js",
+      "dependencies": []
+    },
     "createBigNumberClass": {
       "file": "type/bignumber/BigNumber.js",
       "dependencies": []
@@ -19277,6 +22925,10 @@
     },
     "createChainClass": {
       "file": "type/chain/Chain.js",
+      "dependencies": []
+    },
+    "createChain": {
+      "file": "type/chain/function/chain.js",
       "dependencies": []
     },
     "createComplexClass": {
@@ -19403,6 +23055,10 @@
       "file": "type/number.js",
       "dependencies": []
     },
+    "createResultSet": {
+      "file": "type/resultset/ResultSet.js",
+      "dependencies": []
+    },
     "createString": {
       "file": "type/string.js",
       "dependencies": []
@@ -19418,37 +23074,49 @@
     "createUnitFunction": {
       "file": "type/unit/function/unit.js",
       "dependencies": []
+    },
+    "createUnitClass": {
+      "file": "type/unit/Unit.js",
+      "dependencies": []
     }
   },
   "stats": {
-    "totalFiles": 578,
-    "totalFunctions": 284,
-    "totalDependencies": 1201,
-    "avgDependenciesPerFile": "2.08",
+    "totalFiles": 673,
+    "totalFunctions": 328,
+    "totalDependencies": 1385,
+    "avgDependenciesPerFile": "2.06",
     "mostDependedOn": [
       {
         "file": "utils/factory.js",
-        "count": 283
+        "count": 331
       },
       {
         "file": "utils/is.js",
-        "count": 73
-      },
-      {
-        "file": "plain/number/index.js",
-        "count": 51
-      },
-      {
-        "file": "utils/number.js",
-        "count": 48
+        "count": 105
       },
       {
         "file": "utils/array.js",
-        "count": 48
+        "count": 58
+      },
+      {
+        "file": "utils/number.js",
+        "count": 55
+      },
+      {
+        "file": "plain/number/index.js",
+        "count": 54
+      },
+      {
+        "file": "utils/collection.js",
+        "count": 47
       },
       {
         "file": "utils/object.js",
-        "count": 30
+        "count": 40
+      },
+      {
+        "file": "utils/string.js",
+        "count": 28
       },
       {
         "file": "type/matrix/utils/matrixAlgorithmSuite.js",
@@ -19459,8 +23127,8 @@
         "count": 19
       },
       {
-        "file": "utils/string.js",
-        "count": 17
+        "file": "error/DimensionError.js",
+        "count": 18
       },
       {
         "file": "type/matrix/utils/matAlgo11xS0s.js",
@@ -19468,10 +23136,22 @@
       },
       {
         "file": "type/matrix/utils/matAlgo03xDSf.js",
+        "count": 16
+      },
+      {
+        "file": "expression/transform/utils/errorTransform.js",
         "count": 15
       },
       {
+        "file": "utils/customs.js",
+        "count": 13
+      },
+      {
         "file": "type/matrix/utils/matAlgo14xDs.js",
+        "count": 12
+      },
+      {
+        "file": "utils/bignumber/nearlyEqual.js",
         "count": 11
       },
       {
@@ -19483,28 +23163,8 @@
         "count": 10
       },
       {
-        "file": "type/matrix/utils/matAlgo01xDSid.js",
-        "count": 8
-      },
-      {
-        "file": "type/matrix/utils/matAlgo10xSids.js",
-        "count": 7
-      },
-      {
-        "file": "function/algebra/solver/utils/solveValidation.js",
-        "count": 5
-      },
-      {
-        "file": "type/matrix/utils/matAlgo06xS0S0.js",
-        "count": 4
-      },
-      {
-        "file": "type/matrix/utils/matAlgo05xSfSf.js",
-        "count": 4
-      },
-      {
-        "file": "function/algebra/simplify/util.js",
-        "count": 3
+        "file": "function/statistics/utils/improveErrorMessage.js",
+        "count": 9
       }
     ],
     "circularDependencies": []

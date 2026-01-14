@@ -1,7 +1,7 @@
 import assert from 'assert'
-import * as mainNumber from '../../../src/entry/mainNumber.js'
-import { createSnapshotFromFactories, validateBundle, validateTypeOf } from '../../../src/utils/snapshot.js'
-import * as factoriesNumber from '../../../src/factoriesNumber.js'
+import * as mainNumber from '../../../src/entry/mainNumber.ts'
+import { createSnapshotFromFactories, validateBundle, validateTypeOf } from '../../../src/utils/snapshot.ts'
+import * as factoriesNumber from '../../../src/factoriesNumber.ts'
 const { create, all, add, isObject, isNumber, pi, sqrt, evaluate, chain, Range, reviver, derivative, simplify, addDependencies } = mainNumber
 
 const {

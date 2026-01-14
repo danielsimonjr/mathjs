@@ -4,7 +4,7 @@ import type {
   MathArray,
   Matrix,
   MathNumericType
-} from '../../../types/index.js'
+} from '../../../types/index.ts'
 
 const name = 'setMultiplicity'
 const dependencies = ['typed', 'size', 'subset', 'compareNatural', 'Index']

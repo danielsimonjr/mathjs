@@ -1,7 +1,7 @@
 // test Node
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const Node = math.Node
 
 describe('Node', function () {

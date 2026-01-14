@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    // Include TypeScript test files from test-wasm
-    include: ['test-wasm/unit-tests/**/*.test.ts'],
+    // Include TypeScript test files from test/wasm
+    include: ['test/wasm/unit-tests/**/*.test.ts'],
     // Exclude node_modules
     exclude: ['node_modules'],
     // Use globals for describe, it, expect (Mocha-style)

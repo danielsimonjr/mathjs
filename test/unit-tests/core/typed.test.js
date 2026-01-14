@@ -1,7 +1,7 @@
 import assert from 'assert'
-import math from '../../../src/defaultInstance.js'
+import math from '../../../src/defaultInstance.ts'
 import Decimal from 'decimal.js'
-import { ObjectWrappingMap, PartitionedMap } from '../../../src/utils/map.js'
+import { ObjectWrappingMap, PartitionedMap } from '../../../src/utils/map.ts'
 const math2 = math.create()
 
 describe('typed', function () {

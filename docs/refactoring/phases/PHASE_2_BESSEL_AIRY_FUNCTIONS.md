@@ -1177,7 +1177,7 @@ Target functions for WASM implementation:
 
 **File Structure:**
 ```
-src-wasm/
+src/wasm/
 ├── special/
 │   ├── bessel-j.ts      # J_0 and J_1
 │   ├── bessel-y.ts      # Y_0 and Y_1
@@ -1189,7 +1189,7 @@ src-wasm/
 
 ### Example: WASM Implementation of J_0
 
-**File: `src-wasm/special/bessel-j.ts`**
+**File: `src/wasm/special/bessel-j.ts`**
 ```typescript
 // AssemblyScript implementation of Bessel J_0
 

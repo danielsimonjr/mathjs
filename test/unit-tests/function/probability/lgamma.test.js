@@ -2,7 +2,7 @@
 
 import assert from 'assert'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const lgamma = math.lgamma
 
 // https://www.scratchcode.io/how-to-detect-ie-browser-in-javascript/

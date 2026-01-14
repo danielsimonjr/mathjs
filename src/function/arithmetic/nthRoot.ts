@@ -151,12 +151,12 @@ export const createNthRoot = /* #__PURE__ */ factory(
             }
         )
       },
-      ...(matrixAlgorithmSuite({
+      matrixAlgorithmSuite({
         scalar: 'number | BigNumber',
         SD: matAlgo02xDS0,
         Ss: matAlgo11xS0s,
-        sS: false as any
-      }) as any)
+        sS: false
+      })
     )
 
     /**

@@ -633,7 +633,7 @@ Create `tools/analyze-deps.js` to:
 
 #### Tier 1: Full WASM (Highest Priority)
 
-**Target**: `src-wasm/` (AssemblyScript)
+**Target**: `src/wasm/` (AssemblyScript)
 
 Already implemented:
 - ✅ Matrix operations (multiply, add, transpose)
@@ -708,7 +708,7 @@ export function hybridOperation(data: Matrix): Matrix {
 ```json
 {
   "scripts": {
-    "build:wasm": "asc src-wasm/index.ts --config asconfig.json --target release"
+    "build:wasm": "asc src/wasm/index.ts --config asconfig.json --target release"
   }
 }
 ```
@@ -719,11 +719,11 @@ export function hybridOperation(data: Matrix): Matrix {
 ```json
 {
   "scripts": {
-    "build:wasm:core": "asc src-wasm/core/*.ts --target release",
-    "build:wasm:matrix": "asc src-wasm/matrix/*.ts --target release",
-    "build:wasm:algebra": "asc src-wasm/algebra/*.ts --target release",
-    "build:wasm:signal": "asc src-wasm/signal/*.ts --target release",
-    "build:wasm:plain": "asc src-wasm/plain/*.ts --target release",
+    "build:wasm:core": "asc src/wasm/core/*.ts --target release",
+    "build:wasm:matrix": "asc src/wasm/matrix/*.ts --target release",
+    "build:wasm:algebra": "asc src/wasm/algebra/*.ts --target release",
+    "build:wasm:signal": "asc src/wasm/signal/*.ts --target release",
+    "build:wasm:plain": "asc src/wasm/plain/*.ts --target release",
     "build:wasm:all": "npm-run-all build:wasm:*"
   }
 }
@@ -747,7 +747,7 @@ gulp.task('wasm', compileWasmModular)
 #### WASM Module Structure
 
 ```
-src-wasm/
+src/wasm/
 ├── core/           # Core numeric operations
 │   ├── arithmetic.ts
 │   ├── trigonometry.ts
@@ -775,7 +775,7 @@ src-wasm/
 ```mermaid
 graph TD
     A[TypeScript Source] --> B{WASM Candidate?}
-    B -->|Yes| C[Create WASM Version in src-wasm/]
+    B -->|Yes| C[Create WASM Version in src/wasm/]
     B -->|No| D[TypeScript Only]
     C --> E[Compile with AssemblyScript]
     E --> F[Generate .wasm file]
@@ -817,7 +817,7 @@ Source Files
     │   ↓
     │   lib/cjs/, lib/esm/
     │
-    └── src-wasm/*.ts
+    └── src/wasm/*.ts
         ↓
         AssemblyScript Compile
         ↓
@@ -845,7 +845,7 @@ Source Files
   ],
   "exclude": [
     "src/**/*.js",
-    "src-wasm/**/*",
+    "src/wasm/**/*",
     "test/**/*"
   ]
 }
@@ -896,7 +896,7 @@ gulp.task('build', gulp.series(
     "build:js": "gulp compile",
     "build:clean": "gulp clean",
     "watch:ts": "tsc -p tsconfig.build.json --watch",
-    "watch:wasm": "nodemon --watch src-wasm --exec 'npm run build:wasm'",
+    "watch:wasm": "nodemon --watch src/wasm --exec 'npm run build:wasm'",
     "watch:all": "npm-run-all --parallel watch:ts watch:wasm watch"
   },
   "exports": {

@@ -7,8 +7,8 @@ import {
   isPlainObject,
   isSafeMethod,
   isSafeProperty
-} from '../../../src/utils/customs.js'
-import math from '../../../src/defaultInstance.js'
+} from '../../../src/utils/customs.ts'
+import math from '../../../src/defaultInstance.ts'
 
 describe('customs', function () {
   describe('isSafeMethod', function () {

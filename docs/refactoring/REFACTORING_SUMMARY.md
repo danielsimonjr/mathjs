@@ -25,7 +25,7 @@ This refactoring transforms mathjs into a high-performance computing library by 
 
 ### 2. WASM Implementation ✅
 
-**WASM Source Code** (`src-wasm/`)
+**WASM Source Code** (`src/wasm/`)
 - `matrix/multiply.ts` - High-performance matrix operations with SIMD
 - `algebra/decomposition.ts` - Linear algebra (LU, QR, Cholesky)
 - `signal/fft.ts` - Fast Fourier Transform with optimizations
@@ -104,7 +104,7 @@ mathjs/
 │   │   └── MatrixWasmBridge.ts
 │   └── [existing JS files]
 │
-├── src-wasm/                     # NEW: WASM source (AssemblyScript)
+├── src/wasm/                     # NEW: WASM source (AssemblyScript)
 │   ├── matrix/
 │   │   └── multiply.ts
 │   ├── algebra/

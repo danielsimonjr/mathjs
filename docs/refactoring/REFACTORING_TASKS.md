@@ -105,7 +105,7 @@ This document provides a **granular, file-by-file task list** for converting the
 | 12 | `arithmetic/multiplyScalar.js` | 🟢 Low | ⚡ High | Small | typed |
 | 13 | `arithmetic/divideScalar.js` | 🟢 Low | ⚡ High | Small | typed |
 
-**WASM Opportunity**: Create `src-wasm/arithmetic/basic.ts` with all basic operations
+**WASM Opportunity**: Create `src/wasm/arithmetic/basic.ts` with all basic operations
 
 #### 2.1.2: Logarithmic & Exponential (8 files)
 
@@ -120,7 +120,7 @@ This document provides a **granular, file-by-file task list** for converting the
 | 20 | `arithmetic/nthRoot.js` | 🟡 Medium | ⚡ High | Medium | pow |
 | 21 | `arithmetic/nthRoots.js` | 🔴 High | ⚡ High | Large | Complex, nthRoot |
 
-**WASM Opportunity**: `src-wasm/arithmetic/logarithmic.ts`
+**WASM Opportunity**: `src/wasm/arithmetic/logarithmic.ts`
 
 #### 2.1.3: Advanced Arithmetic (6 files)
 
@@ -133,7 +133,7 @@ This document provides a **granular, file-by-file task list** for converting the
 | 26 | `arithmetic/hypot.js` | 🟡 Medium | ⚡ High | Medium | abs, sqrt |
 | 27 | `arithmetic/norm.js` | 🟡 Medium | ⚡ High | Medium | abs, sqrt |
 
-**WASM Opportunity**: `src-wasm/arithmetic/advanced.ts`
+**WASM Opportunity**: `src/wasm/arithmetic/advanced.ts`
 
 #### 2.1.4: Dot Operations (3 files)
 
@@ -169,7 +169,7 @@ This document provides a **granular, file-by-file task list** for converting the
 | 5 | `trigonometry/acosh.js` | 🟡 Medium | ⚡ High | Medium | log, sqrt |
 | 6 | `trigonometry/atanh.js` | 🟡 Medium | ⚡ High | Medium | log |
 
-**WASM Opportunity**: `src-wasm/trigonometry/hyperbolic.ts`
+**WASM Opportunity**: `src/wasm/trigonometry/hyperbolic.ts`
 
 #### 2.2.2: Reciprocal Functions (6 files)
 
@@ -199,7 +199,7 @@ This document provides a **granular, file-by-file task list** for converting the
 |---|------|------------|------|--------|--------------|
 | 19 | `trigonometry/trigUnit.js` | 🟢 Low | 🌙 Low | Small | config |
 
-**WASM Opportunity**: `src-wasm/trigonometry/complete.ts` (all trig functions)
+**WASM Opportunity**: `src/wasm/trigonometry/complete.ts` (all trig functions)
 
 ### Batch 2.3: Remaining Algebra (33 files)
 
@@ -225,7 +225,7 @@ This document provides a **granular, file-by-file task list** for converting the
 | 11 | `algebra/sparse/csEtree.js` | 🟡 Medium | 🔥 Very High | Medium | csLeaf |
 | 12 | `algebra/sparse/csCounts.js` | 🔴 High | 🔥 Very High | Large | csEtree, csPost |
 
-**WASM Opportunity**: `src-wasm/algebra/sparse/utilities.ts`
+**WASM Opportunity**: `src/wasm/algebra/sparse/utilities.ts`
 
 #### 2.3.2: Sparse Matrix Algorithms - Part 2 (12 files)
 
@@ -246,7 +246,7 @@ This document provides a **granular, file-by-file task list** for converting the
 | 23 | `algebra/sparse/lup.js` (*) | 🔴 High | ⛔ None | XLarge | Already converted |
 | 24 | `algebra/sparse/slu.js` (*) | 🔴 High | ⛔ None | XLarge | Already converted |
 
-**WASM Opportunity**: `src-wasm/algebra/sparse/algorithms.ts`
+**WASM Opportunity**: `src/wasm/algebra/sparse/algorithms.ts`
 
 #### 2.3.3: Algebra Functions (9 files)
 
@@ -353,7 +353,7 @@ This document provides a **granular, file-by-file task list** for converting the
 | 7 | `statistics/corr.js` | 🔴 High | ⚡ High | Large | mean, std, multiply |
 | 8 | `statistics/utils/improveErrorMessage.js` | 🟢 Low | ⛔ None | Small | error handling |
 
-**WASM Opportunity**: `src-wasm/statistics/aggregations.ts`
+**WASM Opportunity**: `src/wasm/statistics/aggregations.ts`
 
 ### Batch 2.6: Probability & Combinatorics (18 files)
 
@@ -369,7 +369,7 @@ This document provides a **granular, file-by-file task list** for converting the
 | 3 | `combinatorics/stirlingS2.js` | 🟡 Medium | 🔥 Very High | Medium | combinations |
 | 4 | `combinatorics/composition.js` | 🟡 Medium | 🔥 Very High | Medium | combinations |
 
-**WASM Opportunity**: `src-wasm/combinatorics/functions.ts`
+**WASM Opportunity**: `src/wasm/combinatorics/functions.ts`
 
 #### 2.6.2: Probability Distributions (10 files)
 
@@ -494,7 +494,7 @@ All files in `type/matrix/utils/matAlgo*.js`:
 | 14 | `matAlgo14xDs.js` | 🟡 Medium | ⚡ High | Medium | DenseMatrix |
 | 15 | `matrixAlgorithmSuite.js` | 🔴 High | ⛔ None | Large | All matAlgo files |
 
-**WASM Opportunity**: `src-wasm/matrix/algorithms.ts`
+**WASM Opportunity**: `src/wasm/matrix/algorithms.ts`
 
 ### Batch 3.4: Primitive & Other Types (7 files)
 
@@ -644,7 +644,7 @@ All files in `type/matrix/utils/matAlgo*.js`:
 | 12 | `bitwise/rightLogShift.js` | 🟡 Medium | ⚡ High | Medium | BigNumber |
 | 13 | `bitwise/useMatrixForArrayScalar.js` | 🟢 Low | ⛔ None | Small | Matrix |
 
-**WASM Opportunity**: `src-wasm/bitwise/operations.ts`
+**WASM Opportunity**: `src/wasm/bitwise/operations.ts`
 
 ### Batch 5.3: Set Operations (10 files)
 
@@ -720,7 +720,7 @@ All files in `type/matrix/utils/matAlgo*.js`:
 | 5 | `special/erf.js` | 🔴 High | 🔥 Very High | Large | exp, sqrt |
 | 6 | `special/zeta.js` | 🔴 High | ⚡ High | Large | gamma, pow |
 
-**WASM Opportunity**: `src-wasm/special/functions.ts`
+**WASM Opportunity**: `src/wasm/special/functions.ts`
 
 ### Batch 6.3: Numeric & Signal (4 files)
 
@@ -732,7 +732,7 @@ All files in `type/matrix/utils/matAlgo*.js`:
 |---|------|------------|------|--------|--------------|
 | 1 | `numeric/solveODE.js` | 🔴 High | 🔥 Very High | XLarge | Matrix, arithmetic |
 
-**WASM Opportunity**: `src-wasm/numeric/ode.ts` - Critical for WASM!
+**WASM Opportunity**: `src/wasm/numeric/ode.ts` - Critical for WASM!
 
 #### Signal Processing (2 files)
 
@@ -791,7 +791,7 @@ All files in `type/matrix/utils/matAlgo*.js`:
 | 12 | `plain/number/utils.js` | 🟡 Medium | 🔥 Very High | Medium | None |
 
 **WASM Implementation**:
-- Create `src-wasm/plain/` directory
+- Create `src/wasm/plain/` directory
 - Directly compile these to WASM
 - Pure numeric code, ideal for AssemblyScript
 - No dependencies on mathjs types
@@ -799,7 +799,7 @@ All files in `type/matrix/utils/matAlgo*.js`:
 
 **Strategy**:
 1. Convert to TypeScript first
-2. Create identical WASM versions in src-wasm/plain/
+2. Create identical WASM versions in src/wasm/plain/
 3. Use WasmBridge for automatic selection
 4. Benchmark: expect 5-10x improvement
 

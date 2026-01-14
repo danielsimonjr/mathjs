@@ -205,11 +205,11 @@ export const createRationalize = /* #__PURE__ */ factory(
       ) {
         // Separate numerator from denominator
         if (nVars === 1) {
-          // @ts-expect-error - TypeScript incorrectly reports polyToCanonical as not callable
           ;(expr as OperatorNode).args[0] = polyToCanonical(
             (expr as OperatorNode).args[0],
             coefficients
-          )(expr as OperatorNode).args[1] = polyToCanonical(
+          )
+          ;(expr as OperatorNode).args[1] = polyToCanonical(
             (expr as OperatorNode).args[1]
           )
         }

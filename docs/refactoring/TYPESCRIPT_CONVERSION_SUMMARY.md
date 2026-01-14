@@ -345,7 +345,7 @@ Types are designed for seamless WASM integration:
 - Compatible with Float64Array memory layout
 - Proper types for SharedArrayBuffer operations
 - Type-safe memory allocation/deallocation
-- Aligned with WASM function signatures in src-wasm/
+- Aligned with WASM function signatures in src/wasm/
 
 ### Parallel Computing
 

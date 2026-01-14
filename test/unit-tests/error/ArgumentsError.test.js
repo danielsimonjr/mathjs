@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { ArgumentsError } from '../../../src/error/ArgumentsError.js'
+import { ArgumentsError } from '../../../src/error/ArgumentsError.ts'
 
 describe('ArgumentsError', function () {
   it('should construct an ArgumentsError without max', function () {
@@ -27,6 +27,6 @@ describe('ArgumentsError', function () {
   it('should throw an error when operator new is missing', function () {
     assert.throws(function () {
       ArgumentsError()
-    }, SyntaxError)
+    }, /Constructor must be called with the new operator|cannot be invoked without 'new'/)
   })
 })

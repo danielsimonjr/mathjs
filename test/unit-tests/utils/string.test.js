@@ -2,8 +2,8 @@
 import assert from 'assert'
 
 import BigNumber from 'decimal.js'
-import math from '../../../src/defaultInstance.js'
-import { endsWith, escape, format } from '../../../src/utils/string.js'
+import math from '../../../src/defaultInstance.ts'
+import { endsWith, escape, format } from '../../../src/utils/string.ts'
 
 describe('string', function () {
   it('endsWith', function () {

@@ -1,7 +1,7 @@
 // test setMultiplicity
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('setMultiplicity', function () {
   it('should return the multiplicity on an element of a set', function () {

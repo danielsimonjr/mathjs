@@ -1,40 +1,31 @@
 import { arraySize } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
-import { noMatrix } from '../../utils/noop.ts'
 
 // Type definitions
 interface TypedFunction<T = any> {
   (...args: any[]): T
 }
 
-interface MatrixConstructor {
-  (data: any[], storage?: 'dense' | 'sparse', datatype?: string): Matrix
-}
-
 interface Matrix {
   size(): number[]
-  create(data: number[], datatype?: string): Matrix
-}
-
-interface Config {
-  matrix: 'Array' | 'Matrix'
 }
 
 interface Dependencies {
   typed: TypedFunction
-  config: Config
-  matrix?: MatrixConstructor
 }
 
 const name = 'size'
-const dependencies = ['typed', 'config', '?matrix']
+const dependencies = ['typed']
 
 export const createSize = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, matrix }: Dependencies) => {
+  ({ typed }: Dependencies) => {
     /**
-     * Calculate the size of a matrix or scalar.
+     * Calculate the size of a matrix or scalar. Always returns an Array containing numbers.
+     *
+     * Note that in mathjs v14 and older, function size could return a Matrix depending on
+     * the input type and configuration.
      *
      * Syntax:
      *
@@ -54,31 +45,17 @@ export const createSize = /* #__PURE__ */ factory(
      *     count, resize, squeeze, subset
      *
      * @param {boolean | number | Complex | Unit | string | Array | Matrix} x  A matrix
-     * @return {Array | Matrix} A vector with size of `x`.
+     * @return {Array} A vector with size of `x`.
      */
     return typed(name, {
-      Matrix: function (x: Matrix): Matrix {
-        return x.create(x.size(), 'number')
-      },
+      Matrix: (x: Matrix): number[] => x.size(),
 
       Array: arraySize,
 
-      string: function (x: string): number[] | Matrix {
-        return config.matrix === 'Array'
-          ? [x.length]
-          : matrix!([x.length], 'dense', 'number')
-      },
+      string: (x: string): number[] => [x.length],
 
-      'number | Complex | BigNumber | Unit | boolean | null': function (
-        _x: any
-      ): any[] | Matrix {
-        // scalar
-        return config.matrix === 'Array'
-          ? []
-          : matrix
-            ? (matrix([], 'dense', 'number') as any[] | Matrix)
-            : (noMatrix() as never)
-      }
+      // scalar
+      'number | Complex | BigNumber | Unit | boolean | null': (_x: any): number[] => []
     })
   }
 )

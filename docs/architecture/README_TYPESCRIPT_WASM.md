@@ -58,7 +58,7 @@ This is the **complete guide** to the mathjs TypeScript + WASM + Parallel Comput
 - ✅ Build scripts integrated into Gulp and npm
 - ✅ Multi-format output (ESM, CJS, TypeScript, WASM)
 
-**WASM Modules** (`src-wasm/`):
+**WASM Modules** (`src/wasm/`):
 - ✅ Matrix operations (multiply, transpose, add, subtract, dot)
 - ✅ Linear algebra (LU, QR, Cholesky decompositions)
 - ✅ Signal processing (FFT, IFFT, convolution)
@@ -185,7 +185,7 @@ if (size < 100) {
 Source Files
     ├── .ts files → TypeScript Compiler → lib/typescript/
     ├── .js files → Babel → lib/esm/, lib/cjs/
-    └── src-wasm/*.ts → AssemblyScript → lib/wasm/*.wasm
+    └── src/wasm/*.ts → AssemblyScript → lib/wasm/*.wasm
                                             ↓
                                         WasmLoader
                                             ↓
@@ -483,7 +483,7 @@ npm run benchmark
 
 - [AssemblyScript Documentation](https://www.assemblyscript.org/)
 - [WebAssembly MDN](https://developer.mozilla.org/en-US/docs/WebAssembly)
-- `src-wasm/` directory for examples
+- `src/wasm/` directory for examples
 
 ### For mathjs Architecture
 

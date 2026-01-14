@@ -2,7 +2,7 @@
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../../tools/approx.js'
-import math from '../../../../../src/defaultInstance.js'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('lup', function () {
   it('should decompose matrix, n x n, no permutations, array', function () {

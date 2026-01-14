@@ -4,7 +4,7 @@ import type {
   MathArray,
   Matrix,
   MathNumericType
-} from '../../../types/index.js'
+} from '../../../types/index.ts'
 
 const name = 'setPowerset'
 const dependencies = ['typed', 'size', 'subset', 'compareNatural', 'Index']

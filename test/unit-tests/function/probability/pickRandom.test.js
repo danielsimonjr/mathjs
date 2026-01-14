@@ -1,6 +1,6 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
-import { flatten } from '../../../../src/utils/array.js'
+import math from '../../../../src/defaultInstance.ts'
+import { flatten } from '../../../../src/utils/array.ts'
 
 const math2 = math.create({ randomSeed: 'test2' })
 const pickRandom = math2.pickRandom

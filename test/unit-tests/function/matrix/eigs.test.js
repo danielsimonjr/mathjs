@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 const { eigs, add, complex, divide, exp, fraction, matrix, matrixFromColumns, multiply, abs, size, transpose, bignumber: bignum, zeros, Matrix, Complex } = math
 

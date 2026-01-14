@@ -68,7 +68,7 @@ svd(A: Matrix): { U: Matrix, S: Vector, V: Matrix }
 svd(A: Matrix, full: boolean): { U: Matrix, S: Matrix, V: Matrix }
 ```
 **Tests**: Reconstruct A from U*S*V^T, orthogonality of U and V, singular values ordering
-**WASM**: Yes - implement in `src-wasm/algebra/svd.ts`
+**WASM**: Yes - implement in `src/wasm/algebra/svd.ts`
 
 #### Task 1.2: Implement Cholesky Decomposition
 **File**: `src/function/algebra/decomposition/cholesky.ts`
@@ -241,7 +241,7 @@ airybip(x: number): number  // Derivative
 ```
 
 #### Task 2.10: WASM Acceleration for Bessel Functions
-**File**: `src-wasm/special/bessel.ts`
+**File**: `src/wasm/special/bessel.ts`
 **Description**: High-performance WASM implementations of Bessel functions
 **Focus**: j0, j1, y0, y1, i0, i1, k0, k1 (most commonly used)
 **Expected speedup**: 3-5x for large arrays
@@ -1578,7 +1578,7 @@ describe('functionName', function () {
 ### WASM Template
 
 ```typescript
-// src-wasm/category/functionName.ts
+// src/wasm/category/functionName.ts
 
 export function functionName(x: f64): f64 {
   // High-performance implementation

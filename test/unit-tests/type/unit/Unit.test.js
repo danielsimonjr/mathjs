@@ -1,8 +1,8 @@
 import assert from 'assert'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
-import { isBigNumber, isFraction } from '../../../../src/utils/is.js'
-import { hasOwnProperty } from '../../../../src/utils/object.js'
+import math from '../../../../src/defaultInstance.ts'
+import { isBigNumber, isFraction } from '../../../../src/utils/is.ts'
+import { hasOwnProperty } from '../../../../src/utils/object.ts'
 
 const Unit = math.Unit
 

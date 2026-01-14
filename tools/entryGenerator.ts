@@ -56,7 +56,7 @@ import { {{name}} } from '{{fileName}}.js'
 {{/dependencies}}
 import { {{factoryName}} } from '../../factories{{suffix}}.js'{{eslintComment}}
 
-export const {{name}} = {{braceOpen}}{{eslintComment}}
+export const {{name}}: Record<string, unknown> = {{braceOpen}}{{eslintComment}}
   {{#dependencies}}
   {{name}},
   {{/dependencies}}
@@ -68,6 +68,7 @@ const pureFunctionsTemplate = Handlebars.compile(`/**
  * THIS FILE IS AUTO-GENERATED
  * DON'T MAKE CHANGES HERE
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { config } from './configReadonly.js'
 import {
   {{#pureFactories}}
@@ -76,14 +77,14 @@ import {
 } from '../factories{{suffix}}.js'
 
 {{#pureFactories}}
-export const {{name}} = /* #__PURE__ */ {{factoryName ~}}
+export const {{name}}: any = /* #__PURE__ */ {{factoryName ~}}
 ({{braceOpen}}{{#if dependencies}} {{/if ~}}
 {{#dependencies ~}}
 {{name}}{{#unless @last}}, {{/unless ~}}
 {{/dependencies ~}}
 {{#if dependencies}} {{/if ~}}})
 {{#if formerly}}
-export const {{formerly}} = {{name}}
+export const {{formerly}}: any = {{name}}
 {{/if}}
 {{/pureFactories}}
 `)
@@ -92,6 +93,7 @@ const impureFunctionsTemplate = Handlebars.compile(`/**
  * THIS FILE IS AUTO-GENERATED
  * DON'T MAKE CHANGES HERE
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { config } from './configReadonly.js'
 import {
   {{#impureFactories}}
@@ -107,12 +109,12 @@ import {
   {{/pureFactories}}
 } from './pureFunctions{{suffix}}.generated.js'
 
-const math = {} // NOT pure!
-const mathWithTransform = {} // NOT pure!
-const classes = {} // NOT pure!
+const math: Record<string, any> = {} // NOT pure!
+const mathWithTransform: Record<string, any> = {} // NOT pure!
+const classes: Record<string, any> = {} // NOT pure!
 
 {{#impureFactories}}
-export const {{name}} = {{factoryName ~}}
+export const {{name}}: any = {{factoryName ~}}
 ({{braceOpen}}{{#if dependencies}} {{/if ~}}
 {{#dependencies ~}}
 {{name}}{{#unless @last}}, {{/unless ~}}
@@ -186,8 +188,8 @@ export async function generateEntryFiles () {
 
 /**
  * Generate index files like
- *   dependenciesAny.generated.js
- *   dependenciesNumber.generated.js
+ *   dependenciesAny.generated.ts
+ *   dependenciesNumber.generated.ts
  * And the individual files for every dependencies collection.
  */
 function generateDependenciesFiles ({ suffix, factories, entryFolder }) {
@@ -255,19 +257,19 @@ function generateDependenciesFiles ({ suffix, factories, entryFolder }) {
   data.factories.forEach(factoryData => {
     const generatedFactory = dependenciesFileTemplate(factoryData)
 
-    const p = path.join(entryFolder, factoryData.fileName + '.js')
+    const p = path.join(entryFolder, factoryData.fileName + '.ts')
     fs.writeFileSync(p, generatedFactory)
   })
 
   // generate a file with links to all dependencies
   const generated = dependenciesIndexTemplate(data)
-  fs.writeFileSync(path.join(entryFolder, 'dependencies' + suffix + '.generated.js'), generated)
+  fs.writeFileSync(path.join(entryFolder, 'dependencies' + suffix + '.generated.ts'), generated)
 }
 
 /**
  * Generate index files like
- *   pureFunctionsAny.generated.js
- *   impureFunctionsAny.generated.js
+ *   pureFunctionsAny.generated.ts
+ *   impureFunctionsAny.generated.ts
  */
 function generateFunctionsFiles ({ suffix, factories, entryFolder }) {
   const braceOpen = '{' // a hack to be able to create a single brace open character in handlebars
@@ -438,11 +440,11 @@ function generateFunctionsFiles ({ suffix, factories, entryFolder }) {
     classes
   }
 
-  // create file with all functions: functionsAny.generated.js, functionsNumber.generated.js
-  fs.writeFileSync(path.join(entryFolder, 'pureFunctions' + suffix + '.generated.js'), pureFunctionsTemplate(data))
+  // create file with all functions: functionsAny.generated.ts, functionsNumber.generated.ts
+  fs.writeFileSync(path.join(entryFolder, 'pureFunctions' + suffix + '.generated.ts'), pureFunctionsTemplate(data))
 
-  // create file with all functions: impureFunctions.generated.js, impureFunctions.generated.js
-  fs.writeFileSync(path.join(entryFolder, 'impureFunctions' + suffix + '.generated.js'), impureFunctionsTemplate(data))
+  // create file with all functions: impureFunctions.generated.ts, impureFunctions.generated.ts
+  fs.writeFileSync(path.join(entryFolder, 'impureFunctions' + suffix + '.generated.ts'), impureFunctionsTemplate(data))
 }
 
 function getDependenciesName (factoryName, factories) {

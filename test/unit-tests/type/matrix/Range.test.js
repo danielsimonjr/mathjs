@@ -2,7 +2,7 @@
 
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const Range = math.Range
 
 describe('range', function () {
@@ -43,7 +43,7 @@ describe('range', function () {
     })
 
     it('should throw an error when created without new keyword', function () {
-      assert.throws(function () { Range(0, 10) }, /Constructor must be called with the new operator/)
+      assert.throws(function () { Range(0, 10) }, /Constructor must be called with the new operator|cannot be invoked without 'new'/)
     })
 
     it('should throw an error for wrong type of arguments', function () {

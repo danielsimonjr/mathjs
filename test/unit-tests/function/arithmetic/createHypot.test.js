@@ -2,7 +2,7 @@
 import assert from 'assert'
 
 import { approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const hypot = math.hypot
 const bignumber = math.bignumber
 

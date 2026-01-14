@@ -105,18 +105,18 @@ interface OptimizedCallback {
 }
 
 const name = 'DenseMatrix'
-const dependencies = ['Matrix']
+const dependencies = ['Matrix', 'config']
 
 export const createDenseMatrixClass = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ Matrix }: { Matrix: any }) => {
+  ({ Matrix, config }: { Matrix: any; config: any }) => {
     /**
      * Dense Matrix implementation. A regular, dense matrix, supporting multi-dimensional matrices. This is the default matrix type.
      * @class DenseMatrix
      * @enum {{ value, index: number[] }}
      */
-    class DenseMatrix implements Matrix {
+    class DenseMatrix extends Matrix implements Matrix {
       type: string = 'DenseMatrix'
       isDenseMatrix: boolean = true
       _data: MatrixData
@@ -127,6 +127,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
         data?: MatrixData | Matrix | DenseMatrixConstructorData | null,
         datatype?: string
       ) {
+        super()
         if (!(this instanceof DenseMatrix)) {
           throw new SyntaxError(
             'Constructor must be called with the new operator'
@@ -939,7 +940,9 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
         throw new TypeError('Invalid index')
       }
 
-      const isScalar = index.isScalar()
+      const isScalar = config.legacySubset
+        ? index.size().every((idx: number) => idx === 1)
+        : index.isScalar()
       if (isScalar) {
         // return a scalar
         return matrix.get(index.min())
@@ -959,12 +962,12 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
         }
 
         // retrieve submatrix
-        const returnMatrix = new DenseMatrix([])
+        const returnMatrix = new DenseMatrix()
         const submatrix = _getSubmatrix(matrix._data, index)
         returnMatrix._size = submatrix.size
         returnMatrix._datatype = matrix._datatype
         returnMatrix._data = submatrix.data
-        return returnMatrix
+        return config.legacySubset ? returnMatrix.reshape(index.size()) : returnMatrix
       }
     }
 
@@ -982,26 +985,32 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
       index: Index
     ): { data: MatrixData; size: number[] } {
       const maxDepth = index.size().length - 1
-      const size = Array(maxDepth)
-      return { data: getSubmatrixRecursive(data), size }
+      const size: (number | null)[] = Array(maxDepth)
+      return { data: getSubmatrixRecursive(data), size: size.filter(x => x !== null) as number[] }
 
       function getSubmatrixRecursive(data: any, depth: number = 0): any {
-        const ranges = index.dimension(depth)
-        size[depth] = ranges.size()[0]
-        if (depth < maxDepth) {
-          return ranges
-            .map((rangeIndex: number) => {
-              validateIndex(rangeIndex, data.length)
-              return getSubmatrixRecursive(data[rangeIndex], depth + 1)
-            })
-            .valueOf()
+        const dims = index.dimension(depth)
+        function _mapIndex(dim: any, callback: (d: number) => any): any {
+          // applies a callback for when the index is a Number or a Matrix
+          if (isNumber(dim)) return callback(dim)
+          else return dim.map(callback).valueOf()
+        }
+
+        if (isNumber(dims)) {
+          size[depth] = null
         } else {
-          return ranges
-            .map((rangeIndex: number) => {
-              validateIndex(rangeIndex, data.length)
-              return data[rangeIndex]
-            })
-            .valueOf()
+          size[depth] = dims.size()[0]
+        }
+        if (depth < maxDepth) {
+          return _mapIndex(dims, (dimIndex: number) => {
+            validateIndex(dimIndex, data.length)
+            return getSubmatrixRecursive(data[dimIndex], depth + 1)
+          })
+        } else {
+          return _mapIndex(dims, (dimIndex: number) => {
+            validateIndex(dimIndex, data.length)
+            return data[dimIndex]
+          })
         }
       }
     }
@@ -1126,16 +1135,21 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
         depth: number = 0
       ): void {
         const range = index.dimension(depth)
+        const recursiveCallback = (rangeIndex: number, i: number[]) => {
+          validateIndex(rangeIndex, data.length)
+          setSubmatrixRecursive(data[rangeIndex], submatrix[i[0]], depth + 1)
+        }
+        const finalCallback = (rangeIndex: number, i: number[]) => {
+          validateIndex(rangeIndex, data.length)
+          data[rangeIndex] = submatrix[i[0]]
+        }
+
         if (depth < maxDepth) {
-          range.forEach((rangeIndex: number, i: number[]) => {
-            validateIndex(rangeIndex, data.length)
-            setSubmatrixRecursive(data[rangeIndex], submatrix[i[0]], depth + 1)
-          })
+          if (isNumber(range)) recursiveCallback(range, [0])
+          else range.forEach(recursiveCallback)
         } else {
-          range.forEach((rangeIndex: number, i: number[]) => {
-            validateIndex(rangeIndex, data.length)
-            data[rangeIndex] = submatrix[i[0]]
-          })
+          if (isNumber(range)) finalCallback(range, [0])
+          else range.forEach(finalCallback)
         }
       }
     }

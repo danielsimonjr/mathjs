@@ -1,7 +1,7 @@
 // test zeros
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const matrix = math.matrix
 
 describe('matrixFrom...', function () {

@@ -10,6 +10,6 @@
     "runtime": "stub"
   },
   "include": [
-    "src-wasm/**/*.ts"
+    "src/wasm/**/*.ts"
   ]
 }
