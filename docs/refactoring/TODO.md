@@ -119,12 +119,12 @@ All 46 test files created for src/wasm/ modules:
   - Document breaking changes (if any)
   - Provide upgrade path from JS-only version
 
-### CI/CD
+### CI/CD ✅ COMPLETE
 
-- [ ] **Update CI/CD pipeline**
-  - Ensure build pipeline compiles TS correctly
-  - Add WASM build to CI
-  - Add TypeScript type-checking to CI
+- [x] **Update CI/CD pipeline**
+  - Added TypeScript type-checking job (`tsc --noEmit` + `test:types`)
+  - Added WASM build & test job (validate, build, run unit tests)
+  - Build-and-test now depends on all verification jobs
 
 ## Notes
 
