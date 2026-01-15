@@ -366,7 +366,7 @@ describe('Index', function () {
   it('should complain when new operator is missing', function () {
     assert.throws(function () {
       Index([2, 5])
-    }, /Constructor must be called with the new operator/)
+    }, /Constructor must be called with the new operator|Class constructor.*cannot be invoked without/)
   })
 
   it('should throw an error on non-integer ranges', function () {

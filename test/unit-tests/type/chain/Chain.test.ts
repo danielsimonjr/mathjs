@@ -104,12 +104,14 @@ describe('Chain', function () {
   })
 
   it('should create a proxy for imported functions', function () {
+    // Use unique name to avoid conflict when running both JS and TS tests
+    const fnName = 'helloTs' + Date.now()
     math.import({
-      hello: function (a) {
+      [fnName]: function (a: string) {
         return a + '!'
       }
     })
-    const a = new Chain('hello').hello().done()
+    const a = new (Chain as any)('hello')[fnName]().done()
     assert.strictEqual(a, 'hello!')
   })
 

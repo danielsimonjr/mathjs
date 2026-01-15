@@ -3,5 +3,6 @@
   "timeout": 60000,
   "forbid-only": true,
   "recursive": true,
+  "extension": ["js", "ts"],
   "node-option": ["import=tsx"]
 }

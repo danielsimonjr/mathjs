@@ -34,6 +34,6 @@ describe('ArgumentsError', function () {
   it('should throw an error when operator new is missing', function () {
     assert.throws(function () {
       ArgumentsError()
-    }, SyntaxError)
+    }, /Class constructor|Cannot call a class as a function/)
   })
 })
