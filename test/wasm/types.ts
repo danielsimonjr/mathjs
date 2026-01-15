@@ -26,8 +26,12 @@ export interface Matrix {
   get(index: number[]): unknown
   set(index: number[], value: unknown, defaultValue?: unknown): Matrix
   clone(): Matrix
-  map(callback: (value: unknown, index: number[], matrix: Matrix) => unknown): Matrix
-  forEach(callback: (value: unknown, index: number[], matrix: Matrix) => void): void
+  map(
+    callback: (value: unknown, index: number[], matrix: Matrix) => unknown
+  ): Matrix
+  forEach(
+    callback: (value: unknown, index: number[], matrix: Matrix) => void
+  ): void
   toString(): string
 }
 
@@ -58,9 +62,9 @@ export interface ComplexNumber {
 
 // Fraction type
 export interface FractionNumber {
-  n: number  // numerator
-  d: number  // denominator
-  s: number  // sign
+  n: number // numerator
+  d: number // denominator
+  s: number // sign
   add(other: FractionNumber | number): FractionNumber
   sub(other: FractionNumber | number): FractionNumber
   mul(other: FractionNumber | number): FractionNumber
@@ -100,14 +104,27 @@ export interface MathNode {
   clone(): MathNode
   cloneDeep(): MathNode
   equals(other: MathNode): boolean
-  _compile(math: MathJsInstance, argNames: Record<string, boolean>): (scope: object, args: object, context: object) => unknown
+  _compile(
+    math: MathJsInstance,
+    argNames: Record<string, boolean>
+  ): (scope: object, args: object, context: object) => unknown
   compile(): { evaluate(scope?: object): unknown }
   evaluate(scope?: object): unknown
-  forEach(callback: (node: MathNode, path: string, parent: MathNode) => void): void
-  map(callback: (node: MathNode, path: string, parent: MathNode) => MathNode): MathNode
-  transform(callback: (node: MathNode, path: string, parent: MathNode) => MathNode): MathNode
-  traverse(callback: (node: MathNode, path: string, parent: MathNode) => void): void
-  filter(callback: (node: MathNode, path: string, parent: MathNode) => boolean): MathNode[]
+  forEach(
+    callback: (node: MathNode, path: string, parent: MathNode) => void
+  ): void
+  map(
+    callback: (node: MathNode, path: string, parent: MathNode) => MathNode
+  ): MathNode
+  transform(
+    callback: (node: MathNode, path: string, parent: MathNode) => MathNode
+  ): MathNode
+  traverse(
+    callback: (node: MathNode, path: string, parent: MathNode) => void
+  ): void
+  filter(
+    callback: (node: MathNode, path: string, parent: MathNode) => boolean
+  ): MathNode[]
 }
 
 export interface ConstantNode extends MathNode {

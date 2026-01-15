@@ -552,12 +552,7 @@ export function condInf(a: Float64Array, n: i32): f64 {
  * @param tol - Tolerance for zero detection
  * @returns Estimated rank
  */
-export function rank(
-  a: Float64Array,
-  rows: i32,
-  cols: i32,
-  tol: f64
-): i32 {
+export function rank(a: Float64Array, rows: i32, cols: i32, tol: f64): i32 {
   // Copy matrix
   const work = new Float64Array(rows * cols)
   for (let i: i32 = 0; i < rows * cols; i++) {

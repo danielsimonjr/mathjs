@@ -9,7 +9,7 @@ import workerpool from '@danielsimonjr/workerpool'
 
 // WASM module instance
 let wasmModule: any = null
-let wasmSimdModule: any = null
+const wasmSimdModule: any = null
 let initialized = false
 
 /**
@@ -259,7 +259,10 @@ function max(arr: number[]): number {
 /**
  * FFT using WASM
  */
-function fft(real: number[], imag: number[]): { real: number[]; imag: number[] } {
+function fft(
+  real: number[],
+  imag: number[]
+): { real: number[]; imag: number[] } {
   if (wasmModule?.exports?.fft) {
     const realTyped = new Float64Array(real)
     const imagTyped = new Float64Array(imag)

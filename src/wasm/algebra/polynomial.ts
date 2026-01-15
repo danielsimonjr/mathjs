@@ -162,7 +162,7 @@ export function cubicRoots(a: f64, b: f64, c: f64, d: f64): Float64Array {
   const pp: f64 = (3.0 * q - p2) / 3.0
   const qq: f64 = (2.0 * p2 * p - 9.0 * p * q + 27.0 * r) / 27.0
 
-  const discriminant: f64 = qq * qq / 4.0 + pp * pp * pp / 27.0
+  const discriminant: f64 = (qq * qq) / 4.0 + (pp * pp * pp) / 27.0
 
   const shift: f64 = -p / 3.0
 
@@ -178,7 +178,7 @@ export function cubicRoots(a: f64, b: f64, c: f64, d: f64): Float64Array {
 
     // Complex roots: -(u+v)/2 ± i*sqrt(3)*(u-v)/2
     const realPart: f64 = -(u + v) / 2.0 + shift
-    const imagPart: f64 = Math.sqrt(3.0) * (u - v) / 2.0
+    const imagPart: f64 = (Math.sqrt(3.0) * (u - v)) / 2.0
 
     result[2] = realPart
     result[3] = imagPart
@@ -187,13 +187,13 @@ export function cubicRoots(a: f64, b: f64, c: f64, d: f64): Float64Array {
   } else if (discriminant < -1e-14) {
     // Three distinct real roots (use trigonometric method)
     const m: f64 = 2.0 * Math.sqrt(-pp / 3.0)
-    const theta: f64 = Math.acos(3.0 * qq / (pp * m)) / 3.0
+    const theta: f64 = Math.acos((3.0 * qq) / (pp * m)) / 3.0
 
     result[0] = m * Math.cos(theta) + shift
     result[1] = 0.0
-    result[2] = m * Math.cos(theta - 2.0 * Math.PI / 3.0) + shift
+    result[2] = m * Math.cos(theta - (2.0 * Math.PI) / 3.0) + shift
     result[3] = 0.0
-    result[4] = m * Math.cos(theta - 4.0 * Math.PI / 3.0) + shift
+    result[4] = m * Math.cos(theta - (4.0 * Math.PI) / 3.0) + shift
     result[5] = 0.0
   } else {
     // Multiple roots (discriminant ≈ 0)
@@ -260,9 +260,10 @@ export function quarticRoots(
 
   // Depressed quartic via x = t - p/4: t⁴ + αt² + βt + γ = 0
   const p2: f64 = p * p
-  const alpha: f64 = q - 3.0 * p2 / 8.0
-  const beta: f64 = r - p * q / 2.0 + p2 * p / 8.0
-  const gamma: f64 = s - p * r / 4.0 + p2 * q / 16.0 - 3.0 * p2 * p2 / 256.0
+  const alpha: f64 = q - (3.0 * p2) / 8.0
+  const beta: f64 = r - (p * q) / 2.0 + (p2 * p) / 8.0
+  const gamma: f64 =
+    s - (p * r) / 4.0 + (p2 * q) / 16.0 - (3.0 * p2 * p2) / 256.0
 
   const shift: f64 = -p / 4.0
 
@@ -322,11 +323,20 @@ export function quarticRoots(
   } else {
     // Ferrari's method: find y such that (t² + α/2 + y)² = (2y - α)t² - βt + y² - γ
     // The resolvent cubic: 8y³ - 4αy² - 8γy + (4αγ - β²) = 0
-    const cRoots = cubicRoots(8.0, -4.0 * alpha, -8.0 * gamma, 4.0 * alpha * gamma - beta * beta)
+    const cRoots = cubicRoots(
+      8.0,
+      -4.0 * alpha,
+      -8.0 * gamma,
+      4.0 * alpha * gamma - beta * beta
+    )
 
     // Take the real root with largest magnitude
     let y: f64 = cRoots[0]
-    if (cRoots[1] === 0.0 && Math.abs(cRoots[2]) > Math.abs(y) && cRoots[3] === 0.0) {
+    if (
+      cRoots[1] === 0.0 &&
+      Math.abs(cRoots[2]) > Math.abs(y) &&
+      cRoots[3] === 0.0
+    ) {
       y = cRoots[2]
     }
     if (cRoots[5] === 0.0 && Math.abs(cRoots[4]) > Math.abs(y)) {
@@ -355,7 +365,7 @@ export function quarticRoots(
       // This is a simplified handling for the complex case
       for (let i: i32 = 0; i < 8; i += 2) {
         result[i] = shift
-        result[i + 1] = sqrtNegW / 2.0 * (i < 4 ? 1.0 : -1.0)
+        result[i + 1] = (sqrtNegW / 2.0) * (i < 4 ? 1.0 : -1.0)
       }
     }
   }
@@ -419,7 +429,7 @@ export function polyRoots(
   const radius: f64 = 1.0 + Math.abs(normCoeffs[degree - 1])
 
   for (let i: i32 = 0; i < degree; i++) {
-    const angle: f64 = 2.0 * Math.PI * f64(i) / f64(degree) + 0.1
+    const angle: f64 = (2.0 * Math.PI * f64(i)) / f64(degree) + 0.1
     roots[i * 2] = radius * Math.cos(angle)
     roots[i * 2 + 1] = radius * Math.sin(angle)
   }

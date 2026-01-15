@@ -20,18 +20,18 @@ describe('wasm/matrix/rotation', function () {
   describe('rotationMatrix2D', function () {
     it('should create identity for angle=0', function () {
       const R = rotationMatrix2D(0)
-      assert(approxEqual(R[0], 1, 1e-10))  // cos(0) = 1
-      assert(approxEqual(R[1], 0, 1e-10))  // -sin(0) = 0
-      assert(approxEqual(R[2], 0, 1e-10))  // sin(0) = 0
-      assert(approxEqual(R[3], 1, 1e-10))  // cos(0) = 1
+      assert(approxEqual(R[0], 1, 1e-10)) // cos(0) = 1
+      assert(approxEqual(R[1], 0, 1e-10)) // -sin(0) = 0
+      assert(approxEqual(R[2], 0, 1e-10)) // sin(0) = 0
+      assert(approxEqual(R[3], 1, 1e-10)) // cos(0) = 1
     })
 
     it('should create 90 degree rotation matrix', function () {
       const R = rotationMatrix2D(PI / 2)
-      assert(approxEqual(R[0], 0, 1e-10))   // cos(π/2) = 0
-      assert(approxEqual(R[1], -1, 1e-10))  // -sin(π/2) = -1
-      assert(approxEqual(R[2], 1, 1e-10))   // sin(π/2) = 1
-      assert(approxEqual(R[3], 0, 1e-10))   // cos(π/2) = 0
+      assert(approxEqual(R[0], 0, 1e-10)) // cos(π/2) = 0
+      assert(approxEqual(R[1], -1, 1e-10)) // -sin(π/2) = -1
+      assert(approxEqual(R[2], 1, 1e-10)) // sin(π/2) = 1
+      assert(approxEqual(R[3], 0, 1e-10)) // cos(π/2) = 0
     })
 
     it('should create 180 degree rotation matrix', function () {
@@ -168,9 +168,7 @@ describe('wasm/matrix/rotation', function () {
       const R = rotationMatrixX(PI / 4)
       const result = rotateByMatrix(point, R)
       const newDist = Math.sqrt(
-        result[0] * result[0] +
-        result[1] * result[1] +
-        result[2] * result[2]
+        result[0] * result[0] + result[1] * result[1] + result[2] * result[2]
       )
 
       assert(approxEqual(newDist, originalDist, 1e-10))

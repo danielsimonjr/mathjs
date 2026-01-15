@@ -14,7 +14,9 @@ import { Bench } from 'tinybench'
 import os from 'os'
 
 console.log('='.repeat(90))
-console.log('BENCHMARK: Original JavaScript (lib/) vs TypeScript (dist/) vs WASM')
+console.log(
+  'BENCHMARK: Original JavaScript (lib/) vs TypeScript (dist/) vs WASM'
+)
 console.log('='.repeat(90))
 console.log(`\nSystem: ${os.cpus().length} CPUs (${os.cpus()[0].model})`)
 console.log(`Node.js: ${process.version}`)
@@ -39,7 +41,10 @@ async function loadImplementations(): Promise<Implementations> {
   try {
     const jsModule = await import('../../lib/esm/defaultInstance.js')
     implementations.js = jsModule.default
-    console.log('  [OK] JavaScript loaded - functions:', typeof implementations.js.add)
+    console.log(
+      '  [OK] JavaScript loaded - functions:',
+      typeof implementations.js.add
+    )
   } catch (error: any) {
     console.log(`  [FAIL] JavaScript: ${error.message}`)
   }
@@ -49,7 +54,10 @@ async function loadImplementations(): Promise<Implementations> {
   try {
     const tsModule = await import('../../dist/index.js')
     implementations.ts = tsModule.default
-    console.log('  [OK] TypeScript loaded - functions:', typeof implementations.ts.add)
+    console.log(
+      '  [OK] TypeScript loaded - functions:',
+      typeof implementations.ts.add
+    )
   } catch (error: any) {
     console.log(`  [FAIL] TypeScript: ${error.message}`)
   }
@@ -58,13 +66,18 @@ async function loadImplementations(): Promise<Implementations> {
   console.log('Loading WASM (lib/wasm/index.js)...')
   try {
     implementations.wasm = await import('../../lib/wasm/index.js')
-    console.log('  [OK] WASM loaded - functions:', typeof implementations.wasm.multiplyDense)
+    console.log(
+      '  [OK] WASM loaded - functions:',
+      typeof implementations.wasm.multiplyDense
+    )
 
     // Verify WASM works
     const testA = new Float64Array([1, 2, 3, 4])
     const testB = new Float64Array([5, 6, 7, 8])
     const result = implementations.wasm.dotProduct(testA, testB, 4)
-    console.log(`  [OK] WASM verification: dot([1,2,3,4], [5,6,7,8]) = ${result} (expected: 70)`)
+    console.log(
+      `  [OK] WASM verification: dot([1,2,3,4], [5,6,7,8]) = ${result} (expected: 70)`
+    )
   } catch (error: any) {
     console.log(`  [FAIL] WASM: ${error.message}`)
   }
@@ -119,7 +132,8 @@ function generateFlatVector(size: number): Float64Array {
 function formatResult(task: any): string {
   const result = task.result
   if (!result) return `  ${task.name}: No result`
-  if (!result.hz) return `  ${task.name}: Error - ${result.error || 'Unknown error'}`
+  if (!result.hz)
+    return `  ${task.name}: Error - ${result.error || 'Unknown error'}`
 
   const opsPerSec = result.hz.toFixed(2)
   const meanMs = (result.mean * 1000).toFixed(3)
@@ -129,7 +143,7 @@ function formatResult(task: any): string {
 }
 
 function printSpeedups(bench: Bench): void {
-  const jsTask = bench.tasks.find(t => t.name.includes('JS (lib/)'))
+  const jsTask = bench.tasks.find((t) => t.name.includes('JS (lib/)'))
   if (!jsTask || !jsTask.result || !jsTask.result.hz) return
 
   const jsHz = jsTask.result.hz
@@ -139,9 +153,10 @@ function printSpeedups(bench: Bench): void {
     if (task === jsTask) continue
     if (task.result && task.result.hz) {
       const speedup = task.result.hz / jsHz
-      const label = speedup >= 1
-        ? `${speedup.toFixed(2)}x faster`
-        : `${(1/speedup).toFixed(2)}x slower`
+      const label =
+        speedup >= 1
+          ? `${speedup.toFixed(2)}x faster`
+          : `${(1 / speedup).toFixed(2)}x slower`
       console.log(`    ${task.name}: ${label}`)
     }
   }
@@ -318,7 +333,9 @@ async function benchmarkAdd(impl: Implementations): Promise<void> {
   const sizes = [100, 500, 1000]
 
   for (const size of sizes) {
-    console.log(`\n[${size}x${size} matrices = ${(size * size).toLocaleString()} elements]`)
+    console.log(
+      `\n[${size}x${size} matrices = ${(size * size).toLocaleString()} elements]`
+    )
 
     const matrixA = generateMatrix(size, size)
     const matrixB = generateMatrix(size, size)
@@ -540,7 +557,9 @@ async function main(): Promise<void> {
   ].filter(Boolean)
 
   if (available.length === 0) {
-    console.error('\nNo implementations loaded! Please build the project first:')
+    console.error(
+      '\nNo implementations loaded! Please build the project first:'
+    )
     console.error('  npm run build')
     process.exit(1)
   }

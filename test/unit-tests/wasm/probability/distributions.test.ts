@@ -132,7 +132,7 @@ describe('wasm/probability/distributions', function () {
         values.push(normal(0, 1))
       }
       // Standard normal should have most values within [-4, 4]
-      const inRange = values.filter(v => v > -4 && v < 4).length
+      const inRange = values.filter((v) => v > -4 && v < 4).length
       assert(inRange >= 95)
     })
 

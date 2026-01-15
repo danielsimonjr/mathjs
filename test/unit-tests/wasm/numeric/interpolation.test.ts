@@ -149,7 +149,9 @@ describe('wasm/numeric/interpolation', function () {
       const xValues = new Float64Array([0, 1, 2])
       const yValues = new Float64Array([5, 10, 20])
       const weights = barycentricWeights(xValues, 3)
-      assert(approxEqual(barycentricInterp(xValues, yValues, weights, 1, 3), 10))
+      assert(
+        approxEqual(barycentricInterp(xValues, yValues, weights, 1, 3), 10)
+      )
     })
   })
 

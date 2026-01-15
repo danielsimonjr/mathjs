@@ -36,7 +36,7 @@ export function gcd(a: i64, b: i64): i64 {
 export function lcm(a: i64, b: i64): i64 {
   if (a === 0 || b === 0) return 0
   const g = gcd(a, b)
-  return (a / g) * b  // Avoid overflow by dividing first
+  return (a / g) * b // Avoid overflow by dividing first
 }
 
 /**
@@ -71,9 +71,9 @@ export function xgcd(a: i64, b: i64, result: Int64Array): void {
   }
 
   // Store results: [gcd, x, y]
-  unchecked(result[0] = oldR)
-  unchecked(result[1] = oldS)
-  unchecked(result[2] = oldT)
+  unchecked((result[0] = oldR))
+  unchecked((result[1] = oldS))
+  unchecked((result[2] = oldT))
 }
 
 /**
@@ -218,11 +218,16 @@ export function mod(x: f64, y: f64): f64 {
  * @param output Output array
  * @param length Length of arrays
  */
-export function modArray(input: Float64Array, divisor: f64, output: Float64Array, length: i32): void {
+export function modArray(
+  input: Float64Array,
+  divisor: f64,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
     const x = unchecked(input[i])
     const result = x % divisor
-    unchecked(output[i] = result < 0 ? result + divisor : result)
+    unchecked((output[i] = result < 0 ? result + divisor : result))
   }
 }
 
@@ -233,9 +238,14 @@ export function modArray(input: Float64Array, divisor: f64, output: Float64Array
  * @param output Output array
  * @param length Length of arrays
  */
-export function gcdArray(inputA: Int64Array, inputB: Int64Array, output: Int64Array, length: i32): void {
+export function gcdArray(
+  inputA: Int64Array,
+  inputB: Int64Array,
+  output: Int64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = gcd(unchecked(inputA[i]), unchecked(inputB[i])))
+    unchecked((output[i] = gcd(unchecked(inputA[i]), unchecked(inputB[i]))))
   }
 }
 
@@ -246,9 +256,14 @@ export function gcdArray(inputA: Int64Array, inputB: Int64Array, output: Int64Ar
  * @param output Output array
  * @param length Length of arrays
  */
-export function lcmArray(inputA: Int64Array, inputB: Int64Array, output: Int64Array, length: i32): void {
+export function lcmArray(
+  inputA: Int64Array,
+  inputB: Int64Array,
+  output: Int64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = lcm(unchecked(inputA[i]), unchecked(inputB[i])))
+    unchecked((output[i] = lcm(unchecked(inputA[i]), unchecked(inputB[i]))))
   }
 }
 
@@ -259,12 +274,12 @@ export function lcmArray(inputA: Int64Array, inputB: Int64Array, output: Int64Ar
  * @param output Output array of size 2*n [re0, im0, re1, im1, ...]
  */
 export function nthRootsOfUnity(n: i32, output: Float64Array): void {
-  const twoPiOverN = 2.0 * Math.PI / f64(n)
+  const twoPiOverN = (2.0 * Math.PI) / f64(n)
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = twoPiOverN * f64(k)
-    unchecked(output[k * 2] = Math.cos(angle))      // Real part
-    unchecked(output[k * 2 + 1] = Math.sin(angle))  // Imaginary part
+    unchecked((output[k * 2] = Math.cos(angle))) // Real part
+    unchecked((output[k * 2 + 1] = Math.sin(angle))) // Imaginary part
   }
 }
 
@@ -279,14 +294,14 @@ export function nthRootsReal(x: f64, n: i32, output: Float64Array): void {
   // Handle special cases
   if (n <= 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      unchecked(output[i] = f64.NaN)
+      unchecked((output[i] = f64.NaN))
     }
     return
   }
 
   if (x === 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      unchecked(output[i] = 0)
+      unchecked((output[i] = 0))
     }
     return
   }
@@ -298,15 +313,15 @@ export function nthRootsReal(x: f64, n: i32, output: Float64Array): void {
   // Compute the principal argument
   let theta: f64 = 0
   if (x < 0) {
-    theta = Math.PI  // arg(-|x|) = π
+    theta = Math.PI // arg(-|x|) = π
   }
 
-  const twoPiOverN = 2.0 * Math.PI / f64(n)
+  const twoPiOverN = (2.0 * Math.PI) / f64(n)
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = (theta + twoPiOverN * f64(k)) / f64(n)
-    unchecked(output[k * 2] = r * Math.cos(angle))      // Real part
-    unchecked(output[k * 2 + 1] = r * Math.sin(angle))  // Imaginary part
+    unchecked((output[k * 2] = r * Math.cos(angle))) // Real part
+    unchecked((output[k * 2 + 1] = r * Math.sin(angle))) // Imaginary part
   }
 }
 
@@ -318,17 +333,22 @@ export function nthRootsReal(x: f64, n: i32, output: Float64Array): void {
  * @param n Root degree
  * @param output Output array of size 2*n [re0, im0, re1, im1, ...]
  */
-export function nthRootsComplex(re: f64, im: f64, n: i32, output: Float64Array): void {
+export function nthRootsComplex(
+  re: f64,
+  im: f64,
+  n: i32,
+  output: Float64Array
+): void {
   if (n <= 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      unchecked(output[i] = f64.NaN)
+      unchecked((output[i] = f64.NaN))
     }
     return
   }
 
   if (re === 0 && im === 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      unchecked(output[i] = 0)
+      unchecked((output[i] = 0))
     }
     return
   }
@@ -340,12 +360,12 @@ export function nthRootsComplex(re: f64, im: f64, n: i32, output: Float64Array):
   // Principal root magnitude
   const rootR = Math.pow(r, 1.0 / f64(n))
 
-  const twoPiOverN = 2.0 * Math.PI / f64(n)
+  const twoPiOverN = (2.0 * Math.PI) / f64(n)
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = (theta + twoPiOverN * f64(k)) / f64(n)
-    unchecked(output[k * 2] = rootR * Math.cos(angle))      // Real part
-    unchecked(output[k * 2 + 1] = rootR * Math.sin(angle))  // Imaginary part
+    unchecked((output[k * 2] = rootR * Math.cos(angle))) // Real part
+    unchecked((output[k * 2 + 1] = rootR * Math.sin(angle))) // Imaginary part
   }
 }
 
@@ -471,9 +491,9 @@ export function xgcdF64(a: f64, b: f64, result: Float64Array): void {
   }
 
   // Store results: [gcd, x, y]
-  unchecked(result[0] = oldR)
-  unchecked(result[1] = oldS)
-  unchecked(result[2] = oldT)
+  unchecked((result[0] = oldR))
+  unchecked((result[1] = oldS))
+  unchecked((result[2] = oldT))
 }
 
 /**

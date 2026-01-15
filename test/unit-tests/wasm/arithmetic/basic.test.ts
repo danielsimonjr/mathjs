@@ -312,7 +312,7 @@ describe('wasm/arithmetic/basic', function () {
     it('should divide two integers', function () {
       assert.strictEqual(divideInt(12, 4), 3)
       // Note: In JS runtime, this is regular division not integer division
-      assert(Math.abs(divideInt(10, 3) - 10/3) < 0.0001)
+      assert(Math.abs(divideInt(10, 3) - 10 / 3) < 0.0001)
     })
   })
 

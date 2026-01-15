@@ -5,7 +5,8 @@
 import { BigNumberDependencies } from './dependenciesBigNumberClass.generated.js'
 import { createSQRT1_2 } from '../../factoriesAny.js' // eslint-disable-line camelcase
 
-export const SQRT1_2Dependencies: Record<string, unknown> = { // eslint-disable-line camelcase
+export const SQRT1_2Dependencies: Record<string, unknown> = {
+  // eslint-disable-line camelcase
   BigNumberDependencies,
   createSQRT1_2
 }

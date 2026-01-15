@@ -22,7 +22,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Load WASM module
-async function loadWasm (): Promise<any> {
+async function loadWasm(): Promise<any> {
   const wasmPath = join(__dirname, '../../lib/wasm/index.js')
   const wasmUrl = new URL(`file:///${wasmPath.replace(/\\/g, '/')}`)
   const wasm = await import(wasmUrl.href)
@@ -60,11 +60,13 @@ const manualTypeCheck = {
     return Math.abs(x)
   },
   add: (x: any, y: any): number => {
-    if (typeof x !== 'number' || typeof y !== 'number') throw new TypeError('Expected numbers')
+    if (typeof x !== 'number' || typeof y !== 'number')
+      throw new TypeError('Expected numbers')
     return x + y
   },
   multiply: (x: any, y: any): number => {
-    if (typeof x !== 'number' || typeof y !== 'number') throw new TypeError('Expected numbers')
+    if (typeof x !== 'number' || typeof y !== 'number')
+      throw new TypeError('Expected numbers')
     return x * y
   },
   sin: (x: any): number => {
@@ -72,7 +74,8 @@ const manualTypeCheck = {
     return Math.sin(x)
   },
   factorial: (n: any): number => {
-    if (typeof n !== 'number' || !Number.isInteger(n)) throw new TypeError('Expected integer')
+    if (typeof n !== 'number' || !Number.isInteger(n))
+      throw new TypeError('Expected integer')
     let result = 1
     for (let i = 2; i <= n; i++) result *= i
     return result
@@ -107,18 +110,19 @@ const typedMultiSig = {
   add: typed('add', {
     'number, number': (x: number, y: number): number => x + y,
     'string, string': (x: string, y: string): string => x + y,
-    'Array, Array': (x: number[], y: number[]): number[] => x.map((v, i) => v + y[i]),
+    'Array, Array': (x: number[], y: number[]): number[] =>
+      x.map((v, i) => v + y[i]),
     'any, any': (x: any, y: any): any => x + y
   }),
   multiply: typed('multiply', {
     'number, number': (x: number, y: number): number => x * y,
-    'Array, number': (x: number[], y: number): number[] => x.map(v => v * y),
-    'number, Array': (x: number, y: number[]): number[] => y.map(v => x * v),
+    'Array, number': (x: number[], y: number): number[] => x.map((v) => v * y),
+    'number, Array': (x: number, y: number[]): number[] => y.map((v) => x * v),
     'any, any': (x: any, y: any): any => x * y
   })
 }
 
-async function runBenchmarks (): Promise<void> {
+async function runBenchmarks(): Promise<void> {
   console.log('Loading WASM module...')
   const wasm = await loadWasm()
   console.log('WASM module loaded\n')
@@ -128,7 +132,9 @@ async function runBenchmarks (): Promise<void> {
   console.log('='.repeat(80))
   console.log('')
   console.log('This benchmark shows WHERE the Math.js overhead comes from.')
-  console.log('TypeScript compiles away - the overhead is from typed-function dispatch.')
+  console.log(
+    'TypeScript compiles away - the overhead is from typed-function dispatch.'
+  )
   console.log('')
 
   // ==========================================================================
@@ -145,7 +151,9 @@ async function runBenchmarks (): Promise<void> {
   scalarBench.add('Math.js abs()', () => math.abs(testValue))
   scalarBench.add('WASM abs()', () => wasm.abs(testValue))
 
-  scalarBench.addEventListener('cycle', (e) => console.log(formatTaskResult(scalarBench, e.task)))
+  scalarBench.addEventListener('cycle', (e) =>
+    console.log(formatTaskResult(scalarBench, e.task))
+  )
   await scalarBench.run()
 
   // ==========================================================================
@@ -154,7 +162,8 @@ async function runBenchmarks (): Promise<void> {
   console.log('\n--- BINARY add(x, y) - Two Values ---\n')
 
   const binaryBench = new Bench({ time: 100, iterations: 10000 })
-  const x = 123.456; const y = 789.012
+  const x = 123.456
+  const y = 789.012
 
   binaryBench.add('Pure JS x + y', () => pureJS.add(x, y))
   binaryBench.add('Manual typeof check', () => manualTypeCheck.add(x, y))
@@ -162,7 +171,9 @@ async function runBenchmarks (): Promise<void> {
   binaryBench.add('typed-function (4 sigs)', () => typedMultiSig.add(x, y))
   binaryBench.add('Math.js add()', () => math.add(x, y))
 
-  binaryBench.addEventListener('cycle', (e) => console.log(formatTaskResult(binaryBench, e.task)))
+  binaryBench.addEventListener('cycle', (e) =>
+    console.log(formatTaskResult(binaryBench, e.task))
+  )
   await binaryBench.run()
 
   // ==========================================================================
@@ -179,7 +190,9 @@ async function runBenchmarks (): Promise<void> {
   trigBench.add('Math.js sin()', () => math.sin(angle))
   trigBench.add('WASM sin()', () => wasm.sin(angle))
 
-  trigBench.addEventListener('cycle', (e) => console.log(formatTaskResult(trigBench, e.task)))
+  trigBench.addEventListener('cycle', (e) =>
+    console.log(formatTaskResult(trigBench, e.task))
+  )
   await trigBench.run()
 
   // ==========================================================================
@@ -196,7 +209,9 @@ async function runBenchmarks (): Promise<void> {
   factBench.add('Math.js factorial()', () => math.factorial(n))
   factBench.add('WASM factorial()', () => wasm.factorial(n))
 
-  factBench.addEventListener('cycle', (e) => console.log(formatTaskResult(factBench, e.task)))
+  factBench.addEventListener('cycle', (e) =>
+    console.log(formatTaskResult(factBench, e.task))
+  )
   await factBench.run()
 
   // ==========================================================================
@@ -213,7 +228,9 @@ async function runBenchmarks (): Promise<void> {
   arrBench.add('Math.js sum()', () => math.sum(jsArr))
   arrBench.add('WASM sum()', () => wasm.sum(arr))
 
-  arrBench.addEventListener('cycle', (e) => console.log(formatTaskResult(arrBench, e.task)))
+  arrBench.addEventListener('cycle', (e) =>
+    console.log(formatTaskResult(arrBench, e.task))
+  )
   await arrBench.run()
 
   // ==========================================================================
@@ -241,7 +258,9 @@ async function runBenchmarks (): Promise<void> {
     for (let i = 0; i < 1000; i++) wasm.abs(values[i])
   })
 
-  overheadBench.addEventListener('cycle', (e) => console.log(formatTaskResult(overheadBench, e.task)))
+  overheadBench.addEventListener('cycle', (e) =>
+    console.log(formatTaskResult(overheadBench, e.task))
+  )
   await overheadBench.run()
 
   // ==========================================================================

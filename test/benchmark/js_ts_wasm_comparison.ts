@@ -41,7 +41,7 @@ interface Implementations {
   wasm?: any
 }
 
-async function loadImplementations (): Promise<Implementations> {
+async function loadImplementations(): Promise<Implementations> {
   const implementations: Implementations = {}
 
   // 1. JavaScript implementation (lib/esm)
@@ -74,7 +74,9 @@ async function loadImplementations (): Promise<Implementations> {
     const testA = new Float64Array([1, 2, 3, 4])
     const testB = new Float64Array([5, 6, 7, 8])
     const result = implementations.wasm.dotProduct(testA, testB, 4)
-    console.log(`  - WASM verification: dot([1,2,3,4], [5,6,7,8]) = ${result} (expected: 70)`)
+    console.log(
+      `  - WASM verification: dot([1,2,3,4], [5,6,7,8]) = ${result} (expected: 70)`
+    )
   } catch (error: any) {
     console.log(`  - WASM load failed: ${error.message}`)
   }
@@ -86,7 +88,7 @@ async function loadImplementations (): Promise<Implementations> {
 // Test Data Generators
 // =============================================================================
 
-function generateMatrix (rows: number, cols: number): number[][] {
+function generateMatrix(rows: number, cols: number): number[][] {
   const data: number[][] = []
   for (let i = 0; i < rows; i++) {
     const row: number[] = []
@@ -98,7 +100,7 @@ function generateMatrix (rows: number, cols: number): number[][] {
   return data
 }
 
-function generateFlatMatrix (rows: number, cols: number): Float64Array {
+function generateFlatMatrix(rows: number, cols: number): Float64Array {
   const data = new Float64Array(rows * cols)
   for (let i = 0; i < rows * cols; i++) {
     data[i] = Math.random() * 10
@@ -106,7 +108,7 @@ function generateFlatMatrix (rows: number, cols: number): Float64Array {
   return data
 }
 
-function generateVector (size: number): number[] {
+function generateVector(size: number): number[] {
   const data: number[] = []
   for (let i = 0; i < size; i++) {
     data.push(Math.random() * 100)
@@ -114,7 +116,7 @@ function generateVector (size: number): number[] {
   return data
 }
 
-function generateFlatVector (size: number): Float64Array {
+function generateFlatVector(size: number): Float64Array {
   const data = new Float64Array(size)
   for (let i = 0; i < size; i++) {
     data[i] = Math.random() * 100
@@ -123,7 +125,7 @@ function generateFlatVector (size: number): Float64Array {
 }
 
 // Fiedler matrix generator for determinant tests
-function generateFiedlerMatrix (n: number): number[][] {
+function generateFiedlerMatrix(n: number): number[][] {
   const matrix: number[][] = []
   for (let i = 0; i < n; i++) {
     const row: number[] = []
@@ -139,10 +141,11 @@ function generateFiedlerMatrix (n: number): number[][] {
 // Format Results
 // =============================================================================
 
-function formatResult (task: any): string {
+function formatResult(task: any): string {
   const result = task.result
   if (!result) return `${task.name}: No result`
-  if (!result.hz) return `${task.name}: Error - ${result.error || 'Unknown error'}`
+  if (!result.hz)
+    return `${task.name}: Error - ${result.error || 'Unknown error'}`
 
   const opsPerSec = result.hz.toFixed(2)
   const meanMs = (result.mean * 1000).toFixed(3)
@@ -151,7 +154,7 @@ function formatResult (task: any): string {
   return `  ${task.name.padEnd(40)} ${opsPerSec.padStart(12)} ops/sec  ${meanMs.padStart(10)} ms/op  (${samples} samples)`
 }
 
-function printSpeedups (bench: Bench, baselineIndex: number = 0): void {
+function printSpeedups(bench: Bench, baselineIndex: number = 0): void {
   const baseline = bench.tasks[baselineIndex].result
   if (!baseline || !baseline.hz) return
 
@@ -161,7 +164,10 @@ function printSpeedups (bench: Bench, baselineIndex: number = 0): void {
     const task = bench.tasks[i]
     if (task.result && task.result.hz) {
       const speedup = task.result.hz / baseline.hz
-      const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1 / speedup).toFixed(2)}x slower`
+      const label =
+        speedup >= 1
+          ? `${speedup.toFixed(2)}x faster`
+          : `${(1 / speedup).toFixed(2)}x slower`
       console.log(`    ${task.name}: ${label}`)
     }
   }
@@ -171,7 +177,7 @@ function printSpeedups (bench: Bench, baselineIndex: number = 0): void {
 // Benchmark Suites
 // =============================================================================
 
-async function benchmarkMatrixMultiply (impl: Implementations): Promise<void> {
+async function benchmarkMatrixMultiply(impl: Implementations): Promise<void> {
   console.log('\n' + '-'.repeat(90))
   console.log('MATRIX MULTIPLICATION')
   console.log('-'.repeat(90))
@@ -231,7 +237,7 @@ async function benchmarkMatrixMultiply (impl: Implementations): Promise<void> {
   }
 }
 
-async function benchmarkDotProduct (impl: Implementations): Promise<void> {
+async function benchmarkDotProduct(impl: Implementations): Promise<void> {
   console.log('\n' + '-'.repeat(90))
   console.log('DOT PRODUCT')
   console.log('-'.repeat(90))
@@ -286,7 +292,7 @@ async function benchmarkDotProduct (impl: Implementations): Promise<void> {
   }
 }
 
-async function benchmarkTranspose (impl: Implementations): Promise<void> {
+async function benchmarkTranspose(impl: Implementations): Promise<void> {
   console.log('\n' + '-'.repeat(90))
   console.log('MATRIX TRANSPOSE')
   console.log('-'.repeat(90))
@@ -334,7 +340,7 @@ async function benchmarkTranspose (impl: Implementations): Promise<void> {
   }
 }
 
-async function benchmarkDeterminant (impl: Implementations): Promise<void> {
+async function benchmarkDeterminant(impl: Implementations): Promise<void> {
   console.log('\n' + '-'.repeat(90))
   console.log('DETERMINANT (via LU decomposition)')
   console.log('-'.repeat(90))
@@ -388,7 +394,7 @@ async function benchmarkDeterminant (impl: Implementations): Promise<void> {
   }
 }
 
-async function benchmarkFFT (impl: Implementations): Promise<void> {
+async function benchmarkFFT(impl: Implementations): Promise<void> {
   console.log('\n' + '-'.repeat(90))
   console.log('FFT (Fast Fourier Transform)')
   console.log('-'.repeat(90))
@@ -401,7 +407,7 @@ async function benchmarkFFT (impl: Implementations): Promise<void> {
     // Generate complex data (interleaved real, imag)
     const data = new Float64Array(size * 2)
     for (let i = 0; i < size; i++) {
-      data[i * 2] = Math.sin(2 * Math.PI * i / size) + Math.random() * 0.1 // real
+      data[i * 2] = Math.sin((2 * Math.PI * i) / size) + Math.random() * 0.1 // real
       data[i * 2 + 1] = 0 // imag
     }
 
@@ -427,7 +433,7 @@ async function benchmarkFFT (impl: Implementations): Promise<void> {
   }
 }
 
-async function benchmarkStatistics (impl: Implementations): Promise<void> {
+async function benchmarkStatistics(impl: Implementations): Promise<void> {
   console.log('\n' + '-'.repeat(90))
   console.log('STATISTICS (mean, variance, std)')
   console.log('-'.repeat(90))
@@ -506,7 +512,7 @@ async function benchmarkStatistics (impl: Implementations): Promise<void> {
   }
 }
 
-async function benchmarkAdd (impl: Implementations): Promise<void> {
+async function benchmarkAdd(impl: Implementations): Promise<void> {
   console.log('\n' + '-'.repeat(90))
   console.log('MATRIX ADDITION')
   console.log('-'.repeat(90))
@@ -514,7 +520,9 @@ async function benchmarkAdd (impl: Implementations): Promise<void> {
   const sizes = [100, 500, 1000]
 
   for (const size of sizes) {
-    console.log(`\n[${size}x${size} matrices (${(size * size).toLocaleString()} elements)]`)
+    console.log(
+      `\n[${size}x${size} matrices (${(size * size).toLocaleString()} elements)]`
+    )
 
     const matrixA = generateMatrix(size, size)
     const matrixB = generateMatrix(size, size)
@@ -570,11 +578,13 @@ async function benchmarkAdd (impl: Implementations): Promise<void> {
 // Main
 // =============================================================================
 
-async function main (): Promise<void> {
+async function main(): Promise<void> {
   const impl = await loadImplementations()
 
   if (!impl.js && !impl.ts && !impl.wasm) {
-    console.error('\nNo implementations loaded! Please build the project first:')
+    console.error(
+      '\nNo implementations loaded! Please build the project first:'
+    )
     console.error('  npm run build')
     process.exit(1)
   }

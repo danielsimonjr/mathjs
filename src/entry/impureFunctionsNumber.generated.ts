@@ -227,30 +227,151 @@ export const RelationalNode: any = createRelationalNode({ Node })
 export const reviver: any = createReviver({ classes })
 export const SymbolNode: any = createSymbolNode({ Node, math })
 export const AccessorNode: any = createAccessorNode({ Node, subset })
-export const AssignmentNode: any = createAssignmentNode({ matrix, Node, subset })
+export const AssignmentNode: any = createAssignmentNode({
+  matrix,
+  Node,
+  subset
+})
 export const chain: any = createChain({ Chain, typed })
 export const ConditionalNode: any = createConditionalNode({ Node })
 export const FunctionNode: any = createFunctionNode({ Node, SymbolNode, math })
 export const IndexNode: any = createIndexNode({ Node, size })
 export const OperatorNode: any = createOperatorNode({ Node })
 export const ArrayNode: any = createArrayNode({ Node })
-export const FunctionAssignmentNode: any = createFunctionAssignmentNode({ Node, typed })
+export const FunctionAssignmentNode: any = createFunctionAssignmentNode({
+  Node,
+  typed
+})
 export const BlockNode: any = createBlockNode({ Node, ResultSet })
 export const ConstantNode: any = createConstantNode({ Node, isBounded })
-export const simplifyConstant: any = createSimplifyConstant({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, SymbolNode, config, isBounded, mathWithTransform, matrix, typed })
+export const simplifyConstant: any = createSimplifyConstant({
+  AccessorNode,
+  ArrayNode,
+  ConstantNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  SymbolNode,
+  config,
+  isBounded,
+  mathWithTransform,
+  matrix,
+  typed
+})
 export const ParenthesisNode: any = createParenthesisNode({ Node })
-export const parse: any = createParse({ AccessorNode, ArrayNode, AssignmentNode, BlockNode, ConditionalNode, ConstantNode, FunctionAssignmentNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, RangeNode, RelationalNode, SymbolNode, config, numeric, typed })
-export const resolve: any = createResolve({ ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, parse, typed })
-export const simplifyCore: any = createSimplifyCore({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, add, divide, equal, isZero, multiply, parse, pow, subtract, typed })
+export const parse: any = createParse({
+  AccessorNode,
+  ArrayNode,
+  AssignmentNode,
+  BlockNode,
+  ConditionalNode,
+  ConstantNode,
+  FunctionAssignmentNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  ParenthesisNode,
+  RangeNode,
+  RelationalNode,
+  SymbolNode,
+  config,
+  numeric,
+  typed
+})
+export const resolve: any = createResolve({
+  ConstantNode,
+  FunctionNode,
+  OperatorNode,
+  ParenthesisNode,
+  parse,
+  typed
+})
+export const simplifyCore: any = createSimplifyCore({
+  AccessorNode,
+  ArrayNode,
+  ConstantNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,
+  add,
+  divide,
+  equal,
+  isZero,
+  multiply,
+  parse,
+  pow,
+  subtract,
+  typed
+})
 export const compile: any = createCompile({ parse, typed })
 export const evaluate: any = createEvaluate({ parse, typed })
 export const Help: any = createHelpClass({ evaluate })
 export const Parser: any = createParserClass({ evaluate, parse })
-export const simplify: any = createSimplify({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, equal, parse, replacer, resolve, simplifyConstant, simplifyCore, typed })
-export const derivative: any = createDerivative({ ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode, config, equal, isZero, numeric, parse, simplify, typed })
+export const simplify: any = createSimplify({
+  AccessorNode,
+  ArrayNode,
+  ConstantNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,
+  equal,
+  parse,
+  replacer,
+  resolve,
+  simplifyConstant,
+  simplifyCore,
+  typed
+})
+export const derivative: any = createDerivative({
+  ConstantNode,
+  FunctionNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,
+  config,
+  equal,
+  isZero,
+  numeric,
+  parse,
+  simplify,
+  typed
+})
 export const help: any = createHelp({ Help, mathWithTransform, typed })
 export const parser: any = createParser({ Parser, typed })
-export const rationalize: any = createRationalize({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, add, config, divide, equal, isZero, mathWithTransform, matrix, multiply, parse, pow, simplify, simplifyConstant, simplifyCore, subtract, typed })
+export const rationalize: any = createRationalize({
+  AccessorNode,
+  ArrayNode,
+  ConstantNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,
+  add,
+  config,
+  divide,
+  equal,
+  isZero,
+  mathWithTransform,
+  matrix,
+  multiply,
+  parse,
+  pow,
+  simplify,
+  simplifyConstant,
+  simplifyCore,
+  subtract,
+  typed
+})
 
 Object.assign(math, {
   e,
@@ -269,7 +390,7 @@ Object.assign(math, {
   tau,
   typed,
   unaryPlus,
-  'E': e,
+  E: e,
   version,
   xor,
   abs,
@@ -384,7 +505,7 @@ Object.assign(math, {
   round,
   smaller,
   subtractScalar,
-  'PI': pi,
+  PI: pi,
   zeta,
   acsch,
   compareNatural,
@@ -440,10 +561,30 @@ Object.assign(mathWithTransform, math, {
   map: createMapTransform({ typed }),
   std: createStdTransform({ map, sqrt, typed, variance }),
   sum: createSumTransform({ add, config, numeric, typed }),
-  variance: createVarianceTransform({ add, divide, isNaN, mapSlices, multiply, subtract, typed }),
+  variance: createVarianceTransform({
+    add,
+    divide,
+    isNaN,
+    mapSlices,
+    multiply,
+    subtract,
+    typed
+  }),
   max: createMaxTransform({ config, isNaN, larger, numeric, typed }),
   min: createMinTransform({ config, isNaN, numeric, smaller, typed }),
-  range: createRangeTransform({ matrix, add, config, equal, isPositive, isZero, larger, largerEq, smaller, smallerEq, typed })
+  range: createRangeTransform({
+    matrix,
+    add,
+    config,
+    equal,
+    isPositive,
+    isZero,
+    larger,
+    largerEq,
+    smaller,
+    smallerEq,
+    typed
+  })
 })
 
 Object.assign(classes, {

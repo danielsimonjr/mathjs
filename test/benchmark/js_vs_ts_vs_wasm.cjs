@@ -23,7 +23,7 @@ console.log('')
 // Load all implementations
 // =============================================================================
 
-async function loadImplementations() {
+async function loadImplementations () {
   const implementations = {}
 
   // 1. Original JavaScript implementation (lib/cjs)
@@ -68,7 +68,7 @@ async function loadImplementations() {
 // Test Data Generators
 // =============================================================================
 
-function generateMatrix(rows, cols) {
+function generateMatrix (rows, cols) {
   const data = []
   for (let i = 0; i < rows; i++) {
     const row = []
@@ -80,7 +80,7 @@ function generateMatrix(rows, cols) {
   return data
 }
 
-function generateFlatMatrix(rows, cols) {
+function generateFlatMatrix (rows, cols) {
   const data = new Float64Array(rows * cols)
   for (let i = 0; i < rows * cols; i++) {
     data[i] = Math.random() * 10
@@ -88,7 +88,7 @@ function generateFlatMatrix(rows, cols) {
   return data
 }
 
-function generateVector(size) {
+function generateVector (size) {
   const data = []
   for (let i = 0; i < size; i++) {
     data.push(Math.random() * 100)
@@ -96,7 +96,7 @@ function generateVector(size) {
   return data
 }
 
-function generateFlatVector(size) {
+function generateFlatVector (size) {
   const data = new Float64Array(size)
   for (let i = 0; i < size; i++) {
     data[i] = Math.random() * 100
@@ -108,7 +108,7 @@ function generateFlatVector(size) {
 // Simple Benchmark Runner
 // =============================================================================
 
-async function runBenchmark(name, fn, iterations = 100, warmup = 10) {
+async function runBenchmark (name, fn, iterations = 100, warmup = 10) {
   // Warmup
   for (let i = 0; i < warmup; i++) {
     fn()
@@ -133,11 +133,11 @@ async function runBenchmark(name, fn, iterations = 100, warmup = 10) {
   return { name, avg, median, min, max, opsPerSec, iterations }
 }
 
-function formatResult(result) {
+function formatResult (result) {
   return `  ${result.name.padEnd(50)} ${result.opsPerSec.toFixed(2).padStart(12)} ops/sec  ${result.avg.toFixed(3).padStart(10)} ms/op`
 }
 
-function printSpeedups(results) {
+function printSpeedups (results) {
   const jsResult = results.find(r => r.name.includes('JS (lib/)'))
   if (!jsResult) return
 
@@ -147,7 +147,7 @@ function printSpeedups(results) {
     const speedup = result.opsPerSec / jsResult.opsPerSec
     const label = speedup >= 1
       ? `${speedup.toFixed(2)}x faster`
-      : `${(1/speedup).toFixed(2)}x slower`
+      : `${(1 / speedup).toFixed(2)}x slower`
     console.log(`    ${result.name}: ${label}`)
   }
 }
@@ -156,7 +156,7 @@ function printSpeedups(results) {
 // Benchmark Suites
 // =============================================================================
 
-async function benchmarkMatrixMultiply(impl) {
+async function benchmarkMatrixMultiply (impl) {
   console.log('\n' + '-'.repeat(90))
   console.log('MATRIX MULTIPLICATION (A * B)')
   console.log('-'.repeat(90))
@@ -211,7 +211,7 @@ async function benchmarkMatrixMultiply(impl) {
   }
 }
 
-async function benchmarkDotProduct(impl) {
+async function benchmarkDotProduct (impl) {
   console.log('\n' + '-'.repeat(90))
   console.log('DOT PRODUCT')
   console.log('-'.repeat(90))
@@ -262,7 +262,7 @@ async function benchmarkDotProduct(impl) {
   }
 }
 
-async function benchmarkTranspose(impl) {
+async function benchmarkTranspose (impl) {
   console.log('\n' + '-'.repeat(90))
   console.log('MATRIX TRANSPOSE')
   console.log('-'.repeat(90))
@@ -306,7 +306,7 @@ async function benchmarkTranspose(impl) {
   }
 }
 
-async function benchmarkAdd(impl) {
+async function benchmarkAdd (impl) {
   console.log('\n' + '-'.repeat(90))
   console.log('MATRIX ADDITION (A + B)')
   console.log('-'.repeat(90))
@@ -362,7 +362,7 @@ async function benchmarkAdd(impl) {
   }
 }
 
-async function benchmarkStatistics(impl) {
+async function benchmarkStatistics (impl) {
   console.log('\n' + '-'.repeat(90))
   console.log('STATISTICS (mean, std)')
   console.log('-'.repeat(90))
@@ -434,7 +434,7 @@ async function benchmarkStatistics(impl) {
   }
 }
 
-async function benchmarkDeterminant(impl) {
+async function benchmarkDeterminant (impl) {
   console.log('\n' + '-'.repeat(90))
   console.log('DETERMINANT')
   console.log('-'.repeat(90))
@@ -470,7 +470,7 @@ async function benchmarkDeterminant(impl) {
   }
 }
 
-async function benchmarkExpressionParser(impl) {
+async function benchmarkExpressionParser (impl) {
   console.log('\n' + '-'.repeat(90))
   console.log('EXPRESSION PARSER')
   console.log('-'.repeat(90))
@@ -512,7 +512,7 @@ async function benchmarkExpressionParser(impl) {
 // Main
 // =============================================================================
 
-async function main() {
+async function main () {
   const impl = await loadImplementations()
 
   const available = [

@@ -20,7 +20,7 @@
 export function fft(data: Float64Array, n: i32, inverse: i32): Float64Array {
   // Copy data
   const result = new Float64Array(n << 1)
-  for (let i: i32 = 0; i < (n << 1); i++) {
+  for (let i: i32 = 0; i < n << 1; i++) {
     result[i] = data[i]
   }
 
@@ -31,7 +31,7 @@ export function fft(data: Float64Array, n: i32, inverse: i32): Float64Array {
   let size: i32 = 2
   while (size <= n) {
     const halfSize: i32 = size >> 1
-    const step: f64 = (inverse ? 1.0 : -1.0) * 2.0 * Math.PI / <f64>size
+    const step: f64 = ((inverse ? 1.0 : -1.0) * 2.0 * Math.PI) / <f64>size
 
     for (let i: i32 = 0; i < n; i += size) {
       let angle: f64 = 0.0
@@ -182,7 +182,7 @@ function fftInPlace(data: Float64Array, n: i32, inverse: i32): Float64Array {
   let size: i32 = 2
   while (size <= n) {
     const halfSize: i32 = size >> 1
-    const step: f64 = (inverse ? 1.0 : -1.0) * 2.0 * Math.PI / <f64>size
+    const step: f64 = ((inverse ? 1.0 : -1.0) * 2.0 * Math.PI) / <f64>size
 
     for (let i: i32 = 0; i < n; i += size) {
       let angle: f64 = 0.0
@@ -332,7 +332,7 @@ function nextPowerOf2(n: i32): i32 {
  * Check if n is a power of 2
  */
 export function isPowerOf2(n: i32): i32 {
-  return (n > 0) && ((n & (n - 1)) === 0) ? 1 : 0
+  return n > 0 && (n & (n - 1)) === 0 ? 1 : 0
 }
 
 /**
@@ -352,11 +352,7 @@ export function ifft(data: Float64Array, n: i32): Float64Array {
  * @param cols - Number of columns
  * @returns Inverse transformed 2D complex data
  */
-export function ifft2d(
-  data: Float64Array,
-  rows: i32,
-  cols: i32
-): Float64Array {
+export function ifft2d(data: Float64Array, rows: i32, cols: i32): Float64Array {
   return fft2d(data, rows, cols, 1)
 }
 
@@ -478,9 +474,6 @@ export function crossCorrelation(
  * @param n - Length of signal
  * @returns Auto-correlation result (real)
  */
-export function autoCorrelation(
-  signal: Float64Array,
-  n: i32
-): Float64Array {
+export function autoCorrelation(signal: Float64Array, n: i32): Float64Array {
   return crossCorrelation(signal, n, signal, n)
 }

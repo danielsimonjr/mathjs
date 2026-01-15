@@ -21,7 +21,14 @@ console.log(`Node.js: ${process.version}`)
 // =============================================================================
 
 // eslint-disable-next-line no-unused-vars
-function jsMatrixMultiply (a: Float64Array, aRows: number, aCols: number, b: Float64Array, _bRows: number, bCols: number): Float64Array {
+function jsMatrixMultiply(
+  a: Float64Array,
+  aRows: number,
+  aCols: number,
+  b: Float64Array,
+  _bRows: number,
+  bCols: number
+): Float64Array {
   const result = new Float64Array(aRows * bCols)
   for (let i = 0; i < aRows; i++) {
     for (let j = 0; j < bCols; j++) {
@@ -35,7 +42,7 @@ function jsMatrixMultiply (a: Float64Array, aRows: number, aCols: number, b: Flo
   return result
 }
 
-function jsDotProduct (a: Float64Array, b: Float64Array, size: number): number {
+function jsDotProduct(a: Float64Array, b: Float64Array, size: number): number {
   let sum = 0
   for (let i = 0; i < size; i++) {
     sum += a[i] * b[i]
@@ -43,7 +50,7 @@ function jsDotProduct (a: Float64Array, b: Float64Array, size: number): number {
   return sum
 }
 
-function jsSum (arr: Float64Array): number {
+function jsSum(arr: Float64Array): number {
   let total = 0
   for (let i = 0; i < arr.length; i++) {
     total += arr[i]
@@ -55,7 +62,11 @@ function jsSum (arr: Float64Array): number {
 // Parallel with SharedArrayBuffer (Zero-Copy)
 // =============================================================================
 
-async function parallelDotProductShared (a: Float64Array, b: Float64Array, size: number): Promise<number> {
+async function parallelDotProductShared(
+  a: Float64Array,
+  b: Float64Array,
+  size: number
+): Promise<number> {
   const numWorkers = Math.min(NUM_CPUS, 4)
   const chunkSize = Math.ceil(size / numWorkers)
 
@@ -68,7 +79,9 @@ async function parallelDotProductShared (a: Float64Array, b: Float64Array, size:
   viewB.set(b)
 
   // Shared result accumulator
-  const sharedResult = new SharedArrayBuffer(numWorkers * Float64Array.BYTES_PER_ELEMENT)
+  const sharedResult = new SharedArrayBuffer(
+    numWorkers * Float64Array.BYTES_PER_ELEMENT
+  )
 
   const workers: Worker[] = []
   const promises: Promise<any>[] = []
@@ -77,7 +90,10 @@ async function parallelDotProductShared (a: Float64Array, b: Float64Array, size:
     const start = w * chunkSize
     const end = Math.min(start + chunkSize, size)
 
-    const worker = new Worker(new URL('data:text/javascript,' + encodeURIComponent(`
+    const worker = new Worker(
+      new URL(
+        'data:text/javascript,' +
+          encodeURIComponent(`
       import { parentPort, workerData } from 'worker_threads'
 
       const { sharedA, sharedB, sharedResult, start, end, workerIndex } = workerData
@@ -92,16 +108,26 @@ async function parallelDotProductShared (a: Float64Array, b: Float64Array, size:
 
       result[workerIndex] = sum
       parentPort.postMessage('done')
-    `)), {
-      workerData: { sharedA, sharedB, sharedResult, start, end, workerIndex: w }
-    })
+    `)
+      ),
+      {
+        workerData: {
+          sharedA,
+          sharedB,
+          sharedResult,
+          start,
+          end,
+          workerIndex: w
+        }
+      }
+    )
 
     workers.push(worker)
-    promises.push(new Promise(resolve => worker.on('message', resolve)))
+    promises.push(new Promise((resolve) => worker.on('message', resolve)))
   }
 
   await Promise.all(promises)
-  workers.forEach(w => w.terminate())
+  workers.forEach((w) => w.terminate())
 
   // Sum partial results
   const results = new Float64Array(sharedResult)
@@ -117,7 +143,11 @@ async function parallelDotProductShared (a: Float64Array, b: Float64Array, size:
 // Parallel with Transferable ArrayBuffer
 // =============================================================================
 
-async function parallelDotProductTransfer (a: Float64Array, b: Float64Array, size: number): Promise<number> {
+async function parallelDotProductTransfer(
+  a: Float64Array,
+  b: Float64Array,
+  size: number
+): Promise<number> {
   const numWorkers = Math.min(NUM_CPUS, 4)
   const chunkSize = Math.ceil(size / numWorkers)
 
@@ -134,7 +164,10 @@ async function parallelDotProductTransfer (a: Float64Array, b: Float64Array, siz
     chunkA.set(a.subarray(start, end))
     chunkB.set(b.subarray(start, end))
 
-    const worker = new Worker(new URL('data:text/javascript,' + encodeURIComponent(`
+    const worker = new Worker(
+      new URL(
+        'data:text/javascript,' +
+          encodeURIComponent(`
       import { parentPort } from 'worker_threads'
 
       parentPort.on('message', ({ a, b }) => {
@@ -146,9 +179,11 @@ async function parallelDotProductTransfer (a: Float64Array, b: Float64Array, siz
         }
         parentPort.postMessage(sum)
       })
-    `)))
+    `)
+      )
+    )
 
-    const promise = new Promise<number>(resolve => {
+    const promise = new Promise<number>((resolve) => {
       worker.on('message', (sum: number) => {
         worker.terminate()
         resolve(sum)
@@ -156,10 +191,10 @@ async function parallelDotProductTransfer (a: Float64Array, b: Float64Array, siz
     })
 
     // Transfer ownership (near zero-copy)
-    worker.postMessage(
-      { a: chunkA.buffer, b: chunkB.buffer },
-      [chunkA.buffer, chunkB.buffer]
-    )
+    worker.postMessage({ a: chunkA.buffer, b: chunkB.buffer }, [
+      chunkA.buffer,
+      chunkB.buffer
+    ])
 
     promises.push(promise)
   }
@@ -172,7 +207,7 @@ async function parallelDotProductTransfer (a: Float64Array, b: Float64Array, siz
 // Parallel Sum with SharedArrayBuffer
 // =============================================================================
 
-async function parallelSumShared (arr: Float64Array): Promise<number> {
+async function parallelSumShared(arr: Float64Array): Promise<number> {
   const size = arr.length
   const numWorkers = Math.min(NUM_CPUS, 4)
   const chunkSize = Math.ceil(size / numWorkers)
@@ -181,7 +216,9 @@ async function parallelSumShared (arr: Float64Array): Promise<number> {
   const view = new Float64Array(sharedArr)
   view.set(arr)
 
-  const sharedResult = new SharedArrayBuffer(numWorkers * Float64Array.BYTES_PER_ELEMENT)
+  const sharedResult = new SharedArrayBuffer(
+    numWorkers * Float64Array.BYTES_PER_ELEMENT
+  )
 
   const promises: Promise<any>[] = []
   const workers: Worker[] = []
@@ -190,7 +227,10 @@ async function parallelSumShared (arr: Float64Array): Promise<number> {
     const start = w * chunkSize
     const end = Math.min(start + chunkSize, size)
 
-    const worker = new Worker(new URL('data:text/javascript,' + encodeURIComponent(`
+    const worker = new Worker(
+      new URL(
+        'data:text/javascript,' +
+          encodeURIComponent(`
       import { parentPort, workerData } from 'worker_threads'
 
       const { sharedArr, sharedResult, start, end, workerIndex } = workerData
@@ -204,16 +244,19 @@ async function parallelSumShared (arr: Float64Array): Promise<number> {
 
       result[workerIndex] = sum
       parentPort.postMessage('done')
-    `)), {
-      workerData: { sharedArr, sharedResult, start, end, workerIndex: w }
-    })
+    `)
+      ),
+      {
+        workerData: { sharedArr, sharedResult, start, end, workerIndex: w }
+      }
+    )
 
     workers.push(worker)
-    promises.push(new Promise(resolve => worker.on('message', resolve)))
+    promises.push(new Promise((resolve) => worker.on('message', resolve)))
   }
 
   await Promise.all(promises)
-  workers.forEach(w => w.terminate())
+  workers.forEach((w) => w.terminate())
 
   const results = new Float64Array(sharedResult)
   let total = 0
@@ -228,7 +271,7 @@ async function parallelSumShared (arr: Float64Array): Promise<number> {
 // Test Data
 // =============================================================================
 
-function generateVector (size: number): Float64Array {
+function generateVector(size: number): Float64Array {
   const data = new Float64Array(size)
   for (let i = 0; i < size; i++) {
     data[i] = Math.random() * 100
@@ -245,7 +288,12 @@ interface BenchmarkResult {
   opsPerSec: number
 }
 
-async function benchmark (name: string, fn: () => Promise<any> | any, warmupRuns: number = 3, benchRuns: number = 10): Promise<BenchmarkResult> {
+async function benchmark(
+  name: string,
+  fn: () => Promise<any> | any,
+  warmupRuns: number = 3,
+  benchRuns: number = 10
+): Promise<BenchmarkResult> {
   // Warmup
   for (let i = 0; i < warmupRuns; i++) {
     await fn()
@@ -264,7 +312,9 @@ async function benchmark (name: string, fn: () => Promise<any> | any, warmupRuns
   const max = Math.max(...times)
   const opsPerSec = 1000 / avg
 
-  console.log(`  ${name.padEnd(40)} ${opsPerSec.toFixed(2).padStart(10)} ops/sec  ${avg.toFixed(2).padStart(8)}ms avg  (${min.toFixed(1)}-${max.toFixed(1)}ms)`)
+  console.log(
+    `  ${name.padEnd(40)} ${opsPerSec.toFixed(2).padStart(10)} ops/sec  ${avg.toFixed(2).padStart(8)}ms avg  (${min.toFixed(1)}-${max.toFixed(1)}ms)`
+  )
 
   return { avg, opsPerSec }
 }
@@ -273,7 +323,7 @@ async function benchmark (name: string, fn: () => Promise<any> | any, warmupRuns
 // Main
 // =============================================================================
 
-async function main (): Promise<void> {
+async function main(): Promise<void> {
   console.log('\n' + '='.repeat(90))
   console.log('EFFICIENT PARALLEL BENCHMARK')
   console.log('Comparing: JS vs SharedArrayBuffer vs Transferable ArrayBuffer')
@@ -299,13 +349,23 @@ async function main (): Promise<void> {
     let transferResult: BenchmarkResult | undefined
 
     try {
-      sharedResult = await benchmark('Parallel (SharedArrayBuffer)', () => parallelDotProductShared(a, b, size), 2, 5)
+      sharedResult = await benchmark(
+        'Parallel (SharedArrayBuffer)',
+        () => parallelDotProductShared(a, b, size),
+        2,
+        5
+      )
     } catch (e: any) {
       console.log(`  Parallel (SharedArrayBuffer): ERROR - ${e.message}`)
     }
 
     try {
-      transferResult = await benchmark('Parallel (Transferable)', () => parallelDotProductTransfer(a, b, size), 2, 5)
+      transferResult = await benchmark(
+        'Parallel (Transferable)',
+        () => parallelDotProductTransfer(a, b, size),
+        2,
+        5
+      )
     } catch (e: any) {
       console.log(`  Parallel (Transferable): ERROR - ${e.message}`)
     }
@@ -314,11 +374,15 @@ async function main (): Promise<void> {
     console.log('\n  Speedups vs Pure JS:')
     if (sharedResult) {
       const speedup = sharedResult.opsPerSec / jsResult.opsPerSec
-      console.log(`    SharedArrayBuffer: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`)
+      console.log(
+        `    SharedArrayBuffer: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`
+      )
     }
     if (transferResult) {
       const speedup = transferResult.opsPerSec / jsResult.opsPerSec
-      console.log(`    Transferable: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`)
+      console.log(
+        `    Transferable: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`
+      )
     }
   }
 
@@ -337,14 +401,21 @@ async function main (): Promise<void> {
 
     let sharedResult: BenchmarkResult | undefined
     try {
-      sharedResult = await benchmark('Parallel (SharedArrayBuffer)', () => parallelSumShared(arr), 2, 5)
+      sharedResult = await benchmark(
+        'Parallel (SharedArrayBuffer)',
+        () => parallelSumShared(arr),
+        2,
+        5
+      )
     } catch (e: any) {
       console.log(`  Parallel (SharedArrayBuffer): ERROR - ${e.message}`)
     }
 
     if (sharedResult) {
       const speedup = sharedResult.opsPerSec / jsResult.opsPerSec
-      console.log(`\n  Speedup: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`)
+      console.log(
+        `\n  Speedup: ${speedup >= 1 ? speedup.toFixed(2) + 'x faster' : (1 / speedup).toFixed(2) + 'x slower'}`
+      )
     }
   }
 

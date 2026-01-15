@@ -224,8 +224,11 @@ describe('wasm/numeric/rootfinding', function () {
 
   describe('root finding properties', function () {
     it('bisection should always bracket the root', function () {
-      let a = 0, b = 10, fa = -5, fb = 5
-      let state = bisectionSetup(fa, fb, a, b)
+      const a = 0,
+        b = 10,
+        fa = -5,
+        fb = 5
+      const state = bisectionSetup(fa, fb, a, b)
 
       // After each step, root should still be in [a, b]
       const mid = state[0]

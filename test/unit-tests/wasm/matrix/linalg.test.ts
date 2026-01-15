@@ -1,7 +1,5 @@
 import assert from 'assert'
-import {
-  det
-} from '../../../../src/wasm/matrix/linalg.ts'
+import { det } from '../../../../src/wasm/matrix/linalg.ts'
 
 const EPSILON = 1e-10
 
@@ -37,10 +35,7 @@ describe('wasm/matrix/linalg', function () {
     it('should use LU decomposition for larger matrices', function () {
       // 4x4 identity matrix → det = 1
       const a = new Float64Array([
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
+        1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
       ])
       assert(approxEqual(det(a, 4), 1))
     })
@@ -48,10 +43,7 @@ describe('wasm/matrix/linalg', function () {
     it('should detect singular matrix', function () {
       // Matrix with zero column
       const a = new Float64Array([
-        1, 0, 2, 3,
-        0, 0, 1, 2,
-        1, 0, 3, 4,
-        2, 0, 1, 1
+        1, 0, 2, 3, 0, 0, 1, 2, 1, 0, 3, 4, 2, 0, 1, 1
       ])
       assert(approxEqual(det(a, 4), 0))
     })

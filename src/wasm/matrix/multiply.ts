@@ -128,11 +128,7 @@ export function multiplyVector(
 /**
  * Matrix transpose: B = A^T
  */
-export function transpose(
-  a: Float64Array,
-  rows: i32,
-  cols: i32
-): Float64Array {
+export function transpose(a: Float64Array, rows: i32, cols: i32): Float64Array {
   const result = new Float64Array(rows * cols)
 
   // Cache-friendly blocked transpose
@@ -158,11 +154,7 @@ export function transpose(
 /**
  * Element-wise addition: C = A + B
  */
-export function add(
-  a: Float64Array,
-  b: Float64Array,
-  size: i32
-): Float64Array {
+export function add(a: Float64Array, b: Float64Array, size: i32): Float64Array {
   const result = new Float64Array(size)
 
   for (let i: i32 = 0; i < size; i++) {
@@ -209,11 +201,7 @@ export function scalarMultiply(
 /**
  * Dot product: result = sum(a[i] * b[i])
  */
-export function dotProduct(
-  a: Float64Array,
-  b: Float64Array,
-  size: i32
-): f64 {
+export function dotProduct(a: Float64Array, b: Float64Array, size: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < size; i++) {

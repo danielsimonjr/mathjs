@@ -83,9 +83,14 @@ export function rightLogShift(x: i32, y: i32): i32 {
  * @param result Output array
  * @param length Array length
  */
-export function bitAndArray(a: Int32Array, b: Int32Array, result: Int32Array, length: i32): void {
+export function bitAndArray(
+  a: Int32Array,
+  b: Int32Array,
+  result: Int32Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(result[i] = unchecked(a[i]) & unchecked(b[i]))
+    unchecked((result[i] = unchecked(a[i]) & unchecked(b[i])))
   }
 }
 
@@ -96,9 +101,14 @@ export function bitAndArray(a: Int32Array, b: Int32Array, result: Int32Array, le
  * @param result Output array
  * @param length Array length
  */
-export function bitOrArray(a: Int32Array, b: Int32Array, result: Int32Array, length: i32): void {
+export function bitOrArray(
+  a: Int32Array,
+  b: Int32Array,
+  result: Int32Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(result[i] = unchecked(a[i]) | unchecked(b[i]))
+    unchecked((result[i] = unchecked(a[i]) | unchecked(b[i])))
   }
 }
 
@@ -109,9 +119,14 @@ export function bitOrArray(a: Int32Array, b: Int32Array, result: Int32Array, len
  * @param result Output array
  * @param length Array length
  */
-export function bitXorArray(a: Int32Array, b: Int32Array, result: Int32Array, length: i32): void {
+export function bitXorArray(
+  a: Int32Array,
+  b: Int32Array,
+  result: Int32Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(result[i] = unchecked(a[i]) ^ unchecked(b[i]))
+    unchecked((result[i] = unchecked(a[i]) ^ unchecked(b[i])))
   }
 }
 
@@ -121,9 +136,13 @@ export function bitXorArray(a: Int32Array, b: Int32Array, result: Int32Array, le
  * @param result Output array
  * @param length Array length
  */
-export function bitNotArray(input: Int32Array, result: Int32Array, length: i32): void {
+export function bitNotArray(
+  input: Int32Array,
+  result: Int32Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(result[i] = ~unchecked(input[i]))
+    unchecked((result[i] = ~unchecked(input[i])))
   }
 }
 
@@ -134,9 +153,14 @@ export function bitNotArray(input: Int32Array, result: Int32Array, length: i32):
  * @param result Output array
  * @param length Array length
  */
-export function leftShiftArray(values: Int32Array, shift: i32, result: Int32Array, length: i32): void {
+export function leftShiftArray(
+  values: Int32Array,
+  shift: i32,
+  result: Int32Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(result[i] = unchecked(values[i]) << shift)
+    unchecked((result[i] = unchecked(values[i]) << shift))
   }
 }
 
@@ -147,9 +171,14 @@ export function leftShiftArray(values: Int32Array, shift: i32, result: Int32Arra
  * @param result Output array
  * @param length Array length
  */
-export function rightArithShiftArray(values: Int32Array, shift: i32, result: Int32Array, length: i32): void {
+export function rightArithShiftArray(
+  values: Int32Array,
+  shift: i32,
+  result: Int32Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(result[i] = unchecked(values[i]) >> shift)
+    unchecked((result[i] = unchecked(values[i]) >> shift))
   }
 }
 
@@ -160,9 +189,14 @@ export function rightArithShiftArray(values: Int32Array, shift: i32, result: Int
  * @param result Output array
  * @param length Array length
  */
-export function rightLogShiftArray(values: Int32Array, shift: i32, result: Int32Array, length: i32): void {
+export function rightLogShiftArray(
+  values: Int32Array,
+  shift: i32,
+  result: Int32Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(result[i] = unchecked(values[i]) >>> shift)
+    unchecked((result[i] = unchecked(values[i]) >>> shift))
   }
 }
 

@@ -21,7 +21,7 @@ describe('wasm/bitwise/operations', function () {
     })
 
     it('should return 0 when ANDing with 0', function () {
-      assert.strictEqual(bitAnd(0xFF, 0), 0)
+      assert.strictEqual(bitAnd(0xff, 0), 0)
     })
 
     it('should return same value when ANDing with all 1s', function () {
@@ -29,7 +29,7 @@ describe('wasm/bitwise/operations', function () {
     })
 
     it('should handle negative numbers', function () {
-      assert.strictEqual(bitAnd(-1, 0xFF), 0xFF)
+      assert.strictEqual(bitAnd(-1, 0xff), 0xff)
     })
   })
 
@@ -124,7 +124,7 @@ describe('wasm/bitwise/operations', function () {
       // -1 in 32-bit is all 1s, shifting right by 1 gives a large positive number
       const result = rightLogShift(-1, 1)
       assert(result > 0)
-      assert.strictEqual(result, 0x7FFFFFFF)
+      assert.strictEqual(result, 0x7fffffff)
     })
 
     it('should handle shift by 0', function () {

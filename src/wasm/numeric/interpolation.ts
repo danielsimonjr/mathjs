@@ -53,7 +53,13 @@ export function linearInterpTable(
     return linearInterp(xValues[0], yValues[0], xValues[1], yValues[1], x)
   }
   if (x >= xValues[n - 1]) {
-    return linearInterp(xValues[n - 2], yValues[n - 2], xValues[n - 1], yValues[n - 1], x)
+    return linearInterp(
+      xValues[n - 2],
+      yValues[n - 2],
+      xValues[n - 1],
+      yValues[n - 1],
+      x
+    )
   }
 
   // Binary search for interval
@@ -86,9 +92,16 @@ export function linearInterpTable(
  * @returns Interpolated value
  */
 export function bilinearInterp(
-  x1: f64, x2: f64, y1: f64, y2: f64,
-  q11: f64, q12: f64, q21: f64, q22: f64,
-  x: f64, y: f64
+  x1: f64,
+  x2: f64,
+  y1: f64,
+  y2: f64,
+  q11: f64,
+  q12: f64,
+  q21: f64,
+  q22: f64,
+  x: f64,
+  y: f64
 ): f64 {
   const denom = (x2 - x1) * (y2 - y1)
   if (denom === 0) return q11
@@ -125,7 +138,7 @@ export function lagrangeInterp(
     let term = yValues[i]
     for (let j: i32 = 0; j < n; j++) {
       if (j !== i) {
-        term = term * (x - xValues[j]) / (xValues[i] - xValues[j])
+        term = (term * (x - xValues[j])) / (xValues[i] - xValues[j])
       }
     }
     result += term
@@ -244,14 +257,17 @@ export function newtonInterpFull(
  * @param n Number of points
  * @returns Barycentric weights
  */
-export function barycentricWeights(xValues: Float64Array, n: i32): Float64Array {
+export function barycentricWeights(
+  xValues: Float64Array,
+  n: i32
+): Float64Array {
   const weights = new Float64Array(n)
 
   for (let i: i32 = 0; i < n; i++) {
     let w: f64 = 1.0
     for (let j: i32 = 0; j < n; j++) {
       if (j !== i) {
-        w /= (xValues[i] - xValues[j])
+        w /= xValues[i] - xValues[j]
       }
     }
     weights[i] = w
@@ -339,8 +355,9 @@ export function naturalCubicSplineCoeffs(
   z[0] = 0.0
 
   for (let i: i32 = 1; i < segments; i++) {
-    alpha[i] = (3.0 / h[i]) * (yValues[i + 1] - yValues[i]) -
-               (3.0 / h[i - 1]) * (yValues[i] - yValues[i - 1])
+    alpha[i] =
+      (3.0 / h[i]) * (yValues[i + 1] - yValues[i]) -
+      (3.0 / h[i - 1]) * (yValues[i] - yValues[i - 1])
     l[i] = 2.0 * (xValues[i + 1] - xValues[i - 1]) - h[i - 1] * mu[i - 1]
     mu[i] = h[i] / l[i]
     z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i]
@@ -362,7 +379,9 @@ export function naturalCubicSplineCoeffs(
 
   for (let i: i32 = 0; i < segments; i++) {
     const a = yValues[i]
-    const b = (yValues[i + 1] - yValues[i]) / h[i] - h[i] * (c[i + 1] + 2.0 * c[i]) / 3.0
+    const b =
+      (yValues[i + 1] - yValues[i]) / h[i] -
+      (h[i] * (c[i + 1] + 2.0 * c[i])) / 3.0
     const d = (c[i + 1] - c[i]) / (3.0 * h[i])
 
     coeffs[i * 4] = a
@@ -406,12 +425,14 @@ export function clampedCubicSplineCoeffs(
   }
 
   const alpha = new Float64Array(n)
-  alpha[0] = 3.0 * (yValues[1] - yValues[0]) / h[0] - 3.0 * fp0
-  alpha[n - 1] = 3.0 * fpn - 3.0 * (yValues[n - 1] - yValues[n - 2]) / h[segments - 1]
+  alpha[0] = (3.0 * (yValues[1] - yValues[0])) / h[0] - 3.0 * fp0
+  alpha[n - 1] =
+    3.0 * fpn - (3.0 * (yValues[n - 1] - yValues[n - 2])) / h[segments - 1]
 
   for (let i: i32 = 1; i < segments; i++) {
-    alpha[i] = (3.0 / h[i]) * (yValues[i + 1] - yValues[i]) -
-               (3.0 / h[i - 1]) * (yValues[i] - yValues[i - 1])
+    alpha[i] =
+      (3.0 / h[i]) * (yValues[i + 1] - yValues[i]) -
+      (3.0 / h[i - 1]) * (yValues[i] - yValues[i - 1])
   }
 
   const l = new Float64Array(n)
@@ -442,7 +463,9 @@ export function clampedCubicSplineCoeffs(
 
   for (let i: i32 = 0; i < segments; i++) {
     const a = yValues[i]
-    const b = (yValues[i + 1] - yValues[i]) / h[i] - h[i] * (c[i + 1] + 2.0 * c[i]) / 3.0
+    const b =
+      (yValues[i + 1] - yValues[i]) / h[i] -
+      (h[i] * (c[i + 1] + 2.0 * c[i])) / 3.0
     const d = (c[i + 1] - c[i]) / (3.0 * h[i])
 
     coeffs[i * 4] = a
@@ -563,8 +586,12 @@ export function cubicSplineDerivative(
  * @returns Interpolated value
  */
 export function hermiteInterp(
-  x0: f64, y0: f64, dy0: f64,
-  x1: f64, y1: f64, dy1: f64,
+  x0: f64,
+  y0: f64,
+  dy0: f64,
+  x1: f64,
+  y1: f64,
+  dy1: f64,
   x: f64
 ): f64 {
   const h = x1 - x0
@@ -622,7 +649,8 @@ export function pchipInterp(
 
   // Endpoints: one-sided differences
   slopes[0] = (yValues[1] - yValues[0]) / (xValues[1] - xValues[0])
-  slopes[n - 1] = (yValues[n - 1] - yValues[n - 2]) / (xValues[n - 1] - xValues[n - 2])
+  slopes[n - 1] =
+    (yValues[n - 1] - yValues[n - 2]) / (xValues[n - 1] - xValues[n - 2])
 
   // Find segment
   let seg: i32 = 0
@@ -645,8 +673,12 @@ export function pchipInterp(
   }
 
   return hermiteInterp(
-    xValues[seg], yValues[seg], slopes[seg],
-    xValues[seg + 1], yValues[seg + 1], slopes[seg + 1],
+    xValues[seg],
+    yValues[seg],
+    slopes[seg],
+    xValues[seg + 1],
+    yValues[seg + 1],
+    slopes[seg + 1],
     x
   )
 }
@@ -724,8 +756,12 @@ export function akimaInterp(
   }
 
   return hermiteInterp(
-    xValues[seg], yValues[seg], t[seg],
-    xValues[seg + 1], yValues[seg + 1], t[seg + 1],
+    xValues[seg],
+    yValues[seg],
+    t[seg],
+    xValues[seg + 1],
+    yValues[seg + 1],
+    t[seg + 1],
     x
   )
 }

@@ -231,9 +231,13 @@ export function divideInt(x: i32, y: i32): i32 {
  * @param output Output array (must be same length as input)
  * @param length Length of arrays
  */
-export function unaryMinusArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function unaryMinusArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = -unchecked(input[i]))
+    unchecked((output[i] = -unchecked(input[i])))
   }
 }
 
@@ -243,10 +247,14 @@ export function unaryMinusArray(input: Float64Array, output: Float64Array, lengt
  * @param output Output array
  * @param length Length of arrays
  */
-export function squareArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function squareArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
     const x = unchecked(input[i])
-    unchecked(output[i] = x * x)
+    unchecked((output[i] = x * x))
   }
 }
 
@@ -256,10 +264,14 @@ export function squareArray(input: Float64Array, output: Float64Array, length: i
  * @param output Output array
  * @param length Length of arrays
  */
-export function cubeArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function cubeArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
     const x = unchecked(input[i])
-    unchecked(output[i] = x * x * x)
+    unchecked((output[i] = x * x * x))
   }
 }
 
@@ -269,9 +281,13 @@ export function cubeArray(input: Float64Array, output: Float64Array, length: i32
  * @param output Output array
  * @param length Length of arrays
  */
-export function absArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function absArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.abs(unchecked(input[i])))
+    unchecked((output[i] = Math.abs(unchecked(input[i]))))
   }
 }
 
@@ -281,63 +297,97 @@ export function absArray(input: Float64Array, output: Float64Array, length: i32)
  * @param output Output array
  * @param length Length of arrays
  */
-export function signArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function signArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
     const x = unchecked(input[i])
-    unchecked(output[i] = x > 0 ? 1.0 : (x < 0 ? -1.0 : 0.0))
+    unchecked((output[i] = x > 0 ? 1.0 : x < 0 ? -1.0 : 0.0))
   }
 }
 
 /**
  * Vectorized addition
  */
-export function addArray(a: Float64Array, b: Float64Array, output: Float64Array, length: i32): void {
+export function addArray(
+  a: Float64Array,
+  b: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = unchecked(a[i]) + unchecked(b[i]))
+    unchecked((output[i] = unchecked(a[i]) + unchecked(b[i])))
   }
 }
 
 /**
  * Vectorized subtraction
  */
-export function subtractArray(a: Float64Array, b: Float64Array, output: Float64Array, length: i32): void {
+export function subtractArray(
+  a: Float64Array,
+  b: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = unchecked(a[i]) - unchecked(b[i]))
+    unchecked((output[i] = unchecked(a[i]) - unchecked(b[i])))
   }
 }
 
 /**
  * Vectorized multiplication
  */
-export function multiplyArray(a: Float64Array, b: Float64Array, output: Float64Array, length: i32): void {
+export function multiplyArray(
+  a: Float64Array,
+  b: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = unchecked(a[i]) * unchecked(b[i]))
+    unchecked((output[i] = unchecked(a[i]) * unchecked(b[i])))
   }
 }
 
 /**
  * Vectorized division
  */
-export function divideArray(a: Float64Array, b: Float64Array, output: Float64Array, length: i32): void {
+export function divideArray(
+  a: Float64Array,
+  b: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = unchecked(a[i]) / unchecked(b[i]))
+    unchecked((output[i] = unchecked(a[i]) / unchecked(b[i])))
   }
 }
 
 /**
  * Scalar addition to array
  */
-export function addScalarArray(input: Float64Array, scalar: f64, output: Float64Array, length: i32): void {
+export function addScalarArray(
+  input: Float64Array,
+  scalar: f64,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = unchecked(input[i]) + scalar)
+    unchecked((output[i] = unchecked(input[i]) + scalar))
   }
 }
 
 /**
  * Scalar multiplication to array
  */
-export function multiplyScalarArray(input: Float64Array, scalar: f64, output: Float64Array, length: i32): void {
+export function multiplyScalarArray(
+  input: Float64Array,
+  scalar: f64,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = unchecked(input[i]) * scalar)
+    unchecked((output[i] = unchecked(input[i]) * scalar))
   }
 }

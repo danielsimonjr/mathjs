@@ -43,7 +43,7 @@ export function csMarked(w: Int32Array, j: i32): boolean {
  * @param j Node index
  */
 export function csMark(w: Int32Array, j: i32): void {
-  unchecked(w[j] = csFlip(unchecked(w[j])))
+  unchecked((w[j] = csFlip(unchecked(w[j]))))
 }
 
 /**
@@ -57,12 +57,12 @@ export function csMark(w: Int32Array, j: i32): void {
 export function csCumsum(p: Int32Array, c: Int32Array, n: i32): i32 {
   let nz: i32 = 0
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(p[i] = nz)
+    unchecked((p[i] = nz))
     const ci = unchecked(c[i])
     nz += ci
-    unchecked(c[i] = unchecked(p[i]))
+    unchecked((c[i] = unchecked(p[i])))
   }
-  unchecked(p[n] = nz)
+  unchecked((p[n] = nz))
   return nz
 }
 
@@ -95,18 +95,20 @@ export function csPermute(
   let nz: i32 = 0
 
   for (let k: i32 = 0; k < n; k++) {
-    unchecked(cPtr[k] = nz)
+    unchecked((cPtr[k] = nz))
     const j = q ? unchecked(q[k]) : k
 
     for (let t: i32 = unchecked(ptr[j]); t < unchecked(ptr[j + 1]); t++) {
-      const i = pinv ? unchecked(pinv[unchecked(index[t])]) : unchecked(index[t])
+      const i = pinv
+        ? unchecked(pinv[unchecked(index[t])])
+        : unchecked(index[t])
 
-      unchecked(cIndex[nz] = i)
-      unchecked(cValues[nz] = unchecked(values[t]))
+      unchecked((cIndex[nz] = i))
+      unchecked((cValues[nz] = unchecked(values[t])))
       nz++
     }
   }
-  unchecked(cPtr[n] = nz)
+  unchecked((cPtr[n] = nz))
 }
 
 /**
@@ -137,9 +139,9 @@ export function csLeaf(
     return jleaf
   }
 
-  unchecked(maxfirst[i] = unchecked(first[j]))
+  unchecked((maxfirst[i] = unchecked(first[j])))
   jprev = unchecked(prevleaf[i])
-  unchecked(prevleaf[i] = j)
+  unchecked((prevleaf[i] = j))
 
   if (jprev === -1) {
     jleaf = i
@@ -156,7 +158,7 @@ export function csLeaf(
 
     for (q = jprev; q !== s; q = sparent) {
       sparent = unchecked(ancestor[q])
-      unchecked(ancestor[q] = j)
+      unchecked((ancestor[q] = j))
     }
   }
 
@@ -181,8 +183,8 @@ export function csEtree(
   const ancestor = new Int32Array(n)
 
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(parent[i] = -1)
-    unchecked(ancestor[i] = -1)
+    unchecked((parent[i] = -1))
+    unchecked((ancestor[i] = -1))
   }
 
   for (let k: i32 = 0; k < n; k++) {
@@ -191,10 +193,10 @@ export function csEtree(
 
       while (i !== -1 && i < k) {
         const inext = unchecked(ancestor[i])
-        unchecked(ancestor[i] = k)
+        unchecked((ancestor[i] = k))
 
         if (inext === -1) {
-          unchecked(parent[i] = k)
+          unchecked((parent[i] = k))
         }
 
         i = inext
@@ -230,7 +232,7 @@ export function csDfs(
   let p: i32
   let p2: i32
 
-  unchecked(xi[0] = j)
+  unchecked((xi[0] = j))
 
   while (head >= 0) {
     j = unchecked(xi[head])
@@ -238,7 +240,7 @@ export function csDfs(
 
     if (!csMarked(marked, j)) {
       csMark(marked, j)
-      unchecked(pstack[head] = jnew < 0 ? 0 : unchecked(ptr[jnew]))
+      unchecked((pstack[head] = jnew < 0 ? 0 : unchecked(ptr[jnew])))
     }
 
     done = true
@@ -251,15 +253,15 @@ export function csDfs(
         continue
       }
 
-      unchecked(pstack[head] = p)
-      unchecked(xi[++head] = i)
+      unchecked((pstack[head] = p))
+      unchecked((xi[++head] = i))
       done = false
       break
     }
 
     if (done) {
       head--
-      unchecked(xi[--top] = j)
+      unchecked((xi[--top] = j))
     }
   }
 
@@ -292,13 +294,22 @@ export function csSpsolve(
   // Find nonzero pattern
   for (let k: i32 = 0; k < n; k++) {
     if (unchecked(B[k]) !== 0) {
-      top = csDfs(k, gIndex, gPtr, top, xi, new Int32Array(n), pinv, new Int32Array(n))
+      top = csDfs(
+        k,
+        gIndex,
+        gPtr,
+        top,
+        xi,
+        new Int32Array(n),
+        pinv,
+        new Int32Array(n)
+      )
     }
   }
 
   // Initialize x with B
   for (let p: i32 = top; p < n; p++) {
-    unchecked(x[unchecked(xi[p])] = unchecked(B[unchecked(xi[p])]))
+    unchecked((x[unchecked(xi[p])] = unchecked(B[unchecked(xi[p])])))
   }
 
   // Solve
@@ -308,13 +319,17 @@ export function csSpsolve(
 
     if (J < 0) continue
 
-    let xj = unchecked(x[j])
+    const xj = unchecked(x[j])
     const p1 = unchecked(gPtr[J])
     const p2 = unchecked(gPtr[J + 1])
 
-    for (let p: i32 = lo ? p1 : p2 - 1; lo ? p < p2 : p >= p1; p = lo ? p + 1 : p - 1) {
+    for (
+      let p: i32 = lo ? p1 : p2 - 1;
+      lo ? p < p2 : p >= p1;
+      p = lo ? p + 1 : p - 1
+    ) {
       const i = unchecked(gIndex[p])
-      unchecked(x[i] -= unchecked(gValues[p]) * xj)
+      unchecked((x[i] -= unchecked(gValues[p]) * xj))
     }
   }
 

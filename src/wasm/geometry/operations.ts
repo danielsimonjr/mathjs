@@ -552,8 +552,8 @@ export function intersectCircles(
   const h: f64 = Math.sqrt(h2)
 
   // Point on line between centers at distance a from center 1
-  const px: f64 = x1 + a * dx / d
-  const py: f64 = y1 + a * dy / d
+  const px: f64 = x1 + (a * dx) / d
+  const py: f64 = y1 + (a * dy) / d
 
   if (h < 1e-10) {
     // One intersection (tangent)
@@ -564,10 +564,10 @@ export function intersectCircles(
   }
 
   // Two intersections
-  result[0] = px + h * dy / d
-  result[1] = py - h * dx / d
-  result[2] = px - h * dy / d
-  result[3] = py + h * dx / d
+  result[0] = px + (h * dy) / d
+  result[1] = py - (h * dx) / d
+  result[2] = px - (h * dy) / d
+  result[3] = py + (h * dx) / d
   result[4] = 2.0
 
   return result
@@ -702,8 +702,8 @@ export function polygonCentroid2D(vertices: Float64Array): Float64Array {
     return result
   }
 
-  cx /= (6.0 * signedArea)
-  cy /= (6.0 * signedArea)
+  cx /= 6.0 * signedArea
+  cy /= 6.0 * signedArea
 
   result[0] = cx
   result[1] = cy

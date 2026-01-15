@@ -73,15 +73,18 @@ export function rk45Step(
     const idx_k6: i32 = 5 * n + i
     const idx_k7: i32 = 6 * n + i
 
-    unchecked(yNext[i] = unchecked(y[i]) + h * (
-      b1 * unchecked(k[idx_k1]) +
-      b2 * unchecked(k[idx_k2]) +
-      b3 * unchecked(k[idx_k3]) +
-      b4 * unchecked(k[idx_k4]) +
-      b5 * unchecked(k[idx_k5]) +
-      b6 * unchecked(k[idx_k6]) +
-      b7 * unchecked(k[idx_k7])
-    ))
+    unchecked(
+      (yNext[i] =
+        unchecked(y[i]) +
+        h *
+          (b1 * unchecked(k[idx_k1]) +
+            b2 * unchecked(k[idx_k2]) +
+            b3 * unchecked(k[idx_k3]) +
+            b4 * unchecked(k[idx_k4]) +
+            b5 * unchecked(k[idx_k5]) +
+            b6 * unchecked(k[idx_k6]) +
+            b7 * unchecked(k[idx_k7])))
+    )
   }
 
   // Compute 4th order solution and error estimate
@@ -94,18 +97,19 @@ export function rk45Step(
     const idx_k6: i32 = 5 * n + i
     const idx_k7: i32 = 6 * n + i
 
-    const yp: f64 = unchecked(y[i]) + h * (
-      bp1 * unchecked(k[idx_k1]) +
-      bp2 * unchecked(k[idx_k2]) +
-      bp3 * unchecked(k[idx_k3]) +
-      bp4 * unchecked(k[idx_k4]) +
-      bp5 * unchecked(k[idx_k5]) +
-      bp6 * unchecked(k[idx_k6]) +
-      bp7 * unchecked(k[idx_k7])
-    )
+    const yp: f64 =
+      unchecked(y[i]) +
+      h *
+        (bp1 * unchecked(k[idx_k1]) +
+          bp2 * unchecked(k[idx_k2]) +
+          bp3 * unchecked(k[idx_k3]) +
+          bp4 * unchecked(k[idx_k4]) +
+          bp5 * unchecked(k[idx_k5]) +
+          bp6 * unchecked(k[idx_k6]) +
+          bp7 * unchecked(k[idx_k7]))
 
     // Error is difference between 5th and 4th order solutions
-    unchecked(yError[i] = Math.abs(unchecked(yNext[i]) - yp))
+    unchecked((yError[i] = Math.abs(unchecked(yNext[i]) - yp)))
   }
 
   return new RKStepResult(yNext, yError)
@@ -169,12 +173,15 @@ export function rk23Step(
     const idx_k3: i32 = 2 * n + i
     const idx_k4: i32 = 3 * n + i
 
-    unchecked(yNext[i] = unchecked(y[i]) + h * (
-      b1 * unchecked(k[idx_k1]) +
-      b2 * unchecked(k[idx_k2]) +
-      b3 * unchecked(k[idx_k3]) +
-      b4 * unchecked(k[idx_k4])
-    ))
+    unchecked(
+      (yNext[i] =
+        unchecked(y[i]) +
+        h *
+          (b1 * unchecked(k[idx_k1]) +
+            b2 * unchecked(k[idx_k2]) +
+            b3 * unchecked(k[idx_k3]) +
+            b4 * unchecked(k[idx_k4])))
+    )
   }
 
   // Compute 2nd order solution and error estimate
@@ -184,14 +191,15 @@ export function rk23Step(
     const idx_k3: i32 = 2 * n + i
     const idx_k4: i32 = 3 * n + i
 
-    const yp: f64 = unchecked(y[i]) + h * (
-      bp1 * unchecked(k[idx_k1]) +
-      bp2 * unchecked(k[idx_k2]) +
-      bp3 * unchecked(k[idx_k3]) +
-      bp4 * unchecked(k[idx_k4])
-    )
+    const yp: f64 =
+      unchecked(y[i]) +
+      h *
+        (bp1 * unchecked(k[idx_k1]) +
+          bp2 * unchecked(k[idx_k2]) +
+          bp3 * unchecked(k[idx_k3]) +
+          bp4 * unchecked(k[idx_k4]))
 
-    unchecked(yError[i] = Math.abs(unchecked(yNext[i]) - yp))
+    unchecked((yError[i] = Math.abs(unchecked(yNext[i]) - yp)))
   }
 
   return new RKStepResult(yNext, yError)
@@ -269,7 +277,7 @@ export function interpolate(
   const beta: f64 = 1.0 - alpha
 
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(result[i] = beta * unchecked(y0[i]) + alpha * unchecked(y1[i]))
+    unchecked((result[i] = beta * unchecked(y0[i]) + alpha * unchecked(y1[i])))
   }
 
   return result
@@ -284,7 +292,7 @@ export function interpolate(
 export function vectorCopy(src: Float64Array, n: i32): Float64Array {
   const dst = new Float64Array(n)
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(dst[i] = unchecked(src[i]))
+    unchecked((dst[i] = unchecked(src[i])))
   }
   return dst
 }
@@ -303,7 +311,7 @@ export function vectorScale(
 ): Float64Array {
   const result = new Float64Array(n)
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(result[i] = unchecked(vec[i]) * scale)
+    unchecked((result[i] = unchecked(vec[i]) * scale))
   }
   return result
 }
@@ -322,7 +330,7 @@ export function vectorAdd(
 ): Float64Array {
   const result = new Float64Array(n)
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(result[i] = unchecked(a[i]) + unchecked(b[i]))
+    unchecked((result[i] = unchecked(a[i]) + unchecked(b[i])))
   }
   return result
 }
@@ -337,9 +345,9 @@ export function vectorAdd(
  */
 export function wouldOvershoot(t: f64, tf: f64, h: f64, forward: i32): i32 {
   if (forward) {
-    return (t + h > tf) ? 1 : 0
+    return t + h > tf ? 1 : 0
   } else {
-    return (t + h < tf) ? 1 : 0
+    return t + h < tf ? 1 : 0
   }
 }
 

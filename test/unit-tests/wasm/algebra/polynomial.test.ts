@@ -110,9 +110,10 @@ describe('wasm/algebra/polynomial', function () {
       // x³ - 1 = 0 → x = 1, e^(2πi/3), e^(-2πi/3)
       const result = cubicRoots(1, 0, 0, -1)
       // One root should be 1
-      const hasRealRoot = approxEqual(result[0], 1, 1e-6) ||
-                         approxEqual(result[2], 1, 1e-6) ||
-                         approxEqual(result[4], 1, 1e-6)
+      const hasRealRoot =
+        approxEqual(result[0], 1, 1e-6) ||
+        approxEqual(result[2], 1, 1e-6) ||
+        approxEqual(result[4], 1, 1e-6)
       assert(hasRealRoot)
     })
 
@@ -131,7 +132,8 @@ describe('wasm/algebra/polynomial', function () {
       const result = quarticRoots(1, -10, 35, -50, 24)
       const realRoots: number[] = []
       for (let i = 0; i < 4; i++) {
-        if (Math.abs(result[i * 2 + 1]) < 0.01) { // small imaginary part
+        if (Math.abs(result[i * 2 + 1]) < 0.01) {
+          // small imaginary part
           realRoots.push(result[i * 2])
         }
       }
@@ -233,7 +235,7 @@ describe('wasm/algebra/polynomial', function () {
       // (x² - 3x + 2) / (x - 1) = (x - 2) with remainder 0
       // Coeffs: [2, -3, 1] / [−1, 1] = [−2, 1]
       const a = new Float64Array([2, -3, 1]) // x² - 3x + 2
-      const b = new Float64Array([-1, 1])    // x - 1
+      const b = new Float64Array([-1, 1]) // x - 1
       const result = polyDivide(a, 3, b, 2)
       // Result should be [quotient, remainder]
       // Quotient has length 3-2+1=2, remainder has length 2-1=1

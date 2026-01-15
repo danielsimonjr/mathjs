@@ -58,8 +58,8 @@ describe('wasm/relational/operations', function () {
       const result = compareArray(a, b)
 
       assert.strictEqual(result[0], -1) // 1 < 2
-      assert.strictEqual(result[1], 0)  // 5 = 5
-      assert.strictEqual(result[2], 1)  // 3 > 1
+      assert.strictEqual(result[1], 0) // 5 = 5
+      assert.strictEqual(result[2], 1) // 3 > 1
     })
   })
 
@@ -311,8 +311,8 @@ describe('wasm/relational/operations', function () {
       const a = new Float64Array([-5, 5, 15])
       const result = clampArray(a, 0, 10)
 
-      assert.strictEqual(result[0], 0)  // -5 -> 0
-      assert.strictEqual(result[1], 5)  // 5 unchanged
+      assert.strictEqual(result[0], 0) // -5 -> 0
+      assert.strictEqual(result[1], 5) // 5 unchanged
       assert.strictEqual(result[2], 10) // 15 -> 10
     })
   })
@@ -438,19 +438,31 @@ describe('wasm/relational/operations', function () {
 
   describe('relational properties', function () {
     it('equal and unequal should be complementary', function () {
-      for (const [a, b] of [[5, 5], [5, 6], [0, 0]]) {
+      for (const [a, b] of [
+        [5, 5],
+        [5, 6],
+        [0, 0]
+      ]) {
         assert.strictEqual(equal(a, b) + unequal(a, b), 1)
       }
     })
 
     it('larger and smallerEq should be complementary', function () {
-      for (const [a, b] of [[5, 3], [3, 5], [5, 5]]) {
+      for (const [a, b] of [
+        [5, 3],
+        [3, 5],
+        [5, 5]
+      ]) {
         assert.strictEqual(larger(a, b) + smallerEq(a, b), 1)
       }
     })
 
     it('smaller and largerEq should be complementary', function () {
-      for (const [a, b] of [[5, 3], [3, 5], [5, 5]]) {
+      for (const [a, b] of [
+        [5, 3],
+        [3, 5],
+        [5, 5]
+      ]) {
         assert.strictEqual(smaller(a, b) + largerEq(a, b), 1)
       }
     })

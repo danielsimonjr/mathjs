@@ -52,10 +52,7 @@ class CholeskyResult {
  * @param n - Size of the square matrix
  * @returns LU matrix, permutation vector, and singular flag
  */
-export function luDecomposition(
-  a: Float64Array,
-  n: i32
-): LUResult {
+export function luDecomposition(a: Float64Array, n: i32): LUResult {
   // Copy input to output
   const lu = new Float64Array(n * n)
   for (let i: i32 = 0; i < n * n; i++) {
@@ -138,11 +135,7 @@ export function isLUSingular(result: LUResult): bool {
  * @param n - Number of columns
  * @returns Q matrix (m x m, orthogonal) and R matrix (m x n, upper triangular)
  */
-export function qrDecomposition(
-  a: Float64Array,
-  m: i32,
-  n: i32
-): QRResult {
+export function qrDecomposition(a: Float64Array, m: i32, n: i32): QRResult {
   // Copy a to r
   const r = new Float64Array(m * n)
   for (let i: i32 = 0; i < m * n; i++) {
@@ -239,10 +232,7 @@ export function getRMatrix(result: QRResult): Float64Array {
  * @param n - Size of the matrix
  * @returns Lower triangular matrix L and success flag
  */
-export function choleskyDecomposition(
-  a: Float64Array,
-  n: i32
-): CholeskyResult {
+export function choleskyDecomposition(a: Float64Array, n: i32): CholeskyResult {
   // Initialize L to zero
   const l = new Float64Array(n * n)
   for (let i: i32 = 0; i < n * n; i++) {
@@ -325,11 +315,7 @@ export function luSolve(
 /**
  * Compute determinant from LU decomposition
  */
-export function luDeterminant(
-  lu: Float64Array,
-  n: i32,
-  perm: Int32Array
-): f64 {
+export function luDeterminant(lu: Float64Array, n: i32, perm: Int32Array): f64 {
   let det: f64 = 1.0
 
   // Product of diagonal elements

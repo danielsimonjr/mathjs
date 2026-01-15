@@ -157,7 +157,7 @@ describe('wasm/trigonometry/basic', function () {
     })
 
     it('should compute atan2(-1, -1) = -3*PI/4', function () {
-      assert(approxEqual(atan2(-1, -1), -3 * PI / 4))
+      assert(approxEqual(atan2(-1, -1), (-3 * PI) / 4))
     })
   })
 

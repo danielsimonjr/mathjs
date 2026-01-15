@@ -133,7 +133,12 @@ export function gradient(fValues: Float64Array, h: f64, n: i32): Float64Array {
  * @param n - Number of dimensions
  * @returns Hessian matrix (row-major, n x n)
  */
-export function hessian(fValues: Float64Array, fx: f64, h: f64, n: i32): Float64Array {
+export function hessian(
+  fValues: Float64Array,
+  fx: f64,
+  h: f64,
+  n: i32
+): Float64Array {
   const result = new Float64Array(n * n)
   const h2: f64 = h * h
 
@@ -198,19 +203,19 @@ export function trapezoidalRule(fValues: Float64Array, h: f64, n: i32): f64 {
  * @returns Approximate integral
  */
 export function simpsonsRule(fValues: Float64Array, h: f64, n: i32): f64 {
-  if (n < 3 || (n % 2) === 0) return f64.NaN
+  if (n < 3 || n % 2 === 0) return f64.NaN
 
   let sum: f64 = fValues[0] + fValues[n - 1]
 
   for (let i: i32 = 1; i < n - 1; i++) {
-    if ((i % 2) === 1) {
+    if (i % 2 === 1) {
       sum += 4.0 * fValues[i]
     } else {
       sum += 2.0 * fValues[i]
     }
   }
 
-  return sum * h / 3.0
+  return (sum * h) / 3.0
 }
 
 /**
@@ -222,19 +227,19 @@ export function simpsonsRule(fValues: Float64Array, h: f64, n: i32): f64 {
  * @returns Approximate integral
  */
 export function simpsons38Rule(fValues: Float64Array, h: f64, n: i32): f64 {
-  if (n < 4 || ((n - 1) % 3) !== 0) return f64.NaN
+  if (n < 4 || (n - 1) % 3 !== 0) return f64.NaN
 
   let sum: f64 = fValues[0] + fValues[n - 1]
 
   for (let i: i32 = 1; i < n - 1; i++) {
-    if ((i % 3) === 0) {
+    if (i % 3 === 0) {
       sum += 2.0 * fValues[i]
     } else {
       sum += 3.0 * fValues[i]
     }
   }
 
-  return sum * 3.0 * h / 8.0
+  return (sum * 3.0 * h) / 8.0
 }
 
 /**
@@ -247,7 +252,7 @@ export function simpsons38Rule(fValues: Float64Array, h: f64, n: i32): f64 {
  * @returns Approximate integral
  */
 export function boolesRule(fValues: Float64Array, h: f64, n: i32): f64 {
-  if (n < 5 || ((n - 1) % 4) !== 0) return f64.NaN
+  if (n < 5 || (n - 1) % 4 !== 0) return f64.NaN
 
   let sum: f64 = 0.0
   const numPanels: i32 = (n - 1) / 4
@@ -268,7 +273,7 @@ export function boolesRule(fValues: Float64Array, h: f64, n: i32): f64 {
     }
   }
 
-  return sum * 2.0 * h / 45.0
+  return (sum * 2.0 * h) / 45.0
 }
 
 // Gauss-Legendre quadrature nodes and weights (stored as constants)
@@ -277,23 +282,26 @@ const GL2_NODES: StaticArray<f64> = [-0.5773502691896257, 0.5773502691896257]
 const GL2_WEIGHTS: StaticArray<f64> = [1.0, 1.0]
 
 // 3-point
-const GL3_NODES: StaticArray<f64> = [-0.7745966692414834, 0.0, 0.7745966692414834]
-const GL3_WEIGHTS: StaticArray<f64> = [0.5555555555555556, 0.8888888888888888, 0.5555555555555556]
+const GL3_NODES: StaticArray<f64> = [
+  -0.7745966692414834, 0.0, 0.7745966692414834
+]
+const GL3_WEIGHTS: StaticArray<f64> = [
+  0.5555555555555556, 0.8888888888888888, 0.5555555555555556
+]
 
 // 4-point
 const GL4_NODES: StaticArray<f64> = [
-  -0.8611363115940526, -0.3399810435848563,
-  0.3399810435848563, 0.8611363115940526
+  -0.8611363115940526, -0.3399810435848563, 0.3399810435848563,
+  0.8611363115940526
 ]
 const GL4_WEIGHTS: StaticArray<f64> = [
-  0.3478548451374538, 0.6521451548625461,
-  0.6521451548625461, 0.3478548451374538
+  0.3478548451374538, 0.6521451548625461, 0.6521451548625461, 0.3478548451374538
 ]
 
 // 5-point
 const GL5_NODES: StaticArray<f64> = [
-  -0.9061798459386640, -0.5384693101056831, 0.0,
-  0.5384693101056831, 0.9061798459386640
+  -0.906179845938664, -0.5384693101056831, 0.0, 0.5384693101056831,
+  0.906179845938664
 ]
 const GL5_WEIGHTS: StaticArray<f64> = [
   0.2369268850561891, 0.4786286704993665, 0.5688888888888889,
@@ -343,7 +351,11 @@ export function gaussLegendreNodes(a: f64, b: f64, nPoints: i32): Float64Array {
  * @param nPoints - Number of quadrature points (2-5 supported)
  * @returns Array of weights
  */
-export function gaussLegendreWeights(a: f64, b: f64, nPoints: i32): Float64Array {
+export function gaussLegendreWeights(
+  a: f64,
+  b: f64,
+  nPoints: i32
+): Float64Array {
   const result = new Float64Array(nPoints)
   const halfWidth: f64 = (b - a) / 2.0
 
@@ -376,7 +388,11 @@ export function gaussLegendreWeights(a: f64, b: f64, nPoints: i32): Float64Array
  * @param nPoints - Number of points
  * @returns Approximate integral
  */
-export function gaussLegendre(fValues: Float64Array, weights: Float64Array, nPoints: i32): f64 {
+export function gaussLegendre(
+  fValues: Float64Array,
+  weights: Float64Array,
+  nPoints: i32
+): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < nPoints; i++) {
@@ -443,7 +459,8 @@ export function romberg(trapValues: Float64Array, n: i32): f64 {
   for (let j: i32 = 1; j < n; j++) {
     const factor: f64 = Math.pow(4.0, f64(j))
     for (let i: i32 = j; i < n; i++) {
-      R[i * n + j] = (factor * R[i * n + j - 1] - R[(i - 1) * n + j - 1]) / (factor - 1.0)
+      R[i * n + j] =
+        (factor * R[i * n + j - 1] - R[(i - 1) * n + j - 1]) / (factor - 1.0)
     }
   }
 
@@ -494,7 +511,12 @@ export function jacobian(
  * @param nDim - Number of dimensions
  * @returns Laplacian value
  */
-export function laplacian(fValues: Float64Array, fx: f64, h: f64, nDim: i32): f64 {
+export function laplacian(
+  fValues: Float64Array,
+  fx: f64,
+  h: f64,
+  nDim: i32
+): f64 {
   const h2: f64 = h * h
   let sum: f64 = -2.0 * f64(nDim) * fx
 

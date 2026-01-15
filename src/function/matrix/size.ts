@@ -55,7 +55,9 @@ export const createSize = /* #__PURE__ */ factory(
       string: (x: string): number[] => [x.length],
 
       // scalar
-      'number | Complex | BigNumber | Unit | boolean | null': (_x: any): number[] => []
+      'number | Complex | BigNumber | Unit | boolean | null': (
+        _x: any
+      ): number[] => []
     })
   }
 )

@@ -1,7 +1,5 @@
 import assert from 'assert'
-import {
-  fivePointStencil
-} from '../../../../src/wasm/numeric/calculus.ts'
+import { fivePointStencil } from '../../../../src/wasm/numeric/calculus.ts'
 
 const EPSILON = 1e-6
 

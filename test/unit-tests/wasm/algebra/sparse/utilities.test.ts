@@ -51,7 +51,8 @@ describe('wasm/algebra/sparse/utilities', function () {
     })
 
     it('should be inverse of csFlip for non-negative values', function () {
-      for (let i = 1; i < 20; i++) {  // Start from 1 to avoid -0 issue
+      for (let i = 1; i < 20; i++) {
+        // Start from 1 to avoid -0 issue
         assert.strictEqual(csUnflip(csFlip(i)), i)
       }
       // Special case for 0
@@ -75,7 +76,8 @@ describe('wasm/algebra/sparse/utilities', function () {
     })
 
     it('csUnflip(csFlip(i)) === i for non-negative i', function () {
-      for (let i = 1; i < 100; i++) {  // Start from 1 to avoid -0 issue
+      for (let i = 1; i < 100; i++) {
+        // Start from 1 to avoid -0 issue
         assert.strictEqual(csUnflip(csFlip(i)), i)
       }
       // Special case for 0: result may be -0 which equals 0

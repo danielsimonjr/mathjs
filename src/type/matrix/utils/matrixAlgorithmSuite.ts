@@ -30,7 +30,7 @@ interface MatrixAlgorithmSuiteOptions {
   DS?: AlgorithmFunction
   SD?: AlgorithmFunction
   Ss?: AlgorithmFunction
-  sS?: AlgorithmFunction | false  // false means not implemented
+  sS?: AlgorithmFunction | false // false means not implemented
   Ds?: AlgorithmFunction
   scalar?: string
 }

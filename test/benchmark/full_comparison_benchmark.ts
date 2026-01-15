@@ -22,7 +22,14 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
 // =============================================================================
 
 const pureJS = {
-  matrixMultiply (a: Float64Array, aRows: number, aCols: number, b: Float64Array, bRows: number, bCols: number): Float64Array {
+  matrixMultiply(
+    a: Float64Array,
+    aRows: number,
+    aCols: number,
+    b: Float64Array,
+    bRows: number,
+    bCols: number
+  ): Float64Array {
     const result = new Float64Array(aRows * bCols)
     for (let i = 0; i < aRows; i++) {
       for (let j = 0; j < bCols; j++) {
@@ -36,7 +43,7 @@ const pureJS = {
     return result
   },
 
-  matrixAdd (a: Float64Array, b: Float64Array, size: number): Float64Array {
+  matrixAdd(a: Float64Array, b: Float64Array, size: number): Float64Array {
     const result = new Float64Array(size)
     for (let i = 0; i < size; i++) {
       result[i] = a[i] + b[i]
@@ -44,7 +51,7 @@ const pureJS = {
     return result
   },
 
-  transpose (a: Float64Array, rows: number, cols: number): Float64Array {
+  transpose(a: Float64Array, rows: number, cols: number): Float64Array {
     const result = new Float64Array(rows * cols)
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
@@ -54,7 +61,7 @@ const pureJS = {
     return result
   },
 
-  dotProduct (a: Float64Array, b: Float64Array, size: number): number {
+  dotProduct(a: Float64Array, b: Float64Array, size: number): number {
     let sum = 0
     for (let i = 0; i < size; i++) {
       sum += a[i] * b[i]
@@ -62,7 +69,7 @@ const pureJS = {
     return sum
   },
 
-  sum (arr: Float64Array): number {
+  sum(arr: Float64Array): number {
     let total = 0
     for (let i = 0; i < arr.length; i++) {
       total += arr[i]
@@ -75,7 +82,7 @@ const pureJS = {
 // WASM Module Loader (using generated ESM bindings)
 // =============================================================================
 
-async function loadWasmModule () {
+async function loadWasmModule() {
   try {
     // The generated ESM bindings auto-load the WASM file and export wrapped functions directly
     const wasmModule = await import('../../lib/wasm/index.js')
@@ -92,28 +99,35 @@ async function loadWasmModule () {
 class WasmOperations {
   module: any
 
-  constructor (wasmModule: any) {
+  constructor(wasmModule: any) {
     this.module = wasmModule
   }
 
-  matrixMultiply (a: Float64Array, aRows: number, aCols: number, b: Float64Array, bRows: number, bCols: number): Float64Array {
+  matrixMultiply(
+    a: Float64Array,
+    aRows: number,
+    aCols: number,
+    b: Float64Array,
+    bRows: number,
+    bCols: number
+  ): Float64Array {
     // Generated binding accepts JS Float64Array directly and returns Float64Array
     return this.module.multiplyDense(a, aRows, aCols, b, bRows, bCols)
   }
 
-  matrixAdd (a: Float64Array, b: Float64Array, size: number): Float64Array {
+  matrixAdd(a: Float64Array, b: Float64Array, size: number): Float64Array {
     return this.module.matrixAdd(a, b, size)
   }
 
-  transpose (data: Float64Array, rows: number, cols: number): Float64Array {
+  transpose(data: Float64Array, rows: number, cols: number): Float64Array {
     return this.module.transpose(data, rows, cols)
   }
 
-  dotProduct (a: Float64Array, b: Float64Array, size: number): number {
+  dotProduct(a: Float64Array, b: Float64Array, size: number): number {
     return this.module.dotProduct(a, b, size)
   }
 
-  sum (data: Float64Array): number {
+  sum(data: Float64Array): number {
     return this.module.sum(data)
   }
 }
@@ -122,10 +136,10 @@ class WasmOperations {
 // Parallel JavaScript Implementation
 // =============================================================================
 
-function createParallelJS (workerpool: any) {
+function createParallelJS(workerpool: any) {
   let pool: any = null
 
-  function getPool () {
+  function getPool() {
     if (!pool) {
       pool = workerpool.pool()
     }
@@ -133,7 +147,14 @@ function createParallelJS (workerpool: any) {
   }
 
   return {
-    async matrixMultiply (a: Float64Array, aRows: number, aCols: number, b: Float64Array, bRows: number, bCols: number): Promise<Float64Array> {
+    async matrixMultiply(
+      a: Float64Array,
+      aRows: number,
+      aCols: number,
+      b: Float64Array,
+      bRows: number,
+      bCols: number
+    ): Promise<Float64Array> {
       const numWorkers = Math.min(aRows, 4)
       const rowsPerWorker = Math.ceil(aRows / numWorkers)
       const result = new Float64Array(aRows * bCols)
@@ -147,19 +168,29 @@ function createParallelJS (workerpool: any) {
         if (startRow >= endRow) break
 
         promises.push(
-          getPool().exec((a: number[], aCols: number, b: number[], bCols: number, startRow: number, endRow: number) => {
-            const result: Array<{idx: number, val: number}> = []
-            for (let i = startRow; i < endRow; i++) {
-              for (let j = 0; j < bCols; j++) {
-                let sum = 0
-                for (let k = 0; k < aCols; k++) {
-                  sum += a[i * aCols + k] * b[k * bCols + j]
+          getPool().exec(
+            (
+              a: number[],
+              aCols: number,
+              b: number[],
+              bCols: number,
+              startRow: number,
+              endRow: number
+            ) => {
+              const result: Array<{ idx: number; val: number }> = []
+              for (let i = startRow; i < endRow; i++) {
+                for (let j = 0; j < bCols; j++) {
+                  let sum = 0
+                  for (let k = 0; k < aCols; k++) {
+                    sum += a[i * aCols + k] * b[k * bCols + j]
+                  }
+                  result.push({ idx: i * bCols + j, val: sum })
                 }
-                result.push({ idx: i * bCols + j, val: sum })
               }
-            }
-            return result
-          }, [aArray, aCols, bArray, bCols, startRow, endRow])
+              return result
+            },
+            [aArray, aCols, bArray, bCols, startRow, endRow]
+          )
         )
       }
 
@@ -172,7 +203,11 @@ function createParallelJS (workerpool: any) {
       return result
     },
 
-    async matrixAdd (a: Float64Array, b: Float64Array, size: number): Promise<Float64Array> {
+    async matrixAdd(
+      a: Float64Array,
+      b: Float64Array,
+      size: number
+    ): Promise<Float64Array> {
       const numWorkers = Math.min(4, Math.ceil(size / 10000))
       const chunkSize = Math.ceil(size / numWorkers)
       const result = new Float64Array(size)
@@ -186,13 +221,16 @@ function createParallelJS (workerpool: any) {
         if (start >= end) break
 
         promises.push(
-          getPool().exec((a: number[], b: number[], start: number, end: number) => {
-            const result: Array<{idx: number, val: number}> = []
-            for (let i = start; i < end; i++) {
-              result.push({ idx: i, val: a[i] + b[i] })
-            }
-            return result
-          }, [aArray, bArray, start, end])
+          getPool().exec(
+            (a: number[], b: number[], start: number, end: number) => {
+              const result: Array<{ idx: number; val: number }> = []
+              for (let i = start; i < end; i++) {
+                result.push({ idx: i, val: a[i] + b[i] })
+              }
+              return result
+            },
+            [aArray, bArray, start, end]
+          )
         )
       }
 
@@ -205,7 +243,11 @@ function createParallelJS (workerpool: any) {
       return result
     },
 
-    async dotProduct (a: Float64Array, b: Float64Array, size: number): Promise<number> {
+    async dotProduct(
+      a: Float64Array,
+      b: Float64Array,
+      size: number
+    ): Promise<number> {
       const numWorkers = Math.min(4, Math.ceil(size / 10000))
       const chunkSize = Math.ceil(size / numWorkers)
       const aArray = Array.from(a)
@@ -218,13 +260,16 @@ function createParallelJS (workerpool: any) {
         if (start >= end) break
 
         promises.push(
-          getPool().exec((a: number[], b: number[], start: number, end: number) => {
-            let sum = 0
-            for (let i = start; i < end; i++) {
-              sum += a[i] * b[i]
-            }
-            return sum
-          }, [aArray, bArray, start, end])
+          getPool().exec(
+            (a: number[], b: number[], start: number, end: number) => {
+              let sum = 0
+              for (let i = start; i < end; i++) {
+                sum += a[i] * b[i]
+              }
+              return sum
+            },
+            [aArray, bArray, start, end]
+          )
         )
       }
 
@@ -232,7 +277,7 @@ function createParallelJS (workerpool: any) {
       return results.reduce((acc: number, val: number) => acc + val, 0)
     },
 
-    async terminate () {
+    async terminate() {
       if (pool) {
         await pool.terminate()
         pool = null
@@ -245,13 +290,20 @@ function createParallelJS (workerpool: any) {
 // Hybrid WASM Implementation (WASM + block splitting in main thread)
 // =============================================================================
 
-function createHybridWasm (wasmOps: WasmOperations) {
+function createHybridWasm(wasmOps: WasmOperations) {
   return {
     wasmOps,
 
     // Split work into blocks and use WASM for each block (main thread)
     // This shows the benefit of WASM without worker overhead
-    matrixMultiply (a: Float64Array, aRows: number, aCols: number, b: Float64Array, bRows: number, bCols: number): Float64Array {
+    matrixMultiply(
+      a: Float64Array,
+      aRows: number,
+      aCols: number,
+      b: Float64Array,
+      bRows: number,
+      bCols: number
+    ): Float64Array {
       const blockSize = Math.max(32, Math.floor(aRows / 4))
       const numBlocks = Math.ceil(aRows / blockSize)
       const result = new Float64Array(aRows * bCols)
@@ -265,7 +317,14 @@ function createHybridWasm (wasmOps: WasmOperations) {
         const blockA = a.slice(startRow * aCols, endRow * aCols)
 
         // Use WASM for block multiplication
-        const blockResult = this.wasmOps.matrixMultiply(blockA, blockRows, aCols, b, bRows, bCols)
+        const blockResult = this.wasmOps.matrixMultiply(
+          blockA,
+          blockRows,
+          aCols,
+          b,
+          bRows,
+          bCols
+        )
 
         // Copy result
         result.set(blockResult, startRow * bCols)
@@ -274,7 +333,7 @@ function createHybridWasm (wasmOps: WasmOperations) {
       return result
     },
 
-    async terminate () {
+    async terminate() {
       // No cleanup needed
     }
   }
@@ -284,7 +343,7 @@ function createHybridWasm (wasmOps: WasmOperations) {
 // Test Data Generators
 // =============================================================================
 
-function generateMatrix (rows: number, cols: number): Float64Array {
+function generateMatrix(rows: number, cols: number): Float64Array {
   const data = new Float64Array(rows * cols)
   for (let i = 0; i < rows * cols; i++) {
     data[i] = Math.random() * 10
@@ -292,7 +351,7 @@ function generateMatrix (rows: number, cols: number): Float64Array {
   return data
 }
 
-function generateVector (size: number): Float64Array {
+function generateVector(size: number): Float64Array {
   const data = new Float64Array(size)
   for (let i = 0; i < size; i++) {
     data[i] = Math.random() * 100
@@ -304,10 +363,11 @@ function generateVector (size: number): Float64Array {
 // Format Results
 // =============================================================================
 
-function formatResult (task: any): string {
+function formatResult(task: any): string {
   const result = task.result
   if (!result) return `${task.name}: No result`
-  if (!result.hz) return `${task.name}: Error - ${result.error || 'Unknown error'}`
+  if (!result.hz)
+    return `${task.name}: Error - ${result.error || 'Unknown error'}`
 
   const opsPerSec = result.hz.toFixed(2)
   const meanMs = (result.mean * 1000).toFixed(3)
@@ -320,7 +380,7 @@ function formatResult (task: any): string {
 // Main Benchmark
 // =============================================================================
 
-async function runBenchmarks () {
+async function runBenchmarks() {
   console.log('\n' + '='.repeat(90))
   console.log('BENCHMARK: JavaScript vs WASM vs Parallel(JS) vs Parallel(WASM)')
   console.log('='.repeat(90))
@@ -340,11 +400,15 @@ async function runBenchmarks () {
       const testA = new Float64Array([1, 2, 3, 4])
       const testB = new Float64Array([5, 6, 7, 8])
       const testResult = wasmOps.dotProduct(testA, testB, 4)
-      console.log(`WASM verification: dot([1,2,3,4], [5,6,7,8]) = ${testResult} (expected: 70)`)
+      console.log(
+        `WASM verification: dot([1,2,3,4], [5,6,7,8]) = ${testResult} (expected: 70)`
+      )
 
       // Also verify matrix multiply
       const testMat = wasmOps.matrixMultiply(testA, 2, 2, testB, 2, 2)
-      console.log(`Matrix multiply test: [[1,2],[3,4]] * [[5,6],[7,8]] = [${Array.from(testMat).join(',')}]`)
+      console.log(
+        `Matrix multiply test: [[1,2],[3,4]] * [[5,6],[7,8]] = [${Array.from(testMat).join(',')}]`
+      )
       console.log('Expected: [19, 22, 43, 50]')
 
       hybridWasm = createHybridWasm(wasmOps)
@@ -423,7 +487,10 @@ async function runBenchmarks () {
         const task = bench.tasks[i]
         if (task.result && task.result.hz) {
           const speedup = task.result.hz / jsResult.hz
-          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1 / speedup).toFixed(2)}x slower`
+          const label =
+            speedup >= 1
+              ? `${speedup.toFixed(2)}x faster`
+              : `${(1 / speedup).toFixed(2)}x slower`
           console.log(`    ${task.name}: ${label}`)
         }
       }
@@ -476,7 +543,10 @@ async function runBenchmarks () {
         const task = bench.tasks[i]
         if (task.result && task.result.hz) {
           const speedup = task.result.hz / jsResult.hz
-          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1 / speedup).toFixed(2)}x slower`
+          const label =
+            speedup >= 1
+              ? `${speedup.toFixed(2)}x faster`
+              : `${(1 / speedup).toFixed(2)}x slower`
           console.log(`    ${task.name}: ${label}`)
         }
       }
@@ -529,7 +599,10 @@ async function runBenchmarks () {
         const task = bench.tasks[i]
         if (task.result && task.result.hz) {
           const speedup = task.result.hz / jsResult.hz
-          const label = speedup >= 1 ? `${speedup.toFixed(2)}x faster` : `${(1 / speedup).toFixed(2)}x slower`
+          const label =
+            speedup >= 1
+              ? `${speedup.toFixed(2)}x faster`
+              : `${(1 / speedup).toFixed(2)}x slower`
           console.log(`    ${task.name}: ${label}`)
         }
       }

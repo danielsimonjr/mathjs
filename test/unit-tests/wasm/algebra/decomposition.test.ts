@@ -21,7 +21,13 @@ function approxEqual(a: number, b: number, eps: number = EPSILON): boolean {
 }
 
 // Matrix multiplication helper: C = A * B
-function matMul(A: Float64Array, B: Float64Array, m: number, k: number, n: number): Float64Array {
+function matMul(
+  A: Float64Array,
+  B: Float64Array,
+  m: number,
+  k: number,
+  n: number
+): Float64Array {
   const C = new Float64Array(m * n)
   for (let i = 0; i < m; i++) {
     for (let j = 0; j < n; j++) {
@@ -144,7 +150,10 @@ describe('wasm/algebra/decomposition', function () {
       const QR = matMul(QT, R, 2, 2, 2)
 
       for (let i = 0; i < 4; i++) {
-        assert(approxEqual(QR[i], A[i], 1e-6), `QR[${i}] = ${QR[i]}, A[${i}] = ${A[i]}`)
+        assert(
+          approxEqual(QR[i], A[i], 1e-6),
+          `QR[${i}] = ${QR[i]}, A[${i}] = ${A[i]}`
+        )
       }
     })
   })

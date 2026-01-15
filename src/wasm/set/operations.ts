@@ -232,7 +232,10 @@ export function setDifference(a: Float64Array, b: Float64Array): Float64Array {
  * @param b - Second set (sorted, unique)
  * @returns Symmetric difference
  */
-export function setSymDifference(a: Float64Array, b: Float64Array): Float64Array {
+export function setSymDifference(
+  a: Float64Array,
+  b: Float64Array
+): Float64Array {
   const na: i32 = a.length
   const nb: i32 = b.length
 

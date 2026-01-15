@@ -20,11 +20,11 @@ describe('wasm/statistics/select', function () {
       const data = new Float64Array([3, 1, 4, 1, 5, 9, 2, 6])
 
       // Sorted: [1, 1, 2, 3, 4, 5, 6, 9]
-      assert.strictEqual(partitionSelect(data, 0), 1)  // min
+      assert.strictEqual(partitionSelect(data, 0), 1) // min
       assert.strictEqual(partitionSelect(data, 1), 1)
       assert.strictEqual(partitionSelect(data, 2), 2)
       assert.strictEqual(partitionSelect(data, 3), 3)
-      assert.strictEqual(partitionSelect(data, 7), 9)  // max
+      assert.strictEqual(partitionSelect(data, 7), 9) // max
     })
 
     it('should return NaN for invalid k', function () {
@@ -156,9 +156,9 @@ describe('wasm/statistics/select', function () {
       // Values: 30 at 0, 10 at 1, 20 at 2
       // Sorted by value: 10 (idx 1), 20 (idx 2), 30 (idx 0)
 
-      assert.strictEqual(partitionSelectIndex(data, 0), 1)  // 10 is at index 1
-      assert.strictEqual(partitionSelectIndex(data, 1), 2)  // 20 is at index 2
-      assert.strictEqual(partitionSelectIndex(data, 2), 0)  // 30 is at index 0
+      assert.strictEqual(partitionSelectIndex(data, 0), 1) // 10 is at index 1
+      assert.strictEqual(partitionSelectIndex(data, 1), 2) // 20 is at index 2
+      assert.strictEqual(partitionSelectIndex(data, 2), 0) // 30 is at index 0
     })
 
     it('should return -1 for invalid k', function () {

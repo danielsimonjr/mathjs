@@ -286,11 +286,7 @@ export function allIntegers(arr: Float64Array, length: i32): i32 {
  * @param condition - 0=isZero, 1=isPositive, 2=isNegative, 3=isNaN
  * @returns Index of first match, or -1 if not found
  */
-export function findFirst(
-  arr: Float64Array,
-  length: i32,
-  condition: i32
-): i32 {
+export function findFirst(arr: Float64Array, length: i32, condition: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
     const x: f64 = arr[i]
     let match: i32 = 0

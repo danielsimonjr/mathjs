@@ -110,9 +110,13 @@ export function pow(x: f64, y: f64): f64 {
  * @param output Output array
  * @param length Length of arrays
  */
-export function expArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function expArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.exp(unchecked(input[i])))
+    unchecked((output[i] = Math.exp(unchecked(input[i]))))
   }
 }
 
@@ -122,9 +126,13 @@ export function expArray(input: Float64Array, output: Float64Array, length: i32)
  * @param output Output array
  * @param length Length of arrays
  */
-export function logArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function logArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.log(unchecked(input[i])))
+    unchecked((output[i] = Math.log(unchecked(input[i]))))
   }
 }
 
@@ -134,9 +142,13 @@ export function logArray(input: Float64Array, output: Float64Array, length: i32)
  * @param output Output array
  * @param length Length of arrays
  */
-export function log10Array(input: Float64Array, output: Float64Array, length: i32): void {
+export function log10Array(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.log10(unchecked(input[i])))
+    unchecked((output[i] = Math.log10(unchecked(input[i]))))
   }
 }
 
@@ -146,9 +158,13 @@ export function log10Array(input: Float64Array, output: Float64Array, length: i3
  * @param output Output array
  * @param length Length of arrays
  */
-export function log2Array(input: Float64Array, output: Float64Array, length: i32): void {
+export function log2Array(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.log2(unchecked(input[i])))
+    unchecked((output[i] = Math.log2(unchecked(input[i]))))
   }
 }
 
@@ -158,9 +174,13 @@ export function log2Array(input: Float64Array, output: Float64Array, length: i32
  * @param output Output array
  * @param length Length of arrays
  */
-export function sqrtArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function sqrtArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.sqrt(unchecked(input[i])))
+    unchecked((output[i] = Math.sqrt(unchecked(input[i]))))
   }
 }
 
@@ -171,8 +191,13 @@ export function sqrtArray(input: Float64Array, output: Float64Array, length: i32
  * @param output Output array
  * @param length Length of arrays
  */
-export function powConstantArray(input: Float64Array, exponent: f64, output: Float64Array, length: i32): void {
+export function powConstantArray(
+  input: Float64Array,
+  exponent: f64,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.pow(unchecked(input[i]), exponent))
+    unchecked((output[i] = Math.pow(unchecked(input[i]), exponent)))
   }
 }

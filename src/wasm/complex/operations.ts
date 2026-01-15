@@ -54,7 +54,7 @@ export function conjArray(data: Float64Array): Float64Array {
   const result = new Float64Array(len)
 
   for (let i: i32 = 0; i < len; i += 2) {
-    result[i] = data[i]         // real part unchanged
+    result[i] = data[i] // real part unchanged
     result[i + 1] = -data[i + 1] // imaginary part negated
   }
 
@@ -149,7 +149,12 @@ export function absArray(data: Float64Array): Float64Array {
  * @param im2 - Imaginary part of second number
  * @returns [real, imag] as Float64Array
  */
-export function addComplex(re1: f64, im1: f64, re2: f64, im2: f64): Float64Array {
+export function addComplex(
+  re1: f64,
+  im1: f64,
+  re2: f64,
+  im2: f64
+): Float64Array {
   const result = new Float64Array(2)
   result[0] = re1 + re2
   result[1] = im1 + im2
@@ -164,7 +169,12 @@ export function addComplex(re1: f64, im1: f64, re2: f64, im2: f64): Float64Array
  * @param im2 - Imaginary part of second number
  * @returns [real, imag] as Float64Array
  */
-export function subComplex(re1: f64, im1: f64, re2: f64, im2: f64): Float64Array {
+export function subComplex(
+  re1: f64,
+  im1: f64,
+  re2: f64,
+  im2: f64
+): Float64Array {
   const result = new Float64Array(2)
   result[0] = re1 - re2
   result[1] = im1 - im2
@@ -180,7 +190,12 @@ export function subComplex(re1: f64, im1: f64, re2: f64, im2: f64): Float64Array
  * @param im2 - Imaginary part of second number
  * @returns [real, imag] as Float64Array
  */
-export function mulComplex(re1: f64, im1: f64, re2: f64, im2: f64): Float64Array {
+export function mulComplex(
+  re1: f64,
+  im1: f64,
+  re2: f64,
+  im2: f64
+): Float64Array {
   const result = new Float64Array(2)
   result[0] = re1 * re2 - im1 * im2
   result[1] = re1 * im2 + im1 * re2
@@ -196,7 +211,12 @@ export function mulComplex(re1: f64, im1: f64, re2: f64, im2: f64): Float64Array
  * @param im2 - Imaginary part of second number
  * @returns [real, imag] as Float64Array
  */
-export function divComplex(re1: f64, im1: f64, re2: f64, im2: f64): Float64Array {
+export function divComplex(
+  re1: f64,
+  im1: f64,
+  re2: f64,
+  im2: f64
+): Float64Array {
   const result = new Float64Array(2)
   const denom: f64 = re2 * re2 + im2 * im2
   result[0] = (re1 * re2 + im1 * im2) / denom

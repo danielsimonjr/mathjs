@@ -42,7 +42,7 @@ export function random(): f64 {
 export function randomInt(min: i32, max: i32): i32 {
   const range: i32 = max - min + 1
   const r: i32 = randomU32()
-  return min + (r < 0 ? -r : r) % range
+  return min + ((r < 0 ? -r : r) % range)
 }
 
 /**
@@ -187,9 +187,7 @@ export function fillNormal(
  */
 export function normalPDF(x: f64, mu: f64, sigma: f64): f64 {
   const z: f64 = (x - mu) / sigma
-  return (
-    Math.exp(-0.5 * z * z) / (sigma * Math.sqrt(2.0 * Math.PI))
-  )
+  return Math.exp(-0.5 * z * z) / (sigma * Math.sqrt(2.0 * Math.PI))
 }
 
 /**

@@ -183,7 +183,6 @@ export const createComplexClass = /* #__PURE__ */ factory(
           )
       }
     }
-
     ;(Complex.prototype as any).valueOf = Complex.prototype.toString
 
     /**

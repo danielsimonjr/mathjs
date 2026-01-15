@@ -134,7 +134,7 @@ describe('wasm/signal/fft', function () {
       const result = powerSpectrum(data, 2)
 
       assert(approxEqual(result[0], 25, 1e-6)) // 3^2 + 4^2 = 25
-      assert(approxEqual(result[1], 1, 1e-6))  // 1^2 + 0^2 = 1
+      assert(approxEqual(result[1], 1, 1e-6)) // 1^2 + 0^2 = 1
     })
   })
 
@@ -143,8 +143,8 @@ describe('wasm/signal/fft', function () {
       const data = new Float64Array([3, 4, 0, 5])
       const result = magnitudeSpectrum(data, 2)
 
-      assert(approxEqual(result[0], 5, 1e-6))  // sqrt(9+16) = 5
-      assert(approxEqual(result[1], 5, 1e-6))  // sqrt(0+25) = 5
+      assert(approxEqual(result[0], 5, 1e-6)) // sqrt(9+16) = 5
+      assert(approxEqual(result[1], 5, 1e-6)) // sqrt(0+25) = 5
     })
   })
 
@@ -153,10 +153,10 @@ describe('wasm/signal/fft', function () {
       const data = new Float64Array([1, 0, 0, 1, -1, 0, 0, -1])
       const result = phaseSpectrum(data, 4)
 
-      assert(approxEqual(result[0], 0, 1e-6))              // atan2(0, 1) = 0
-      assert(approxEqual(result[1], Math.PI / 2, 1e-6))   // atan2(1, 0) = π/2
-      assert(approxEqual(result[2], Math.PI, 1e-6))       // atan2(0, -1) = π
-      assert(approxEqual(result[3], -Math.PI / 2, 1e-6))  // atan2(-1, 0) = -π/2
+      assert(approxEqual(result[0], 0, 1e-6)) // atan2(0, 1) = 0
+      assert(approxEqual(result[1], Math.PI / 2, 1e-6)) // atan2(1, 0) = π/2
+      assert(approxEqual(result[2], Math.PI, 1e-6)) // atan2(0, -1) = π
+      assert(approxEqual(result[3], -Math.PI / 2, 1e-6)) // atan2(-1, 0) = -π/2
     })
   })
 

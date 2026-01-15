@@ -1447,7 +1447,10 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
         }
 
         // helper function to iterate over index dimensions
-        function _forEachIndex(idx: any, callback: (dataIndex: number, subIndex: [number]) => void) {
+        function _forEachIndex(
+          idx: any,
+          callback: (dataIndex: number, subIndex: [number]) => void
+        ) {
           // iterate cases where index is a Matrix or a Number
           if (isNumber(idx)) callback(idx, [0])
           else idx.forEach(callback)
@@ -1469,17 +1472,23 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
           // if the replacement index has 2 dimensions, go through each one and set the value in the correct index
           const firstDimensionRange = index.dimension(0)
           const secondDimensionRange = index.dimension(1)
-          _forEachIndex(firstDimensionRange, (firstDataIndex: number, firstSubIndex: [number]) => {
-            validateIndex(firstDataIndex)
-            _forEachIndex(secondDimensionRange, (secondDataIndex: number, secondSubIndex: [number]) => {
-              validateIndex(secondDataIndex)
-              matrix.set(
-                [firstDataIndex, secondDataIndex],
-                (submatrix as any[][])[firstSubIndex[0]][secondSubIndex[0]],
-                defaultValue
+          _forEachIndex(
+            firstDimensionRange,
+            (firstDataIndex: number, firstSubIndex: [number]) => {
+              validateIndex(firstDataIndex)
+              _forEachIndex(
+                secondDimensionRange,
+                (secondDataIndex: number, secondSubIndex: [number]) => {
+                  validateIndex(secondDataIndex)
+                  matrix.set(
+                    [firstDataIndex, secondDataIndex],
+                    (submatrix as any[][])[firstSubIndex[0]][secondSubIndex[0]],
+                    defaultValue
+                  )
+                }
               )
-            })
-          })
+            }
+          )
         }
       }
       return matrix

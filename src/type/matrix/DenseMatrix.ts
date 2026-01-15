@@ -967,7 +967,9 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
         returnMatrix._size = submatrix.size
         returnMatrix._datatype = matrix._datatype
         returnMatrix._data = submatrix.data
-        return config.legacySubset ? returnMatrix.reshape(index.size()) : returnMatrix
+        return config.legacySubset
+          ? returnMatrix.reshape(index.size())
+          : returnMatrix
       }
     }
 
@@ -986,7 +988,10 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
     ): { data: MatrixData; size: number[] } {
       const maxDepth = index.size().length - 1
       const size: (number | null)[] = Array(maxDepth)
-      return { data: getSubmatrixRecursive(data), size: size.filter(x => x !== null) as number[] }
+      return {
+        data: getSubmatrixRecursive(data),
+        size: size.filter((x) => x !== null) as number[]
+      }
 
       function getSubmatrixRecursive(data: any, depth: number = 0): any {
         const dims = index.dimension(depth)

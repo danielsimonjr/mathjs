@@ -149,7 +149,8 @@ describe('wasm/matrix/basic', function () {
     })
 
     it('ones should have sum = rows * cols', function () {
-      const rows = 3, cols = 4
+      const rows = 3,
+        cols = 4
       const m = ones(rows, cols)
       const sum = m.reduce((a, b) => a + b, 0)
       assert.strictEqual(sum, rows * cols)

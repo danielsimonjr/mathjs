@@ -36,7 +36,7 @@ function partition(arr: Float64Array, left: i32, right: i32): i32 {
  * Partition using median-of-three pivot selection
  */
 function partitionMedianOfThree(arr: Float64Array, left: i32, right: i32): i32 {
-  const mid: i32 = left + Math.floor(f64(right - left) / 2.0) as i32
+  const mid: i32 = (left + Math.floor(f64(right - left) / 2.0)) as i32
 
   // Sort left, mid, right
   if (arr[left] > arr[mid]) {
@@ -310,7 +310,8 @@ export function introSelect(data: Float64Array, k: i32): f64 {
   }
 
   // Max recursion depth before switching to median-of-medians
-  const maxDepth: i32 = 2 * (Math.floor(Math.log(f64(n)) / Math.log(2.0)) as i32)
+  const maxDepth: i32 =
+    2 * (Math.floor(Math.log(f64(n)) / Math.log(2.0)) as i32)
 
   return introSelectHelper(arr, 0, n - 1, k, maxDepth)
 }
@@ -394,7 +395,7 @@ function medianOfMediansSelect(
 
     // Get median of group
     const groupSize: i32 = groupEnd - groupStart + 1
-    medians[i] = arr[groupStart + Math.floor(f64(groupSize) / 2.0) as i32]
+    medians[i] = arr[(groupStart + Math.floor(f64(groupSize) / 2.0)) as i32]
   }
 
   // Recursively find median of medians
@@ -412,7 +413,12 @@ function medianOfMediansSelect(
     }
     pivot = medians[Math.floor(f64(numGroups) / 2.0) as i32]
   } else {
-    pivot = medianOfMediansSelect(medians, 0, numGroups - 1, Math.floor(f64(numGroups) / 2.0) as i32)
+    pivot = medianOfMediansSelect(
+      medians,
+      0,
+      numGroups - 1,
+      Math.floor(f64(numGroups) / 2.0) as i32
+    )
   }
 
   // Partition around pivot

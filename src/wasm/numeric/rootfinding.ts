@@ -19,12 +19,7 @@
  * @param tol - Tolerance for convergence
  * @returns Number of iterations used, or -1 if no root bracketed
  */
-export function bisectionSetup(
-  fa: f64,
-  fb: f64,
-  a: f64,
-  b: f64
-): Float64Array {
+export function bisectionSetup(fa: f64, fb: f64, a: f64, b: f64): Float64Array {
   // Returns [nextX, currentA, currentB, fa, fb, status]
   // status: 1 = continue, 0 = converged, -1 = no bracket
   const result = new Float64Array(6)
@@ -52,7 +47,11 @@ export function bisectionSetup(
  * @param tol - Tolerance
  * @returns Updated state
  */
-export function bisectionStep(state: Float64Array, fmid: f64, tol: f64): Float64Array {
+export function bisectionStep(
+  state: Float64Array,
+  fmid: f64,
+  tol: f64
+): Float64Array {
   const result = new Float64Array(6)
 
   const mid: f64 = state[0]
@@ -110,7 +109,12 @@ export function newtonSetup(x0: f64): Float64Array {
  * @param tol - Tolerance
  * @returns Updated state [newX, status]
  */
-export function newtonStep(state: Float64Array, fx: f64, fpx: f64, tol: f64): Float64Array {
+export function newtonStep(
+  state: Float64Array,
+  fx: f64,
+  fpx: f64,
+  tol: f64
+): Float64Array {
   const result = new Float64Array(2)
 
   // Check convergence
@@ -143,7 +147,12 @@ export function newtonStep(state: Float64Array, fx: f64, fpx: f64, tol: f64): Fl
  * @param fx1 - f(x1)
  * @returns State array [currentX, prevX, currentF, prevF, status]
  */
-export function secantSetup(x0: f64, x1: f64, fx0: f64, fx1: f64): Float64Array {
+export function secantSetup(
+  x0: f64,
+  x1: f64,
+  fx0: f64,
+  fx1: f64
+): Float64Array {
   const result = new Float64Array(5)
   result[0] = x1
   result[1] = x0
@@ -185,7 +194,7 @@ export function secantStep(state: Float64Array, tol: f64): Float64Array {
     return result
   }
 
-  const newX: f64 = x - fx * (x - xPrev) / denom
+  const newX: f64 = x - (fx * (x - xPrev)) / denom
 
   result[0] = newX // Return new x for evaluation
   result[1] = x
@@ -315,14 +324,16 @@ export function brentStep(state: Float64Array, tol: f64): Float64Array {
     if (a === c) {
       // Secant (linear interpolation)
       s = fb / fa
-      newB = b + 2.0 * m * s / (1.0 - s)
+      newB = b + (2.0 * m * s) / (1.0 - s)
     } else {
       // Inverse quadratic interpolation
       const q: f64 = fa / fc
       const r: f64 = fb / fc
       s = fb / fa
-      newB = b + s * (2.0 * m * q * (q - r) - (b - a) * (r - 1.0)) /
-             ((q - 1.0) * (r - 1.0) * (s - 1.0))
+      newB =
+        b +
+        (s * (2.0 * m * q * (q - r) - (b - a) * (r - 1.0))) /
+          ((q - 1.0) * (r - 1.0) * (s - 1.0))
     }
 
     // Check if interpolation is acceptable
@@ -391,7 +402,11 @@ export function fixedPointSetup(x0: f64): Float64Array {
  * @param tol - Tolerance
  * @returns Updated state
  */
-export function fixedPointStep(state: Float64Array, gx: f64, tol: f64): Float64Array {
+export function fixedPointStep(
+  state: Float64Array,
+  gx: f64,
+  tol: f64
+): Float64Array {
   const result = new Float64Array(2)
 
   const x: f64 = state[0]
@@ -445,7 +460,11 @@ export function illinoisSetup(a: f64, b: f64, fa: f64, fb: f64): Float64Array {
  * @param tol - Tolerance
  * @returns Updated state
  */
-export function illinoisStep(state: Float64Array, fc: f64, tol: f64): Float64Array {
+export function illinoisStep(
+  state: Float64Array,
+  fc: f64,
+  tol: f64
+): Float64Array {
   let a: f64 = state[0]
   let b: f64 = state[1]
   let fa: f64 = state[2]
@@ -563,7 +582,7 @@ export function mullerStep(
     return result
   }
 
-  result[0] = x2 - 2.0 * c / denom
+  result[0] = x2 - (2.0 * c) / denom
   result[1] = 1.0 // Continue
 
   return result
@@ -579,7 +598,12 @@ export function mullerStep(
  * @param tol - Tolerance
  * @returns [newX, status]
  */
-export function steffensenStep(x: f64, fx: f64, fxpfx: f64, tol: f64): Float64Array {
+export function steffensenStep(
+  x: f64,
+  fx: f64,
+  fxpfx: f64,
+  tol: f64
+): Float64Array {
   const result = new Float64Array(2)
 
   if (Math.abs(fx) < tol) {
@@ -596,7 +620,7 @@ export function steffensenStep(x: f64, fx: f64, fxpfx: f64, tol: f64): Float64Ar
     return result
   }
 
-  result[0] = x - fx * fx / denom
+  result[0] = x - (fx * fx) / denom
   result[1] = 1.0 // Continue
 
   return result
@@ -613,7 +637,13 @@ export function steffensenStep(x: f64, fx: f64, fxpfx: f64, tol: f64): Float64Ar
  * @param tol - Tolerance
  * @returns [newX, status]
  */
-export function halleyStep(x: f64, fx: f64, fpx: f64, fppx: f64, tol: f64): Float64Array {
+export function halleyStep(
+  x: f64,
+  fx: f64,
+  fpx: f64,
+  fppx: f64,
+  tol: f64
+): Float64Array {
   const result = new Float64Array(2)
 
   if (Math.abs(fx) < tol) {
@@ -630,7 +660,7 @@ export function halleyStep(x: f64, fx: f64, fpx: f64, fppx: f64, tol: f64): Floa
     return result
   }
 
-  result[0] = x - 2.0 * fx * fpx / denom
+  result[0] = x - (2.0 * fx * fpx) / denom
   result[1] = 1.0 // Continue
 
   return result

@@ -46,9 +46,7 @@ export const createFractionClass = /* #__PURE__ */ factory(
       // Convert sign to BigInt to avoid "Cannot mix BigInt and other types" error
       // when n is a BigInt (as in local Fraction implementation)
       const signedNumerator =
-        typeof this.n === 'bigint'
-          ? BigInt(this.s) * this.n
-          : this.s * this.n
+        typeof this.n === 'bigint' ? BigInt(this.s) * this.n : this.s * this.n
       return {
         mathjs: 'Fraction',
         n: String(signedNumerator),

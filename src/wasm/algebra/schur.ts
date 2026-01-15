@@ -48,12 +48,15 @@ export function schur(
 
   while (p > 0) {
     // Check for deflation
-    let q: i32 = p - 1
+    const q: i32 = p - 1
     let deflated: boolean = false
 
     // Check if T[p, p-1] is small enough
     const scale: f64 = Math.abs(T[p * n + p]) + Math.abs(T[q * n + q])
-    if (Math.abs(T[p * n + q]) < tol * scale || Math.abs(T[p * n + q]) < 1e-14) {
+    if (
+      Math.abs(T[p * n + q]) < tol * scale ||
+      Math.abs(T[p * n + q]) < 1e-14
+    ) {
       T[p * n + q] = 0.0
       p--
       deflated = true
@@ -63,8 +66,12 @@ export function schur(
       // Find start of active block
       let l: i32 = 0
       for (let i: i32 = q; i > 0; i--) {
-        const scaleI: f64 = Math.abs(T[i * n + i]) + Math.abs(T[(i - 1) * n + (i - 1)])
-        if (Math.abs(T[i * n + (i - 1)]) < tol * scaleI || Math.abs(T[i * n + (i - 1)]) < 1e-14) {
+        const scaleI: f64 =
+          Math.abs(T[i * n + i]) + Math.abs(T[(i - 1) * n + (i - 1)])
+        if (
+          Math.abs(T[i * n + (i - 1)]) < tol * scaleI ||
+          Math.abs(T[i * n + (i - 1)]) < 1e-14
+        ) {
           T[i * n + (i - 1)] = 0.0
           l = i
           break
@@ -85,9 +92,15 @@ export function schur(
         const det: f64 = a11 * a22 - a12 * a21
 
         // First column of (A - s1*I)(A - s2*I) = A^2 - trace*A + det*I
-        let x: f64 = T[l * n + l] * T[l * n + l] + T[l * n + (l + 1)] * T[(l + 1) * n + l] - trace * T[l * n + l] + det
-        let y: f64 = T[(l + 1) * n + l] * (T[l * n + l] + T[(l + 1) * n + (l + 1)] - trace)
-        let z: f64 = l + 2 <= p ? T[(l + 2) * n + (l + 1)] * T[(l + 1) * n + l] : 0.0
+        let x: f64 =
+          T[l * n + l] * T[l * n + l] +
+          T[l * n + (l + 1)] * T[(l + 1) * n + l] -
+          trace * T[l * n + l] +
+          det
+        let y: f64 =
+          T[(l + 1) * n + l] * (T[l * n + l] + T[(l + 1) * n + (l + 1)] - trace)
+        let z: f64 =
+          l + 2 <= p ? T[(l + 2) * n + (l + 1)] * T[(l + 1) * n + l] : 0.0
 
         // Apply Householder transformations
         for (let k: i32 = l; k < p; k++) {
@@ -111,7 +124,8 @@ export function schur(
               if (size === 3) {
                 dot += z * T[(k + 2) * n + j]
               }
-              const tau: f64 = 2.0 * dot / (u1 * u1 + y * y + (size === 3 ? z * z : 0.0))
+              const tau: f64 =
+                (2.0 * dot) / (u1 * u1 + y * y + (size === 3 ? z * z : 0.0))
               T[k * n + j] -= tau * u1
               T[(k + 1) * n + j] -= tau * y
               if (size === 3) {
@@ -126,7 +140,8 @@ export function schur(
               if (size === 3) {
                 dot += z * T[i * n + (k + 2)]
               }
-              const tau: f64 = 2.0 * dot / (u1 * u1 + y * y + (size === 3 ? z * z : 0.0))
+              const tau: f64 =
+                (2.0 * dot) / (u1 * u1 + y * y + (size === 3 ? z * z : 0.0))
               T[i * n + k] -= tau * u1
               T[i * n + (k + 1)] -= tau * y
               if (size === 3) {
@@ -140,7 +155,8 @@ export function schur(
               if (size === 3) {
                 dot += z * Q[i * n + (k + 2)]
               }
-              const tau: f64 = 2.0 * dot / (u1 * u1 + y * y + (size === 3 ? z * z : 0.0))
+              const tau: f64 =
+                (2.0 * dot) / (u1 * u1 + y * y + (size === 3 ? z * z : 0.0))
               Q[i * n + k] -= tau * u1
               Q[i * n + (k + 1)] -= tau * y
               if (size === 3) {
@@ -159,7 +175,10 @@ export function schur(
 
         // Check convergence
         const scaleCheck: f64 = Math.abs(T[p * n + p]) + Math.abs(T[q * n + q])
-        if (Math.abs(T[p * n + q]) < tol * scaleCheck || Math.abs(T[p * n + q]) < 1e-14) {
+        if (
+          Math.abs(T[p * n + q]) < tol * scaleCheck ||
+          Math.abs(T[p * n + q]) < 1e-14
+        ) {
           T[p * n + q] = 0.0
           converged = true
         }
@@ -172,7 +191,8 @@ export function schur(
 
   // Clean up small subdiagonal elements
   for (let i: i32 = 1; i < n; i++) {
-    const scale: f64 = Math.abs(T[i * n + i]) + Math.abs(T[(i - 1) * n + (i - 1)])
+    const scale: f64 =
+      Math.abs(T[i * n + i]) + Math.abs(T[(i - 1) * n + (i - 1)])
     if (Math.abs(T[i * n + (i - 1)]) < tol * scale) {
       T[i * n + (i - 1)] = 0.0
     }

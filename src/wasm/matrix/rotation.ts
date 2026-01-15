@@ -142,7 +142,10 @@ export function rotationMatrixZ(angle: f64): Float64Array {
  * @param angle - Rotation angle in radians
  * @returns 3x3 rotation matrix (row-major)
  */
-export function rotationMatrixAxisAngle(axis: Float64Array, angle: f64): Float64Array {
+export function rotationMatrixAxisAngle(
+  axis: Float64Array,
+  angle: f64
+): Float64Array {
   const c: f64 = Math.cos(angle)
   const s: f64 = Math.sin(angle)
   const t: f64 = 1.0 - c
@@ -173,7 +176,11 @@ export function rotationMatrixAxisAngle(axis: Float64Array, angle: f64): Float64
  * @param roll - Rotation around X axis
  * @returns 3x3 rotation matrix (row-major)
  */
-export function rotationMatrixEulerZYX(yaw: f64, pitch: f64, roll: f64): Float64Array {
+export function rotationMatrixEulerZYX(
+  yaw: f64,
+  pitch: f64,
+  roll: f64
+): Float64Array {
   const cy: f64 = Math.cos(yaw)
   const sy: f64 = Math.sin(yaw)
   const cp: f64 = Math.cos(pitch)
@@ -202,7 +209,11 @@ export function rotationMatrixEulerZYX(yaw: f64, pitch: f64, roll: f64): Float64
  * @param gamma - Rotation around Z axis
  * @returns 3x3 rotation matrix (row-major)
  */
-export function rotationMatrixEulerXYZ(alpha: f64, beta: f64, gamma: f64): Float64Array {
+export function rotationMatrixEulerXYZ(
+  alpha: f64,
+  beta: f64,
+  gamma: f64
+): Float64Array {
   const ca: f64 = Math.cos(alpha)
   const sa: f64 = Math.sin(alpha)
   const cb: f64 = Math.cos(beta)
@@ -288,9 +299,9 @@ export function quaternionFromRotationMatrix(R: Float64Array): Float64Array {
   // Normalize
   const norm: f64 = Math.sqrt(
     result[0] * result[0] +
-    result[1] * result[1] +
-    result[2] * result[2] +
-    result[3] * result[3]
+      result[1] * result[1] +
+      result[2] * result[2] +
+      result[3] * result[3]
   )
 
   if (norm > 1e-14) {
@@ -309,7 +320,10 @@ export function quaternionFromRotationMatrix(R: Float64Array): Float64Array {
  * @param q2 - Second quaternion [w, x, y, z]
  * @returns Product quaternion [w, x, y, z]
  */
-export function quaternionMultiply(q1: Float64Array, q2: Float64Array): Float64Array {
+export function quaternionMultiply(
+  q1: Float64Array,
+  q2: Float64Array
+): Float64Array {
   const result = new Float64Array(4)
 
   result[0] = q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3]
@@ -327,7 +341,11 @@ export function quaternionMultiply(q1: Float64Array, q2: Float64Array): Float64A
  * @param t - Interpolation parameter (0 to 1)
  * @returns Interpolated quaternion [w, x, y, z]
  */
-export function quaternionSlerp(q1: Float64Array, q2: Float64Array, t: f64): Float64Array {
+export function quaternionSlerp(
+  q1: Float64Array,
+  q2: Float64Array,
+  t: f64
+): Float64Array {
   // Compute dot product
   let dot: f64 = q1[0] * q2[0] + q1[1] * q2[1] + q1[2] * q2[2] + q1[3] * q2[3]
 
@@ -369,9 +387,9 @@ export function quaternionSlerp(q1: Float64Array, q2: Float64Array, t: f64): Flo
   // Normalize
   const norm: f64 = Math.sqrt(
     result[0] * result[0] +
-    result[1] * result[1] +
-    result[2] * result[2] +
-    result[3] * result[3]
+      result[1] * result[1] +
+      result[2] * result[2] +
+      result[3] * result[3]
   )
 
   if (norm > 1e-14) {
@@ -390,7 +408,10 @@ export function quaternionSlerp(q1: Float64Array, q2: Float64Array, t: f64): Flo
  * @param angle - Rotation angle in radians
  * @returns Quaternion [w, x, y, z]
  */
-export function quaternionFromAxisAngle(axis: Float64Array, angle: f64): Float64Array {
+export function quaternionFromAxisAngle(
+  axis: Float64Array,
+  angle: f64
+): Float64Array {
   const halfAngle: f64 = angle / 2.0
   const s: f64 = Math.sin(halfAngle)
 
@@ -435,7 +456,10 @@ export function axisAngleFromQuaternion(q: Float64Array): Float64Array {
  * @param q - Quaternion [w, x, y, z]
  * @returns Rotated point [x', y', z']
  */
-export function rotateByQuaternion(point: Float64Array, q: Float64Array): Float64Array {
+export function rotateByQuaternion(
+  point: Float64Array,
+  q: Float64Array
+): Float64Array {
   // Convert point to quaternion form [0, x, y, z]
   const p = new Float64Array(4)
   p[0] = 0.0
@@ -470,7 +494,10 @@ export function rotateByQuaternion(point: Float64Array, q: Float64Array): Float6
  * @param R - 3x3 rotation matrix (row-major)
  * @returns Rotated point [x', y', z']
  */
-export function rotateByMatrix(point: Float64Array, R: Float64Array): Float64Array {
+export function rotateByMatrix(
+  point: Float64Array,
+  R: Float64Array
+): Float64Array {
   const result = new Float64Array(3)
 
   result[0] = R[0] * point[0] + R[1] * point[1] + R[2] * point[2]
@@ -513,7 +540,10 @@ export function eulerFromRotationMatrix(R: Float64Array): Float64Array {
  * @param count - Number of matrices
  * @returns Combined 3x3 rotation matrix
  */
-export function composeRotations(matrices: Float64Array, count: i32): Float64Array {
+export function composeRotations(
+  matrices: Float64Array,
+  count: i32
+): Float64Array {
   if (count <= 0) {
     // Return identity
     const identity = new Float64Array(9)

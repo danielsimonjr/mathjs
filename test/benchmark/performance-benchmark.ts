@@ -222,7 +222,7 @@ let wasmExports: any = null
 async function loadWasmModule(): Promise<boolean> {
   try {
     // Load the compiled WASM module using the generated bindings
-    const wasm = await import('../../lib/wasm/index.js') as any
+    const wasm = (await import('../../lib/wasm/index.js')) as any
     wasmExports = wasm
 
     wasmModule = {
@@ -549,7 +549,11 @@ async function benchmarkOperation(
     console.log(`  Size: ${size.toLocaleString()}`)
 
     // JavaScript benchmark
-    const jsResult = await runBenchmark(`${operationName}_js`, () => jsFn(size), fullConfig)
+    const jsResult = await runBenchmark(
+      `${operationName}_js`,
+      () => jsFn(size),
+      fullConfig
+    )
     const jsStats = computeStats(jsResult.times)
 
     const jsEntry: BenchmarkResult = {
@@ -923,9 +927,15 @@ function printSummary(results: BenchmarkResult[]): void {
   }
 
   // Print table
-  console.log('\n┌─────────────────────────────┬────────────┬────────────┬──────────┐')
-  console.log('│ Operation                   │ Mode       │ Avg (ms)   │ Speedup  │')
-  console.log('├─────────────────────────────┼────────────┼────────────┼──────────┤')
+  console.log(
+    '\n┌─────────────────────────────┬────────────┬────────────┬──────────┐'
+  )
+  console.log(
+    '│ Operation                   │ Mode       │ Avg (ms)   │ Speedup  │'
+  )
+  console.log(
+    '├─────────────────────────────┼────────────┼────────────┼──────────┤'
+  )
 
   for (const [op, opResults] of byOperation) {
     // Get largest size results for summary
@@ -933,14 +943,18 @@ function printSummary(results: BenchmarkResult[]): void {
     const largestResults = opResults.filter((r) => r.size === maxSize)
 
     for (const r of largestResults) {
-      const speedup = r.speedupVsJs ? `${r.speedupVsJs.toFixed(2)}x` : 'baseline'
+      const speedup = r.speedupVsJs
+        ? `${r.speedupVsJs.toFixed(2)}x`
+        : 'baseline'
       console.log(
         `│ ${op.padEnd(27)} │ ${r.mode.padEnd(10)} │ ${r.avgMs.toFixed(3).padStart(10)} │ ${speedup.padStart(8)} │`
       )
     }
   }
 
-  console.log('└─────────────────────────────┴────────────┴────────────┴──────────┘')
+  console.log(
+    '└─────────────────────────────┴────────────┴────────────┴──────────┘'
+  )
 
   // WASM speedup summary
   const wasmResults = results.filter(
@@ -948,7 +962,8 @@ function printSummary(results: BenchmarkResult[]): void {
   )
   if (wasmResults.length > 0) {
     const avgSpeedup =
-      wasmResults.reduce((sum, r) => sum + (r.speedupVsJs || 1), 0) / wasmResults.length
+      wasmResults.reduce((sum, r) => sum + (r.speedupVsJs || 1), 0) /
+      wasmResults.length
     const maxSpeedup = Math.max(...wasmResults.map((r) => r.speedupVsJs || 1))
     const minSpeedup = Math.min(...wasmResults.map((r) => r.speedupVsJs || 1))
 

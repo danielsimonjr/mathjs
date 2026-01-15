@@ -10,7 +10,12 @@
 
 import { MathWorkerPool, WorkerPoolOptions, PoolStats } from './WorkerPool.ts'
 
-export type ExecutionMode = 'js' | 'wasm' | 'wasm-simd' | 'parallel-js' | 'parallel-wasm'
+export type ExecutionMode =
+  | 'js'
+  | 'wasm'
+  | 'wasm-simd'
+  | 'parallel-js'
+  | 'parallel-wasm'
 
 export interface WasmWorkerPoolOptions extends WorkerPoolOptions {
   /** Preferred execution mode */
@@ -111,9 +116,9 @@ export class WasmWorkerPool {
       // This validates that the browser supports SIMD instructions
       return WebAssembly.validate(
         new Uint8Array([
-          0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x05, 0x01, 0x60,
-          0x00, 0x01, 0x7b, 0x03, 0x02, 0x01, 0x00, 0x0a, 0x0a, 0x01, 0x08, 0x00,
-          0x41, 0x00, 0xfd, 0x0f, 0xfd, 0x62, 0x0b
+          0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x05, 0x01,
+          0x60, 0x00, 0x01, 0x7b, 0x03, 0x02, 0x01, 0x00, 0x0a, 0x0a, 0x01,
+          0x08, 0x00, 0x41, 0x00, 0xfd, 0x0f, 0xfd, 0x62, 0x0b
         ])
       )
     } catch {
@@ -175,7 +180,9 @@ export class WasmWorkerPool {
     const wasm = this.getWasmModule()
     if (!wasm || !wasm[operation]) {
       // Fallback to JS if WASM not available
-      console.warn(`WASM operation ${operation} not available, using JS fallback`)
+      console.warn(
+        `WASM operation ${operation} not available, using JS fallback`
+      )
       return this.execJs<T>(operation, args)
     }
 
@@ -231,7 +238,10 @@ export class WasmWorkerPool {
   /**
    * Execute operation in parallel using WASM workers
    */
-  private async execParallelWasm<T>(operation: string, args: any[]): Promise<T> {
+  private async execParallelWasm<T>(
+    operation: string,
+    args: any[]
+  ): Promise<T> {
     // For now, use same strategy as parallel JS but with WASM execution
     // In a full implementation, we'd have WASM-enabled workers
     const data = args[0]
@@ -309,7 +319,12 @@ export class WasmWorkerPool {
 
     const iterations = options.iterations || 100
     const warmup = options.warmup || 10
-    const modes = options.modes || ['js', 'wasm', 'parallel-js', 'parallel-wasm']
+    const modes = options.modes || [
+      'js',
+      'wasm',
+      'parallel-js',
+      'parallel-wasm'
+    ]
 
     const results: BenchmarkResult[] = []
     let jsBaseline = 0
@@ -352,8 +367,8 @@ export class WasmWorkerPool {
       const inputSize = Array.isArray(args[0])
         ? args[0].length
         : args[0] instanceof Float64Array
-        ? args[0].length
-        : 1
+          ? args[0].length
+          : 1
 
       results.push({
         operation,
@@ -409,7 +424,9 @@ export class WasmWorkerPool {
 /**
  * Create a pre-configured WasmWorkerPool for matrix operations
  */
-export function createMatrixPool(options?: WasmWorkerPoolOptions): WasmWorkerPool {
+export function createMatrixPool(
+  options?: WasmWorkerPoolOptions
+): WasmWorkerPool {
   return new WasmWorkerPool({
     parallelThreshold: 1000, // Use parallel for matrices > 1000 elements
     ...options
@@ -419,7 +436,9 @@ export function createMatrixPool(options?: WasmWorkerPoolOptions): WasmWorkerPoo
 /**
  * Create a pre-configured WasmWorkerPool for statistical operations
  */
-export function createStatsPool(options?: WasmWorkerPoolOptions): WasmWorkerPool {
+export function createStatsPool(
+  options?: WasmWorkerPoolOptions
+): WasmWorkerPool {
   return new WasmWorkerPool({
     parallelThreshold: 10000, // Use parallel for datasets > 10000 elements
     ...options

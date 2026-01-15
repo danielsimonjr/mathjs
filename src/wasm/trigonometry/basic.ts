@@ -257,9 +257,13 @@ export function radToDeg(rad: f64): f64 {
  * @param output Output array
  * @param length Length of arrays
  */
-export function sinArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function sinArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.sin(unchecked(input[i])))
+    unchecked((output[i] = Math.sin(unchecked(input[i]))))
   }
 }
 
@@ -269,9 +273,13 @@ export function sinArray(input: Float64Array, output: Float64Array, length: i32)
  * @param output Output array
  * @param length Length of arrays
  */
-export function cosArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function cosArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.cos(unchecked(input[i])))
+    unchecked((output[i] = Math.cos(unchecked(input[i]))))
   }
 }
 
@@ -281,9 +289,13 @@ export function cosArray(input: Float64Array, output: Float64Array, length: i32)
  * @param output Output array
  * @param length Length of arrays
  */
-export function tanArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function tanArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.tan(unchecked(input[i])))
+    unchecked((output[i] = Math.tan(unchecked(input[i]))))
   }
 }
 
@@ -293,9 +305,13 @@ export function tanArray(input: Float64Array, output: Float64Array, length: i32)
  * @param output Output array
  * @param length Length of arrays
  */
-export function sinhArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function sinhArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.sinh(unchecked(input[i])))
+    unchecked((output[i] = Math.sinh(unchecked(input[i]))))
   }
 }
 
@@ -305,9 +321,13 @@ export function sinhArray(input: Float64Array, output: Float64Array, length: i32
  * @param output Output array
  * @param length Length of arrays
  */
-export function coshArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function coshArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.cosh(unchecked(input[i])))
+    unchecked((output[i] = Math.cosh(unchecked(input[i]))))
   }
 }
 
@@ -317,8 +337,12 @@ export function coshArray(input: Float64Array, output: Float64Array, length: i32
  * @param output Output array
  * @param length Length of arrays
  */
-export function tanhArray(input: Float64Array, output: Float64Array, length: i32): void {
+export function tanhArray(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = Math.tanh(unchecked(input[i])))
+    unchecked((output[i] = Math.tanh(unchecked(input[i]))))
   }
 }

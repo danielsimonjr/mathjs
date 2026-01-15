@@ -135,7 +135,7 @@ describe('wasm/arithmetic/logarithmic', function () {
     })
 
     it('should handle negative numbers for odd roots', function () {
-      assert(Math.abs(nthRoot(-8, 3) - (-2)) < EPSILON)
+      assert(Math.abs(nthRoot(-8, 3) - -2) < EPSILON)
     })
 
     it('should calculate 4th root of 16', function () {

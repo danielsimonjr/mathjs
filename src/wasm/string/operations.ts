@@ -33,7 +33,8 @@ export function isDigit(code: i32): i32 {
  * @returns 1 if letter, 0 otherwise
  */
 export function isLetter(code: i32): i32 {
-  return (code >= CHAR_A && code <= CHAR_Z) || (code >= CHAR_a && code <= CHAR_z)
+  return (code >= CHAR_A && code <= CHAR_Z) ||
+    (code >= CHAR_a && code <= CHAR_z)
     ? 1
     : 0
 }
