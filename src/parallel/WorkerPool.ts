@@ -125,10 +125,14 @@ export class MathWorkerPool {
     }
 
     const poolOptions: PoolOptions = {
-      minWorkers: options?.minWorkers,
       maxWorkers: options?.maxWorkers || this.getOptimalWorkerCount(),
       workerType: options?.workerType || 'auto',
       workerTerminateTimeout: options?.workerTerminateTimeout || 1000
+    }
+
+    // Only set minWorkers if explicitly provided (workerpool validates it must be >= 0)
+    if (options?.minWorkers !== undefined) {
+      poolOptions.minWorkers = options.minWorkers
     }
 
     if (this.workerScript) {
