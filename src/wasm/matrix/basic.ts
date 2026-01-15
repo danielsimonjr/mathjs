@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * WASM-optimized basic matrix operations using AssemblyScript
  *

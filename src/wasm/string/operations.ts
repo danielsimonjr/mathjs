@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * WASM-optimized string/number operations using AssemblyScript
  * Note: Full string manipulation is better handled in JavaScript.

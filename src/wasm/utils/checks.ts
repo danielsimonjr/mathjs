@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * WASM-optimized utility functions for numeric checks
  * using AssemblyScript

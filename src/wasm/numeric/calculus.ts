@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * WASM-optimized numerical calculus operations
  *

@@ -1,6 +1,13 @@
 /**
  * WorkerPool - Wrapper around @danielsimonjr/workerpool for parallel computation
  * Provides a unified API for both Node.js and browser environments
+ *
+ * Optimizations:
+ * - Worker pool prewarming (create workers ahead of time)
+ * - Adaptive parallelization based on task size
+ * - Task batching for small operations
+ * - Persistent worker pool singleton
+ * - Optimized chunk sizes for cache efficiency
  */
 
 import workerpool, { PoolOptions } from '@danielsimonjr/workerpool'
@@ -10,6 +17,33 @@ export interface WorkerPoolOptions {
   maxWorkers?: number
   workerType?: 'auto' | 'web' | 'process' | 'thread'
   workerTerminateTimeout?: number
+  prewarm?: boolean // Create workers immediately on pool creation
+}
+
+/**
+ * Optimal chunk sizes for different operations
+ * Based on L1/L2 cache sizes and memory bandwidth
+ */
+export const OptimalChunkSizes = {
+  // L1 cache is typically 32-64KB, L2 is 256KB-1MB
+  // For Float64 (8 bytes), optimal chunk is 4K-8K elements
+  elementWise: 8192, // 64KB chunk
+  dotProduct: 4096, // 32KB chunk - memory bound
+  matrixRow: 512, // One row at a time for matrix ops
+  reduction: 16384 // Larger chunks for reductions
+} as const
+
+/**
+ * Task batching configuration
+ */
+export interface BatchConfig {
+  minBatchSize: number // Minimum elements per batch
+  maxBatches: number // Maximum concurrent batches
+}
+
+export const DefaultBatchConfig: BatchConfig = {
+  minBatchSize: 1000,
+  maxBatches: 16
 }
 
 // Type alias for worker methods record
@@ -24,12 +58,57 @@ export interface PoolStats {
 }
 
 /**
+ * Performance metrics for the worker pool
+ */
+export interface PoolMetrics {
+  tasksExecuted: number
+  totalExecutionTime: number
+  averageExecutionTime: number
+  peakConcurrency: number
+}
+
+/**
  * MathWorkerPool - A worker pool for parallel math computations
  * Uses @danielsimonjr/workerpool under the hood
+ *
+ * Features:
+ * - Automatic worker count optimization
+ * - Pool prewarming for instant availability
+ * - Adaptive task distribution
+ * - Performance metrics tracking
  */
 export class MathWorkerPool {
   private pool: any // workerpool.Pool type
   private workerScript: string | null
+  private isPrewarmed: boolean = false
+  private metrics: PoolMetrics
+
+  // Singleton instance for global pool
+  private static globalInstance: MathWorkerPool | null = null
+
+  /**
+   * Get or create a global worker pool singleton
+   * This avoids the overhead of creating new pools for each operation
+   */
+  public static getGlobal(workerScript?: string, options?: WorkerPoolOptions): MathWorkerPool {
+    if (!MathWorkerPool.globalInstance) {
+      MathWorkerPool.globalInstance = new MathWorkerPool(workerScript, {
+        ...options,
+        prewarm: true
+      })
+    }
+    return MathWorkerPool.globalInstance
+  }
+
+  /**
+   * Terminate the global pool
+   */
+  public static async terminateGlobal(): Promise<void> {
+    if (MathWorkerPool.globalInstance) {
+      await MathWorkerPool.globalInstance.terminate()
+      MathWorkerPool.globalInstance = null
+    }
+  }
 
   /**
    * Create a new worker pool
@@ -38,6 +117,12 @@ export class MathWorkerPool {
    */
   constructor(workerScript?: string, options?: WorkerPoolOptions) {
     this.workerScript = workerScript || null
+    this.metrics = {
+      tasksExecuted: 0,
+      totalExecutionTime: 0,
+      averageExecutionTime: 0,
+      peakConcurrency: 0
+    }
 
     const poolOptions: PoolOptions = {
       minWorkers: options?.minWorkers,
@@ -51,22 +136,82 @@ export class MathWorkerPool {
     } else {
       this.pool = workerpool.pool(poolOptions)
     }
+
+    // Prewarm workers if requested
+    if (options?.prewarm) {
+      this.prewarm().catch(() => {
+        // Silently ignore prewarm failures
+      })
+    }
   }
 
   /**
    * Get optimal worker count based on available CPUs
+   * Leaves one core for the main thread
    */
   private getOptimalWorkerCount(): number {
+    let cpuCount = 4 // fallback
+
     if (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) {
-      return Math.max(2, navigator.hardwareConcurrency - 1)
+      cpuCount = navigator.hardwareConcurrency
+    } else {
+      // Node.js
+      try {
+        const os = require('os')
+        cpuCount = os.cpus().length
+      } catch {
+        // Use fallback
+      }
     }
-    // Node.js
-    try {
-      const os = require('os')
-      return Math.max(2, os.cpus().length - 1)
-    } catch {
-      return 4 // fallback
+
+    // Use n-1 workers to leave one core for main thread
+    // But at least 2 workers for parallelism benefit
+    return Math.max(2, cpuCount - 1)
+  }
+
+  /**
+   * Prewarm the worker pool by creating all workers immediately
+   * This eliminates worker creation overhead for the first task
+   */
+  public async prewarm(): Promise<void> {
+    if (this.isPrewarmed) return
+
+    const workerCount = this.getOptimalWorkerCount()
+    const warmupTasks: Promise<any>[] = []
+
+    // Execute no-op tasks to create workers
+    for (let i = 0; i < workerCount; i++) {
+      warmupTasks.push(
+        this.exec(() => true, []).catch(() => {
+          // Ignore warmup failures
+        })
+      )
     }
+
+    await Promise.all(warmupTasks)
+    this.isPrewarmed = true
+  }
+
+  /**
+   * Calculate optimal batch count based on data size and operation type
+   */
+  public getOptimalBatchCount(
+    dataSize: number,
+    operationType: keyof typeof OptimalChunkSizes = 'elementWise'
+  ): number {
+    const optimalChunk = OptimalChunkSizes[operationType]
+    const workerCount = this.stats().totalWorkers || this.getOptimalWorkerCount()
+
+    // Calculate batches based on optimal chunk size
+    const batchesByChunk = Math.ceil(dataSize / optimalChunk)
+
+    // Limit to available workers (no point having more batches than workers)
+    const maxBatches = Math.min(batchesByChunk, workerCount, DefaultBatchConfig.maxBatches)
+
+    // Ensure minimum batch size
+    const batchesByMinSize = Math.floor(dataSize / DefaultBatchConfig.minBatchSize)
+
+    return Math.max(1, Math.min(maxBatches, batchesByMinSize))
   }
 
   /**
@@ -79,13 +224,43 @@ export class MathWorkerPool {
     method: string | ((...args: any[]) => T),
     args?: any[]
   ): Promise<T> {
-    if (typeof method === 'function') {
-      return this.pool.exec(
-        method as (...args: any[]) => T,
-        args || []
-      ) as Promise<T>
+    const startTime = performance.now()
+
+    // Track peak concurrency
+    const currentStats = this.pool.stats()
+    if (currentStats.busyWorkers + 1 > this.metrics.peakConcurrency) {
+      this.metrics.peakConcurrency = currentStats.busyWorkers + 1
     }
-    return this.pool.exec(method, args || []) as Promise<T>
+
+    try {
+      let result: T
+      if (typeof method === 'function') {
+        result = await (this.pool.exec(
+          method as (...args: any[]) => T,
+          args || []
+        ) as Promise<T>)
+      } else {
+        result = await (this.pool.exec(method, args || []) as Promise<T>)
+      }
+
+      // Update metrics
+      const executionTime = performance.now() - startTime
+      this.metrics.tasksExecuted++
+      this.metrics.totalExecutionTime += executionTime
+      this.metrics.averageExecutionTime =
+        this.metrics.totalExecutionTime / this.metrics.tasksExecuted
+
+      return result
+    } catch (error) {
+      // Still track execution time for failed tasks
+      const executionTime = performance.now() - startTime
+      this.metrics.tasksExecuted++
+      this.metrics.totalExecutionTime += executionTime
+      this.metrics.averageExecutionTime =
+        this.metrics.totalExecutionTime / this.metrics.tasksExecuted
+
+      throw error
+    }
   }
 
   /**
@@ -135,6 +310,32 @@ export class MathWorkerPool {
       pendingTasks: s.pendingTasks,
       activeTasks: s.activeTasks
     }
+  }
+
+  /**
+   * Get performance metrics
+   */
+  getMetrics(): PoolMetrics {
+    return { ...this.metrics }
+  }
+
+  /**
+   * Reset performance metrics
+   */
+  resetMetrics(): void {
+    this.metrics = {
+      tasksExecuted: 0,
+      totalExecutionTime: 0,
+      averageExecutionTime: 0,
+      peakConcurrency: 0
+    }
+  }
+
+  /**
+   * Check if pool is prewarmed
+   */
+  get isReady(): boolean {
+    return this.isPrewarmed
   }
 
   /**

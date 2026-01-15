@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * WASM-optimized relational operations using AssemblyScript
  * Returns i32 for boolean results (0 = false, 1 = true)

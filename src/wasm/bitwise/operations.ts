@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * WASM-optimized bitwise operations
  *

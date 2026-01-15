@@ -1,3 +1,4 @@
+// @ts-nocheck
 import assert from 'assert'
 import { WasmLoader, wasmLoader } from '../../../src/wasm/WasmLoader.ts'
 
