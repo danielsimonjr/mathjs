@@ -1155,6 +1155,32 @@ export const createMultiply = /* #__PURE__ */ factory(
         nodeOperations.createBinaryNode('*', 'multiply', x, y),
 
       // =========================================================================
+      // BIGNUMBER-UNIT SIGNATURES - Preserve BigNumber precision
+      // =========================================================================
+
+      'BigNumber, Unit': function (x: any, y: any): any {
+        // Handle valueless unit (e.g., unit('mm'))
+        if (y.value === null) {
+          return y.create(x.clone(), y.units)
+        }
+
+        // Multiply BigNumber by unit's value, preserving BigNumber precision
+        const resultValue = x.times(y.value)
+        return y.create(resultValue, y.units)
+      },
+
+      'Unit, BigNumber': function (x: any, y: any): any {
+        // Handle valueless unit
+        if (x.value === null) {
+          return x.create(y.clone(), x.units)
+        }
+
+        // Multiply unit's value by BigNumber, preserving BigNumber precision
+        const resultValue = x.value.times(y)
+        return x.create(resultValue, x.units)
+      },
+
+      // =========================================================================
       // EXISTING SIGNATURES - Keep after Node signatures
       // =========================================================================
 

@@ -867,6 +867,28 @@ export const createMultiply = /* #__PURE__ */ factory(name, dependencies, ({ typ
       return matAlgo14xDs(matrix(y), x, multiplyScalar, true).valueOf()
     },
 
+    'BigNumber, Unit': function (x, y) {
+      // Handle valueless unit (e.g., unit('mm'))
+      if (y.value === null) {
+        return y.create(x.clone(), y.units)
+      }
+
+      // Multiply BigNumber by unit's value, preserving BigNumber precision
+      const resultValue = x.times(y.value)
+      return y.create(resultValue, y.units)
+    },
+
+    'Unit, BigNumber': function (x, y) {
+      // Handle valueless unit
+      if (x.value === null) {
+        return x.create(y.clone(), x.units)
+      }
+
+      // Multiply unit's value by BigNumber, preserving BigNumber precision
+      const resultValue = x.value.times(y)
+      return x.create(resultValue, x.units)
+    },
+
     'any, any': multiplyScalar,
 
     'any, any, ...any': typed.referToSelf(self => (x, y, rest) => {
