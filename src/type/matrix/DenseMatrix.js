@@ -50,14 +50,6 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(name, dependencies
       // get the dimensions of the array
       this._size = arraySize(this._data)
 
-      // Validate 2D requirement
-      if (this._size.length === 1) {
-        throw new DimensionError('Two dimensional array expected')
-      }
-      if (this._size.length > 2) {
-        throw new DimensionError('Two dimensional array expected')
-      }
-
       // verify the dimensions of the array, TODO: compute size while processing array
       validate(this._data, this._size)
       // data type unknown

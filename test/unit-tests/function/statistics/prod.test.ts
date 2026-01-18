@@ -39,9 +39,7 @@ describe('prod', function () {
     )
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should return the product of strings (with BigNumber config)', function () {
-    // TODO: requires math.add to recon with config.number when parsing strings
+  it('should return the product of strings (with BigNumber config)', function () {
     const bigmath = math.create({ number: 'BigNumber' })
     assert.deepStrictEqual(
       bigmath.prod('10', '3', '4', '2'),
@@ -50,9 +48,7 @@ describe('prod', function () {
     assert.deepStrictEqual(bigmath.prod('10'), bigmath.bignumber(10))
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should return the product of strings (with bigint config)', function () {
-    // TODO: requires math.add to recon with config.number when parsing strings
+  it('should return the product of strings (with bigint config)', function () {
     const bigmath = math.create({ number: 'bigint' })
     assert.strictEqual(bigmath.prod('10', '3', '4', '2'), 240n)
     assert.strictEqual(bigmath.prod('10'), 10n)
@@ -140,7 +136,7 @@ describe('prod', function () {
     }, /TypeError: Cannot calculate prod, unexpected type of argument/)
     assert.throws(function () {
       prod('a', 'b')
-    }, /Error: Cannot convert "a" to a number/)
+    }, /SyntaxError: String "a" is not a valid number/)
     assert.throws(function () {
       prod('a')
     }, /SyntaxError: String "a" is not a valid number/)

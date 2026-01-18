@@ -1137,8 +1137,7 @@ describe('Unit', function () {
       assert.strictEqual(valuelessF.divide(1 / 123).format(12), '123 fahrenheit')
     })
 
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should cancel units in numerator and denominator', function () {
+    it('should cancel units in numerator and denominator', function () {
       assert.strictEqual(math.evaluate('2 J/K/g * 2 g').toString(), '4 J / K')
       assert.strictEqual(math.evaluate('2 J/K/g * 2K').toString(), '4 J / g')
     })

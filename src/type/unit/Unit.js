@@ -800,7 +800,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       const u1 = units[i]
       const key1 = u1.unit.name + '_' + (u1.prefix ? u1.prefix.name : '')
 
-      for (let j = i + 1; j < units.length; j++) {
+      for (let j = i + 1; j < units.length; i++) {
         if (cancelled[j]) continue
         const u2 = units[j]
         const key2 = u2.unit.name + '_' + (u2.prefix ? u2.prefix.name : '')

@@ -10034,18 +10034,29 @@ var IndexError = class _IndexError extends RangeError {
 // src/error/DimensionError.ts
 var DimensionError = class _DimensionError extends RangeError {
   /**
-   * @param actual - The actual size
-   * @param expected - The expected size
+   * @param actual - The actual size or custom error message
+   * @param expected - The expected size (optional if actual is a custom message)
    * @param relation - Optional relation between actual and expected size: '!=', '<', etc.
    */
   constructor(actual, expected, relation) {
-    const message = "Dimension mismatch (" + (Array.isArray(actual) ? "[" + actual.join(", ") + "]" : actual) + " " + (relation || "!=") + " " + (Array.isArray(expected) ? "[" + expected.join(", ") + "]" : expected) + ")";
+    let message;
+    if (typeof actual === "string" && expected === void 0) {
+      message = actual;
+    } else {
+      message = "Dimension mismatch (" + (Array.isArray(actual) ? "[" + actual.join(", ") + "]" : actual) + " " + (relation || "!=") + " " + (Array.isArray(expected) ? "[" + expected.join(", ") + "]" : expected) + ")";
+    }
     super(message);
     this.isDimensionError = true;
     this.name = "DimensionError";
-    this.actual = actual;
-    this.expected = expected;
-    this.relation = relation;
+    if (typeof actual === "string" && expected === void 0) {
+      this.actual = void 0;
+      this.expected = void 0;
+      this.relation = void 0;
+    } else {
+      this.actual = actual;
+      this.expected = expected;
+      this.relation = relation;
+    }
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, _DimensionError);
     }
@@ -18852,12 +18863,16 @@ function improveErrorMessage(err, fnName, value) {
 
 // src/function/statistics/prod.ts
 var name77 = "prod";
-var dependencies65 = ["typed", "config", "multiplyScalar", "numeric"];
+var dependencies65 = ["typed", "config", "multiplyScalar", "numeric", "parseNumberWithConfig"];
 var createProd = /* @__PURE__ */ factory(
   name77,
   dependencies65,
-  ({ typed: typed2, config, multiplyScalar, numeric }) => {
+  ({ typed: typed2, config, multiplyScalar, numeric, parseNumberWithConfig }) => {
     return typed2(name77, {
+      // prod(string) - single string input
+      "string": function(x) {
+        return parseNumberWithConfig(x);
+      },
       // prod([a, b, c, d, ...])
       "Array | Matrix": _prod,
       // prod([a, b, c, d, ...], dim)
@@ -18873,14 +18888,12 @@ var createProd = /* @__PURE__ */ factory(
       let prod;
       deepForEach2(array, function(value) {
         try {
-          prod = prod === void 0 ? value : multiplyScalar(prod, value);
+          const converted = typeof value === "string" ? parseNumberWithConfig(value) : value;
+          prod = prod === void 0 ? converted : multiplyScalar(prod, converted);
         } catch (err) {
           throw improveErrorMessage(err, "prod", value);
         }
       });
-      if (typeof prod === "string") {
-        prod = numeric(prod, safeNumberType(prod, config));
-      }
       if (prod === void 0) {
         throw new Error("Cannot calculate prod of an empty array");
       }
@@ -18997,12 +19010,16 @@ var createMin = /* @__PURE__ */ factory(
 
 // src/function/statistics/sum.ts
 var name80 = "sum";
-var dependencies68 = ["typed", "config", "add", "numeric"];
+var dependencies68 = ["typed", "config", "add", "numeric", "parseNumberWithConfig"];
 var createSum = /* @__PURE__ */ factory(
   name80,
   dependencies68,
-  ({ typed: typed2, config, add, numeric }) => {
+  ({ typed: typed2, config, add, numeric, parseNumberWithConfig }) => {
     return typed2(name80, {
+      // sum(string) - single string input
+      "string": function(x) {
+        return parseNumberWithConfig(x);
+      },
       // sum([a, b, c, d, ...])
       "Array | Matrix": _sum,
       // sum([a, b, c, d, ...], dim)
@@ -19019,16 +19036,14 @@ var createSum = /* @__PURE__ */ factory(
       let sum;
       deepForEach2(array, function(value) {
         try {
-          sum = sum === void 0 ? value : add(sum, value);
+          const converted = typeof value === "string" ? parseNumberWithConfig(value) : value;
+          sum = sum === void 0 ? converted : add(sum, converted);
         } catch (err) {
           throw improveErrorMessage(err, "sum", value);
         }
       });
       if (sum === void 0) {
         sum = numeric(0, config.number);
-      }
-      if (typeof sum === "string") {
-        sum = numeric(sum, safeNumberType(sum, config));
       }
       return sum;
     }

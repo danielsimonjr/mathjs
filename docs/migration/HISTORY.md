@@ -6,6 +6,24 @@
   `multiply`, and `divide`. When any operand is a MathNode (ConstantNode,
   SymbolNode, etc.), these functions now return an OperatorNode for symbolic
   computation instead of evaluating numerically.
+- Feat: add config propagation support for `prod`, `sum`, and `unaryMinus`.
+  These functions now respect the `config.number` setting when converting
+  boolean and string inputs (e.g., with `{ number: 'BigNumber' }` or
+  `{ number: 'bigint' }`).
+- Feat: unit cancellation in Unit multiplication. Units with opposite powers
+  (e.g., `g^1` and `g^-1`) are now automatically cancelled when multiplying
+  units, simplifying compound units like `J/K/g * g` to `J/K`.
+- Fix: `sortFactories` now correctly preserves input order when circular
+  dependencies are detected, preventing incorrect reordering of mutually
+  dependent factories.
+- Fix: conflicting signatures "BigNumber,Unit" in `multiplyScalar` function.
+  Removed duplicate signature that was already handled by `multiply` function.
+- Fix: `DenseMatrix` incorrectly rejecting 1D arrays. Removed invalid 2D-only
+  validation that prevented creation of 1D matrices.
+- Fix: `parseNumberWithConfig` now properly validates invalid strings and
+  throws `SyntaxError` for non-numeric inputs instead of silently returning NaN.
+- Fix: added missing `cancelCommonUnits` function to `Unit.ts` TypeScript
+  implementation to match functionality in `Unit.js`.
 - Fix: #3578 interpret empty true-expr of conditional as error (#3581).
   Thanks @gwhitney.
 - Docs: fix #3565, update Matrix documentation (#3591). Thanks @orelbn.

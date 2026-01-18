@@ -37,8 +37,8 @@ export const createMultiplyScalar = /* #__PURE__ */ factory(name, dependencies, 
       return x.mul(y)
     },
 
-    'number | Fraction | BigNumber | Complex, Unit': (x, y) => y.multiply(x),
+    'number | Fraction | Complex, Unit': (x, y) => y.multiply(x),
 
-    'Unit, number | Fraction | BigNumber | Complex | Unit': (x, y) => x.multiply(y)
+    'Unit, number | Fraction | Complex | Unit': (x, y) => x.multiply(y)
   })
 })

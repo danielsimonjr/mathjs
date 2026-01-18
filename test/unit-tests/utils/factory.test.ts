@@ -35,9 +35,7 @@ describe('factory', function () {
     f({ a: 1, b: 2, c: 3 })
   })
 
-  // FIXME: this unit test doesn't work on IE either remove sortFactories if redundant, or use it and get the test working
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should order functions by their dependencies (1)', function () {
+  it('should order functions by their dependencies (1)', function () {
     function fn1() {
       return 1
     }

@@ -4,7 +4,7 @@
   "title": "Extend Config Propagation to unaryMinus - Enhanced Implementation Guide",
   "priority": "HIGH",
   "effort": "4 hours",
-  "status": "pending",
+  "status": "completed",
   "impact": "Completes config propagation implementation by fixing unaryMinus to respect config.number for boolean inputs. Fixes final 2 tests of the 8-test config propagation issue. Includes comprehensive documentation of the entire feature.",
   "currentBehavior": "math.unaryMinus(true) returns -1 (number) even when config.number='BigNumber'",
   "expectedBehavior": "math.unaryMinus(true) returns BigNumber(-1) when config.number='BigNumber'",

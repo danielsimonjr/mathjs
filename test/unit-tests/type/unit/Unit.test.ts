@@ -1436,8 +1436,7 @@ describe('Unit', function () {
       )
     })
 
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should cancel units in numerator and denominator', function () {
+    it('should cancel units in numerator and denominator', function () {
       assert.strictEqual(mathTs.evaluate('2 J/K/g * 2 g').toString(), '4 J / K')
       assert.strictEqual(mathTs.evaluate('2 J/K/g * 2K').toString(), '4 J / g')
     })

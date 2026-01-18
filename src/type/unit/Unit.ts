@@ -728,6 +728,9 @@ export const createUnitClass = /* #__PURE__ */ factory(
         res.skipAutomaticSimplification = false
       }
 
+      // Cancel common units in numerator and denominator
+      cancelCommonUnits(res)
+
       return getNumericIfUnitless(res)
     }
 
@@ -837,6 +840,50 @@ export const createUnitClass = /* #__PURE__ */ factory(
       } else {
         return unit
       }
+    }
+
+    /**
+     * Cancel common units in the numerator and denominator.
+     * Finds pairs of units with opposite powers (e.g., g^1 and g^-1) and removes them.
+     * Unlike full simplification, this preserves multiple units of the same type
+     * (e.g., in * in stays as two separate 'in' units, not in^2).
+     * @param {Unit} unit - The unit to simplify
+     * @returns {Unit} The unit with cancelled common units
+     */
+    function cancelCommonUnits(unit: any): any {
+      const units = unit.units
+      const cancelled = new Array(units.length).fill(false)
+
+      // For each unit with positive power, look for a matching unit with negative power
+      for (let i = 0; i < units.length; i++) {
+        if (cancelled[i]) continue
+        const u1 = units[i]
+        const key1 = u1.unit.name + '_' + (u1.prefix ? u1.prefix.name : '')
+
+        for (let j = i + 1; j < units.length; j++) {
+          if (cancelled[j]) continue
+          const u2 = units[j]
+          const key2 = u2.unit.name + '_' + (u2.prefix ? u2.prefix.name : '')
+
+          // Check if these units can cancel (same unit, opposite powers)
+          if (key1 === key2 && Math.abs(u1.power + u2.power) < 1e-12) {
+            cancelled[i] = true
+            cancelled[j] = true
+            break
+          }
+        }
+      }
+
+      // Build new units array with non-cancelled units
+      const newUnits = []
+      for (let i = 0; i < units.length; i++) {
+        if (!cancelled[i]) {
+          newUnits.push(units[i])
+        }
+      }
+
+      unit.units = newUnits
+      return unit
     }
 
     /**

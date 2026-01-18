@@ -4,9 +4,9 @@ import { safeNumberType } from '../../utils/number.js'
 import { improveErrorMessage } from './utils/improveErrorMessage.js'
 
 const name = 'sum'
-const dependencies = ['typed', 'config', 'add', 'numeric']
+const dependencies = ['typed', 'config', 'add', 'numeric', 'parseNumberWithConfig']
 
-export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, add, numeric }) => {
+export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, add, numeric, parseNumberWithConfig }) => {
   /**
    * Compute the sum of a matrix or a list with values.
    * In case of a multidimensional array or matrix, the sum of all
@@ -32,6 +32,11 @@ export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
    * @return {*} The sum of all values
    */
   return typed(name, {
+    // sum(string) - single string input
+    'string': function (x) {
+      return parseNumberWithConfig(x)
+    },
+
     // sum([a, b, c, d, ...])
     'Array | Matrix': _sum,
 
@@ -59,18 +64,20 @@ export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
 
     deepForEach(array, function (value) {
       try {
-        sum = (sum === undefined) ? value : add(sum, value)
+        // Pre-convert string inputs BEFORE addition
+        const converted = (typeof value === 'string')
+          ? parseNumberWithConfig(value)
+          : value
+
+        sum = (sum === undefined) ? converted : add(sum, converted)
       } catch (err) {
         throw improveErrorMessage(err, 'sum', value)
       }
     })
 
-    // make sure returning numeric value: parse a string into a numeric value
+    // Return 0 (in configured type) for empty arrays
     if (sum === undefined) {
       sum = numeric(0, config.number)
-    }
-    if (typeof sum === 'string') {
-      sum = numeric(sum, safeNumberType(sum, config))
     }
 
     return sum

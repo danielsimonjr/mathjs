@@ -39,10 +39,10 @@ export const createMultiplyScalar = /* #__PURE__ */ factory(
         return x.mul(y)
       },
 
-      'number | Fraction | BigNumber | Complex, Unit': (x: any, y: any): any =>
+      'number | Fraction | Complex, Unit': (x: any, y: any): any =>
         y.multiply(x),
 
-      'Unit, number | Fraction | BigNumber | Complex | Unit': (
+      'Unit, number | Fraction | Complex | Unit': (
         x: any,
         y: any
       ): any => x.multiply(y)

@@ -25,17 +25,13 @@ describe('prod', function () {
     assert.strictEqual(prod([['1', '3'], ['5', '2']]), 30)
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should return the product of strings (with BigNumber config)', function () {
-    // TODO: requires math.add to recon with config.number when parsing strings
+  it('should return the product of strings (with BigNumber config)', function () {
     const bigmath = math.create({ number: 'BigNumber' })
     assert.deepStrictEqual(bigmath.prod('10', '3', '4', '2'), bigmath.bignumber('240'))
     assert.deepStrictEqual(bigmath.prod('10'), bigmath.bignumber(10))
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should return the product of strings (with bigint config)', function () {
-    // TODO: requires math.add to recon with config.number when parsing strings
+  it('should return the product of strings (with bigint config)', function () {
     const bigmath = math.create({ number: 'bigint' })
     assert.strictEqual(bigmath.prod('10', '3', '4', '2'), 240n)
     assert.strictEqual(bigmath.prod('10'), 10n)
@@ -98,7 +94,7 @@ describe('prod', function () {
     assert.throws(function () { prod([[2, undefined, 4]]) }, /TypeError: Cannot calculate prod, unexpected type of argument/)
     assert.throws(function () { prod([[2, new Date(), 4]]) }, /TypeError: Cannot calculate prod, unexpected type of argument/)
     assert.throws(function () { prod([2, null, 4]) }, /TypeError: Cannot calculate prod, unexpected type of argument/)
-    assert.throws(function () { prod('a', 'b') }, /Error: Cannot convert "a" to a number/)
+    assert.throws(function () { prod('a', 'b') }, /SyntaxError: String "a" is not a valid number/)
     assert.throws(function () { prod('a') }, /SyntaxError: String "a" is not a valid number/)
   })
 

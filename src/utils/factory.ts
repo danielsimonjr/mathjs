@@ -125,6 +125,25 @@ export function sortFactories(
     factoriesByName[name] = factory
   })
 
+  // Check if there's a circular dependency between two factories
+  function hasCircularDependency(
+    factory1: FactoryFunction | LegacyFactory,
+    factory2: FactoryFunction | LegacyFactory
+  ): boolean {
+    if (!isFactory(factory1) || !isFactory(factory2)) {
+      return false
+    }
+
+    const name1 = factory1.fn
+    const name2 = factory2.fn
+
+    // Check if factory1 depends on factory2 AND factory2 depends on factory1
+    return (
+      factory1.dependencies.includes(name2) &&
+      factory2.dependencies.includes(name1)
+    )
+  }
+
   function containsDependency(
     factory: FactoryFunction | LegacyFactory,
     dependency: FactoryFunction | LegacyFactory,
@@ -139,6 +158,12 @@ export function sortFactories(
       }
 
       const depName = isFactory(dependency) ? dependency.fn : dependency.name
+
+      // If there's a circular dependency, don't reorder (preserve input order)
+      if (hasCircularDependency(factory, dependency)) {
+        return false
+      }
+
       if (factory.dependencies.includes(depName)) {
         return true
       }

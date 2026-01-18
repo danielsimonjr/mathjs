@@ -11475,7 +11475,10 @@ var createRationalize = /* @__PURE__ */ factory(name13, dependencies14, ({
       let redoInic = false;
       expr = simplify2(expr, setRules.firstRules, {}, noExactFractions);
       let s;
-      while (true) {
+      const maxIterations = 1e3;
+      let iterations = 0;
+      while (iterations < maxIterations) {
+        iterations++;
         rules = eDistrDiv ? setRules.distrDivRules : setRules.sucDivRules;
         expr = simplify2(expr, rules, {}, withExactFractions);
         eDistrDiv = !eDistrDiv;
@@ -11888,10 +11891,17 @@ function DimensionError(actual, expected, relation) {
   if (!(this instanceof DimensionError)) {
     throw new SyntaxError("Constructor must be called with the new operator");
   }
-  this.actual = actual;
-  this.expected = expected;
-  this.relation = relation;
-  this.message = "Dimension mismatch (" + (Array.isArray(actual) ? "[" + actual.join(", ") + "]" : actual) + " " + (this.relation || "!=") + " " + (Array.isArray(expected) ? "[" + expected.join(", ") + "]" : expected) + ")";
+  if (typeof actual === "string" && expected === void 0) {
+    this.message = actual;
+    this.actual = void 0;
+    this.expected = void 0;
+    this.relation = void 0;
+  } else {
+    this.actual = actual;
+    this.expected = expected;
+    this.relation = relation;
+    this.message = "Dimension mismatch (" + (Array.isArray(actual) ? "[" + actual.join(", ") + "]" : actual) + " " + (this.relation || "!=") + " " + (Array.isArray(expected) ? "[" + expected.join(", ") + "]" : expected) + ")";
+  }
   this.stack = new Error().stack;
 }
 DimensionError.prototype = new RangeError();
@@ -19765,9 +19775,13 @@ function improveErrorMessage(err, fnName, value) {
 
 // src/function/statistics/prod.js
 var name77 = "prod";
-var dependencies65 = ["typed", "config", "multiplyScalar", "numeric"];
-var createProd = /* @__PURE__ */ factory(name77, dependencies65, ({ typed: typed4, config: config3, multiplyScalar: multiplyScalar2, numeric: numeric2 }) => {
+var dependencies65 = ["typed", "config", "multiplyScalar", "numeric", "parseNumberWithConfig"];
+var createProd = /* @__PURE__ */ factory(name77, dependencies65, ({ typed: typed4, config: config3, multiplyScalar: multiplyScalar2, numeric: numeric2, parseNumberWithConfig }) => {
   return typed4(name77, {
+    // prod(string) - single string input
+    "string": function(x) {
+      return parseNumberWithConfig(x);
+    },
     // prod([a, b, c, d, ...])
     "Array | Matrix": _prod,
     // prod([a, b, c, d, ...], dim)
@@ -19783,14 +19797,12 @@ var createProd = /* @__PURE__ */ factory(name77, dependencies65, ({ typed: typed
     let prod2;
     deepForEach2(array, function(value) {
       try {
-        prod2 = prod2 === void 0 ? value : multiplyScalar2(prod2, value);
+        const converted = typeof value === "string" ? parseNumberWithConfig(value) : value;
+        prod2 = prod2 === void 0 ? converted : multiplyScalar2(prod2, converted);
       } catch (err) {
         throw improveErrorMessage(err, "prod", value);
       }
     });
-    if (typeof prod2 === "string") {
-      prod2 = numeric2(prod2, safeNumberType(prod2, config3));
-    }
     if (prod2 === void 0) {
       throw new Error("Cannot calculate prod of an empty array");
     }
@@ -19898,9 +19910,13 @@ var createMin = /* @__PURE__ */ factory(name79, dependencies67, ({ typed: typed4
 
 // src/function/statistics/sum.js
 var name80 = "sum";
-var dependencies68 = ["typed", "config", "add", "numeric"];
-var createSum = /* @__PURE__ */ factory(name80, dependencies68, ({ typed: typed4, config: config3, add: add2, numeric: numeric2 }) => {
+var dependencies68 = ["typed", "config", "add", "numeric", "parseNumberWithConfig"];
+var createSum = /* @__PURE__ */ factory(name80, dependencies68, ({ typed: typed4, config: config3, add: add2, numeric: numeric2, parseNumberWithConfig }) => {
   return typed4(name80, {
+    // sum(string) - single string input
+    "string": function(x) {
+      return parseNumberWithConfig(x);
+    },
     // sum([a, b, c, d, ...])
     "Array | Matrix": _sum,
     // sum([a, b, c, d, ...], dim)
@@ -19917,16 +19933,14 @@ var createSum = /* @__PURE__ */ factory(name80, dependencies68, ({ typed: typed4
     let sum2;
     deepForEach2(array, function(value) {
       try {
-        sum2 = sum2 === void 0 ? value : add2(sum2, value);
+        const converted = typeof value === "string" ? parseNumberWithConfig(value) : value;
+        sum2 = sum2 === void 0 ? converted : add2(sum2, converted);
       } catch (err) {
         throw improveErrorMessage(err, "sum", value);
       }
     });
     if (sum2 === void 0) {
       sum2 = numeric2(0, config3.number);
-    }
-    if (typeof sum2 === "string") {
-      sum2 = numeric2(sum2, safeNumberType(sum2, config3));
     }
     return sum2;
   }
@@ -20276,13 +20290,20 @@ var createQuantileSeq = /* @__PURE__ */ factory(name86, dependencies74, ({ typed
     if (len === 0) {
       throw new Error("Cannot calculate quantile of an empty sequence");
     }
-    const index2 = isNumber2(prob) ? prob * (len - 1) : prob.times(len - 1);
-    const integerPart = isNumber2(prob) ? Math.floor(index2) : index2.floor().toNumber();
-    const fracPart = isNumber2(prob) ? index2 % 1 : index2.minus(integerPart);
+    let actualProb = prob;
+    if (isNumber2(prob) && bignumber) {
+      const hasBigNumber = flat.some((x) => isBigNumber2(x));
+      if (hasBigNumber) {
+        actualProb = bignumber(prob.toPrecision(15));
+      }
+    }
+    const index2 = isNumber2(actualProb) ? actualProb * (len - 1) : actualProb.times(len - 1);
+    const integerPart = isNumber2(actualProb) ? Math.floor(index2) : index2.floor().toNumber();
+    const fracPart = isNumber2(actualProb) ? index2 % 1 : index2.minus(integerPart);
     if (isInteger4(index2)) {
       return sorted ? flat[index2] : partitionSelect2(
         flat,
-        isNumber2(prob) ? index2 : index2.valueOf()
+        isNumber2(actualProb) ? index2 : index2.valueOf()
       );
     }
     let left;
@@ -21176,7 +21197,10 @@ var cot = /* @__PURE__ */ createCot({ typed: typed2 });
 var csc = /* @__PURE__ */ createCsc({ typed: typed2 });
 var cube = /* @__PURE__ */ createCube({ typed: typed2 });
 var divide = /* @__PURE__ */ createDivide({ typed: typed2 });
-var equalScalar = /* @__PURE__ */ createEqualScalarNumber({ config: config2, typed: typed2 });
+var equalScalar = /* @__PURE__ */ createEqualScalarNumber({
+  config: config2,
+  typed: typed2
+});
 var erf = /* @__PURE__ */ createErf({ typed: typed2 });
 var exp = /* @__PURE__ */ createExp({ typed: typed2 });
 var filter2 = /* @__PURE__ */ createFilter({ typed: typed2 });
@@ -21214,87 +21238,288 @@ var string = /* @__PURE__ */ createString({ typed: typed2 });
 var subtract = /* @__PURE__ */ createSubtract({ typed: typed2 });
 var tanh2 = /* @__PURE__ */ createTanh({ typed: typed2 });
 var typeOf3 = /* @__PURE__ */ createTypeOf({ typed: typed2 });
-var unequal = /* @__PURE__ */ createUnequalNumber({ equalScalar, typed: typed2 });
+var unequal = /* @__PURE__ */ createUnequalNumber({
+  equalScalar,
+  typed: typed2
+});
 var xgcd = /* @__PURE__ */ createXgcd({ typed: typed2 });
 var acoth = /* @__PURE__ */ createAcoth({ typed: typed2 });
 var addScalar = /* @__PURE__ */ createAddScalar({ typed: typed2 });
 var asech = /* @__PURE__ */ createAsech({ typed: typed2 });
-var bernoulli = /* @__PURE__ */ createBernoulli({ config: config2, isInteger: isInteger2, number, typed: typed2 });
+var bernoulli = /* @__PURE__ */ createBernoulli({
+  config: config2,
+  isInteger: isInteger2,
+  number,
+  typed: typed2
+});
 var bitOr = /* @__PURE__ */ createBitOr({ typed: typed2 });
 var combinationsWithRep = /* @__PURE__ */ createCombinationsWithRep({ typed: typed2 });
 var cosh2 = /* @__PURE__ */ createCosh({ typed: typed2 });
 var csch = /* @__PURE__ */ createCsch({ typed: typed2 });
 var divideScalar = /* @__PURE__ */ createDivideScalar({ typed: typed2 });
-var equalText = /* @__PURE__ */ createEqualText({ compareText: compareText2, isZero, typed: typed2 });
+var equalText = /* @__PURE__ */ createEqualText({
+  compareText: compareText2,
+  isZero,
+  typed: typed2
+});
 var expm13 = /* @__PURE__ */ createExpm1({ typed: typed2 });
 var isNaN2 = /* @__PURE__ */ createIsNaN({ typed: typed2 });
 var isPrime = /* @__PURE__ */ createIsPrime({ typed: typed2 });
 var larger = /* @__PURE__ */ createLargerNumber({ config: config2, typed: typed2 });
 var lgamma = /* @__PURE__ */ createLgamma({ typed: typed2 });
 var log23 = /* @__PURE__ */ createLog2({ typed: typed2 });
-var mapSlices = /* @__PURE__ */ createMapSlices({ isInteger: isInteger2, typed: typed2 });
+var mapSlices = /* @__PURE__ */ createMapSlices({
+  isInteger: isInteger2,
+  typed: typed2
+});
 var apply = mapSlices;
-var multiplyScalar = /* @__PURE__ */ createMultiplyScalar({ typed: typed2 });
+var multiplyScalar = /* @__PURE__ */ createMultiplyScalar({
+  typed: typed2
+});
 var nthRoot = /* @__PURE__ */ createNthRoot({ typed: typed2 });
-var pickRandom = /* @__PURE__ */ createPickRandom({ config: config2, typed: typed2 });
-var randomInt = /* @__PURE__ */ createRandomInt({ config: config2, log2: log23, typed: typed2 });
-var rightArithShift = /* @__PURE__ */ createRightArithShift({ typed: typed2 });
+var pickRandom = /* @__PURE__ */ createPickRandom({
+  config: config2,
+  typed: typed2
+});
+var randomInt = /* @__PURE__ */ createRandomInt({
+  config: config2,
+  log2: log23,
+  typed: typed2
+});
+var rightArithShift = /* @__PURE__ */ createRightArithShift({
+  typed: typed2
+});
 var sec = /* @__PURE__ */ createSec({ typed: typed2 });
 var sinh2 = /* @__PURE__ */ createSinh({ typed: typed2 });
 var sqrt = /* @__PURE__ */ createSqrt({ typed: typed2 });
 var tan = /* @__PURE__ */ createTan({ typed: typed2 });
 var unaryMinus = /* @__PURE__ */ createUnaryMinus({ typed: typed2 });
-var variance = /* @__PURE__ */ createVariance({ add, divide, isNaN: isNaN2, mapSlices, multiply, subtract, typed: typed2 });
+var variance = /* @__PURE__ */ createVariance({
+  add,
+  divide,
+  isNaN: isNaN2,
+  mapSlices,
+  multiply,
+  subtract,
+  typed: typed2
+});
 var acosh2 = /* @__PURE__ */ createAcosh({ typed: typed2 });
 var atan2 = /* @__PURE__ */ createAtan2({ typed: typed2 });
 var bitAnd = /* @__PURE__ */ createBitAnd({ typed: typed2 });
-var catalan = /* @__PURE__ */ createCatalan({ addScalar, combinations, divideScalar, isInteger: isInteger2, isNegative, multiplyScalar, typed: typed2 });
+var catalan = /* @__PURE__ */ createCatalan({
+  addScalar,
+  combinations,
+  divideScalar,
+  isInteger: isInteger2,
+  isNegative,
+  multiplyScalar,
+  typed: typed2
+});
 var clone4 = /* @__PURE__ */ createClone({ typed: typed2 });
-var composition = /* @__PURE__ */ createComposition({ addScalar, combinations, isInteger: isInteger2, isNegative, isPositive, larger, typed: typed2 });
+var composition = /* @__PURE__ */ createComposition({
+  addScalar,
+  combinations,
+  isInteger: isInteger2,
+  isNegative,
+  isPositive,
+  larger,
+  typed: typed2
+});
 var coth = /* @__PURE__ */ createCoth({ typed: typed2 });
 var equal = /* @__PURE__ */ createEqualNumber({ equalScalar, typed: typed2 });
 var factorial = /* @__PURE__ */ createFactorial({ gamma, typed: typed2 });
-var isFinite2 = /* @__PURE__ */ createIsFinite({ isBounded, map: map2, typed: typed2 });
+var isFinite2 = /* @__PURE__ */ createIsFinite({
+  isBounded,
+  map: map2,
+  typed: typed2
+});
 var LN2 = /* @__PURE__ */ createLN2({ config: config2 });
 var log103 = /* @__PURE__ */ createLog10({ typed: typed2 });
-var multinomial = /* @__PURE__ */ createMultinomial({ add, divide, factorial, isInteger: isInteger2, isPositive, multiply, typed: typed2 });
+var multinomial = /* @__PURE__ */ createMultinomial({
+  add,
+  divide,
+  factorial,
+  isInteger: isInteger2,
+  isPositive,
+  multiply,
+  typed: typed2
+});
 var numeric = /* @__PURE__ */ createNumeric({ number });
-var permutations = /* @__PURE__ */ createPermutations({ factorial, typed: typed2 });
-var prod = /* @__PURE__ */ createProd({ config: config2, multiplyScalar, numeric, typed: typed2 });
+var permutations = /* @__PURE__ */ createPermutations({
+  factorial,
+  typed: typed2
+});
+var prod = /* @__PURE__ */ createProd({
+  config: config2,
+  multiplyScalar,
+  numeric,
+  typed: typed2
+});
 var round = /* @__PURE__ */ createRound({ typed: typed2 });
 var smaller = /* @__PURE__ */ createSmallerNumber({ config: config2, typed: typed2 });
-var subtractScalar = /* @__PURE__ */ createSubtractScalar({ typed: typed2 });
-var zeta = /* @__PURE__ */ createZeta({ add, config: config2, divide, equal, factorial, gamma, isBounded, isNegative, multiply, pi: pi2, pow, sin, smallerEq, subtract, typed: typed2 });
+var subtractScalar = /* @__PURE__ */ createSubtractScalar({
+  typed: typed2
+});
+var zeta = /* @__PURE__ */ createZeta({
+  add,
+  config: config2,
+  divide,
+  equal,
+  factorial,
+  gamma,
+  isBounded,
+  isNegative,
+  multiply,
+  pi: pi2,
+  pow,
+  sin,
+  smallerEq,
+  subtract,
+  typed: typed2
+});
 var acsch = /* @__PURE__ */ createAcsch({ typed: typed2 });
-var compareNatural = /* @__PURE__ */ createCompareNatural({ compare, typed: typed2 });
-var cumsum = /* @__PURE__ */ createCumSum({ add, typed: typed2, unaryPlus });
+var compareNatural = /* @__PURE__ */ createCompareNatural({
+  compare,
+  typed: typed2
+});
+var cumsum = /* @__PURE__ */ createCumSum({
+  add,
+  typed: typed2,
+  unaryPlus
+});
 var floor = /* @__PURE__ */ createFloorNumber({ config: config2, round, typed: typed2 });
-var hypot = /* @__PURE__ */ createHypot({ abs, addScalar, divideScalar, isPositive, multiplyScalar, smaller, sqrt, typed: typed2 });
+var hypot = /* @__PURE__ */ createHypot({
+  abs,
+  addScalar,
+  divideScalar,
+  isPositive,
+  multiplyScalar,
+  smaller,
+  sqrt,
+  typed: typed2
+});
 var lcm = /* @__PURE__ */ createLcm({ typed: typed2 });
-var max = /* @__PURE__ */ createMax({ config: config2, isNaN: isNaN2, larger, numeric, typed: typed2 });
-var min = /* @__PURE__ */ createMin({ config: config2, isNaN: isNaN2, numeric, smaller, typed: typed2 });
+var max = /* @__PURE__ */ createMax({
+  config: config2,
+  isNaN: isNaN2,
+  larger,
+  numeric,
+  typed: typed2
+});
+var min = /* @__PURE__ */ createMin({
+  config: config2,
+  isNaN: isNaN2,
+  numeric,
+  smaller,
+  typed: typed2
+});
 var norm = /* @__PURE__ */ createNorm({ typed: typed2 });
 var print = /* @__PURE__ */ createPrint({ typed: typed2 });
-var range = /* @__PURE__ */ createRange({ matrix, add, config: config2, equal, isPositive, isZero, larger, largerEq, smaller, smallerEq, typed: typed2 });
+var range = /* @__PURE__ */ createRange({
+  matrix,
+  add,
+  config: config2,
+  equal,
+  isPositive,
+  isZero,
+  larger,
+  largerEq,
+  smaller,
+  smallerEq,
+  typed: typed2
+});
 var sign2 = /* @__PURE__ */ createSign({ typed: typed2 });
-var std = /* @__PURE__ */ createStd({ map: map2, sqrt, typed: typed2, variance });
-var sum = /* @__PURE__ */ createSum({ add, config: config2, numeric, typed: typed2 });
+var std = /* @__PURE__ */ createStd({
+  map: map2,
+  sqrt,
+  typed: typed2,
+  variance
+});
+var sum = /* @__PURE__ */ createSum({
+  add,
+  config: config2,
+  numeric,
+  typed: typed2
+});
 var asinh2 = /* @__PURE__ */ createAsinh({ typed: typed2 });
 var ceil = /* @__PURE__ */ createCeilNumber({ config: config2, round, typed: typed2 });
-var corr = /* @__PURE__ */ createCorr({ add, divide, matrix, mean, multiply, pow, sqrt, subtract, sum, typed: typed2 });
+var corr = /* @__PURE__ */ createCorr({
+  add,
+  divide,
+  matrix,
+  mean,
+  multiply,
+  pow,
+  sqrt,
+  subtract,
+  sum,
+  typed: typed2
+});
 var fix = /* @__PURE__ */ createFixNumber({ ceil, floor, typed: typed2 });
 var isNumeric = /* @__PURE__ */ createIsNumeric({ typed: typed2 });
-var partitionSelect = /* @__PURE__ */ createPartitionSelect({ compare, isNaN: isNaN2, isNumeric, typed: typed2 });
-var stirlingS2 = /* @__PURE__ */ createStirlingS2({ addScalar, combinations, divideScalar, factorial, isInteger: isInteger2, isNegative, larger, multiplyScalar, number, pow, subtractScalar, typed: typed2 });
-var bellNumbers = /* @__PURE__ */ createBellNumbers({ addScalar, isInteger: isInteger2, isNegative, stirlingS2, typed: typed2 });
+var partitionSelect = /* @__PURE__ */ createPartitionSelect({
+  compare,
+  isNaN: isNaN2,
+  isNumeric,
+  typed: typed2
+});
+var stirlingS2 = /* @__PURE__ */ createStirlingS2({
+  addScalar,
+  combinations,
+  divideScalar,
+  factorial,
+  isInteger: isInteger2,
+  isNegative,
+  larger,
+  multiplyScalar,
+  number,
+  pow,
+  subtractScalar,
+  typed: typed2
+});
+var bellNumbers = /* @__PURE__ */ createBellNumbers({
+  addScalar,
+  isInteger: isInteger2,
+  isNegative,
+  stirlingS2,
+  typed: typed2
+});
 var deepEqual = /* @__PURE__ */ createDeepEqual({ equal, typed: typed2 });
 var gcd = /* @__PURE__ */ createGcd({ typed: typed2 });
-var median = /* @__PURE__ */ createMedian({ add, compare, divide, partitionSelect, typed: typed2 });
-var quantileSeq = /* @__PURE__ */ createQuantileSeq({ add, compare, divide, isInteger: isInteger2, larger, mapSlices, multiply, partitionSelect, smaller, smallerEq, subtract, typed: typed2 });
+var median = /* @__PURE__ */ createMedian({
+  add,
+  compare,
+  divide,
+  partitionSelect,
+  typed: typed2
+});
+var quantileSeq = /* @__PURE__ */ createQuantileSeq({
+  add,
+  compare,
+  divide,
+  isInteger: isInteger2,
+  larger,
+  mapSlices,
+  multiply,
+  partitionSelect,
+  smaller,
+  smallerEq,
+  subtract,
+  typed: typed2
+});
 var mode = /* @__PURE__ */ createMode({ isNaN: isNaN2, isNumeric, typed: typed2 });
 var _true = /* @__PURE__ */ createTrue({});
-var hasNumericValue = /* @__PURE__ */ createHasNumericValue({ isNumeric, typed: typed2 });
-var mad = /* @__PURE__ */ createMad({ abs, map: map2, median, subtract, typed: typed2 });
+var hasNumericValue = /* @__PURE__ */ createHasNumericValue({
+  isNumeric,
+  typed: typed2
+});
+var mad = /* @__PURE__ */ createMad({
+  abs,
+  map: map2,
+  median,
+  subtract,
+  typed: typed2
+});
 
 // src/entry/impureFunctionsNumber.generated.ts
 var math = {};
@@ -21308,30 +21533,151 @@ var RelationalNode = createRelationalNode({ Node });
 var reviver = createReviver({ classes });
 var SymbolNode = createSymbolNode({ Node, math });
 var AccessorNode = createAccessorNode({ Node, subset });
-var AssignmentNode = createAssignmentNode({ matrix, Node, subset });
+var AssignmentNode = createAssignmentNode({
+  matrix,
+  Node,
+  subset
+});
 var chain = createChain({ Chain, typed: typed2 });
 var ConditionalNode = createConditionalNode({ Node });
 var FunctionNode = createFunctionNode({ Node, SymbolNode, math });
 var IndexNode = createIndexNode({ Node, size });
 var OperatorNode = createOperatorNode({ Node });
 var ArrayNode = createArrayNode({ Node });
-var FunctionAssignmentNode = createFunctionAssignmentNode({ Node, typed: typed2 });
+var FunctionAssignmentNode = createFunctionAssignmentNode({
+  Node,
+  typed: typed2
+});
 var BlockNode = createBlockNode({ Node, ResultSet });
 var ConstantNode = createConstantNode({ Node, isBounded });
-var simplifyConstant = createSimplifyConstant({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, SymbolNode, config: config2, isBounded, mathWithTransform, matrix, typed: typed2 });
+var simplifyConstant = createSimplifyConstant({
+  AccessorNode,
+  ArrayNode,
+  ConstantNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  SymbolNode,
+  config: config2,
+  isBounded,
+  mathWithTransform,
+  matrix,
+  typed: typed2
+});
 var ParenthesisNode = createParenthesisNode({ Node });
-var parse = createParse({ AccessorNode, ArrayNode, AssignmentNode, BlockNode, ConditionalNode, ConstantNode, FunctionAssignmentNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, RangeNode, RelationalNode, SymbolNode, config: config2, numeric, typed: typed2 });
-var resolve = createResolve({ ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, parse, typed: typed2 });
-var simplifyCore = createSimplifyCore({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, add, divide, equal, isZero, multiply, parse, pow, subtract, typed: typed2 });
+var parse = createParse({
+  AccessorNode,
+  ArrayNode,
+  AssignmentNode,
+  BlockNode,
+  ConditionalNode,
+  ConstantNode,
+  FunctionAssignmentNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  ParenthesisNode,
+  RangeNode,
+  RelationalNode,
+  SymbolNode,
+  config: config2,
+  numeric,
+  typed: typed2
+});
+var resolve = createResolve({
+  ConstantNode,
+  FunctionNode,
+  OperatorNode,
+  ParenthesisNode,
+  parse,
+  typed: typed2
+});
+var simplifyCore = createSimplifyCore({
+  AccessorNode,
+  ArrayNode,
+  ConstantNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,
+  add,
+  divide,
+  equal,
+  isZero,
+  multiply,
+  parse,
+  pow,
+  subtract,
+  typed: typed2
+});
 var compile = createCompile({ parse, typed: typed2 });
 var evaluate = createEvaluate({ parse, typed: typed2 });
 var Help = createHelpClass({ evaluate });
 var Parser = createParserClass({ evaluate, parse });
-var simplify = createSimplify({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, equal, parse, replacer, resolve, simplifyConstant, simplifyCore, typed: typed2 });
-var derivative = createDerivative({ ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode, config: config2, equal, isZero, numeric, parse, simplify, typed: typed2 });
+var simplify = createSimplify({
+  AccessorNode,
+  ArrayNode,
+  ConstantNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,
+  equal,
+  parse,
+  replacer,
+  resolve,
+  simplifyConstant,
+  simplifyCore,
+  typed: typed2
+});
+var derivative = createDerivative({
+  ConstantNode,
+  FunctionNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,
+  config: config2,
+  equal,
+  isZero,
+  numeric,
+  parse,
+  simplify,
+  typed: typed2
+});
 var help = createHelp({ Help, mathWithTransform, typed: typed2 });
 var parser = createParser({ Parser, typed: typed2 });
-var rationalize = createRationalize({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, add, config: config2, divide, equal, isZero, mathWithTransform, matrix, multiply, parse, pow, simplify, simplifyConstant, simplifyCore, subtract, typed: typed2 });
+var rationalize = createRationalize({
+  AccessorNode,
+  ArrayNode,
+  ConstantNode,
+  FunctionNode,
+  IndexNode,
+  ObjectNode,
+  OperatorNode,
+  ParenthesisNode,
+  SymbolNode,
+  add,
+  config: config2,
+  divide,
+  equal,
+  isZero,
+  mathWithTransform,
+  matrix,
+  multiply,
+  parse,
+  pow,
+  simplify,
+  simplifyConstant,
+  simplifyCore,
+  subtract,
+  typed: typed2
+});
 Object.assign(math, {
   e: e2,
   false: _false,
@@ -21349,7 +21695,7 @@ Object.assign(math, {
   tau: tau2,
   typed: typed2,
   unaryPlus,
-  "E": e2,
+  E: e2,
   version: version2,
   xor,
   abs,
@@ -21464,7 +21810,7 @@ Object.assign(math, {
   round,
   smaller,
   subtractScalar,
-  "PI": pi2,
+  PI: pi2,
   zeta,
   acsch,
   compareNatural,
@@ -21519,10 +21865,30 @@ Object.assign(mathWithTransform, math, {
   map: createMapTransform({ typed: typed2 }),
   std: createStdTransform({ map: map2, sqrt, typed: typed2, variance }),
   sum: createSumTransform({ add, config: config2, numeric, typed: typed2 }),
-  variance: createVarianceTransform({ add, divide, isNaN: isNaN2, mapSlices, multiply, subtract, typed: typed2 }),
+  variance: createVarianceTransform({
+    add,
+    divide,
+    isNaN: isNaN2,
+    mapSlices,
+    multiply,
+    subtract,
+    typed: typed2
+  }),
   max: createMaxTransform({ config: config2, isNaN: isNaN2, larger, numeric, typed: typed2 }),
   min: createMinTransform({ config: config2, isNaN: isNaN2, numeric, smaller, typed: typed2 }),
-  range: createRangeTransform({ matrix, add, config: config2, equal, isPositive, isZero, larger, largerEq, smaller, smallerEq, typed: typed2 })
+  range: createRangeTransform({
+    matrix,
+    add,
+    config: config2,
+    equal,
+    isPositive,
+    isZero,
+    larger,
+    largerEq,
+    smaller,
+    smallerEq,
+    typed: typed2
+  })
 });
 Object.assign(classes, {
   Range,
@@ -21595,18 +21961,29 @@ var IndexError2 = class _IndexError extends RangeError {
 // src/error/DimensionError.ts
 var DimensionError2 = class _DimensionError extends RangeError {
   /**
-   * @param actual - The actual size
-   * @param expected - The expected size
+   * @param actual - The actual size or custom error message
+   * @param expected - The expected size (optional if actual is a custom message)
    * @param relation - Optional relation between actual and expected size: '!=', '<', etc.
    */
   constructor(actual, expected, relation) {
-    const message = "Dimension mismatch (" + (Array.isArray(actual) ? "[" + actual.join(", ") + "]" : actual) + " " + (relation || "!=") + " " + (Array.isArray(expected) ? "[" + expected.join(", ") + "]" : expected) + ")";
+    let message;
+    if (typeof actual === "string" && expected === void 0) {
+      message = actual;
+    } else {
+      message = "Dimension mismatch (" + (Array.isArray(actual) ? "[" + actual.join(", ") + "]" : actual) + " " + (relation || "!=") + " " + (Array.isArray(expected) ? "[" + expected.join(", ") + "]" : expected) + ")";
+    }
     super(message);
     this.isDimensionError = true;
     this.name = "DimensionError";
-    this.actual = actual;
-    this.expected = expected;
-    this.relation = relation;
+    if (typeof actual === "string" && expected === void 0) {
+      this.actual = void 0;
+      this.expected = void 0;
+      this.relation = void 0;
+    } else {
+      this.actual = actual;
+      this.expected = expected;
+      this.relation = relation;
+    }
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, _DimensionError);
     }
@@ -41435,12 +41812,16 @@ function improveErrorMessage2(err, fnName, value) {
 
 // src/function/statistics/prod.ts
 var name190 = "prod";
-var dependencies166 = ["typed", "config", "multiplyScalar", "numeric"];
+var dependencies166 = ["typed", "config", "multiplyScalar", "numeric", "parseNumberWithConfig"];
 var createProd2 = /* @__PURE__ */ factory2(
   name190,
   dependencies166,
-  ({ typed: typed4, config: config3, multiplyScalar: multiplyScalar2, numeric: numeric2 }) => {
+  ({ typed: typed4, config: config3, multiplyScalar: multiplyScalar2, numeric: numeric2, parseNumberWithConfig }) => {
     return typed4(name190, {
+      // prod(string) - single string input
+      "string": function(x) {
+        return parseNumberWithConfig(x);
+      },
       // prod([a, b, c, d, ...])
       "Array | Matrix": _prod,
       // prod([a, b, c, d, ...], dim)
@@ -41456,14 +41837,12 @@ var createProd2 = /* @__PURE__ */ factory2(
       let prod2;
       deepForEach4(array, function(value) {
         try {
-          prod2 = prod2 === void 0 ? value : multiplyScalar2(prod2, value);
+          const converted = typeof value === "string" ? parseNumberWithConfig(value) : value;
+          prod2 = prod2 === void 0 ? converted : multiplyScalar2(prod2, converted);
         } catch (err) {
           throw improveErrorMessage2(err, "prod", value);
         }
       });
-      if (typeof prod2 === "string") {
-        prod2 = numeric2(prod2, safeNumberType2(prod2, config3));
-      }
       if (prod2 === void 0) {
         throw new Error("Cannot calculate prod of an empty array");
       }
@@ -41580,12 +41959,16 @@ var createMin2 = /* @__PURE__ */ factory2(
 
 // src/function/statistics/sum.ts
 var name193 = "sum";
-var dependencies169 = ["typed", "config", "add", "numeric"];
+var dependencies169 = ["typed", "config", "add", "numeric", "parseNumberWithConfig"];
 var createSum2 = /* @__PURE__ */ factory2(
   name193,
   dependencies169,
-  ({ typed: typed4, config: config3, add: add2, numeric: numeric2 }) => {
+  ({ typed: typed4, config: config3, add: add2, numeric: numeric2, parseNumberWithConfig }) => {
     return typed4(name193, {
+      // sum(string) - single string input
+      "string": function(x) {
+        return parseNumberWithConfig(x);
+      },
       // sum([a, b, c, d, ...])
       "Array | Matrix": _sum,
       // sum([a, b, c, d, ...], dim)
@@ -41602,16 +41985,14 @@ var createSum2 = /* @__PURE__ */ factory2(
       let sum2;
       deepForEach4(array, function(value) {
         try {
-          sum2 = sum2 === void 0 ? value : add2(sum2, value);
+          const converted = typeof value === "string" ? parseNumberWithConfig(value) : value;
+          sum2 = sum2 === void 0 ? converted : add2(sum2, converted);
         } catch (err) {
           throw improveErrorMessage2(err, "sum", value);
         }
       });
       if (sum2 === void 0) {
         sum2 = numeric2(0, config3.number);
-      }
-      if (typeof sum2 === "string") {
-        sum2 = numeric2(sum2, safeNumberType2(sum2, config3));
       }
       return sum2;
     }

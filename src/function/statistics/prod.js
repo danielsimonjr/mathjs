@@ -4,9 +4,9 @@ import { safeNumberType } from '../../utils/number.js'
 import { improveErrorMessage } from './utils/improveErrorMessage.js'
 
 const name = 'prod'
-const dependencies = ['typed', 'config', 'multiplyScalar', 'numeric']
+const dependencies = ['typed', 'config', 'multiplyScalar', 'numeric', 'parseNumberWithConfig']
 
-export const createProd = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, multiplyScalar, numeric }) => {
+export const createProd = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, multiplyScalar, numeric, parseNumberWithConfig }) => {
   /**
    * Compute the product of a matrix or a list with values.
    * In case of a multidimensional array or matrix, the sum of all
@@ -33,6 +33,11 @@ export const createProd = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
    * @return {*} The product of all values
    */
   return typed(name, {
+    // prod(string) - single string input
+    'string': function (x) {
+      return parseNumberWithConfig(x)
+    },
+
     // prod([a, b, c, d, ...])
     'Array | Matrix': _prod,
 
@@ -60,16 +65,16 @@ export const createProd = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
 
     deepForEach(array, function (value) {
       try {
-        prod = (prod === undefined) ? value : multiplyScalar(prod, value)
+        // Pre-convert string inputs BEFORE multiplication
+        const converted = (typeof value === 'string')
+          ? parseNumberWithConfig(value)
+          : value
+
+        prod = (prod === undefined) ? converted : multiplyScalar(prod, converted)
       } catch (err) {
         throw improveErrorMessage(err, 'prod', value)
       }
     })
-
-    // make sure returning numeric value: parse a string into a numeric value
-    if (typeof prod === 'string') {
-      prod = numeric(prod, safeNumberType(prod, config))
-    }
 
     if (prod === undefined) {
       throw new Error('Cannot calculate prod of an empty array')
