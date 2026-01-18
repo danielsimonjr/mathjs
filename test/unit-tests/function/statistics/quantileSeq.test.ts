@@ -114,9 +114,7 @@ describe('quantileSeq', function () {
     assert.deepStrictEqual(quantileSeq(lst, bignumber(1)), bignumber(3.7))
   })
 
-  // FIXME: should return the quantileSeq of an array of bignumbers with number probability
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should return the quantileSeq of an array of bignumbers with number probability', function () {
+  it('should return the quantileSeq of an array of bignumbers with number probability', function () {
     approxEqual(
       quantileSeq(
         [
