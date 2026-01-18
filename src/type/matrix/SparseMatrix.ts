@@ -1206,6 +1206,11 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       let columns = 0
 
       // Validate input array dimensions and consistency
+      // Check for 1D arrays
+      if (rows > 0 && !isArray(data[0])) {
+        throw new DimensionError('Two dimensional array expected')
+      }
+
       let expectedColumns: number | null = null
       for (let i = 0; i < rows; i++) {
         const row = data[i]
@@ -1213,7 +1218,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
           // Check for 3D+ arrays (elements within rows should not be arrays)
           for (let k = 0; k < row.length; k++) {
             if (isArray(row[k])) {
-              throw new DimensionError(3, 2)
+              throw new DimensionError('Two dimensional array expected')
             }
           }
           // Check for consistent row lengths
