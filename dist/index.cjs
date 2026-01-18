@@ -17742,7 +17742,9 @@ var createUnitClass = /* @__PURE__ */ factory(
       if (isUnit(_other)) {
         res.skipAutomaticSimplification = false;
       }
-      simplifyUnit(res);
+      if (!res.skipAutomaticSimplification) {
+        simplifyUnit(res);
+      }
       return getNumericIfUnitless(res);
     };
     Unit.prototype.divideInto = function(numerator) {
@@ -17771,7 +17773,9 @@ var createUnitClass = /* @__PURE__ */ factory(
       if (isUnit(_other)) {
         res.skipAutomaticSimplification = false;
       }
-      simplifyUnit(res);
+      if (!res.skipAutomaticSimplification) {
+        simplifyUnit(res);
+      }
       return getNumericIfUnitless(res);
     };
     Unit.prototype.pow = function(p) {

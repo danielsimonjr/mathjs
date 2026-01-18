@@ -729,7 +729,9 @@ export const createUnitClass = /* #__PURE__ */ factory(
       }
 
       // Simplify units (cancel common units, reduce powers)
-      simplifyUnit(res)
+      if (!res.skipAutomaticSimplification) {
+        simplifyUnit(res)
+      }
 
       return getNumericIfUnitless(res)
     }
@@ -787,7 +789,9 @@ export const createUnitClass = /* #__PURE__ */ factory(
       }
 
       // Simplify units (cancel common units, reduce powers)
-      simplifyUnit(res)
+      if (!res.skipAutomaticSimplification) {
+        simplifyUnit(res)
+      }
 
       return getNumericIfUnitless(res)
     }
