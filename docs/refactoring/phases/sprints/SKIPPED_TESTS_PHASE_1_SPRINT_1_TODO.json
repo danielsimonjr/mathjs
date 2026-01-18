@@ -205,7 +205,8 @@
   "filesModified": [
     "src/type/matrix/SparseMatrix.js",
     "src/type/matrix/DenseMatrix.js",
-    "test/unit-tests/type/matrix/SparseMatrix.test.ts"
+    "test/unit-tests/type/matrix/SparseMatrix.test.ts",
+    "test/unit-tests/type/matrix/SparseMatrix.test.js"
   ],
   "totalNewTests": 0,
   "testsFixed": 2,
