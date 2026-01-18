@@ -46,6 +46,7 @@
           "step": 1,
           "action": "Analyze current Unit structure",
           "details": "Read src/type/unit/Unit.js and src/type/unit/Unit.ts to understand internal representation",
+          "criticalNote": "**CRITICAL**: The structure below is an ASSUMPTION. You MUST verify the actual structure by reading Unit.js before proceeding with implementation. Do NOT skip this step!",
           "expectedStructure": {
             "description": "Units are stored with power notation",
             "example": {
@@ -165,6 +166,12 @@
           "Maintain dual codebase (.js and .ts) synchronization"
         ]
       },
+      "criticalPrerequisites": [
+        "MUST verify Unit has clone() method (if not, use new Unit(this.value, this.units))",
+        "MUST verify how Unit reconstructs unit strings (may need to use existing methods)",
+        "MUST verify actual unit structure before implementing (see Task 4.1.1)",
+        "DO NOT proceed with implementation until Task 4.1.1 is complete and verified"
+      ],
       "stepByStep": [
         {
           "step": 1,

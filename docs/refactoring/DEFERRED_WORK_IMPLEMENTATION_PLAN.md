@@ -62,7 +62,8 @@ The implementation requires three main components:
    - Read `src/type/unit/Unit.js` and `src/type/unit/Unit.ts`
    - Understand internal representation of compound units
    - Document how units like `J/K/g` are stored internally
-   - Expected structure:
+   - **CRITICAL**: The structure below is an ASSUMPTION - you MUST verify the actual structure before proceeding
+   - Expected structure (VERIFY THIS):
      ```javascript
      {
        units: [
@@ -154,6 +155,11 @@ The implementation requires three main components:
 - `src/type/unit/Unit.ts`
 
 **Implementation Steps**:
+
+**CRITICAL PREREQUISITES**:
+- MUST verify Unit has `clone()` method (if not, use `new Unit(this.value, this.units)`)
+- MUST verify how Unit reconstructs unit strings (may need to use existing methods)
+- MUST verify actual unit structure before implementing (see Task 1)
 
 1. **Add `simplify()` Method to Unit Class**
 
@@ -1053,7 +1059,7 @@ This is a **tactical solution** that can be migrated to Option B (typed-function
 **Implementation**:
 
 ```javascript
-import { factory } from '../core/function/typed.js'
+import { factory } from './factory.js'
 
 const name = 'parseNumberWithConfig'
 const dependencies = ['config', '?bignumber']
@@ -1128,7 +1134,7 @@ export const createParseNumberWithConfig = /* #__PURE__ */ factory(
 **TypeScript Version** (`src/utils/parseNumber.ts`):
 
 ```typescript
-import { factory } from '../core/function/typed.js'
+import { factory } from './factory.js'
 
 const name = 'parseNumberWithConfig'
 const dependencies = ['config', '?bignumber']
@@ -1252,6 +1258,8 @@ export { createParseNumberWithConfig } from './utils/parseNumber.js'
 
 **Implementation**:
 
+**Note**: `reduce` and `multiply` are already imported/available in the prod function.
+
 ```javascript
 // In prod.js - add dependency
 export const createProd = /* #__PURE__ */ factory(
@@ -1313,6 +1321,8 @@ export const createProd = /* #__PURE__ */ factory(
 - `src/function/statistics/sum.ts`
 
 **Implementation** (same pattern as prod, but sum of empty = 0):
+
+**Note**: `reduce` and `add` are already imported/available in the sum function.
 
 ```javascript
 export const createSum = /* #__PURE__ */ factory(
