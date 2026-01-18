@@ -5363,9 +5363,6 @@ var createSparseMatrixClass = /* @__PURE__ */ factory(
       matrix._datatype = datatype;
       const rows = data.length;
       let columns = 0;
-      if (rows > 0 && !isArray(data[0])) {
-        throw new DimensionError("Two dimensional array expected");
-      }
       let expectedColumns = null;
       for (let i = 0; i < rows; i++) {
         const row = data[i];
@@ -9081,18 +9078,22 @@ var createMultiply = /* @__PURE__ */ factory(
       // BIGNUMBER-UNIT SIGNATURES - Preserve BigNumber precision
       // =========================================================================
       "BigNumber, Unit": function(x, y) {
+        const result = y.clone();
         if (y.value === null) {
-          return y.create(x.clone(), y.units);
+          result.value = result._normalize(x);
+        } else {
+          result.value = multiplyScalar(x, y.value);
         }
-        const resultValue = x.times(y.value);
-        return y.create(resultValue, y.units);
+        return result;
       },
       "Unit, BigNumber": function(x, y) {
+        const result = x.clone();
         if (x.value === null) {
-          return x.create(y.clone(), x.units);
+          result.value = result._normalize(y);
+        } else {
+          result.value = multiplyScalar(x.value, y);
         }
-        const resultValue = x.value.times(y);
-        return x.create(resultValue, x.units);
+        return result;
       },
       // =========================================================================
       // EXISTING SIGNATURES - Keep after Node signatures
@@ -36649,9 +36650,10 @@ var createQuantileSeq = /* @__PURE__ */ factory(
           }
         }
       }
+      const fracPartConverted = isBigNumber(left) && isNumber(fracPart) ? bignumber(fracPart) : fracPart;
       return add(
-        multiply(left, subtract(1, fracPart)),
-        multiply(right, fracPart)
+        multiply(left, subtract(1, fracPartConverted)),
+        multiply(right, fracPartConverted)
       );
     }
   }

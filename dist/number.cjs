@@ -42461,9 +42461,10 @@ var createQuantileSeq2 = /* @__PURE__ */ factory2(
           }
         }
       }
+      const fracPartConverted = isBigNumber(left) && isNumber(fracPart) ? bignumber(fracPart) : fracPart;
       return add2(
-        multiply2(left, subtract2(1, fracPart)),
-        multiply2(right, fracPart)
+        multiply2(left, subtract2(1, fracPartConverted)),
+        multiply2(right, fracPartConverted)
       );
     }
   }

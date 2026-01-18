@@ -1,4 +1,4 @@
-import { isNumber } from '../../utils/is.ts'
+import { isNumber, isBigNumber } from '../../utils/is.ts'
 import { flatten } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 
@@ -261,9 +261,13 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
         }
       }
       // Q(prob) = (1-f)*A[floor(index)] + f*A[floor(index)+1]
+      // If left/right are BigNumbers but fracPart is a number, convert to BigNumber
+      // to avoid floating-point precision errors
+      const fracPartConverted =
+        isBigNumber(left) && isNumber(fracPart) ? bignumber!(fracPart) : fracPart
       return add(
-        multiply(left, subtract(1, fracPart)),
-        multiply(right, fracPart)
+        multiply(left, subtract(1, fracPartConverted)),
+        multiply(right, fracPartConverted)
       )
     }
   }

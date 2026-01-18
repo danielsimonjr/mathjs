@@ -1159,25 +1159,29 @@ export const createMultiply = /* #__PURE__ */ factory(
       // =========================================================================
 
       'BigNumber, Unit': function (x: any, y: any): any {
-        // Handle valueless unit (e.g., unit('mm'))
+        // Clone the unit and set its value to the BigNumber
+        const result = y.clone()
         if (y.value === null) {
-          return y.create(x.clone(), y.units)
+          // Normalize the BigNumber to the unit's base units
+          result.value = result._normalize(x)
+        } else {
+          // Multiply BigNumber by unit's value, preserving BigNumber precision
+          result.value = multiplyScalar(x, y.value)
         }
-
-        // Multiply BigNumber by unit's value, preserving BigNumber precision
-        const resultValue = x.times(y.value)
-        return y.create(resultValue, y.units)
+        return result
       },
 
       'Unit, BigNumber': function (x: any, y: any): any {
-        // Handle valueless unit
+        // Clone the unit and multiply its value by the BigNumber
+        const result = x.clone()
         if (x.value === null) {
-          return x.create(y.clone(), x.units)
+          // Normalize the BigNumber to the unit's base units
+          result.value = result._normalize(y)
+        } else {
+          // Multiply unit's value by BigNumber, preserving BigNumber precision
+          result.value = multiplyScalar(x.value, y)
         }
-
-        // Multiply unit's value by BigNumber, preserving BigNumber precision
-        const resultValue = x.value.times(y)
-        return x.create(resultValue, x.units)
+        return result
       },
 
       // =========================================================================
