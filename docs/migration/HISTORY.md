@@ -10,9 +10,12 @@
   These functions now respect the `config.number` setting when converting
   boolean and string inputs (e.g., with `{ number: 'BigNumber' }` or
   `{ number: 'bigint' }`).
-- Feat: unit cancellation in Unit multiplication. Units with opposite powers
-  (e.g., `g^1` and `g^-1`) are now automatically cancelled when multiplying
-  units, simplifying compound units like `J/K/g * g` to `J/K`.
+- Feat: comprehensive unit simplification in Unit multiplication and division.
+  Units with opposite powers (e.g., `g^1` and `g^-1`) are now automatically
+  cancelled when multiplying or dividing units. Supports power reduction
+  (`m^2 / m` → `m`), complete cancellation to dimensionless (`m / m` → `1`),
+  multi-unit cancellation (`J/K/g * g` → `J/K`), unit aliases (`meter` = `m`),
+  and prefix handling (`km` ≠ `m`). Preserves original unit order for clarity.
 - Fix: `sortFactories` now correctly preserves input order when circular
   dependencies are detected, preventing incorrect reordering of mutually
   dependent factories.
@@ -22,8 +25,10 @@
   validation that prevented creation of 1D matrices.
 - Fix: `parseNumberWithConfig` now properly validates invalid strings and
   throws `SyntaxError` for non-numeric inputs instead of silently returning NaN.
-- Fix: added missing `cancelCommonUnits` function to `Unit.ts` TypeScript
-  implementation to match functionality in `Unit.js`.
+- Fix: implemented `simplifyUnit` function in both `Unit.ts` and `Unit.js` to
+  provide comprehensive unit cancellation and simplification. Replaces the
+  previous basic `cancelCommonUnits` with enhanced algorithm supporting power
+  reduction, dimensionless detection, and alias handling.
 - Fix: #3578 interpret empty true-expr of conditional as error (#3581).
   Thanks @gwhitney.
 - Docs: fix #3565, update Matrix documentation (#3591). Thanks @orelbn.

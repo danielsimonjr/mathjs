@@ -17742,7 +17742,7 @@ var createUnitClass = /* @__PURE__ */ factory(
       if (isUnit(_other)) {
         res.skipAutomaticSimplification = false;
       }
-      cancelCommonUnits(res);
+      simplifyUnit(res);
       return getNumericIfUnitless(res);
     };
     Unit.prototype.divideInto = function(numerator) {
@@ -17771,6 +17771,7 @@ var createUnitClass = /* @__PURE__ */ factory(
       if (isUnit(_other)) {
         res.skipAutomaticSimplification = false;
       }
+      simplifyUnit(res);
       return getNumericIfUnitless(res);
     };
     Unit.prototype.pow = function(p) {
@@ -17796,31 +17797,71 @@ var createUnitClass = /* @__PURE__ */ factory(
         return unit;
       }
     }
-    function cancelCommonUnits(unit) {
-      const units = unit.units;
-      const cancelled = new Array(units.length).fill(false);
+    function normalizeUnitName(name323) {
+      const lower = name323.toLowerCase();
+      const aliasMap = {
+        // Length
+        meter: "m",
+        meters: "m",
+        metre: "m",
+        metres: "m",
+        // Mass
+        gram: "g",
+        grams: "g",
+        kilogram: "kg",
+        kilograms: "kg",
+        // Time
+        second: "s",
+        seconds: "s",
+        // Temperature
+        kelvin: "K",
+        kelvins: "K",
+        celsius: "degC",
+        // Frequency
+        hertz: "Hz",
+        // Force
+        newton: "N",
+        newtons: "N",
+        // Energy
+        joule: "J",
+        joules: "J",
+        // Power
+        watt: "W",
+        watts: "W"
+      };
+      return aliasMap[lower] || lower;
+    }
+    function normalizeUnitKey(unitObj) {
+      const normalizedName = normalizeUnitName(unitObj.unit.name);
+      const prefixName = unitObj.prefix ? unitObj.prefix.name : "";
+      return `${normalizedName}_${prefixName}`;
+    }
+    function simplifyUnit(unit) {
+      let units = unit.units;
+      if (!units || units.length <= 1) {
+        return unit;
+      }
+      units = units.map((u) => ({ ...u }));
       for (let i = 0; i < units.length; i++) {
-        if (cancelled[i]) continue;
-        const u1 = units[i];
-        const key1 = u1.unit.name + "_" + (u1.prefix ? u1.prefix.name : "");
-        for (let j = i + 1; j < units.length; j++) {
-          if (cancelled[j]) continue;
-          const u2 = units[j];
-          const key2 = u2.unit.name + "_" + (u2.prefix ? u2.prefix.name : "");
-          if (key1 === key2 && Math.abs(u1.power + u2.power) < 1e-12) {
-            cancelled[i] = true;
-            cancelled[j] = true;
-            break;
+        if (units[i].power > 0) {
+          const key1 = normalizeUnitKey(units[i]);
+          for (let j = 0; j < units.length; j++) {
+            if (j !== i && units[j].power < 0) {
+              const key2 = normalizeUnitKey(units[j]);
+              if (key1 === key2) {
+                const positivePower = units[i].power;
+                const negativePower = Math.abs(units[j].power);
+                const cancelAmount = Math.min(positivePower, negativePower);
+                units[i].power -= cancelAmount;
+                units[j].power += cancelAmount;
+                break;
+              }
+            }
           }
         }
       }
-      const newUnits = [];
-      for (let i = 0; i < units.length; i++) {
-        if (!cancelled[i]) {
-          newUnits.push(units[i]);
-        }
-      }
-      unit.units = newUnits;
+      const simplifiedUnits = units.filter((u) => Math.abs(u.power) >= 1e-12);
+      unit.units = simplifiedUnits;
       return unit;
     }
     function one(typeOfValue) {

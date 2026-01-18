@@ -672,8 +672,8 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       res.skipAutomaticSimplification = false
     }
 
-    // Cancel common units in numerator and denominator
-    cancelCommonUnits(res)
+    // Simplify units (cancel, reduce powers, handle aliases)
+    simplifyUnit(res)
 
     return getNumericIfUnitless(res)
   }
@@ -727,8 +727,8 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       res.skipAutomaticSimplification = false
     }
 
-    // Cancel common units in numerator and denominator
-    cancelCommonUnits(res)
+    // Simplify units (cancel, reduce powers, handle aliases)
+    simplifyUnit(res)
 
     return getNumericIfUnitless(res)
   }
@@ -783,46 +783,130 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
   }
 
   /**
-   * Cancel common units in the numerator and denominator.
-   * Finds pairs of units with opposite powers (e.g., g^1 and g^-1) and removes them.
-   * Unlike full simplification, this preserves multiple units of the same type
-   * (e.g., in * in stays as two separate 'in' units, not in^2).
-   * @param {Unit} unit - The unit to simplify
-   * @returns {Unit} The unit with cancelled common units
+   * Normalize unit name to handle aliases.
+   * Examples: 'meter' → 'm', 'meters' → 'm', 'gram' → 'g'
+   * @param {string} name - Unit name
+   * @returns {string} Normalized name
+   * @private
    */
-  function cancelCommonUnits (unit) {
-    const units = unit.units
-    const cancelled = new Array(units.length).fill(false)
+  function normalizeUnitName (name) {
+    const lower = name.toLowerCase()
 
-    // For each unit with positive power, look for a matching unit with negative power
+    const aliasMap = {
+      // Length
+      meter: 'm',
+      meters: 'm',
+      metre: 'm',
+      metres: 'm',
+
+      // Mass
+      gram: 'g',
+      grams: 'g',
+      kilogram: 'kg',
+      kilograms: 'kg',
+
+      // Time
+      second: 's',
+      seconds: 's',
+
+      // Temperature
+      kelvin: 'K',
+      kelvins: 'K',
+      celsius: 'degC',
+
+      // Frequency
+      hertz: 'Hz',
+
+      // Force
+      newton: 'N',
+      newtons: 'N',
+
+      // Energy
+      joule: 'J',
+      joules: 'J',
+
+      // Power
+      watt: 'W',
+      watts: 'W'
+    }
+
+    return aliasMap[lower] || lower
+  }
+
+  /**
+   * Create a unique key for grouping identical units.
+   * Combines normalized unit name with prefix name.
+   * @param {Object} unitObj - Unit object with unit and prefix properties
+   * @returns {string} Normalized key for grouping
+   * @private
+   */
+  function normalizeUnitKey (unitObj) {
+    const normalizedName = normalizeUnitName(unitObj.unit.name)
+    const prefixName = unitObj.prefix ? unitObj.prefix.name : ''
+    return `${normalizedName}_${prefixName}`
+  }
+
+  /**
+   * Cancel matching units between numerator and denominator.
+   *
+   * Only cancels units with opposite powers (e.g., m^1 and m^-1).
+   * Does NOT consolidate multiple units in the same category.
+   * Preserves original order of units.
+   *
+   * Examples:
+   *   J/K/g * g → J/K (g^1 cancels with g^-1)
+   *   m^2 / m → m (one m cancels, leaving m^1)
+   *   m / m → dimensionless (complete cancellation)
+   *   lbf / (in * in) → lbf / in / in (in units NOT consolidated)
+   *
+   * @param {Unit} unit - The unit to simplify
+   * @returns {Unit} The simplified unit
+   * @private
+   */
+  function simplifyUnit (unit) {
+    let units = unit.units
+
+    // Simple case: 0 or 1 unit components need no simplification
+    if (!units || units.length <= 1) {
+      return unit
+    }
+
+    // Copy units array to avoid modifying during iteration
+    units = units.map(u => ({ ...u }))
+
+    // Cancel matching units with opposite powers
+    // For each positive power unit, look for matching negative power unit
     for (let i = 0; i < units.length; i++) {
-      if (cancelled[i]) continue
-      const u1 = units[i]
-      const key1 = u1.unit.name + '_' + (u1.prefix ? u1.prefix.name : '')
+      if (units[i].power > 0) {
+        const key1 = normalizeUnitKey(units[i])
 
-      for (let j = i + 1; j < units.length; i++) {
-        if (cancelled[j]) continue
-        const u2 = units[j]
-        const key2 = u2.unit.name + '_' + (u2.prefix ? u2.prefix.name : '')
+        // Search entire array for matching unit with negative power
+        for (let j = 0; j < units.length; j++) {
+          if (j !== i && units[j].power < 0) {
+            const key2 = normalizeUnitKey(units[j])
 
-        // Check if these units can cancel (same unit, opposite powers)
-        if (key1 === key2 && Math.abs(u1.power + u2.power) < 1e-12) {
-          cancelled[i] = true
-          cancelled[j] = true
-          break
+            if (key1 === key2) {
+              // Found matching units - calculate cancellation
+              const positivePower = units[i].power
+              const negativePower = Math.abs(units[j].power)
+              const cancelAmount = Math.min(positivePower, negativePower)
+
+              // Reduce powers
+              units[i].power -= cancelAmount
+              units[j].power += cancelAmount // Adding because it's negative
+
+              break // Only cancel with first match
+            }
+          }
         }
       }
     }
 
-    // Build new units array with non-cancelled units
-    const newUnits = []
-    for (let i = 0; i < units.length; i++) {
-      if (!cancelled[i]) {
-        newUnits.push(units[i])
-      }
-    }
+    // Remove units with zero power
+    const simplifiedUnits = units.filter(u => Math.abs(u.power) >= 1e-12)
 
-    unit.units = newUnits
+    // Update unit's units array
+    unit.units = simplifiedUnits
     return unit
   }
 

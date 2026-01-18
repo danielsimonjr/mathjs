@@ -1141,6 +1141,48 @@ describe('Unit', function () {
       assert.strictEqual(math.evaluate('2 J/K/g * 2 g').toString(), '4 J / K')
       assert.strictEqual(math.evaluate('2 J/K/g * 2K').toString(), '4 J / g')
     })
+
+    it('should reduce unit powers when simplifying', function () {
+      // m^2 / m should simplify to m
+      const area = math.unit('10 m^2')
+      const length = math.unit('2 m')
+      const result = math.divide(area, length)
+
+      assert.strictEqual(result.toString(), '5 m')
+      assert(!result.toString().includes('m^2'))
+    })
+
+    it('should produce dimensionless unit when all units cancel', function () {
+      // m / m = dimensionless
+      const length1 = math.unit('10 m')
+      const length2 = math.unit('5 m')
+      const result = math.divide(length1, length2)
+
+      assert.strictEqual(result, 2) // Should be a plain number, not a Unit
+    })
+
+    it('should handle complex multi-unit cancellation', function () {
+      // J*m/m should simplify to J (meters cancel)
+      const result = math.evaluate('20 J * 4 m / 4 m')
+
+      // Should simplify to just J
+      assert.strictEqual(result.toString(), '20 J')
+      // Verify no residual m units in the string representation
+      const unitStr = result.toString()
+      const jIndex = unitStr.indexOf('J')
+      const mIndex = unitStr.indexOf('m', jIndex + 1) // Look for 'm' after 'J'
+      assert.strictEqual(mIndex, -1, 'Should not have meters in result')
+    })
+
+    it('should not cancel non-matching units', function () {
+      // m and s should not cancel (different dimensions)
+      const result = math.evaluate('10 m / 2 s')
+
+      assert.strictEqual(result.toString(), '5 m / s')
+      // Verify both units preserved
+      assert(result.toString().includes('m'))
+      assert(result.toString().includes('s'))
+    })
   })
 
   describe('plurals', function () {
