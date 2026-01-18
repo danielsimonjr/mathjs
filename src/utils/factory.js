@@ -62,14 +62,23 @@ export function sortFactories (factories) {
     factoriesByName[factory.fn] = factory
   })
 
-  function containsDependency (factory, dependency) {
-    // TODO: detect circular references
+  function containsDependency (factory, dependency, visited = new Set()) {
     if (isFactory(factory)) {
+      // Detect circular references by tracking visited factories
+      const factoryName = factory.fn || factory.name
+      if (visited.has(factoryName)) {
+        // Circular dependency detected - return false to avoid infinite recursion
+        return false
+      }
+
       if (factory.dependencies.includes(dependency.fn || dependency.name)) {
         return true
       }
 
-      if (factory.dependencies.some(d => containsDependency(factoriesByName[d], dependency))) {
+      // Mark this factory as visited before recursing
+      visited.add(factoryName)
+
+      if (factory.dependencies.some(d => containsDependency(factoriesByName[d], dependency, visited))) {
         return true
       }
     }

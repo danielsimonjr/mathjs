@@ -91,9 +91,7 @@ describe('factory', function () {
     )
   })
 
-  // TODO: throw an error in case of circular dependencies
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should not go crazy with circular dependencies', function () {
+  it('should not go crazy with circular dependencies', function () {
     const fn1factory = factory('fn1', ['fn2'], () => {})
     const fn2factory = factory('fn2', ['fn1'], () => {})
 
