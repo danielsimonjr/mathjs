@@ -122,9 +122,10 @@ describe('rationalize', function () {
     assert.strictEqual(stri(math.rationalize(no)), '(-20*x^4+28*x^3+104*x^2+6*x-12)/(6*x^2+5*x-4)')
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('processes a really complex expression', function () {
-    // note this test passes but takes for ever to complete
+  it('processes a really complex expression', function () {
+    // Complex expression with high computational cost
+    // Timeout set to 30 seconds to accommodate algorithmic complexity
+    this.timeout(30000)
 
     assert.strictEqual(stri(math.rationalize('x/(1-x)/(x-2)/(x-3)/(x-4) + 2x/ ( (1-2x)/(2-3x) )/ ((3-4x)/(4-5x) )')),
       '(-30*x^7+344*x^6-1506*x^5+3200*x^4-3472*x^3+1846*x^2-381*x)/(-8*x^6+90*x^5-383*x^4+780*x^3-797*x^2+390*x-72)')

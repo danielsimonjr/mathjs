@@ -197,9 +197,10 @@ describe('rationalize', function () {
     )
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('processes a really complex expression', function () {
-    // note this test passes but takes for ever to complete
+  it('processes a really complex expression', function () {
+    // Complex expression with high computational cost
+    // Timeout set to 30 seconds to accommodate algorithmic complexity
+    this.timeout(30000)
 
     assert.strictEqual(
       stri(
