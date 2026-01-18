@@ -1,0 +1,105 @@
+{
+  "phase": 2,
+  "sprint": 3,
+  "title": "Comprehensive Testing - Add/Subtract",
+  "feature": "Simplify with Node Objects",
+  "priority": "HIGH",
+  "effort": "6 hours",
+  "status": "skipped",
+  "skippedReason": "Integration and performance tests were deferred to focus on core implementation. Basic functionality verified through unit tests.",
+  "impact": "Validates Phase 2 implementation before proceeding to complex operators",
+  "targetMetrics": {
+    "testCoverage": {
+      "current": "Basic Node tests for add/subtract",
+      "target": "Integration tests, performance verification, full regression suite"
+    }
+  },
+  "tasks": [
+    {
+      "id": "2.3.1",
+      "category": "testing",
+      "title": "Create Integration Tests",
+      "description": "Test that add and subtract work together and integrate with simplify/derivative.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["test/unit-tests/function/arithmetic/nodeIntegration.test.ts"],
+      "testCategories": ["integration"],
+      "implementation": {
+        "purpose": "Verify add/subtract Node operations integrate correctly with each other and symbolic functions."
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create integration test file",
+          "code": "describe('add/subtract Node integration', function () {\n  it('should chain add and subtract operations', function () {\n    const x = new SymbolNode('x')\n    const step1 = math.add(5, x)      // 5 + x\n    const step2 = math.subtract(step1, 3)  // (5 + x) - 3\n    const value = step2.compile().evaluate({ x: 10 })\n    assert.strictEqual(value, 12)  // (5 + 10) - 3 = 12\n  })\n\n  it('should work with simplify', function () {\n    const x = new SymbolNode('x')\n    const expr = math.add(5, x)\n    const simplified = math.simplify(expr)\n    assert.ok(simplified && simplified.isNode)\n  })\n\n  it('should work with derivative', function () {\n    const x = new SymbolNode('x')\n    const expr = math.add(5, x)\n    const deriv = math.derivative(expr, x)\n    assert.ok(deriv && deriv.isNode)\n  })\n})"
+        }
+      ],
+      "acceptanceCriteria": ["Integration tests pass", "Chaining works", "simplify integration works", "derivative integration works"]
+    },
+    {
+      "id": "2.3.2",
+      "category": "testing",
+      "title": "Performance Regression Tests",
+      "description": "Verify no performance regression for scalar operations.",
+      "status": "pending",
+      "estimatedHours": 1.5,
+      "agent": "claude",
+      "files": ["test/benchmark/node_operators_perf.ts"],
+      "testCategories": ["performance"],
+      "implementation": {
+        "purpose": "Ensure adding Node signatures doesn't slow down scalar operations."
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create performance benchmark",
+          "code": "import { Bench } from 'tinybench'\nimport math from '../../src/defaultInstance.js'\n\nconst bench = new Bench({ time: 1000 })\nconst x = new math.SymbolNode('x')\n\nbench.add('add(number, number)', () => math.add(5, 3))\nbench.add('subtract(number, number)', () => math.subtract(5, 3))\nbench.add('add(number, Node)', () => math.add(5, x))\nbench.add('subtract(number, Node)', () => math.subtract(5, x))\n\nawait bench.run()\nconsole.table(bench.tasks.map(t => ({ Task: t.name, 'ops/sec': t.result?.hz?.toFixed(2) })))"
+        }
+      ],
+      "acceptanceCriteria": ["Scalar ops maintain >1M ops/sec", "No significant regression from baseline"]
+    },
+    {
+      "id": "2.3.3",
+      "category": "verification",
+      "title": "Full Regression Test Suite",
+      "description": "Run complete test suite to ensure no regressions.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["regression"],
+      "stepByStep": [
+        {"step": 1, "action": "Run full test suite", "details": "npm run test:src"},
+        {"step": 2, "action": "Run type tests", "details": "npm run test:types"},
+        {"step": 3, "action": "Verify test count", "details": "Expected: 14,606+ tests passing"}
+      ],
+      "acceptanceCriteria": ["All 14,606+ tests pass", "Type tests pass", "No warnings"]
+    },
+    {
+      "id": "2.3.4",
+      "category": "documentation",
+      "title": "Document Known Limitations",
+      "description": "Document any discovered limitations or edge cases.",
+      "status": "pending",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": ["docs/refactoring/phases/node-operators-limitations.md"],
+      "testCategories": ["documentation"],
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create limitations document",
+          "code": "# Node Operators - Known Limitations\n\n## Supported\n- add/subtract(scalar, Node) ✓\n- add/subtract(Node, scalar) ✓\n- add/subtract(Node, Node) ✓\n\n## Not Yet Supported\n- Matrix + Node combinations (Phase 3+)\n\n## Edge Cases\n- [Document any discovered edge cases]"
+        }
+      ],
+      "acceptanceCriteria": ["Limitations documented", "Edge cases noted"]
+    }
+  ],
+  "successCriteria": ["Integration tests pass", "Performance verified", "Full regression suite passes", "Documentation complete", "Ready for Phase 3"],
+  "filesCreated": ["test/unit-tests/function/arithmetic/nodeIntegration.test.ts", "test/benchmark/node_operators_perf.ts", "docs/refactoring/phases/node-operators-limitations.md"],
+  "totalNewTests": 10,
+  "totalEstimatedHours": 5,
+  "dependencies": ["Sprint 2.1", "Sprint 2.2"],
+  "notes": ["This sprint validates Phase 2 before moving to complex operators", "Performance benchmark establishes baseline"]
+}

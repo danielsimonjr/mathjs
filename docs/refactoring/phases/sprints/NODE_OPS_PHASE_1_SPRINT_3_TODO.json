@@ -1,0 +1,167 @@
+{
+  "phase": 1,
+  "sprint": 3,
+  "title": "Test Infrastructure",
+  "feature": "Simplify with Node Objects",
+  "priority": "MEDIUM",
+  "effort": "4 hours",
+  "status": "completed",
+  "completedDate": "2026-01-16",
+  "impact": "Provides reusable test utilities and templates for comprehensive Node operator testing across all phases",
+  "targetMetrics": {
+    "testReusability": {
+      "current": "Each operator would need duplicate test setup",
+      "target": "Shared test helpers used by all 4 operator test files"
+    },
+    "testComprehensiveness": {
+      "current": "No standard test matrix for Node operations",
+      "target": "Comprehensive test matrix covering all type combinations"
+    }
+  },
+  "tasks": [
+    {
+      "id": "1.3.1",
+      "category": "testing",
+      "title": "Create Test Helper Module",
+      "description": "Create shared test utilities for Node operator testing including test data generators, assertion helpers, and test matrix generators.",
+      "status": "completed",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["test/unit-tests/function/arithmetic/utils/nodeTestHelpers.ts"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Reduce test code duplication and ensure consistent testing across all operators.",
+        "keyDecisions": [
+          "testData object provides reusable test values",
+          "nodeAssert provides specialized assertions for OperatorNode validation",
+          "generateTestMatrix creates all type × Node combinations automatically",
+          "runBackwardsCompatibilityTests verifies no regressions"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create test helper file with imports",
+          "code": "import assert from 'assert'\nimport math from '../../../../../src/defaultInstance.js'\n\nconst { parse, ConstantNode, SymbolNode, OperatorNode } = math"
+        },
+        {
+          "step": 2,
+          "action": "Add testData generators",
+          "code": "export const testData = {\n  numbers: [0, 1, -1, 0.5, 100, -100, Math.PI],\n  bigNumbers: () => [\n    math.bignumber(0),\n    math.bignumber(1),\n    math.bignumber(-1),\n    math.bignumber('1e50')\n  ],\n  complexNumbers: () => [\n    math.complex(0, 0),\n    math.complex(1, 0),\n    math.complex(0, 1),\n    math.complex(2, 3)\n  ],\n  fractions: () => [\n    math.fraction(1, 2),\n    math.fraction(1, 3),\n    math.fraction(-1, 4)\n  ],\n  simpleNodes: () => [\n    new ConstantNode(5),\n    new SymbolNode('x'),\n    new SymbolNode('y'),\n    parse('2 * x'),\n    parse('x + 1')\n  ]\n}"
+        },
+        {
+          "step": 3,
+          "action": "Add nodeAssert helpers",
+          "code": "export const nodeAssert = {\n  isOperatorNode(result: unknown, expectedOp: string, expectedFn: string): void {\n    assert.ok(result instanceof OperatorNode,\n      `Expected OperatorNode, got ${result?.constructor?.name}`)\n    assert.strictEqual((result as OperatorNode).op, expectedOp)\n    assert.strictEqual((result as OperatorNode).fn, expectedFn)\n  },\n\n  hasArgs(result: OperatorNode, count: number): void {\n    assert.strictEqual(result.args.length, count)\n  },\n\n  evaluatesTo(result: Node, expected: number, scope: object = {}): void {\n    const value = result.compile().evaluate(scope)\n    assert.strictEqual(value, expected)\n  },\n\n  toStringEquals(result: Node, expected: string): void {\n    assert.strictEqual(result.toString(), expected)\n  }\n}"
+        },
+        {
+          "step": 4,
+          "action": "Add generateTestMatrix function",
+          "code": "export function generateTestMatrix(\n  operator: string,\n  fn: string\n): Array<{ left: unknown; right: unknown; desc: string }> {\n  const matrix: Array<{ left: unknown; right: unknown; desc: string }> = []\n\n  // number, Node\n  for (const num of testData.numbers.slice(0, 3)) {\n    for (const node of testData.simpleNodes()) {\n      matrix.push({ left: num, right: node, desc: `${num} ${operator} ${node}` })\n    }\n  }\n\n  // Node, number\n  for (const node of testData.simpleNodes()) {\n    for (const num of testData.numbers.slice(0, 3)) {\n      matrix.push({ left: node, right: num, desc: `${node} ${operator} ${num}` })\n    }\n  }\n\n  // Node, Node\n  for (const left of testData.simpleNodes()) {\n    for (const right of testData.simpleNodes()) {\n      matrix.push({ left, right, desc: `${left} ${operator} ${right}` })\n    }\n  }\n\n  return matrix\n}"
+        },
+        {
+          "step": 5,
+          "action": "Add backwards compatibility test helper",
+          "code": "export function runBackwardsCompatibilityTests(\n  mathFn: Function,\n  fnName: string\n): void {\n  describe(`${fnName} backwards compatibility`, function () {\n    it('should still work with two numbers', function () {\n      const result = mathFn(5, 3)\n      assert.strictEqual(typeof result, 'number')\n    })\n\n    it('should still work with BigNumbers', function () {\n      const result = mathFn(math.bignumber(5), math.bignumber(3))\n      assert.ok(math.isBigNumber(result))\n    })\n\n    it('should still work with matrices', function () {\n      const result = mathFn([[1, 2]], [[3, 4]])\n      assert.ok(math.isMatrix(result) || Array.isArray(result))\n    })\n  })\n}"
+        }
+      ],
+      "acceptanceCriteria": [
+        "nodeTestHelpers.ts created",
+        "testData provides all numeric types and Node types",
+        "nodeAssert provides OperatorNode-specific assertions",
+        "generateTestMatrix creates comprehensive test combinations",
+        "runBackwardsCompatibilityTests helper works"
+      ]
+    },
+    {
+      "id": "1.3.2",
+      "category": "testing",
+      "title": "Create Test Template",
+      "description": "Create a template test file that can be copied and adapted for each operator.",
+      "status": "completed",
+      "estimatedHours": 1.5,
+      "agent": "claude",
+      "files": ["test/unit-tests/function/arithmetic/utils/nodeOperatorTestTemplate.ts"],
+      "testCategories": ["template"],
+      "implementation": {
+        "purpose": "Provide consistent test structure across all operator test files.",
+        "keyDecisions": [
+          "Template includes all test categories: basic, type combinations, variadic, evaluation, backwards compatibility",
+          "Uses helper functions from nodeTestHelpers",
+          "Clearly marked sections for customization"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create test template with structure",
+          "code": "import assert from 'assert'\nimport math from '../../../../../src/defaultInstance.js'\nimport { testData, nodeAssert, generateTestMatrix, runBackwardsCompatibilityTests } from './nodeTestHelpers.js'\n\nconst { parse, ConstantNode, SymbolNode, OperatorNode } = math\n\n// CUSTOMIZE THESE:\nconst OPERATOR = '+'\nconst FUNCTION_NAME = 'add'\nconst mathFn = math.add\n\ndescribe(`${FUNCTION_NAME} with Nodes`, function () {\n\n  describe('basic Node operations', function () {\n    it('should return OperatorNode for number + Node', function () {\n      const x = new SymbolNode('x')\n      const result = mathFn(5, x)\n      nodeAssert.isOperatorNode(result, OPERATOR, FUNCTION_NAME)\n    })\n    // ... more basic tests\n  })\n\n  describe('type combinations', function () {\n    // BigNumber, Complex, Fraction + Node tests\n  })\n\n  describe('variadic operations', function () {\n    // Multiple argument tests\n  })\n\n  describe('evaluation', function () {\n    // Compile and evaluate tests\n  })\n\n  runBackwardsCompatibilityTests(mathFn, FUNCTION_NAME)\n\n  describe('comprehensive test matrix', function () {\n    const testMatrix = generateTestMatrix(OPERATOR, FUNCTION_NAME)\n    testMatrix.forEach(({ left, right, desc }) => {\n      it(`should handle: ${desc}`, function () {\n        const result = mathFn(left, right)\n        nodeAssert.isOperatorNode(result, OPERATOR, FUNCTION_NAME)\n      })\n    })\n  })\n})"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Test template created",
+        "Template includes all test categories",
+        "Clear instructions for customization",
+        "Uses nodeTestHelpers functions"
+      ]
+    },
+    {
+      "id": "1.3.3",
+      "category": "verification",
+      "title": "Verify Test Infrastructure",
+      "description": "Run the test helpers to verify they work correctly before using them in Phase 2.",
+      "status": "completed",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["verification"],
+      "implementation": {
+        "purpose": "Ensure test infrastructure is ready for Phase 2.",
+        "keyDecisions": [
+          "Test helpers should be importable",
+          "Test data generators should return correct types",
+          "Assertions should work with current math.js"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create minimal verification test",
+          "details": "Create a simple test that imports and uses the test helpers"
+        },
+        {
+          "step": 2,
+          "action": "Run verification",
+          "details": "npx mocha test/unit-tests/function/arithmetic/utils/nodeTestHelpers.test.ts"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Test helpers can be imported",
+        "testData returns valid test values",
+        "nodeAssert functions work correctly",
+        "generateTestMatrix produces valid test cases"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "Test helper module created and working",
+    "Test template ready for Phase 2 use",
+    "All test infrastructure verified",
+    "Ready to begin Phase 2"
+  ],
+  "filesCreated": [
+    "test/unit-tests/function/arithmetic/utils/nodeTestHelpers.ts",
+    "test/unit-tests/function/arithmetic/utils/nodeOperatorTestTemplate.ts",
+    "test/unit-tests/function/arithmetic/utils/nodeTestHelpers.test.ts"
+  ],
+  "filesModified": [],
+  "actualNewTests": 28,
+  "totalNewTests": 5,
+  "totalEstimatedHours": 4,
+  "dependencies": ["Sprint 1.1", "Sprint 1.2"],
+  "notes": [
+    "Test infrastructure enables consistent testing across all operators",
+    "Comprehensive test matrix catches edge cases",
+    "Backwards compatibility tests prevent regressions"
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "phase": 1,
+  "sprint": 1,
+  "title": "Node Utility Module",
+  "feature": "Simplify with Node Objects",
+  "priority": "HIGH",
+  "effort": "8 hours",
+  "status": "completed",
+  "completedDate": "2026-01-16",
+  "impact": "Foundation for all Node operator implementations - provides shared utilities for creating OperatorNodes from arithmetic operations",
+  "targetMetrics": {
+    "codeReuse": {
+      "current": "Each operator would need duplicate Node creation logic",
+      "target": "Single nodeOperations module used by all 4 operators"
+    },
+    "testCoverage": {
+      "current": "No Node operator tests exist",
+      "target": "100% coverage of nodeOperations utility functions"
+    }
+  },
+  "tasks": [
+    {
+      "id": "1.1.1",
+      "category": "implementation",
+      "title": "Create nodeOperations.ts File",
+      "description": "Create the shared utility module that provides helper functions for creating Node-based operation results. This module will be used by all arithmetic operators (add, subtract, multiply, divide).",
+      "status": "completed",
+      "estimatedHours": 3.0,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/utils/nodeOperations.ts"],
+      "testCategories": ["unit", "typecheck"],
+      "implementation": {
+        "purpose": "Provide centralized, reusable functions for wrapping values in ConstantNodes and creating OperatorNodes for binary and n-ary operations.",
+        "keyDecisions": [
+          "Use factory pattern to match math.js architecture",
+          "Depend on ConstantNode and OperatorNode constructors",
+          "wrapInNode handles all value types transparently",
+          "createBinaryNode standardizes binary operation creation",
+          "createNaryNode builds left-associative trees for variadic ops",
+          "OPERATOR_MAP provides operator symbol lookup"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create directory structure",
+          "details": "mkdir -p src/function/arithmetic/utils"
+        },
+        {
+          "step": 2,
+          "action": "Create nodeOperations.ts with imports",
+          "code": "/**\n * Node Operations Utility Module\n *\n * Provides shared functionality for arithmetic operators to work with\n * expression Node objects, creating symbolic operation results.\n */\n\nimport { factory } from '../../../utils/factory.js'\nimport { isNode } from '../../../utils/is.js'\n\nexport const name = 'nodeOperations'\nexport const dependencies = ['ConstantNode', 'OperatorNode']"
+        },
+        {
+          "step": 3,
+          "action": "Add factory function with wrapInNode",
+          "code": "export const createNodeOperations = /* #__PURE__ */ factory(\n  name,\n  dependencies,\n  ({ ConstantNode, OperatorNode }) => {\n\n    /**\n     * Wraps a value in a ConstantNode if it's not already a Node.\n     * @param {*} value - The value to wrap\n     * @returns {Node} - A Node representing the value\n     */\n    function wrapInNode(value: unknown): Node {\n      if (isNode(value)) {\n        return value\n      }\n      return new ConstantNode(value)\n    }"
+        },
+        {
+          "step": 4,
+          "action": "Add createBinaryNode function",
+          "code": "    /**\n     * Creates an OperatorNode for a binary operation.\n     * @param {string} op - The operator symbol ('+', '-', '*', '/')\n     * @param {string} fn - The function name ('add', 'subtract', 'multiply', 'divide')\n     * @param {*} left - Left operand (will be wrapped if not a Node)\n     * @param {*} right - Right operand (will be wrapped if not a Node)\n     * @returns {OperatorNode} - The resulting operation node\n     */\n    function createBinaryNode(\n      op: string,\n      fn: string,\n      left: unknown,\n      right: unknown\n    ): OperatorNode {\n      const leftNode = wrapInNode(left)\n      const rightNode = wrapInNode(right)\n      return new OperatorNode(op, fn, [leftNode, rightNode])\n    }"
+        },
+        {
+          "step": 5,
+          "action": "Add createNaryNode function",
+          "code": "    /**\n     * Creates an OperatorNode for an n-ary operation (variadic).\n     * Builds left-associative tree: ((a op b) op c) op d\n     * @param {string} op - The operator symbol\n     * @param {string} fn - The function name\n     * @param {Array} args - Array of operands\n     * @returns {OperatorNode} - The resulting operation node\n     */\n    function createNaryNode(\n      op: string,\n      fn: string,\n      args: unknown[]\n    ): OperatorNode {\n      if (args.length < 2) {\n        throw new Error(`${fn} requires at least 2 arguments`)\n      }\n      let result = createBinaryNode(op, fn, args[0], args[1])\n      for (let i = 2; i < args.length; i++) {\n        result = createBinaryNode(op, fn, result, args[i])\n      }\n      return result\n    }"
+        },
+        {
+          "step": 6,
+          "action": "Add helper functions and OPERATOR_MAP",
+          "code": "    /**\n     * Checks if any argument is a Node.\n     */\n    function hasNodeArg(...args: unknown[]): boolean {\n      return args.some(arg => isNode(arg))\n    }\n\n    const OPERATOR_MAP = {\n      add: '+',\n      subtract: '-',\n      multiply: '*',\n      divide: '/',\n      pow: '^',\n      mod: '%'\n    } as const\n\n    function getOperator(fn: string): string {\n      return OPERATOR_MAP[fn as keyof typeof OPERATOR_MAP] || fn\n    }\n\n    return {\n      wrapInNode,\n      createBinaryNode,\n      createNaryNode,\n      hasNodeArg,\n      getOperator,\n      OPERATOR_MAP\n    }\n  }\n)"
+        },
+        {
+          "step": 7,
+          "action": "Run TypeScript compilation to verify",
+          "details": "npx tsc --noEmit"
+        }
+      ],
+      "acceptanceCriteria": [
+        "nodeOperations.ts created in src/function/arithmetic/utils/",
+        "Uses factory pattern matching math.js architecture",
+        "wrapInNode correctly wraps non-Node values in ConstantNode",
+        "wrapInNode returns Node values unchanged",
+        "createBinaryNode creates OperatorNode with correct structure",
+        "createNaryNode builds left-associative tree",
+        "hasNodeArg detects Node arguments",
+        "OPERATOR_MAP contains all arithmetic operators",
+        "TypeScript compiles without errors"
+      ]
+    },
+    {
+      "id": "1.1.2",
+      "category": "integration",
+      "title": "Register nodeOperations in Factory System",
+      "description": "Add the nodeOperations module to the factory exports so it can be injected as a dependency into arithmetic operators.",
+      "status": "completed",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": ["src/factoriesAny.ts"],
+      "testCategories": ["typecheck"],
+      "implementation": {
+        "purpose": "Make nodeOperations available through the math.js dependency injection system.",
+        "keyDecisions": [
+          "Export from factoriesAny.js for full math.js builds",
+          "Not needed in factoriesNumber.js (number-only builds don't use Nodes)"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add export to factoriesAny.js",
+          "code": "// Add with other arithmetic exports:\nexport { createNodeOperations } from './function/arithmetic/utils/nodeOperations.js'"
+        },
+        {
+          "step": 2,
+          "action": "Verify import works",
+          "details": "npm run build && node -e \"const m = require('./lib/cjs/factoriesAny.js'); console.log(typeof m.createNodeOperations)\""
+        }
+      ],
+      "acceptanceCriteria": [
+        "createNodeOperations exported from factoriesAny.js",
+        "Build completes successfully",
+        "Factory is accessible after build"
+      ]
+    },
+    {
+      "id": "1.1.3",
+      "category": "testing",
+      "title": "Create Unit Tests for nodeOperations",
+      "description": "Create comprehensive unit tests for all nodeOperations utility functions.",
+      "status": "completed",
+      "estimatedHours": 2.5,
+      "agent": "claude",
+      "files": ["test/unit-tests/function/arithmetic/utils/nodeOperations.test.ts"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Ensure nodeOperations functions work correctly before using them in arithmetic operators.",
+        "keyDecisions": [
+          "Test all value types for wrapInNode",
+          "Test binary operations for all operator types",
+          "Test variadic operations with various argument counts",
+          "Test edge cases (empty arrays, single arguments, etc.)"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create test file structure",
+          "code": "import assert from 'assert'\nimport math from '../../../../../src/defaultInstance.js'\n\ndescribe('nodeOperations', function () {\n  const { parse, ConstantNode, OperatorNode, SymbolNode } = math\n  const nodeOps = math.nodeOperations"
+        },
+        {
+          "step": 2,
+          "action": "Add wrapInNode tests",
+          "code": "  describe('wrapInNode', function () {\n    it('should wrap a number in ConstantNode', function () {\n      const result = nodeOps.wrapInNode(5)\n      assert.ok(result instanceof ConstantNode)\n      assert.strictEqual(result.value, 5)\n    })\n\n    it('should return Node unchanged', function () {\n      const node = parse('x + 1')\n      const result = nodeOps.wrapInNode(node)\n      assert.strictEqual(result, node)\n    })\n\n    it('should wrap BigNumber in ConstantNode', function () {\n      const big = math.bignumber(123)\n      const result = nodeOps.wrapInNode(big)\n      assert.ok(result instanceof ConstantNode)\n    })\n\n    it('should wrap Complex in ConstantNode', function () {\n      const complex = math.complex(2, 3)\n      const result = nodeOps.wrapInNode(complex)\n      assert.ok(result instanceof ConstantNode)\n    })\n  })"
+        },
+        {
+          "step": 3,
+          "action": "Add createBinaryNode tests",
+          "code": "  describe('createBinaryNode', function () {\n    it('should create OperatorNode from two numbers', function () {\n      const result = nodeOps.createBinaryNode('+', 'add', 5, 3)\n      assert.ok(result instanceof OperatorNode)\n      assert.strictEqual(result.op, '+')\n      assert.strictEqual(result.fn, 'add')\n      assert.strictEqual(result.args.length, 2)\n    })\n\n    it('should create OperatorNode from number and Node', function () {\n      const xNode = new SymbolNode('x')\n      const result = nodeOps.createBinaryNode('+', 'add', 5, xNode)\n      assert.ok(result.args[0] instanceof ConstantNode)\n      assert.strictEqual(result.args[1], xNode)\n    })\n\n    it('should handle nested expressions', function () {\n      const expr = parse('x + 1')\n      const result = nodeOps.createBinaryNode('*', 'multiply', 2, expr)\n      assert.strictEqual(result.toString(), '2 * (x + 1)')\n    })\n  })"
+        },
+        {
+          "step": 4,
+          "action": "Add createNaryNode and helper tests",
+          "code": "  describe('createNaryNode', function () {\n    it('should create nested OperatorNodes for 3 arguments', function () {\n      const result = nodeOps.createNaryNode('+', 'add', [1, 2, 3])\n      assert.ok(result instanceof OperatorNode)\n      assert.strictEqual(result.toString(), '1 + 2 + 3')\n    })\n\n    it('should throw for less than 2 arguments', function () {\n      assert.throws(() => nodeOps.createNaryNode('+', 'add', [1]))\n    })\n  })\n\n  describe('hasNodeArg', function () {\n    it('should return true if any argument is a Node', function () {\n      const x = new SymbolNode('x')\n      assert.strictEqual(nodeOps.hasNodeArg(1, x, 3), true)\n    })\n\n    it('should return false if no arguments are Nodes', function () {\n      assert.strictEqual(nodeOps.hasNodeArg(1, 2, 3), false)\n    })\n  })\n})"
+        },
+        {
+          "step": 5,
+          "action": "Run tests",
+          "details": "npm run test:src -- --grep 'nodeOperations'"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Test file created at test/unit-tests/function/arithmetic/utils/nodeOperations.test.ts",
+        "Tests cover wrapInNode with all value types",
+        "Tests cover createBinaryNode with all combinations",
+        "Tests cover createNaryNode including edge cases",
+        "Tests cover helper functions (hasNodeArg, getOperator)",
+        "All tests pass"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "nodeOperations.ts created and compiles without errors",
+    "Module registered in factoriesAny.js",
+    "All unit tests pass",
+    "Functions accessible from math instance (math.nodeOperations)",
+    "Ready for use in Phase 2 operator implementations"
+  ],
+  "filesCreated": [
+    "src/function/arithmetic/utils/nodeOperations.ts",
+    "test/unit-tests/function/arithmetic/utils/nodeOperations.test.ts"
+  ],
+  "filesModified": [
+    "src/factoriesAny.ts"
+  ],
+  "actualNewTests": 45,
+  "totalNewTests": 15,
+  "totalEstimatedHours": 6,
+  "dependencies": [],
+  "notes": [
+    "CRITICAL: This module is the foundation for all Phase 2-3 work",
+    "Use factory pattern to match existing math.js architecture",
+    "Ensure proper TypeScript types for all functions",
+    "wrapInNode must handle all math.js value types (number, BigNumber, Complex, Fraction, Unit)"
+  ]
+}

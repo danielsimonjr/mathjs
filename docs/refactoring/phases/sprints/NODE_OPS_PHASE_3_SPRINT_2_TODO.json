@@ -1,0 +1,229 @@
+{
+  "phase": 3,
+  "sprint": 2,
+  "title": "Multiply Operator Node Support",
+  "feature": "Simplify with Node Objects",
+  "priority": "CRITICAL",
+  "effort": "16 hours",
+  "status": "completed",
+  "completedDate": "2026-01-16",
+  "impact": "HIGHEST RISK - multiply.ts is 1,127 lines with complex matrix algorithms, WASM paths, and special cases",
+  "targetMetrics": {
+    "nodeSupport": {
+      "current": "multiply(number, Node) throws TypeError",
+      "target": "multiply(number, Node) returns OperatorNode"
+    },
+    "matrixCompat": {
+      "current": "All matrix operations work correctly",
+      "target": "ALL matrix operations still work after Node signatures"
+    },
+    "wasmCompat": {
+      "current": "WASM acceleration works for large matrices",
+      "target": "WASM paths unaffected by Node signatures"
+    }
+  },
+  "tasks": [
+    {
+      "id": "3.2.0",
+      "category": "analysis",
+      "title": "Deep Dive into multiply.ts",
+      "description": "Comprehensive review of multiply.ts to understand all matrix algorithms, WASM paths, and special cases.",
+      "status": "completed",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/multiply.ts"],
+      "testCategories": ["analysis"],
+      "implementation": {
+        "purpose": "Understand the full complexity before making changes.",
+        "keyDecisions": [
+          "Document all signature types",
+          "Identify matrixAlgorithmSuite integration",
+          "Find WASM acceleration paths",
+          "Note vector dot product special case"
+        ]
+      },
+      "stepByStep": [
+        {"step": 1, "action": "Read and document structure", "details": "Lines 1-50: deps, 51-200: scalars, 201-500: dense, 501-800: sparse, 801-1000: mixed, 1001-1127: WASM"},
+        {"step": 2, "action": "Identify insertion point", "details": "Node signatures must go BEFORE matrixAlgorithmSuite merges signatures"},
+        {"step": 3, "action": "Document potential conflicts", "details": "Note any 'any, any' or matrix signatures that could catch Nodes"}
+      ],
+      "acceptanceCriteria": ["Full structure documented", "Safe insertion point identified", "Potential conflicts noted"]
+    },
+    {
+      "id": "3.2.1",
+      "category": "implementation",
+      "title": "Add Node Dependencies to multiply.ts",
+      "description": "Add nodeOperations to multiply dependencies (nodeOperations internally depends on ConstantNode and OperatorNode).",
+      "status": "completed",
+      "estimatedHours": 0.25,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/multiply.ts"],
+      "testCategories": ["typecheck"],
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add to multiplyDependencies",
+          "code": "const dependencies = [\n  'typed', 'matrix', 'addScalar', 'multiplyScalar', 'equalScalar', 'dot',\n  // NEW: Node support\n  'nodeOperations'\n]"
+        }
+      ],
+      "acceptanceCriteria": ["Dependencies added to multiplyDependencies array"]
+    },
+    {
+      "id": "3.2.2",
+      "category": "implementation",
+      "title": "Update Factory Function Parameters",
+      "description": "Update the factory function to destructure nodeOperations.",
+      "status": "completed",
+      "estimatedHours": 0.25,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/multiply.ts"],
+      "testCategories": ["typecheck"],
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add to factory function parameters",
+          "details": "Add nodeOperations to destructured parameters"
+        },
+        {
+          "step": 2,
+          "action": "Verify TypeScript compilation",
+          "details": "npx tsc --noEmit"
+        }
+      ],
+      "acceptanceCriteria": ["Parameters added to factory function", "TypeScript compiles without errors"]
+    },
+    {
+      "id": "3.2.3",
+      "category": "analysis",
+      "title": "Identify Safe Insertion Point",
+      "description": "Identify the exact location in multiply.ts where Node signatures can be safely inserted without disrupting matrix algorithm dispatch.",
+      "status": "completed",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/multiply.ts"],
+      "testCategories": ["analysis"],
+      "implementation": {
+        "purpose": "Critical analysis to ensure Node signatures don't interfere with matrix operations.",
+        "keyDecisions": [
+          "Node signatures must be FIRST in typed() object",
+          "Must come BEFORE matrixAlgorithmSuite merges signatures",
+          "Must not conflict with 'any, any' catch-all"
+        ]
+      },
+      "stepByStep": [
+        {"step": 1, "action": "Find typed() object start", "details": "Locate the exact line where typed(name, { starts"},
+        {"step": 2, "action": "Identify matrixAlgorithmSuite merge", "details": "Find where matrix signatures are merged into typed object"},
+        {"step": 3, "action": "Document safe insertion point", "details": "Node signatures go immediately after typed(name, { and before any other signatures"}
+      ],
+      "acceptanceCriteria": ["Exact insertion point documented", "Confirmed safe for Node signatures", "No conflict with matrix operations"]
+    },
+    {
+      "id": "3.2.4",
+      "category": "implementation",
+      "title": "Add Node Type Signatures to multiply.ts",
+      "description": "CAREFULLY add Node signatures at the VERY BEGINNING of typed() object, BEFORE any matrix algorithm signatures.",
+      "status": "completed",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/multiply.ts"],
+      "testCategories": ["typecheck", "unit"],
+      "implementation": {
+        "purpose": "Enable multiply to accept Node operands without breaking matrix operations.",
+        "keyDecisions": [
+          "Node signatures MUST be FIRST - before matrixAlgorithmSuite",
+          "Use '*' operator and 'multiply' function name",
+          "Do NOT modify any existing matrix signatures"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add Node signatures at very start of typed object",
+          "code": "const multiply = typed(name, {\n  // =========================================================================\n  // NODE SIGNATURES - MUST BE FIRST (before matrixAlgorithmSuite)\n  // =========================================================================\n  'Node, Node': (x, y) => nodeOperations.createBinaryNode('*', 'multiply', x, y),\n  'number, Node': (x, y) => nodeOperations.createBinaryNode('*', 'multiply', x, y),\n  'Node, number': (x, y) => nodeOperations.createBinaryNode('*', 'multiply', x, y),\n  // ... all 12 signatures\n\n  // =========================================================================\n  // EXISTING SIGNATURES (unchanged)\n  // =========================================================================\n  'any, any': multiplyScalar,\n  // ... rest unchanged\n}, matrixAlgorithmSuite({ /* unchanged */ }))"
+        },
+        {
+          "step": 2,
+          "action": "Verify compilation",
+          "details": "npx tsc --noEmit"
+        },
+        {
+          "step": 3,
+          "action": "Quick smoke test",
+          "details": "node -e \"const m=require('./lib/cjs'); console.log(m.multiply(3, m.parse('x')).toString())\""
+        }
+      ],
+      "acceptanceCriteria": ["All 12 Node signatures added", "Signatures BEFORE matrix algorithms", "multiply(3, parse('x')) returns OperatorNode"]
+    },
+    {
+      "id": "3.2.5",
+      "category": "testing",
+      "title": "Create multiply.test.ts Node Tests",
+      "description": "Add comprehensive Node tests with special focus on matrix compatibility.",
+      "status": "completed",
+      "estimatedHours": 3.0,
+      "agent": "claude",
+      "files": ["test/unit-tests/function/arithmetic/multiply.test.ts"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Test Node operations AND verify all matrix operations still work."
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add Node operation tests",
+          "code": "describe('multiply with Node operands', function () {\n  it('should return OperatorNode for multiply(number, Node)', function () {\n    const x = new SymbolNode('x')\n    const result = math.multiply(3, x)\n    assert.ok(result instanceof OperatorNode)\n    assert.strictEqual(result.toString(), '3 * x')\n  })\n})"
+        },
+        {
+          "step": 2,
+          "action": "Add CRITICAL matrix backwards compatibility tests",
+          "code": "describe('multiply matrix backwards compatibility (CRITICAL)', function () {\n  it('should still compute dense × dense', function () {\n    const A = [[1,2],[3,4]], B = [[5,6],[7,8]]\n    const result = math.multiply(A, B)\n    assert.deepStrictEqual(result, [[19,22],[43,50]])\n  })\n\n  it('should still compute sparse × sparse', function () {\n    const A = math.sparse([[1,0],[0,2]])\n    const B = math.sparse([[3,0],[0,4]])\n    const result = math.multiply(A, B)\n    assert.ok(math.isSparseMatrix(result))\n  })\n\n  it('should still broadcast scalar × matrix', function () {\n    const result = math.multiply(2, [[1,2],[3,4]])\n    assert.deepStrictEqual(result, [[2,4],[6,8]])\n  })\n\n  it('should still compute vector dot product', function () {\n    const result = math.multiply([1,2,3], [[1],[2],[3]])\n    // Dot product behavior\n    assert.ok(result)\n  })\n})"
+        }
+      ],
+      "acceptanceCriteria": ["Node tests pass", "ALL matrix tests pass", "Dot product works", "Sparse matrix works", "WASM paths unaffected"]
+    },
+    {
+      "id": "3.2.6",
+      "category": "verification",
+      "title": "Matrix Operation Verification (CRITICAL)",
+      "description": "CRITICAL: Run extensive matrix tests to verify no regressions.",
+      "status": "completed",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["verification"],
+      "implementation": {
+        "purpose": "This is the highest-risk change - thorough verification is essential."
+      },
+      "stepByStep": [
+        {"step": 1, "action": "Run multiply tests", "details": "npm run test:src -- --grep 'multiply'"},
+        {"step": 2, "action": "Run all matrix tests", "details": "npm run test:src -- --grep 'matrix'"},
+        {"step": 3, "action": "Run sparse matrix tests", "details": "npm run test:src -- --grep 'sparse'"},
+        {"step": 4, "action": "Test large matrix performance", "details": "Verify WASM paths still work for 100x100 matrices"},
+        {"step": 5, "action": "Run full test suite", "details": "npm run test:src (all 14,606+ tests)"}
+      ],
+      "acceptanceCriteria": ["ALL multiply tests pass", "ALL matrix tests pass", "Sparse tests pass", "Large matrix performance maintained", "Full suite passes"]
+    }
+  ],
+  "successCriteria": [
+    "multiply accepts Node operands",
+    "multiply(number, Node) returns OperatorNode",
+    "ALL matrix operations still work (CRITICAL)",
+    "Sparse matrix operations work",
+    "WASM paths unaffected",
+    "Full test suite passes"
+  ],
+  "filesCreated": ["test/unit-tests/function/arithmetic/multiply.node.test.ts"],
+  "filesModified": ["src/function/arithmetic/multiply.ts"],
+  "actualNewTests": 13,
+  "totalNewTests": 30,
+  "implementationNote": "Tests were added to a separate multiply.node.test.ts file instead of modifying multiply.test.ts",
+  "totalEstimatedHours": 10.0,
+  "dependencies": ["Sprint 3.1"],
+  "notes": [
+    "HIGHEST RISK SPRINT - multiply.ts is 1,127 lines",
+    "Node signatures MUST be FIRST before matrixAlgorithmSuite",
+    "Do NOT modify any existing matrix code",
+    "Test matrix operations EXTENSIVELY",
+    "If tests fail, check signature ordering first"
+  ]
+}

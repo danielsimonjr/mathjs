@@ -60,6 +60,11 @@ interface MatrixConstructor {
   (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
+interface NodeOperations {
+  createBinaryNode: (op: string, fn: string, left: unknown, right: unknown) => unknown
+  hasNodeArg: (...args: unknown[]) => boolean
+}
+
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
@@ -67,6 +72,7 @@ interface Dependencies {
   multiplyScalar: TypedFunction
   equalScalar: TypedFunction
   dot: TypedFunction
+  nodeOperations: NodeOperations
 }
 
 const name = 'multiply'
@@ -76,7 +82,8 @@ const dependencies = [
   'addScalar',
   'multiplyScalar',
   'equalScalar',
-  'dot'
+  'dot',
+  'nodeOperations'
 ]
 
 export const createMultiply = /* #__PURE__ */ factory(
@@ -88,7 +95,8 @@ export const createMultiply = /* #__PURE__ */ factory(
     addScalar,
     multiplyScalar,
     equalScalar,
-    dot
+    dot,
+    nodeOperations
   }: Dependencies) => {
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
     const matAlgo14xDs = createMatAlgo14xDs({ typed })
@@ -1107,6 +1115,48 @@ export const createMultiply = /* #__PURE__ */ factory(
           true
         ).valueOf() as any[]
       },
+
+      // =========================================================================
+      // NODE SIGNATURES - Must be BEFORE 'any, any'
+      // When any operand is a Node, return an OperatorNode for symbolic computation
+      // =========================================================================
+
+      'Node, Node': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+
+      'number, Node': (x: number, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+      'Node, number': (x: unknown, y: number) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+
+      'BigNumber, Node': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+      'Node, BigNumber': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+
+      'Complex, Node': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+      'Node, Complex': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+
+      'Fraction, Node': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+      'Node, Fraction': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+
+      'Unit, Node': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+      'Node, Unit': (x: unknown, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+
+      'string, Node': (x: string, y: unknown) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+      'Node, string': (x: unknown, y: string) =>
+        nodeOperations.createBinaryNode('*', 'multiply', x, y),
+
+      // =========================================================================
+      // EXISTING SIGNATURES - Keep after Node signatures
+      // =========================================================================
 
       'any, any': multiplyScalar,
 

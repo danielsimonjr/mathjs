@@ -1,0 +1,115 @@
+{
+  "phase": 3,
+  "sprint": 3,
+  "title": "Matrix Integration Verification",
+  "feature": "Simplify with Node Objects",
+  "priority": "CRITICAL",
+  "effort": "8 hours",
+  "status": "skipped",
+  "skippedReason": "Comprehensive matrix verification tests and performance benchmarks were deferred. Basic matrix compatibility verified through unit tests during implementation.",
+  "impact": "Final verification that all matrix operations work correctly after Phase 3 changes",
+  "targetMetrics": {
+    "matrixVerification": {
+      "current": "Basic matrix tests run",
+      "target": "Comprehensive matrix verification across all sizes and types"
+    },
+    "performance": {
+      "current": "No performance baseline",
+      "target": "Performance verified against baseline"
+    }
+  },
+  "tasks": [
+    {
+      "id": "3.3.1",
+      "category": "testing",
+      "title": "Create Comprehensive Matrix Test Suite",
+      "description": "Create extensive matrix tests covering all multiplication/division scenarios.",
+      "status": "pending",
+      "estimatedHours": 3.0,
+      "agent": "claude",
+      "files": ["test/unit-tests/function/arithmetic/matrixNodeVerification.test.ts"],
+      "testCategories": ["integration"],
+      "implementation": {
+        "purpose": "Verify all matrix operations work correctly with added Node signatures."
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create comprehensive matrix test file",
+          "code": "describe('Matrix operations after Node support', function () {\n  this.timeout(10000)\n\n  describe('multiply matrix verification', function () {\n    const sizes = [2, 5, 10, 50, 100]\n    sizes.forEach(size => {\n      it(`should multiply ${size}×${size} dense matrices`, function () {\n        const A = math.random([size, size])\n        const B = math.random([size, size])\n        const result = math.multiply(A, B)\n        assert.strictEqual(result.size()[0], size)\n      })\n    })\n\n    it('should multiply sparse × sparse', function () {\n      const A = math.sparse([[1,0,2],[0,3,0],[4,0,5]])\n      const B = math.sparse([[1,0],[0,1],[1,0]])\n      const result = math.multiply(A, B)\n      assert.ok(result)\n    })\n\n    it('should broadcast scalar × matrix', function () {\n      const result = math.multiply(3, [[1,2],[3,4]])\n      assert.deepStrictEqual(result, [[3,6],[9,12]])\n    })\n  })\n\n  describe('divide matrix verification', function () {\n    it('should divide matrix by scalar', function () {\n      const result = math.divide([[10,20],[30,40]], 10)\n      assert.deepStrictEqual(result, [[1,2],[3,4]])\n    })\n  })\n})"
+        }
+      ],
+      "acceptanceCriteria": ["All matrix sizes tested", "Sparse matrices work", "Broadcasting works", "Division works"]
+    },
+    {
+      "id": "3.3.2",
+      "category": "verification",
+      "title": "Run Full Regression Test Suite",
+      "description": "Run complete test suite to ensure no regressions across all math.js functionality.",
+      "status": "pending",
+      "estimatedHours": 1.5,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["regression"],
+      "stepByStep": [
+        {"step": 1, "action": "Run full unit tests", "details": "npm run test:src"},
+        {"step": 2, "action": "Run generated code tests", "details": "npm run test:generated"},
+        {"step": 3, "action": "Run type tests", "details": "npm run test:types"},
+        {"step": 4, "action": "Verify build", "details": "npm run build"}
+      ],
+      "acceptanceCriteria": ["All 14,606+ tests pass", "Generated tests pass", "Type tests pass", "Build succeeds"]
+    },
+    {
+      "id": "3.3.3",
+      "category": "testing",
+      "title": "Performance Benchmark",
+      "description": "Verify no performance regression for matrix and scalar operations.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["test/benchmark/node_operators_phase3.ts"],
+      "testCategories": ["performance"],
+      "implementation": {
+        "purpose": "Establish performance baseline and verify no regression."
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create Phase 3 performance benchmark",
+          "code": "import { Bench } from 'tinybench'\nimport math from '../../src/defaultInstance.js'\n\nconst small = math.random([10, 10])\nconst medium = math.random([50, 50])\nconst x = new math.SymbolNode('x')\n\nconst bench = new Bench({ time: 2000 })\n\n// Scalar ops\nbench.add('multiply(number, number)', () => math.multiply(5, 3))\nbench.add('divide(number, number)', () => math.divide(10, 2))\n\n// Matrix ops\nbench.add('multiply(10×10, 10×10)', () => math.multiply(small, small))\nbench.add('multiply(50×50, 50×50)', () => math.multiply(medium, medium))\n\n// Node ops\nbench.add('multiply(number, Node)', () => math.multiply(5, x))\nbench.add('divide(number, Node)', () => math.divide(10, x))\n\nawait bench.run()\nconsole.table(bench.tasks.map(t => ({ Task: t.name, 'ops/sec': t.result?.hz?.toFixed(2) })))"
+        }
+      ],
+      "acceptanceCriteria": ["Scalar ops maintain >1M ops/sec", "Matrix ops maintain expected performance", "No significant regression"]
+    },
+    {
+      "id": "3.3.4",
+      "category": "documentation",
+      "title": "Update Phase 3 Completion Status",
+      "description": "Document Phase 3 completion and prepare for Phase 4.",
+      "status": "pending",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": ["docs/refactoring/phases/node-operators-limitations.md"],
+      "testCategories": ["documentation"],
+      "stepByStep": [
+        {"step": 1, "action": "Update limitations doc with any discovered issues"},
+        {"step": 2, "action": "Document any matrix edge cases found"},
+        {"step": 3, "action": "Confirm ready for Phase 4"}
+      ],
+      "acceptanceCriteria": ["Documentation updated", "All known issues documented", "Ready for Phase 4"]
+    }
+  ],
+  "successCriteria": [
+    "Comprehensive matrix tests pass",
+    "Performance benchmark shows no regression",
+    "Full test suite passes (14,606+ tests)",
+    "Build succeeds",
+    "Ready for Phase 4 Integration"
+  ],
+  "filesCreated": ["test/unit-tests/function/arithmetic/matrixNodeVerification.test.ts", "test/benchmark/node_operators_phase3.ts"],
+  "filesModified": ["docs/refactoring/phases/node-operators-limitations.md"],
+  "totalNewTests": 30,
+  "totalEstimatedHours": 7,
+  "dependencies": ["Sprint 3.1", "Sprint 3.2"],
+  "notes": ["This sprint validates the highest-risk changes", "If matrix tests fail, review multiply.ts signature ordering", "Performance baseline important for future reference"]
+}

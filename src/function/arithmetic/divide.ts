@@ -35,6 +35,11 @@ interface MatrixConstructor {
   (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
+interface NodeOperations {
+  createBinaryNode: (op: string, fn: string, left: unknown, right: unknown) => unknown
+  hasNodeArg: (...args: unknown[]) => boolean
+}
+
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
@@ -42,6 +47,7 @@ interface Dependencies {
   equalScalar: TypedFunction
   divideScalar: TypedFunction
   inv: TypedFunction
+  nodeOperations: NodeOperations
 }
 
 const name = 'divide'
@@ -51,7 +57,8 @@ const dependencies = [
   'multiply',
   'equalScalar',
   'divideScalar',
-  'inv'
+  'inv',
+  'nodeOperations'
 ]
 
 export const createDivide = /* #__PURE__ */ factory(
@@ -63,7 +70,8 @@ export const createDivide = /* #__PURE__ */ factory(
     multiply,
     equalScalar,
     divideScalar,
-    inv
+    inv,
+    nodeOperations
   }: Dependencies) => {
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
     const matAlgo14xDs = createMatAlgo14xDs({ typed })
@@ -103,7 +111,47 @@ export const createDivide = /* #__PURE__ */ factory(
       'divide',
       extend(
         {
-          // we extend the signatures of divideScalar with signatures dealing with matrices
+          // =========================================================================
+          // NODE SIGNATURES - Must be FIRST (before divideScalar signatures)
+          // When any operand is a Node, return an OperatorNode for symbolic computation
+          // =========================================================================
+
+          'Node, Node': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+
+          'number, Node': (x: number, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+          'Node, number': (x: unknown, y: number) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+
+          'BigNumber, Node': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+          'Node, BigNumber': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+
+          'Complex, Node': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+          'Node, Complex': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+
+          'Fraction, Node': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+          'Node, Fraction': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+
+          'Unit, Node': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+          'Node, Unit': (x: unknown, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+
+          'string, Node': (x: string, y: unknown) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+          'Node, string': (x: unknown, y: string) =>
+            nodeOperations.createBinaryNode('/', 'divide', x, y),
+
+          // =========================================================================
+          // MATRIX SIGNATURES - Deal with matrices
+          // =========================================================================
 
           'Array | Matrix, Array | Matrix': function (
             x: any[] | Matrix,

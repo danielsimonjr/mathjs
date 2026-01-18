@@ -1,0 +1,141 @@
+{
+  "phase": 2,
+  "sprint": 2,
+  "title": "Subtract Operator Node Support",
+  "feature": "Simplify with Node Objects",
+  "priority": "HIGH",
+  "effort": "8 hours",
+  "status": "completed",
+  "completedDate": "2026-01-16",
+  "impact": "Second arithmetic operator with Node support - follows established pattern from add",
+  "targetMetrics": {
+    "nodeSupport": {
+      "current": "subtract(number, Node) throws TypeError",
+      "target": "subtract(number, Node) returns OperatorNode"
+    }
+  },
+  "tasks": [
+    {
+      "id": "2.2.1",
+      "category": "implementation",
+      "title": "Add Node Dependencies to subtract.ts",
+      "description": "Add nodeOperations to the subtract function's dependencies array (nodeOperations internally depends on ConstantNode and OperatorNode).",
+      "status": "completed",
+      "estimatedHours": 0.25,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/subtract.ts"],
+      "testCategories": ["typecheck"],
+      "implementation": {
+        "purpose": "Make Node-related utilities available to subtract function.",
+        "keyDecisions": ["Follow same pattern as add.ts"]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add to subtractDependencies array",
+          "code": "const dependencies = [\n  'typed', 'matrix', 'equalScalar', 'subtractScalar', 'unaryMinus', 'DenseMatrix', 'concat',\n  // NEW: Node support\n  'nodeOperations'\n]"
+        }
+      ],
+      "acceptanceCriteria": ["Dependencies added to subtractDependencies array"]
+    },
+    {
+      "id": "2.2.2",
+      "category": "implementation",
+      "title": "Update Factory Function Parameters",
+      "description": "Update the factory function to destructure nodeOperations.",
+      "status": "completed",
+      "estimatedHours": 0.25,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/subtract.ts"],
+      "testCategories": ["typecheck"],
+      "implementation": {
+        "purpose": "Make Node utilities accessible within the factory function.",
+        "keyDecisions": ["Follow same pattern as add.ts"]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add to factory function parameters",
+          "details": "Add nodeOperations to destructured parameters"
+        },
+        {
+          "step": 2,
+          "action": "Verify TypeScript compilation",
+          "details": "npx tsc --noEmit"
+        }
+      ],
+      "acceptanceCriteria": ["Parameters added to factory function", "TypeScript compiles without errors"]
+    },
+    {
+      "id": "2.2.3",
+      "category": "implementation",
+      "title": "Add Node Type Signatures to subtract.ts",
+      "description": "Add all 12 Node type signatures using '-' operator and 'subtract' function name.",
+      "status": "completed",
+      "estimatedHours": 1.5,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/subtract.ts"],
+      "testCategories": ["typecheck", "unit"],
+      "implementation": {
+        "purpose": "Enable subtract function to accept Node operands.",
+        "keyDecisions": ["Same pattern as add, with '-' operator and 'subtract' function name"]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add Node signatures at start of typed() object",
+          "code": "'Node, Node': (x, y) => nodeOperations.createBinaryNode('-', 'subtract', x, y),\n'number, Node': (x, y) => nodeOperations.createBinaryNode('-', 'subtract', x, y),\n'Node, number': (x, y) => nodeOperations.createBinaryNode('-', 'subtract', x, y),\n// ... all 12 signatures with '-' and 'subtract'"
+        }
+      ],
+      "acceptanceCriteria": ["All 12 signatures added", "Signatures before 'any, any'", "subtract(5, parse('x')) returns OperatorNode"]
+    },
+    {
+      "id": "2.2.4",
+      "category": "testing",
+      "title": "Create subtract.test.ts Node Tests",
+      "description": "Add comprehensive tests for Node operations in subtract function.",
+      "status": "completed",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["test/unit-tests/function/arithmetic/subtract.test.ts"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Test all Node operations and backwards compatibility.",
+        "keyDecisions": ["Follow same test structure as add tests", "Test evaluation: subtract(10, x) with x=3 should give 7"]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add Node tests describe block",
+          "code": "describe('subtract with Node operands', function () {\n  it('should return OperatorNode for subtract(number, Node)', function () {\n    const x = new SymbolNode('x')\n    const result = math.subtract(10, x)\n    assert.ok(result instanceof OperatorNode)\n    assert.strictEqual(result.op, '-')\n    assert.strictEqual(result.toString(), '10 - x')\n  })\n  // ... type combinations, variadic, evaluation, backwards compatibility\n})"
+        }
+      ],
+      "acceptanceCriteria": ["Tests cover all type combinations", "All tests pass", "Backwards compatibility verified"]
+    },
+    {
+      "id": "2.2.5",
+      "category": "verification",
+      "title": "Verify subtract Implementation",
+      "description": "Run tests and verify no regressions.",
+      "status": "completed",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["verification"],
+      "stepByStep": [
+        {"step": 1, "action": "Run tests", "details": "npm run test:src -- --grep 'subtract'"},
+        {"step": 2, "action": "Run full suite", "details": "npm run test:src"}
+      ],
+      "acceptanceCriteria": ["All subtract tests pass", "Full test suite passes"]
+    }
+  ],
+  "successCriteria": ["subtract accepts Node operands", "All tests pass", "Same pattern as add"],
+  "filesCreated": ["test/unit-tests/function/arithmetic/subtract.node.test.ts"],
+  "filesModified": ["src/function/arithmetic/subtract.ts"],
+  "actualNewTests": 24,
+  "totalNewTests": 20,
+  "implementationNote": "Tests were added to a separate subtract.node.test.ts file instead of modifying subtract.test.ts",
+  "totalEstimatedHours": 4.5,
+  "dependencies": ["Sprint 2.1"],
+  "notes": ["Follow exact same pattern as add implementation", "Faster due to established pattern"]
+}

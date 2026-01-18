@@ -1185,11 +1185,18 @@ export interface MathJsInstance extends MathJsFactory {
 
   /**
    * Add two values, x + y. For matrices, the function is evaluated
-   * element wise.
+   * element wise. When one or more operands are expression Nodes,
+   * returns an OperatorNode for symbolic computation.
    * @param x First value to add
    * @param y Second value to add
    * @returns Sum of x and y
    */
+  // Node overloads - return OperatorNode for symbolic computation
+  add(x: MathNode, y: MathNode): OperatorNode
+  add(x: MathNode, y: MathNumericType): OperatorNode
+  add(x: MathNumericType, y: MathNode): OperatorNode
+  add(x: MathNode, y: MathType, ...values: MathType[]): OperatorNode
+  // Standard overloads
   add<T extends MathType>(x: T, y: T): T
   add<T extends MathType>(x: T, y: T, ...values: T[]): T
   add(x: MathType, y: MathType): MathType
@@ -1311,6 +1318,10 @@ export interface MathJsInstance extends MathJsFactory {
    * @param y Denominator
    * @returns Quotient, x / y
    */
+  // Node overloads - return OperatorNode for symbolic computation
+  divide(x: MathNode, y: MathNode): OperatorNode
+  divide(x: MathNode, y: MathNumericType): OperatorNode
+  divide(x: MathNumericType, y: MathNode): OperatorNode
   divide(x: Unit, y: Unit): Unit | number
   divide(x: Unit, y: number): Unit
   divide(x: number, y: number): number
@@ -1505,12 +1516,18 @@ export interface MathJsInstance extends MathJsFactory {
 
   /**
    * Multiply two values, x * y. The result is squeezed. For matrices, the
-   * matrix product is calculated.
+   * matrix product is calculated. When one or more operands are expression
+   * Nodes, returns an OperatorNode for symbolic computation.
    * @param x The first value to multiply
    * @param y The second value to multiply
    * @returns Multiplication of x and y
    */
-
+  // Node overloads - return OperatorNode for symbolic computation
+  multiply(x: MathNode, y: MathNode): OperatorNode
+  multiply(x: MathNode, y: MathNumericType): OperatorNode
+  multiply(x: MathNumericType, y: MathNode): OperatorNode
+  multiply(x: MathNode, y: MathType, ...values: MathType[]): OperatorNode
+  // Standard overloads
   multiply<T extends Matrix>(x: T, y: MathType): Matrix
   multiply<T extends Matrix>(x: MathType, y: T): Matrix
 
@@ -1596,11 +1613,17 @@ export interface MathJsInstance extends MathJsFactory {
 
   /**
    * Subtract two values, x - y. For matrices, the function is evaluated
-   * element wise.
+   * element wise. When one or more operands are expression Nodes,
+   * returns an OperatorNode for symbolic computation.
    * @param x Initial value
    * @param y Value to subtract from x
    * @returns Subtraction of x and y
    */
+  // Node overloads - return OperatorNode for symbolic computation
+  subtract(x: MathNode, y: MathNode): OperatorNode
+  subtract(x: MathNode, y: MathNumericType): OperatorNode
+  subtract(x: MathNumericType, y: MathNode): OperatorNode
+  // Standard overloads
   subtract<T extends MathType>(x: T, y: T): T
   subtract(x: MathType, y: MathType): MathType
 
@@ -5309,6 +5332,9 @@ export interface MathJsChain<TValue> {
    * element wise.
    * @param y Second value to add
    */
+  // Node overloads - return OperatorNode for symbolic computation
+  add(this: MathJsChain<MathNode>, y: MathType): MathJsChain<OperatorNode>
+  add(this: MathJsChain<MathNumericType>, y: MathNode): MathJsChain<OperatorNode>
   add<T extends MathType>(this: MathJsChain<T>, y: T): MathJsChain<T>
   add(this: MathJsChain<MathType>, y: MathType): MathJsChain<MathType>
 
@@ -5475,6 +5501,9 @@ export interface MathJsChain<TValue> {
    * the inverse of y: x * inv(y).
    * @param y Denominator
    */
+  // Node overloads - return OperatorNode for symbolic computation
+  divide(this: MathJsChain<MathNode>, y: MathType): MathJsChain<OperatorNode>
+  divide(this: MathJsChain<MathNumericType>, y: MathNode): MathJsChain<OperatorNode>
   divide(this: MathJsChain<Unit>, y: Unit): MathJsChain<Unit | number>
   divide(this: MathJsChain<Unit>, y: number): MathJsChain<Unit>
   divide(this: MathJsChain<number>, y: number): MathJsChain<number>
@@ -5641,6 +5670,9 @@ export interface MathJsChain<TValue> {
    * matrix product is calculated.
    * @param y The second value to multiply
    */
+  // Node overloads - return OperatorNode for symbolic computation
+  multiply(this: MathJsChain<MathNode>, y: MathType): MathJsChain<OperatorNode>
+  multiply(this: MathJsChain<MathNumericType>, y: MathNode): MathJsChain<OperatorNode>
   multiply<T extends MathCollection>(
     this: MathJsChain<T>,
     y: MathType
@@ -5725,6 +5757,9 @@ export interface MathJsChain<TValue> {
    * element wise.
    * @param y Value to subtract from x
    */
+  // Node overloads - return OperatorNode for symbolic computation
+  subtract(this: MathJsChain<MathNode>, y: MathType): MathJsChain<OperatorNode>
+  subtract(this: MathJsChain<MathNumericType>, y: MathNode): MathJsChain<OperatorNode>
   subtract<T extends MathType>(this: MathJsChain<T>, y: T): MathJsChain<T>
 
   /**

@@ -60,6 +60,11 @@ interface MatrixConstructor {
   (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
+interface NodeOperations {
+  createBinaryNode: (op: string, fn: string, left: unknown, right: unknown) => unknown
+  hasNodeArg: (...args: unknown[]) => boolean
+}
+
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
@@ -68,6 +73,7 @@ interface Dependencies {
   unaryMinus: TypedFunction
   DenseMatrix: any
   concat: TypedFunction
+  nodeOperations: NodeOperations
 }
 
 const name = 'subtract'
@@ -78,7 +84,8 @@ const dependencies = [
   'subtractScalar',
   'unaryMinus',
   'DenseMatrix',
-  'concat'
+  'concat',
+  'nodeOperations'
 ]
 
 export const createSubtract = /* #__PURE__ */ factory(
@@ -91,7 +98,8 @@ export const createSubtract = /* #__PURE__ */ factory(
     subtractScalar,
     unaryMinus: _unaryMinus,
     DenseMatrix,
-    concat
+    concat,
+    nodeOperations
   }: Dependencies) => {
     // TODO: split function subtract in two: subtract and subtractScalar
 
@@ -139,6 +147,48 @@ export const createSubtract = /* #__PURE__ */ factory(
     return typed(
       name,
       {
+        // =========================================================================
+        // NODE SIGNATURES - Must be FIRST (before 'any, any')
+        // When any operand is a Node, return an OperatorNode for symbolic computation
+        // =========================================================================
+
+        'Node, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+
+        'number, Node': (x: number, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+        'Node, number': (x: unknown, y: number) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+
+        'BigNumber, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+        'Node, BigNumber': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+
+        'Complex, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+        'Node, Complex': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+
+        'Fraction, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+        'Node, Fraction': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+
+        'Unit, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+        'Node, Unit': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+
+        'string, Node': (x: string, y: unknown) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+        'Node, string': (x: unknown, y: string) =>
+          nodeOperations.createBinaryNode('-', 'subtract', x, y),
+
+        // =========================================================================
+        // EXISTING SIGNATURES - Keep after Node signatures
+        // =========================================================================
+
         'any, any': subtractScalar
       },
       matrixAlgorithmSuite({

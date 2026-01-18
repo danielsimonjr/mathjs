@@ -1,0 +1,146 @@
+{
+  "phase": 1,
+  "sprint": 2,
+  "title": "Type System Preparation",
+  "feature": "Simplify with Node Objects",
+  "priority": "MEDIUM",
+  "effort": "4 hours",
+  "status": "completed",
+  "completedDate": "2026-01-16",
+  "impact": "Ensures typed-function dispatch correctly routes Node arguments before catch-all signatures",
+  "targetMetrics": {
+    "typeDispatch": {
+      "current": "'any, any' catches all types including Nodes",
+      "target": "Node signatures have priority over 'any, any'"
+    },
+    "documentation": {
+      "current": "No guidance on signature ordering",
+      "target": "Clear documentation for Node signature placement"
+    }
+  },
+  "tasks": [
+    {
+      "id": "1.2.1",
+      "category": "verification",
+      "title": "Verify Node Type Registration",
+      "description": "Confirm that Node types are properly registered in typed-function's type system for correct dispatch.",
+      "status": "completed",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": ["src/core/function/typed.ts"],
+      "testCategories": ["verification"],
+      "implementation": {
+        "purpose": "Ensure the type system can distinguish Node types from other types.",
+        "keyDecisions": [
+          "Node types should already be registered (verify, don't modify)",
+          "Check type registration order doesn't conflict"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Check typed.ts for Node type registrations",
+          "details": "Search for isNode, isConstantNode, isOperatorNode in src/core/function/typed.ts"
+        },
+        {
+          "step": 2,
+          "action": "Verify registration format",
+          "code": "// Should find entries like:\n{ name: 'Node', test: isNode },\n{ name: 'ConstantNode', test: isConstantNode },\n{ name: 'SymbolNode', test: isSymbolNode },\n{ name: 'OperatorNode', test: isOperatorNode },"
+        },
+        {
+          "step": 3,
+          "action": "Test type dispatch",
+          "code": "// In Node REPL:\nconst math = require('./lib/cjs/index.js')\nconst x = new math.SymbolNode('x')\nconsole.log(math.typeOf(x))  // Should print 'SymbolNode'"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Node, ConstantNode, SymbolNode, OperatorNode registered in typed-function",
+        "math.typeOf correctly identifies Node types",
+        "No modifications needed (verification only)"
+      ]
+    },
+    {
+      "id": "1.2.2",
+      "category": "documentation",
+      "title": "Document Type Precedence Rules",
+      "description": "Create documentation explaining typed-function signature ordering requirements for Node operations.",
+      "status": "completed",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": ["docs/refactoring/phases/type-precedence.md"],
+      "testCategories": ["documentation"],
+      "implementation": {
+        "purpose": "Prevent future bugs by documenting the critical signature ordering requirement.",
+        "keyDecisions": [
+          "Node signatures MUST appear BEFORE 'any, any'",
+          "Document with examples of correct vs incorrect ordering",
+          "Explain why ordering matters in typed-function"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create type-precedence.md",
+          "code": "# Type Precedence for Node Operations\n\n## Critical Rule\n\ntyped-function dispatches to the FIRST matching signature.\nNode signatures MUST be declared BEFORE 'any, any' catch-all.\n\n## Correct Order\n\n```javascript\ntyped(name, {\n  // SPECIFIC: Node signatures first\n  'Node, Node': nodeHandler,\n  'Node, number': nodeHandler,\n  'number, Node': nodeHandler,\n  \n  // GENERAL: Catch-all last\n  'any, any': scalarHandler\n})\n```\n\n## Incorrect Order (Nodes Never Match)\n\n```javascript\ntyped(name, {\n  'any, any': scalarHandler,  // Catches Nodes!\n  'Node, Node': nodeHandler   // Never reached\n})\n```"
+        }
+      ],
+      "acceptanceCriteria": [
+        "type-precedence.md created",
+        "Explains typed-function dispatch behavior",
+        "Shows correct vs incorrect signature ordering",
+        "Includes code examples"
+      ]
+    },
+    {
+      "id": "1.2.3",
+      "category": "documentation",
+      "title": "Create Signature Template",
+      "description": "Create a template file showing the exact signature structure for Node-aware operators.",
+      "status": "completed",
+      "estimatedHours": 1.5,
+      "agent": "claude",
+      "files": ["docs/refactoring/phases/signature-template.ts"],
+      "testCategories": ["documentation"],
+      "implementation": {
+        "purpose": "Provide copy-paste template for implementing Node signatures in each operator.",
+        "keyDecisions": [
+          "Template covers all numeric type + Node combinations",
+          "12 signatures per operator (6 types × 2 directions)",
+          "Comments explain each signature's purpose"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create signature-template.ts",
+          "code": "/**\n * Template for Node-aware arithmetic operator signatures.\n * Copy and adapt for add, subtract, multiply, divide.\n */\n\nconst NODE_DEPENDENCIES = [\n  'ConstantNode',\n  'OperatorNode',\n  'nodeOperations'\n]\n\n// Replace OPERATOR ('+') and FUNCTION_NAME ('add')\nconst NODE_SIGNATURES = {\n  'Node, Node': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'number, Node': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Node, number': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'BigNumber, Node': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Node, BigNumber': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Complex, Node': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Node, Complex': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Fraction, Node': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Node, Fraction': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Unit, Node': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Node, Unit': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'string, Node': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y),\n  'Node, string': (x, y) => nodeOperations.createBinaryNode('OPERATOR', 'FUNCTION_NAME', x, y)\n}\n\n// Total: 12 signatures per operator\n// 4 operators × 12 = 48 new signatures"
+        }
+      ],
+      "acceptanceCriteria": [
+        "signature-template.ts created",
+        "Template covers all 12 Node + type combinations",
+        "Comments explain how to adapt for each operator",
+        "Dependencies list included"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "Node types verified in typed-function",
+    "Type precedence documentation complete",
+    "Signature template ready for Phase 2 use",
+    "No production code changes in this sprint"
+  ],
+  "filesCreated": [
+    "docs/refactoring/phases/type-precedence.md",
+    "docs/refactoring/phases/signature-template.ts"
+  ],
+  "filesModified": [],
+  "totalNewTests": 0,
+  "totalEstimatedHours": 3,
+  "dependencies": ["Sprint 1.1"],
+  "notes": [
+    "This sprint is primarily documentation and verification",
+    "Critical for preventing dispatch bugs in Phase 2-3",
+    "Signature template will be copied into each operator file"
+  ]
+}

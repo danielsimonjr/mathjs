@@ -1,0 +1,327 @@
+{
+  "phase": 2,
+  "sprint": 1,
+  "title": "Add Operator Node Support",
+  "feature": "Simplify with Node Objects",
+  "priority": "HIGH",
+  "effort": "12 hours",
+  "status": "completed",
+  "completedDate": "2026-01-16",
+  "impact": "First arithmetic operator to support Node operands - establishes pattern for remaining operators",
+  "targetMetrics": {
+    "nodeSupport": {
+      "current": "add(number, Node) throws TypeError",
+      "target": "add(number, Node) returns OperatorNode"
+    },
+    "backwardsCompatibility": {
+      "current": "All existing add tests pass",
+      "target": "All existing add tests still pass after changes"
+    }
+  },
+  "tasks": [
+    {
+      "id": "2.1.1",
+      "category": "analysis",
+      "title": "Analyze Current add.ts Structure",
+      "description": "Review the current add.ts implementation to understand signature structure and identify the correct insertion point for Node signatures.",
+      "status": "completed",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/add.ts"],
+      "testCategories": ["analysis"],
+      "implementation": {
+        "purpose": "Understand the existing code structure before making changes.",
+        "keyDecisions": [
+          "Identify current dependencies list",
+          "Find typed() call and existing signatures",
+          "Locate 'any, any' signature that catches all types",
+          "Understand matrixAlgorithmSuite integration"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Read add.ts and document structure",
+          "details": "Read src/function/arithmetic/add.ts and note: dependencies, factory structure, typed signatures"
+        },
+        {
+          "step": 2,
+          "action": "Document current signature order",
+          "details": "List all signatures in order they appear in typed() call"
+        },
+        {
+          "step": 3,
+          "action": "Identify insertion point",
+          "details": "Node signatures must go BEFORE 'any, any' - identify exact line number"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Current add.ts structure documented",
+        "Insertion point for Node signatures identified",
+        "No code changes made (analysis only)"
+      ]
+    },
+    {
+      "id": "2.1.2",
+      "category": "implementation",
+      "title": "Add Node Dependencies",
+      "description": "Add nodeOperations to the add function's dependencies array (nodeOperations internally depends on ConstantNode and OperatorNode).",
+      "status": "completed",
+      "estimatedHours": 0.25,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/add.ts"],
+      "testCategories": ["typecheck"],
+      "implementation": {
+        "purpose": "Make Node-related utilities available to the add function.",
+        "keyDecisions": [
+          "Add to addDependencies array",
+          "Keep existing dependencies unchanged"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add to dependencies array",
+          "code": "const dependencies = [\n  'typed',\n  'matrix',\n  'addScalar',\n  'equalScalar',\n  'DenseMatrix',\n  'SparseMatrix',\n  'concat',\n  // NEW: Node support\n  'nodeOperations'\n]"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Dependencies added to addDependencies array"
+      ]
+    },
+    {
+      "id": "2.1.3",
+      "category": "implementation",
+      "title": "Update Factory Function Parameters",
+      "description": "Update the factory function to destructure nodeOperations.",
+      "status": "completed",
+      "estimatedHours": 0.25,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/add.ts"],
+      "testCategories": ["typecheck"],
+      "implementation": {
+        "purpose": "Make Node utilities accessible within the factory function.",
+        "keyDecisions": [
+          "Add to factory function parameters",
+          "Keep existing parameters unchanged"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add to factory function parameters",
+          "code": "export const createAdd = /* #__PURE__ */ factory(name, dependencies, ({\n  typed,\n  matrix,\n  addScalar,\n  equalScalar,\n  DenseMatrix,\n  SparseMatrix,\n  concat,\n  // NEW: Node support\n  nodeOperations\n}) => {"
+        },
+        {
+          "step": 2,
+          "action": "Verify TypeScript compilation",
+          "details": "npx tsc --noEmit"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Parameters added to factory function",
+        "TypeScript compiles without errors"
+      ]
+    },
+    {
+      "id": "2.1.4",
+      "category": "implementation",
+      "title": "Add Node Type Signatures to add.ts",
+      "description": "Add all 12 Node type signatures to the add function's typed() call, ensuring they appear BEFORE 'any, any'.",
+      "status": "completed",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/add.ts"],
+      "testCategories": ["typecheck", "unit"],
+      "implementation": {
+        "purpose": "Enable add function to accept Node operands and return OperatorNode results.",
+        "keyDecisions": [
+          "Node signatures MUST be FIRST in typed() object",
+          "Use nodeOperations.createBinaryNode for all signatures",
+          "Cover all numeric types: number, BigNumber, Complex, Fraction, Unit, string"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add Node signatures at start of typed() object",
+          "code": "return typed(name, {\n  // =========================================================================\n  // NODE SIGNATURES - Must be FIRST (before 'any, any')\n  // =========================================================================\n\n  'Node, Node': function (x: Node, y: Node) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n\n  'number, Node': function (x: number, y: Node) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n  'Node, number': function (x: Node, y: number) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n\n  'BigNumber, Node': function (x: BigNumber, y: Node) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n  'Node, BigNumber': function (x: Node, y: BigNumber) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n\n  'Complex, Node': function (x: Complex, y: Node) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n  'Node, Complex': function (x: Node, y: Complex) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n\n  'Fraction, Node': function (x: Fraction, y: Node) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n  'Node, Fraction': function (x: Node, y: Fraction) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n\n  'Unit, Node': function (x: Unit, y: Node) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n  'Node, Unit': function (x: Node, y: Unit) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n\n  'string, Node': function (x: string, y: Node) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n  'Node, string': function (x: Node, y: string) {\n    return nodeOperations.createBinaryNode('+', 'add', x, y)\n  },\n\n  // =========================================================================\n  // EXISTING SIGNATURES - Keep after Node signatures\n  // =========================================================================\n\n  'any, any': addScalar,\n  // ... rest of existing code"
+        },
+        {
+          "step": 2,
+          "action": "Verify TypeScript compilation",
+          "details": "npx tsc --noEmit"
+        },
+        {
+          "step": 3,
+          "action": "Run quick smoke test",
+          "details": "node -e \"const m = require('./lib/cjs'); console.log(m.add(5, m.parse('x')).toString())\""
+        }
+      ],
+      "acceptanceCriteria": [
+        "All 12 Node signatures added",
+        "Signatures appear BEFORE 'any, any'",
+        "TypeScript compiles without errors",
+        "add(5, parse('x')) returns OperatorNode"
+      ]
+    },
+    {
+      "id": "2.1.5",
+      "category": "verification",
+      "title": "Handle Variadic with Nodes",
+      "description": "Verify that variadic operations work correctly with Node arguments through typed.referToSelf recursion.",
+      "status": "completed",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": ["src/function/arithmetic/add.ts"],
+      "testCategories": ["verification"],
+      "implementation": {
+        "purpose": "Ensure variadic add operations (add(a, b, c, ...)) work when any argument is a Node.",
+        "keyDecisions": [
+          "Variadic uses typed.referToSelf for recursion",
+          "First call dispatches to Node signature if either arg is Node",
+          "Returns OperatorNode which then dispatches correctly in subsequent calls"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Verify variadic behavior",
+          "code": "// Expected behavior:\n// add(1, x, 2) where x is SymbolNode\n// 1. self(1, x) -> dispatches to 'number, Node' -> returns OperatorNode(1+x)\n// 2. self(OperatorNode(1+x), 2) -> dispatches to 'Node, number' -> returns OperatorNode((1+x)+2)"
+        },
+        {
+          "step": 2,
+          "action": "Create verification test",
+          "code": "it('should handle variadic with Nodes', function () {\n  const x = new SymbolNode('x')\n  const result = math.add(1, x, 2, 3)\n  assert.ok(result instanceof OperatorNode)\n  assert.strictEqual(result.toString(), '1 + x + 2 + 3')\n})"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Variadic add works with Node arguments",
+        "Chaining produces correct nested OperatorNodes",
+        "toString output is correct"
+      ]
+    },
+    {
+      "id": "2.1.6",
+      "category": "testing",
+      "title": "Create add.test.ts Node Tests",
+      "description": "Add comprehensive tests for Node operations in the add function.",
+      "status": "completed",
+      "estimatedHours": 3.0,
+      "agent": "claude",
+      "files": ["test/unit-tests/function/arithmetic/add.test.ts"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Ensure all Node operations work correctly and existing functionality is preserved.",
+        "keyDecisions": [
+          "Add new describe block for Node operations",
+          "Test all type combinations",
+          "Test variadic operations",
+          "Test evaluation",
+          "Run backwards compatibility tests"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add Node tests describe block",
+          "code": "describe('add with Node operands', function () {\n  const { parse, ConstantNode, SymbolNode, OperatorNode } = math\n\n  describe('basic operations', function () {\n    it('should return OperatorNode for add(number, Node)', function () {\n      const x = new SymbolNode('x')\n      const result = math.add(5, x)\n\n      assert.ok(result instanceof OperatorNode)\n      assert.strictEqual(result.op, '+')\n      assert.strictEqual(result.fn, 'add')\n      assert.strictEqual(result.toString(), '5 + x')\n    })\n\n    it('should return OperatorNode for add(Node, number)', function () {\n      const x = new SymbolNode('x')\n      const result = math.add(x, 5)\n      assert.ok(result instanceof OperatorNode)\n      assert.strictEqual(result.toString(), 'x + 5')\n    })\n\n    it('should return OperatorNode for add(Node, Node)', function () {\n      const x = new SymbolNode('x')\n      const y = new SymbolNode('y')\n      const result = math.add(x, y)\n      assert.ok(result instanceof OperatorNode)\n      assert.strictEqual(result.toString(), 'x + y')\n    })\n  })"
+        },
+        {
+          "step": 2,
+          "action": "Add type combination tests",
+          "code": "  describe('type combinations', function () {\n    it('should work with BigNumber + Node', function () {\n      const big = math.bignumber(100)\n      const x = new SymbolNode('x')\n      const result = math.add(big, x)\n      assert.ok(result instanceof OperatorNode)\n    })\n\n    it('should work with Complex + Node', function () {\n      const c = math.complex(2, 3)\n      const x = new SymbolNode('x')\n      const result = math.add(c, x)\n      assert.ok(result instanceof OperatorNode)\n    })\n\n    it('should work with Fraction + Node', function () {\n      const f = math.fraction(1, 2)\n      const x = new SymbolNode('x')\n      const result = math.add(f, x)\n      assert.ok(result instanceof OperatorNode)\n    })\n  })"
+        },
+        {
+          "step": 3,
+          "action": "Add variadic and evaluation tests",
+          "code": "  describe('variadic operations', function () {\n    it('should handle add(number, Node, number)', function () {\n      const x = new SymbolNode('x')\n      const result = math.add(1, x, 2)\n      assert.ok(result instanceof OperatorNode)\n      assert.strictEqual(result.toString(), '1 + x + 2')\n    })\n  })\n\n  describe('evaluation', function () {\n    it('should evaluate correctly with scope', function () {\n      const x = new SymbolNode('x')\n      const result = math.add(5, x)\n      const value = result.compile().evaluate({ x: 3 })\n      assert.strictEqual(value, 8)\n    })\n  })"
+        },
+        {
+          "step": 4,
+          "action": "Add backwards compatibility tests",
+          "code": "  describe('backwards compatibility', function () {\n    it('should still return number for add(number, number)', function () {\n      assert.strictEqual(math.add(5, 3), 8)\n    })\n\n    it('should still work with matrices', function () {\n      const result = math.add([[1, 2]], [[3, 4]])\n      assert.deepStrictEqual(\n        math.isMatrix(result) ? result.toArray() : result,\n        [[4, 6]]\n      )\n    })\n  })\n})"
+        },
+        {
+          "step": 5,
+          "action": "Run tests",
+          "details": "npm run test:src -- --grep 'add'"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Node test section added to add.test.ts",
+        "Tests cover all type combinations",
+        "Tests cover variadic operations",
+        "Tests cover evaluation",
+        "All new tests pass",
+        "All existing add tests still pass"
+      ]
+    },
+    {
+      "id": "2.1.7",
+      "category": "verification",
+      "title": "Verify add Implementation",
+      "description": "Run full test suite and verify no regressions.",
+      "status": "completed",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["verification"],
+      "implementation": {
+        "purpose": "Ensure add changes don't break anything else.",
+        "keyDecisions": [
+          "Run full test suite",
+          "Verify TypeScript compilation",
+          "Check for any performance concerns"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Run full test suite",
+          "details": "npm run test:src"
+        },
+        {
+          "step": 2,
+          "action": "Verify TypeScript compilation",
+          "details": "npx tsc --noEmit"
+        },
+        {
+          "step": 3,
+          "action": "Run add-specific tests",
+          "details": "npm run test:src -- --grep 'add'"
+        }
+      ],
+      "acceptanceCriteria": [
+        "All tests pass (14,606+ tests)",
+        "TypeScript compiles without errors",
+        "No performance regression warnings"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "add function accepts Node operands",
+    "add(number, Node) returns OperatorNode",
+    "add(Node, Node) returns OperatorNode",
+    "All existing add tests pass",
+    "Full test suite passes",
+    "Pattern established for remaining operators"
+  ],
+  "filesCreated": [
+    "test/unit-tests/function/arithmetic/add.node.test.ts"
+  ],
+  "filesModified": [
+    "src/function/arithmetic/add.ts"
+  ],
+  "actualNewTests": 32,
+  "totalNewTests": 25,
+  "implementationNote": "Tests were added to a separate add.node.test.ts file instead of modifying add.test.ts",
+  "totalEstimatedHours": 8.0,
+  "dependencies": ["Phase 1 complete"],
+  "notes": [
+    "CRITICAL: Node signatures must appear BEFORE 'any, any'",
+    "This establishes the pattern for subtract, multiply, divide",
+    "Variadic operations should work due to typed.referToSelf recursion",
+    "Test backwards compatibility thoroughly"
+  ]
+}

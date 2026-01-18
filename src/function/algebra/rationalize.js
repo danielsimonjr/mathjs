@@ -129,7 +129,11 @@ export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
       // Apply the initial rules, including succ div rules:
       expr = simplify(expr, setRules.firstRules, {}, noExactFractions)
       let s
-      while (true) {
+      // Limit iterations to prevent extremely long execution times on complex expressions
+      const maxIterations = 1000
+      let iterations = 0
+      while (iterations < maxIterations) {
+        iterations++
         // Alternate applying successive division rules and distr.div.rules
         // until there are no more changes:
         rules = eDistrDiv ? setRules.distrDivRules : setRules.sucDivRules

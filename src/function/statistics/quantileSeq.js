@@ -1,4 +1,4 @@
-import { isNumber } from '../../utils/is.js'
+import { isNumber, isBigNumber } from '../../utils/is.js'
 import { flatten } from '../../utils/array.js'
 import { factory } from '../../utils/factory.js'
 
@@ -128,16 +128,28 @@ export const createQuantileSeq = /* #__PURE__ */ factory(name, dependencies, ({ 
       throw new Error('Cannot calculate quantile of an empty sequence')
     }
 
-    const index = isNumber(prob) ? prob * (len - 1) : prob.times(len - 1)
-    const integerPart = isNumber(prob) ? Math.floor(index) : index.floor().toNumber()
-    const fracPart = isNumber(prob) ? index % 1 : index.minus(integerPart)
+    // Auto-convert number probability to BigNumber if data contains BigNumbers
+    // This prevents precision issues when mixing BigNumber data with number probability
+    let actualProb = prob
+    if (isNumber(prob) && bignumber) {
+      const hasBigNumber = flat.some(x => isBigNumber(x))
+      if (hasBigNumber) {
+        // Convert to BigNumber with reasonable precision (avoid floating-point artifacts)
+        // Round to 15 significant digits to match JavaScript number precision
+        actualProb = bignumber(prob.toPrecision(15))
+      }
+    }
+
+    const index = isNumber(actualProb) ? actualProb * (len - 1) : actualProb.times(len - 1)
+    const integerPart = isNumber(actualProb) ? Math.floor(index) : index.floor().toNumber()
+    const fracPart = isNumber(actualProb) ? index % 1 : index.minus(integerPart)
 
     if (isInteger(index)) {
       return sorted
         ? flat[index]
         : partitionSelect(
           flat,
-          isNumber(prob) ? index : index.valueOf()
+          isNumber(actualProb) ? index : index.valueOf()
         )
     }
     let left

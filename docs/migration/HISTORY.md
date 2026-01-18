@@ -2,6 +2,10 @@
 
 # unreleased changes since 15.1.0
 
+- Feat: add Node operand support to arithmetic operators `add`, `subtract`,
+  `multiply`, and `divide`. When any operand is a MathNode (ConstantNode,
+  SymbolNode, etc.), these functions now return an OperatorNode for symbolic
+  computation instead of evaluating numerically.
 - Fix: #3578 interpret empty true-expr of conditional as error (#3581).
   Thanks @gwhitney.
 - Docs: fix #3565, update Matrix documentation (#3591). Thanks @orelbn.

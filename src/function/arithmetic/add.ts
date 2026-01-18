@@ -58,6 +58,11 @@ interface MatrixConstructor {
   (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
+interface NodeOperations {
+  createBinaryNode: (op: string, fn: string, left: unknown, right: unknown) => unknown
+  hasNodeArg: (...args: unknown[]) => boolean
+}
+
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
@@ -66,6 +71,7 @@ interface Dependencies {
   DenseMatrix: any
   SparseMatrix: any
   concat: TypedFunction
+  nodeOperations: NodeOperations
 }
 
 const name = 'add'
@@ -76,7 +82,8 @@ const dependencies = [
   'equalScalar',
   'DenseMatrix',
   'SparseMatrix',
-  'concat'
+  'concat',
+  'nodeOperations'
 ]
 
 export const createAdd = /* #__PURE__ */ factory(
@@ -89,7 +96,8 @@ export const createAdd = /* #__PURE__ */ factory(
     equalScalar,
     DenseMatrix,
     SparseMatrix: _SparseMatrix,
-    concat
+    concat,
+    nodeOperations
   }: Dependencies) => {
     const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
     const matAlgo04xSidSid = createMatAlgo04xSidSid({ typed, equalScalar })
@@ -136,6 +144,48 @@ export const createAdd = /* #__PURE__ */ factory(
     return typed(
       name,
       {
+        // =========================================================================
+        // NODE SIGNATURES - Must be FIRST (before 'any, any')
+        // When any operand is a Node, return an OperatorNode for symbolic computation
+        // =========================================================================
+
+        'Node, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+
+        'number, Node': (x: number, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+        'Node, number': (x: unknown, y: number) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+
+        'BigNumber, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+        'Node, BigNumber': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+
+        'Complex, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+        'Node, Complex': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+
+        'Fraction, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+        'Node, Fraction': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+
+        'Unit, Node': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+        'Node, Unit': (x: unknown, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+
+        'string, Node': (x: string, y: unknown) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+        'Node, string': (x: unknown, y: string) =>
+          nodeOperations.createBinaryNode('+', 'add', x, y),
+
+        // =========================================================================
+        // EXISTING SIGNATURES - Keep after Node signatures
+        // =========================================================================
+
         'any, any': addScalar,
 
         'any, any, ...any': typed.referToSelf(
