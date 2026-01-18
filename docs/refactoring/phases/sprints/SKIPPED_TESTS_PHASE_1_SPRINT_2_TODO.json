@@ -242,7 +242,9 @@
   "filesCreated": [],
   "filesModified": [
     "src/type/matrix/utils/deepMap.js",
+    "src/type/matrix/utils/deepMap.ts",
     "src/function/algebra/rationalize.js",
+    "src/function/algebra/rationalize.ts",
     "test/unit-tests/type/matrix/utils/deepMap.test.ts",
     "test/unit-tests/function/algebra/rationalize.test.ts",
     "docs/migration/HISTORY.md"
@@ -255,6 +257,7 @@
     "DECISION POINT: Choose Option A (remove skipZeros) or Option B (implement it)",
     "Recommend Option A unless usage analysis shows it's needed",
     "rationalize may already be fixed - verify before implementing",
-    "If rationalize still too slow, document algorithmic limitation"
+    "If rationalize still too slow, document algorithmic limitation",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }

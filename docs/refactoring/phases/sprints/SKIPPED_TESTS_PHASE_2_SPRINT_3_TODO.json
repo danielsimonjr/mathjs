@@ -201,6 +201,7 @@
   "filesCreated": [],
   "filesModified": [
     "src/function/arithmetic/unaryMinus.js",
+    "src/function/arithmetic/unaryMinus.ts",
     "test/unit-tests/function/arithmetic/unaryMinus.test.ts",
     "test/unit-tests/function/arithmetic/unaryMinus.test.js",
     "HISTORY.md",
@@ -219,6 +220,7 @@
     "Consider if other functions need boolean→number config awareness",
     "This is a bug fix, not a breaking change - improves existing behavior",
     "Update migration guide if users relied on old (buggy) behavior",
-    "Total Phase 2 impact: 8 tests fixed, major architecture improvement"
+    "Total Phase 2 impact: 8 tests fixed, major architecture improvement",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }

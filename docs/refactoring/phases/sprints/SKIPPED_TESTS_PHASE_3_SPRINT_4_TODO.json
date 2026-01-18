@@ -219,6 +219,7 @@
   "filesCreated": [],
   "filesModified": [
     "src/function/statistics/quantileSeq.js",
+    "src/function/statistics/quantileSeq.ts",
     "test/unit-tests/function/statistics/quantileSeq.test.ts",
     "test/unit-tests/function/statistics/quantileSeq.test.js"
   ],
@@ -236,6 +237,7 @@
     "Consider applying same pattern to other statistical functions (median, percentile)",
     "Update HISTORY.md with type preservation improvement",
     "This improves BigNumber config usefulness significantly",
-    "Total Phase 3 impact: 6 tests fixed (4 multiply + 1 mod + 1 quantileSeq × 2 files)"
+    "Total Phase 3 impact: 6 tests fixed (4 multiply + 1 mod + 1 quantileSeq × 2 files)",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }

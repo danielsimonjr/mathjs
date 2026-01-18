@@ -199,6 +199,7 @@
   "filesCreated": [],
   "filesModified": [
     "src/function/arithmetic/mod.js",
+    "src/function/arithmetic/mod.ts",
     "test/unit-tests/function/arithmetic/mod.test.ts",
     "test/unit-tests/function/arithmetic/mod.test.js"
   ],
@@ -215,6 +216,7 @@
     "If custom implementation needed, use BigNumber arithmetic to preserve precision",
     "Consider negative operand behavior (floor-based modulo)",
     "Update HISTORY.md if behavior changes or error added",
-    "Document fractional modulo behavior in mod function JSDoc"
+    "Document fractional modulo behavior in mod function JSDoc",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }

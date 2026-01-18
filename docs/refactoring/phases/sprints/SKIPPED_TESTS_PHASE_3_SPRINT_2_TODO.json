@@ -217,7 +217,9 @@
   "filesCreated": [],
   "filesModified": [
     "src/function/arithmetic/multiply.js",
+    "src/function/arithmetic/multiply.ts",
     "src/type/unit/Unit.js",
+    "src/type/unit/Unit.ts",
     "test/unit-tests/function/arithmetic/multiply.test.ts",
     "test/unit-tests/function/arithmetic/multiply.test.js"
   ],
@@ -234,6 +236,7 @@
     "Unit class changes are non-breaking (adds support, doesn't remove)",
     "Consider extending to divide, add, subtract with Units in future",
     "Update HISTORY.md with bug fix note",
-    "This is a user-visible improvement - highlight in release notes"
+    "This is a user-visible improvement - highlight in release notes",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }

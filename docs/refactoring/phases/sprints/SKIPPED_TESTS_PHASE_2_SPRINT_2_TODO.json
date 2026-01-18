@@ -255,11 +255,14 @@
   ],
   "filesCreated": [
     "src/utils/parseNumber.js",
+    "src/utils/parseNumber.ts",
     "test/unit-tests/utils/parseNumber.test.js"
   ],
   "filesModified": [
     "src/function/statistics/prod.js",
+    "src/function/statistics/prod.ts",
     "src/function/statistics/sum.js",
+    "src/function/statistics/sum.ts",
     "test/unit-tests/function/statistics/prod.test.ts",
     "test/unit-tests/function/statistics/prod.test.js",
     "test/unit-tests/function/statistics/sum.test.ts",
@@ -278,6 +281,7 @@
     "Tests exist in both JS and TS - must update both files",
     "Consider adding Fraction support even if not tested (future-proofing)",
     "Document config-aware behavior in function JSDoc",
-    "Update HISTORY.md with bug fix note"
+    "Update HISTORY.md with bug fix note",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }

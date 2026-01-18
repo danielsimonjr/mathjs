@@ -204,7 +204,9 @@
   "filesCreated": [],
   "filesModified": [
     "src/type/matrix/SparseMatrix.js",
+    "src/type/matrix/SparseMatrix.ts",
     "src/type/matrix/DenseMatrix.js",
+    "src/type/matrix/DenseMatrix.ts",
     "test/unit-tests/type/matrix/SparseMatrix.test.ts",
     "test/unit-tests/type/matrix/SparseMatrix.test.js"
   ],
@@ -216,6 +218,7 @@
     "Low risk change - only adds validation",
     "Invalid matrices were always bugs, rejection is correct behavior",
     "Consistent error messages improve developer experience",
-    "May want to add similar validation to Matrix() factory function"
+    "May want to add similar validation to Matrix() factory function",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }

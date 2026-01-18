@@ -221,6 +221,7 @@
   "filesCreated": [],
   "filesModified": [
     "src/utils/factory.js",
+    "src/utils/factory.ts",
     "test/unit-tests/utils/factory.test.ts",
     "test/unit-tests/utils/factory.test.js"
   ],
@@ -237,6 +238,7 @@
     "Circular dependency detection prevents hard-to-debug initialization issues",
     "Consider adding visualization of dependency graph in error (future enhancement)",
     "Update HISTORY.md with circular dependency detection feature",
-    "This improves developer experience when creating custom factories"
+    "This improves developer experience when creating custom factories",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }

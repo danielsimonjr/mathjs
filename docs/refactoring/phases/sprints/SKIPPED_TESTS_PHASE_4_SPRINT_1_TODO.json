@@ -228,6 +228,7 @@
   "filesCreated": [],
   "filesModified": [
     "src/type/unit/Unit.js",
+    "src/type/unit/Unit.ts",
     "test/unit-tests/type/unit/Unit.test.ts",
     "test/unit-tests/type/unit/Unit.test.js"
   ],
@@ -244,6 +245,7 @@
     "Dimensionless results are important edge case - test thoroughly",
     "Update HISTORY.md with new simplification feature",
     "This is a significant UX improvement - highlight in release notes",
-    "Consider adding simplify() as public API for manual control"
+    "Consider adding simplify() as public API for manual control",
+    "IMPORTANT: This is a dual JS/TS codebase. Changes must be applied to BOTH .js and .ts source files. JavaScript tests verify .js source, TypeScript tests verify .ts source."
   ]
 }
