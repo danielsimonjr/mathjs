@@ -1,0 +1,430 @@
+{
+  "phase": 2,
+  "sprint": 1,
+  "title": "Design Config Propagation - Enhanced Planning Guide",
+  "priority": "HIGH",
+  "effort": "4 hours",
+  "status": "pending",
+  "impact": "Foundation for fixing string-to-number conversion to respect config.number setting. Affects 8 skipped tests across prod, sum, and unaryMinus functions. This design phase determines the implementation approach for all config propagation work.",
+  "currentBehavior": "String inputs like prod(['10', '3']) always convert to regular numbers, ignoring config.number setting",
+  "expectedBehavior": "String inputs respect config.number: prod(['10', '3']) returns BigNumber(30) when config.number='BigNumber'",
+  "targetMetrics": {
+    "architectureClarity": {
+      "current": "No unified approach for config propagation in type conversion",
+      "target": "Clear design document with chosen implementation approach"
+    },
+    "conversionPaths": {
+      "current": "String conversions hardcoded to number type",
+      "target": "Complete mapping of all conversion points requiring config awareness"
+    }
+  },
+  "tasks": [
+    {
+      "id": "2.1.1",
+      "category": "architecture",
+      "title": "Analyze Current Type Conversion Architecture",
+      "description": "Trace all string-to-number conversion paths in the codebase to understand where config.number is currently used vs where it should be used. Document findings for design decisions.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "src/function/statistics/prod.js",
+        "src/function/statistics/sum.js",
+        "src/function/arithmetic/unaryMinus.js",
+        "src/core/typed.js",
+        "src/utils/number.js",
+        "node_modules/@danielsimonjr/typed-function/index.js"
+      ],
+      "testCategories": ["architecture"],
+      "implementation": {
+        "purpose": "Understand the complete conversion flow from strings to numbers, identify all functions that perform conversions, and map where config.number is respected vs ignored. This analysis is critical for choosing the right implementation approach.",
+        "keyDecisions": [
+          "Identify all entry points for string-to-number conversion",
+          "Map typed-function's role in automatic type conversions",
+          "Determine if conversions happen in utilities or function implementations",
+          "Assess feasibility of each potential solution approach"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Trace string conversion in prod function",
+          "commands": [
+            "grep -r 'typeof.*string' src/function/statistics/prod.js",
+            "grep -r 'String\\|Number' src/function/statistics/prod.js"
+          ],
+          "readFiles": [
+            "src/function/statistics/prod.js",
+            "src/function/statistics/prod.ts"
+          ],
+          "questions": [
+            "Where does prod handle string inputs?",
+            "Does it pre-convert strings before processing?",
+            "What happens when prod(['10', '3']) is called?",
+            "Which function ultimately converts the string?"
+          ],
+          "expectedFindings": {
+            "prodImplementation": "Uses typed-function with 'Array' signature",
+            "stringHandling": "Arrays with strings passed to reduce + multiply",
+            "conversionPoint": "Strings converted by multiply's typed-function signatures",
+            "configAwareness": "NO - multiply doesn't check config.number for string conversion"
+          }
+        },
+        {
+          "step": 2,
+          "action": "Map typed-function conversion behavior",
+          "readFiles": [
+            "src/core/typed.js",
+            "node_modules/@danielsimonjr/typed-function/index.js"
+          ],
+          "questions": [
+            "Does typed-function have built-in string→number conversion?",
+            "Where are conversion signatures defined?",
+            "Can typed-function be configured to respect config.number?",
+            "Are conversions automatic or explicit?"
+          ],
+          "expectedFindings": {
+            "autoConversion": "typed-function provides automatic conversions",
+            "conversionSignatures": "Hardcoded in typed-function library",
+            "configSupport": "NO - conversions don't check config.number",
+            "extensibility": "Could be extended but requires forking typed-function"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Identify all number conversion utilities",
+          "commands": [
+            "grep -r 'function.*number\\|bignumber\\|bigint' src/utils/",
+            "grep -r 'export.*number\\|bignumber' src/utils/"
+          ],
+          "documentUtilities": {
+            "number()": {
+              "location": "typed-function auto-conversion",
+              "configAware": false,
+              "usage": "Implicit in typed-function"
+            },
+            "bignumber()": {
+              "location": "Factory function",
+              "configAware": true,
+              "usage": "Via factory dependency injection"
+            },
+            "bigint()": {
+              "location": "JavaScript native",
+              "configAware": false,
+              "usage": "Direct BigInt() constructor"
+            },
+            "Fraction()": {
+              "location": "Factory function",
+              "configAware": true,
+              "usage": "Via factory dependency injection"
+            }
+          }
+        },
+        {
+          "step": 4,
+          "action": "Create conversion path diagram",
+          "diagram": {
+            "userInput": "prod(['10', '3'])",
+            "flow": [
+              "1. prod() factory function called",
+              "2. typed-function dispatcher → 'Array' signature",
+              "3. Array handler: reduce(array, multiply)",
+              "4. multiply('10', '3') called",
+              "5. typed-function auto-converts '10' → number (10)",
+              "6. typed-function auto-converts '3' → number (3)",
+              "7. multiply(10, 3) → 30",
+              "8. Result: 30 (number)"
+            ],
+            "problem": "Step 5-6: Conversion hardcoded to number, ignores config.number",
+            "solutionPoint": "Need config-aware conversion BEFORE step 3 (in prod's Array handler)"
+          }
+        },
+        {
+          "step": 5,
+          "action": "Trace sum function (similar to prod)",
+          "files": [
+            "src/function/statistics/sum.js",
+            "src/function/statistics/sum.ts"
+          ],
+          "expectedFinding": "Same pattern as prod - Array handler needs pre-conversion"
+        },
+        {
+          "step": 6,
+          "action": "Trace unaryMinus boolean handling",
+          "files": [
+            "src/function/arithmetic/unaryMinus.js",
+            "src/function/arithmetic/unaryMinus.ts"
+          ],
+          "questions": [
+            "Is there a boolean signature?",
+            "How are booleans currently handled?",
+            "Where does boolean→number conversion happen?"
+          ],
+          "expectedFinding": "NO boolean signature exists - needs to be added with config awareness"
+        },
+        {
+          "step": 7,
+          "action": "Document findings in analysis file",
+          "createFile": "docs/architecture/TYPE_CONVERSION_ANALYSIS.md",
+          "sections": [
+            "## Current Conversion Points",
+            "### prod Function",
+            "- Location: src/function/statistics/prod.js",
+            "- Issue: Strings converted by multiply without config check",
+            "- Config Awareness: NO",
+            "",
+            "### sum Function", "- Location: src/function/statistics/sum.js",
+            "- Issue: Same as prod",
+            "- Config Awareness: NO",
+            "",
+            "### unaryMinus Function",
+            "- Location: src/function/arithmetic/unaryMinus.js",
+            "- Issue: No boolean signature, no config awareness",
+            "- Config Awareness: NO",
+            "",
+            "## typed-function Role",
+            "- Provides automatic type conversions",
+            "- Conversions are hardcoded, don't check config.number",
+            "- Extending requires forking typed-function library",
+            "",
+            "## Gap Analysis",
+            "**Where config.number SHOULD be used but ISN'T:**",
+            "1. prod(['string']) - should convert based on config",
+            "2. sum(['string']) - should convert based on config",
+            "3. unaryMinus(boolean) - should convert based on config",
+            "",
+            "**Root Cause:**",
+            "Functions don't pre-convert inputs based on config before processing.",
+            "",
+            "## Recommended Utilities",
+            "1. parseNumberWithConfig(str, config) - string → configured number type",
+            "2. convertArrayStrings(arr, config) - array helper",
+            "3. booleanToConfiguredNumber(bool, config) - boolean → configured number"
+          ]
+        }
+      ],
+      "acceptanceCriteria": [
+        "Complete conversion path traced for prod function",
+        "Complete conversion path traced for sum function",
+        "Complete conversion path traced for unaryMinus function",
+        "typed-function's role in conversions documented",
+        "All number conversion utilities cataloged with config-awareness status",
+        "Gap analysis identifies all functions needing config awareness",
+        "Conversion flow diagram created showing problem points",
+        "Findings documented in docs/architecture/TYPE_CONVERSION_ANALYSIS.md",
+        "Document includes recommendations for utility functions needed"
+      ]
+    },
+    {
+      "id": "2.1.2",
+      "category": "architecture",
+      "title": "Design Config Propagation Solution",
+      "description": "Evaluate three potential approaches and select the best one with clear rationale. Create implementation plan for selected approach.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "docs/architecture/CONFIG_PROPAGATION_DESIGN.md"
+      ],
+      "testCategories": ["architecture"],
+      "implementation": {
+        "purpose": "Make an informed architectural decision on how to implement config-aware type conversion. This decision will guide all subsequent implementation work and affect maintainability, performance, and future extensibility.",
+        "keyDecisions": [
+          "Choose between three approaches based on complexity, maintainability, and performance",
+          "Consider impact on existing codebase and breaking changes",
+          "Evaluate testability and debugging ease",
+          "Assess scalability to other functions beyond prod/sum"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Evaluate Option A: Pass config through function chain",
+          "analysis": {
+            "description": "Add config parameter to all functions in the call chain",
+            "pros": [
+              "Explicit config usage",
+              "Clean separation of concerns",
+              "Type-safe (config passed explicitly)"
+            ],
+            "cons": [
+              "Requires changing 100+ function signatures",
+              "Breaking API change: prod([1,2,3]) → prod([1,2,3], config)",
+              "Very high complexity: 40+ hours",
+              "Not backward compatible",
+              "Affects entire function ecosystem"
+            ],
+            "verdict": "❌ REJECTED - Too invasive and breaking"
+          },
+          "exampleCode": "// Option A Example:\nfunction prod(values, config) {\n  return reduce(values, (a, b) => multiply(a, b, config), config)\n}\n\nfunction multiply(x, y, config) {\n  if (typeof x === 'string') x = parseWithConfig(x, config)\n  if (typeof y === 'string') y = parseWithConfig(y, config)\n  return x * y\n}\n\n// PROBLEMS:\n// - multiply, add, and 100+ other functions need config param\n// - Breaks existing API: user code breaks\n// - Huge effort for 3 functions that need it",
+          "effort": "40+ hours",
+          "risk": "HIGH (breaking changes)"
+        },
+        {
+          "step": 2,
+          "action": "Evaluate Option B: Typed-function auto-conversion based on config",
+          "analysis": {
+            "description": "Extend typed-function to check config.number before conversions",
+            "pros": [
+              "Centralized logic in one place",
+              "Automatic conversion for all functions",
+              "Maintainable - single point of config awareness",
+              "Scales to all functions automatically"
+            ],
+            "cons": [
+              "Requires forking @danielsimonjr/typed-function",
+              "External dependency modification",
+              "Medium complexity: 20 hours",
+              "Requires coordination with typed-function maintenance",
+              "May affect conversion performance"
+            ],
+            "verdict": "⚠️ VIABLE - Good long-term solution but requires external changes"
+          },
+          "exampleCode": "// Option B Example:\n// In typed-function library:\ntyped.config = { number: 'BigNumber' }\n\ntyped('prod', {\n  'string': (x) => typed.convertNumber(x), // Uses config.number\n  'Array': (x) => reduce(x, multiply)\n})\n\n// ASSESSMENT:\n// - Clean and automatic\n// - Need to modify forked typed-function package\n// - All functions benefit automatically\n// - Could be future enhancement",
+          "effort": "20 hours",
+          "risk": "MEDIUM (external dependency)"
+        },
+        {
+          "step": 3,
+          "action": "Evaluate Option C: Pre-convert strings in prod/sum (RECOMMENDED)",
+          "analysis": {
+            "description": "Pre-convert string inputs in affected functions before processing",
+            "pros": [
+              "Minimal changes - only 3 functions affected",
+              "Localized to specific problem areas",
+              "Low risk - no breaking changes",
+              "Reusable utility function (parseNumberWithConfig)",
+              "Low effort: 12 hours",
+              "Pragmatic and incremental",
+              "Easy to test and debug",
+              "Can migrate to Option B later if needed"
+            ],
+            "cons": [
+              "Duplicated logic (but shared via utility)",
+              "Doesn't scale automatically to other functions",
+              "Each new function needs manual implementation"
+            ],
+            "verdict": "✅ RECOMMENDED - Pragmatic, low-risk, solves immediate problem"
+          },
+          "exampleCode": "// Option C Example (RECOMMENDED):\nexport const createProd = factory(\n  'prod',\n  ['typed', 'multiply', 'config', 'parseNumberWithConfig'],\n  ({ typed, multiply, config, parseNumberWithConfig }) => {\n    \n    return typed('prod', {\n      'string': (x) => parseNumberWithConfig(x),\n      \n      'Array': (x) => {\n        // Pre-convert string elements\n        const converted = x.map(val =>\n          typeof val === 'string' ? parseNumberWithConfig(val) : val\n        )\n        return reduce(converted, multiply)\n      }\n    })\n  }\n)\n\n// parseNumberWithConfig utility:\nfunction parseNumberWithConfig(str) {\n  switch (config.number) {\n    case 'BigNumber': return bignumber(str)\n    case 'bigint': return str.includes('.') ? Number(str) : BigInt(str)\n    default: return Number(str)\n  }\n}\n\n// BENEFITS:\n// - Only 3 functions modified (prod, sum, unaryMinus)\n// - Shared utility is reusable\n// - No breaking changes\n// - Clear and maintainable",
+          "effort": "12 hours",
+          "risk": "LOW (localized changes)"
+        },
+        {
+          "step": 4,
+          "action": "Compare all three options in decision matrix",
+          "comparisonTable": {
+            "headers": ["Criteria", "Option A: Chain", "Option B: typed-fn", "Option C: Pre-convert"],
+            "rows": [
+              ["Effort", "40+ hours", "20 hours", "12 hours"],
+              ["Complexity", "Very High", "Medium", "Low"],
+              ["Risk", "HIGH (breaking)", "MEDIUM (external)", "LOW"],
+              ["Maintainability", "Medium", "High", "Medium"],
+              ["Scalability", "High", "Very High", "Low"],
+              ["Breaking Changes", "YES", "NO", "NO"],
+              ["Implementation Time", "4-6 weeks", "2-3 weeks", "1-2 weeks"],
+              ["Dependencies", "None", "typed-function fork", "None"],
+              ["Verdict", "❌ Rejected", "⚠️ Future option", "✅ Selected"]
+            ]
+          }
+        },
+        {
+          "step": 5,
+          "action": "Document selected approach (Option C)",
+          "createFile": "docs/architecture/CONFIG_PROPAGATION_DESIGN.md",
+          "content": {
+            "problemStatement": "String and boolean inputs to prod, sum, and unaryMinus functions don't respect the config.number setting, always converting to regular JavaScript numbers instead of the configured type (BigNumber, bigint, Fraction).",
+            "evaluatedApproaches": "[Include all three options with pros/cons]",
+            "selectedApproach": "Option C: Pre-convert in functions",
+            "rationale": [
+              "Low risk - changes isolated to 3 functions",
+              "Pragmatic - solves immediate problem",
+              "Maintainable - clear utility function",
+              "Extensible - easy to add more functions later",
+              "Non-breaking - no API changes",
+              "Can migrate to Option B in future if needed"
+            ],
+            "implementationPlan": {
+              "sprint2_2": "Create utility and update prod/sum (8 hours, 4 tests)",
+              "sprint2_3": "Update unaryMinus and docs (4 hours, 2 tests)"
+            }
+          }
+        },
+        {
+          "step": 6,
+          "action": "Create implementation checklist",
+          "checklist": {
+            "filesCreated": [
+              "src/utils/parseNumber.js",
+              "src/utils/parseNumber.ts",
+              "test/unit-tests/utils/parseNumber.test.js"
+            ],
+            "filesModified": [
+              "src/function/statistics/prod.js + .ts",
+              "src/function/statistics/sum.js + .ts",
+              "src/function/arithmetic/unaryMinus.js + .ts",
+              "test files for prod, sum, unaryMinus (6 files total)",
+              "HISTORY.md",
+              "src/factoriesAny.js (register parseNumberWithConfig)"
+            ],
+            "utilitiesNeeded": [
+              "parseNumberWithConfig(str) - main conversion function",
+              "Handles: number, BigNumber, bigint, Fraction types",
+              "Graceful fallback: bigint with decimals → number"
+            ],
+            "testingStrategy": [
+              "Unit tests for parseNumberWithConfig utility",
+              "Enable 8 skipped tests (4 in Sprint 2.2, 2 in Sprint 2.3)",
+              "Verify no regressions in full test suite",
+              "Test all config.number types: number, BigNumber, bigint"
+            ]
+          }
+        }
+      ],
+      "acceptanceCriteria": [
+        "All three options evaluated with detailed pros/cons",
+        "Option C selected with clear rationale documented",
+        "Decision matrix comparing all options created",
+        "CONFIG_PROPAGATION_DESIGN.md document created",
+        "Implementation plan detailed for Sprints 2.2 and 2.3",
+        "File modification list complete",
+        "Utility function specifications defined",
+        "Testing strategy documented",
+        "Risk assessment included",
+        "Effort estimates provided for next sprints",
+        "Migration path to Option B noted for future consideration"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "Both tasks completed successfully",
+    "TYPE_CONVERSION_ANALYSIS.md created with complete findings",
+    "CONFIG_PROPAGATION_DESIGN.md created with selected approach",
+    "Option C (pre-convert) selected and justified",
+    "Complete mapping of all conversion points documented",
+    "Implementation plan ready for Sprint 2.2 and 2.3",
+    "All design decisions documented with rationale",
+    "Stakeholder approval obtained (if required)"
+  ],
+  "filesCreated": [
+    "docs/architecture/TYPE_CONVERSION_ANALYSIS.md",
+    "docs/architecture/CONFIG_PROPAGATION_DESIGN.md"
+  ],
+  "filesModified": [],
+  "testsFixed": 0,
+  "totalNewTests": 0,
+  "totalEstimatedHours": 4,
+  "dependencies": [],
+  "notes": [
+    "CRITICAL: This design phase determines approach for all 8 config propagation tests",
+    "RECOMMENDATION: Select Option C (pre-convert in prod/sum) - pragmatic and low-risk",
+    "Option B (typed-function integration) is viable long-term enhancement",
+    "Option A (pass config through chain) is too invasive - rejected",
+    "Design document should be reviewed before starting Sprint 2.2 implementation",
+    "Consider creating parseNumberWithConfig as shared utility in src/utils/parseNumber.js",
+    "This sprint has NO test output - it's pure design and analysis work",
+    "NO code changes in this sprint - only documentation and analysis",
+    "Get approval on design before moving to implementation sprints",
+    "Analysis findings will guide all implementation work in Sprints 2.2 and 2.3"
+  ]
+}

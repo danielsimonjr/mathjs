@@ -1,0 +1,276 @@
+{
+  "phase": 2,
+  "sprint": 3,
+  "title": "Extend Config Propagation to unaryMinus - Enhanced Implementation Guide",
+  "priority": "HIGH",
+  "effort": "4 hours",
+  "status": "pending",
+  "impact": "Completes config propagation implementation by fixing unaryMinus to respect config.number for boolean inputs. Fixes final 2 tests of the 8-test config propagation issue. Includes comprehensive documentation of the entire feature.",
+  "currentBehavior": "math.unaryMinus(true) returns -1 (number) even when config.number='BigNumber'",
+  "expectedBehavior": "math.unaryMinus(true) returns BigNumber(-1) when config.number='BigNumber'",
+  "targetMetrics": {
+    "testsFixed": {
+      "current": "2 tests skipped (unaryMinus with boolean × 2 files)",
+      "target": "All 2 tests passing"
+    },
+    "configCoverage": {
+      "current": "prod and sum respect config.number",
+      "target": "unaryMinus also respects config.number for boolean→number conversion"
+    }
+  },
+  "tasks": [
+    {
+      "id": "2.3.1",
+      "category": "implementation",
+      "title": "Update unaryMinus for Config-Aware Boolean Conversion",
+      "description": "Add boolean signature to unaryMinus that converts boolean to configured number type before negation.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "src/function/arithmetic/unaryMinus.js",
+        "src/function/arithmetic/unaryMinus.ts"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Enable unaryMinus to respect config.number when converting boolean inputs. Boolean conversion logic: true→1→-1, false→0→0. The intermediate number should match config.number type (e.g., BigNumber(-1) when configured for BigNumber).",
+        "keyDecisions": [
+          "Boolean converts to 1 (true) or 0 (false) first",
+          "Then negate according to configured number type",
+          "Add config and bignumber dependencies to factory",
+          "Add new boolean signature to typed-function",
+          "Preserve existing typed-function signatures",
+          "Apply to both .js and .ts versions"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Modify src/function/arithmetic/unaryMinus.js",
+          "changes": {
+            "dependencies": "Add 'config' and '?bignumber' to factory dependencies",
+            "factoryParams": "Add config and bignumber to destructured params",
+            "booleanSignature": "Add new 'boolean' signature with config awareness"
+          },
+          "fullCode": "export const createUnaryMinus = /* #__PURE__ */ factory(\n  'unaryMinus',\n  ['typed', 'config', '?bignumber'], // ADDED config and bignumber\n  ({ typed, config, bignumber }) => { // ADDED\n\n    return typed('unaryMinus', {\n      // EXISTING signatures for number, BigNumber, Complex, etc. remain unchanged\n\n      // NEW: Boolean signature with config awareness\n      'boolean': function (x) {\n        // Convert boolean to number: true→1, false→0\n        const numValue = x ? 1 : 0\n        const negValue = -numValue\n\n        // Return in configured number type\n        const numberType = config?.number || 'number'\n\n        switch (numberType) {\n          case 'BigNumber':\n            if (!bignumber) {\n              throw new Error(\n                'BigNumber not available. Configure mathjs with BigNumber support.'\n              )\n            }\n            return bignumber(negValue)\n\n          case 'bigint':\n            return BigInt(negValue)\n\n          case 'Fraction':\n            // TODO: Add Fraction support when dependency available\n            return negValue\n\n          case 'number':\n          default:\n            return negValue\n        }\n      },\n\n      // ALL EXISTING signatures remain unchanged\n    })\n  }\n)"
+        },
+        {
+          "step": 2,
+          "action": "Apply same changes to src/function/arithmetic/unaryMinus.ts",
+          "note": "Identical implementation with TypeScript type annotations",
+          "typeSignature": "'boolean': function (x: boolean): number | any"
+        },
+        {
+          "step": 3,
+          "action": "Verify no regressions",
+          "commands": [
+            "npm test -- test/unit-tests/function/arithmetic/unaryMinus.test.js",
+            "npm test -- test/unit-tests/function/arithmetic/unaryMinus.test.ts"
+          ],
+          "expectedResult": "All existing tests still pass"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Config and bignumber added to unaryMinus factory dependencies",
+        "Boolean signature added to typed-function",
+        "unaryMinus(true) returns BigNumber(-1) when config.number='BigNumber'",
+        "unaryMinus(false) returns BigNumber(0) when config.number='BigNumber'",
+        "unaryMinus(true) returns bigint(-1n) when config.number='bigint'",
+        "unaryMinus(false) returns bigint(0n) when config.number='bigint'",
+        "Handles all config.number types: number, BigNumber, bigint, Fraction",
+        "Both .js and .ts versions updated",
+        "Existing signatures unaffected (no regressions)"
+      ]
+    },
+    {
+      "id": "2.3.2",
+      "category": "testing",
+      "title": "Enable and Verify unaryMinus Tests",
+      "description": "Remove it.skip from the 2 affected unaryMinus tests and verify they pass with config-aware boolean conversion.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [
+        "test/unit-tests/function/arithmetic/unaryMinus.test.ts",
+        "test/unit-tests/function/arithmetic/unaryMinus.test.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Verify that unaryMinus correctly respects config.number for boolean inputs. This completes the config propagation feature across all affected functions (prod, sum, unaryMinus).",
+        "keyDecisions": [
+          "Enable test in both JS and TS versions",
+          "Test both true and false inputs",
+          "Verify BigNumber type preservation",
+          "Test type checking with constructor.name"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Find and enable test in TypeScript version",
+          "file": "test/unit-tests/function/arithmetic/unaryMinus.test.ts",
+          "search": "it.skip.*boolean.*BigNumber config",
+          "before": "it.skip('should calculate unary minus of a boolean with BigNumber config', function () {",
+          "after": "it('should calculate unary minus of a boolean with BigNumber config', function () {\n  const bigmath = math.create({ number: 'BigNumber' })\n\n  const result1 = bigmath.unaryMinus(true)\n  assert.deepStrictEqual(result1, bigmath.bignumber(-1))\n  assert.strictEqual(result1.constructor.name, 'BigNumber')\n\n  const result2 = bigmath.unaryMinus(false)\n  assert.deepStrictEqual(result2, bigmath.bignumber(0))\n  assert.strictEqual(result2.constructor.name, 'BigNumber')\n})"
+        },
+        {
+          "step": 2,
+          "action": "Enable test in JavaScript version",
+          "file": "test/unit-tests/function/arithmetic/unaryMinus.test.js",
+          "note": "Same change as step 1, remove it.skip"
+        },
+        {
+          "step": 3,
+          "action": "Optional: Add comprehensive config test",
+          "code": "// OPTIONAL: Add additional test coverage for all config types\nit('should respect all config.number types for boolean input', function () {\n  // Test with number config (default)\n  const mathNumber = math.create({ number: 'number' })\n  assert.strictEqual(mathNumber.unaryMinus(true), -1)\n  assert.strictEqual(typeof mathNumber.unaryMinus(true), 'number')\n\n  // Test with bigint config\n  const mathBigInt = math.create({ number: 'bigint' })\n  assert.strictEqual(mathBigInt.unaryMinus(true), BigInt(-1))\n  assert.strictEqual(typeof mathBigInt.unaryMinus(true), 'bigint')\n\n  // Test with BigNumber config\n  const mathBigNumber = math.create({ number: 'BigNumber' })\n  const result = mathBigNumber.unaryMinus(true)\n  assert.strictEqual(result.constructor.name, 'BigNumber')\n  assert.strictEqual(result.toString(), '-1')\n})"
+        },
+        {
+          "step": 4,
+          "action": "Run unaryMinus test suite",
+          "command": "npm test -- --grep 'unaryMinus'",
+          "expectedResult": "All tests pass, including newly enabled boolean tests"
+        },
+        {
+          "step": 5,
+          "action": "Run full test suite",
+          "command": "npm run test:src",
+          "expectedResult": "No regressions - all tests pass"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Both it.skip changed to it (TS and JS versions)",
+        "Test verifies unaryMinus(true) returns BigNumber(-1)",
+        "Test verifies unaryMinus(false) returns BigNumber(0)",
+        "Type checking confirms BigNumber type preservation",
+        "Tests pass in both JS and TS versions",
+        "Optional: Additional tests for bigint and Fraction configs",
+        "No regressions in full test suite",
+        "All config propagation tests now passing (8 total)"
+      ]
+    },
+    {
+      "id": "2.3.3",
+      "category": "documentation",
+      "title": "Document Config Propagation Feature",
+      "description": "Update documentation to explain config-aware type conversion behavior for string and boolean inputs. Update HISTORY.md and function JSDoc.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [
+        "HISTORY.md",
+        "src/function/statistics/prod.js",
+        "src/function/statistics/sum.js",
+        "src/function/arithmetic/unaryMinus.js"
+          ],
+      "testCategories": ["documentation"],
+      "implementation": {
+        "purpose": "Document the new config-aware behavior so users understand how string and boolean inputs are converted based on their config.number setting. This is a user-facing feature that improves mathjs behavior and needs clear documentation.",
+        "keyDecisions": [
+          "Add to HISTORY.md as bug fix (not breaking change)",
+          "Update JSDoc for all affected functions",
+          "Explain fallback behavior (e.g., bigint→number for decimals)",
+          "Provide usage examples",
+          "Highlight in release notes"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Update HISTORY.md",
+          "location": "## not yet published section",
+          "content": "## not yet published\n\n### Fixed\n\n- Fixed string and boolean inputs not respecting `config.number` setting in `prod`, `sum`, and `unaryMinus` functions. String inputs now convert to the configured number type (BigNumber, bigint, Fraction) instead of always defaulting to regular numbers. (#XXXX)\n  - `prod(['10', '3'])` with `config.number='BigNumber'` now returns `BigNumber(30)`\n  - `sum(['10', '3'])` with `config.number='BigNumber'` now returns `BigNumber(13)`\n  - `unaryMinus(true)` with `config.number='BigNumber'` now returns `BigNumber(-1)`\n  - Note: bigint config gracefully falls back to number for decimal strings (e.g., '3.14')\n  - Note: bigint config also falls back for scientific notation (e.g., '1e5')"
+        },
+        {
+          "step": 2,
+          "action": "Update prod.js JSDoc",
+          "location": "Function docblock above createProd",
+          "content": "/**\n * Compute the product of a matrix or a list with values.\n * In case of a (multi-dimensional) array or matrix, the product of all\n * elements will be calculated.\n *\n * String inputs are converted according to the configured number type\n * (config.number). For example, with BigNumber configuration, string\n * inputs will be converted to BigNumber before calculation.\n *\n * @param {Array | Matrix} args  A single matrix or multiple scalar values\n * @return {*} The product of all values\n *\n * @example\n * math.prod(2, 3, 4)           // returns 24\n * math.prod([2, 3, 4])         // returns 24\n *\n * // With BigNumber config:\n * const mathBig = math.create({ config: { number: 'BigNumber' } })\n * mathBig.prod('10', '3')      // returns BigNumber(30)\n * mathBig.prod(['10', '3'])    // returns BigNumber(30)\n *\n * // With bigint config:\n * const mathInt = math.create({ config: { number: 'bigint' } })\n * mathInt.prod('10', '3')      // returns 30n\n * mathInt.prod('2.5')          // returns 2.5 (falls back to number for decimals)\n */"
+        },
+        {
+          "step": 3,
+          "action": "Update sum.js JSDoc",
+          "location": "Function docblock above createSum",
+          "content": "/**\n * Compute the sum of a matrix or a list with values.\n * In case of a (multi-dimensional) array or matrix, the sum of all\n * elements will be calculated.\n *\n * String inputs are converted according to the configured number type\n * (config.number). For example, with BigNumber configuration, string\n * inputs will be converted to BigNumber before calculation.\n *\n * @param {Array | Matrix} args  A single matrix or multiple scalar values\n * @return {*} The sum of all values\n *\n * @example\n * math.sum(2, 3, 4)           // returns 9\n * math.sum([2, 3, 4])         // returns 9\n *\n * // With BigNumber config:\n * const mathBig = math.create({ config: { number: 'BigNumber' } })\n * mathBig.sum('10', '3')      // returns BigNumber(13)\n * mathBig.sum(['10', '3'])    // returns BigNumber(13)\n *\n * // With bigint config:\n * const mathInt = math.create({ config: { number: 'bigint' } })\n * mathInt.sum('10', '3')      // returns 13n\n * mathInt.sum('2.5', '4')     // returns 6.5 (falls back to number for decimals)\n */"
+        },
+        {
+          "step": 4,
+          "action": "Update unaryMinus.js JSDoc",
+          "location": "Function docblock above createUnaryMinus",
+          "content": "/**\n * Inverse the sign of a value, apply a unary minus operation.\n *\n * Boolean inputs are converted to numbers (true→1, false→0) and then\n * negated. The result type respects the configured number type\n * (config.number).\n *\n * For matrices, the function is evaluated element wise.\n *\n * @param  {number | BigNumber | Fraction | Complex | Unit | Array | Matrix} x\n * @return {number | BigNumber | Fraction | Complex | Unit | Array | Matrix}\n *         Negation of x\n *\n * @example\n * math.unaryMinus(3.5)        // returns -3.5\n * math.unaryMinus(-4.2)       // returns 4.2\n *\n * // With BigNumber config:\n * const mathBig = math.create({ config: { number: 'BigNumber' } })\n * mathBig.unaryMinus(true)    // returns BigNumber(-1)\n * mathBig.unaryMinus(false)   // returns BigNumber(0)\n *\n * // With bigint config:\n * const mathInt = math.create({ config: { number: 'bigint' } })\n * mathInt.unaryMinus(true)    // returns -1n\n * mathInt.unaryMinus(false)   // returns 0n\n */"
+        },
+        {
+          "step": 5,
+          "action": "Replicate JSDoc to TypeScript versions",
+          "files": [
+            "src/function/statistics/prod.ts",
+            "src/function/statistics/sum.ts",
+            "src/function/arithmetic/unaryMinus.ts"
+          ],
+          "note": "Copy same JSDoc to .ts versions"
+        },
+        {
+          "step": 6,
+          "action": "Verify documentation builds",
+          "command": "npm run build:docs",
+          "expectedResult": "Documentation builds without errors"
+        }
+      ],
+      "acceptanceCriteria": [
+        "HISTORY.md updated with comprehensive bug fix entry",
+        "Bug fix explains behavior for prod, sum, and unaryMinus",
+        "Bigint fallback behavior documented (decimals and scientific notation)",
+        "prod JSDoc includes config-aware conversion note and examples",
+        "sum JSDoc includes config-aware conversion note and examples",
+        "unaryMinus JSDoc includes boolean conversion behavior and examples",
+        "All examples are accurate and tested",
+        "JSDoc replicated to both .js and .ts versions",
+        "Documentation builds without errors",
+        "Examples show both BigNumber and bigint configs"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "All three tasks completed successfully",
+    "unaryMinus respects config.number for boolean inputs",
+    "Both skipped tests enabled and passing",
+    "Documentation updated to reflect new behavior",
+    "No regressions in existing tests",
+    "Config propagation feature complete (all 8 original tests now passing)",
+    "HISTORY.md documents the bug fix",
+    "All function JSDoc updated with config-aware examples",
+    "Dual codebase (.js and .ts) maintained throughout"
+  ],
+  "filesCreated": [],
+  "filesModified": [
+    "src/function/arithmetic/unaryMinus.js",
+    "src/function/arithmetic/unaryMinus.ts",
+    "test/unit-tests/function/arithmetic/unaryMinus.test.ts",
+    "test/unit-tests/function/arithmetic/unaryMinus.test.js",
+    "HISTORY.md",
+    "src/function/statistics/prod.js",
+    "src/function/statistics/prod.ts",
+    "src/function/statistics/sum.js",
+    "src/function/statistics/sum.ts"
+  ],
+  "testsFixed": 2,
+  "totalNewTests": 1,
+  "totalEstimatedHours": 4,
+  "dependencies": [
+    "PHASE_2_SPRINT_2_ENHANCED_TODO.json (parseNumberWithConfig utility must exist)",
+    "Note: unaryMinus uses config/bignumber dependencies directly, not parseNumberWithConfig"
+  ],
+  "notes": [
+    "MILESTONE: This sprint completes Phase 2 - all 8 config propagation tests fixed",
+    "unaryMinus boolean conversion is SIMPLER than string parsing (no edge cases like decimals)",
+    "Boolean→number conversion: true→1→-1, false→0→0",
+    "Consider if other functions need boolean→number config awareness (future work)",
+    "This is a BUG FIX, not a breaking change - improves existing behavior",
+    "Update migration guide if users relied on old (buggy) behavior (unlikely)",
+    "Total Phase 2 impact: 8 tests fixed, major architecture improvement in type handling",
+    "IMPORTANT: Dual JS/TS codebase - changes must be applied to BOTH .js and .ts source files",
+    "JSDoc updates improve user experience and API documentation",
+    "Config propagation pattern (pre-convert inputs) can be reused for other functions if needed",
+    "Phase 2 completion: prod (Sprint 2.2), sum (Sprint 2.2), unaryMinus (Sprint 2.3)",
+    "All three functions now properly respect config.number for their input types"
+  ]
+}

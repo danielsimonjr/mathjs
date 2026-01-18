@@ -1,0 +1,336 @@
+{
+  "phase": 2,
+  "sprint": 2,
+  "title": "Implement String Parsing for BigNumber Config - Enhanced Implementation Guide",
+  "priority": "HIGH",
+  "effort": "8 hours",
+  "status": "pending",
+  "impact": "Fixes string-to-number conversion to respect config.number setting for BigNumber and bigint. Enables 4 critical skipped tests in prod and sum functions.",
+  "currentBehavior": "math.prod(['10', '3']) returns 30 (number) even when config.number='BigNumber'",
+  "expectedBehavior": "math.prod(['10', '3']) returns BigNumber(30) when config.number='BigNumber'",
+  "targetMetrics": {
+    "testsFixed": {
+      "current": "4 tests skipped (prod BigNumber/bigint, sum BigNumber/bigint)",
+      "target": "All 4 tests passing"
+    },
+    "typePreservation": {
+      "current": "Strings always convert to number type",
+      "target": "Strings convert to config.number type (BigNumber/bigint/number)"
+    }
+  },
+  "tasks": [
+    {
+      "id": "2.2.1",
+      "category": "implementation",
+      "title": "Create parseNumberWithConfig Utility",
+      "description": "Create centralized utility function that converts strings to the appropriate number type based on config.number setting.",
+      "status": "pending",
+      "estimatedHours": 3.0,
+      "agent": "claude",
+      "files": [
+        "src/utils/parseNumber.js",
+        "src/utils/parseNumber.ts",
+        "test/unit-tests/utils/parseNumber.test.js",
+        "src/factoriesAny.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Provide a single, reusable utility that handles config-aware string-to-number conversion. This utility will be used by prod, sum, and potentially other functions to respect the user's configured number type.",
+        "keyDecisions": [
+          "Handle all config.number values: 'number', 'BigNumber', 'bigint', 'Fraction'",
+          "Fallback gracefully for edge cases (e.g., decimals with bigint)",
+          "Validate inputs and provide clear error messages",
+          "Make function pure and side-effect free",
+          "Use factory pattern for dependency injection"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create src/utils/parseNumber.js",
+          "fullImplementation": "import { factory } from '../core/function/typed.js'\n\nconst name = 'parseNumberWithConfig'\nconst dependencies = ['config', '?bignumber']\n\nexport const createParseNumberWithConfig = /* #__PURE__ */ factory(\n  name,\n  dependencies,\n  ({ config, bignumber }) => {\n    /**\n     * Parse a string to a number type based on the config.number setting.\n     *\n     * Respects the configured number type:\n     * - config.number = 'number': JavaScript number\n     * - config.number = 'BigNumber': BigNumber instance\n     * - config.number = 'bigint': bigint (fallback to number for decimals)\n     * - config.number = 'Fraction': Fraction instance\n     *\n     * @param {string} str - String representation of a number\n     * @returns {number|BigNumber|bigint|Fraction} Parsed number\n     *\n     * @example\n     * // With config.number = 'BigNumber'\n     * parseNumberWithConfig('10')  // Returns: BigNumber(10)\n     *\n     * @example\n     * // With config.number = 'bigint'\n     * parseNumberWithConfig('5')    // Returns: 5n\n     * parseNumberWithConfig('3.14') // Returns: 3.14 (number fallback)\n     */\n    function parseNumberWithConfig(str) {\n      if (typeof str !== 'string') {\n        throw new TypeError(\n          `parseNumberWithConfig expects string, got ${typeof str}`\n        )\n      }\n\n      const numberType = config.number || 'number'\n\n      switch (numberType) {\n        case 'BigNumber':\n          if (!bignumber) {\n            throw new Error(\n              'BigNumber not available. Configure mathjs with BigNumber support.'\n            )\n          }\n          return bignumber(str)\n\n        case 'bigint':\n          // bigint doesn't support decimals - fallback to number\n          if (str.includes('.') || str.includes('e') || str.includes('E')) {\n            return Number(str)\n          }\n          return BigInt(str)\n\n        case 'Fraction':\n          // TODO: Add fraction dependency when Fraction support needed\n          return Number(str)\n\n        case 'number':\n        default:\n          return Number(str)\n      }\n    }\n\n    return parseNumberWithConfig\n  }\n)"
+        },
+        {
+          "step": 2,
+          "action": "Create TypeScript version: src/utils/parseNumber.ts",
+          "note": "Same implementation with TypeScript types",
+          "typeSignature": "function parseNumberWithConfig(str: string): number | any"
+        },
+        {
+          "step": 3,
+          "action": "Create test file: test/unit-tests/utils/parseNumber.test.js",
+          "fullImplementation": "import assert from 'assert'\nimport math from '../../../src/defaultInstance.js'\n\ndescribe('parseNumberWithConfig', function () {\n  it('should parse strings as regular numbers by default', function () {\n    const result = math.parseNumberWithConfig('42')\n    assert.strictEqual(result, 42)\n    assert.strictEqual(typeof result, 'number')\n  })\n\n  it('should parse strings as BigNumber when configured', function () {\n    const bigMath = math.create({ number: 'BigNumber' })\n    const result = bigMath.parseNumberWithConfig('42')\n\n    assert.strictEqual(result.constructor.name, 'BigNumber')\n    assert.strictEqual(result.toString(), '42')\n  })\n\n  it('should parse strings as bigint when configured', function () {\n    const bigintMath = math.create({ number: 'bigint' })\n    const result = bigintMath.parseNumberWithConfig('42')\n\n    assert.strictEqual(result, BigInt(42))\n    assert.strictEqual(typeof result, 'bigint')\n  })\n\n  it('should fallback to number for decimal strings with bigint config', function () {\n    const bigintMath = math.create({ number: 'bigint' })\n    const result = bigintMath.parseNumberWithConfig('3.14')\n\n    assert.strictEqual(result, 3.14)\n    assert.strictEqual(typeof result, 'number')\n  })\n\n  it('should throw error for non-string input', function () {\n    assert.throws(\n      () => math.parseNumberWithConfig(42),\n      /TypeError.*expects string/\n    )\n  })\n\n  it('should handle scientific notation with bigint fallback', function () {\n    const bigintMath = math.create({ number: 'bigint' })\n    const result = bigintMath.parseNumberWithConfig('1e5')\n\n    assert.strictEqual(result, 100000) // Falls back to number\n    assert.strictEqual(typeof result, 'number')\n  })\n})"
+        },
+        {
+          "step": 4,
+          "action": "Register in src/factoriesAny.js",
+          "code": "// Add this export with other utilities:\nexport { createParseNumberWithConfig } from './utils/parseNumber.js'"
+        },
+        {
+          "step": 5,
+          "action": "Run tests",
+          "commands": [
+            "npm test -- test/unit-tests/utils/parseNumber.test.js"
+          ],
+          "expectedResult": "All 6 tests passing"
+        }
+      ],
+      "acceptanceCriteria": [
+        "parseNumber.js created with factory pattern",
+        "parseNumber.ts created with TypeScript types",
+        "Handles all config types: number, BigNumber, bigint, Fraction",
+        "Bigint gracefully falls back to number for decimals",
+        "Bigint falls back for scientific notation (e.g., '1e5')",
+        "Input validation with TypeError for non-strings",
+        "Comprehensive JSDoc documentation",
+        "Unit tests created with 6+ test cases",
+        "All tests passing",
+        "Registered in factoriesAny.js",
+        "Both .js and .ts implementations complete"
+      ]
+    },
+    {
+      "id": "2.2.2",
+      "category": "implementation",
+      "title": "Update prod Function for Config-Aware Parsing",
+      "description": "Modify prod function to use parseNumberWithConfig utility for string inputs, ensuring type preservation based on config.number.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "src/function/statistics/prod.js",
+        "src/function/statistics/prod.ts"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Enable prod function to respect config.number when processing string inputs. This fixes 2 skipped tests and aligns behavior with user expectations when they configure mathjs for BigNumber or bigint arithmetic.",
+        "keyDecisions": [
+          "Add parseNumberWithConfig to factory dependencies",
+          "Add string signature to typed-function",
+          "Pre-convert string array elements before reduction",
+          "Preserve existing behavior for non-string inputs",
+          "Apply to both .js and .ts versions"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Modify src/function/statistics/prod.js",
+          "changes": {
+            "dependencies": "Add 'parseNumberWithConfig' to factory dependencies array",
+            "factoryParams": "Add parseNumberWithConfig to destructured params",
+            "stringSignature": "Add new 'string' signature",
+            "arraySignature": "Update to pre-convert string elements"
+          },
+          "fullCode": "export const createProd = /* #__PURE__ */ factory(\n  'prod',\n  ['typed', 'add', 'multiply', 'parseNumberWithConfig'], // ADDED\n  ({ typed, add, multiply, parseNumberWithConfig }) => { // ADDED\n\n    return typed('prod', {\n      // EXISTING signatures remain unchanged\n\n      // NEW: Handle single string input\n      'string': function (x) {\n        return parseNumberWithConfig(x)\n      },\n\n      // UPDATED: Handle array with potential string elements\n      'Array': function (x) {\n        if (x.length === 0) {\n          return 1 // Product of empty array\n        }\n\n        // Pre-convert string elements BEFORE reduction\n        const converted = x.map(element =>\n          typeof element === 'string'\n            ? parseNumberWithConfig(element)\n            : element\n        )\n\n        return reduce(converted, multiply)\n      },\n\n      // EXISTING matrix and other signatures remain unchanged\n    })\n  }\n)"
+        },
+        {
+          "step": 2,
+          "action": "Apply same changes to src/function/statistics/prod.ts",
+          "note": "Identical implementation with TypeScript type annotations"
+        },
+        {
+          "step": 3,
+          "action": "Verify no regressions",
+          "commands": [
+            "npm test -- test/unit-tests/function/statistics/prod.test.js",
+            "npm test -- test/unit-tests/function/statistics/prod.test.ts"
+          ],
+          "expectedResult": "All existing tests still pass (no regressions)"
+        }
+      ],
+      "acceptanceCriteria": [
+        "parseNumberWithConfig added to prod factory dependencies",
+        "String signature implemented: 'string': parseNumberWithConfig",
+        "Array handler pre-converts string elements with map()",
+        "Empty array still returns 1 (product identity)",
+        "Both .js and .ts versions updated identically",
+        "Existing tests still pass (no regressions)",
+        "Code follows existing mathjs style and patterns"
+      ]
+    },
+    {
+      "id": "2.2.3",
+      "category": "implementation",
+      "title": "Update sum Function for Config-Aware Parsing",
+      "description": "Modify sum function to use parseNumberWithConfig utility, mirroring the approach used in prod. Note: sum's empty array returns 0, not 1.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "src/function/statistics/sum.js",
+        "src/function/statistics/sum.ts"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Enable sum function to respect config.number for string inputs, fixing 2 skipped tests. Implementation mirrors prod function approach for consistency.",
+        "keyDecisions": [
+          "Use same pattern as prod for consistency",
+          "Handle both single strings and string arrays",
+          "IMPORTANT: Preserve sum-specific behavior (empty array = 0, not 1)",
+          "Apply to both .js and .ts versions"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Modify src/function/statistics/sum.js",
+          "fullCode": "export const createSum = /* #__PURE__ */ factory(\n  'sum',\n  ['typed', 'add', 'parseNumberWithConfig'], // ADDED\n  ({ typed, add, parseNumberWithConfig }) => { // ADDED\n\n    return typed('sum', {\n      // EXISTING signatures remain unchanged\n\n      // NEW: Handle single string input\n      'string': function (x) {\n        return parseNumberWithConfig(x)\n      },\n\n      // UPDATED: Handle array with potential string elements\n      'Array': function (x) {\n        if (x.length === 0) {\n          return 0 // Sum of empty array is 0 (NOT 1 like prod!)\n        }\n\n        // Pre-convert string elements BEFORE reduction\n        const converted = x.map(element =>\n          typeof element === 'string'\n            ? parseNumberWithConfig(element)\n            : element\n        )\n\n        return reduce(converted, add)\n      },\n\n      // EXISTING matrix and other signatures remain unchanged\n    })\n  }\n)"
+        },
+        {
+          "step": 2,
+          "action": "Apply same changes to src/function/statistics/sum.ts"
+        },
+        {
+          "step": 3,
+          "action": "Verify no regressions",
+          "commands": [
+            "npm test -- test/unit-tests/function/statistics/sum.test.js",
+            "npm test -- test/unit-tests/function/statistics/sum.test.ts"
+          ]
+        }
+      ],
+      "acceptanceCriteria": [
+        "parseNumberWithConfig added to sum factory dependencies",
+        "String signature implemented",
+        "Array handler pre-converts string elements",
+        "CRITICAL: Empty array returns 0 (not 1!)",
+        "Both .js and .ts versions updated",
+        "Existing tests still pass (no regressions)",
+        "Implementation mirrors prod for consistency"
+      ]
+    },
+    {
+      "id": "2.2.4",
+      "category": "testing",
+      "title": "Enable and Verify Skipped Tests",
+      "description": "Remove it.skip from 4 affected tests and verify they pass with the new config-aware implementation.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [
+        "test/unit-tests/function/statistics/prod.test.ts",
+        "test/unit-tests/function/statistics/prod.test.js",
+        "test/unit-tests/function/statistics/sum.test.ts",
+        "test/unit-tests/function/statistics/sum.test.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Verify that the config-aware parsing implementation successfully fixes all 4 skipped tests. This validates the entire sprint's work.",
+        "keyDecisions": [
+          "Enable tests in both JS and TS versions (4 files total)",
+          "Verify with different config.number values",
+          "Ensure type preservation is correct",
+          "Test both BigNumber and bigint configs"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Enable prod BigNumber test",
+          "file": "test/unit-tests/function/statistics/prod.test.ts (line ~43)",
+          "before": "it.skip('should return the product of strings (with BigNumber config)', function () {",
+          "after": "it('should return the product of strings (with BigNumber config)', function () {\n  const bigmath = math.create({ number: 'BigNumber' })\n  assert.deepStrictEqual(\n    bigmath.prod('10', '3', '4', '2'),\n    bigmath.bignumber('240')\n  )\n  assert.deepStrictEqual(bigmath.prod('10'), bigmath.bignumber(10))\n})",
+          "alsoUpdate": "prod.test.js with same changes"
+        },
+        {
+          "step": 2,
+          "action": "Enable prod bigint test",
+          "file": "test/unit-tests/function/statistics/prod.test.ts (line ~54)",
+          "before": "it.skip('should return the product of strings (with bigint config)', function () {",
+          "after": "it('should return the product of strings (with bigint config)', function () {\n  const bigmath = math.create({ number: 'bigint' })\n  assert.strictEqual(bigmath.prod('10', '3', '4', '2'), 240n)\n  assert.strictEqual(bigmath.prod('10'), 10n)\n  assert.strictEqual(bigmath.prod('2.5'), 2.5) // fallback to number\n  assert.strictEqual(bigmath.prod('2.5', '4'), 10) // fallback to number\n})",
+          "alsoUpdate": "prod.test.js"
+        },
+        {
+          "step": 3,
+          "action": "Enable sum BigNumber test",
+          "file": "test/unit-tests/function/statistics/sum.test.ts (line ~45)",
+          "before": "it.skip('should return the max of strings by their numerical value (with BigNumber config)', function () {",
+          "after": "it('should return the sum of strings (with BigNumber config)', function () {\n  const bigmath = math.create({ number: 'BigNumber' })\n  assert.deepStrictEqual(\n    bigmath.sum('10', '3', '4', '2'),\n    bigmath.bignumber('19')\n  )\n  assert.deepStrictEqual(bigmath.sum('10'), bigmath.bignumber(10))\n})",
+          "alsoUpdate": "sum.test.js"
+        },
+        {
+          "step": 4,
+          "action": "Enable sum bigint test",
+          "file": "test/unit-tests/function/statistics/sum.test.ts (line ~56)",
+          "before": "it.skip('should return the max of strings by their numerical value (with bigint config)', function () {",
+          "after": "it('should return the sum of strings (with bigint config)', function () {\n  const bigmath = math.create({ number: 'bigint' })\n  assert.strictEqual(bigmath.sum('10', '3', '4', '2'), 19n)\n  assert.strictEqual(bigmath.sum('10'), 10n)\n  assert.strictEqual(bigmath.sum('2.5'), 2.5) // fallback to number\n  assert.strictEqual(bigmath.sum('2.5', '4'), 6.5) // fallback to number\n})",
+          "alsoUpdate": "sum.test.js"
+        },
+        {
+          "step": 5,
+          "action": "Run specific tests",
+          "commands": [
+            "npm test -- --grep 'strings.*BigNumber config'",
+            "npm test -- --grep 'strings.*bigint config'"
+          ],
+          "expectedResult": "All 4 newly-enabled tests pass"
+        },
+        {
+          "step": 6,
+          "action": "Run full test suite",
+          "command": "npm run test:src",
+          "expectedResult": "No regressions - all tests pass"
+        }
+      ],
+      "acceptanceCriteria": [
+        "All 4 it.skip changed to it (2 prod, 2 sum)",
+        "All 4 tests updated in both .ts and .js versions (8 changes total)",
+        "prod with BigNumber config returns BigNumber(240)",
+        "prod with bigint config returns bigint(240n)",
+        "sum with BigNumber config returns BigNumber(19)",
+        "sum with bigint config returns bigint(19n)",
+        "Decimal string fallback tested for bigint config",
+        "All 4 tests passing",
+        "No regressions in full test suite",
+        "Type preservation verified (BigNumber stays BigNumber)"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "All four tasks completed successfully",
+    "parseNumberWithConfig utility created and tested",
+    "prod and sum functions updated to use config-aware parsing",
+    "All 4 skipped tests enabled and passing",
+    "No regressions in existing tests",
+    "Code follows mathjs patterns and style",
+    "Dual codebase (.js/.ts) maintained",
+    "Comprehensive test coverage for utility function"
+  ],
+  "filesCreated": [
+    "src/utils/parseNumber.js",
+    "src/utils/parseNumber.ts",
+    "test/unit-tests/utils/parseNumber.test.js"
+  ],
+  "filesModified": [
+    "src/function/statistics/prod.js",
+    "src/function/statistics/prod.ts",
+    "src/function/statistics/sum.js",
+    "src/function/statistics/sum.ts",
+    "test/unit-tests/function/statistics/prod.test.ts",
+    "test/unit-tests/function/statistics/prod.test.js",
+    "test/unit-tests/function/statistics/sum.test.ts",
+    "test/unit-tests/function/statistics/sum.test.js",
+    "src/factoriesAny.js"
+  ],
+  "testsFixed": 4,
+  "totalNewTests": 6,
+  "totalEstimatedHours": 8,
+  "dependencies": [
+    "PHASE_2_SPRINT_1_ENHANCED_TODO.json (design must be complete and approved)"
+  ],
+  "notes": [
+    "CRITICAL: This sprint fixes 4 of the 8 config propagation tests (prod/sum)",
+    "parseNumberWithConfig utility is REUSABLE - unaryMinus will use it in Sprint 2.3",
+    "Bigint fallback to number for decimals is INTENTIONAL and correct behavior",
+    "Tests exist in both JS and TS - MUST update both files",
+    "Empty array handling differs: prod returns 1, sum returns 0 - DON'T mix them up",
+    "Factory dependency injection pattern ensures config is always available",
+    "Optional bignumber dependency (?) allows graceful handling when BigNumber not configured",
+    "Consider adding Fraction support in parseNumberWithConfig even if not tested (future-proofing)",
+    "Document config-aware behavior in function JSDoc (done in Sprint 2.3)",
+    "Update HISTORY.md with bug fix note (done in Sprint 2.3)",
+    "IMPORTANT: Dual JS/TS codebase - changes must be applied to BOTH .js and .ts source files",
+    "Verify parseNumberWithConfig is exported from factoriesAny.js before use in prod/sum"
+  ]
+}
