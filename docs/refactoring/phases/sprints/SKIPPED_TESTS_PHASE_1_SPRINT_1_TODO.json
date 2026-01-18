@@ -1,0 +1,220 @@
+{
+  "phase": 1,
+  "sprint": 1,
+  "title": "SparseMatrix Input Validation",
+  "feature": "Skipped Tests Resolution",
+  "priority": "HIGH",
+  "effort": "4 hours",
+  "status": "pending",
+  "impact": "Prevents invalid matrix construction, fixes 2 skipped tests with low risk",
+  "targetMetrics": {
+    "validation": {
+      "current": "SparseMatrix accepts 1D, 3D, and jagged arrays without validation",
+      "target": "Reject invalid arrays with clear DimensionError messages"
+    },
+    "testsFixed": {
+      "current": "2 tests skipped",
+      "target": "2 tests passing"
+    }
+  },
+  "tasks": [
+    {
+      "id": "1.1.1",
+      "category": "implementation",
+      "title": "Add Dimension Validation to SparseMatrix Constructor",
+      "description": "Add validation checks to reject 1D arrays, 3D+ arrays, and jagged arrays (inconsistent row lengths) with clear error messages.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["src/type/matrix/SparseMatrix.js"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Prevent invalid matrix construction that causes runtime errors later. Invalid matrices should be rejected at construction time with clear error messages.",
+        "keyDecisions": [
+          "Check for 1D arrays: if !Array.isArray(data[0])",
+          "Check for 3D+ arrays: if Array.isArray(data[0][0])",
+          "Check for jagged arrays: ensure all rows have same length",
+          "Use DimensionError for all validation failures"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Locate SparseMatrix constructor",
+          "details": "Find constructor in src/type/matrix/SparseMatrix.js"
+        },
+        {
+          "step": 2,
+          "action": "Add 1D array check",
+          "code": "// In constructor, before processing data\nif (data && data.length > 0 && !Array.isArray(data[0])) {\n  throw new DimensionError('SparseMatrix requires 2D array, got 1D array')\n}"
+        },
+        {
+          "step": 3,
+          "action": "Add 3D+ array check",
+          "code": "// After 1D check\nif (data && data.length > 0 && Array.isArray(data[0]) && Array.isArray(data[0][0])) {\n  throw new DimensionError('SparseMatrix requires 2D array, got 3D or higher dimensional array')\n}"
+        },
+        {
+          "step": 4,
+          "action": "Add jagged array check",
+          "code": "// After dimension checks, before processing\nif (data && data.length > 0 && Array.isArray(data[0])) {\n  const expectedCols = data[0].length\n  for (let i = 1; i < data.length; i++) {\n    if (!Array.isArray(data[i]) || data[i].length !== expectedCols) {\n      throw new DimensionError(\n        `Row ${i} has ${Array.isArray(data[i]) ? data[i].length : 0} columns, expected ${expectedCols}`\n      )\n    }\n  }\n}"
+        },
+        {
+          "step": 5,
+          "action": "Verify DimensionError is imported",
+          "details": "Check if DimensionError is already imported, add if needed: import { DimensionError } from '../../error/DimensionError.js'"
+        }
+      ],
+      "acceptanceCriteria": [
+        "1D arrays throw DimensionError with message about 2D requirement",
+        "3D+ arrays throw DimensionError with message about 2D requirement",
+        "Jagged arrays throw DimensionError with row and column info",
+        "Valid 2D arrays still work correctly",
+        "All existing SparseMatrix tests still pass"
+      ]
+    },
+    {
+      "id": "1.1.2",
+      "category": "implementation",
+      "title": "Add Same Validation to DenseMatrix (Consistency)",
+      "description": "Add identical validation to DenseMatrix constructor for consistency across matrix types.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": ["src/type/matrix/DenseMatrix.js"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Ensure consistent validation behavior across both matrix types. Users should get the same validation errors whether using DenseMatrix or SparseMatrix.",
+        "keyDecisions": [
+          "Use identical validation logic as SparseMatrix",
+          "Use same error messages for consistency",
+          "May already have some validation - check first"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Review DenseMatrix constructor",
+          "details": "Check if any validation already exists"
+        },
+        {
+          "step": 2,
+          "action": "Add validation checks",
+          "details": "Copy validation logic from SparseMatrix with same error messages"
+        },
+        {
+          "step": 3,
+          "action": "Test with existing test suite",
+          "details": "Run DenseMatrix tests to ensure no regressions"
+        }
+      ],
+      "acceptanceCriteria": [
+        "DenseMatrix has same validation as SparseMatrix",
+        "Error messages are consistent",
+        "All existing DenseMatrix tests pass"
+      ]
+    },
+    {
+      "id": "1.1.3",
+      "category": "testing",
+      "title": "Enable Skipped SparseMatrix Tests",
+      "description": "Remove it.skip from the two validation tests and verify they pass with the new validation logic.",
+      "status": "pending",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": ["test/unit-tests/type/matrix/SparseMatrix.test.ts"],
+      "testCategories": ["unit"],
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Enable first test",
+          "details": "Change it.skip to it on line 184: 'should throw an error when input array does not have two dimensions'"
+        },
+        {
+          "step": 2,
+          "action": "Enable second test",
+          "details": "Change it.skip to it on line 195: 'should throw an error when the dimensions of the input array are invalid'"
+        },
+        {
+          "step": 3,
+          "action": "Remove TODO comments",
+          "details": "Remove 'TODO: add some more input validations to SparseMatrix' comments"
+        },
+        {
+          "step": 4,
+          "action": "Run tests",
+          "details": "npx mocha test/unit-tests/type/matrix/SparseMatrix.test.ts"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Both tests no longer use it.skip",
+        "Both tests pass",
+        "Error messages match test expectations",
+        "TODO comments removed"
+      ]
+    },
+    {
+      "id": "1.1.4",
+      "category": "verification",
+      "title": "Run Full Matrix Test Suite",
+      "description": "Run complete matrix test suite to verify no regressions from validation changes.",
+      "status": "pending",
+      "estimatedHours": 0.5,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["verification"],
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Run SparseMatrix tests",
+          "details": "npm run test:src -- --grep 'SparseMatrix'"
+        },
+        {
+          "step": 2,
+          "action": "Run DenseMatrix tests",
+          "details": "npm run test:src -- --grep 'DenseMatrix'"
+        },
+        {
+          "step": 3,
+          "action": "Run all matrix tests",
+          "details": "npm run test:src -- --grep 'matrix'"
+        },
+        {
+          "step": 4,
+          "action": "Verify no regressions",
+          "details": "Ensure test count hasn't decreased, all pass"
+        }
+      ],
+      "acceptanceCriteria": [
+        "All SparseMatrix tests pass",
+        "All DenseMatrix tests pass",
+        "All matrix operation tests pass",
+        "No test count regressions"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "SparseMatrix rejects 1D arrays with clear error",
+    "SparseMatrix rejects 3D+ arrays with clear error",
+    "SparseMatrix rejects jagged arrays with clear error",
+    "DenseMatrix has consistent validation",
+    "2 skipped tests now passing",
+    "No regressions in existing tests",
+    "Error messages are clear and helpful"
+  ],
+  "filesCreated": [],
+  "filesModified": [
+    "src/type/matrix/SparseMatrix.js",
+    "src/type/matrix/DenseMatrix.js",
+    "test/unit-tests/type/matrix/SparseMatrix.test.ts"
+  ],
+  "totalNewTests": 0,
+  "testsFixed": 2,
+  "totalEstimatedHours": 4.0,
+  "dependencies": [],
+  "notes": [
+    "Low risk change - only adds validation",
+    "Invalid matrices were always bugs, rejection is correct behavior",
+    "Consistent error messages improve developer experience",
+    "May want to add similar validation to Matrix() factory function"
+  ]
+}

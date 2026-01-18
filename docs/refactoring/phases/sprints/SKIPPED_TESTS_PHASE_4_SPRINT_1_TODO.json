@@ -1,0 +1,249 @@
+{
+  "phase": 4,
+  "sprint": 1,
+  "title": "Unit Cancellation in Multiplication",
+  "priority": "MEDIUM",
+  "effort": "8 hours",
+  "status": "pending",
+  "impact": "Implements algebraic simplification for compound units, enabling automatic cancellation of matching units in numerator and denominator. Fixes 2 skipped tests (JS/TS versions) and significantly improves Unit usability.",
+  "targetMetrics": {
+    "testsFixed": {
+      "current": "2 tests skipped (Unit cancellation)",
+      "target": "Both tests passing"
+    },
+    "unitSimplification": {
+      "current": "J/K/g * g = J*g/K/g (no cancellation)",
+      "target": "J/K/g * g = J/K (grams cancel automatically)"
+    }
+  },
+  "tasks": [
+    {
+      "id": "4.1.1",
+      "category": "design",
+      "title": "Design Unit Cancellation Algorithm",
+      "description": "Design algorithm for identifying and canceling matching units in compound unit expressions, handling unit powers and fractional units.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["design"],
+      "implementation": {
+        "purpose": "Create a clear algorithm for unit simplification that handles all edge cases: matching units, powers, fractional units, and unit aliases. This design guides implementation and prevents bugs.",
+        "keyDecisions": [
+          "How to represent compound units internally (numerator/denominator lists)",
+          "How to detect matching units (handle aliases: m vs meter)",
+          "How to handle unit powers (m^2/m = m)",
+          "When to invoke simplification (after every operation or on-demand)",
+          "How to preserve user-specified format vs auto-simplify"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Analyze current Unit structure",
+          "code": "// Current Unit structure (from src/type/unit/Unit.js):\nclass Unit {\n  constructor(value, unit) {\n    this.value = value  // numeric value\n    this.unit = unit    // unit object or string\n  }\n}\n\n// Unit internally represents compound units like:\n// 'J/K/g' might be stored as:\n// {\n//   numerator: [{ name: 'J', power: 1 }],\n//   denominator: [{ name: 'K', power: 1 }, { name: 'g', power: 1 }]\n// }\n\n// Need to understand exact internal representation"
+        },
+        {
+          "step": 2,
+          "action": "Define simplification algorithm",
+          "code": "// Unit Simplification Algorithm:\n\nfunction simplifyUnit(unit) {\n  // Step 1: Parse unit into numerator and denominator\n  const { numerator, denominator } = parseCompoundUnit(unit)\n  \n  // Step 2: Find matching units\n  for (let i = numerator.length - 1; i >= 0; i--) {\n    for (let j = denominator.length - 1; j >= 0; j--) {\n      if (unitsMatch(numerator[i], denominator[j])) {\n        // Step 3: Cancel matching units\n        const cancelAmount = Math.min(\n          numerator[i].power,\n          denominator[j].power\n        )\n        \n        numerator[i].power -= cancelAmount\n        denominator[j].power -= cancelAmount\n        \n        // Remove if power becomes 0\n        if (numerator[i].power === 0) {\n          numerator.splice(i, 1)\n        }\n        if (denominator[j].power === 0) {\n          denominator.splice(j, 1)\n        }\n        \n        break\n      }\n    }\n  }\n  \n  // Step 4: Reconstruct simplified unit\n  return reconstructUnit(numerator, denominator)\n}\n\n// Helper: Check if two units match (handle aliases)\nfunction unitsMatch(unit1, unit2) {\n  // Normalize unit names (m === meter, kg === kilogram)\n  return normalizeUnitName(unit1.name) === normalizeUnitName(unit2.name)\n}\n\n// Example:\n// Input:  J/K/g * g\n// Parse:  { num: [J], den: [K, g] } * { num: [g], den: [] }\n// Multiply: { num: [J, g], den: [K, g] }\n// Simplify: { num: [J], den: [K] }  <- g canceled!\n// Output: J/K"
+        },
+        {
+          "step": 3,
+          "action": "Handle edge cases",
+          "code": "// Edge Case 1: Power reduction\n// m^2 / m = m^(2-1) = m^1 = m\n\n// Edge Case 2: Negative powers (1/m = m^-1)\n// Some systems use m^-1 instead of 1/m\n// Decide: convert to denominator form for consistency\n\n// Edge Case 3: Unit aliases\n// meter === m, kilogram === kg, second === s\n// Need normalization table\n\n// Edge Case 4: Dimensionless result\n// m/m = 1 (dimensionless)\n\n// Edge Case 5: Prefixes\n// km vs m - these should NOT cancel\n// Need to handle unit prefixes separately\n\nconst edgeCases = [\n  { input: 'm^2/m', expected: 'm' },\n  { input: 'm/m', expected: '' }, // dimensionless\n  { input: 'J*m/m', expected: 'J' },\n  { input: 'km/m', expected: 'km/m' }, // different units, don't cancel\n]"
+        },
+        {
+          "step": 4,
+          "action": "Decide when to simplify",
+          "code": "// Option A: Auto-simplify after every operation (RECOMMENDED)\n// Pros: Cleaner output, matches user expectations\n// Cons: May be unexpected if user wants unsimplified form\n\nclass Unit {\n  multiply(other) {\n    const result = this._rawMultiply(other)\n    return result.simplify() // Auto-simplify\n  }\n}\n\n// Option B: Manual simplification only\n// Pros: User control\n// Cons: Units accumulate complexity\n\nconst result = unit('J/K/g').multiply(unit('g'))\nconst simplified = result.simplify() // Manual call\n\n// RECOMMENDATION: Option A (auto-simplify)\n// Rationale: Matches mathematical convention and user expectations"
+        },
+        {
+          "step": 5,
+          "action": "Document algorithm decisions",
+          "details": "Create design doc explaining: internal representation, matching logic, power handling, alias normalization, simplification timing, edge cases."
+        }
+      ],
+      "acceptanceCriteria": [
+        "Complete simplification algorithm designed",
+        "Numerator/denominator representation defined",
+        "Unit matching logic specified (with aliases)",
+        "Power reduction algorithm detailed",
+        "Edge cases identified and handled",
+        "Simplification timing decided (auto vs manual)",
+        "Design document created with examples"
+      ]
+    },
+    {
+      "id": "4.1.2",
+      "category": "implementation",
+      "title": "Implement Unit Simplification",
+      "description": "Implement the simplify() method in Unit class to perform algebraic cancellation of matching units.",
+      "status": "pending",
+      "estimatedHours": 4.0,
+      "agent": "claude",
+      "files": [
+        "src/type/unit/Unit.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Add simplification capability to Unit class. This is complex algebraic manipulation that requires careful handling of unit powers, aliases, and edge cases.",
+        "keyDecisions": [
+          "Implement simplify() method on Unit class",
+          "Call simplify() automatically after multiply/divide",
+          "Handle all edge cases from design",
+          "Preserve value precision during simplification"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Understand current Unit internal structure",
+          "details": "Read Unit.js to understand how compound units are stored. Look for existing parsing/formatting methods."
+        },
+        {
+          "step": 2,
+          "action": "Implement simplify() method",
+          "code": "// In src/type/unit/Unit.js\n\nclass Unit {\n  // ... existing methods ...\n  \n  /**\n   * Simplify this unit by canceling matching units in numerator and denominator.\n   * \n   * @returns {Unit} A new simplified Unit\n   * \n   * @example\n   * unit('J/K/g').multiply(unit('g')).simplify()\n   * // Returns: unit('J/K') - grams canceled\n   */\n  simplify() {\n    // Get current unit structure\n    const units = this._getUnits() // Hypothetical helper\n    \n    if (!units || !units.units) {\n      return this // Simple unit, nothing to simplify\n    }\n    \n    // Separate into numerator and denominator\n    const numerator = []\n    const denominator = []\n    \n    for (const unit of units.units) {\n      if (unit.power > 0) {\n        numerator.push({ ...unit })\n      } else if (unit.power < 0) {\n        denominator.push({ ...unit, power: -unit.power })\n      }\n    }\n    \n    // Cancel matching units\n    for (let i = numerator.length - 1; i >= 0; i--) {\n      for (let j = denominator.length - 1; j >= 0; j--) {\n        if (this._unitsEqual(numerator[i], denominator[j])) {\n          const cancelAmount = Math.min(numerator[i].power, denominator[j].power)\n          \n          numerator[i].power -= cancelAmount\n          denominator[j].power -= cancelAmount\n          \n          if (numerator[i].power === 0) {\n            numerator.splice(i, 1)\n          }\n          if (denominator[j].power === 0) {\n            denominator.splice(j, 1)\n          }\n          \n          break\n        }\n      }\n    }\n    \n    // Reconstruct unit from simplified numerator/denominator\n    const simplifiedUnits = [\n      ...numerator,\n      ...denominator.map(u => ({ ...u, power: -u.power }))\n    ]\n    \n    return new Unit(this.value, this._reconstructUnit(simplifiedUnits))\n  }\n  \n  /**\n   * Check if two unit objects represent the same physical unit.\n   */\n  _unitsEqual(unit1, unit2) {\n    // Compare normalized unit names (handle aliases)\n    return this._normalizeUnitName(unit1.name) === this._normalizeUnitName(unit2.name)\n  }\n  \n  /**\n   * Normalize unit names to handle aliases.\n   * Examples: meter -> m, kilogram -> kg\n   */\n  _normalizeUnitName(name) {\n    const aliases = {\n      'meter': 'm',\n      'meters': 'm',\n      'kilogram': 'kg',\n      'kilograms': 'kg',\n      'second': 's',\n      'seconds': 's',\n      // ... add more as needed\n    }\n    return aliases[name.toLowerCase()] || name\n  }\n}"
+        },
+        {
+          "step": 3,
+          "action": "Call simplify() in multiply method",
+          "code": "// Update multiply to auto-simplify:\n\nmultiply(other) {\n  // ... existing multiplication logic ...\n  const result = new Unit(newValue, newUnitString)\n  \n  // Auto-simplify after multiplication\n  return result.simplify()\n}"
+        },
+        {
+          "step": 4,
+          "action": "Add helper methods",
+          "details": "Implement _getUnits(), _reconstructUnit(), and any other helpers needed based on Unit's internal structure"
+        },
+        {
+          "step": 5,
+          "action": "Handle dimensionless results",
+          "code": "// When all units cancel:\nif (numerator.length === 0 && denominator.length === 0) {\n  // Return a dimensionless unit (empty unit string)\n  return new Unit(this.value, '')\n}"
+        },
+        {
+          "step": 6,
+          "action": "Test manually",
+          "details": "Create test script to verify: unit('J/K/g').multiply(unit('g')) returns unit('J/K')"
+        }
+      ],
+      "acceptanceCriteria": [
+        "simplify() method implemented on Unit class",
+        "Matching units canceled correctly",
+        "Powers reduced appropriately (m^2/m = m)",
+        "Unit aliases handled (meter === m)",
+        "Dimensionless results handled (m/m = '')",
+        "Auto-simplification in multiply() method",
+        "Helper methods implemented",
+        "Manual testing confirms cancellation works"
+      ]
+    },
+    {
+      "id": "4.1.3",
+      "category": "testing",
+      "title": "Enable and Verify Unit Cancellation Tests",
+      "description": "Remove it.skip from Unit cancellation test and add comprehensive tests for simplification edge cases.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "test/unit-tests/type/unit/Unit.test.ts",
+        "test/unit-tests/type/unit/Unit.test.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Verify unit cancellation works correctly for the test case and add comprehensive coverage for all edge cases identified in design.",
+        "keyDecisions": [
+          "Enable main cancellation test",
+          "Add tests for power reduction",
+          "Add tests for dimensionless results",
+          "Test unit aliases",
+          "Test that non-matching units don't cancel"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Enable cancellation test (line 1440)",
+          "code": "// In Unit.test.ts and Unit.test.js\n// BEFORE:\nit.skip('should cancel units in numerator and denominator', function () {\n  \n// AFTER:\nit('should cancel units in numerator and denominator', function () {\n  // Test from SKIPPED_TESTS_ANALYSIS.md:\n  const result = multiply(unit('2 J/K/g'), unit('2 g'))\n  \n  // Expect: 4 J/K (grams cancel)\n  assert.strictEqual(result.toString(), '4 J/K')\n  assert.strictEqual(result.value, 4)\n  \n  // Verify units are simplified\n  assert(!result.toString().includes('g*')) // No g in numerator\n  assert(!result.toString().includes('/g')) // Only one /g removed\n})"
+        },
+        {
+          "step": 2,
+          "action": "Add power reduction test",
+          "code": "it('should reduce unit powers when canceling', function () {\n  // m^2 / m = m\n  const area = unit('10 m^2')\n  const length = unit('2 m')\n  const result = divide(area, length)\n  \n  assert.strictEqual(result.toString(), '5 m')\n  assert(!result.toString().includes('m^2'))\n})"
+        },
+        {
+          "step": 3,
+          "action": "Add dimensionless result test",
+          "code": "it('should produce dimensionless unit when all units cancel', function () {\n  // m/m = 1 (dimensionless)\n  const result = divide(unit('10 m'), unit('5 m'))\n  \n  assert.strictEqual(result.value, 2)\n  assert.strictEqual(result.toString(), '2') // No unit\n  // Or: assert(result.units === null || result.units === '')\n})"
+        },
+        {
+          "step": 4,
+          "action": "Add unit alias test",
+          "code": "it('should cancel unit aliases', function () {\n  // If implementation supports aliases:\n  const result = divide(unit('10 meters'), unit('2 m'))\n  \n  assert.strictEqual(result.value, 5)\n  assert.strictEqual(result.toString(), '5') // Dimensionless\n})"
+        },
+        {
+          "step": 5,
+          "action": "Add non-canceling test",
+          "code": "it('should not cancel different units', function () {\n  // km and m should not cancel (different magnitudes)\n  const result = divide(unit('10 km'), unit('2 m'))\n  \n  // Should still have both units (or converted to same base)\n  assert(result.toString().includes('km') || result.toString().includes('m'))\n  assert.strictEqual(result.value, 5000) // 10000m / 2m\n})"
+        },
+        {
+          "step": 6,
+          "action": "Add complex cancellation test",
+          "code": "it('should handle complex unit cancellation', function () {\n  // J*m/m = J\n  const work = unit('20 J')\n  const distance = unit('4 m')\n  const force = multiply(work, unit('1/m')) // J/m = N (but we're testing cancellation)\n  \n  const result = multiply(force, distance) // (J/m)*m = J\n  \n  assert.strictEqual(result.toString(), '20 J')\n})"
+        },
+        {
+          "step": 7,
+          "action": "Run Unit test suite",
+          "details": "Execute: npm test -- --grep 'Unit' to verify all tests pass"
+        },
+        {
+          "step": 8,
+          "action": "Run full test suite",
+          "details": "Execute: npm run test:src to ensure no regressions"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Main cancellation test enabled (it.skip → it)",
+        "Test verifies J/K/g * g = J/K",
+        "Power reduction test added (m^2/m = m)",
+        "Dimensionless result test added (m/m = 1)",
+        "Unit alias test added (if supported)",
+        "Non-canceling test added (km vs m)",
+        "Complex cancellation test added",
+        "All tests pass in both JS and TS versions",
+        "No regressions in full test suite"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "All three tasks completed",
+    "Unit cancellation algorithm designed and documented",
+    "simplify() method implemented in Unit class",
+    "Auto-simplification in multiply/divide operations",
+    "2 skipped tests enabled and passing",
+    "Comprehensive test coverage for edge cases",
+    "No regressions in existing Unit functionality"
+  ],
+  "filesCreated": [],
+  "filesModified": [
+    "src/type/unit/Unit.js",
+    "test/unit-tests/type/unit/Unit.test.ts",
+    "test/unit-tests/type/unit/Unit.test.js"
+  ],
+  "testsFixed": 2,
+  "totalNewTests": 6,
+  "totalEstimatedHours": 8,
+  "dependencies": [],
+  "notes": [
+    "COMPLEX FEATURE: This is algebraic simplification - requires careful design",
+    "Research existing unit libraries: pint (Python), units.js (JavaScript)",
+    "Unit internal structure must be understood first - may vary from assumptions",
+    "Consider performance: simplification on every operation may be costly",
+    "Unit aliases may already be handled by Unit class - check existing code",
+    "Dimensionless results are important edge case - test thoroughly",
+    "Update HISTORY.md with new simplification feature",
+    "This is a significant UX improvement - highlight in release notes",
+    "Consider adding simplify() as public API for manual control"
+  ]
+}

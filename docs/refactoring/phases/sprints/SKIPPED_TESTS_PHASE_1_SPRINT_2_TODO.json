@@ -1,0 +1,260 @@
+{
+  "phase": 1,
+  "sprint": 2,
+  "title": "deepMap skipZeros & rationalize Performance",
+  "feature": "Skipped Tests Resolution",
+  "priority": "HIGH",
+  "effort": "4-8 hours",
+  "status": "pending",
+  "impact": "Removes unused feature, optimizes performance - fixes 2 skipped tests",
+  "targetMetrics": {
+    "skipZeros": {
+      "current": "skipZeros parameter exists but doesn't work",
+      "target": "Parameter removed from codebase (recommended)"
+    },
+    "rationalize": {
+      "current": "Test times out on complex expressions",
+      "target": "Test passes within timeout or documented as performance limitation"
+    },
+    "testsFixed": {
+      "current": "2 tests skipped (deepMap + rationalize)",
+      "target": "1-2 tests passing (depends on rationalize verification)"
+    }
+  },
+  "tasks": [
+    {
+      "id": "1.2.1",
+      "category": "decision",
+      "title": "Decide on skipZeros Parameter Fate",
+      "description": "Analyze skipZeros usage and decide to either remove (recommended) or implement the feature.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": ["src/type/matrix/utils/deepMap.js"],
+      "testCategories": ["analysis"],
+      "implementation": {
+        "purpose": "The skipZeros parameter was planned but never implemented. Need to decide: remove it (simpler) or implement it (more work).",
+        "keyDecisions": [
+          "Search codebase for skipZeros usage",
+          "Check if any external code depends on it",
+          "Recommend removal if unused",
+          "Document decision rationale"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Search for skipZeros usage",
+          "details": "grep -r 'skipZeros' src/ test/"
+        },
+        {
+          "step": 2,
+          "action": "Check function signature",
+          "details": "Review deepMap.js to see current parameter definition"
+        },
+        {
+          "step": 3,
+          "action": "Make decision",
+          "details": "If unused: recommend removal. If used: plan implementation."
+        },
+        {
+          "step": 4,
+          "action": "Document decision",
+          "details": "Add note to this sprint file with rationale"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Usage of skipZeros parameter analyzed",
+        "Decision made: remove or implement",
+        "Rationale documented"
+      ]
+    },
+    {
+      "id": "1.2.2",
+      "category": "implementation",
+      "title": "Remove skipZeros Parameter (Option A - Recommended)",
+      "description": "Remove skipZeros parameter from deepMap function signature and all call sites.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["src/type/matrix/utils/deepMap.js", "test/unit-tests/type/matrix/utils/deepMap.test.ts"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Clean up unused parameter to simplify API and remove confusion.",
+        "keyDecisions": [
+          "Remove from function signature",
+          "Update TypeScript definitions",
+          "Remove from all call sites",
+          "Delete the skipped test"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Remove parameter from function signature",
+          "code": "// Change from:\nexport function deepMap(array, callback, skipZeros) {\n// To:\nexport function deepMap(array, callback) {"
+        },
+        {
+          "step": 2,
+          "action": "Search for all deepMap calls",
+          "details": "Find all call sites with: grep -r 'deepMap(' src/"
+        },
+        {
+          "step": 3,
+          "action": "Remove skipZeros from call sites",
+          "details": "Update any calls that pass skipZeros parameter"
+        },
+        {
+          "step": 4,
+          "action": "Update TypeScript definitions",
+          "details": "Remove skipZeros from types/index.d.ts if present"
+        },
+        {
+          "step": 5,
+          "action": "Delete skipped test",
+          "details": "Remove the entire test at line 98 in deepMap.test.ts"
+        },
+        {
+          "step": 6,
+          "action": "Update HISTORY.md",
+          "code": "## Breaking Changes\n\n- `deepMap`: Removed unused `skipZeros` parameter from function signature"
+        }
+      ],
+      "acceptanceCriteria": [
+        "skipZeros parameter removed from function",
+        "All call sites updated",
+        "TypeScript definitions updated",
+        "Test deleted (not just skipped)",
+        "HISTORY.md updated with breaking change note",
+        "All deepMap tests pass"
+      ]
+    },
+    {
+      "id": "1.2.3",
+      "category": "implementation",
+      "title": "Implement skipZeros Feature (Option B - If Needed)",
+      "description": "Implement zero-skipping logic if analysis shows the feature is needed.",
+      "status": "pending",
+      "estimatedHours": 4.0,
+      "agent": "claude",
+      "files": ["src/type/matrix/utils/deepMap.js"],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Add working skipZeros functionality if required.",
+        "keyDecisions": [
+          "Add conditional check before callback",
+          "Handle different zero types (0, 0.0, null)",
+          "Optimize for sparse matrices"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add zero check before callback",
+          "code": "if (skipZeros && value === 0) {\n  return value // Skip callback for zeros\n}\nreturn callback(value)"
+        },
+        {
+          "step": 2,
+          "action": "Handle edge cases",
+          "details": "Consider: negative zero, BigNumber zero, null vs 0"
+        },
+        {
+          "step": 3,
+          "action": "Enable test",
+          "details": "Change it.skip to it on line 98"
+        },
+        {
+          "step": 4,
+          "action": "Add more test cases",
+          "details": "Test with dense/sparse matrices, different zero types"
+        }
+      ],
+      "acceptanceCriteria": [
+        "skipZeros parameter works correctly",
+        "Callback not called for zero values when enabled",
+        "All zero types handled (0, -0, null)",
+        "Test passes",
+        "Documentation updated"
+      ]
+    },
+    {
+      "id": "1.2.4",
+      "category": "verification",
+      "title": "Verify rationalize Iteration Limit Fix",
+      "description": "Check if iteration limit was already added in recent commits. If so, enable test with timeout.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": ["src/function/algebra/rationalize.js", "test/unit-tests/function/algebra/rationalize.test.ts"],
+      "testCategories": ["unit", "performance"],
+      "implementation": {
+        "purpose": "Recent commits added iteration limit to rationalize. Verify this fixes the performance issue.",
+        "keyDecisions": [
+          "Check git log for rationalize changes",
+          "Verify iteration limit implementation",
+          "Try enabling test with reasonable timeout",
+          "If still too slow, document performance limitation"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Check git history",
+          "details": "git log --all --oneline -- src/function/algebra/rationalize.js"
+        },
+        {
+          "step": 2,
+          "action": "Review recent rationalize changes",
+          "details": "Look for iteration limit or maxIterations implementation"
+        },
+        {
+          "step": 3,
+          "action": "Try enabling test with timeout",
+          "code": "it('processes a really complex expression', function () {\n  this.timeout(10000) // 10 second timeout\n  // ... test code\n})"
+        },
+        {
+          "step": 4,
+          "action": "If test passes: Enable it",
+          "details": "Remove it.skip, add timeout, remove TODO comment"
+        },
+        {
+          "step": 5,
+          "action": "If test still fails: Document limitation",
+          "code": "it.skip('processes a really complex expression', function () {\n  // NOTE: This test is skipped due to O(2^n) complexity on deeply nested expressions.\n  // The iteration limit prevents infinite loops but doesn't solve exponential time.\n  // See: docs/architecture/RATIONALIZE_PERFORMANCE.md\n})"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Git history reviewed for rationalize changes",
+        "Iteration limit implementation verified",
+        "Test either passes with timeout OR documented with performance note",
+        "If skipped: Clear explanation of why",
+        "If enabled: Reasonable timeout set"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "skipZeros decision made and implemented",
+    "rationalize performance verified",
+    "1-2 skipped tests resolved (deepMap + possibly rationalize)",
+    "Breaking changes documented in HISTORY.md if applicable",
+    "No regressions in existing tests"
+  ],
+  "filesCreated": [],
+  "filesModified": [
+    "src/type/matrix/utils/deepMap.js",
+    "src/function/algebra/rationalize.js",
+    "test/unit-tests/type/matrix/utils/deepMap.test.ts",
+    "test/unit-tests/function/algebra/rationalize.test.ts",
+    "docs/migration/HISTORY.md"
+  ],
+  "totalNewTests": 0,
+  "testsFixed": 2,
+  "totalEstimatedHours": 8.0,
+  "dependencies": [],
+  "notes": [
+    "DECISION POINT: Choose Option A (remove skipZeros) or Option B (implement it)",
+    "Recommend Option A unless usage analysis shows it's needed",
+    "rationalize may already be fixed - verify before implementing",
+    "If rationalize still too slow, document algorithmic limitation"
+  ]
+}

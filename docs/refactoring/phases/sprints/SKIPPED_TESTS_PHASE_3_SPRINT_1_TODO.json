@@ -1,0 +1,158 @@
+{
+  "phase": 3,
+  "sprint": 1,
+  "title": "BigNumber Precision Policy Decision",
+  "priority": "MEDIUM",
+  "effort": "2 hours",
+  "status": "pending",
+  "impact": "Establishes architectural policy for BigNumber precision preservation across operations. This decision guides implementation for 6 skipped tests involving BigNumber-Unit multiplication, BigNumber modulo, and quantileSeq type consistency.",
+  "targetMetrics": {
+    "policyClarity": {
+      "current": "No clear policy on BigNumber precision in mixed-type operations",
+      "target": "Documented policy with rationale and implementation guidelines"
+    },
+    "userExpectation": {
+      "current": "BigNumber operations unpredictably lose precision",
+      "target": "Clear, consistent behavior that matches user intent"
+    }
+  },
+  "tasks": [
+    {
+      "id": "3.1.1",
+      "category": "architecture",
+      "title": "Research BigNumber Precision Tradeoffs",
+      "description": "Analyze the tradeoffs between preserving BigNumber precision vs converting to regular numbers in mixed-type operations.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["architecture"],
+      "implementation": {
+        "purpose": "Make an informed decision about BigNumber precision preservation. This affects user expectations, API consistency, performance, and backward compatibility.",
+        "keyDecisions": [
+          "Should BigNumber × Unit preserve BigNumber precision?",
+          "Should mixed-type operations prefer precision or simplicity?",
+          "What are the performance implications?",
+          "Is this a breaking change?"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Document current behavior and issues",
+          "details": "Current: multiply(bignumber(2), unit('5 mm')) converts BigNumber to number, losing precision. TODO comment says: 'TODO: cleanup once decided to not downgrade BigNumber to number'. This suggests intention was always to preserve precision."
+        },
+        {
+          "step": 2,
+          "action": "Analyze Option A: Always preserve BigNumber precision",
+          "code": "// Option A: Preserve BigNumber (RECOMMENDED)\n\nPros:\n- Matches user intent (if they created BigNumber, they want precision)\n- Consistent with math.js philosophy of type preservation\n- Prevents silent precision loss\n- Makes BigNumber config actually useful\n\nCons:\n- May surprise users expecting simple number results\n- Slightly more complex implementation\n- Unit operations become BigNumber-aware\n\nExample:\nmultiply(bignumber(2), unit('5 mm'))\n// Returns: Unit(BigNumber(10), 'mm')\n// Precision preserved!\n\nImpact:\n- 4 tests fixed (multiply × Unit)\n- User expectations aligned\n- Type consistency improved\n\nImplementation complexity: LOW\nBreaking change: NO (improves existing behavior)\nPerformance impact: NEGLIGIBLE\n\nVERDICT: RECOMMENDED - aligns with user intent and math.js philosophy"
+        },
+        {
+          "step": 3,
+          "action": "Analyze Option B: Downgrade to number (current behavior)",
+          "code": "// Option B: Keep current behavior (downgrade to number)\n\nPros:\n- No implementation needed\n- Simpler mental model (Units always have number values)\n- Potentially faster\n\nCons:\n- Silent precision loss\n- Breaks user expectations\n- Makes BigNumber config less useful\n- Inconsistent with type preservation philosophy\n- Tests remain skipped (issue unresolved)\n\nExample:\nmultiply(bignumber(2), unit('5 mm'))\n// Returns: Unit(10, 'mm')  <- Lost BigNumber precision!\n\nVERDICT: NOT RECOMMENDED - defeats purpose of BigNumber"
+        },
+        {
+          "step": 4,
+          "action": "Analyze Option C: Make configurable",
+          "code": "// Option C: Add config.preserveBigNumberPrecision flag\n\nPros:\n- Maximum flexibility\n- Users can choose behavior\n- No breaking changes\n\nCons:\n- Adds complexity\n- Another config option to maintain\n- Users may not know which to choose\n- Over-engineering for edge case\n\nVERDICT: NOT RECOMMENDED - unnecessary complexity"
+        },
+        {
+          "step": 5,
+          "action": "Research similar libraries",
+          "details": "Check how other libraries handle this: NumPy (preserves precision), SymPy (preserves types), JavaScript BigInt (strict typing). Conclusion: Precision preservation is standard practice."
+        },
+        {
+          "step": 6,
+          "action": "Document performance implications",
+          "details": "BigNumber operations are ~10x slower than number operations, but this is already accepted by users who choose BigNumber. No additional performance penalty from preserving type in mixed operations."
+        }
+      ],
+      "acceptanceCriteria": [
+        "All three options analyzed with pros/cons",
+        "Performance implications documented",
+        "Backward compatibility assessed",
+        "User expectation alignment evaluated",
+        "Similar library behavior researched",
+        "Clear recommendation with rationale"
+      ]
+    },
+    {
+      "id": "3.1.2",
+      "category": "architecture",
+      "title": "Create BigNumber Precision Policy Document",
+      "description": "Write comprehensive policy document explaining the decision, rationale, implementation guidelines, and migration notes.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [
+        "docs/architecture/BIGNUMBER_PRECISION_POLICY.md"
+      ],
+      "testCategories": ["documentation"],
+      "implementation": {
+        "purpose": "Create a reference document that guides all future BigNumber implementation decisions. This ensures consistency across the codebase and provides clear guidance for contributors.",
+        "keyDecisions": [
+          "Document chosen policy (recommended: preserve precision)",
+          "Provide implementation patterns",
+          "List affected operations",
+          "Define edge case handling"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Create policy document structure",
+          "code": "# BigNumber Precision Preservation Policy\n\n**Status:** Approved\n**Date:** 2026-01-17\n**Decision:** PRESERVE BigNumber precision in all mixed-type operations\n\n## Overview\n\nWhen BigNumber instances are used in operations with other types (Units, regular numbers, etc.), the result should preserve BigNumber precision whenever mathematically valid.\n\n## Rationale\n\n1. **User Intent:** If a user creates a BigNumber, they explicitly want arbitrary precision arithmetic\n2. **Type Consistency:** Math.js philosophy is to preserve input types through operations\n3. **No Silent Loss:** Converting BigNumber → number loses precision without warning\n4. **Config Alignment:** Makes config.number='BigNumber' actually useful\n5. **Industry Standard:** NumPy, SymPy, and other libraries preserve precision\n\n## Policy Statement\n\n**POLICY:** All operations involving BigNumber inputs MUST preserve BigNumber precision in the result, unless mathematically impossible or explicitly converted by the user.\n\n## Examples\n\n### Correct (Preserve Precision)\n```javascript\nmultiply(bignumber(2), unit('5 mm'))\n// ✓ Returns: Unit(BigNumber(10), 'mm')\n\nadd(bignumber('1e100'), 5)\n// ✓ Returns: BigNumber('1.00000000000000000005e100')\n\nmod(bignumber(7), bignumber(3))\n// ✓ Returns: BigNumber(1)\n```\n\n### Incorrect (Precision Loss)\n```javascript\nmultiply(bignumber(2), unit('5 mm'))\n// ✗ Returns: Unit(10, 'mm')  <- Lost BigNumber!\n```\n\n## Implementation Guidelines\n\n### Pattern 1: Explicit BigNumber Signatures\nAdd typed-function signatures for BigNumber combinations:\n\n```javascript\ntyped('multiply', {\n  'BigNumber, Unit': (x, y) => {\n    if (y.value === null) {\n      return new Unit(x.clone(), y.unit)\n    }\n    return new Unit(x.times(y.value), y.unit)\n  },\n  'Unit, BigNumber': (x, y) => {\n    if (x.value === null) {\n      return new Unit(y.clone(), x.unit)\n    }\n    return new Unit(x.value.times(y), x.unit)\n  }\n})\n```\n\n### Pattern 2: Type Preservation in Conversions\nWhen converting types, check if inputs are BigNumber:\n\n```javascript\nfunction someOperation(arr, param) {\n  // If array contains BigNumber, convert param to BigNumber\n  if (isBigNumber(arr[0]) && !isBigNumber(param)) {\n    param = new BigNumber(param)\n  }\n  // ... proceed with operation\n}\n```\n\n### Pattern 3: Unit Class BigNumber Support\nUpdate classes to support BigNumber values:\n\n```javascript\nclass Unit {\n  constructor(value, unit) {\n    // Accept BigNumber values\n    if (isBigNumber(value)) {\n      this.value = value.clone()\n    } else {\n      this.value = value\n    }\n    this.unit = unit\n  }\n}\n```\n\n## Affected Operations\n\nOperations that MUST preserve BigNumber precision:\n- Arithmetic: add, subtract, multiply, divide, mod, pow\n- Unit operations: multiply/divide with Units\n- Array operations: sum, prod, mean, median, quantile\n- Matrix operations: all element-wise operations\n\n## Edge Cases\n\n### 1. Fractional Modulo\nBigNumber modulo with fractions may not be mathematically defined:\n```javascript\nmod(bignumber(7).div(3), bignumber(1).div(3))\n// Decision: Throw clear error or implement if BigNumber.js supports it\n```\n\n### 2. Mixed Types in Arrays\n```javascript\nsum([bignumber(1), 2, 3])\n// Decision: First element determines type, convert others to match\n```\n\n## Migration Notes\n\n**Breaking Change:** NO\n\nThis is a bug fix that improves existing behavior. Users who relied on precision loss (unlikely) can explicitly convert:\n\n```javascript\n// If precision loss was desired (rare):\nconst result = number(multiply(bignumber(2), unit('5 mm')))\n```\n\n## Testing Requirements\n\nAll functions handling BigNumber MUST:\n1. Test BigNumber input preservation\n2. Test mixed-type operations\n3. Verify no precision loss\n4. Test with config.number='BigNumber'\n\n## Related Documents\n\n- SKIPPED_TESTS_RESOLUTION_PLAN.md (Phase 3)\n- CONFIG_PROPAGATION_DESIGN.md\n- HISTORY.md (update when implementing)\n\n## References\n\n- BigNumber.js documentation: https://mikemcl.github.io/bignumber.js/\n- Math.js type system: types/index.d.ts\n- Typed-function: https://github.com/josdejong/typed-function"
+        },
+        {
+          "step": 2,
+          "action": "Review policy with stakeholders",
+          "details": "Share document for review. Ensure alignment with math.js philosophy and user expectations."
+        },
+        {
+          "step": 3,
+          "action": "Add policy to documentation index",
+          "details": "Link from docs/architecture/README.md and mention in CONTRIBUTING.md"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Policy document created at docs/architecture/BIGNUMBER_PRECISION_POLICY.md",
+        "Clear policy statement: PRESERVE precision",
+        "Rationale section with 5+ reasons",
+        "Implementation patterns with code examples",
+        "Edge cases documented with handling strategies",
+        "Migration notes confirm no breaking change",
+        "Testing requirements specified",
+        "Examples show correct vs incorrect patterns"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "Both tasks completed",
+    "Policy decision made: PRESERVE BigNumber precision",
+    "Comprehensive policy document created",
+    "Implementation patterns documented",
+    "Edge cases identified and handling specified",
+    "Stakeholder approval obtained",
+    "Ready to implement in subsequent sprints"
+  ],
+  "filesCreated": [
+    "docs/architecture/BIGNUMBER_PRECISION_POLICY.md"
+  ],
+  "filesModified": [
+    "docs/architecture/README.md",
+    "CONTRIBUTING.md"
+  ],
+  "testsFixed": 0,
+  "totalNewTests": 0,
+  "totalEstimatedHours": 2,
+  "dependencies": [],
+  "notes": [
+    "CRITICAL: This policy guides all Phase 3 implementation work",
+    "Recommended decision: PRESERVE precision (Option A)",
+    "This is NOT a breaking change - it's a bug fix",
+    "Policy applies to all 6 BigNumber precision tests",
+    "Document should be reviewed before starting Sprint 3.2",
+    "TODO comments in multiply.test.ts confirm original intent was to preserve precision"
+  ]
+}

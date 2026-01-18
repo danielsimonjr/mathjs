@@ -1,0 +1,239 @@
+{
+  "phase": 3,
+  "sprint": 2,
+  "title": "BigNumber-Unit Multiplication",
+  "priority": "MEDIUM",
+  "effort": "6 hours",
+  "status": "pending",
+  "impact": "Implements BigNumber precision preservation for Unit multiplication operations. Fixes 4 skipped tests (2 unique × 2 file versions) and enables high-precision unit calculations.",
+  "targetMetrics": {
+    "testsFixed": {
+      "current": "4 tests skipped (multiply BigNumber×Unit)",
+      "target": "All 4 tests passing"
+    },
+    "precisionPreservation": {
+      "current": "BigNumber downgraded to number in Unit operations",
+      "target": "BigNumber precision preserved in Unit value"
+    }
+  },
+  "tasks": [
+    {
+      "id": "3.2.1",
+      "category": "implementation",
+      "title": "Update multiply Function for BigNumber-Unit Operations",
+      "description": "Add explicit typed-function signatures for BigNumber×Unit and Unit×BigNumber multiplication that preserve BigNumber precision.",
+      "status": "pending",
+      "estimatedHours": 3.0,
+      "agent": "claude",
+      "files": [
+        "src/function/arithmetic/multiply.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Enable multiply function to preserve BigNumber precision when multiplying BigNumbers with Units. This implements the policy established in Sprint 3.1 and fixes TODO comment about BigNumber downgrade.",
+        "keyDecisions": [
+          "Add explicit 'BigNumber, Unit' and 'Unit, BigNumber' signatures",
+          "Use BigNumber.times() for multiplication (preserves precision)",
+          "Clone BigNumber values to avoid mutation",
+          "Handle valueless units (e.g., unit('mm') without numeric value)"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Locate multiply typed-function definition",
+          "details": "Find the typed('multiply', {...}) definition in src/function/arithmetic/multiply.js"
+        },
+        {
+          "step": 2,
+          "action": "Add BigNumber, Unit signature",
+          "code": "// In src/function/arithmetic/multiply.js\n// Add these signatures to the typed-function definition\n\ntyped('multiply', {\n  // ... existing signatures ...\n  \n  // NEW: BigNumber × Unit\n  'BigNumber, Unit': function (x, y) {\n    // Handle valueless unit (e.g., unit('mm'))\n    if (y.value === null) {\n      // Create unit with BigNumber value and y's unit\n      return new Unit(x.clone(), y.unit)\n    }\n    \n    // Multiply BigNumber by unit's value\n    // Use BigNumber.times() to preserve precision\n    const resultValue = x.times(y.value)\n    return new Unit(resultValue, y.unit)\n  },\n  \n  // NEW: Unit × BigNumber (commutative)\n  'Unit, BigNumber': function (x, y) {\n    // Handle valueless unit\n    if (x.value === null) {\n      return new Unit(y.clone(), x.unit)\n    }\n    \n    // Multiply unit's value by BigNumber\n    const resultValue = x.value.times(y)\n    return new Unit(resultValue, x.unit)\n  },\n  \n  // ... rest of signatures ...\n})"
+        },
+        {
+          "step": 3,
+          "action": "Verify Unit class supports BigNumber values",
+          "details": "Check src/type/unit/Unit.js constructor. If it doesn't already support BigNumber values, this will be addressed in task 3.2.2"
+        },
+        {
+          "step": 4,
+          "action": "Add import for Unit type checking if needed",
+          "code": "// At top of multiply.js, verify these imports exist:\nimport { isUnit } from '../../utils/is.js'\n// Or wherever type checking utilities are imported from"
+        },
+        {
+          "step": 5,
+          "action": "Test manually",
+          "details": "Create quick test script to verify: math.multiply(math.bignumber(2), math.unit('5 mm'))"
+        }
+      ],
+      "acceptanceCriteria": [
+        "'BigNumber, Unit' signature added to multiply typed-function",
+        "'Unit, BigNumber' signature added (commutative case)",
+        "Valueless units handled correctly (value === null case)",
+        "BigNumber.times() used for multiplication (preserves precision)",
+        "BigNumber.clone() used to avoid mutation",
+        "Result is Unit with BigNumber value",
+        "Manual testing confirms precision preserved"
+      ]
+    },
+    {
+      "id": "3.2.2",
+      "category": "implementation",
+      "title": "Update Unit Class to Support BigNumber Values",
+      "description": "Ensure Unit class constructor, toString, valueOf, and other methods properly handle BigNumber values.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "src/type/unit/Unit.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Make Unit class fully compatible with BigNumber values. This ensures Units can store and display BigNumber values without precision loss or type errors.",
+        "keyDecisions": [
+          "Constructor should accept and store BigNumber values",
+          "toString() should handle BigNumber display",
+          "valueOf() should return BigNumber when appropriate",
+          "Comparison methods should work with BigNumber"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Review Unit constructor",
+          "details": "Check if Unit constructor already handles BigNumber. Look for type checks or conversions."
+        },
+        {
+          "step": 2,
+          "action": "Update constructor if needed",
+          "code": "// In src/type/unit/Unit.js constructor\n\nclass Unit {\n  constructor(value, unit) {\n    // Store value as-is if it's BigNumber\n    // Don't convert to number!\n    if (isBigNumber(value)) {\n      this.value = value.clone() // Clone to avoid mutation\n    } else if (value === null || value === undefined) {\n      this.value = null\n    } else {\n      this.value = value // number, Fraction, Complex, etc.\n    }\n    \n    this.unit = unit\n    // ... rest of constructor\n  }\n}"
+        },
+        {
+          "step": 3,
+          "action": "Update toString method",
+          "code": "// Ensure toString() handles BigNumber correctly\n\ntoString() {\n  let valueStr\n  \n  if (this.value === null) {\n    valueStr = ''\n  } else if (isBigNumber(this.value)) {\n    // Use BigNumber's toString (handles precision correctly)\n    valueStr = this.value.toString()\n  } else {\n    valueStr = String(this.value)\n  }\n  \n  return valueStr + ' ' + this.unit\n}"
+        },
+        {
+          "step": 4,
+          "action": "Update valueOf method",
+          "code": "// Ensure valueOf() preserves BigNumber type\n\nvalueOf() {\n  if (this.value === null) {\n    return null\n  }\n  \n  // Return value as-is (including BigNumber)\n  // Don't convert to number!\n  return this.value\n}"
+        },
+        {
+          "step": 5,
+          "action": "Check comparison methods",
+          "details": "Review equals(), compare() and other comparison methods. Ensure they handle BigNumber values correctly using BigNumber comparison methods."
+        },
+        {
+          "step": 6,
+          "action": "Add isBigNumber import if needed",
+          "code": "import { isBigNumber } from '../../utils/is.js'"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Unit constructor accepts BigNumber values",
+        "BigNumber values cloned to prevent mutation",
+        "toString() correctly displays BigNumber values",
+        "valueOf() returns BigNumber without conversion",
+        "Comparison methods work with BigNumber",
+        "No type errors when creating Unit(BigNumber, 'mm')",
+        "Precision preserved through all operations"
+      ]
+    },
+    {
+      "id": "3.2.3",
+      "category": "testing",
+      "title": "Enable and Verify BigNumber-Unit Tests",
+      "description": "Remove it.skip from 4 affected tests and verify BigNumber precision is preserved in Unit multiplication.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [
+        "test/unit-tests/function/arithmetic/multiply.test.ts",
+        "test/unit-tests/function/arithmetic/multiply.test.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Verify that multiply correctly preserves BigNumber precision in Unit operations. This validates the implementation and resolves the TODO comment.",
+        "keyDecisions": [
+          "Enable tests in both JS and TS versions",
+          "Remove TODO comment about BigNumber downgrade decision",
+          "Verify result type is Unit with BigNumber value",
+          "Test both valued and valueless units"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Enable first test (line 328)",
+          "code": "// In multiply.test.ts and multiply.test.js\n// BEFORE:\nit.skip('should multiply a bignumber and a unit correctly', function () {\n  // TODO: cleanup once decided to not downgrade BigNumber to number\n  \n// AFTER:\nit('should multiply a bignumber and a unit correctly', function () {\n  const result = multiply(bignumber(2), unit('5 mm'))\n  \n  // Verify result is a Unit\n  assert.strictEqual(result.constructor.name, 'Unit')\n  \n  // Verify value is BigNumber (not downgraded to number)\n  assert.strictEqual(result.value.constructor.name, 'BigNumber')\n  \n  // Verify calculation is correct\n  assert.deepStrictEqual(result.value, bignumber(10))\n  assert.strictEqual(result.unit.toString(), 'mm')\n  \n  // Verify toString works\n  assert.strictEqual(result.toString(), '10 mm')\n})"
+        },
+        {
+          "step": 2,
+          "action": "Enable second test (line 346)",
+          "code": "// BEFORE:\nit.skip('should multiply a bignumber and a unit without value correctly', function () {\n  // TODO: cleanup once decided to not downgrade BigNumber to number\n  \n// AFTER:\nit('should multiply a bignumber and a unit without value correctly', function () {\n  const result = multiply(bignumber(2), unit('mm'))\n  \n  // Verify result is a Unit\n  assert.strictEqual(result.constructor.name, 'Unit')\n  \n  // Verify value is BigNumber\n  assert.strictEqual(result.value.constructor.name, 'BigNumber')\n  \n  // Verify the BigNumber value is 2\n  assert.deepStrictEqual(result.value, bignumber(2))\n  \n  // Verify unit is 'mm'\n  assert.strictEqual(result.unit.toString(), 'mm')\n  assert.strictEqual(result.toString(), '2 mm')\n})"
+        },
+        {
+          "step": 3,
+          "action": "Delete TODO comments",
+          "details": "Remove all TODO comments about 'cleanup once decided to not downgrade BigNumber to number' - decision has been made and implemented"
+        },
+        {
+          "step": 4,
+          "action": "Add test for commutative case",
+          "code": "// Add new test for Unit × BigNumber\nit('should multiply a unit and a bignumber correctly (commutative)', function () {\n  const result = multiply(unit('5 mm'), bignumber(2))\n  \n  assert.strictEqual(result.value.constructor.name, 'BigNumber')\n  assert.deepStrictEqual(result.value, bignumber(10))\n  assert.strictEqual(result.toString(), '10 mm')\n})"
+        },
+        {
+          "step": 5,
+          "action": "Run multiply test suite",
+          "details": "Execute: npm test -- --grep 'multiply.*bignumber.*unit'"
+        },
+        {
+          "step": 6,
+          "action": "Run full test suite",
+          "details": "Execute: npm run test:src to ensure no regressions"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Both it.skip changed to it (lines 328 and 346)",
+        "TODO comments removed",
+        "Test 1 verifies multiply(BigNumber, Unit) with valued unit",
+        "Test 2 verifies multiply(BigNumber, Unit) with valueless unit",
+        "Both tests verify result.value is BigNumber (not number)",
+        "Both tests verify correct calculation",
+        "Optional: New test for Unit × BigNumber (commutative)",
+        "All 4 tests pass (2 original + 2 duplicate in JS/TS)",
+        "No regressions in full test suite"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "All three tasks completed successfully",
+    "multiply function has BigNumber×Unit signatures",
+    "Unit class supports BigNumber values",
+    "All 4 skipped tests enabled and passing",
+    "BigNumber precision preserved in all cases",
+    "TODO comments about downgrade decision removed",
+    "No regressions in existing tests"
+  ],
+  "filesCreated": [],
+  "filesModified": [
+    "src/function/arithmetic/multiply.js",
+    "src/type/unit/Unit.js",
+    "test/unit-tests/function/arithmetic/multiply.test.ts",
+    "test/unit-tests/function/arithmetic/multiply.test.js"
+  ],
+  "testsFixed": 4,
+  "totalNewTests": 1,
+  "totalEstimatedHours": 6,
+  "dependencies": [
+    "SKIPPED_TESTS_PHASE_3_SPRINT_1_TODO.json (policy must be established)"
+  ],
+  "notes": [
+    "This implements the BigNumber precision preservation policy",
+    "Fixes TODO comment: 'cleanup once decided to not downgrade BigNumber to number'",
+    "Decision: DO NOT downgrade - preserve BigNumber precision",
+    "Unit class changes are non-breaking (adds support, doesn't remove)",
+    "Consider extending to divide, add, subtract with Units in future",
+    "Update HISTORY.md with bug fix note",
+    "This is a user-visible improvement - highlight in release notes"
+  ]
+}

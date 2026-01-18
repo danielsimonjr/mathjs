@@ -1,0 +1,241 @@
+{
+  "phase": 3,
+  "sprint": 4,
+  "title": "quantileSeq Type Consistency",
+  "priority": "MEDIUM",
+  "effort": "6 hours",
+  "status": "pending",
+  "impact": "Fixes type consistency in quantileSeq function to preserve BigNumber types in results and handle matrix outputs correctly. Fixes 2 skipped tests (JS/TS versions).",
+  "targetMetrics": {
+    "testsFixed": {
+      "current": "2 tests skipped (quantileSeq type consistency)",
+      "target": "Both tests passing"
+    },
+    "typeConsistency": {
+      "current": "BigNumber arrays with number probability return number results",
+      "target": "Result type matches input array type (BigNumber preserved)"
+    }
+  },
+  "tasks": [
+    {
+      "id": "3.4.1",
+      "category": "investigation",
+      "title": "Analyze Current quantileSeq Implementation",
+      "description": "Investigate how quantileSeq currently handles type conversion and identify where BigNumber type is lost.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [
+        "src/function/statistics/quantileSeq.js"
+      ],
+      "testCategories": ["research"],
+      "implementation": {
+        "purpose": "Understand the current quantileSeq implementation to identify where type coercion happens and why BigNumber types are lost. This analysis determines the fix approach.",
+        "keyDecisions": [
+          "Where does number probability convert BigNumber array elements?",
+          "How is interpolation performed (may cause type loss)?",
+          "Is this a new issue or was it always broken?",
+          "Can we auto-convert probability to match array type?"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Read quantileSeq implementation",
+          "details": "Locate and read src/function/statistics/quantileSeq.js. Understand the algorithm: sort array, find position based on probability, interpolate if needed."
+        },
+        {
+          "step": 2,
+          "action": "Trace type flow",
+          "code": "// Trace what happens with:\nquantileSeq([bignumber(1), bignumber(2), bignumber(3)], 0.5)\n\n// 1. Sort array (preserves BigNumber types)\n// 2. Calculate position: index = prob * (n-1) = 0.5 * 2 = 1\n// 3. Get element at index 1: bignumber(2)\n// 4. If interpolation needed:\n//    lerp = lower + (upper - lower) * fraction\n//    Problem: arithmetic with number probability may convert to number!\n\n// Find where type conversion happens"
+        },
+        {
+          "step": 3,
+          "action": "Check recent changes",
+          "details": "Review git history for quantileSeq. The test comment says this 'may be fixed already' - check if recent commits addressed type preservation."
+        },
+        {
+          "step": 4,
+          "action": "Test current behavior manually",
+          "code": "// Quick test script:\nconst math = require('mathjs')\nconst result = math.quantileSeq(\n  [math.bignumber(1), math.bignumber(2), math.bignumber(3)],\n  0.5\n)\nconsole.log('Result:', result)\nconsole.log('Type:', result.constructor.name)\nconsole.log('Expected: BigNumber, Got:', result.constructor.name)\n\n// Determine if:\n// - Already fixed (constructor.name === 'BigNumber')\n// - Still broken (constructor.name === 'Number')\n// - Partially working"
+        },
+        {
+          "step": 5,
+          "action": "Document findings",
+          "code": "// Analysis Results:\n\n// Issue Location: [Identify specific line/function]\n// Root Cause: [Why type is lost]\n// Current Behavior: [Test result]\n// Fix Approach:\n//   Option A: Auto-convert probability to BigNumber when array is BigNumber\n//   Option B: Use typed arithmetic that preserves types\n//   Option C: Already fixed - just enable test\n\n// Recommendation: [Chosen approach with rationale]"
+        }
+      ],
+      "acceptanceCriteria": [
+        "quantileSeq implementation thoroughly reviewed",
+        "Type flow traced from input to output",
+        "Current behavior tested and documented",
+        "Root cause of type loss identified",
+        "Fix approach determined with rationale",
+        "Verification if recent commits already fixed this"
+      ]
+    },
+    {
+      "id": "3.4.2",
+      "category": "implementation",
+      "title": "Fix BigNumber Type Preservation in quantileSeq",
+      "description": "Implement type-aware probability handling to preserve BigNumber types in quantileSeq results.",
+      "status": "pending",
+      "estimatedHours": 3.0,
+      "agent": "claude",
+      "files": [
+        "src/function/statistics/quantileSeq.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Modify quantileSeq to preserve input array types in results. When array contains BigNumber, ensure result is also BigNumber even when probability is a regular number.",
+        "keyDecisions": [
+          "Auto-convert number probability to BigNumber when array is BigNumber",
+          "Use typed arithmetic operations (add, multiply, etc.) instead of operators",
+          "Handle interpolation without type coercion",
+          "Preserve behavior for non-BigNumber arrays"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Add type detection",
+          "code": "// At start of quantileSeq function:\n\nfunction quantileSeq(data, probOrOptions, options) {\n  // ... existing parameter handling ...\n  \n  // Detect if data contains BigNumber\n  const isBigNumberData = data.length > 0 && isBigNumber(data[0])\n  \n  // Convert probability to match data type\n  if (isBigNumberData && typeof prob === 'number') {\n    prob = new BigNumber(prob)\n  }\n  \n  // ... rest of function ...\n}"
+        },
+        {
+          "step": 2,
+          "action": "Use typed arithmetic for calculations",
+          "code": "// When calculating interpolation, use typed functions instead of operators:\n\n// BEFORE (loses type):\nconst result = lower + (upper - lower) * fraction\n\n// AFTER (preserves type):\nconst result = add(\n  lower,\n  multiply(subtract(upper, lower), fraction)\n)\n\n// This uses typed-function versions which preserve BigNumber"
+        },
+        {
+          "step": 3,
+          "action": "Handle index calculation carefully",
+          "code": "// Index calculation with BigNumber probability:\n\nif (isBigNumber(prob)) {\n  // Use BigNumber arithmetic for position calculation\n  const position = prob.times(data.length - 1)\n  const index = position.floor().toNumber() // Convert to number for array indexing\n  const fraction = position.minus(index) // Keep fraction as BigNumber\n  \n  // ... use index and fraction ...\n} else {\n  // Original number-based calculation\n  const position = prob * (data.length - 1)\n  const index = Math.floor(position)\n  const fraction = position - index\n}"
+        },
+        {
+          "step": 4,
+          "action": "Ensure all arithmetic preserves types",
+          "code": "// Example interpolation with type preservation:\n\nfunction interpolate(lower, upper, fraction) {\n  // Detect types\n  const useBigNumber = isBigNumber(lower) || isBigNumber(upper) || isBigNumber(fraction)\n  \n  if (useBigNumber) {\n    // Convert all to BigNumber if any is BigNumber\n    const l = isBigNumber(lower) ? lower : new BigNumber(lower)\n    const u = isBigNumber(upper) ? upper : new BigNumber(upper)\n    const f = isBigNumber(fraction) ? fraction : new BigNumber(fraction)\n    \n    // Compute: lower + (upper - lower) * fraction\n    return l.plus(u.minus(l).times(f))\n  }\n  \n  // Regular number arithmetic\n  return lower + (upper - lower) * fraction\n}"
+        },
+        {
+          "step": 5,
+          "action": "Add isBigNumber import if needed",
+          "code": "import { isBigNumber } from '../../utils/is.js'"
+        },
+        {
+          "step": 6,
+          "action": "Test implementation manually",
+          "details": "Test with BigNumber array and number probability to verify type preservation"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Type detection added for BigNumber arrays",
+        "Number probability auto-converts to BigNumber when needed",
+        "All arithmetic operations preserve BigNumber types",
+        "Interpolation uses typed arithmetic",
+        "Index calculation handles BigNumber correctly",
+        "Non-BigNumber arrays work as before (no regression)",
+        "Manual testing confirms type preservation"
+      ]
+    },
+    {
+      "id": "3.4.3",
+      "category": "testing",
+      "title": "Enable and Verify quantileSeq Tests",
+      "description": "Remove it.skip from quantileSeq type consistency test and verify BigNumber type is preserved.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "test/unit-tests/function/statistics/quantileSeq.test.ts",
+        "test/unit-tests/function/statistics/quantileSeq.test.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Verify that quantileSeq preserves BigNumber types when processing BigNumber arrays with number probabilities. This validates the type-aware implementation.",
+        "keyDecisions": [
+          "Enable test in both JS and TS versions",
+          "Verify result is BigNumber, not number",
+          "Test multiple probability values",
+          "Add edge case tests (interpolation, extremes)"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Enable test (line 119)",
+          "code": "// In quantileSeq.test.ts and quantileSeq.test.js\n// BEFORE:\nit.skip('should return the quantileSeq of an array of bignumbers with number probability', function () {\n  // Note: this may be fixed already\n  \n// AFTER:\nit('should return the quantileSeq of an array of bignumbers with number probability', function () {\n  const data = [\n    bignumber(1),\n    bignumber(2),\n    bignumber(3),\n    bignumber(4),\n    bignumber(5)\n  ]\n  \n  // Test with number probability (not BigNumber)\n  const result = quantileSeq(data, 0.5)\n  \n  // Verify result is BigNumber\n  assert.strictEqual(result.constructor.name, 'BigNumber')\n  \n  // Verify correct value (median)\n  assert.deepStrictEqual(result, bignumber(3))\n})"
+        },
+        {
+          "step": 2,
+          "action": "Add test for interpolation case",
+          "code": "// Test when interpolation is needed:\nit('should preserve BigNumber type when interpolating', function () {\n  const data = [bignumber(1), bignumber(5)]\n  \n  // 0.5 quantile of [1, 5] requires interpolation\n  const result = quantileSeq(data, 0.5)\n  \n  // Verify BigNumber type preserved\n  assert.strictEqual(result.constructor.name, 'BigNumber')\n  \n  // Verify interpolated value: 1 + (5-1)*0.5 = 3\n  assert.deepStrictEqual(result, bignumber(3))\n})"
+        },
+        {
+          "step": 3,
+          "action": "Add test for edge cases",
+          "code": "// Test extreme quantiles:\nit('should preserve BigNumber type for extreme quantiles', function () {\n  const data = [bignumber(1), bignumber(2), bignumber(3)]\n  \n  // Min (0.0 quantile)\n  const min = quantileSeq(data, 0)\n  assert.strictEqual(min.constructor.name, 'BigNumber')\n  assert.deepStrictEqual(min, bignumber(1))\n  \n  // Max (1.0 quantile)\n  const max = quantileSeq(data, 1)\n  assert.strictEqual(max.constructor.name, 'BigNumber')\n  assert.deepStrictEqual(max, bignumber(3))\n})"
+        },
+        {
+          "step": 4,
+          "action": "Remove 'may be fixed already' note",
+          "details": "Delete the note comment since we're now verifying the fix"
+        },
+        {
+          "step": 5,
+          "action": "Run quantileSeq test suite",
+          "details": "Execute: npm test -- --grep 'quantileSeq' to verify all tests pass"
+        },
+        {
+          "step": 6,
+          "action": "Test with different number types",
+          "code": "// Ensure other types still work:\nit('should work with regular number arrays', function () {\n  const result = quantileSeq([1, 2, 3, 4, 5], 0.5)\n  assert.strictEqual(typeof result, 'number')\n  assert.strictEqual(result, 3)\n})\n\nit('should work with Fraction arrays', function () {\n  const data = [fraction(1), fraction(2), fraction(3)]\n  const result = quantileSeq(data, 0.5)\n  assert.strictEqual(result.constructor.name, 'Fraction')\n})"
+        },
+        {
+          "step": 7,
+          "action": "Run full test suite",
+          "details": "Execute: npm run test:src to ensure no regressions"
+        }
+      ],
+      "acceptanceCriteria": [
+        "it.skip changed to it in both test files",
+        "Test verifies result.constructor.name === 'BigNumber'",
+        "Test verifies correct quantile calculation",
+        "Additional test for interpolation case",
+        "Additional test for edge cases (0.0, 1.0 quantiles)",
+        "Tests for other number types (regression check)",
+        "All tests pass in both JS and TS versions",
+        "No regressions in full test suite"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "All three tasks completed",
+    "quantileSeq preserves BigNumber types",
+    "Number probability auto-converts when needed",
+    "2 skipped tests enabled and passing",
+    "Interpolation works without type loss",
+    "No regressions for other number types"
+  ],
+  "filesCreated": [],
+  "filesModified": [
+    "src/function/statistics/quantileSeq.js",
+    "test/unit-tests/function/statistics/quantileSeq.test.ts",
+    "test/unit-tests/function/statistics/quantileSeq.test.js"
+  ],
+  "testsFixed": 2,
+  "totalNewTests": 4,
+  "totalEstimatedHours": 6,
+  "dependencies": [
+    "SKIPPED_TESTS_PHASE_3_SPRINT_1_TODO.json (BigNumber precision policy applies)"
+  ],
+  "notes": [
+    "MILESTONE: This completes Phase 3 - all 6 BigNumber precision tests fixed",
+    "Test comment says 'this may be fixed already' - verify current behavior first",
+    "Type detection pattern: check first element of array",
+    "Use typed arithmetic (add, multiply, subtract) to preserve types",
+    "Consider applying same pattern to other statistical functions (median, percentile)",
+    "Update HISTORY.md with type preservation improvement",
+    "This improves BigNumber config usefulness significantly",
+    "Total Phase 3 impact: 6 tests fixed (4 multiply + 1 mod + 1 quantileSeq × 2 files)"
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "phase": 3,
+  "sprint": 3,
+  "title": "BigNumber Modulo for Fractions",
+  "priority": "MEDIUM",
+  "effort": "4 hours",
+  "status": "pending",
+  "impact": "Resolves BigNumber modulo behavior for fractional operands. Fixes 2 skipped tests (JS/TS versions) by either implementing fractional modulo or documenting the mathematical limitation with clear errors.",
+  "targetMetrics": {
+    "testsFixed": {
+      "current": "2 tests skipped (mod with BigNumber fractions)",
+      "target": "Tests passing or replaced with error expectation tests"
+    },
+    "behaviorClarity": {
+      "current": "Undefined behavior for fractional BigNumber modulo",
+      "target": "Clear behavior: either works or throws descriptive error"
+    }
+  },
+  "tasks": [
+    {
+      "id": "3.3.1",
+      "category": "research",
+      "title": "Research BigNumber Fractional Modulo Support",
+      "description": "Investigate whether BigNumber.js supports modulo operations with fractional operands and research the mathematical definition of modulo for non-integers.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [],
+      "testCategories": ["research"],
+      "implementation": {
+        "purpose": "Determine if fractional modulo is mathematically sound and supported by BigNumber.js. This research drives the implementation decision: support the operation or throw a clear error.",
+        "keyDecisions": [
+          "Is modulo defined for fractional numbers mathematically?",
+          "Does BigNumber.js mod() method support fractions?",
+          "What do other libraries do (NumPy, SymPy, etc.)?",
+          "Should we support it, error on it, or convert to alternative operation?"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Research mathematical definition of fractional modulo",
+          "details": "Modulo is typically defined for integers. For reals: a mod b = a - b * floor(a/b). This IS defined for fractions, though less commonly used. Example: 7.5 mod 2.3 = 7.5 - 2.3*floor(7.5/2.3) = 7.5 - 2.3*3 = 0.6"
+        },
+        {
+          "step": 2,
+          "action": "Check BigNumber.js documentation",
+          "code": "// Test BigNumber.js fractional modulo support:\nconst BigNumber = require('bignumber.js')\n\n// Test 1: Integer modulo (known to work)\nconst a = new BigNumber(7)\nconst b = new BigNumber(3)\nconsole.log(a.mod(b).toString()) // Expected: '1'\n\n// Test 2: Fractional modulo\nconst c = new BigNumber('7').div(3) // 2.333...\nconst d = new BigNumber('1').div(3) // 0.333...\nconsole.log(c.mod(d).toString()) // Does this work?\n\n// Expected result: 0 (since 2.333... = 7 * 0.333...)\n// If this works, BigNumber.js DOES support fractional modulo"
+        },
+        {
+          "step": 3,
+          "action": "Research how other libraries handle fractional modulo",
+          "details": "NumPy: numpy.mod() works with floats. Python: % operator works with floats (uses floor division definition). JavaScript: Number % works with floats. Conclusion: Fractional modulo is standard."
+        },
+        {
+          "step": 4,
+          "action": "Test current mathjs behavior",
+          "code": "// Test what math.js currently does:\nconst math = require('mathjs')\n\n// With regular numbers (should work)\nconsole.log(math.mod(7.5, 2.3)) // Works with numbers\n\n// With BigNumber (currently skipped test)\nconst bn1 = math.bignumber(7).div(3)\nconst bn2 = math.bignumber(1).div(3)\ntry {\n  console.log(math.mod(bn1, bn2).toString())\n} catch (e) {\n  console.log('Error:', e.message)\n}\n\n// Determine if it works, fails, or gives wrong result"
+        },
+        {
+          "step": 5,
+          "action": "Document findings and make recommendation",
+          "code": "// Research Summary:\n\n// 1. Mathematical Definition: ✓ DEFINED for fractions\n//    a mod b = a - b * floor(a/b)\n\n// 2. BigNumber.js Support: [TEST RESULT HERE]\n//    - If mod() works: IMPLEMENT support\n//    - If mod() errors: Need custom implementation or error\n//    - If mod() gives wrong result: Bug to fix\n\n// 3. Industry Standard: ✓ SUPPORTED by NumPy, Python, JavaScript\n\n// 4. Recommendation:\n//    Option A: If BigNumber.js supports it → Enable test, verify correct\n//    Option B: If not supported → Implement using: a.minus(b.times(a.div(b).floor()))\n//    Option C: If mathematically unsound → Throw clear error (unlikely)\n\n// EXPECTED: Option A or B (support it)"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Mathematical definition of fractional modulo researched",
+        "BigNumber.js mod() behavior tested with fractions",
+        "Other library behavior documented (NumPy, Python, JavaScript)",
+        "Current mathjs behavior tested",
+        "Clear recommendation made with rationale",
+        "Test results documented"
+      ]
+    },
+    {
+      "id": "3.3.2",
+      "category": "implementation",
+      "title": "Implement or Document BigNumber Fractional Modulo",
+      "description": "Based on research findings, either enable fractional modulo support or add clear error handling with documentation.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "src/function/arithmetic/mod.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Implement the decision from task 3.3.1. Most likely: verify BigNumber.js mod() works with fractions and enable the feature. Alternatively: implement custom fractional modulo or add validation to throw clear errors.",
+        "keyDecisions": [
+          "If BigNumber.js supports it: Just enable test (likely)",
+          "If needs custom implementation: Use a - b*floor(a/b) formula",
+          "If unsupported: Add validation and clear error message"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Review current mod implementation",
+          "details": "Check src/function/arithmetic/mod.js to see current BigNumber handling"
+        },
+        {
+          "step": 2,
+          "action": "Option A: Verify BigNumber.js mod works (most likely)",
+          "code": "// If research shows BigNumber.js mod() already handles fractions:\n\n// In mod.js - probably already correct!\ntyped('mod', {\n  'BigNumber, BigNumber': function (x, y) {\n    return x.mod(y) // This should work with fractions\n  }\n})\n\n// Action: Just enable the test and verify it passes\n// No code changes needed if BigNumber.js handles it"
+        },
+        {
+          "step": 3,
+          "action": "Option B: Implement custom fractional modulo (if needed)",
+          "code": "// If BigNumber.js mod() doesn't handle fractions:\n\ntyped('mod', {\n  'BigNumber, BigNumber': function (x, y) {\n    // Check if either operand is fractional\n    if (!x.isInt() || !y.isInt()) {\n      // Implement: a mod b = a - b * floor(a/b)\n      const quotient = x.div(y).floor()\n      return x.minus(y.times(quotient))\n    }\n    \n    // Use built-in mod for integers (faster)\n    return x.mod(y)\n  }\n})\n\n// Note: BigNumber.isInt() checks if value is integer"
+        },
+        {
+          "step": 4,
+          "action": "Option C: Add validation and error (if unsupported - unlikely)",
+          "code": "// If fractional modulo is mathematically problematic (very unlikely):\n\ntyped('mod', {\n  'BigNumber, BigNumber': function (x, y) {\n    // Validate: only integers allowed\n    if (!x.isInt() || !y.isInt()) {\n      throw new Error(\n        'BigNumber modulo is only defined for integer operands. ' +\n        'For fractional modulo, convert to numbers or use alternative operation.'\n      )\n    }\n    \n    return x.mod(y)\n  }\n})\n\n// Update test to expect error instead of result"
+        },
+        {
+          "step": 5,
+          "action": "Add unit tests for edge cases",
+          "code": "// Add tests for fractional modulo behavior:\n\n// Positive fractions\nassert.deepStrictEqual(\n  mod(bignumber('7').div(3), bignumber('1').div(3)),\n  bignumber(0)\n)\n\n// Mixed integer and fraction\nassert.deepStrictEqual(\n  mod(bignumber('7.5'), bignumber(2)),\n  bignumber('1.5')\n)\n\n// Negative fractions\nassert.deepStrictEqual(\n  mod(bignumber('-7.5'), bignumber(2)),\n  bignumber('0.5') // Note: modulo definition for negatives\n)"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Implementation choice made based on research",
+        "If supported: BigNumber fractional modulo works correctly",
+        "If custom: Formula a - b*floor(a/b) implemented",
+        "If unsupported: Clear error message added",
+        "Edge cases tested (positive, negative, mixed)",
+        "Code follows BigNumber.js best practices",
+        "No regressions on integer modulo"
+      ]
+    },
+    {
+      "id": "3.3.3",
+      "category": "testing",
+      "title": "Enable and Update BigNumber Modulo Test",
+      "description": "Remove it.skip from the fractional modulo test and update test assertion based on implementation decision.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [
+        "test/unit-tests/function/arithmetic/mod.test.ts",
+        "test/unit-tests/function/arithmetic/mod.test.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Verify BigNumber fractional modulo works as expected or throws appropriate error. Update test to match implementation decision.",
+        "keyDecisions": [
+          "If modulo works: Test correct result calculation",
+          "If modulo errors: Test error message",
+          "Test both JS and TS versions"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Enable test (line 95)",
+          "code": "// In mod.test.ts and mod.test.js\n// BEFORE:\nit.skip('should calculate the modulus of bignumbers for fractions', function () {\n  \n// AFTER (if modulo works):\nit('should calculate the modulus of bignumbers for fractions', function () {\n  // Test: 7/3 mod 1/3 = 2.333... mod 0.333... = 0\n  const a = bignumber(7).div(3)\n  const b = bignumber(1).div(3)\n  const result = mod(a, b)\n  \n  assert.deepStrictEqual(result, bignumber(0))\n  assert.strictEqual(result.constructor.name, 'BigNumber')\n})"
+        },
+        {
+          "step": 2,
+          "action": "Alternative: Update test to expect error (if unsupported)",
+          "code": "// AFTER (if modulo throws error):\nit('should throw error for fractional BigNumber modulo', function () {\n  const a = bignumber(7).div(3)\n  const b = bignumber(1).div(3)\n  \n  assert.throws(\n    () => mod(a, b),\n    /BigNumber modulo is only defined for integer operands/\n  )\n})"
+        },
+        {
+          "step": 3,
+          "action": "Add additional fractional modulo tests",
+          "code": "// Add more test cases for fractional modulo:\n\nit('should handle mixed integer and fractional BigNumber modulo', function () {\n  const result = mod(bignumber('7.5'), bignumber(2))\n  assert.deepStrictEqual(result, bignumber('1.5'))\n})\n\nit('should handle negative fractional BigNumber modulo', function () {\n  const result = mod(bignumber('-7.5'), bignumber(2))\n  // Result depends on modulo definition (floor-based)\n  assert.deepStrictEqual(result, bignumber('0.5'))\n})"
+        },
+        {
+          "step": 4,
+          "action": "Run mod test suite",
+          "details": "Execute: npm test -- --grep 'mod' to verify all modulo tests pass"
+        },
+        {
+          "step": 5,
+          "action": "Verify no regressions",
+          "details": "Run full test suite: npm run test:src"
+        }
+      ],
+      "acceptanceCriteria": [
+        "it.skip changed to it in both test files",
+        "Test assertion matches implementation (result or error)",
+        "If result: Correct calculation verified",
+        "If error: Error message verified",
+        "Additional test cases added for coverage",
+        "Tests pass in both JS and TS versions",
+        "Integer modulo tests still pass (no regression)"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "All three tasks completed",
+    "Research determines fractional modulo support status",
+    "Implementation matches research findings",
+    "2 skipped tests enabled and passing (or expecting errors)",
+    "Clear behavior documented",
+    "No regressions in integer modulo operations"
+  ],
+  "filesCreated": [],
+  "filesModified": [
+    "src/function/arithmetic/mod.js",
+    "test/unit-tests/function/arithmetic/mod.test.ts",
+    "test/unit-tests/function/arithmetic/mod.test.js"
+  ],
+  "testsFixed": 2,
+  "totalNewTests": 2,
+  "totalEstimatedHours": 4,
+  "dependencies": [
+    "SKIPPED_TESTS_PHASE_3_SPRINT_1_TODO.json (policy guides approach)"
+  ],
+  "notes": [
+    "LIKELY OUTCOME: BigNumber.js mod() already supports fractions, just enable test",
+    "Mathematical definition: a mod b = a - b*floor(a/b) - works for fractions",
+    "NumPy, Python, JavaScript all support fractional modulo",
+    "If custom implementation needed, use BigNumber arithmetic to preserve precision",
+    "Consider negative operand behavior (floor-based modulo)",
+    "Update HISTORY.md if behavior changes or error added",
+    "Document fractional modulo behavior in mod function JSDoc"
+  ]
+}

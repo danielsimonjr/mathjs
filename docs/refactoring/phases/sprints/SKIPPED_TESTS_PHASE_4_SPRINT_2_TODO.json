@@ -1,0 +1,242 @@
+{
+  "phase": 4,
+  "sprint": 2,
+  "title": "Circular Dependency Detection",
+  "priority": "MEDIUM",
+  "effort": "6 hours",
+  "status": "pending",
+  "impact": "Adds circular dependency detection to factory import system, preventing infinite loops and providing clear error messages. Fixes 2 skipped tests (sortFactories redundancy check and circular dependency detection).",
+  "targetMetrics": {
+    "testsFixed": {
+      "current": "2 tests skipped (factory dependency tests)",
+      "target": "Both tests passing or documented as intentional"
+    },
+    "safeguards": {
+      "current": "Circular dependencies may cause infinite loops",
+      "target": "Circular dependencies detected with clear error messages"
+    }
+  },
+  "tasks": [
+    {
+      "id": "4.2.1",
+      "category": "implementation",
+      "title": "Implement Circular Dependency Detection",
+      "description": "Add depth-first search (DFS) based cycle detection to factory dependency resolution system.",
+      "status": "pending",
+      "estimatedHours": 3.0,
+      "agent": "claude",
+      "files": [
+        "src/utils/factory.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Detect circular dependencies in factory dependency graphs before they cause infinite loops during initialization. This prevents cryptic runtime errors and provides clear diagnostic messages to developers.",
+        "keyDecisions": [
+          "Use DFS with stack tracking for cycle detection",
+          "Throw error with full cycle path (A → B → C → A)",
+          "Run detection before dependency resolution",
+          "Handle self-dependencies as special case"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Locate factory dependency resolution code",
+          "details": "Find sortFactories() or similar function in src/utils/factory.js or src/core/create.js"
+        },
+        {
+          "step": 2,
+          "action": "Implement DFS cycle detection",
+          "code": "/**\n * Detect circular dependencies in factory dependency graph.\n * \n * @param {Object} factories - Map of factory name to factory object\n * @throws {Error} If circular dependency detected\n */\nfunction detectCircularDependencies(factories) {\n  const visited = new Set()\n  const recursionStack = new Set()\n  const path = []\n  \n  function dfs(factoryName) {\n    // If we've seen this node in current path, we have a cycle\n    if (recursionStack.has(factoryName)) {\n      // Build cycle path for error message\n      const cycleStart = path.indexOf(factoryName)\n      const cycle = [...path.slice(cycleStart), factoryName]\n      throw new Error(\n        `Circular dependency detected: ${cycle.join(' → ')}`\n      )\n    }\n    \n    // If already fully explored, skip\n    if (visited.has(factoryName)) {\n      return\n    }\n    \n    // Mark as visiting\n    visited.add(factoryName)\n    recursionStack.add(factoryName)\n    path.push(factoryName)\n    \n    // Visit all dependencies\n    const factory = factories[factoryName]\n    if (factory && factory.dependencies) {\n      for (const dep of factory.dependencies) {\n        dfs(dep)\n      }\n    }\n    \n    // Mark as done with this path\n    recursionStack.delete(factoryName)\n    path.pop()\n  }\n  \n  // Check all factories (some may not be reachable from others)\n  for (const factoryName in factories) {\n    if (!visited.has(factoryName)) {\n      dfs(factoryName)\n    }\n  }\n}\n\n// Example usage:\n// const factories = {\n//   'add': { dependencies: ['multiply'] },\n//   'multiply': { dependencies: ['add'] } // CIRCULAR!\n// }\n// detectCircularDependencies(factories)\n// // Throws: \"Circular dependency detected: add → multiply → add\""
+        },
+        {
+          "step": 3,
+          "action": "Call detection before dependency resolution",
+          "code": "// In sortFactories() or create() function:\n\nfunction sortFactories(factories) {\n  // Detect cycles BEFORE attempting to sort\n  detectCircularDependencies(factories)\n  \n  // ... existing topological sort logic ...\n}"
+        },
+        {
+          "step": 4,
+          "action": "Handle self-dependencies",
+          "code": "// Special case: factory depends on itself\nif (factory.dependencies.includes(factoryName)) {\n  throw new Error(\n    `Self-dependency detected: ${factoryName} depends on itself`\n  )\n}"
+        },
+        {
+          "step": 5,
+          "action": "Add comprehensive error messages",
+          "code": "// Enhance error with suggestions:\nthrow new Error(\n  `Circular dependency detected: ${cycle.join(' → ')}\\n` +\n  `This creates an infinite loop during initialization.\\n` +\n  `Suggestion: Break the cycle by refactoring one of these factories ` +\n  `to not depend on the others.`\n)"
+        },
+        {
+          "step": 6,
+          "action": "Test manually with circular deps",
+          "code": "// Create test case:\nconst math = create({\n  'funcA': factory('funcA', ['funcB'], () => {}),\n  'funcB': factory('funcB', ['funcA'], () => {})\n})\n// Should throw clear error"
+        }
+      ],
+      "acceptanceCriteria": [
+        "detectCircularDependencies() function implemented",
+        "DFS algorithm correctly detects cycles",
+        "Error message includes full cycle path (A → B → C → A)",
+        "Self-dependencies detected and reported",
+        "Detection runs before dependency resolution",
+        "Clear error suggestions provided",
+        "Manual testing confirms detection works"
+      ]
+    },
+    {
+      "id": "4.2.2",
+      "category": "testing",
+      "title": "Enable Circular Dependency Test",
+      "description": "Remove it.skip from circular dependency test and verify error is thrown with correct message.",
+      "status": "pending",
+      "estimatedHours": 1.0,
+      "agent": "claude",
+      "files": [
+        "test/unit-tests/utils/factory.test.ts",
+        "test/unit-tests/utils/factory.test.js"
+      ],
+      "testCategories": ["unit"],
+      "implementation": {
+        "purpose": "Verify that circular dependencies are detected and reported with clear error messages. This validates the DFS implementation.",
+        "keyDecisions": [
+          "Test should expect error to be thrown",
+          "Verify error message contains cycle path",
+          "Test multiple cycle scenarios"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Enable circular dependency test (line 96)",
+          "code": "// In factory.test.ts and factory.test.js\n// BEFORE:\nit.skip('should not go crazy with circular dependencies', function () {\n  // TODO: throw an error in case of circular dependencies\n  \n// AFTER:\nit('should throw error for circular dependencies', function () {\n  // Create factories with circular dependency: A → B → C → A\n  const factoryA = factory('funcA', ['funcB'], () => 'A')\n  const factoryB = factory('funcB', ['funcC'], () => 'B')\n  const factoryC = factory('funcC', ['funcA'], () => 'C')\n  \n  // Attempt to create math instance with circular deps\n  assert.throws(\n    () => {\n      create({\n        funcA: factoryA,\n        funcB: factoryB,\n        funcC: factoryC\n      })\n    },\n    /Circular dependency detected.*funcA.*funcB.*funcC/\n  )\n})"
+        },
+        {
+          "step": 2,
+          "action": "Remove TODO comment",
+          "details": "Delete 'TODO: throw an error in case of circular dependencies' - it's now implemented"
+        },
+        {
+          "step": 3,
+          "action": "Add test for self-dependency",
+          "code": "it('should throw error for self-dependency', function () {\n  const factoryA = factory('funcA', ['funcA'], () => 'A')\n  \n  assert.throws(\n    () => create({ funcA: factoryA }),\n    /Self-dependency detected.*funcA/\n  )\n})"
+        },
+        {
+          "step": 4,
+          "action": "Add test for indirect cycles",
+          "code": "it('should detect indirect circular dependencies', function () {\n  // A → B → C → D → B (cycle doesn't include A)\n  const factoryA = factory('funcA', ['funcB'], () => 'A')\n  const factoryB = factory('funcB', ['funcC'], () => 'B')\n  const factoryC = factory('funcC', ['funcD'], () => 'C')\n  const factoryD = factory('funcD', ['funcB'], () => 'D')\n  \n  assert.throws(\n    () => create({ funcA: factoryA, funcB: factoryB, funcC: factoryC, funcD: factoryD }),\n    /Circular dependency detected.*funcB.*funcC.*funcD/\n  )\n})"
+        },
+        {
+          "step": 5,
+          "action": "Add test for valid dependency graph",
+          "code": "it('should not throw error for valid dependencies', function () {\n  // A → B → C (no cycle)\n  const factoryA = factory('funcA', ['funcB'], ({ funcB }) => 'A')\n  const factoryB = factory('funcB', ['funcC'], ({ funcC }) => 'B')\n  const factoryC = factory('funcC', [], () => 'C')\n  \n  // Should not throw\n  assert.doesNotThrow(() => {\n    create({\n      funcA: factoryA,\n      funcB: factoryB,\n      funcC: factoryC\n    })\n  })\n})"
+        },
+        {
+          "step": 6,
+          "action": "Run factory test suite",
+          "details": "Execute: npm test -- --grep 'factory' to verify all tests pass"
+        }
+      ],
+      "acceptanceCriteria": [
+        "it.skip changed to it (test enabled)",
+        "TODO comment removed",
+        "Test expects error to be thrown",
+        "Error message validation includes cycle path",
+        "Test for self-dependency added",
+        "Test for indirect cycles added",
+        "Test for valid dependencies added (no false positives)",
+        "Tests pass in both JS and TS versions"
+      ]
+    },
+    {
+      "id": "4.2.3",
+      "category": "investigation",
+      "title": "Investigate sortFactories Test Redundancy",
+      "description": "Determine if sortFactories test at line 40 is truly redundant or if it reveals an IE compatibility issue that needs addressing.",
+      "status": "pending",
+      "estimatedHours": 2.0,
+      "agent": "claude",
+      "files": [
+        "test/unit-tests/utils/factory.test.ts",
+        "src/utils/factory.js"
+      ],
+      "testCategories": ["research"],
+      "implementation": {
+        "purpose": "Understand the skipped sortFactories test that has a FIXME note: 'this doesn't work on IE'. Determine if it's a real issue, if IE compatibility matters, or if the test can be safely removed.",
+        "keyDecisions": [
+          "Is IE (Internet Explorer) still supported by mathjs?",
+          "Is the test actually redundant or does it test unique behavior?",
+          "Should the test be fixed, removed, or documented as IE-specific?"
+        ]
+      },
+      "stepByStep": [
+        {
+          "step": 1,
+          "action": "Review mathjs browser support policy",
+          "details": "Check README.md, package.json browserslist, or CONTRIBUTING.md for supported browsers. IE 11 is EOL as of 2022 - likely not supported."
+        },
+        {
+          "step": 2,
+          "action": "Read the skipped test (line 40)",
+          "code": "// In factory.test.ts:\nit.skip('should order functions by their dependencies (1)', function () {\n  // FIXME: this doesn't work on IE\n  // Test creates factories and checks dependency ordering\n})"
+        },
+        {
+          "step": 3,
+          "action": "Determine what makes it IE-specific",
+          "details": "Possible issues: Object key ordering (not guaranteed in older JS), Array methods not in IE, or topological sort algorithm using modern features."
+        },
+        {
+          "step": 4,
+          "action": "Check if there's a duplicate test",
+          "details": "Look for another test named 'should order functions by their dependencies' without (1). If duplicate exists and passes, this one is redundant."
+        },
+        {
+          "step": 5,
+          "action": "Make decision and document",
+          "code": "// Decision Matrix:\n\n// Scenario 1: IE not supported + test is redundant\n// Action: Delete test entirely\n// Justification: IE EOL, test duplicates coverage\n\n// Scenario 2: IE not supported + test is unique\n// Action: Remove .skip, remove FIXME, update to modern JS\n// Justification: IE EOL, test provides value\n\n// Scenario 3: IE still supported (unlikely)\n// Action: Fix compatibility issue or document limitation\n// Justification: Support policy requires it\n\n// EXPECTED: Scenario 1 or 2"
+        },
+        {
+          "step": 6,
+          "action": "Implement chosen action",
+          "details": "Either delete test, enable and modernize test, or fix IE compatibility based on decision"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Browser support policy reviewed",
+        "IE compatibility requirement determined",
+        "Test examined for redundancy",
+        "Duplicate tests identified (if any)",
+        "Decision made: delete, fix, or document",
+        "Action implemented based on decision",
+        "If test kept: it.skip removed and test passes",
+        "If test removed: documented why in commit message"
+      ]
+    }
+  ],
+  "successCriteria": [
+    "All three tasks completed",
+    "Circular dependency detection implemented with DFS",
+    "Clear error messages with cycle paths",
+    "Circular dependency test enabled and passing",
+    "sortFactories test investigated and resolved",
+    "No regressions in factory system",
+    "IE compatibility issue documented or resolved"
+  ],
+  "filesCreated": [],
+  "filesModified": [
+    "src/utils/factory.js",
+    "test/unit-tests/utils/factory.test.ts",
+    "test/unit-tests/utils/factory.test.js"
+  ],
+  "testsFixed": 2,
+  "totalNewTests": 3,
+  "totalEstimatedHours": 6,
+  "dependencies": [],
+  "notes": [
+    "MILESTONE: This completes Phase 4 - all unimplemented algebra features addressed",
+    "DFS cycle detection is a classic graph algorithm - well documented",
+    "Error messages should help developers debug circular dependencies",
+    "IE 11 reached end-of-life in June 2022 - likely not supported",
+    "sortFactories test may be safe to delete if IE unsupported",
+    "Circular dependency detection prevents hard-to-debug initialization issues",
+    "Consider adding visualization of dependency graph in error (future enhancement)",
+    "Update HISTORY.md with circular dependency detection feature",
+    "This improves developer experience when creating custom factories"
+  ]
+}
