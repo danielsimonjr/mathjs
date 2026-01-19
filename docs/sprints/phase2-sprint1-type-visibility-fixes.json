@@ -4,8 +4,8 @@
   "title": "Type Visibility & Assignment Fixes",
   "week": "Week 2",
   "effort": "2-3 hours",
-  "status": "pending",
-  "completedDate": "",
+  "status": "completed",
+  "completedDate": "2026-01-18",
   "description": "Fix TS2322 type assignment errors and TS2345 argument type mismatches. These are medium-severity issues affecting type safety.",
   "tasks": [
     {
@@ -13,8 +13,8 @@
       "category": "TypeScript",
       "description": "Fix type assignment in create.ts - Review factory function signature mismatch at line 368 and adjust type annotations or signatures to match expected types",
       "estimatedHours": 1.0,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS2322",
       "errorCount": 1,
       "files": [
@@ -26,8 +26,8 @@
       "category": "TypeScript",
       "description": "Audit and fix TS2322 errors in expression nodes - Review all type assignment errors in src/expression/node/ directory and apply proper type annotations or safe type assertions",
       "estimatedHours": 1.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS2322",
       "errorCount": 15,
       "files": [
@@ -39,8 +39,8 @@
       "category": "TypeScript",
       "description": "Fix TS2322 errors in function implementations - Review and fix type assignments in src/function/ directory files with type mismatches",
       "estimatedHours": 1.0,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS2322",
       "errorCount": 10,
       "files": [
@@ -52,8 +52,8 @@
       "category": "TypeScript",
       "description": "Fix TS2345 argument type mismatches - Review 6 occurrences where function arguments don't match parameter types and apply correct type annotations",
       "estimatedHours": 0.75,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS2345",
       "errorCount": 6,
       "files": [
@@ -65,8 +65,8 @@
       "category": "TypeScript",
       "description": "Fix TS2564 property initialization errors - Add proper initialization in constructors or use definite assignment assertion for 3 occurrences",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS2564",
       "errorCount": 3,
       "files": [

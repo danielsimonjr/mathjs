@@ -4,8 +4,8 @@
   "title": "Critical TypeScript Fixes - Core Type Exports & Critical Errors",
   "week": "Week 1",
   "effort": "2-3 hours",
-  "status": "pending",
-  "completedDate": "",
+  "status": "completed",
+  "completedDate": "2026-01-18",
   "description": "Fix critical type export issues that block other TypeScript compilation. Addresses TS4023 errors for unexported types and TS2454/TS2538 variable issues.",
   "tasks": [
     {
@@ -13,8 +13,8 @@
       "category": "TypeScript",
       "description": "Export CompiledExpression, CompileFunction, and StringOptions interfaces in Node.ts - Add 'export' keyword to interface CompiledExpression, type CompileFunction, and interface StringOptions at lines 10-22",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS4023",
       "errorCount": 20,
       "files": [
@@ -26,8 +26,8 @@
       "category": "TypeScript",
       "description": "Fix variable assignment issues in OperatorNode.ts - Initialize 'result' variable with default value at lines 256-264 to resolve 'used before assigned' errors",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS2454",
       "errorCount": 4,
       "files": [
@@ -39,8 +39,8 @@
       "category": "TypeScript",
       "description": "Fix index type issues in OperatorNode.ts - Add null checks before using 'op' as index at lines 115, 205, 215 where 'Type null cannot be used as index type'",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS2538",
       "errorCount": 3,
       "files": [
@@ -52,8 +52,8 @@
       "category": "TypeScript",
       "description": "Fix private property issues in ImmutableDenseMatrix.ts - Convert 'private _max' and 'private _min' at line 73 to ES private fields using # syntax or make public with underscore convention",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS4094",
       "errorCount": 2,
       "files": [
@@ -65,8 +65,8 @@
       "category": "TypeScript",
       "description": "Fix private property issues in MatrixIndex.ts - Convert private '_dimensions', '_isScalar', '_sourceSize' at line 50 to ES private fields or public with underscore convention",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS4094",
       "errorCount": 3,
       "files": [

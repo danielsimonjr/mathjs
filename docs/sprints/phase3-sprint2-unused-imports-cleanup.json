@@ -4,8 +4,8 @@
   "title": "Code Cleanup - Unused Type Imports",
   "week": "Week 2-3",
   "effort": "1-2 hours",
-  "status": "pending",
-  "completedDate": "",
+  "status": "completed",
+  "completedDate": "2026-01-18",
   "description": "Fix TS6196 unused type import warnings by removing or converting to type-only imports.",
   "tasks": [
     {
@@ -13,8 +13,8 @@
       "category": "Code Cleanup",
       "description": "Clean up unused imports in SymbolNode.ts - Remove or convert unused 'Unit' type import to type-only import if needed for type checking",
       "estimatedHours": 0.25,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 1,
       "files": [
@@ -26,8 +26,8 @@
       "category": "Code Cleanup",
       "description": "Clean up unused imports in concat.transform.ts and cumsum.transform.ts - Remove unused 'BigNumber' imports or convert to 'import type' syntax",
       "estimatedHours": 0.25,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 2,
       "files": [
@@ -40,8 +40,8 @@
       "category": "Code Cleanup",
       "description": "Clean up unused imports in index.transform.ts - Remove or convert unused 'Range', 'BigNumber', 'Matrix' imports",
       "estimatedHours": 0.25,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 3,
       "files": [
@@ -53,8 +53,8 @@
       "category": "Code Cleanup",
       "description": "Clean up unused imports in mapSlices.transform.ts - Remove unused 'BigNumber' import or convert to type-only import",
       "estimatedHours": 0.25,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 1,
       "files": [
@@ -66,8 +66,8 @@
       "category": "Code Cleanup",
       "description": "Audit and fix remaining TS6196 errors - Search for any other unused type imports across the codebase and clean them up",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 37,
       "files": [

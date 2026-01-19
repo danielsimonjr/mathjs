@@ -4,8 +4,8 @@
   "title": "Code Cleanup - Unused Variables",
   "week": "Week 2",
   "effort": "2-3 hours",
-  "status": "pending",
-  "completedDate": "",
+  "status": "completed",
+  "completedDate": "2026-01-18",
   "description": "Fix TS6133 unused variable/parameter warnings by prefixing intentionally unused parameters with underscore convention.",
   "tasks": [
     {
@@ -13,8 +13,8 @@
       "category": "Code Cleanup",
       "description": "Fix unused 'options' parameters - Find all TS6133 errors for 'options' parameter and rename to '_options' in expression/node and function files",
       "estimatedHours": 0.75,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6133",
       "errorCount": 50,
       "files": [
@@ -27,8 +27,8 @@
       "category": "Code Cleanup",
       "description": "Fix unused 'scope' and 'context' parameters - Rename unused 'scope' to '_scope' and 'context' to '_context' across affected files",
       "estimatedHours": 0.75,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6133",
       "errorCount": 40,
       "files": [
@@ -41,8 +41,8 @@
       "category": "Code Cleanup",
       "description": "Fix unused 'math' parameters - Rename unused 'math' dependency parameters to '_math' in factory functions where the dependency is declared but not used",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6133",
       "errorCount": 30,
       "files": [
@@ -54,8 +54,8 @@
       "category": "Code Cleanup",
       "description": "Fix unused 'callback' and 'args' parameters - Rename to '_callback' and '_args' where these parameters are required by interface but not used in implementation",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6133",
       "errorCount": 30,
       "files": [
@@ -67,8 +67,8 @@
       "category": "Code Cleanup",
       "description": "Fix remaining TS6133 errors - Address any other unused variable declarations not covered by previous tasks, apply consistent underscore convention",
       "estimatedHours": 0.5,
-      "status": "pending",
-      "completedDate": "",
+      "status": "completed",
+      "completedDate": "2026-01-18",
       "errorCode": "TS6133",
       "errorCount": 51,
       "files": [
