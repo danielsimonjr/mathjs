@@ -27,7 +27,7 @@ const { parse, ConstantNode, SymbolNode } = math
 // CUSTOMIZE THESE FOR YOUR OPERATOR
 // ============================================================================
 const OPERATOR = '+'           // The operator symbol: '+', '-', '*', '/'
-const FUNCTION_NAME = 'add'    // The function name: 'add', 'subtract', 'multiply', 'divide'
+const FUNCTION_NAME: string = 'add'    // The function name: 'add', 'subtract', 'multiply', 'divide'
 const mathFn = math.add        // The math function to test
 const IS_VARIADIC = true       // true for add/multiply, false for subtract/divide
 

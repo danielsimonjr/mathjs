@@ -102,7 +102,7 @@ describe('divide with Node operands', function () {
 
     it('should still work with matrices', function () {
       const result = math.divide([[4, 8]], 2)
-      const arr = math.isMatrix(result) ? result.toArray() : result
+      const arr = math.isMatrix(result) ? (result as any).toArray() : result
       assert.deepStrictEqual(arr, [[2, 4]])
     })
   })

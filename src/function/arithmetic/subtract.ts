@@ -180,11 +180,6 @@ export const createSubtract = /* #__PURE__ */ factory(
         'Node, Unit': (x: unknown, y: unknown) =>
           nodeOperations.createBinaryNode('-', 'subtract', x, y),
 
-        'string, Node': (x: string, y: unknown) =>
-          nodeOperations.createBinaryNode('-', 'subtract', x, y),
-        'Node, string': (x: unknown, y: string) =>
-          nodeOperations.createBinaryNode('-', 'subtract', x, y),
-
         // =========================================================================
         // EXISTING SIGNATURES - Keep after Node signatures
         // =========================================================================

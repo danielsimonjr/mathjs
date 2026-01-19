@@ -57,7 +57,7 @@ async function loadWasm(): Promise<any> {
       wasmModule = mod
       return mod
     })
-    .catch(() => {
+    .catch((): null => {
       wasmModule = null
       return null
     })

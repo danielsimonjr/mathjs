@@ -9815,8 +9815,6 @@ var createSubtract = /* @__PURE__ */ factory(
         "Node, Fraction": (x, y) => nodeOperations.createBinaryNode("-", "subtract", x, y),
         "Unit, Node": (x, y) => nodeOperations.createBinaryNode("-", "subtract", x, y),
         "Node, Unit": (x, y) => nodeOperations.createBinaryNode("-", "subtract", x, y),
-        "string, Node": (x, y) => nodeOperations.createBinaryNode("-", "subtract", x, y),
-        "Node, string": (x, y) => nodeOperations.createBinaryNode("-", "subtract", x, y),
         // =========================================================================
         // EXISTING SIGNATURES - Keep after Node signatures
         // =========================================================================

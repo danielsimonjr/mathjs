@@ -104,7 +104,7 @@ describe('multiply with Node operands', function () {
 
     it('should still work with matrices', function () {
       const result = math.multiply([[1, 2], [3, 4]], [[5], [6]])
-      const arr = math.isMatrix(result) ? result.toArray() : result
+      const arr = math.isMatrix(result) ? (result as any).toArray() : result
       assert.deepStrictEqual(arr, [[17], [39]])
     })
   })

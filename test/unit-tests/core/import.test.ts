@@ -398,29 +398,41 @@ describe('import', function () {
     })
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should import a factory with name', function () {
-    // TODO: unit test importing a factory
+  it('should import a factory with name', function () {
+    math.import(multiplyTestFactory)
+    assert.strictEqual(math.multiplyTest(3, 4), 12)
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should import a factory with path', function () {
-    // TODO: unit test importing a factory
+  it('should import a factory with path', function () {
+    // Factory names with nested paths are not supported
+    assert.throws(function () {
+      math.import(nestedFactory)
+    }, /Factory name should not contain a nested path/)
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should import a factory without name', function () {
-    // TODO: unit test importing a factory
+  it('should import a factory without name', function () {
+    const testFactory = factory('testAnonymous', [], () => {
+      return function testFunc() {
+        return 'test result'
+      }
+    })
+    math.import(testFactory)
+    assert.strictEqual(math.testAnonymous(), 'test result')
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should pass the namespace to a factory function', function () {
-    // TODO: unit test importing a factory
+  it('should pass the namespace to a factory function', function () {
+    math.import([multiplyTestFactory, cubeTestFactory])
+    assert.strictEqual(math.cubeTest(3), 27)
+    assert.strictEqual(math.multiplyTest(math.cubeTest(2), 2), 16)
   })
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should import an Array', function () {
-    // TODO: unit test importing an Array containing stuff
+  it('should import an Array', function () {
+    math.import([
+      { customValue: 100 },
+      { customFunc: (x) => x * 2 }
+    ])
+    assert.strictEqual(math.customValue, 100)
+    assert.strictEqual(math.customFunc(5), 10)
   })
 
   it('should LaTeX import', function () {
