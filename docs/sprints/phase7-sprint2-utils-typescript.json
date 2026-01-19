@@ -1,0 +1,79 @@
+{
+  "phase": 7,
+  "sprint": 2,
+  "title": "Utilities - TypeScript",
+  "week": "Week 10-11",
+  "effort": "3-4 hours",
+  "status": "pending",
+  "description": "Convert utility functions from JavaScript to TypeScript. These are helper functions for validation, object manipulation, number utilities, etc.",
+  "tasks": [
+    {
+      "id": "7.2.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert validation utilities: is.js, isInteger.js, isNumeric.js, etc. to TypeScript with proper type guards",
+      "estimatedHours": 1,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/utils/is.js",
+        "src/utils/number.js",
+        "src/utils/bignumber/*.js"
+      ]
+    },
+    {
+      "id": "7.2.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert object utilities: object.js, array.js, collection.js to TypeScript",
+      "estimatedHours": 1,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/utils/object.js",
+        "src/utils/array.js",
+        "src/utils/collection.js"
+      ]
+    },
+    {
+      "id": "7.2.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert string utilities: string.js, customs.js to TypeScript",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/utils/string.js",
+        "src/utils/customs.js"
+      ]
+    },
+    {
+      "id": "7.2.4",
+      "category": "TypeScript Conversion",
+      "description": "Convert remaining utilities: snapshot.js, emitter.js, lazy.js, etc. to TypeScript",
+      "estimatedHours": 1,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/utils/snapshot.js",
+        "src/utils/emitter.js",
+        "src/utils/lazy.js",
+        "src/utils/*.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 28 utility files converted to TypeScript",
+    "Type guards properly implemented for validation utilities",
+    "Object and array utilities maintain type safety",
+    "Proper generic types for collection utilities",
+    "All utility tests pass",
+    "TypeScript compilation succeeds"
+  ],
+  "dependencies": [
+    "phase7-sprint1"
+  ],
+  "blockedBy": []
+}

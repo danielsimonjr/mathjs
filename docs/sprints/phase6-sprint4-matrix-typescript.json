@@ -1,0 +1,103 @@
+{
+  "phase": 6,
+  "sprint": 4,
+  "title": "Matrix Operations - TypeScript",
+  "week": "Week 6-7",
+  "effort": "8-10 hours",
+  "status": "pending",
+  "description": "Convert matrix operations from JavaScript to TypeScript. These functions handle Matrix objects and are not suitable for direct AssemblyScript conversion (they will use WASM via MatrixWasmBridge when appropriate).",
+  "tasks": [
+    {
+      "id": "6.4.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert basic matrix functions: column.js, row.js, ones.js, zeros.js, identity.js to TypeScript",
+      "estimatedHours": 2,
+      "status": "pending",
+      "wasmPriority": "Medium",
+      "complexity": "Low",
+      "files": [
+        "src/function/matrix/column.js",
+        "src/function/matrix/row.js",
+        "src/function/matrix/ones.js",
+        "src/function/matrix/zeros.js",
+        "src/function/matrix/identity.js"
+      ]
+    },
+    {
+      "id": "6.4.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert matrix creation functions: diag.js, flatten.js, reshape.js, resize.js, squeeze.js to TypeScript",
+      "estimatedHours": 2,
+      "status": "pending",
+      "wasmPriority": "Medium",
+      "complexity": "Medium",
+      "files": [
+        "src/function/matrix/diag.js",
+        "src/function/matrix/flatten.js",
+        "src/function/matrix/reshape.js",
+        "src/function/matrix/resize.js",
+        "src/function/matrix/squeeze.js"
+      ]
+    },
+    {
+      "id": "6.4.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert matrix manipulation: concat.js, cross.js, diff.js, filter.js, forEach.js, map.js to TypeScript",
+      "estimatedHours": 2.5,
+      "status": "pending",
+      "wasmPriority": "Medium",
+      "complexity": "Medium",
+      "files": [
+        "src/function/matrix/concat.js",
+        "src/function/matrix/cross.js",
+        "src/function/matrix/diff.js",
+        "src/function/matrix/filter.js",
+        "src/function/matrix/forEach.js",
+        "src/function/matrix/map.js"
+      ]
+    },
+    {
+      "id": "6.4.4",
+      "category": "TypeScript Conversion",
+      "description": "Convert matrix query functions: size.js, subset.js, getMatrixDataType.js, trace.js, transpose.js to TypeScript",
+      "estimatedHours": 2,
+      "status": "pending",
+      "wasmPriority": "Medium",
+      "complexity": "Medium",
+      "files": [
+        "src/function/matrix/size.js",
+        "src/function/matrix/subset.js",
+        "src/function/matrix/getMatrixDataType.js",
+        "src/function/matrix/trace.js",
+        "src/function/matrix/transpose.js"
+      ]
+    },
+    {
+      "id": "6.4.5",
+      "category": "TypeScript Conversion",
+      "description": "Convert remaining matrix functions (kron, matrixFromColumns, matrixFromRows, etc.) to TypeScript",
+      "estimatedHours": 2,
+      "status": "pending",
+      "wasmPriority": "Medium",
+      "complexity": "Medium",
+      "files": [
+        "src/function/matrix/kron.js",
+        "src/function/matrix/matrixFromColumns.js",
+        "src/function/matrix/matrixFromRows.js",
+        "src/function/matrix/*.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 44 matrix operation files converted to TypeScript",
+    "Type annotations for Matrix, DenseMatrix, SparseMatrix",
+    "Integration with existing MatrixWasmBridge for performance",
+    "All matrix tests pass",
+    "TypeScript compilation succeeds with 0 errors",
+    "Proper type inference for matrix operations"
+  ],
+  "dependencies": [
+    "phase6-sprint3"
+  ],
+  "blockedBy": []
+}

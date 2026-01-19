@@ -1,0 +1,77 @@
+{
+  "phase": 10,
+  "sprint": 1,
+  "title": "Embedded Documentation - TypeScript",
+  "week": "Week 14-16",
+  "effort": "12-15 hours",
+  "status": "pending",
+  "description": "Convert embedded documentation files from JavaScript to TypeScript. These are documentation strings for all functions in the expression parser. MARKED FOR LAST - convert after all other work is complete.",
+  "priority": "LOWEST",
+  "tasks": [
+    {
+      "id": "10.1.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert embedded docs for arithmetic functions (50+ files) to TypeScript",
+      "estimatedHours": 3,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/expression/embeddedDocs/function/arithmetic/*.js"
+      ]
+    },
+    {
+      "id": "10.1.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert embedded docs for algebra, matrix, statistics functions (80+ files) to TypeScript",
+      "estimatedHours": 4,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/expression/embeddedDocs/function/algebra/*.js",
+        "src/expression/embeddedDocs/function/matrix/*.js",
+        "src/expression/embeddedDocs/function/statistics/*.js"
+      ]
+    },
+    {
+      "id": "10.1.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert embedded docs for remaining function categories (125+ files) to TypeScript",
+      "estimatedHours": 5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/expression/embeddedDocs/function/*/*.js"
+      ]
+    },
+    {
+      "id": "10.1.4",
+      "category": "TypeScript Conversion",
+      "description": "Convert embedded docs core files: embeddedDocs.js, construction/*.js, constants/*.js to TypeScript",
+      "estimatedHours": 2,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/expression/embeddedDocs/embeddedDocs.js",
+        "src/expression/embeddedDocs/construction/*.js",
+        "src/expression/embeddedDocs/constants/*.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 255 embedded documentation files converted to TypeScript",
+    "Documentation strings properly typed",
+    "Help system integrates with TypeScript docs",
+    "All documentation accessible via help() function",
+    "TypeScript compilation succeeds",
+    "Documentation rendering works correctly"
+  ],
+  "dependencies": [
+    "phase9-sprint1"
+  ],
+  "blockedBy": [],
+  "notes": "This sprint should be completed LAST, after all functional code is converted. These are pure documentation files with minimal logic."
+}

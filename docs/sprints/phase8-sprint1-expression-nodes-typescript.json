@@ -1,0 +1,93 @@
+{
+  "phase": 8,
+  "sprint": 1,
+  "title": "Expression Nodes - TypeScript",
+  "week": "Week 11",
+  "effort": "4-6 hours",
+  "status": "pending",
+  "description": "Convert expression AST node implementations from JavaScript to TypeScript. These are the building blocks of the expression parser.",
+  "tasks": [
+    {
+      "id": "8.1.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert basic nodes: ConstantNode.js, SymbolNode.js, OperatorNode.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/node/ConstantNode.js",
+        "src/expression/node/SymbolNode.js",
+        "src/expression/node/OperatorNode.js"
+      ]
+    },
+    {
+      "id": "8.1.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert function nodes: FunctionNode.js, FunctionAssignmentNode.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "High",
+      "files": [
+        "src/expression/node/FunctionNode.js",
+        "src/expression/node/FunctionAssignmentNode.js"
+      ]
+    },
+    {
+      "id": "8.1.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert assignment nodes: AssignmentNode.js, BlockNode.js, ConditionalNode.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/node/AssignmentNode.js",
+        "src/expression/node/BlockNode.js",
+        "src/expression/node/ConditionalNode.js"
+      ]
+    },
+    {
+      "id": "8.1.4",
+      "category": "TypeScript Conversion",
+      "description": "Convert accessor nodes: AccessorNode.js, IndexNode.js, RangeNode.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/node/AccessorNode.js",
+        "src/expression/node/IndexNode.js",
+        "src/expression/node/RangeNode.js"
+      ]
+    },
+    {
+      "id": "8.1.5",
+      "category": "TypeScript Conversion",
+      "description": "Convert remaining nodes: ArrayNode.js, ObjectNode.js, ParenthesisNode.js, etc. to TypeScript",
+      "estimatedHours": 1,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/node/ArrayNode.js",
+        "src/expression/node/ObjectNode.js",
+        "src/expression/node/ParenthesisNode.js",
+        "src/expression/node/*.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 18 expression node files converted to TypeScript",
+    "Node type hierarchy properly defined with interfaces",
+    "AST traversal and manipulation properly typed",
+    "Node transformation methods maintain type safety",
+    "All expression node tests pass",
+    "TypeScript compilation succeeds"
+  ],
+  "dependencies": [
+    "phase7-sprint2"
+  ],
+  "blockedBy": []
+}

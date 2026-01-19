@@ -1,0 +1,103 @@
+{
+  "phase": 6,
+  "sprint": 7,
+  "title": "Relational, Logical, Set & String - TypeScript",
+  "week": "Week 9",
+  "effort": "3-5 hours",
+  "status": "pending",
+  "description": "Convert relational comparisons, logical operations, set operations, and string functions from JavaScript to TypeScript. These are utility functions with lower WASM priority.",
+  "tasks": [
+    {
+      "id": "6.7.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert relational functions: compare.js, compareNatural.js, compareText.js, deepEqual.js, equal.js, equalText.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "Low",
+      "complexity": "Low",
+      "files": [
+        "src/function/relational/compare.js",
+        "src/function/relational/compareNatural.js",
+        "src/function/relational/compareText.js",
+        "src/function/relational/deepEqual.js",
+        "src/function/relational/equal.js",
+        "src/function/relational/equalText.js"
+      ]
+    },
+    {
+      "id": "6.7.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert remaining relational: larger.js, largerEq.js, smaller.js, smallerEq.js, unequal.js to TypeScript",
+      "estimatedHours": 1,
+      "status": "pending",
+      "wasmPriority": "Low",
+      "complexity": "Low",
+      "files": [
+        "src/function/relational/larger.js",
+        "src/function/relational/largerEq.js",
+        "src/function/relational/smaller.js",
+        "src/function/relational/smallerEq.js",
+        "src/function/relational/unequal.js"
+      ]
+    },
+    {
+      "id": "6.7.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert logical operations: and.js, not.js, or.js, xor.js to TypeScript",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "Low",
+      "complexity": "Low",
+      "files": [
+        "src/function/logical/and.js",
+        "src/function/logical/not.js",
+        "src/function/logical/or.js",
+        "src/function/logical/xor.js"
+      ]
+    },
+    {
+      "id": "6.7.4",
+      "category": "TypeScript Conversion",
+      "description": "Convert set operations: setCartesian.js, setDifference.js, setDistinct.js, setIntersect.js, setIsSubset.js, etc. to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "Low",
+      "complexity": "Medium",
+      "files": [
+        "src/function/set/setCartesian.js",
+        "src/function/set/setDifference.js",
+        "src/function/set/setDistinct.js",
+        "src/function/set/setIntersect.js",
+        "src/function/set/setIsSubset.js",
+        "src/function/set/*.js"
+      ]
+    },
+    {
+      "id": "6.7.5",
+      "category": "TypeScript Conversion",
+      "description": "Convert string functions: format.js, print.js to TypeScript, plus geometry and special functions",
+      "estimatedHours": 1,
+      "status": "pending",
+      "wasmPriority": "Low",
+      "complexity": "Low",
+      "files": [
+        "src/function/string/format.js",
+        "src/function/string/print.js",
+        "src/function/geometry/*.js",
+        "src/function/special/*.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 38 miscellaneous function files converted to TypeScript",
+    "Proper type guards for comparison functions",
+    "Logical operations properly typed as boolean",
+    "Set operations maintain type safety",
+    "String formatting works correctly",
+    "All tests pass"
+  ],
+  "dependencies": [
+    "phase6-sprint6"
+  ],
+  "blockedBy": []
+}

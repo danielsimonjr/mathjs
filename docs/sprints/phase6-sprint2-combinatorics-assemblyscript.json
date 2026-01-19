@@ -1,0 +1,75 @@
+{
+  "phase": 6,
+  "sprint": 2,
+  "title": "Combinatorics Functions - AssemblyScript",
+  "week": "Week 5",
+  "effort": "1-2 hours",
+  "status": "pending",
+  "description": "Convert combinatorics functions from JavaScript to AssemblyScript in src/wasm/combinatorics/. These are factorial, permutation, and combination operations with Very High WASM priority.",
+  "tasks": [
+    {
+      "id": "6.2.1",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert src/function/combinatorics/bellNumbers.js to src/wasm/combinatorics/bellNumbers.ts - Bell numbers calculation",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Medium",
+      "files": [
+        "src/function/combinatorics/bellNumbers.js",
+        "src/wasm/combinatorics/bellNumbers.ts"
+      ]
+    },
+    {
+      "id": "6.2.2",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert src/function/combinatorics/catalan.js to src/wasm/combinatorics/catalan.ts - Catalan numbers calculation",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Medium",
+      "files": [
+        "src/function/combinatorics/catalan.js",
+        "src/wasm/combinatorics/catalan.ts"
+      ]
+    },
+    {
+      "id": "6.2.3",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert src/function/combinatorics/stirlingS2.js to src/wasm/combinatorics/stirlingS2.ts - Stirling numbers of second kind",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Medium",
+      "files": [
+        "src/function/combinatorics/stirlingS2.js",
+        "src/wasm/combinatorics/stirlingS2.ts"
+      ]
+    },
+    {
+      "id": "6.2.4",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert src/function/combinatorics/composition.js to src/wasm/combinatorics/composition.ts - Integer composition calculation",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Medium",
+      "files": [
+        "src/function/combinatorics/composition.js",
+        "src/wasm/combinatorics/composition.ts"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 4 combinatorics functions converted to AssemblyScript",
+    "Files located in src/wasm/combinatorics/ directory",
+    "AssemblyScript compilation succeeds",
+    "Large number handling works correctly",
+    "Unit tests pass with correct results",
+    "Performance improvement over JavaScript version"
+  ],
+  "dependencies": [
+    "phase6-sprint1"
+  ],
+  "blockedBy": []
+}

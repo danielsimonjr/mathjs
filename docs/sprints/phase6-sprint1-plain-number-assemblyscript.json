@@ -1,0 +1,86 @@
+{
+  "phase": 6,
+  "sprint": 1,
+  "title": "Plain Number Implementations - AssemblyScript",
+  "week": "Week 5",
+  "effort": "3-4 hours",
+  "status": "pending",
+  "description": "Convert plain number implementations from JavaScript to AssemblyScript in src/wasm/plain/. These are high-performance numeric operations with Very High WASM priority.",
+  "tasks": [
+    {
+      "id": "6.1.1",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert src/plain/number/arithmetic.js to src/wasm/plain/arithmetic.ts - Basic arithmetic operations (add, subtract, multiply, divide) for plain numbers",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Low",
+      "files": [
+        "src/plain/number/arithmetic.js",
+        "src/wasm/plain/arithmetic.ts"
+      ]
+    },
+    {
+      "id": "6.1.2",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert src/plain/number/constants.js to src/wasm/plain/constants.ts - Mathematical constants (PI, E, etc.)",
+      "estimatedHours": 0.25,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Low",
+      "files": [
+        "src/plain/number/constants.js",
+        "src/wasm/plain/constants.ts"
+      ]
+    },
+    {
+      "id": "6.1.3",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert src/plain/number/bitwise.js to src/wasm/plain/bitwise.ts - Bitwise operations for plain numbers",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Low",
+      "files": [
+        "src/plain/number/bitwise.js",
+        "src/wasm/plain/bitwise.ts"
+      ]
+    },
+    {
+      "id": "6.1.4",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert src/plain/number/trigonometry.js to src/wasm/plain/trigonometry.ts - Trig functions for plain numbers",
+      "estimatedHours": 0.75,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Medium",
+      "files": [
+        "src/plain/number/trigonometry.js",
+        "src/wasm/plain/trigonometry.ts"
+      ]
+    },
+    {
+      "id": "6.1.5",
+      "category": "AssemblyScript Conversion",
+      "description": "Convert remaining src/plain/number/*.js files to src/wasm/plain/*.ts - Complete plain number implementation suite",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "Very High",
+      "complexity": "Medium",
+      "files": [
+        "src/plain/number/*.js",
+        "src/wasm/plain/*.ts"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All plain number implementations converted to AssemblyScript",
+    "Files located in src/wasm/plain/ directory",
+    "AssemblyScript compilation succeeds (asc builds without errors)",
+    "Numeric precision maintained or improved",
+    "Performance benchmarks show WASM advantage",
+    "Unit tests pass for all converted functions"
+  ],
+  "dependencies": [],
+  "blockedBy": []
+}

@@ -1,0 +1,61 @@
+{
+  "phase": 8,
+  "sprint": 3,
+  "title": "Core Expression Files - TypeScript",
+  "week": "Week 12",
+  "effort": "3-5 hours",
+  "status": "pending",
+  "description": "Convert core expression system files from JavaScript to TypeScript. This includes the Parser and Help system.",
+  "tasks": [
+    {
+      "id": "8.3.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert Parser.js to TypeScript with proper tokenization and parsing types",
+      "estimatedHours": 2.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "High",
+      "files": [
+        "src/expression/Parser.js"
+      ]
+    },
+    {
+      "id": "8.3.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert Help.js to TypeScript with proper documentation types",
+      "estimatedHours": 1,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/Help.js"
+      ]
+    },
+    {
+      "id": "8.3.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert remaining core expression files: parse.js, compile.js, evaluate.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "High",
+      "files": [
+        "src/expression/parse.js",
+        "src/expression/compile.js",
+        "src/expression/evaluate.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 5 core expression files converted to TypeScript",
+    "Parser tokenization and AST generation properly typed",
+    "Help system maintains documentation structure",
+    "Expression compilation and evaluation type-safe",
+    "All parser and expression tests pass",
+    "TypeScript compilation succeeds"
+  ],
+  "dependencies": [
+    "phase8-sprint2"
+  ],
+  "blockedBy": []
+}

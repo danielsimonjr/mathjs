@@ -1,0 +1,81 @@
+{
+  "phase": 8,
+  "sprint": 2,
+  "title": "Expression Transforms - TypeScript",
+  "week": "Week 12",
+  "effort": "5-7 hours",
+  "status": "pending",
+  "description": "Convert expression transform functions from JavaScript to TypeScript. These are specialized transformations applied to mathematical expressions.",
+  "tasks": [
+    {
+      "id": "8.2.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert basic transforms: concat.transform.js, filter.transform.js, forEach.transform.js, map.transform.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/transform/concat.transform.js",
+        "src/expression/transform/filter.transform.js",
+        "src/expression/transform/forEach.transform.js",
+        "src/expression/transform/map.transform.js"
+      ]
+    },
+    {
+      "id": "8.2.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert index transforms: index.transform.js, column.transform.js, row.transform.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/transform/index.transform.js",
+        "src/expression/transform/column.transform.js",
+        "src/expression/transform/row.transform.js"
+      ]
+    },
+    {
+      "id": "8.2.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert statistical transforms: max.transform.js, mean.transform.js, min.transform.js, std.transform.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/transform/max.transform.js",
+        "src/expression/transform/mean.transform.js",
+        "src/expression/transform/min.transform.js",
+        "src/expression/transform/std.transform.js"
+      ]
+    },
+    {
+      "id": "8.2.4",
+      "category": "TypeScript Conversion",
+      "description": "Convert remaining transforms: subset.transform.js, range.transform.js, etc. to TypeScript",
+      "estimatedHours": 2,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/expression/transform/subset.transform.js",
+        "src/expression/transform/range.transform.js",
+        "src/expression/transform/*.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 30 expression transform files converted to TypeScript",
+    "Transform function signatures properly typed",
+    "Node transformations maintain type safety",
+    "Lazy evaluation properly handled",
+    "All expression transform tests pass",
+    "TypeScript compilation succeeds"
+  ],
+  "dependencies": [
+    "phase8-sprint1"
+  ],
+  "blockedBy": []
+}

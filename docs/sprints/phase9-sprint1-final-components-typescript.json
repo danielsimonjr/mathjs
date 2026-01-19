@@ -1,0 +1,78 @@
+{
+  "phase": 9,
+  "sprint": 1,
+  "title": "Final Components - TypeScript",
+  "week": "Week 13",
+  "effort": "3-4 hours",
+  "status": "pending",
+  "description": "Convert final core components, entry points, error classes, and JSON utilities from JavaScript to TypeScript. These are the remaining infrastructure files.",
+  "tasks": [
+    {
+      "id": "9.1.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert core files: import.js, config.js, typed.js to TypeScript",
+      "estimatedHours": 1.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Medium",
+      "files": [
+        "src/core/import.js",
+        "src/core/config.js",
+        "src/core/function/typed.js"
+      ]
+    },
+    {
+      "id": "9.1.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert error classes: ArgumentsError.js, DimensionError.js, IndexError.js to TypeScript",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/error/ArgumentsError.js",
+        "src/error/DimensionError.js",
+        "src/error/IndexError.js"
+      ]
+    },
+    {
+      "id": "9.1.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert JSON utilities: reviver.js, replacer.js to TypeScript",
+      "estimatedHours": 0.5,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/json/reviver.js",
+        "src/json/replacer.js"
+      ]
+    },
+    {
+      "id": "9.1.4",
+      "category": "TypeScript Conversion",
+      "description": "Convert root entry files: entry/*.js, version.js to TypeScript",
+      "estimatedHours": 1,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "Low",
+      "files": [
+        "src/entry/*.js",
+        "src/version.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 24 final component files converted to TypeScript",
+    "Import and config system properly typed",
+    "Error classes extend Error with proper typing",
+    "JSON utilities handle custom types correctly",
+    "Entry points properly export all functionality",
+    "All tests pass",
+    "TypeScript compilation succeeds with 0 errors"
+  ],
+  "dependencies": [
+    "phase8-sprint3"
+  ],
+  "blockedBy": []
+}

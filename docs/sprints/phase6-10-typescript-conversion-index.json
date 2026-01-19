@@ -1,0 +1,233 @@
+{
+  "title": "MathJS TypeScript/AssemblyScript Conversion Plan - Phases 6-10",
+  "version": "1.0",
+  "createdDate": "2026-01-18",
+  "description": "Comprehensive plan to convert remaining 674 JavaScript files to TypeScript or AssemblyScript",
+  "totalPhases": 5,
+  "totalSprints": 13,
+  "totalFiles": 674,
+  "totalEstimatedEffort": "60-85 hours",
+  "conversionStrategy": {
+    "typescript": "General TypeScript conversion for business logic, type system, expression system",
+    "assemblyscript": "AssemblyScript (in src/wasm/) for high-performance numeric operations with WASM compilation",
+    "priority": "WASM-eligible functions first, embedded docs last"
+  },
+  "phases": [
+    {
+      "phase": 6,
+      "title": "High-Performance Functions",
+      "description": "Convert high-performance math functions to TypeScript or AssemblyScript based on WASM eligibility",
+      "estimatedEffort": "28-40 hours",
+      "fileCount": 362,
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Plain Number Implementations - AssemblyScript",
+          "file": "phase6-sprint1-plain-number-assemblyscript.json",
+          "taskCount": 5,
+          "fileCount": 12,
+          "effort": "3-4 hours",
+          "target": "src/wasm/plain/",
+          "wasmPriority": "Very High"
+        },
+        {
+          "sprint": 2,
+          "title": "Combinatorics Functions - AssemblyScript",
+          "file": "phase6-sprint2-combinatorics-assemblyscript.json",
+          "taskCount": 4,
+          "fileCount": 4,
+          "effort": "1-2 hours",
+          "target": "src/wasm/combinatorics/",
+          "wasmPriority": "Very High"
+        },
+        {
+          "sprint": 3,
+          "title": "Bitwise Operations - AssemblyScript",
+          "file": "phase6-sprint3-bitwise-assemblyscript.json",
+          "taskCount": 5,
+          "fileCount": 8,
+          "effort": "2-3 hours",
+          "target": "src/wasm/bitwise/",
+          "wasmPriority": "High"
+        },
+        {
+          "sprint": 4,
+          "title": "Matrix Operations - TypeScript",
+          "file": "phase6-sprint4-matrix-typescript.json",
+          "taskCount": 5,
+          "fileCount": 44,
+          "effort": "8-10 hours",
+          "target": "src/function/matrix/",
+          "wasmPriority": "Medium"
+        },
+        {
+          "sprint": 5,
+          "title": "Algebra Functions - TypeScript",
+          "file": "phase6-sprint5-algebra-typescript.json",
+          "taskCount": 5,
+          "fileCount": 45,
+          "effort": "8-12 hours",
+          "target": "src/function/algebra/",
+          "wasmPriority": "Mixed"
+        },
+        {
+          "sprint": 6,
+          "title": "Statistics & Probability - TypeScript",
+          "file": "phase6-sprint6-stats-probability-typescript.json",
+          "taskCount": 5,
+          "fileCount": 28,
+          "effort": "4-6 hours",
+          "target": "src/function/statistics/, src/function/probability/",
+          "wasmPriority": "Medium"
+        },
+        {
+          "sprint": 7,
+          "title": "Relational, Logical, Set & String - TypeScript",
+          "file": "phase6-sprint7-misc-functions-typescript.json",
+          "taskCount": 5,
+          "fileCount": 38,
+          "effort": "3-5 hours",
+          "target": "src/function/relational/, src/function/logical/, src/function/set/, src/function/string/",
+          "wasmPriority": "Low"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "title": "Type System & Utilities",
+      "description": "Convert type system implementations and utility functions to TypeScript",
+      "estimatedEffort": "9-12 hours",
+      "fileCount": 73,
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Type System - TypeScript",
+          "file": "phase7-sprint1-type-system-typescript.json",
+          "taskCount": 4,
+          "fileCount": 45,
+          "effort": "6-8 hours",
+          "target": "src/type/",
+          "wasmPriority": "None"
+        },
+        {
+          "sprint": 2,
+          "title": "Utilities - TypeScript",
+          "file": "phase7-sprint2-utils-typescript.json",
+          "taskCount": 4,
+          "fileCount": 28,
+          "effort": "3-4 hours",
+          "target": "src/utils/",
+          "wasmPriority": "None"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "title": "Expression System",
+      "description": "Convert expression parser, nodes, and transforms to TypeScript (excluding embedded docs)",
+      "estimatedEffort": "12-18 hours",
+      "fileCount": 53,
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Expression Nodes - TypeScript",
+          "file": "phase8-sprint1-expression-nodes-typescript.json",
+          "taskCount": 5,
+          "fileCount": 18,
+          "effort": "4-6 hours",
+          "target": "src/expression/node/",
+          "wasmPriority": "None"
+        },
+        {
+          "sprint": 2,
+          "title": "Expression Transforms - TypeScript",
+          "file": "phase8-sprint2-expression-transforms-typescript.json",
+          "taskCount": 4,
+          "fileCount": 30,
+          "effort": "5-7 hours",
+          "target": "src/expression/transform/",
+          "wasmPriority": "None"
+        },
+        {
+          "sprint": 3,
+          "title": "Core Expression Files - TypeScript",
+          "file": "phase8-sprint3-expression-core-typescript.json",
+          "taskCount": 3,
+          "fileCount": 5,
+          "effort": "3-5 hours",
+          "target": "src/expression/",
+          "wasmPriority": "None"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "title": "Final Components",
+      "description": "Convert core infrastructure, entry points, error classes, and JSON utilities",
+      "estimatedEffort": "3-4 hours",
+      "fileCount": 24,
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Final Components - TypeScript",
+          "file": "phase9-sprint1-final-components-typescript.json",
+          "taskCount": 4,
+          "fileCount": 24,
+          "effort": "3-4 hours",
+          "target": "src/core/, src/error/, src/json/, src/entry/",
+          "wasmPriority": "None"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "title": "Embedded Documentation (LAST)",
+      "description": "Convert embedded documentation files - COMPLETE THIS LAST after all functional code",
+      "estimatedEffort": "12-15 hours",
+      "fileCount": 255,
+      "priority": "LOWEST",
+      "sprints": [
+        {
+          "sprint": 1,
+          "title": "Embedded Documentation - TypeScript",
+          "file": "phase10-sprint1-embedded-docs-typescript.json",
+          "taskCount": 4,
+          "fileCount": 255,
+          "effort": "12-15 hours",
+          "target": "src/expression/embeddedDocs/",
+          "wasmPriority": "None",
+          "notes": "DO LAST - pure documentation with minimal logic"
+        }
+      ]
+    }
+  ],
+  "conversionSummary": {
+    "assemblyscript": {
+      "fileCount": 24,
+      "categories": ["Plain numbers (12)", "Combinatorics (4)", "Bitwise (8)"],
+      "location": "src/wasm/",
+      "priority": "Very High to High WASM"
+    },
+    "typescript": {
+      "fileCount": 650,
+      "categories": [
+        "Functions (338)",
+        "Expression system (53)",
+        "Type system (45)",
+        "Utils (28)",
+        "Final components (24)",
+        "Embedded docs (255)"
+      ],
+      "locations": "src/function/, src/expression/, src/type/, src/utils/, src/core/, etc."
+    }
+  },
+  "successCriteria": [
+    "All 674 JavaScript files converted to TypeScript or AssemblyScript",
+    "TypeScript compilation produces 0 errors",
+    "AssemblyScript compilation succeeds for all WASM modules",
+    "All existing tests pass (14,882+)",
+    "Build pipeline works correctly",
+    "npm run lint passes",
+    "Performance benchmarks show improvement for WASM functions"
+  ]
+}

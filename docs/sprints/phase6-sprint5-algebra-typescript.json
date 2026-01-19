@@ -1,0 +1,93 @@
+{
+  "phase": 6,
+  "sprint": 5,
+  "title": "Algebra Functions - TypeScript",
+  "week": "Week 7-8",
+  "effort": "8-12 hours",
+  "status": "pending",
+  "description": "Convert algebra functions from JavaScript to TypeScript. These include equation solving, simplification, derivatives, and symbolic computation. WASM integration via existing algebra WASM modules when applicable.",
+  "tasks": [
+    {
+      "id": "6.5.1",
+      "category": "TypeScript Conversion",
+      "description": "Convert derivative functions: derivative.js, rationalize.js, resolve.js, simplify.js to TypeScript",
+      "estimatedHours": 3,
+      "status": "pending",
+      "wasmPriority": "Low",
+      "complexity": "High",
+      "files": [
+        "src/function/algebra/derivative.js",
+        "src/function/algebra/rationalize.js",
+        "src/function/algebra/resolve.js",
+        "src/function/algebra/simplify.js"
+      ]
+    },
+    {
+      "id": "6.5.2",
+      "category": "TypeScript Conversion",
+      "description": "Convert solver functions: lsolve.js, lup.js, lusolve.js, qr.js, slu.js, usolve.js to TypeScript",
+      "estimatedHours": 3,
+      "status": "pending",
+      "wasmPriority": "High",
+      "complexity": "High",
+      "files": [
+        "src/function/algebra/lsolve.js",
+        "src/function/algebra/lup.js",
+        "src/function/algebra/lusolve.js",
+        "src/function/algebra/qr.js",
+        "src/function/algebra/slu.js",
+        "src/function/algebra/usolve.js"
+      ]
+    },
+    {
+      "id": "6.5.3",
+      "category": "TypeScript Conversion",
+      "description": "Convert sparse algebra: sparse/*.js files (csAmd, csChol, csDFS, etc.) to TypeScript",
+      "estimatedHours": 4,
+      "status": "pending",
+      "wasmPriority": "Medium",
+      "complexity": "High",
+      "files": [
+        "src/function/algebra/sparse/*.js"
+      ]
+    },
+    {
+      "id": "6.5.4",
+      "category": "TypeScript Conversion",
+      "description": "Convert decomposition: decomposition/*.js files to TypeScript",
+      "estimatedHours": 2,
+      "status": "pending",
+      "wasmPriority": "High",
+      "complexity": "Medium",
+      "files": [
+        "src/function/algebra/decomposition/*.js"
+      ]
+    },
+    {
+      "id": "6.5.5",
+      "category": "TypeScript Conversion",
+      "description": "Convert simplify core: simplifyCore.js, simplifyConstant.js, utils/*.js to TypeScript",
+      "estimatedHours": 2,
+      "status": "pending",
+      "wasmPriority": "None",
+      "complexity": "High",
+      "files": [
+        "src/function/algebra/simplifyCore.js",
+        "src/function/algebra/simplifyConstant.js",
+        "src/function/algebra/utils/*.js"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All 45 algebra files converted to TypeScript",
+    "Complex symbolic computation types properly defined",
+    "Solver functions maintain numerical accuracy",
+    "Sparse matrix algorithms optimized",
+    "All algebra tests pass",
+    "TypeScript compilation succeeds"
+  ],
+  "dependencies": [
+    "phase6-sprint4"
+  ],
+  "blockedBy": []
+}
