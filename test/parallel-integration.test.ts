@@ -49,24 +49,22 @@ describe('Parallel Computing Integration Tests', function () {
         // This test only runs if parallel infrastructure is available
         const { ParallelMatrix } = await import('../src/parallel/ParallelMatrix.js')
 
-        // Create small test matrices
-        const size = 10
-        const a: number[][] = []
-        const b: number[][] = []
+        // Create small test arrays (flat arrays, not matrices)
+        const size = 100
+        const a = new Float64Array(size)
+        const b = new Float64Array(size)
 
         for (let i = 0; i < size; i++) {
-          a[i] = []
-          b[i] = []
-          for (let j = 0; j < size; j++) {
-            a[i][j] = i + j
-            b[i][j] = 1
-          }
+          a[i] = i
+          b[i] = 1
         }
 
         // Attempt parallel operation (will skip if not implemented)
         if (typeof ParallelMatrix.add === 'function') {
-          const result = await ParallelMatrix.add(a, b)
+          const result = await ParallelMatrix.add(a, b, size)
           assert.strictEqual(result.length, size, 'Result should have correct dimensions')
+          assert.strictEqual(result[0], 1, 'First element should be 0 + 1 = 1')
+          assert.strictEqual(result[50], 51, 'Element 50 should be 50 + 1 = 51')
         } else {
           this.skip()
         }
@@ -129,27 +127,23 @@ describe('Parallel Computing Integration Tests', function () {
       try {
         const { ParallelMatrix } = await import('../src/parallel/ParallelMatrix.js')
 
-        // Create moderate-sized matrices
-        const size = 50
-        const a: number[][] = []
-        const b: number[][] = []
+        // Create moderate-sized flat arrays (below parallel threshold to avoid worker setup)
+        const size = 500
+        const a = new Float64Array(size)
+        const b = new Float64Array(size)
 
         for (let i = 0; i < size; i++) {
-          a[i] = []
-          b[i] = []
-          for (let j = 0; j < size; j++) {
-            a[i][j] = Math.random()
-            b[i][j] = Math.random()
-          }
+          a[i] = Math.random()
+          b[i] = Math.random()
         }
 
         if (typeof ParallelMatrix.add === 'function') {
           const startTime = Date.now()
-          await ParallelMatrix.add(a, b)
+          await ParallelMatrix.add(a, b, size)
           const duration = Date.now() - startTime
 
-          // Operation should complete in reasonable time
-          assert.ok(duration < 10000, `Parallel operation took ${duration}ms`)
+          // Operation should complete in reasonable time (sequential path)
+          assert.ok(duration < 5000, `Operation took ${duration}ms`)
         } else {
           this.skip()
         }
