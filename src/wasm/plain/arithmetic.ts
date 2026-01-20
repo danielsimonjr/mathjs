@@ -78,7 +78,7 @@ export function nthRootNumber(a: f64, root: f64 = 2): f64 {
     return f64.NaN
   }
 
-  if (a < 0 && (Math.abs(root) % 2 !== 1)) {
+  if (a < 0 && Math.abs(root) % 2 !== 1) {
     // Root must be odd when a is negative
     return f64.NaN
   }
@@ -148,8 +148,10 @@ export function log1pNumber(x: f64): f64 {
 export function powNumber(x: f64, y: f64): f64 {
   // x^Infinity === 0 if -1 < x < 1
   // A real number 0 is returned instead of complex(0)
-  if ((x * x < 1 && y === f64.POSITIVE_INFINITY) ||
-      (x * x > 1 && y === f64.NEGATIVE_INFINITY)) {
+  if (
+    (x * x < 1 && y === f64.POSITIVE_INFINITY) ||
+    (x * x > 1 && y === f64.NEGATIVE_INFINITY)
+  ) {
     return 0
   }
 
@@ -236,9 +238,9 @@ export function xgcdNumber(a: f64, b: f64): StaticArray<f64> {
   }
 
   // source: https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
-  let t: f64  // used to swap two variables
-  let q: f64  // quotient
-  let r: f64  // remainder
+  let t: f64 // used to swap two variables
+  let q: f64 // quotient
+  let r: f64 // remainder
   let x: f64 = 0
   let lastx: f64 = 1
   let y: f64 = 1

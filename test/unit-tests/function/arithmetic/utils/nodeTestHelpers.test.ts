@@ -212,8 +212,7 @@ describe('nodeTestHelpers', function () {
     it('should include number + Node combinations', function () {
       const matrix = generateTestMatrix('+', 'add')
       const numNodeCases = matrix.filter(
-        ({ left, right }) =>
-          typeof left === 'number' && (right as any)?.isNode
+        ({ left, right }) => typeof left === 'number' && (right as any)?.isNode
       )
       assert.ok(numNodeCases.length > 0)
     })
@@ -221,8 +220,7 @@ describe('nodeTestHelpers', function () {
     it('should include Node + number combinations', function () {
       const matrix = generateTestMatrix('+', 'add')
       const nodeNumCases = matrix.filter(
-        ({ left, right }) =>
-          (left as any)?.isNode && typeof right === 'number'
+        ({ left, right }) => (left as any)?.isNode && typeof right === 'number'
       )
       assert.ok(nodeNumCases.length > 0)
     })
@@ -230,8 +228,7 @@ describe('nodeTestHelpers', function () {
     it('should include Node + Node combinations', function () {
       const matrix = generateTestMatrix('+', 'add')
       const nodeNodeCases = matrix.filter(
-        ({ left, right }) =>
-          (left as any)?.isNode && (right as any)?.isNode
+        ({ left, right }) => (left as any)?.isNode && (right as any)?.isNode
       )
       assert.ok(nodeNodeCases.length > 0)
     })

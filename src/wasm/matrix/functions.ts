@@ -369,11 +369,11 @@ export function expm(a: Float64Array, n: i32): Float64Array {
   const c: StaticArray<f64> = [
     1.0,
     0.5,
-    0.1,  // 1/10
-    0.016666666666666666,  // 1/60
-    0.001984126984126984,  // 1/504
-    0.00016534391534391535,  // 1/6048
-    0.000009182736455463728   // 1/108864
+    0.1, // 1/10
+    0.016666666666666666, // 1/60
+    0.001984126984126984, // 1/504
+    0.00016534391534391535, // 1/6048
+    0.000009182736455463728 // 1/108864
   ]
 
   // Compute powers of As
@@ -700,7 +700,10 @@ export function eigs(
     // Check for deflation
     let deflate: bool = false
     for (let i: i32 = m - 1; i > 0; i--) {
-      if (Math.abs(H[i * n + (i - 1)]) < tol * (Math.abs(H[(i - 1) * n + (i - 1)]) + Math.abs(H[i * n + i]))) {
+      if (
+        Math.abs(H[i * n + (i - 1)]) <
+        tol * (Math.abs(H[(i - 1) * n + (i - 1)]) + Math.abs(H[i * n + i]))
+      ) {
         H[i * n + (i - 1)] = 0.0
         if (i === m - 1) {
           eigenvalues[m - 1] = H[(m - 1) * n + (m - 1)]

@@ -44,10 +44,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
-      "files": [
-        "src/json/reviver.js",
-        "src/json/replacer.js"
-      ]
+      "files": ["src/json/reviver.js", "src/json/replacer.js"]
     },
     {
       "id": "9.1.4",
@@ -57,10 +54,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
-      "files": [
-        "src/entry/*.js",
-        "src/version.js"
-      ]
+      "files": ["src/entry/*.js", "src/version.js"]
     }
   ],
   "acceptanceCriteria": [
@@ -72,8 +66,6 @@
     "All tests pass",
     "TypeScript compilation succeeds with 0 errors"
   ],
-  "dependencies": [
-    "phase8-sprint3"
-  ],
+  "dependencies": ["phase8-sprint3"],
   "blockedBy": []
 }

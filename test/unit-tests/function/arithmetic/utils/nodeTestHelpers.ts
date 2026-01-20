@@ -68,14 +68,22 @@ export const testData = {
  * Helper function to check if a value is a Node type.
  */
 function isNode(value: unknown): boolean {
-  return value !== null && typeof value === 'object' && (value as any).isNode === true
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    (value as any).isNode === true
+  )
 }
 
 /**
  * Helper function to check node type by property.
  */
 function isOperatorNode(value: unknown): boolean {
-  return value !== null && typeof value === 'object' && (value as any).type === 'OperatorNode'
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    (value as any).type === 'OperatorNode'
+  )
 }
 
 /**
@@ -85,13 +93,25 @@ export const nodeAssert = {
   /**
    * Assert that result is an OperatorNode with expected operator and function name.
    */
-  isOperatorNode(result: unknown, expectedOp: string, expectedFn: string): void {
+  isOperatorNode(
+    result: unknown,
+    expectedOp: string,
+    expectedFn: string
+  ): void {
     assert.ok(
       isOperatorNode(result),
       `Expected OperatorNode, got ${(result as any)?.type || typeof result}`
     )
-    assert.strictEqual((result as any).op, expectedOp, `Expected operator '${expectedOp}', got '${(result as any).op}'`)
-    assert.strictEqual((result as any).fn, expectedFn, `Expected function '${expectedFn}', got '${(result as any).fn}'`)
+    assert.strictEqual(
+      (result as any).op,
+      expectedOp,
+      `Expected operator '${expectedOp}', got '${(result as any).op}'`
+    )
+    assert.strictEqual(
+      (result as any).fn,
+      expectedFn,
+      `Expected function '${expectedFn}', got '${(result as any).fn}'`
+    )
   },
 
   /**
@@ -109,10 +129,18 @@ export const nodeAssert = {
   /**
    * Assert that a Node evaluates to the expected value.
    */
-  evaluatesTo(result: unknown, expected: number, scope: Record<string, unknown> = {}): void {
+  evaluatesTo(
+    result: unknown,
+    expected: number,
+    scope: Record<string, unknown> = {}
+  ): void {
     assert.ok(isNode(result), 'Expected a Node')
     const value = (result as any).compile().evaluate(scope)
-    assert.strictEqual(value, expected, `Expected evaluation to be ${expected}, got ${value}`)
+    assert.strictEqual(
+      value,
+      expected,
+      `Expected evaluation to be ${expected}, got ${value}`
+    )
   },
 
   /**
@@ -132,7 +160,10 @@ export const nodeAssert = {
    */
   isNumeric(result: unknown): void {
     assert.ok(
-      typeof result === 'number' || math.isBigNumber(result) || math.isComplex(result) || math.isFraction(result),
+      typeof result === 'number' ||
+        math.isBigNumber(result) ||
+        math.isComplex(result) ||
+        math.isFraction(result),
       `Expected numeric result, got ${typeof result}`
     )
   }
@@ -142,10 +173,7 @@ export const nodeAssert = {
  * Generates a comprehensive test matrix for a binary operator.
  * Creates test cases for all combinations of Node with other types.
  */
-export function generateTestMatrix(
-  operator: string,
-  _fn: string
-): TestCase[] {
+export function generateTestMatrix(operator: string, _fn: string): TestCase[] {
   const matrix: TestCase[] = []
   const nodes = testData.simpleNodes()
   const nums = testData.numbers.slice(0, 3) // Use first 3 numbers

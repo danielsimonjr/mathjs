@@ -46,13 +46,17 @@ export function combinationsNumber(n: f64, k: f64): f64 {
   const nMinusk = n - k
 
   let answer: f64 = 1
-  const firstnumerator = (k < nMinusk) ? nMinusk + 1 : k + 1
+  const firstnumerator = k < nMinusk ? nMinusk + 1 : k + 1
   let nextdivisor: f64 = 2
-  const lastdivisor = (k < nMinusk) ? k : nMinusk
+  const lastdivisor = k < nMinusk ? k : nMinusk
 
   // Balance multiplications and divisions to try to keep intermediate values
   // in exact-integer range as long as possible
-  for (let nextnumerator = firstnumerator; nextnumerator <= n; nextnumerator++) {
+  for (
+    let nextnumerator = firstnumerator;
+    nextnumerator <= n;
+    nextnumerator++
+  ) {
     answer *= nextnumerator
     while (nextdivisor <= lastdivisor && answer % nextdivisor === 0) {
       answer /= nextdivisor

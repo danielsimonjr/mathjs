@@ -90,7 +90,7 @@ export function reduce(num: i64, den: i64): StaticArray<i64> {
 
   if (den === 0) {
     // Return [sign, 0] for infinity representation
-    result[0] = num > 0 ? 1 : (num < 0 ? -1 : 0)
+    result[0] = num > 0 ? 1 : num < 0 ? -1 : 0
     result[1] = 0
     return result
   }
@@ -126,7 +126,12 @@ export function reduce(num: i64, den: i64): StaticArray<i64> {
  * @param den2 Denominator of second rational
  * @returns [numerator, denominator]
  */
-export function add(num1: i64, den1: i64, num2: i64, den2: i64): StaticArray<i64> {
+export function add(
+  num1: i64,
+  den1: i64,
+  num2: i64,
+  den2: i64
+): StaticArray<i64> {
   // Use LCM to minimize overflow risk
   const g = gcd(den1, den2)
   const d1 = den1 / g
@@ -142,7 +147,12 @@ export function add(num1: i64, den1: i64, num2: i64, den2: i64): StaticArray<i64
  * Subtract two rationals: a/b - c/d
  * @returns [numerator, denominator]
  */
-export function subtract(num1: i64, den1: i64, num2: i64, den2: i64): StaticArray<i64> {
+export function subtract(
+  num1: i64,
+  den1: i64,
+  num2: i64,
+  den2: i64
+): StaticArray<i64> {
   return add(num1, den1, -num2, den2)
 }
 
@@ -151,7 +161,12 @@ export function subtract(num1: i64, den1: i64, num2: i64, den2: i64): StaticArra
  * Cross-reduces to minimize overflow
  * @returns [numerator, denominator]
  */
-export function multiply(num1: i64, den1: i64, num2: i64, den2: i64): StaticArray<i64> {
+export function multiply(
+  num1: i64,
+  den1: i64,
+  num2: i64,
+  den2: i64
+): StaticArray<i64> {
   // Cross-reduce to minimize overflow
   const g1 = gcd(num1, den2)
   const g2 = gcd(num2, den1)
@@ -166,7 +181,12 @@ export function multiply(num1: i64, den1: i64, num2: i64, den2: i64): StaticArra
  * Divide two rationals: (a/b) / (c/d) = (a*d) / (b*c)
  * @returns [numerator, denominator]
  */
-export function divide(num1: i64, den1: i64, num2: i64, den2: i64): StaticArray<i64> {
+export function divide(
+  num1: i64,
+  den1: i64,
+  num2: i64,
+  den2: i64
+): StaticArray<i64> {
   return multiply(num1, den1, den2, num2)
 }
 
@@ -226,8 +246,14 @@ export function compare(num1: i64, den1: i64, num2: i64, den2: i64): i32 {
   if (den2 === 0) return num2 >= 0 ? -1 : 1
 
   // Normalize signs
-  if (den1 < 0) { num1 = -num1; den1 = -den1 }
-  if (den2 < 0) { num2 = -num2; den2 = -den2 }
+  if (den1 < 0) {
+    num1 = -num1
+    den1 = -den1
+  }
+  if (den2 < 0) {
+    num2 = -num2
+    den2 = -den2
+  }
 
   // Cross multiply (be careful with overflow)
   // a/b vs c/d → a*d vs c*b
@@ -304,7 +330,7 @@ export function fromFloat(value: f64, maxDenom: i64): StaticArray<i64> {
   const result = new StaticArray<i64>(2)
 
   if (!isFinite(value)) {
-    result[0] = value > 0 ? 1 : (value < 0 ? -1 : 0)
+    result[0] = value > 0 ? 1 : value < 0 ? -1 : 0
     result[1] = 0
     return result
   }
@@ -319,8 +345,10 @@ export function fromFloat(value: f64, maxDenom: i64): StaticArray<i64> {
   if (neg) value = -value
 
   // Continued fraction approximation
-  let h0: i64 = 0, h1: i64 = 1
-  let k0: i64 = 1, k1: i64 = 0
+  let h0: i64 = 0,
+    h1: i64 = 1
+  let k0: i64 = 1,
+    k1: i64 = 0
 
   let x = value
 
@@ -333,8 +361,10 @@ export function fromFloat(value: f64, maxDenom: i64): StaticArray<i64> {
     // Check for overflow or exceeding max denominator
     if (k2 > maxDenom || k2 < 0) break
 
-    h0 = h1; h1 = h2
-    k0 = k1; k1 = k2
+    h0 = h1
+    h1 = h2
+    k0 = k1
+    k1 = k2
 
     const remainder = x - f64(a)
     if (Math.abs(remainder) < 1e-15) break
@@ -480,8 +510,10 @@ export function modInverse(a: i64, m: i64): i64 {
 
   a = ((a % m) + m) % m // Ensure positive
 
-  let t: i64 = 0, newt: i64 = 1
-  let r = m, newr = a
+  let t: i64 = 0,
+    newt: i64 = 1
+  let r = m,
+    newr = a
 
   while (newr !== 0) {
     const q = r / newr
@@ -519,7 +551,7 @@ export function mod(num: i64, den: i64, n: i64): StaticArray<i64> {
   const rDen = r[1]
 
   // Compute floor((a/b) / n) * n
-  const floored = rNum / (rDen * n) * n * rDen
+  const floored = (rNum / (rDen * n)) * n * rDen
   const newNum = rNum - floored
 
   return reduce(newNum, rDen)
@@ -536,7 +568,10 @@ export function mod(num: i64, den: i64, n: i64): StaticArray<i64> {
  * @param count Number of rationals
  * @returns [sum_numerator, sum_denominator]
  */
-export function sumArray(rationals: Float64Array, count: i32): StaticArray<i64> {
+export function sumArray(
+  rationals: Float64Array,
+  count: i32
+): StaticArray<i64> {
   if (count === 0) {
     const result = new StaticArray<i64>(2)
     result[0] = 0
@@ -564,7 +599,10 @@ export function sumArray(rationals: Float64Array, count: i32): StaticArray<i64> 
  * @param count Number of rationals
  * @returns [product_numerator, product_denominator]
  */
-export function productArray(rationals: Float64Array, count: i32): StaticArray<i64> {
+export function productArray(
+  rationals: Float64Array,
+  count: i32
+): StaticArray<i64> {
   if (count === 0) {
     const result = new StaticArray<i64>(2)
     result[0] = 1
@@ -593,7 +631,11 @@ export function productArray(rationals: Float64Array, count: i32): StaticArray<i
  * @param maxTerms Maximum number of terms
  * @returns Array of continued fraction coefficients
  */
-export function toContinuedFraction(num: i64, den: i64, maxTerms: i32): Int32Array {
+export function toContinuedFraction(
+  num: i64,
+  den: i64,
+  maxTerms: i32
+): Int32Array {
   const terms = new Int32Array(maxTerms)
   let count: i32 = 0
 
@@ -626,7 +668,10 @@ export function toContinuedFraction(num: i64, den: i64, maxTerms: i32): Int32Arr
  * @param n Number of terms
  * @returns [numerator, denominator]
  */
-export function fromContinuedFraction(terms: Int32Array, n: i32): StaticArray<i64> {
+export function fromContinuedFraction(
+  terms: Int32Array,
+  n: i32
+): StaticArray<i64> {
   if (n === 0) {
     const result = new StaticArray<i64>(2)
     result[0] = 0
@@ -634,16 +679,20 @@ export function fromContinuedFraction(terms: Int32Array, n: i32): StaticArray<i6
     return result
   }
 
-  let h0: i64 = 1, h1: i64 = i64(terms[0])
-  let k0: i64 = 0, k1: i64 = 1
+  let h0: i64 = 1,
+    h1: i64 = i64(terms[0])
+  let k0: i64 = 0,
+    k1: i64 = 1
 
   for (let i: i32 = 1; i < n; i++) {
     const a = i64(terms[i])
     const h2 = a * h1 + h0
     const k2 = a * k1 + k0
 
-    h0 = h1; h1 = h2
-    k0 = k1; k1 = k2
+    h0 = h1
+    h1 = h2
+    k0 = k1
+    k1 = k2
   }
 
   return reduce(h1, k1)
@@ -657,7 +706,12 @@ export function fromContinuedFraction(terms: Int32Array, n: i32): StaticArray<i6
  * Compute mediant of two fractions: (a+c)/(b+d)
  * Used in Stern-Brocot tree and Farey sequences
  */
-export function mediant(num1: i64, den1: i64, num2: i64, den2: i64): StaticArray<i64> {
+export function mediant(
+  num1: i64,
+  den1: i64,
+  num2: i64,
+  den2: i64
+): StaticArray<i64> {
   return reduce(num1 + num2, den1 + den2)
 }
 
@@ -668,7 +722,7 @@ export function mediant(num1: i64, den1: i64, num2: i64, den2: i64): StaticArray
 export function bestApproximation(value: f64, maxDenom: i64): StaticArray<i64> {
   if (!isFinite(value)) {
     const result = new StaticArray<i64>(2)
-    result[0] = value > 0 ? 1 : (value < 0 ? -1 : 0)
+    result[0] = value > 0 ? 1 : value < 0 ? -1 : 0
     result[1] = 0
     return result
   }
@@ -677,8 +731,10 @@ export function bestApproximation(value: f64, maxDenom: i64): StaticArray<i64> {
   if (neg) value = -value
 
   // Bounds: 0/1 <= value <= value_ceil/1
-  let aNum: i64 = 0, aDen: i64 = 1
-  let bNum: i64 = 1, bDen: i64 = 0
+  let aNum: i64 = 0,
+    aDen: i64 = 1
+  let bNum: i64 = 1,
+    bDen: i64 = 0
 
   while (true) {
     const mNum = aNum + bNum
@@ -774,14 +830,14 @@ export function reduceF64(num: f64, den: f64, result: Float64Array): void {
   den = Math.floor(den)
 
   if (den === 0) {
-    unchecked(result[0] = num > 0 ? 1 : (num < 0 ? -1 : 0))
-    unchecked(result[1] = 0)
+    unchecked((result[0] = num > 0 ? 1 : num < 0 ? -1 : 0))
+    unchecked((result[1] = 0))
     return
   }
 
   if (num === 0) {
-    unchecked(result[0] = 0)
-    unchecked(result[1] = 1)
+    unchecked((result[0] = 0))
+    unchecked((result[1] = 1))
     return
   }
 
@@ -792,8 +848,8 @@ export function reduceF64(num: f64, den: f64, result: Float64Array): void {
   }
 
   const g = gcdF64(num < 0 ? -num : num, den)
-  unchecked(result[0] = num / g)
-  unchecked(result[1] = den / g)
+  unchecked((result[0] = num / g))
+  unchecked((result[1] = den / g))
 }
 
 /**
@@ -804,7 +860,13 @@ export function reduceF64(num: f64, den: f64, result: Float64Array): void {
  * @param den2 Denominator of second rational
  * @param result Float64Array[2] to store [numerator, denominator]
  */
-export function addF64(num1: f64, den1: f64, num2: f64, den2: f64, result: Float64Array): void {
+export function addF64(
+  num1: f64,
+  den1: f64,
+  num2: f64,
+  den2: f64,
+  result: Float64Array
+): void {
   const g = gcdF64(den1, den2)
   const d1 = den1 / g
   const d2 = den2 / g
@@ -823,7 +885,13 @@ export function addF64(num1: f64, den1: f64, num2: f64, den2: f64, result: Float
  * @param den2 Denominator of second rational
  * @param result Float64Array[2] to store [numerator, denominator]
  */
-export function multiplyF64(num1: f64, den1: f64, num2: f64, den2: f64, result: Float64Array): void {
+export function multiplyF64(
+  num1: f64,
+  den1: f64,
+  num2: f64,
+  den2: f64,
+  result: Float64Array
+): void {
   // Cross-reduce to minimize overflow
   const g1 = gcdF64(Math.abs(num1), Math.abs(den2))
   const g2 = gcdF64(Math.abs(num2), Math.abs(den1))
@@ -847,8 +915,14 @@ export function compareF64(num1: f64, den1: f64, num2: f64, den2: f64): i32 {
   if (den2 === 0) return num2 >= 0 ? -1 : 1
 
   // Normalize signs
-  if (den1 < 0) { num1 = -num1; den1 = -den1 }
-  if (den2 < 0) { num2 = -num2; den2 = -den2 }
+  if (den1 < 0) {
+    num1 = -num1
+    den1 = -den1
+  }
+  if (den2 < 0) {
+    num2 = -num2
+    den2 = -den2
+  }
 
   // Cross multiply
   const lhs = num1 * den2
@@ -866,18 +940,24 @@ export function compareF64(num1: f64, den1: f64, num2: f64, den2: f64): i32 {
  * @param maxDenom Maximum denominator
  * @param result Float64Array[2] to store [numerator, denominator]
  */
-export function fromFloatF64(value: f64, maxDenom: f64, result: Float64Array): void {
+export function fromFloatF64(
+  value: f64,
+  maxDenom: f64,
+  result: Float64Array
+): void {
   if (!isFinite(value)) {
-    unchecked(result[0] = value > 0 ? 1 : (value < 0 ? -1 : 0))
-    unchecked(result[1] = 0)
+    unchecked((result[0] = value > 0 ? 1 : value < 0 ? -1 : 0))
+    unchecked((result[1] = 0))
     return
   }
 
   const neg = value < 0
   if (neg) value = -value
 
-  let aNum: f64 = 0, aDen: f64 = 1
-  let bNum: f64 = 1, bDen: f64 = 0
+  let aNum: f64 = 0,
+    aDen: f64 = 1
+  let bNum: f64 = 1,
+    bDen: f64 = 0
 
   while (true) {
     const mNum = aNum + bNum
@@ -888,8 +968,8 @@ export function fromFloatF64(value: f64, maxDenom: f64, result: Float64Array): v
     const mVal = mNum / mDen
 
     if (Math.abs(mVal - value) < 1e-15) {
-      unchecked(result[0] = neg ? -mNum : mNum)
-      unchecked(result[1] = mDen)
+      unchecked((result[0] = neg ? -mNum : mNum))
+      unchecked((result[1] = mDen))
       return
     }
 
@@ -907,10 +987,10 @@ export function fromFloatF64(value: f64, maxDenom: f64, result: Float64Array): v
   const bErr = bDen > 0 ? Math.abs(bNum / bDen - value) : Infinity
 
   if (aErr <= bErr) {
-    unchecked(result[0] = neg ? -aNum : aNum)
-    unchecked(result[1] = aDen)
+    unchecked((result[0] = neg ? -aNum : aNum))
+    unchecked((result[1] = aDen))
   } else {
-    unchecked(result[0] = neg ? -bNum : bNum)
-    unchecked(result[1] = bDen)
+    unchecked((result[0] = neg ? -bNum : bNum))
+    unchecked((result[1] = bDen))
   }
 }

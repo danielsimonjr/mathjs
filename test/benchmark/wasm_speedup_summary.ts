@@ -58,7 +58,11 @@ function jsAdd(a: Float64Array, b: Float64Array): Float64Array {
   return result
 }
 
-function jsTranspose(data: Float64Array, rows: number, cols: number): Float64Array {
+function jsTranspose(
+  data: Float64Array,
+  rows: number,
+  cols: number
+): Float64Array {
   const result = new Float64Array(rows * cols)
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
@@ -126,9 +130,9 @@ async function main(): Promise<void> {
 
     await bench.run()
 
-    const jsTask = bench.tasks.find(t => t.name === 'JS')
-    const wasmTask = bench.tasks.find(t => t.name === 'WASM')
-    const simdTask = bench.tasks.find(t => t.name === 'SIMD')
+    const jsTask = bench.tasks.find((t) => t.name === 'JS')
+    const wasmTask = bench.tasks.find((t) => t.name === 'WASM')
+    const simdTask = bench.tasks.find((t) => t.name === 'SIMD')
 
     const jsOps = jsTask?.result?.hz || 0
     const wasmOps = wasmTask?.result?.hz || 0
@@ -146,9 +150,13 @@ async function main(): Promise<void> {
 
     console.log(`  ${size.toLocaleString().padStart(10)} elements:`)
     console.log(`    JS:   ${jsOps.toFixed(0).padStart(10)} ops/sec`)
-    console.log(`    WASM: ${wasmOps.toFixed(0).padStart(10)} ops/sec (${(wasmOps/jsOps).toFixed(1)}x)`)
+    console.log(
+      `    WASM: ${wasmOps.toFixed(0).padStart(10)} ops/sec (${(wasmOps / jsOps).toFixed(1)}x)`
+    )
     if (simdOps > 0) {
-      console.log(`    SIMD: ${simdOps.toFixed(0).padStart(10)} ops/sec (${(simdOps/jsOps).toFixed(1)}x)`)
+      console.log(
+        `    SIMD: ${simdOps.toFixed(0).padStart(10)} ops/sec (${(simdOps / jsOps).toFixed(1)}x)`
+      )
     }
     console.log('')
   }
@@ -169,13 +177,17 @@ async function main(): Promise<void> {
     }
     await meanBench.run()
 
-    const jsMeanOps = meanBench.tasks.find(t => t.name === 'JS Mean')?.result?.hz || 0
-    const simdMeanOps = meanBench.tasks.find(t => t.name === 'SIMD Mean')?.result?.hz || 0
+    const jsMeanOps =
+      meanBench.tasks.find((t) => t.name === 'JS Mean')?.result?.hz || 0
+    const simdMeanOps =
+      meanBench.tasks.find((t) => t.name === 'SIMD Mean')?.result?.hz || 0
 
     console.log(`  Mean (${size.toLocaleString()} elements):`)
     console.log(`    JS:   ${jsMeanOps.toFixed(0).padStart(10)} ops/sec`)
     if (simdMeanOps > 0) {
-      console.log(`    SIMD: ${simdMeanOps.toFixed(0).padStart(10)} ops/sec (${(simdMeanOps/jsMeanOps).toFixed(1)}x)`)
+      console.log(
+        `    SIMD: ${simdMeanOps.toFixed(0).padStart(10)} ops/sec (${(simdMeanOps / jsMeanOps).toFixed(1)}x)`
+      )
     }
 
     // Std
@@ -186,13 +198,17 @@ async function main(): Promise<void> {
     }
     await stdBench.run()
 
-    const jsStdOps = stdBench.tasks.find(t => t.name === 'JS Std')?.result?.hz || 0
-    const simdStdOps = stdBench.tasks.find(t => t.name === 'SIMD Std')?.result?.hz || 0
+    const jsStdOps =
+      stdBench.tasks.find((t) => t.name === 'JS Std')?.result?.hz || 0
+    const simdStdOps =
+      stdBench.tasks.find((t) => t.name === 'SIMD Std')?.result?.hz || 0
 
     console.log(`  Std Dev (${size.toLocaleString()} elements):`)
     console.log(`    JS:   ${jsStdOps.toFixed(0).padStart(10)} ops/sec`)
     if (simdStdOps > 0) {
-      console.log(`    SIMD: ${simdStdOps.toFixed(0).padStart(10)} ops/sec (${(simdStdOps/jsStdOps).toFixed(1)}x)`)
+      console.log(
+        `    SIMD: ${simdStdOps.toFixed(0).padStart(10)} ops/sec (${(simdStdOps / jsStdOps).toFixed(1)}x)`
+      )
     }
 
     results.push({
@@ -232,8 +248,8 @@ async function main(): Promise<void> {
 
     await bench.run()
 
-    const jsOps = bench.tasks.find(t => t.name === 'JS')?.result?.hz || 0
-    const wasmOps = bench.tasks.find(t => t.name === 'WASM')?.result?.hz || 0
+    const jsOps = bench.tasks.find((t) => t.name === 'JS')?.result?.hz || 0
+    const wasmOps = bench.tasks.find((t) => t.name === 'WASM')?.result?.hz || 0
 
     results.push({
       operation: 'Transpose',
@@ -247,7 +263,9 @@ async function main(): Promise<void> {
 
     console.log(`  ${n}x${n} matrix:`)
     console.log(`    JS:   ${jsOps.toFixed(0).padStart(10)} ops/sec`)
-    console.log(`    WASM: ${wasmOps.toFixed(0).padStart(10)} ops/sec (${(wasmOps/jsOps).toFixed(1)}x)`)
+    console.log(
+      `    WASM: ${wasmOps.toFixed(0).padStart(10)} ops/sec (${(wasmOps / jsOps).toFixed(1)}x)`
+    )
     console.log('')
   }
 
@@ -274,9 +292,9 @@ async function main(): Promise<void> {
 
     await bench.run()
 
-    const jsOps = bench.tasks.find(t => t.name === 'JS')?.result?.hz || 0
-    const wasmOps = bench.tasks.find(t => t.name === 'WASM')?.result?.hz || 0
-    const simdOps = bench.tasks.find(t => t.name === 'SIMD')?.result?.hz || 0
+    const jsOps = bench.tasks.find((t) => t.name === 'JS')?.result?.hz || 0
+    const wasmOps = bench.tasks.find((t) => t.name === 'WASM')?.result?.hz || 0
+    const simdOps = bench.tasks.find((t) => t.name === 'SIMD')?.result?.hz || 0
 
     results.push({
       operation: 'Add',
@@ -290,9 +308,13 @@ async function main(): Promise<void> {
 
     console.log(`  ${n}x${n} matrices (${size.toLocaleString()} elements):`)
     console.log(`    JS:   ${jsOps.toFixed(0).padStart(10)} ops/sec`)
-    console.log(`    WASM: ${wasmOps.toFixed(0).padStart(10)} ops/sec (${(wasmOps/jsOps).toFixed(1)}x)`)
+    console.log(
+      `    WASM: ${wasmOps.toFixed(0).padStart(10)} ops/sec (${(wasmOps / jsOps).toFixed(1)}x)`
+    )
     if (simdOps > 0) {
-      console.log(`    SIMD: ${simdOps.toFixed(0).padStart(10)} ops/sec (${(simdOps/jsOps).toFixed(1)}x)`)
+      console.log(
+        `    SIMD: ${simdOps.toFixed(0).padStart(10)} ops/sec (${(simdOps / jsOps).toFixed(1)}x)`
+      )
     }
     console.log('')
   }
@@ -304,7 +326,9 @@ async function main(): Promise<void> {
   console.log('SPEEDUP SUMMARY')
   console.log('='.repeat(90))
   console.log('')
-  console.log('  Operation          Size           JS ops/s    WASM Speedup    SIMD Speedup')
+  console.log(
+    '  Operation          Size           JS ops/s    WASM Speedup    SIMD Speedup'
+  )
   console.log('  ' + '-'.repeat(80))
 
   for (const r of results) {
@@ -321,15 +345,21 @@ async function main(): Promise<void> {
   console.log('='.repeat(90))
 
   // Calculate average speedups
-  const wasmSpeedups = results.filter(r => r.speedup > 0).map(r => r.speedup)
-  const simdSpeedups = results.filter(r => r.simdSpeedup > 0).map(r => r.simdSpeedup)
+  const wasmSpeedups = results
+    .filter((r) => r.speedup > 0)
+    .map((r) => r.speedup)
+  const simdSpeedups = results
+    .filter((r) => r.simdSpeedup > 0)
+    .map((r) => r.simdSpeedup)
 
-  const avgWasm = wasmSpeedups.length > 0
-    ? wasmSpeedups.reduce((a, b) => a + b, 0) / wasmSpeedups.length
-    : 0
-  const avgSimd = simdSpeedups.length > 0
-    ? simdSpeedups.reduce((a, b) => a + b, 0) / simdSpeedups.length
-    : 0
+  const avgWasm =
+    wasmSpeedups.length > 0
+      ? wasmSpeedups.reduce((a, b) => a + b, 0) / wasmSpeedups.length
+      : 0
+  const avgSimd =
+    simdSpeedups.length > 0
+      ? simdSpeedups.reduce((a, b) => a + b, 0) / simdSpeedups.length
+      : 0
   const maxSimd = simdSpeedups.length > 0 ? Math.max(...simdSpeedups) : 0
 
   console.log(`

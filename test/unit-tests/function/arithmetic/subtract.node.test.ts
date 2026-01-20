@@ -9,7 +9,11 @@ const { parse, ConstantNode, SymbolNode } = math
 
 // Helper to check node type
 function isOperatorNode(value: unknown): boolean {
-  return value !== null && typeof value === 'object' && (value as any).type === 'OperatorNode'
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    (value as any).type === 'OperatorNode'
+  )
 }
 
 describe('subtract with Node operands', function () {

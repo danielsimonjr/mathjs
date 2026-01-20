@@ -106,9 +106,18 @@
   ],
   "errorSummary": {
     "critical": {
-      "TS4023": { "count": 20, "description": "Exported variable uses unexported type" },
-      "TS4094": { "count": 5, "description": "Private property on exported anonymous class" },
-      "TS2454": { "count": 4, "description": "Variable used before assignment" },
+      "TS4023": {
+        "count": 20,
+        "description": "Exported variable uses unexported type"
+      },
+      "TS4094": {
+        "count": 5,
+        "description": "Private property on exported anonymous class"
+      },
+      "TS2454": {
+        "count": 4,
+        "description": "Variable used before assignment"
+      },
       "TS2538": { "count": 3, "description": "Type cannot be used as index" }
     },
     "medium": {

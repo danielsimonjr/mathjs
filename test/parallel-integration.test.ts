@@ -33,8 +33,10 @@ describe('Parallel Computing Integration Tests', function () {
         const WorkerPool = await import('../src/parallel/WorkerPool.js')
         assert.ok(WorkerPool, 'WorkerPool module should load')
       } catch (err) {
-        if ((err as Error).message.includes('Cannot find module') ||
-            (err as Error).message.includes('workerpool')) {
+        if (
+          (err as Error).message.includes('Cannot find module') ||
+          (err as Error).message.includes('workerpool')
+        ) {
           this.skip()
         } else {
           throw err
@@ -47,7 +49,9 @@ describe('Parallel Computing Integration Tests', function () {
     it('should perform parallel operations when workerpool is available', async function () {
       try {
         // This test only runs if parallel infrastructure is available
-        const { ParallelMatrix } = await import('../src/parallel/ParallelMatrix.js')
+        const { ParallelMatrix } = await import(
+          '../src/parallel/ParallelMatrix.js'
+        )
 
         // Create small test arrays (flat arrays, not matrices)
         const size = 100
@@ -62,16 +66,22 @@ describe('Parallel Computing Integration Tests', function () {
         // Attempt parallel operation (will skip if not implemented)
         if (typeof ParallelMatrix.add === 'function') {
           const result = await ParallelMatrix.add(a, b, size)
-          assert.strictEqual(result.length, size, 'Result should have correct dimensions')
+          assert.strictEqual(
+            result.length,
+            size,
+            'Result should have correct dimensions'
+          )
           assert.strictEqual(result[0], 1, 'First element should be 0 + 1 = 1')
           assert.strictEqual(result[50], 51, 'Element 50 should be 50 + 1 = 51')
         } else {
           this.skip()
         }
       } catch (err) {
-        if ((err as Error).message.includes('Cannot find module') ||
-            (err as Error).message.includes('workerpool') ||
-            (err as Error).message.includes('not implemented')) {
+        if (
+          (err as Error).message.includes('Cannot find module') ||
+          (err as Error).message.includes('workerpool') ||
+          (err as Error).message.includes('not implemented')
+        ) {
           this.skip()
         } else {
           throw err
@@ -104,16 +114,26 @@ describe('Parallel Computing Integration Tests', function () {
         // Attempt parallel WASM operation
         if (typeof ParallelWasm.add === 'function') {
           const result = await ParallelWasm.add(array1, array2)
-          assert.strictEqual(result.length, size, 'Result should have correct length')
+          assert.strictEqual(
+            result.length,
+            size,
+            'Result should have correct length'
+          )
           assert.strictEqual(result[0], 0, 'First element should be correct')
-          assert.strictEqual(result[50], 150, 'Middle element should be correct')
+          assert.strictEqual(
+            result[50],
+            150,
+            'Middle element should be correct'
+          )
         } else {
           this.skip()
         }
       } catch (err) {
-        if ((err as Error).message.includes('Cannot find module') ||
-            (err as Error).message.includes('not implemented') ||
-            (err as Error).message.includes('workerpool')) {
+        if (
+          (err as Error).message.includes('Cannot find module') ||
+          (err as Error).message.includes('not implemented') ||
+          (err as Error).message.includes('workerpool')
+        ) {
           this.skip()
         } else {
           throw err
@@ -125,7 +145,9 @@ describe('Parallel Computing Integration Tests', function () {
   describe('Performance Characteristics', function () {
     it('should complete parallel operations within reasonable time', async function () {
       try {
-        const { ParallelMatrix } = await import('../src/parallel/ParallelMatrix.js')
+        const { ParallelMatrix } = await import(
+          '../src/parallel/ParallelMatrix.js'
+        )
 
         // Create moderate-sized flat arrays (below parallel threshold to avoid worker setup)
         const size = 500
@@ -148,9 +170,11 @@ describe('Parallel Computing Integration Tests', function () {
           this.skip()
         }
       } catch (err) {
-        if ((err as Error).message.includes('Cannot find module') ||
-            (err as Error).message.includes('not implemented') ||
-            (err as Error).message.includes('workerpool')) {
+        if (
+          (err as Error).message.includes('Cannot find module') ||
+          (err as Error).message.includes('not implemented') ||
+          (err as Error).message.includes('workerpool')
+        ) {
           this.skip()
         } else {
           throw err

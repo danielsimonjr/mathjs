@@ -142,7 +142,11 @@ export function algo03DenseSparseFunction(
         result[i * cols + j] = workspace[i]
       } else {
         // Sparse element is zero
-        result[i * cols + j] = applyOperation(denseData[i * cols + j], 0.0, operation)
+        result[i * cols + j] = applyOperation(
+          denseData[i * cols + j],
+          0.0,
+          operation
+        )
       }
     }
   }

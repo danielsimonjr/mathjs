@@ -412,7 +412,10 @@ export class ParallelWasm {
   /**
    * Compute standard deviation with automatic strategy selection
    */
-  public static async std(data: Float64Array, ddof: number = 0): Promise<number> {
+  public static async std(
+    data: Float64Array,
+    ddof: number = 0
+  ): Promise<number> {
     const size = data.length
     const strategy = this.getStrategy(size, 'statistics')
 

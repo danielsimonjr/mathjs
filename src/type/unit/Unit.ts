@@ -970,7 +970,9 @@ export const createUnitClass = /* #__PURE__ */ factory(
       }
 
       // Remove units with zero power
-      const simplifiedUnits = units.filter((u: any) => Math.abs(u.power) >= 1e-12)
+      const simplifiedUnits = units.filter(
+        (u: any) => Math.abs(u.power) >= 1e-12
+      )
 
       // Update unit's units array
       unit.units = simplifiedUnits

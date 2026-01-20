@@ -99,11 +99,7 @@ export const createNodeOperations = /* #__PURE__ */ factory(
      * @param args - Array of operands
      * @returns The resulting OperatorNode
      */
-    function createNaryNode(
-      op: string,
-      fn: string,
-      args: unknown[]
-    ): MathNode {
+    function createNaryNode(op: string, fn: string, args: unknown[]): MathNode {
       if (args.length < 2) {
         throw new Error(`${fn} requires at least 2 arguments`)
       }

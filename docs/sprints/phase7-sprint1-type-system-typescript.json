@@ -29,9 +29,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
-      "files": [
-        "src/type/number/*.js"
-      ]
+      "files": ["src/type/number/*.js"]
     },
     {
       "id": "7.1.3",
@@ -41,9 +39,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "High",
-      "files": [
-        "src/type/chain/*.js"
-      ]
+      "files": ["src/type/chain/*.js"]
     },
     {
       "id": "7.1.4",
@@ -53,10 +49,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
-      "files": [
-        "src/type/resultset/*.js",
-        "src/type/*.js"
-      ]
+      "files": ["src/type/resultset/*.js", "src/type/*.js"]
     }
   ],
   "acceptanceCriteria": [
@@ -67,8 +60,6 @@
     "All type tests pass",
     "TypeScript compilation succeeds"
   ],
-  "dependencies": [
-    "phase6-sprint7"
-  ],
+  "dependencies": ["phase6-sprint7"],
   "blockedBy": []
 }

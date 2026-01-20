@@ -182,9 +182,7 @@ export class WasmLoader {
       const response = await fetch(path)
       // Use streaming compilation in browser for better performance
       if (typeof WebAssembly.compileStreaming === 'function') {
-        this.compiledModule = await WebAssembly.compileStreaming(
-          fetch(path)
-        )
+        this.compiledModule = await WebAssembly.compileStreaming(fetch(path))
       } else {
         const buffer = await response.arrayBuffer()
         this.compiledModule = await WebAssembly.compile(buffer)
@@ -498,7 +496,10 @@ export class WasmLoader {
   /**
    * Get a suitable entry from the memory pool
    */
-  private getFromPool(pool: PoolEntry[], requestedSize: number): PoolEntry | null {
+  private getFromPool(
+    pool: PoolEntry[],
+    requestedSize: number
+  ): PoolEntry | null {
     // Find best fit: smallest available entry that's >= requested size
     let bestFit: PoolEntry | null = null
     let bestFitWaste = Infinity
@@ -580,8 +581,16 @@ export class WasmLoader {
     const i32Bytes = this.int32Pool.reduce((sum, e) => sum + e.size, 0)
 
     return {
-      float64: { total: this.float64Pool.length, inUse: f64InUse, totalBytes: f64Bytes },
-      int32: { total: this.int32Pool.length, inUse: i32InUse, totalBytes: i32Bytes }
+      float64: {
+        total: this.float64Pool.length,
+        inUse: f64InUse,
+        totalBytes: f64Bytes
+      },
+      int32: {
+        total: this.int32Pool.length,
+        inUse: i32InUse,
+        totalBytes: i32Bytes
+      }
     }
   }
 

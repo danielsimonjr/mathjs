@@ -17,9 +17,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 1,
-      "files": [
-        "src/expression/node/SymbolNode.ts"
-      ]
+      "files": ["src/expression/node/SymbolNode.ts"]
     },
     {
       "id": "3.2.2",
@@ -44,9 +42,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 3,
-      "files": [
-        "src/expression/transform/index.transform.ts"
-      ]
+      "files": ["src/expression/transform/index.transform.ts"]
     },
     {
       "id": "3.2.4",
@@ -57,9 +53,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 1,
-      "files": [
-        "src/expression/transform/mapSlices.transform.ts"
-      ]
+      "files": ["src/expression/transform/mapSlices.transform.ts"]
     },
     {
       "id": "3.2.5",
@@ -70,9 +64,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS6196",
       "errorCount": 37,
-      "files": [
-        "src/"
-      ]
+      "files": ["src/"]
     }
   ],
   "acceptanceCriteria": [
@@ -81,8 +73,6 @@
     "No broken imports introduced",
     "All tests still pass"
   ],
-  "dependencies": [
-    "phase3-sprint1"
-  ],
+  "dependencies": ["phase3-sprint1"],
   "blockedBy": []
 }

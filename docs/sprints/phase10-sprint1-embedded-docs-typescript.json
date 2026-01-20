@@ -17,9 +17,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
-      "files": [
-        "src/expression/embeddedDocs/function/arithmetic/*.js"
-      ]
+      "files": ["src/expression/embeddedDocs/function/arithmetic/*.js"]
     },
     {
       "id": "10.1.2",
@@ -43,9 +41,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
-      "files": [
-        "src/expression/embeddedDocs/function/*/*.js"
-      ]
+      "files": ["src/expression/embeddedDocs/function/*/*.js"]
     },
     {
       "id": "10.1.4",
@@ -70,9 +66,7 @@
     "TypeScript compilation succeeds",
     "Documentation rendering works correctly"
   ],
-  "dependencies": [
-    "phase9-sprint1"
-  ],
+  "dependencies": ["phase9-sprint1"],
   "blockedBy": [],
   "notes": "This sprint should be completed LAST, after all functional code is converted. These are pure documentation files with minimal logic."
 }

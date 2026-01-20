@@ -31,7 +31,12 @@ class TransferFunction {
   denReal: Float64Array
   denImag: Float64Array
 
-  constructor(numReal: Float64Array, numImag: Float64Array, denReal: Float64Array, denImag: Float64Array) {
+  constructor(
+    numReal: Float64Array,
+    numImag: Float64Array,
+    denReal: Float64Array,
+    denImag: Float64Array
+  ) {
     this.numReal = numReal
     this.numImag = numImag
     this.denReal = denReal
@@ -74,7 +79,7 @@ export function freqz(
     let numImag: f64 = 0.0
 
     for (let k: i32 = 0; k < bLen; k++) {
-      const angle: f64 = -<f64>k * omega
+      const angle: f64 = -(<f64>k) * omega
       const cosAngle: f64 = Math.cos(angle)
       const sinAngle: f64 = Math.sin(angle)
 
@@ -87,7 +92,7 @@ export function freqz(
     let denImag: f64 = 0.0
 
     for (let k: i32 = 0; k < aLen; k++) {
-      const angle: f64 = -<f64>k * omega
+      const angle: f64 = -(<f64>k) * omega
       const cosAngle: f64 = Math.cos(angle)
       const sinAngle: f64 = Math.sin(angle)
 
@@ -99,8 +104,8 @@ export function freqz(
     // (a + bi) / (c + di) = ((ac + bd) + (bc - ad)i) / (c^2 + d^2)
     const denMagSq: f64 = denReal * denReal + denImag * denImag
 
-    unchecked(hReal[i] = (numReal * denReal + numImag * denImag) / denMagSq)
-    unchecked(hImag[i] = (numImag * denReal - numReal * denImag) / denMagSq)
+    unchecked((hReal[i] = (numReal * denReal + numImag * denImag) / denMagSq))
+    unchecked((hImag[i] = (numImag * denReal - numReal * denImag) / denMagSq))
   }
 
   return new FreqzResult(hReal, hImag)
@@ -149,7 +154,7 @@ export function freqzUniform(
     let numImag: f64 = 0.0
 
     for (let k: i32 = 0; k < bLen; k++) {
-      const angle: f64 = -<f64>k * omega
+      const angle: f64 = -(<f64>k) * omega
       numReal += unchecked(b[k]) * Math.cos(angle)
       numImag += unchecked(b[k]) * Math.sin(angle)
     }
@@ -159,15 +164,15 @@ export function freqzUniform(
     let denImag: f64 = 0.0
 
     for (let k: i32 = 0; k < aLen; k++) {
-      const angle: f64 = -<f64>k * omega
+      const angle: f64 = -(<f64>k) * omega
       denReal += unchecked(a[k]) * Math.cos(angle)
       denImag += unchecked(a[k]) * Math.sin(angle)
     }
 
     // Complex division
     const denMagSq: f64 = denReal * denReal + denImag * denImag
-    unchecked(hReal[i] = (numReal * denReal + numImag * denImag) / denMagSq)
-    unchecked(hImag[i] = (numImag * denReal - numReal * denImag) / denMagSq)
+    unchecked((hReal[i] = (numReal * denReal + numImag * denImag) / denMagSq))
+    unchecked((hImag[i] = (numImag * denReal - numReal * denImag) / denMagSq))
   }
 
   return new FreqzResult(hReal, hImag)
@@ -216,8 +221,8 @@ export function polyMultiply(
 
   // Initialize output to zero
   for (let i: i32 = 0; i < cLen; i++) {
-    unchecked(cReal[i] = 0.0)
-    unchecked(cImag[i] = 0.0)
+    unchecked((cReal[i] = 0.0))
+    unchecked((cImag[i] = 0.0))
   }
 
   // Convolution with complex multiplication
@@ -231,8 +236,8 @@ export function polyMultiply(
         const br: f64 = unchecked(bReal[k])
         const bi: f64 = unchecked(bImag[k])
 
-        unchecked(cReal[i] += ar * br - ai * bi)
-        unchecked(cImag[i] += ar * bi + ai * br)
+        unchecked((cReal[i] += ar * br - ai * bi))
+        unchecked((cImag[i] += ar * bi + ai * br))
       }
     }
   }
@@ -305,8 +310,12 @@ export function zpk2tf(
     factorImag[1] = -zi
 
     const result = polyMultiplyInternal(
-      tempReal1, tempImag1, numLen,
-      factorReal, factorImag, 2
+      tempReal1,
+      tempImag1,
+      numLen,
+      factorReal,
+      factorImag,
+      2
     )
 
     numLen += 1
@@ -318,8 +327,8 @@ export function zpk2tf(
   const numReal = new Float64Array(numLen)
   const numImag = new Float64Array(numLen)
   for (let i: i32 = 0; i < numLen; i++) {
-    unchecked(numReal[i] = tempReal1[i] * k)
-    unchecked(numImag[i] = tempImag1[i] * k)
+    unchecked((numReal[i] = tempReal1[i] * k))
+    unchecked((numImag[i] = tempImag1[i] * k))
   }
 
   // Build denominator from poles
@@ -343,8 +352,12 @@ export function zpk2tf(
     factorImag[1] = -pi
 
     const result = polyMultiplyInternal(
-      tempReal1, tempImag1, denLen,
-      factorReal, factorImag, 2
+      tempReal1,
+      tempImag1,
+      denLen,
+      factorReal,
+      factorImag,
+      2
     )
 
     denLen += 1
@@ -356,8 +369,8 @@ export function zpk2tf(
   const denReal = new Float64Array(denLen)
   const denImag = new Float64Array(denLen)
   for (let i: i32 = 0; i < denLen; i++) {
-    unchecked(denReal[i] = tempReal1[i])
-    unchecked(denImag[i] = tempImag1[i])
+    unchecked((denReal[i] = tempReal1[i]))
+    unchecked((denImag[i] = tempImag1[i]))
   }
 
   return new TransferFunction(numReal, numImag, denReal, denImag)
@@ -387,8 +400,8 @@ function polyMultiplyInternal(
         const br: f64 = unchecked(bReal[k])
         const bi: f64 = unchecked(bImag[k])
 
-        unchecked(cReal[i] += ar * br - ai * bi)
-        unchecked(cImag[i] += ar * bi + ai * br)
+        unchecked((cReal[i] += ar * br - ai * bi))
+        unchecked((cImag[i] += ar * bi + ai * br))
       }
     }
   }
@@ -441,7 +454,7 @@ export function magnitude(
   for (let i: i32 = 0; i < n; i++) {
     const re: f64 = unchecked(hReal[i])
     const im: f64 = unchecked(hImag[i])
-    unchecked(result[i] = Math.sqrt(re * re + im * im))
+    unchecked((result[i] = Math.sqrt(re * re + im * im)))
   }
 
   return result
@@ -469,9 +482,9 @@ export function magnitudeDb(
 
     // Avoid log(0)
     if (mag > 1e-300) {
-      unchecked(result[i] = log10Factor * Math.log(mag))
+      unchecked((result[i] = log10Factor * Math.log(mag)))
     } else {
-      unchecked(result[i] = -300.0) // Very small number in dB
+      unchecked((result[i] = -300.0)) // Very small number in dB
     }
   }
 
@@ -493,7 +506,9 @@ export function phase(
   const result = new Float64Array(n)
 
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(result[i] = Math.atan2(unchecked(hImag[i]), unchecked(hReal[i])))
+    unchecked(
+      (result[i] = Math.atan2(unchecked(hImag[i]), unchecked(hReal[i])))
+    )
   }
 
   return result
@@ -522,11 +537,11 @@ export function unwrapPhase(phaseIn: Float64Array, n: i32): Float64Array {
 
     // Wrap difference to [-pi, pi]
     while (diff > Math.PI) {
-      unchecked(result[i] -= twoPi)
+      unchecked((result[i] -= twoPi))
       diff -= twoPi
     }
     while (diff < -Math.PI) {
-      unchecked(result[i] += twoPi)
+      unchecked((result[i] += twoPi))
       diff += twoPi
     }
   }
@@ -562,15 +577,24 @@ export function groupDelay(
 
   // Compute negative derivative
   for (let i: i32 = 1; i < n - 1; i++) {
-    const dPhase: f64 = unchecked(unwrappedPhase[i + 1]) - unchecked(unwrappedPhase[i - 1])
+    const dPhase: f64 =
+      unchecked(unwrappedPhase[i + 1]) - unchecked(unwrappedPhase[i - 1])
     const dw: f64 = unchecked(w[i + 1]) - unchecked(w[i - 1])
 
-    unchecked(result[i] = -dPhase / dw)
+    unchecked((result[i] = -dPhase / dw))
   }
 
   // Endpoints use one-sided differences
-  unchecked(result[0] = -(unchecked(unwrappedPhase[1]) - unchecked(unwrappedPhase[0])) / (unchecked(w[1]) - unchecked(w[0])))
-  unchecked(result[n - 1] = -(unchecked(unwrappedPhase[n - 1]) - unchecked(unwrappedPhase[n - 2])) / (unchecked(w[n - 1]) - unchecked(w[n - 2])))
+  unchecked(
+    (result[0] =
+      -(unchecked(unwrappedPhase[1]) - unchecked(unwrappedPhase[0])) /
+      (unchecked(w[1]) - unchecked(w[0])))
+  )
+  unchecked(
+    (result[n - 1] =
+      -(unchecked(unwrappedPhase[n - 1]) - unchecked(unwrappedPhase[n - 2])) /
+      (unchecked(w[n - 1]) - unchecked(w[n - 2])))
+  )
 
   return result
 }

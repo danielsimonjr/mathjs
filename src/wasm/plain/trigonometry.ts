@@ -160,9 +160,7 @@ export function cschNumber(x: f64): f64 {
  * Inverse hyperbolic cotangent: acoth(x) = (ln((x+1)/x) + ln(x/(x-1))) / 2
  */
 export function acothNumber(x: f64): f64 {
-  return isFinite(x)
-    ? (Math.log((x + 1) / x) + Math.log(x / (x - 1))) / 2
-    : 0
+  return isFinite(x) ? (Math.log((x + 1) / x) + Math.log(x / (x - 1))) / 2 : 0
 }
 
 /**

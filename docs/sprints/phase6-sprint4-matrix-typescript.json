@@ -97,8 +97,6 @@
     "TypeScript compilation succeeds with 0 errors",
     "Proper type inference for matrix operations"
   ],
-  "dependencies": [
-    "phase6-sprint3"
-  ],
+  "dependencies": ["phase6-sprint3"],
   "blockedBy": []
 }

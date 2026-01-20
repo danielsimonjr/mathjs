@@ -149,7 +149,7 @@ export function cumsum(data: Float64Array, length: i32): void {
   if (length === 0) return
 
   for (let i: i32 = 1; i < length; i++) {
-    unchecked(data[i] += unchecked(data[i - 1]))
+    unchecked((data[i] += unchecked(data[i - 1])))
   }
 }
 
@@ -159,12 +159,16 @@ export function cumsum(data: Float64Array, length: i32): void {
  * @param output Output array
  * @param length Length of arrays
  */
-export function cumsumCopy(input: Float64Array, output: Float64Array, length: i32): void {
+export function cumsumCopy(
+  input: Float64Array,
+  output: Float64Array,
+  length: i32
+): void {
   if (length === 0) return
 
-  unchecked(output[0] = unchecked(input[0]))
+  unchecked((output[0] = unchecked(input[0])))
   for (let i: i32 = 1; i < length; i++) {
-    unchecked(output[i] = unchecked(output[i - 1]) + unchecked(input[i]))
+    unchecked((output[i] = unchecked(output[i - 1]) + unchecked(input[i])))
   }
 }
 
@@ -186,7 +190,7 @@ export function mad(data: Float64Array, length: i32): f64 {
   // Calculate absolute deviations
   const deviations = new Float64Array(length)
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(deviations[i] = Math.abs(unchecked(data[i]) - med))
+    unchecked((deviations[i] = Math.abs(unchecked(data[i]) - med)))
   }
 
   // Sort deviations and find median
@@ -215,7 +219,9 @@ export function quantile(data: Float64Array, length: i32, p: f64): f64 {
   }
 
   const fraction = index - f64(lower)
-  return unchecked(data[lower]) * (1 - fraction) + unchecked(data[upper]) * fraction
+  return (
+    unchecked(data[lower]) * (1 - fraction) + unchecked(data[upper]) * fraction
+  )
 }
 
 /**
@@ -244,15 +250,15 @@ function partition(arr: Float64Array, left: i32, right: i32): i32 {
       i++
       // Swap
       const temp = unchecked(arr[i])
-      unchecked(arr[i] = unchecked(arr[j]))
-      unchecked(arr[j] = temp)
+      unchecked((arr[i] = unchecked(arr[j])))
+      unchecked((arr[j] = temp))
     }
   }
 
   // Swap pivot
   const temp = unchecked(arr[i + 1])
-  unchecked(arr[i + 1] = unchecked(arr[right]))
-  unchecked(arr[right] = temp)
+  unchecked((arr[i + 1] = unchecked(arr[right])))
+  unchecked((arr[right] = temp))
 
   return i + 1
 }
@@ -306,7 +312,12 @@ export function mode(data: Float64Array, length: i32, tolerance: f64): f64 {
  * @param bias If true, use biased estimator (divide by n)
  * @returns Covariance
  */
-export function covariance(x: Float64Array, y: Float64Array, length: i32, bias: boolean): f64 {
+export function covariance(
+  x: Float64Array,
+  y: Float64Array,
+  length: i32,
+  bias: boolean
+): f64 {
   if (length === 0) return NaN
   if (length === 1) return bias ? 0 : NaN
 
@@ -329,7 +340,11 @@ export function covariance(x: Float64Array, y: Float64Array, length: i32, bias: 
  * @param length Length of arrays
  * @returns Correlation coefficient (-1 to 1)
  */
-export function correlation(x: Float64Array, y: Float64Array, length: i32): f64 {
+export function correlation(
+  x: Float64Array,
+  y: Float64Array,
+  length: i32
+): f64 {
   if (length === 0) return NaN
 
   const meanX = mean(x, length)

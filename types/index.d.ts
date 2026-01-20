@@ -5334,7 +5334,10 @@ export interface MathJsChain<TValue> {
    */
   // Node overloads - return OperatorNode for symbolic computation
   add(this: MathJsChain<MathNode>, y: MathType): MathJsChain<OperatorNode>
-  add(this: MathJsChain<MathNumericType>, y: MathNode): MathJsChain<OperatorNode>
+  add(
+    this: MathJsChain<MathNumericType>,
+    y: MathNode
+  ): MathJsChain<OperatorNode>
   add<T extends MathType>(this: MathJsChain<T>, y: T): MathJsChain<T>
   add(this: MathJsChain<MathType>, y: MathType): MathJsChain<MathType>
 
@@ -5503,7 +5506,10 @@ export interface MathJsChain<TValue> {
    */
   // Node overloads - return OperatorNode for symbolic computation
   divide(this: MathJsChain<MathNode>, y: MathType): MathJsChain<OperatorNode>
-  divide(this: MathJsChain<MathNumericType>, y: MathNode): MathJsChain<OperatorNode>
+  divide(
+    this: MathJsChain<MathNumericType>,
+    y: MathNode
+  ): MathJsChain<OperatorNode>
   divide(this: MathJsChain<Unit>, y: Unit): MathJsChain<Unit | number>
   divide(this: MathJsChain<Unit>, y: number): MathJsChain<Unit>
   divide(this: MathJsChain<number>, y: number): MathJsChain<number>
@@ -5672,7 +5678,10 @@ export interface MathJsChain<TValue> {
    */
   // Node overloads - return OperatorNode for symbolic computation
   multiply(this: MathJsChain<MathNode>, y: MathType): MathJsChain<OperatorNode>
-  multiply(this: MathJsChain<MathNumericType>, y: MathNode): MathJsChain<OperatorNode>
+  multiply(
+    this: MathJsChain<MathNumericType>,
+    y: MathNode
+  ): MathJsChain<OperatorNode>
   multiply<T extends MathCollection>(
     this: MathJsChain<T>,
     y: MathType
@@ -5759,7 +5768,10 @@ export interface MathJsChain<TValue> {
    */
   // Node overloads - return OperatorNode for symbolic computation
   subtract(this: MathJsChain<MathNode>, y: MathType): MathJsChain<OperatorNode>
-  subtract(this: MathJsChain<MathNumericType>, y: MathNode): MathJsChain<OperatorNode>
+  subtract(
+    this: MathJsChain<MathNumericType>,
+    y: MathNode
+  ): MathJsChain<OperatorNode>
   subtract<T extends MathType>(this: MathJsChain<T>, y: T): MathJsChain<T>
 
   /**

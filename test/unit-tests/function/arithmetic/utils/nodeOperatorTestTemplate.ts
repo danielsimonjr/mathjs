@@ -26,10 +26,10 @@ const { parse, ConstantNode, SymbolNode } = math
 // ============================================================================
 // CUSTOMIZE THESE FOR YOUR OPERATOR
 // ============================================================================
-const OPERATOR = '+'           // The operator symbol: '+', '-', '*', '/'
-const FUNCTION_NAME: string = 'add'    // The function name: 'add', 'subtract', 'multiply', 'divide'
-const mathFn = math.add        // The math function to test
-const IS_VARIADIC = true       // true for add/multiply, false for subtract/divide
+const OPERATOR = '+' // The operator symbol: '+', '-', '*', '/'
+const FUNCTION_NAME: string = 'add' // The function name: 'add', 'subtract', 'multiply', 'divide'
+const mathFn = math.add // The math function to test
+const IS_VARIADIC = true // true for add/multiply, false for subtract/divide
 
 // ============================================================================
 // TEST SUITE
@@ -157,11 +157,20 @@ describe(`${FUNCTION_NAME} with Nodes`, function () {
       // Customize expected value based on operator
       let expected: number
       switch (FUNCTION_NAME) {
-        case 'add': expected = 15; break
-        case 'subtract': expected = -5; break
-        case 'multiply': expected = 50; break
-        case 'divide': expected = 0.5; break
-        default: expected = 15
+        case 'add':
+          expected = 15
+          break
+        case 'subtract':
+          expected = -5
+          break
+        case 'multiply':
+          expected = 50
+          break
+        case 'divide':
+          expected = 0.5
+          break
+        default:
+          expected = 15
       }
 
       nodeAssert.evaluatesTo(result, expected, scope)
@@ -173,11 +182,20 @@ describe(`${FUNCTION_NAME} with Nodes`, function () {
 
       let expected: number
       switch (FUNCTION_NAME) {
-        case 'add': expected = 15; break
-        case 'subtract': expected = 5; break
-        case 'multiply': expected = 50; break
-        case 'divide': expected = 2; break
-        default: expected = 15
+        case 'add':
+          expected = 15
+          break
+        case 'subtract':
+          expected = 5
+          break
+        case 'multiply':
+          expected = 50
+          break
+        case 'divide':
+          expected = 2
+          break
+        default:
+          expected = 15
       }
 
       nodeAssert.evaluatesTo(result, expected, scope)
@@ -191,11 +209,20 @@ describe(`${FUNCTION_NAME} with Nodes`, function () {
       // x = 10, y = 5
       let expected: number
       switch (FUNCTION_NAME) {
-        case 'add': expected = 15; break
-        case 'subtract': expected = 5; break
-        case 'multiply': expected = 50; break
-        case 'divide': expected = 2; break
-        default: expected = 15
+        case 'add':
+          expected = 15
+          break
+        case 'subtract':
+          expected = 5
+          break
+        case 'multiply':
+          expected = 50
+          break
+        case 'divide':
+          expected = 2
+          break
+        default:
+          expected = 15
       }
 
       nodeAssert.evaluatesTo(result, expected, scope)

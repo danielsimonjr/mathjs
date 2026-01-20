@@ -114,9 +114,15 @@ async function main(): Promise<void> {
 
   console.log(`Cold load (first time):     ${coldTime.toFixed(2)}ms`)
   if (coldMetrics) {
-    console.log(`  - File read:              ${coldMetrics.fileReadMs.toFixed(2)}ms`)
-    console.log(`  - Compilation:            ${coldMetrics.compileMs.toFixed(2)}ms`)
-    console.log(`  - Instantiation:          ${coldMetrics.instantiateMs.toFixed(2)}ms`)
+    console.log(
+      `  - File read:              ${coldMetrics.fileReadMs.toFixed(2)}ms`
+    )
+    console.log(
+      `  - Compilation:            ${coldMetrics.compileMs.toFixed(2)}ms`
+    )
+    console.log(
+      `  - Instantiation:          ${coldMetrics.instantiateMs.toFixed(2)}ms`
+    )
   }
 
   // Second load (cached module)
@@ -130,11 +136,15 @@ async function main(): Promise<void> {
   console.log(`\nWarm load (precompiled):    ${warmTime.toFixed(2)}ms`)
   if (warmMetrics) {
     console.log(`  - From cache:             ${warmMetrics.fromCache}`)
-    console.log(`  - Instantiation only:     ${warmMetrics.instantiateMs.toFixed(2)}ms`)
+    console.log(
+      `  - Instantiation only:     ${warmMetrics.instantiateMs.toFixed(2)}ms`
+    )
   }
 
   const cacheSpeedup = coldTime / warmTime
-  console.log(`\nCache speedup:              ${cacheSpeedup.toFixed(1)}x faster`)
+  console.log(
+    `\nCache speedup:              ${cacheSpeedup.toFixed(1)}x faster`
+  )
 
   // ============================================================================
   // 2. Size Threshold Verification (JS vs WASM crossover)
@@ -142,11 +152,19 @@ async function main(): Promise<void> {
   console.log('\n--- 2. SIZE THRESHOLD VERIFICATION ---\n')
 
   console.log('Current thresholds:')
-  console.log(`  - Element-wise ops:       ${WasmThresholds.elementWise} elements`)
-  console.log(`  - Dot product:            ${WasmThresholds.dotProduct} elements`)
-  console.log(`  - Matrix multiply:        ${WasmThresholds.matrixMultiply} elements`)
+  console.log(
+    `  - Element-wise ops:       ${WasmThresholds.elementWise} elements`
+  )
+  console.log(
+    `  - Dot product:            ${WasmThresholds.dotProduct} elements`
+  )
+  console.log(
+    `  - Matrix multiply:        ${WasmThresholds.matrixMultiply} elements`
+  )
   console.log(`  - FFT:                    ${WasmThresholds.fft} elements`)
-  console.log(`  - LU decomposition:       ${WasmThresholds.luDecomposition} elements`)
+  console.log(
+    `  - LU decomposition:       ${WasmThresholds.luDecomposition} elements`
+  )
   console.log(`  - Parallel threshold:     ${WasmThresholds.parallel} elements`)
 
   // Test dot product crossover
@@ -170,7 +188,11 @@ async function main(): Promise<void> {
       b[i] = Math.random()
     }
 
-    const jsResult = benchmark('', () => jsDot(a, b), Math.min(10000, 100000 / size))
+    const jsResult = benchmark(
+      '',
+      () => jsDot(a, b),
+      Math.min(10000, 100000 / size)
+    )
     const recommended = size >= WasmThresholds.dotProduct ? 'WASM' : 'JS'
 
     console.log(
@@ -223,8 +245,7 @@ async function main(): Promise<void> {
 
   for (const [rows, cols] of matSizes) {
     const elements = rows * cols * 2 // A + B matrices
-    const method =
-      elements >= WasmThresholds.matrixMultiply ? 'WASM' : 'JS'
+    const method = elements >= WasmThresholds.matrixMultiply ? 'WASM' : 'JS'
     const reason =
       method === 'WASM'
         ? 'O(n³) compute > copy overhead'
@@ -267,8 +288,12 @@ async function main(): Promise<void> {
 
   const poolStats = loader1.getPoolStats()
   console.log('Current pool state:')
-  console.log(`  Float64 pool: ${poolStats.float64.total} entries, ${poolStats.float64.inUse} in use, ${poolStats.float64.totalBytes} bytes`)
-  console.log(`  Int32 pool:   ${poolStats.int32.total} entries, ${poolStats.int32.inUse} in use, ${poolStats.int32.totalBytes} bytes`)
+  console.log(
+    `  Float64 pool: ${poolStats.float64.total} entries, ${poolStats.float64.inUse} in use, ${poolStats.float64.totalBytes} bytes`
+  )
+  console.log(
+    `  Int32 pool:   ${poolStats.int32.total} entries, ${poolStats.int32.inUse} in use, ${poolStats.int32.totalBytes} bytes`
+  )
 
   // ============================================================================
   // Summary

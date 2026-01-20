@@ -90,7 +90,10 @@ export class MathWorkerPool {
    * Get or create a global worker pool singleton
    * This avoids the overhead of creating new pools for each operation
    */
-  public static getGlobal(workerScript?: string, options?: WorkerPoolOptions): MathWorkerPool {
+  public static getGlobal(
+    workerScript?: string,
+    options?: WorkerPoolOptions
+  ): MathWorkerPool {
     if (!MathWorkerPool.globalInstance) {
       MathWorkerPool.globalInstance = new MathWorkerPool(workerScript, {
         ...options,
@@ -204,16 +207,23 @@ export class MathWorkerPool {
     operationType: keyof typeof OptimalChunkSizes = 'elementWise'
   ): number {
     const optimalChunk = OptimalChunkSizes[operationType]
-    const workerCount = this.stats().totalWorkers || this.getOptimalWorkerCount()
+    const workerCount =
+      this.stats().totalWorkers || this.getOptimalWorkerCount()
 
     // Calculate batches based on optimal chunk size
     const batchesByChunk = Math.ceil(dataSize / optimalChunk)
 
     // Limit to available workers (no point having more batches than workers)
-    const maxBatches = Math.min(batchesByChunk, workerCount, DefaultBatchConfig.maxBatches)
+    const maxBatches = Math.min(
+      batchesByChunk,
+      workerCount,
+      DefaultBatchConfig.maxBatches
+    )
 
     // Ensure minimum batch size
-    const batchesByMinSize = Math.floor(dataSize / DefaultBatchConfig.minBatchSize)
+    const batchesByMinSize = Math.floor(
+      dataSize / DefaultBatchConfig.minBatchSize
+    )
 
     return Math.max(1, Math.min(maxBatches, batchesByMinSize))
   }

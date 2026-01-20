@@ -17,10 +17,9 @@ export function factorial(n: i32): f64 {
   // Lookup table for small factorials
   if (n <= 20) {
     const factorials: f64[] = [
-      1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880,
-      3628800, 39916800, 479001600, 6227020800, 87178291200,
-      1307674368000, 20922789888000, 355687428096000,
-      6402373705728000, 121645100408832000, 2432902008176640000
+      1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
+      479001600, 6227020800, 87178291200, 1307674368000, 20922789888000,
+      355687428096000, 6402373705728000, 121645100408832000, 2432902008176640000
     ]
     return factorials[n]
   }
@@ -105,21 +104,21 @@ export function stirlingS2(n: i32, k: i32): f64 {
   const dp = new Float64Array((n + 1) * (k + 1))
 
   for (let i: i32 = 0; i <= n; i++) {
-    unchecked(dp[i * (k + 1) + 0] = 0)
+    unchecked((dp[i * (k + 1) + 0] = 0))
   }
   for (let j: i32 = 0; j <= k; j++) {
-    unchecked(dp[0 * (k + 1) + j] = 0)
+    unchecked((dp[0 * (k + 1) + j] = 0))
   }
-  unchecked(dp[0] = 1)
+  unchecked((dp[0] = 1))
 
   for (let i: i32 = 1; i <= n; i++) {
     for (let j: i32 = 1; j <= min(i, k); j++) {
       if (j === 1 || j === i) {
-        unchecked(dp[i * (k + 1) + j] = 1)
+        unchecked((dp[i * (k + 1) + j] = 1))
       } else {
         const val1 = unchecked(dp[(i - 1) * (k + 1) + j])
         const val2 = unchecked(dp[(i - 1) * (k + 1) + (j - 1)])
-        unchecked(dp[i * (k + 1) + j] = f64(j) * val1 + val2)
+        unchecked((dp[i * (k + 1) + j] = f64(j) * val1 + val2))
       }
     }
   }
@@ -201,9 +200,13 @@ export function multinomial(n: i32, k: Int32Array, m: i32): f64 {
  * @param output Output array
  * @param length Length of arrays
  */
-export function factorialArray(input: Int32Array, output: Float64Array, length: i32): void {
+export function factorialArray(
+  input: Int32Array,
+  output: Float64Array,
+  length: i32
+): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = factorial(unchecked(input[i])))
+    unchecked((output[i] = factorial(unchecked(input[i]))))
   }
 }
 
@@ -221,7 +224,9 @@ export function combinationsArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = combinations(unchecked(nArray[i]), unchecked(kArray[i])))
+    unchecked(
+      (output[i] = combinations(unchecked(nArray[i]), unchecked(kArray[i])))
+    )
   }
 }
 
@@ -239,7 +244,9 @@ export function permutationsArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(output[i] = permutations(unchecked(nArray[i]), unchecked(kArray[i])))
+    unchecked(
+      (output[i] = permutations(unchecked(nArray[i]), unchecked(kArray[i])))
+    )
   }
 }
 
@@ -279,8 +286,8 @@ export function subfactorial(n: i32): f64 {
   if (n === 1) return 0
 
   // Use recurrence: !n = (n-1)(!(n-1) + !(n-2))
-  let prev2: f64 = 1  // !0
-  let prev1: f64 = 0  // !1
+  let prev2: f64 = 1 // !0
+  let prev1: f64 = 0 // !1
 
   for (let i: i32 = 2; i <= n; i++) {
     const curr = f64(i - 1) * (prev1 + prev2)
@@ -303,7 +310,7 @@ export function fallingFactorial(x: f64, n: i32): f64 {
 
   let result: f64 = 1
   for (let i: i32 = 0; i < n; i++) {
-    result *= (x - f64(i))
+    result *= x - f64(i)
   }
   return result
 }
@@ -321,7 +328,7 @@ export function risingFactorial(x: f64, n: i32): f64 {
 
   let result: f64 = 1
   for (let i: i32 = 0; i < n; i++) {
-    result *= (x + f64(i))
+    result *= x + f64(i)
   }
   return result
 }

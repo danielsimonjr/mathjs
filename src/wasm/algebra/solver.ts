@@ -556,7 +556,7 @@ export function lsolveAll(
         isConsistent = 0
         break
       }
-      particular[i] = 0.0  // Set free variable to 0 for particular solution
+      particular[i] = 0.0 // Set free variable to 0 for particular solution
     } else {
       particular[i] = sum / L[i * n + i]
     }
@@ -565,7 +565,7 @@ export function lsolveAll(
   // Set info
   info[2] = isConsistent
   if (isConsistent === 0) {
-    info[0] = 0  // No solutions
+    info[0] = 0 // No solutions
     info[1] = 0
     return
   }
@@ -581,7 +581,7 @@ export function lsolveAll(
   }
 
   // Infinitely many solutions
-  info[0] = 1 + numFree  // particular + null space vectors
+  info[0] = 1 + numFree // particular + null space vectors
   info[1] = numFree
 
   // Store particular solution in first column
@@ -598,9 +598,9 @@ export function lsolveAll(
 
       for (let i: i32 = 0; i < n; i++) {
         if (i === k) {
-          nullVec[i] = 1.0  // Free variable set to 1
+          nullVec[i] = 1.0 // Free variable set to 1
         } else if (isFree[i] === 1) {
-          nullVec[i] = 0.0  // Other free variables set to 0
+          nullVec[i] = 0.0 // Other free variables set to 0
         } else if (i < k) {
           // Variables before the free variable (already computed)
           // Forward substitution up to the free variable
@@ -681,7 +681,7 @@ export function usolveAll(
         isConsistent = 0
         break
       }
-      particular[i] = 0.0  // Set free variable to 0 for particular solution
+      particular[i] = 0.0 // Set free variable to 0 for particular solution
     } else {
       particular[i] = sum / U[i * n + i]
     }
@@ -690,7 +690,7 @@ export function usolveAll(
   // Set info
   info[2] = isConsistent
   if (isConsistent === 0) {
-    info[0] = 0  // No solutions
+    info[0] = 0 // No solutions
     info[1] = 0
     return
   }
@@ -723,9 +723,9 @@ export function usolveAll(
       // Backward substitution for null space vector
       for (let i: i32 = n - 1; i >= 0; i--) {
         if (i === k) {
-          nullVec[i] = 1.0  // Free variable set to 1
+          nullVec[i] = 1.0 // Free variable set to 1
         } else if (isFree[i] === 1) {
-          nullVec[i] = 0.0  // Other free variables set to 0
+          nullVec[i] = 0.0 // Other free variables set to 0
         } else if (i > k) {
           // Variables after the free variable (already computed)
           let sum: f64 = 0.0

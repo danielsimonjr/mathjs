@@ -174,7 +174,9 @@ export function sortFactories(
       if (
         factory.dependencies.some((d) => {
           const depFactory = factoriesByName[d]
-          return depFactory && containsDependency(depFactory, dependency, visited)
+          return (
+            depFactory && containsDependency(depFactory, dependency, visited)
+          )
         })
       ) {
         return true

@@ -97,8 +97,6 @@
     "String formatting works correctly",
     "All tests pass"
   ],
-  "dependencies": [
-    "phase6-sprint6"
-  ],
+  "dependencies": ["phase6-sprint6"],
   "blockedBy": []
 }

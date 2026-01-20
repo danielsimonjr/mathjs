@@ -264,7 +264,9 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
       // If left/right are BigNumbers but fracPart is a number, convert to BigNumber
       // to avoid floating-point precision errors
       const fracPartConverted =
-        isBigNumber(left) && isNumber(fracPart) ? bignumber!(fracPart) : fracPart
+        isBigNumber(left) && isNumber(fracPart)
+          ? bignumber!(fracPart)
+          : fracPart
       return add(
         multiply(left, subtract(1, fracPartConverted)),
         multiply(right, fracPartConverted)

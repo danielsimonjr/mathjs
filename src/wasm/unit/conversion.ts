@@ -401,7 +401,7 @@ export function getConversionFactor(unitCode: i32): f64 {
 export function getTemperatureOffset(unitCode: i32): f64 {
   if (unitCode === UNIT_KELVIN) return 0.0
   if (unitCode === UNIT_CELSIUS) return 273.15
-  if (unitCode === UNIT_FAHRENHEIT) return 459.67 * 5.0 / 9.0
+  if (unitCode === UNIT_FAHRENHEIT) return (459.67 * 5.0) / 9.0
   if (unitCode === UNIT_RANKINE) return 0.0
   return 0.0
 }
@@ -430,7 +430,8 @@ export function convert(value: f64, fromUnit: i32, toUnit: i32): f64 {
   // Handle temperature specially due to offsets
   if (isTemperatureUnit(fromUnit) && isTemperatureUnit(toUnit)) {
     // Convert to Kelvin first
-    const kelvin = value * getConversionFactor(fromUnit) + getTemperatureOffset(fromUnit)
+    const kelvin =
+      value * getConversionFactor(fromUnit) + getTemperatureOffset(fromUnit)
     // Then from Kelvin to target
     return (kelvin - getTemperatureOffset(toUnit)) / getConversionFactor(toUnit)
   }
@@ -474,7 +475,8 @@ export function convertArray(
       result[i] = (kelvin - offsetTo) / factorTo
     }
   } else {
-    const factorRatio = getConversionFactor(fromUnit) / getConversionFactor(toUnit)
+    const factorRatio =
+      getConversionFactor(fromUnit) / getConversionFactor(toUnit)
 
     for (let i: i32 = 0; i < n; i++) {
       result[i] = values[i] * factorRatio
@@ -492,7 +494,9 @@ export function convertArray(
  */
 export function toSI(value: f64, fromUnit: i32): f64 {
   if (isTemperatureUnit(fromUnit)) {
-    return value * getConversionFactor(fromUnit) + getTemperatureOffset(fromUnit)
+    return (
+      value * getConversionFactor(fromUnit) + getTemperatureOffset(fromUnit)
+    )
   }
   return value * getConversionFactor(fromUnit)
 }
@@ -505,7 +509,9 @@ export function toSI(value: f64, fromUnit: i32): f64 {
  */
 export function fromSI(siValue: f64, toUnit: i32): f64 {
   if (isTemperatureUnit(toUnit)) {
-    return (siValue - getTemperatureOffset(toUnit)) / getConversionFactor(toUnit)
+    return (
+      (siValue - getTemperatureOffset(toUnit)) / getConversionFactor(toUnit)
+    )
   }
   return siValue / getConversionFactor(toUnit)
 }
@@ -524,19 +530,26 @@ export function getDimensions(unitCode: i32): Float64Array {
   const dims = new Float64Array(NUM_DIMENSIONS)
 
   // Base units
-  if (unitCode >= 100 && unitCode < 200) { // Length
+  if (unitCode >= 100 && unitCode < 200) {
+    // Length
     dims[DIM_LENGTH] = 1
-  } else if (unitCode >= 200 && unitCode < 300) { // Mass
+  } else if (unitCode >= 200 && unitCode < 300) {
+    // Mass
     dims[DIM_MASS] = 1
-  } else if (unitCode >= 300 && unitCode < 400) { // Time
+  } else if (unitCode >= 300 && unitCode < 400) {
+    // Time
     dims[DIM_TIME] = 1
-  } else if (unitCode >= 400 && unitCode < 500) { // Temperature
+  } else if (unitCode >= 400 && unitCode < 500) {
+    // Temperature
     dims[DIM_TEMPERATURE] = 1
-  } else if (unitCode >= 500 && unitCode < 600) { // Current
+  } else if (unitCode >= 500 && unitCode < 600) {
+    // Current
     dims[DIM_CURRENT] = 1
-  } else if (unitCode >= 600 && unitCode < 700) { // Amount
+  } else if (unitCode >= 600 && unitCode < 700) {
+    // Amount
     dims[DIM_AMOUNT] = 1
-  } else if (unitCode >= 700 && unitCode < 800) { // Luminosity
+  } else if (unitCode >= 700 && unitCode < 800) {
+    // Luminosity
     dims[DIM_LUMINOSITY] = 1
   }
   // Force: kg·m/s² = M¹L¹T⁻²
@@ -568,7 +581,8 @@ export function getDimensions(unitCode: i32): Float64Array {
     dims[DIM_TIME] = -1
   }
   // Electric derived units
-  else if (unitCode === UNIT_VOLT) { // kg·m²/(A·s³)
+  else if (unitCode === UNIT_VOLT) {
+    // kg·m²/(A·s³)
     dims[DIM_MASS] = 1
     dims[DIM_LENGTH] = 2
     dims[DIM_TIME] = -3
@@ -578,17 +592,23 @@ export function getDimensions(unitCode: i32): Float64Array {
     dims[DIM_LENGTH] = 2
     dims[DIM_TIME] = -3
     dims[DIM_CURRENT] = -1
-  } else if (unitCode === UNIT_OHM || unitCode === UNIT_KILOHM || unitCode === UNIT_MEGOHM) {
+  } else if (
+    unitCode === UNIT_OHM ||
+    unitCode === UNIT_KILOHM ||
+    unitCode === UNIT_MEGOHM
+  ) {
     dims[DIM_MASS] = 1
     dims[DIM_LENGTH] = 2
     dims[DIM_TIME] = -3
     dims[DIM_CURRENT] = -2
-  } else if (unitCode >= 1305 && unitCode <= 1308) { // Farad
+  } else if (unitCode >= 1305 && unitCode <= 1308) {
+    // Farad
     dims[DIM_MASS] = -1
     dims[DIM_LENGTH] = -2
     dims[DIM_TIME] = 4
     dims[DIM_CURRENT] = 2
-  } else if (unitCode === UNIT_COULOMB) { // A·s
+  } else if (unitCode === UNIT_COULOMB) {
+    // A·s
     dims[DIM_CURRENT] = 1
     dims[DIM_TIME] = 1
   } else if (unitCode === UNIT_HENRY) {
@@ -647,7 +667,10 @@ export function areCompatible(unit1: i32, unit2: i32): bool {
  * Multiply unit dimensions (for compound units)
  * Returns new dimension vector
  */
-export function multiplyDimensions(dims1: Float64Array, dims2: Float64Array): Float64Array {
+export function multiplyDimensions(
+  dims1: Float64Array,
+  dims2: Float64Array
+): Float64Array {
   const result = new Float64Array(NUM_DIMENSIONS)
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
     result[i] = dims1[i] + dims2[i]
@@ -658,7 +681,10 @@ export function multiplyDimensions(dims1: Float64Array, dims2: Float64Array): Fl
 /**
  * Divide unit dimensions
  */
-export function divideDimensions(dims1: Float64Array, dims2: Float64Array): Float64Array {
+export function divideDimensions(
+  dims1: Float64Array,
+  dims2: Float64Array
+): Float64Array {
   const result = new Float64Array(NUM_DIMENSIONS)
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
     result[i] = dims1[i] - dims2[i]
@@ -744,7 +770,7 @@ export function removePrefix(value: f64, prefixPower: i32): f64 {
 export const CONST_SPEED_OF_LIGHT: f64 = 299792458.0 // m/s
 export const CONST_PLANCK: f64 = 6.62607015e-34 // J·s
 export const CONST_PLANCK_REDUCED: f64 = 1.054571817e-34 // J·s
-export const CONST_GRAVITATIONAL: f64 = 6.67430e-11 // m³/(kg·s²)
+export const CONST_GRAVITATIONAL: f64 = 6.6743e-11 // m³/(kg·s²)
 export const CONST_ELEMENTARY_CHARGE: f64 = 1.602176634e-19 // C
 export const CONST_ELECTRON_MASS: f64 = 9.1093837015e-31 // kg
 export const CONST_PROTON_MASS: f64 = 1.67262192369e-27 // kg

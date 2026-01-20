@@ -14,7 +14,10 @@
 
 import { Bench } from 'tinybench'
 import os from 'os'
-import { ParallelWasm, ParallelWasmThresholds } from '../../src/parallel/ParallelWasm.ts'
+import {
+  ParallelWasm,
+  ParallelWasmThresholds
+} from '../../src/parallel/ParallelWasm.ts'
 import { MathWorkerPool } from '../../src/parallel/WorkerPool.ts'
 
 const NUM_CPUS = os.cpus().length
@@ -25,7 +28,9 @@ console.log('Comparing: JS vs WASM vs WASM+SIMD vs Parallel')
 console.log('='.repeat(90))
 console.log(`\nSystem: ${NUM_CPUS} CPUs (${os.cpus()[0].model})`)
 console.log(`Node.js: ${process.version}`)
-console.log(`SharedArrayBuffer: ${typeof SharedArrayBuffer !== 'undefined' ? 'Available' : 'Not available'}`)
+console.log(
+  `SharedArrayBuffer: ${typeof SharedArrayBuffer !== 'undefined' ? 'Available' : 'Not available'}`
+)
 console.log('')
 
 // =============================================================================
@@ -106,7 +111,11 @@ async function runBenchmarks(): Promise<void> {
   try {
     wasm = await import('../../lib/wasm/index.js')
     console.log('  [OK] WASM loaded')
-    console.log(`       Available functions: ${Object.keys(wasm).filter(k => typeof wasm[k] === 'function').join(', ')}`)
+    console.log(
+      `       Available functions: ${Object.keys(wasm)
+        .filter((k) => typeof wasm[k] === 'function')
+        .join(', ')}`
+    )
   } catch (e: any) {
     console.log(`  [FAIL] WASM: ${e.message}`)
     console.log('  Run `npm run build:wasm` first')
@@ -124,10 +133,18 @@ async function runBenchmarks(): Promise<void> {
 
   console.log('')
   console.log('Parallel WASM Thresholds:')
-  console.log(`  - WASM threshold (dotProduct): ${ParallelWasmThresholds.wasm.dotProduct} elements`)
-  console.log(`  - Parallel threshold (dotProduct): ${ParallelWasmThresholds.parallel.dotProduct} elements`)
-  console.log(`  - Parallel threshold (elementWise): ${ParallelWasmThresholds.parallel.elementWise} elements`)
-  console.log(`  - Parallel threshold (statistics): ${ParallelWasmThresholds.parallel.statistics} elements`)
+  console.log(
+    `  - WASM threshold (dotProduct): ${ParallelWasmThresholds.wasm.dotProduct} elements`
+  )
+  console.log(
+    `  - Parallel threshold (dotProduct): ${ParallelWasmThresholds.parallel.dotProduct} elements`
+  )
+  console.log(
+    `  - Parallel threshold (elementWise): ${ParallelWasmThresholds.parallel.elementWise} elements`
+  )
+  console.log(
+    `  - Parallel threshold (statistics): ${ParallelWasmThresholds.parallel.statistics} elements`
+  )
   console.log('')
 
   // ==========================================================================
@@ -174,21 +191,25 @@ async function runBenchmarks(): Promise<void> {
     await bench.run()
 
     // Print results
-    const results: BenchResult[] = bench.tasks.map(task => ({
+    const results: BenchResult[] = bench.tasks.map((task) => ({
       name: task.name,
       opsPerSec: task.result?.hz || 0,
       avgMs: task.result?.mean ? task.result.mean * 1000 : 0
     }))
 
-    results.forEach(r => console.log(formatResult(r)))
+    results.forEach((r) => console.log(formatResult(r)))
 
     // Calculate speedups
-    const jsResult = results.find(r => r.name.includes('JS'))
+    const jsResult = results.find((r) => r.name.includes('JS'))
     if (jsResult) {
       console.log('\n  Speedups vs JS:')
-      results.filter(r => !r.name.includes('JS')).forEach(r => {
-        console.log(`    ${r.name}: ${formatSpeedup(jsResult.opsPerSec, r.opsPerSec)}`)
-      })
+      results
+        .filter((r) => !r.name.includes('JS'))
+        .forEach((r) => {
+          console.log(
+            `    ${r.name}: ${formatSpeedup(jsResult.opsPerSec, r.opsPerSec)}`
+          )
+        })
     }
   }
 
@@ -227,20 +248,24 @@ async function runBenchmarks(): Promise<void> {
 
     await bench.run()
 
-    const results: BenchResult[] = bench.tasks.map(task => ({
+    const results: BenchResult[] = bench.tasks.map((task) => ({
       name: task.name,
       opsPerSec: task.result?.hz || 0,
       avgMs: task.result?.mean ? task.result.mean * 1000 : 0
     }))
 
-    results.forEach(r => console.log(formatResult(r)))
+    results.forEach((r) => console.log(formatResult(r)))
 
-    const jsResult = results.find(r => r.name.includes('JS'))
+    const jsResult = results.find((r) => r.name.includes('JS'))
     if (jsResult) {
       console.log('\n  Speedups vs JS:')
-      results.filter(r => !r.name.includes('JS')).forEach(r => {
-        console.log(`    ${r.name}: ${formatSpeedup(jsResult.opsPerSec, r.opsPerSec)}`)
-      })
+      results
+        .filter((r) => !r.name.includes('JS'))
+        .forEach((r) => {
+          console.log(
+            `    ${r.name}: ${formatSpeedup(jsResult.opsPerSec, r.opsPerSec)}`
+          )
+        })
     }
   }
 
@@ -289,20 +314,24 @@ async function runBenchmarks(): Promise<void> {
 
     await bench.run()
 
-    const results: BenchResult[] = bench.tasks.map(task => ({
+    const results: BenchResult[] = bench.tasks.map((task) => ({
       name: task.name,
       opsPerSec: task.result?.hz || 0,
       avgMs: task.result?.mean ? task.result.mean * 1000 : 0
     }))
 
-    results.forEach(r => console.log(formatResult(r)))
+    results.forEach((r) => console.log(formatResult(r)))
 
-    const jsResult = results.find(r => r.name.includes('JS'))
+    const jsResult = results.find((r) => r.name.includes('JS'))
     if (jsResult) {
       console.log('\n  Speedups vs JS:')
-      results.filter(r => !r.name.includes('JS')).forEach(r => {
-        console.log(`    ${r.name}: ${formatSpeedup(jsResult.opsPerSec, r.opsPerSec)}`)
-      })
+      results
+        .filter((r) => !r.name.includes('JS'))
+        .forEach((r) => {
+          console.log(
+            `    ${r.name}: ${formatSpeedup(jsResult.opsPerSec, r.opsPerSec)}`
+          )
+        })
     }
   }
 

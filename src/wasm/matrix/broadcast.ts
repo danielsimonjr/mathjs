@@ -32,7 +32,10 @@ export function canBroadcast(shape1: Int32Array, shape2: Int32Array): bool {
  * @param shape2 - Second shape [rows, cols]
  * @returns Output shape or empty array if incompatible
  */
-export function broadcastShape(shape1: Int32Array, shape2: Int32Array): Int32Array {
+export function broadcastShape(
+  shape1: Int32Array,
+  shape2: Int32Array
+): Int32Array {
   const n1: i32 = shape1.length
   const n2: i32 = shape2.length
   const maxLen: i32 = n1 > n2 ? n1 : n2
@@ -94,12 +97,14 @@ export function broadcastMultiply(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
   // Check compatibility
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -125,11 +130,13 @@ export function broadcastDivide(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -155,11 +162,13 @@ export function broadcastAdd(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -185,11 +194,13 @@ export function broadcastSubtract(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -215,11 +226,13 @@ export function broadcastPow(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -245,11 +258,13 @@ export function broadcastMin(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -275,11 +290,13 @@ export function broadcastMax(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -305,11 +322,13 @@ export function broadcastMod(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -336,11 +355,13 @@ export function broadcastEqual(
   cols2: i32,
   tol: f64
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -366,11 +387,13 @@ export function broadcastLess(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -396,11 +419,13 @@ export function broadcastGreater(
   rows2: i32,
   cols2: i32
 ): Float64Array {
-  const outRows: i32 = rows1 > rows2 ? rows1 : (rows2 > 1 ? rows2 : rows1)
-  const outCols: i32 = cols1 > cols2 ? cols1 : (cols2 > 1 ? cols2 : cols1)
+  const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
+  const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
-  if ((rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
-      (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)) {
+  if (
+    (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
+    (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
+  ) {
     return new Float64Array(0)
   }
 
@@ -433,10 +458,7 @@ export function broadcastScalarMultiply(
 /**
  * Scalar broadcast - add scalar to matrix
  */
-export function broadcastScalarAdd(
-  A: Float64Array,
-  scalar: f64
-): Float64Array {
+export function broadcastScalarAdd(A: Float64Array, scalar: f64): Float64Array {
   const n: i32 = A.length
   const result = new Float64Array(n)
   for (let i: i32 = 0; i < n; i++) {

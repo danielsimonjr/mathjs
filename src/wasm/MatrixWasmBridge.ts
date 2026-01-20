@@ -110,10 +110,7 @@ export class MatrixWasmBridge {
 
     // Strategy selection based on operation complexity
     // Matrix multiply is O(n³), so WASM benefits even at smaller sizes
-    if (
-      opts.useParallel &&
-      outputElements >= WasmThresholds.parallel
-    ) {
+    if (opts.useParallel && outputElements >= WasmThresholds.parallel) {
       // Very large matrices: use parallel processing
       return ParallelMatrix.multiply(aData, aRows, aCols, bData, bRows, bCols)
     } else if (

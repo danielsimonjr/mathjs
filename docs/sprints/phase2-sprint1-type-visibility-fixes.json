@@ -17,9 +17,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS2322",
       "errorCount": 1,
-      "files": [
-        "src/core/create.ts"
-      ]
+      "files": ["src/core/create.ts"]
     },
     {
       "id": "2.1.2",
@@ -30,9 +28,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS2322",
       "errorCount": 15,
-      "files": [
-        "src/expression/node/"
-      ]
+      "files": ["src/expression/node/"]
     },
     {
       "id": "2.1.3",
@@ -43,9 +39,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS2322",
       "errorCount": 10,
-      "files": [
-        "src/function/"
-      ]
+      "files": ["src/function/"]
     },
     {
       "id": "2.1.4",
@@ -56,9 +50,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS2345",
       "errorCount": 6,
-      "files": [
-        "src/"
-      ]
+      "files": ["src/"]
     },
     {
       "id": "2.1.5",
@@ -69,9 +61,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS2564",
       "errorCount": 3,
-      "files": [
-        "src/"
-      ]
+      "files": ["src/"]
     }
   ],
   "acceptanceCriteria": [
@@ -81,9 +71,6 @@
     "npm run compile:ts error count significantly reduced",
     "No runtime type errors introduced"
   ],
-  "dependencies": [
-    "phase1-sprint1",
-    "phase1-sprint2"
-  ],
+  "dependencies": ["phase1-sprint1", "phase1-sprint2"],
   "blockedBy": []
 }

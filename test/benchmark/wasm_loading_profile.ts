@@ -25,7 +25,11 @@ interface TimingResult {
   runs: number
 }
 
-async function timeAsync(name: string, fn: () => Promise<any>, runs: number = 10): Promise<TimingResult> {
+async function timeAsync(
+  name: string,
+  fn: () => Promise<any>,
+  runs: number = 10
+): Promise<TimingResult> {
   const times: number[] = []
 
   for (let i = 0; i < runs; i++) {
@@ -43,7 +47,11 @@ async function timeAsync(name: string, fn: () => Promise<any>, runs: number = 10
   }
 }
 
-function timeSync(name: string, fn: () => any, runs: number = 1000): TimingResult {
+function timeSync(
+  name: string,
+  fn: () => any,
+  runs: number = 1000
+): TimingResult {
   const times: number[] = []
 
   for (let i = 0; i < runs; i++) {
@@ -88,15 +96,23 @@ async function main(): Promise<void> {
   console.log('\n--- 1. WASM FILE LOADING (I/O) ---\n')
 
   // Time raw file read
-  const fileReadResult = await timeAsync('fs.readFile (raw buffer)', async () => {
-    await fs.promises.readFile(wasmPath)
-  }, 20)
+  const fileReadResult = await timeAsync(
+    'fs.readFile (raw buffer)',
+    async () => {
+      await fs.promises.readFile(wasmPath)
+    },
+    20
+  )
   console.log(formatResult(fileReadResult))
 
   // Time file read with sync
-  const fileReadSyncResult = timeSync('fs.readFileSync', () => {
-    fs.readFileSync(wasmPath)
-  }, 20)
+  const fileReadSyncResult = timeSync(
+    'fs.readFileSync',
+    () => {
+      fs.readFileSync(wasmPath)
+    },
+    20
+  )
   console.log(formatResult(fileReadSyncResult))
 
   // ============================================================================
@@ -107,9 +123,13 @@ async function main(): Promise<void> {
   const wasmBuffer = fs.readFileSync(wasmPath)
 
   // Time WebAssembly.compile
-  const compileResult = await timeAsync('WebAssembly.compile', async () => {
-    await WebAssembly.compile(wasmBuffer)
-  }, 10)
+  const compileResult = await timeAsync(
+    'WebAssembly.compile',
+    async () => {
+      await WebAssembly.compile(wasmBuffer)
+    },
+    10
+  )
   console.log(formatResult(compileResult))
 
   // Time WebAssembly.compileStreaming (simulated with buffer)
@@ -122,7 +142,9 @@ async function main(): Promise<void> {
 
   const imports = {
     env: {
-      abort: () => { throw new Error('abort') },
+      abort: () => {
+        throw new Error('abort')
+      },
       seed: () => Date.now()
     },
     Math: Math as any,
@@ -133,22 +155,34 @@ async function main(): Promise<void> {
   const compiledModule = await WebAssembly.compile(wasmBuffer)
 
   // Time instantiation from compiled module
-  const instantiateCompiledResult = await timeAsync('WebAssembly.instantiate (compiled)', async () => {
-    await WebAssembly.instantiate(compiledModule, imports)
-  }, 10)
+  const instantiateCompiledResult = await timeAsync(
+    'WebAssembly.instantiate (compiled)',
+    async () => {
+      await WebAssembly.instantiate(compiledModule, imports)
+    },
+    10
+  )
   console.log(formatResult(instantiateCompiledResult))
 
   // Time full compile + instantiate
-  const fullLoadResult = await timeAsync('compile + instantiate (full)', async () => {
-    const module = await WebAssembly.compile(wasmBuffer)
-    await WebAssembly.instantiate(module, imports)
-  }, 10)
+  const fullLoadResult = await timeAsync(
+    'compile + instantiate (full)',
+    async () => {
+      const module = await WebAssembly.compile(wasmBuffer)
+      await WebAssembly.instantiate(module, imports)
+    },
+    10
+  )
   console.log(formatResult(fullLoadResult))
 
   // Time WebAssembly.instantiate with buffer (single call)
-  const instantiateBufferResult = await timeAsync('WebAssembly.instantiate (buffer)', async () => {
-    await WebAssembly.instantiate(wasmBuffer, imports)
-  }, 10)
+  const instantiateBufferResult = await timeAsync(
+    'WebAssembly.instantiate (buffer)',
+    async () => {
+      await WebAssembly.instantiate(wasmBuffer, imports)
+    },
+    10
+  )
   console.log(formatResult(instantiateBufferResult))
 
   // ============================================================================
@@ -161,19 +195,27 @@ async function main(): Promise<void> {
   const memory = exports.memory as WebAssembly.Memory
 
   // Test Float64Array view creation
-  const viewCreationResult = timeSync('Float64Array view creation (1000 elem)', () => {
-    new Float64Array(memory.buffer, 0, 1000)
-  }, 10000)
+  const viewCreationResult = timeSync(
+    'Float64Array view creation (1000 elem)',
+    () => {
+      new Float64Array(memory.buffer, 0, 1000)
+    },
+    10000
+  )
   console.log(formatResult(viewCreationResult))
 
   // Test data copying
   const testData = new Float64Array(1000)
   for (let i = 0; i < 1000; i++) testData[i] = Math.random()
 
-  const dataCopyResult = timeSync('Float64Array.set (1000 elem)', () => {
-    const view = new Float64Array(memory.buffer, 0, 1000)
-    view.set(testData)
-  }, 10000)
+  const dataCopyResult = timeSync(
+    'Float64Array.set (1000 elem)',
+    () => {
+      const view = new Float64Array(memory.buffer, 0, 1000)
+      view.set(testData)
+    },
+    10000
+  )
   console.log(formatResult(dataCopyResult))
 
   // Test various sizes
@@ -183,10 +225,14 @@ async function main(): Promise<void> {
     const data = new Float64Array(size)
     for (let i = 0; i < size; i++) data[i] = Math.random()
 
-    const result = timeSync(`  copy ${size.toString().padStart(6)} elements`, () => {
-      const view = new Float64Array(memory.buffer, 0, size)
-      view.set(data)
-    }, Math.min(1000, 100000 / size))
+    const result = timeSync(
+      `  copy ${size.toString().padStart(6)} elements`,
+      () => {
+        const view = new Float64Array(memory.buffer, 0, size)
+        view.set(data)
+      },
+      Math.min(1000, 100000 / size)
+    )
     console.log(formatResult(result))
   }
 
@@ -205,7 +251,9 @@ async function main(): Promise<void> {
   }
 
   // Check if WASM has dotProduct
-  const wasmDotProduct = exports.dotProduct as ((aPtr: number, bPtr: number, size: number) => number) | undefined
+  const wasmDotProduct = exports.dotProduct as
+    | ((aPtr: number, bPtr: number, size: number) => number)
+    | undefined
 
   if (wasmDotProduct) {
     console.log('  Size         JS (ms)      WASM (ms)    Speedup    Winner')
@@ -220,21 +268,31 @@ async function main(): Promise<void> {
       }
 
       // JS timing
-      const jsResult = timeSync('', () => jsDotProduct(a, b), Math.min(10000, 1000000 / size))
+      const jsResult = timeSync(
+        '',
+        () => jsDotProduct(a, b),
+        Math.min(10000, 1000000 / size)
+      )
 
       // WASM timing (including memory copy overhead)
-      const wasmResult = timeSync('', () => {
-        const viewA = new Float64Array(memory.buffer, 0, size)
-        const viewB = new Float64Array(memory.buffer, size * 8, size)
-        viewA.set(a)
-        viewB.set(b)
-        return wasmDotProduct(0, size * 8, size)
-      }, Math.min(10000, 1000000 / size))
+      const wasmResult = timeSync(
+        '',
+        () => {
+          const viewA = new Float64Array(memory.buffer, 0, size)
+          const viewB = new Float64Array(memory.buffer, size * 8, size)
+          viewA.set(a)
+          viewB.set(b)
+          return wasmDotProduct(0, size * 8, size)
+        },
+        Math.min(10000, 1000000 / size)
+      )
 
       const speedup = jsResult.avg / wasmResult.avg
       const winner = speedup > 1 ? 'WASM' : 'JS'
 
-      console.log(`  ${size.toString().padStart(6)}    ${jsResult.avg.toFixed(6).padStart(10)}   ${wasmResult.avg.toFixed(6).padStart(10)}   ${speedup.toFixed(2).padStart(7)}x   ${winner}`)
+      console.log(
+        `  ${size.toString().padStart(6)}    ${jsResult.avg.toFixed(6).padStart(10)}   ${wasmResult.avg.toFixed(6).padStart(10)}   ${speedup.toFixed(2).padStart(7)}x   ${winner}`
+      )
     }
   } else {
     console.log('  dotProduct not found in WASM exports')

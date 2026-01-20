@@ -27,12 +27,24 @@ interface Dependencies {
 }
 
 const name = 'prod'
-const dependencies = ['typed', 'config', 'multiplyScalar', 'numeric', 'parseNumberWithConfig']
+const dependencies = [
+  'typed',
+  'config',
+  'multiplyScalar',
+  'numeric',
+  'parseNumberWithConfig'
+]
 
 export const createProd = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, multiplyScalar, numeric, parseNumberWithConfig }: Dependencies) => {
+  ({
+    typed,
+    config,
+    multiplyScalar,
+    numeric,
+    parseNumberWithConfig
+  }: Dependencies) => {
     /**
      * Compute the product of a matrix or a list with values.
      * In case of a multidimensional array or matrix, the sum of all
@@ -60,7 +72,7 @@ export const createProd = /* #__PURE__ */ factory(
      */
     return typed(name, {
       // prod(string) - single string input
-      'string': function (x: string): any {
+      string: function (x: string): any {
         return parseNumberWithConfig(x)
       },
 
@@ -95,11 +107,11 @@ export const createProd = /* #__PURE__ */ factory(
       deepForEach(array as any, function (value: any) {
         try {
           // Pre-convert string inputs BEFORE multiplication
-          const converted = (typeof value === 'string')
-            ? parseNumberWithConfig(value)
-            : value
+          const converted =
+            typeof value === 'string' ? parseNumberWithConfig(value) : value
 
-          prod = prod === undefined ? converted : multiplyScalar(prod, converted)
+          prod =
+            prod === undefined ? converted : multiplyScalar(prod, converted)
         } catch (err) {
           throw improveErrorMessage(err, 'prod', value)
         }

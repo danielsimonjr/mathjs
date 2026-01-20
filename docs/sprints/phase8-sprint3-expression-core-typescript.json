@@ -16,9 +16,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "High",
-      "files": [
-        "src/expression/Parser.js"
-      ]
+      "files": ["src/expression/Parser.js"]
     },
     {
       "id": "8.3.2",
@@ -28,9 +26,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
-      "files": [
-        "src/expression/Help.js"
-      ]
+      "files": ["src/expression/Help.js"]
     },
     {
       "id": "8.3.3",
@@ -55,8 +51,6 @@
     "All parser and expression tests pass",
     "TypeScript compilation succeeds"
   ],
-  "dependencies": [
-    "phase8-sprint2"
-  ],
+  "dependencies": ["phase8-sprint2"],
   "blockedBy": []
 }

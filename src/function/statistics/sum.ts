@@ -31,7 +31,13 @@ interface Dependencies {
 }
 
 const name = 'sum'
-const dependencies = ['typed', 'config', 'add', 'numeric', 'parseNumberWithConfig']
+const dependencies = [
+  'typed',
+  'config',
+  'add',
+  'numeric',
+  'parseNumberWithConfig'
+]
 
 export const createSum = /* #__PURE__ */ factory(
   name,
@@ -63,7 +69,7 @@ export const createSum = /* #__PURE__ */ factory(
      */
     return typed(name, {
       // sum(string) - single string input
-      'string': function (x: string): any {
+      string: function (x: string): any {
         return parseNumberWithConfig(x)
       },
 
@@ -95,9 +101,8 @@ export const createSum = /* #__PURE__ */ factory(
       deepForEach(array as any, function (value: any) {
         try {
           // Pre-convert string inputs BEFORE addition
-          const converted = (typeof value === 'string')
-            ? parseNumberWithConfig(value)
-            : value
+          const converted =
+            typeof value === 'string' ? parseNumberWithConfig(value) : value
 
           sum = sum === undefined ? converted : add(sum, converted)
         } catch (err) {

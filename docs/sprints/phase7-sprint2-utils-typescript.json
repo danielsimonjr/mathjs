@@ -44,10 +44,7 @@
       "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
-      "files": [
-        "src/utils/string.js",
-        "src/utils/customs.js"
-      ]
+      "files": ["src/utils/string.js", "src/utils/customs.js"]
     },
     {
       "id": "7.2.4",
@@ -73,8 +70,6 @@
     "All utility tests pass",
     "TypeScript compilation succeeds"
   ],
-  "dependencies": [
-    "phase7-sprint1"
-  ],
+  "dependencies": ["phase7-sprint1"],
   "blockedBy": []
 }

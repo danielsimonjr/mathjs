@@ -22,7 +22,12 @@
  * @param result Output array
  * @param length Number of elements (should be even for optimal performance)
  */
-export function simdAddF64(a: Float64Array, b: Float64Array, result: Float64Array, length: i32): void {
+export function simdAddF64(
+  a: Float64Array,
+  b: Float64Array,
+  result: Float64Array,
+  length: i32
+): void {
   const simdLength = length & ~1 // Round down to even number
 
   // Process 2 elements at a time with SIMD
@@ -35,14 +40,19 @@ export function simdAddF64(a: Float64Array, b: Float64Array, result: Float64Arra
 
   // Handle remaining odd element
   if (length & 1) {
-    unchecked(result[simdLength] = a[simdLength] + b[simdLength])
+    unchecked((result[simdLength] = a[simdLength] + b[simdLength]))
   }
 }
 
 /**
  * SIMD vector subtraction: result[i] = a[i] - b[i]
  */
-export function simdSubF64(a: Float64Array, b: Float64Array, result: Float64Array, length: i32): void {
+export function simdSubF64(
+  a: Float64Array,
+  b: Float64Array,
+  result: Float64Array,
+  length: i32
+): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
@@ -53,14 +63,19 @@ export function simdSubF64(a: Float64Array, b: Float64Array, result: Float64Arra
   }
 
   if (length & 1) {
-    unchecked(result[simdLength] = a[simdLength] - b[simdLength])
+    unchecked((result[simdLength] = a[simdLength] - b[simdLength]))
   }
 }
 
 /**
  * SIMD vector multiplication: result[i] = a[i] * b[i]
  */
-export function simdMulF64(a: Float64Array, b: Float64Array, result: Float64Array, length: i32): void {
+export function simdMulF64(
+  a: Float64Array,
+  b: Float64Array,
+  result: Float64Array,
+  length: i32
+): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
@@ -71,14 +86,19 @@ export function simdMulF64(a: Float64Array, b: Float64Array, result: Float64Arra
   }
 
   if (length & 1) {
-    unchecked(result[simdLength] = a[simdLength] * b[simdLength])
+    unchecked((result[simdLength] = a[simdLength] * b[simdLength]))
   }
 }
 
 /**
  * SIMD vector division: result[i] = a[i] / b[i]
  */
-export function simdDivF64(a: Float64Array, b: Float64Array, result: Float64Array, length: i32): void {
+export function simdDivF64(
+  a: Float64Array,
+  b: Float64Array,
+  result: Float64Array,
+  length: i32
+): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
@@ -89,14 +109,19 @@ export function simdDivF64(a: Float64Array, b: Float64Array, result: Float64Arra
   }
 
   if (length & 1) {
-    unchecked(result[simdLength] = a[simdLength] / b[simdLength])
+    unchecked((result[simdLength] = a[simdLength] / b[simdLength]))
   }
 }
 
 /**
  * SIMD scalar multiplication: result[i] = a[i] * scalar
  */
-export function simdScaleF64(a: Float64Array, scalar: f64, result: Float64Array, length: i32): void {
+export function simdScaleF64(
+  a: Float64Array,
+  scalar: f64,
+  result: Float64Array,
+  length: i32
+): void {
   const simdLength = length & ~1
   const vs = f64x2.splat(scalar)
 
@@ -107,7 +132,7 @@ export function simdScaleF64(a: Float64Array, scalar: f64, result: Float64Array,
   }
 
   if (length & 1) {
-    unchecked(result[simdLength] = a[simdLength] * scalar)
+    unchecked((result[simdLength] = a[simdLength] * scalar))
   }
 }
 
@@ -200,7 +225,10 @@ export function simdMinF64(a: Float64Array, length: i32): f64 {
     minVec = f64x2.min(minVec, va)
   }
 
-  let result = Math.min(f64x2.extract_lane(minVec, 0), f64x2.extract_lane(minVec, 1))
+  let result = Math.min(
+    f64x2.extract_lane(minVec, 0),
+    f64x2.extract_lane(minVec, 1)
+  )
 
   if (length & 1) {
     result = Math.min(result, unchecked(a[simdLength]))
@@ -223,7 +251,10 @@ export function simdMaxF64(a: Float64Array, length: i32): f64 {
     maxVec = f64x2.max(maxVec, va)
   }
 
-  let result = Math.max(f64x2.extract_lane(maxVec, 0), f64x2.extract_lane(maxVec, 1))
+  let result = Math.max(
+    f64x2.extract_lane(maxVec, 0),
+    f64x2.extract_lane(maxVec, 1)
+  )
 
   if (length & 1) {
     result = Math.max(result, unchecked(a[simdLength]))
@@ -235,7 +266,11 @@ export function simdMaxF64(a: Float64Array, length: i32): f64 {
 /**
  * SIMD absolute value: result[i] = |a[i]|
  */
-export function simdAbsF64(a: Float64Array, result: Float64Array, length: i32): void {
+export function simdAbsF64(
+  a: Float64Array,
+  result: Float64Array,
+  length: i32
+): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
@@ -245,14 +280,18 @@ export function simdAbsF64(a: Float64Array, result: Float64Array, length: i32): 
   }
 
   if (length & 1) {
-    unchecked(result[simdLength] = Math.abs(a[simdLength]))
+    unchecked((result[simdLength] = Math.abs(a[simdLength])))
   }
 }
 
 /**
  * SIMD square root: result[i] = sqrt(a[i])
  */
-export function simdSqrtF64(a: Float64Array, result: Float64Array, length: i32): void {
+export function simdSqrtF64(
+  a: Float64Array,
+  result: Float64Array,
+  length: i32
+): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
@@ -262,14 +301,18 @@ export function simdSqrtF64(a: Float64Array, result: Float64Array, length: i32):
   }
 
   if (length & 1) {
-    unchecked(result[simdLength] = Math.sqrt(a[simdLength]))
+    unchecked((result[simdLength] = Math.sqrt(a[simdLength])))
   }
 }
 
 /**
  * SIMD negation: result[i] = -a[i]
  */
-export function simdNegF64(a: Float64Array, result: Float64Array, length: i32): void {
+export function simdNegF64(
+  a: Float64Array,
+  result: Float64Array,
+  length: i32
+): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
@@ -279,7 +322,7 @@ export function simdNegF64(a: Float64Array, result: Float64Array, length: i32): 
   }
 
   if (length & 1) {
-    unchecked(result[simdLength] = -a[simdLength])
+    unchecked((result[simdLength] = -a[simdLength]))
   }
 }
 
@@ -306,7 +349,9 @@ export function simdMatVecMulF64(
 
     // SIMD part
     for (let j: i32 = 0; j < simdN; j += 2) {
-      const va = v128.load(changetype<usize>(A.dataStart) + ((rowOffset + j) << 3))
+      const va = v128.load(
+        changetype<usize>(A.dataStart) + ((rowOffset + j) << 3)
+      )
       const vx = v128.load(changetype<usize>(x.dataStart) + (j << 3))
       sum = f64x2.add(sum, f64x2.mul(va, vx))
     }
@@ -318,7 +363,7 @@ export function simdMatVecMulF64(
       rowSum += unchecked(A[rowOffset + simdN]) * unchecked(x[simdN])
     }
 
-    unchecked(result[i] = rowSum)
+    unchecked((result[i] = rowSum))
   }
 }
 
@@ -404,11 +449,17 @@ export function simdMatMulF64(
       // SIMD inner product
       for (let p: i32 = 0; p < simdK; p += 2) {
         // Load 2 elements from row of A
-        const va = v128.load(changetype<usize>(A.dataStart) + ((rowOffsetA + p) << 3))
+        const va = v128.load(
+          changetype<usize>(A.dataStart) + ((rowOffsetA + p) << 3)
+        )
         // Load 2 elements from column of B (non-contiguous, so manual load)
         const b0 = unchecked(B[p * n + j])
         const b1 = unchecked(B[(p + 1) * n + j])
-        const vb = f64x2.replace_lane(f64x2.replace_lane(f64x2.splat(0.0), 0, b0), 1, b1)
+        const vb = f64x2.replace_lane(
+          f64x2.replace_lane(f64x2.splat(0.0), 0, b0),
+          1,
+          b1
+        )
         sum = f64x2.add(sum, f64x2.mul(va, vb))
       }
 
@@ -419,7 +470,7 @@ export function simdMatMulF64(
         dotSum += unchecked(A[rowOffsetA + simdK]) * unchecked(B[simdK * n + j])
       }
 
-      unchecked(C[rowOffsetC + j] = dotSum)
+      unchecked((C[rowOffsetC + j] = dotSum))
     }
   }
 }
@@ -449,24 +500,24 @@ export function simdMatTransposeF64(
       const a11 = unchecked(A[(i + 1) * n + j + 1])
 
       // Store transposed 2x2 block to B
-      unchecked(B[j * m + i] = a00)
-      unchecked(B[j * m + i + 1] = a10)
-      unchecked(B[(j + 1) * m + i] = a01)
-      unchecked(B[(j + 1) * m + i + 1] = a11)
+      unchecked((B[j * m + i] = a00))
+      unchecked((B[j * m + i + 1] = a10))
+      unchecked((B[(j + 1) * m + i] = a01))
+      unchecked((B[(j + 1) * m + i + 1] = a11))
     }
   }
 
   // Handle remaining rows
   for (let i: i32 = m2; i < m; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      unchecked(B[j * m + i] = A[i * n + j])
+      unchecked((B[j * m + i] = A[i * n + j]))
     }
   }
 
   // Handle remaining columns
   for (let i: i32 = 0; i < m2; i++) {
     for (let j: i32 = n2; j < n; j++) {
-      unchecked(B[j * m + i] = A[i * n + j])
+      unchecked((B[j * m + i] = A[i * n + j]))
     }
   }
 }
@@ -487,7 +538,11 @@ export function simdMeanF64(a: Float64Array, length: i32): f64 {
  * SIMD variance calculation
  * Uses two-pass algorithm for numerical stability
  */
-export function simdVarianceF64(a: Float64Array, length: i32, ddof: i32 = 0): f64 {
+export function simdVarianceF64(
+  a: Float64Array,
+  length: i32,
+  ddof: i32 = 0
+): f64 {
   if (length <= ddof) return f64.NaN
 
   const mean = simdMeanF64(a, length)
@@ -525,7 +580,12 @@ export function simdStdF64(a: Float64Array, length: i32, ddof: i32 = 0): f64 {
 /**
  * SIMD vector addition using f32x4 (4 elements at a time)
  */
-export function simdAddF32(a: Float32Array, b: Float32Array, result: Float32Array, length: i32): void {
+export function simdAddF32(
+  a: Float32Array,
+  b: Float32Array,
+  result: Float32Array,
+  length: i32
+): void {
   const simdLength = length & ~3 // Round down to multiple of 4
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
@@ -537,14 +597,19 @@ export function simdAddF32(a: Float32Array, b: Float32Array, result: Float32Arra
 
   // Handle remaining elements
   for (let i: i32 = simdLength; i < length; i++) {
-    unchecked(result[i] = a[i] + b[i])
+    unchecked((result[i] = a[i] + b[i]))
   }
 }
 
 /**
  * SIMD vector multiplication using f32x4
  */
-export function simdMulF32(a: Float32Array, b: Float32Array, result: Float32Array, length: i32): void {
+export function simdMulF32(
+  a: Float32Array,
+  b: Float32Array,
+  result: Float32Array,
+  length: i32
+): void {
   const simdLength = length & ~3
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
@@ -555,7 +620,7 @@ export function simdMulF32(a: Float32Array, b: Float32Array, result: Float32Arra
   }
 
   for (let i: i32 = simdLength; i < length; i++) {
-    unchecked(result[i] = a[i] * b[i])
+    unchecked((result[i] = a[i] * b[i]))
   }
 }
 
@@ -573,8 +638,11 @@ export function simdDotF32(a: Float32Array, b: Float32Array, length: i32): f32 {
   }
 
   // Horizontal sum
-  let result: f32 = f32x4.extract_lane(sum, 0) + f32x4.extract_lane(sum, 1) +
-                    f32x4.extract_lane(sum, 2) + f32x4.extract_lane(sum, 3)
+  let result: f32 =
+    f32x4.extract_lane(sum, 0) +
+    f32x4.extract_lane(sum, 1) +
+    f32x4.extract_lane(sum, 2) +
+    f32x4.extract_lane(sum, 3)
 
   for (let i: i32 = simdLength; i < length; i++) {
     result += unchecked(a[i]) * unchecked(b[i])
@@ -595,8 +663,11 @@ export function simdSumF32(a: Float32Array, length: i32): f32 {
     sum = f32x4.add(sum, va)
   }
 
-  let result: f32 = f32x4.extract_lane(sum, 0) + f32x4.extract_lane(sum, 1) +
-                    f32x4.extract_lane(sum, 2) + f32x4.extract_lane(sum, 3)
+  let result: f32 =
+    f32x4.extract_lane(sum, 0) +
+    f32x4.extract_lane(sum, 1) +
+    f32x4.extract_lane(sum, 2) +
+    f32x4.extract_lane(sum, 3)
 
   for (let i: i32 = simdLength; i < length; i++) {
     result += unchecked(a[i])
@@ -613,7 +684,12 @@ export function simdSumF32(a: Float32Array, length: i32): f32 {
 /**
  * SIMD integer vector addition
  */
-export function simdAddI32(a: Int32Array, b: Int32Array, result: Int32Array, length: i32): void {
+export function simdAddI32(
+  a: Int32Array,
+  b: Int32Array,
+  result: Int32Array,
+  length: i32
+): void {
   const simdLength = length & ~3
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
@@ -624,14 +700,19 @@ export function simdAddI32(a: Int32Array, b: Int32Array, result: Int32Array, len
   }
 
   for (let i: i32 = simdLength; i < length; i++) {
-    unchecked(result[i] = a[i] + b[i])
+    unchecked((result[i] = a[i] + b[i]))
   }
 }
 
 /**
  * SIMD integer vector multiplication
  */
-export function simdMulI32(a: Int32Array, b: Int32Array, result: Int32Array, length: i32): void {
+export function simdMulI32(
+  a: Int32Array,
+  b: Int32Array,
+  result: Int32Array,
+  length: i32
+): void {
   const simdLength = length & ~3
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
@@ -642,7 +723,7 @@ export function simdMulI32(a: Int32Array, b: Int32Array, result: Int32Array, len
   }
 
   for (let i: i32 = simdLength; i < length; i++) {
-    unchecked(result[i] = a[i] * b[i])
+    unchecked((result[i] = a[i] * b[i]))
   }
 }
 
@@ -668,8 +749,8 @@ export function simdComplexMulF64(
     const bRe = unchecked(b[idx])
     const bIm = unchecked(b[idx + 1])
 
-    unchecked(result[idx] = aRe * bRe - aIm * bIm)
-    unchecked(result[idx + 1] = aRe * bIm + aIm * bRe)
+    unchecked((result[idx] = aRe * bRe - aIm * bIm))
+    unchecked((result[idx + 1] = aRe * bIm + aIm * bRe))
   }
 }
 

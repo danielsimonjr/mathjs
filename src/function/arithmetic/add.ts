@@ -59,7 +59,12 @@ interface MatrixConstructor {
 }
 
 interface NodeOperations {
-  createBinaryNode: (op: string, fn: string, left: unknown, right: unknown) => unknown
+  createBinaryNode: (
+    op: string,
+    fn: string,
+    left: unknown,
+    right: unknown
+  ) => unknown
   hasNodeArg: (...args: unknown[]) => boolean
 }
 

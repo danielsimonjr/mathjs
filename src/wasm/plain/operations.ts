@@ -50,7 +50,7 @@ export function cbrt(x: f64): f64 {
   if (isFinite(x)) {
     result = Math.exp(Math.log(x) / 3)
     // from https://en.wikipedia.org/wiki/Cube_root#Numerical_methods
-    result = (x / (result * result) + (2 * result)) / 3
+    result = (x / (result * result) + 2 * result) / 3
   } else {
     result = x
   }
@@ -67,9 +67,9 @@ export function exp(x: f64): f64 {
 }
 
 export function expm1(x: f64): f64 {
-  return (x >= 2e-4 || x <= -2e-4)
+  return x >= 2e-4 || x <= -2e-4
     ? Math.exp(x) - 1
-    : x + x * x / 2 + x * x * x / 6
+    : x + (x * x) / 2 + (x * x * x) / 6
 }
 
 /**
@@ -93,7 +93,7 @@ export function gcd(a: f64, b: f64): f64 {
     a = b
     b = r
   }
-  return (a < 0) ? -a : a
+  return a < 0 ? -a : a
 }
 
 /**
@@ -138,7 +138,7 @@ export function log1p(x: f64): f64 {
  * Modulus operation (proper mathematical modulo, not remainder)
  */
 export function mod(x: f64, y: f64): f64 {
-  return (y === 0) ? x : x - y * Math.floor(x / y)
+  return y === 0 ? x : x - y * Math.floor(x / y)
 }
 
 /**
@@ -153,7 +153,7 @@ export function nthRoot(a: f64, root: f64): f64 {
   if (root === 0) {
     throw new Error('Root must be non-zero')
   }
-  if (a < 0 && (Math.abs(root) % 2 !== 1)) {
+  if (a < 0 && Math.abs(root) % 2 !== 1) {
     throw new Error('Root must be odd when a is negative.')
   }
 
@@ -186,8 +186,7 @@ export function square(x: f64): f64 {
 
 export function pow(x: f64, y: f64): f64 {
   // x^Infinity === 0 if -1 < x < 1
-  if ((x * x < 1 && y === Infinity) ||
-    (x * x > 1 && y === -Infinity)) {
+  if ((x * x < 1 && y === Infinity) || (x * x > 1 && y === -Infinity)) {
     return 0
   }
 
@@ -250,10 +249,14 @@ function product(start: f64, end: f64): f64 {
  */
 export function combinations(n: f64, k: f64): f64 {
   if (!isInteger(n) || n < 0) {
-    throw new TypeError('Positive integer value expected in function combinations')
+    throw new TypeError(
+      'Positive integer value expected in function combinations'
+    )
   }
   if (!isInteger(k) || k < 0) {
-    throw new TypeError('Positive integer value expected in function combinations')
+    throw new TypeError(
+      'Positive integer value expected in function combinations'
+    )
   }
   if (k > n) {
     throw new TypeError('k must be less than or equal to n')
@@ -262,11 +265,15 @@ export function combinations(n: f64, k: f64): f64 {
   const nMinusk = n - k
 
   let answer: f64 = 1
-  const firstnumerator = (k < nMinusk) ? nMinusk + 1 : k + 1
+  const firstnumerator = k < nMinusk ? nMinusk + 1 : k + 1
   let nextdivisor: f64 = 2
-  const lastdivisor = (k < nMinusk) ? k : nMinusk
+  const lastdivisor = k < nMinusk ? k : nMinusk
 
-  for (let nextnumerator = firstnumerator; nextnumerator <= n; ++nextnumerator) {
+  for (
+    let nextnumerator = firstnumerator;
+    nextnumerator <= n;
+    ++nextnumerator
+  ) {
     answer *= nextnumerator
     while (nextdivisor <= lastdivisor && answer % nextdivisor === 0) {
       answer /= nextdivisor
@@ -351,20 +358,12 @@ export function compare(x: f64, y: f64): i32 {
 const GAMMA_G: f64 = 4.7421875
 
 const GAMMA_P: f64[] = [
-  0.99999999999999709182,
-  57.156235665862923517,
-  -59.597960355475491248,
-  14.136097974741747174,
-  -0.49191381609762019978,
-  0.33994649984811888699e-4,
-  0.46523628927048575665e-4,
-  -0.98374475304879564677e-4,
-  0.15808870322491248884e-3,
-  -0.21026444172410488319e-3,
-  0.21743961811521264320e-3,
-  -0.16431810653676389022e-3,
-  0.84418223983852743293e-4,
-  -0.26190838401581408670e-4,
+  0.99999999999999709182, 57.156235665862923517, -59.597960355475491248,
+  14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4,
+  0.46523628927048575665e-4, -0.98374475304879564677e-4,
+  0.15808870322491248884e-3, -0.21026444172410488319e-3,
+  0.2174396181152126432e-3, -0.16431810653676389022e-3,
+  0.84418223983852743293e-4, -0.2619083840158140867e-4,
   0.36899182659531622704e-5
 ]
 
@@ -399,10 +398,17 @@ export function gamma(n: f64): f64 {
     const threeN = twoN * n
     const fourN = threeN * n
     const fiveN = fourN * n
-    return Math.sqrt(2 * Math.PI / n) * Math.pow((n / Math.E), n) *
-      (1 + 1 / (12 * n) + 1 / (288 * twoN) - 139 / (51840 * threeN) -
-        571 / (2488320 * fourN) + 163879 / (209018880 * fiveN) +
+    return (
+      Math.sqrt((2 * Math.PI) / n) *
+      Math.pow(n / Math.E, n) *
+      (1 +
+        1 / (12 * n) +
+        1 / (288 * twoN) -
+        139 / (51840 * threeN) -
+        571 / (2488320 * fourN) +
+        163879 / (209018880 * fiveN) +
         5246819 / (75246796800 * fiveN * n))
+    )
   }
 
   --n
@@ -421,13 +427,8 @@ const LGAMMA_G: f64 = 5
 const LGAMMA_N: i32 = 7
 
 const LGAMMA_SERIES: f64[] = [
-  1.000000000190015,
-  76.18009172947146,
-  -86.50532032941677,
-  24.01409824083091,
-  -1.231739572450155,
-  0.1208650973866179e-2,
-  -0.5395239384953e-5
+  1.000000000190015, 76.18009172947146, -86.50532032941677, 24.01409824083091,
+  -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5
 ]
 
 /**
@@ -470,9 +471,7 @@ export function acot(x: f64): f64 {
 }
 
 export function acoth(x: f64): f64 {
-  return isFinite(x)
-    ? (Math.log((x + 1) / x) + Math.log(x / (x - 1))) / 2
-    : 0
+  return isFinite(x) ? (Math.log((x + 1) / x) + Math.log(x / (x - 1))) / 2 : 0
 }
 
 export function acsc(x: f64): f64 {

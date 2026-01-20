@@ -7,7 +7,11 @@ import math from '../../../../src/defaultInstance.ts'
 const { parse, ConstantNode, SymbolNode } = math
 
 function isOperatorNode(value: unknown): boolean {
-  return value !== null && typeof value === 'object' && (value as any).type === 'OperatorNode'
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    (value as any).type === 'OperatorNode'
+  )
 }
 
 describe('divide with Node operands', function () {

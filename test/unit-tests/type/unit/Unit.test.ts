@@ -392,7 +392,10 @@ describe('Unit', function () {
         '-40 degF'
       )
       assert.strictEqual(mathTs.unit('32 degF').to('degC').toString(), '0 degC')
-      assert.strictEqual(mathTs.unit('68 degF').to('degC').toString(), '20 degC')
+      assert.strictEqual(
+        mathTs.unit('68 degF').to('degC').toString(),
+        '20 degC'
+      )
       assert.strictEqual(
         mathTs.unit('98.6 degF').to('degC').toString(),
         '37 degC'
@@ -964,7 +967,10 @@ describe('Unit', function () {
     })
 
     it('should format a unit with a fraction', function () {
-      assert.strictEqual(new Unit(mathTs.fraction(4 / 5), 'm').format(), '4/5 m')
+      assert.strictEqual(
+        new Unit(mathTs.fraction(4 / 5), 'm').format(),
+        '4/5 m'
+      )
     })
 
     it('should format a Complex unit', function () {
@@ -1292,13 +1298,25 @@ describe('Unit', function () {
     it('should accept short prefixes', function () {
       assert.strictEqual(new Unit(mathTs.bignumber(1e30), 'm').format(), '1 Qm')
       assert.strictEqual(new Unit(mathTs.bignumber(1e27), 'm').format(), '1 Rm')
-      assert.strictEqual(new Unit(mathTs.bignumber(1e-27), 'm').format(), '1 rm')
-      assert.strictEqual(new Unit(mathTs.bignumber(1e-30), 'm').format(), '1 qm')
+      assert.strictEqual(
+        new Unit(mathTs.bignumber(1e-27), 'm').format(),
+        '1 rm'
+      )
+      assert.strictEqual(
+        new Unit(mathTs.bignumber(1e-30), 'm').format(),
+        '1 qm'
+      )
     })
 
     it('should create square meter correctly', function () {
-      assert.strictEqual(new Unit(mathTs.bignumber(1e60), 'm2').format(), '1 Qm2')
-      assert.strictEqual(new Unit(mathTs.bignumber(1e54), 'm2').format(), '1 Rm2')
+      assert.strictEqual(
+        new Unit(mathTs.bignumber(1e60), 'm2').format(),
+        '1 Qm2'
+      )
+      assert.strictEqual(
+        new Unit(mathTs.bignumber(1e54), 'm2').format(),
+        '1 Rm2'
+      )
       assert.strictEqual(
         new Unit(mathTs.bignumber(1e-54), 'm2').format(),
         '1 rm2'
@@ -1310,8 +1328,14 @@ describe('Unit', function () {
     })
 
     it('should create cubic meter correctly', function () {
-      assert.strictEqual(new Unit(mathTs.bignumber(1e90), 'm3').format(), '1 Qm3')
-      assert.strictEqual(new Unit(mathTs.bignumber(1e81), 'm3').format(), '1 Rm3')
+      assert.strictEqual(
+        new Unit(mathTs.bignumber(1e90), 'm3').format(),
+        '1 Qm3'
+      )
+      assert.strictEqual(
+        new Unit(mathTs.bignumber(1e81), 'm3').format(),
+        '1 Rm3'
+      )
       assert.strictEqual(
         new Unit(mathTs.bignumber(1e-81), 'm3').format(),
         '1 rm3'
@@ -1482,8 +1506,14 @@ describe('Unit', function () {
       assert.strictEqual(unit2.units[0].unit.name, 'lb')
       assert.strictEqual(unit2.units[0].prefix.name, '')
 
-      assert.strictEqual(mathTs.evaluate('2 feet * 8 s').toString(), '16 feet s')
-      assert.strictEqual(mathTs.evaluate('2 s * 8 feet').toString(), '16 s feet')
+      assert.strictEqual(
+        mathTs.evaluate('2 feet * 8 s').toString(),
+        '16 feet s'
+      )
+      assert.strictEqual(
+        mathTs.evaluate('2 s * 8 feet').toString(),
+        '16 s feet'
+      )
 
       assert.strictEqual(mathTs.evaluate('2 N + 2 kgf').toString(), '21.6133 N')
     })
@@ -1649,7 +1679,9 @@ describe('Unit', function () {
         prefixes: 'long'
       })
       assert.strictEqual(
-        mathTs.evaluate('2 wriggle' + suffix + ' to wiggle' + suffix).toString(),
+        mathTs
+          .evaluate('2 wriggle' + suffix + ' to wiggle' + suffix)
+          .toString(),
         '1 wiggle' + suffix
       )
     })

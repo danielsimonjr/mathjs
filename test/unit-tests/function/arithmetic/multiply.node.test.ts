@@ -7,7 +7,11 @@ import math from '../../../../src/defaultInstance.ts'
 const { parse, ConstantNode, SymbolNode } = math
 
 function isOperatorNode(value: unknown): boolean {
-  return value !== null && typeof value === 'object' && (value as any).type === 'OperatorNode'
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    (value as any).type === 'OperatorNode'
+  )
 }
 
 describe('multiply with Node operands', function () {
@@ -103,7 +107,13 @@ describe('multiply with Node operands', function () {
     })
 
     it('should still work with matrices', function () {
-      const result = math.multiply([[1, 2], [3, 4]], [[5], [6]])
+      const result = math.multiply(
+        [
+          [1, 2],
+          [3, 4]
+        ],
+        [[5], [6]]
+      )
       const arr = math.isMatrix(result) ? (result as any).toArray() : result
       assert.deepStrictEqual(arr, [[17], [39]])
     })

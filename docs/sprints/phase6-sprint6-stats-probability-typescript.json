@@ -93,8 +93,6 @@
     "All tests pass",
     "TypeScript compilation succeeds"
   ],
-  "dependencies": [
-    "phase6-sprint5"
-  ],
+  "dependencies": ["phase6-sprint5"],
   "blockedBy": []
 }

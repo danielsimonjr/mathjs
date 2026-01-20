@@ -38,7 +38,7 @@ export function csDfs(
   n: i32
 ): i32 {
   // Workspace for DFS
-  const head: i32 = 0  // Stack stores (node, adjacency index) pairs
+  const head: i32 = 0 // Stack stores (node, adjacency index) pairs
   let tail: i32 = 0
 
   // Push starting node onto stack
@@ -54,7 +54,7 @@ export function csDfs(
   // If pinv is not null, map through it
   if (pinv !== null) {
     node = unchecked(pinv[j])
-    if (node < 0) return top  // Node not in pattern
+    if (node < 0) return top // Node not in pattern
   }
 
   // Mark j as visited by negating (or use a separate mark array)
@@ -81,9 +81,9 @@ export function csDfs(
       // Check if neighbor is visited
       if (unchecked(done[neighbor]) === 0) {
         // Push neighbor onto stack
-        unchecked(stackAdj[p] = k)  // Save position for backtracking
-        unchecked(stackNode[tail] = neighbor)
-        unchecked(stackAdj[tail] = unchecked(gPtr[neighbor]))
+        unchecked((stackAdj[p] = k)) // Save position for backtracking
+        unchecked((stackNode[tail] = neighbor))
+        unchecked((stackAdj[tail] = unchecked(gPtr[neighbor])))
         tail++
         found = true
         break
@@ -92,10 +92,10 @@ export function csDfs(
 
     if (!found) {
       // Node is finished - add to output
-      unchecked(done[i] = 1)
-      unchecked(xi[top] = i)
+      unchecked((done[i] = 1))
+      unchecked((xi[top] = i))
       top++
-      tail--  // Pop from stack
+      tail-- // Pop from stack
     }
   }
 
@@ -128,7 +128,7 @@ export function csReach(
 ): i32 {
   // Mark array for visited nodes
   const mark = new Int32Array(n)
-  let top: i32 = n  // Output grows downward from n
+  let top: i32 = n // Output grows downward from n
 
   // Process each nonzero in B[:,k]
   const bStart: i32 = unchecked(bPtr[k])
@@ -188,9 +188,9 @@ function csDfsReach(
     // First time visiting - mark as in progress (partial)
     if (pi < 0) {
       // Node not in L, finish immediately
-      unchecked(mark[i] = 1)
+      unchecked((mark[i] = 1))
       top--
-      unchecked(xi[top] = i)
+      unchecked((xi[top] = i))
       depth--
       continue
     }
@@ -203,7 +203,7 @@ function csDfsReach(
     for (let k: i32 = p; k < pEnd; k++) {
       const child: i32 = unchecked(gIndex[k])
       if (unchecked(mark[child]) === 0) {
-        stackPos[depth] = k + 1  // Save position
+        stackPos[depth] = k + 1 // Save position
         depth++
         stack[depth] = child
         let pc: i32 = child
@@ -218,9 +218,9 @@ function csDfsReach(
 
     if (!foundChild) {
       // All children visited - finish this node
-      unchecked(mark[i] = 1)
+      unchecked((mark[i] = 1))
       top--
-      unchecked(xi[top] = i)
+      unchecked((xi[top] = i))
       depth--
     }
   }
@@ -248,8 +248,8 @@ export function csEtree(
 
   // Initialize
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(parent[i] = -1)
-    unchecked(ancestor[i] = -1)
+    unchecked((parent[i] = -1))
+    unchecked((ancestor[i] = -1))
   }
 
   // Process columns from left to right
@@ -267,11 +267,11 @@ export function csEtree(
       // Path from i to root of subtree, updating parent and ancestor
       while (i !== -1 && i < k) {
         const inext: i32 = unchecked(ancestor[i])
-        unchecked(ancestor[i] = k)  // Path compression
+        unchecked((ancestor[i] = k)) // Path compression
 
         if (inext === -1) {
           // i is a root of its subtree - k becomes its parent
-          unchecked(parent[i] = k)
+          unchecked((parent[i] = k))
           break
         }
         i = inext
@@ -288,11 +288,7 @@ export function csEtree(
  * @param n - Number of nodes
  * @param post - Output: post-order permutation
  */
-export function csPost(
-  parent: Int32Array,
-  n: i32,
-  post: Int32Array
-): void {
+export function csPost(parent: Int32Array, n: i32, post: Int32Array): void {
   // Count children of each node
   const childCount = new Int32Array(n)
   const firstChild = new Int32Array(n)
@@ -300,33 +296,33 @@ export function csPost(
 
   // Initialize
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(firstChild[i] = -1)
-    unchecked(nextSibling[i] = -1)
+    unchecked((firstChild[i] = -1))
+    unchecked((nextSibling[i] = -1))
   }
 
   // Build child list for each node (in reverse order for efficiency)
   for (let i: i32 = n - 1; i >= 0; i--) {
     const p: i32 = unchecked(parent[i])
     if (p >= 0 && p < n) {
-      unchecked(nextSibling[i] = unchecked(firstChild[p]))
-      unchecked(firstChild[p] = i)
+      unchecked((nextSibling[i] = unchecked(firstChild[p])))
+      unchecked((firstChild[p] = i))
       unchecked(childCount[p]++)
     }
   }
 
   // Iterative post-order traversal
   const stack = new Int32Array(n)
-  const stackState = new Int32Array(n)  // 0=first visit, 1=visiting children
+  const stackState = new Int32Array(n) // 0=first visit, 1=visiting children
   let postIdx: i32 = 0
 
   // Find roots (nodes with parent = -1) and process each tree
   for (let root: i32 = 0; root < n; root++) {
-    if (unchecked(parent[root]) !== -1) continue  // Not a root
+    if (unchecked(parent[root]) !== -1) continue // Not a root
 
     // DFS from root
     let depth: i32 = 0
-    unchecked(stack[depth] = root)
-    unchecked(stackState[depth] = 0)
+    unchecked((stack[depth] = root))
+    unchecked((stackState[depth] = 0))
 
     while (depth >= 0) {
       const node: i32 = unchecked(stack[depth])
@@ -334,17 +330,17 @@ export function csPost(
 
       if (state === 0) {
         // First visit - push all children
-        unchecked(stackState[depth] = 1)
+        unchecked((stackState[depth] = 1))
         let child: i32 = unchecked(firstChild[node])
         while (child >= 0) {
           depth++
-          unchecked(stack[depth] = child)
-          unchecked(stackState[depth] = 0)
+          unchecked((stack[depth] = child))
+          unchecked((stackState[depth] = 0))
           child = unchecked(nextSibling[child])
         }
       } else {
         // All children processed - output this node
-        unchecked(post[postIdx] = node)
+        unchecked((post[postIdx] = node))
         postIdx++
         depth--
       }
@@ -388,7 +384,7 @@ export function csPermute(
 
   // Process each column of C
   for (let j: i32 = 0; j < n; j++) {
-    unchecked(cPtr[j] = nnz)
+    unchecked((cPtr[j] = nnz))
 
     // Column j of C comes from column q[j] of A (or j if q is null)
     const jOld: i32 = q !== null ? unchecked(q[j]) : j
@@ -401,13 +397,13 @@ export function csPermute(
       // Row iOld of A becomes row pinv[iOld] of C (or iOld if pinv is null)
       const iNew: i32 = pinv !== null ? unchecked(pinv[iOld]) : iOld
 
-      unchecked(cValues[nnz] = unchecked(aValues[p]))
-      unchecked(cIndex[nnz] = iNew)
+      unchecked((cValues[nnz] = unchecked(aValues[p])))
+      unchecked((cIndex[nnz] = iNew))
       nnz++
     }
   }
 
-  unchecked(cPtr[n] = nnz)
+  unchecked((cPtr[n] = nnz))
   return nnz
 }
 
@@ -442,7 +438,7 @@ export function csSpsolve(
   if (isLower) {
     // Forward substitution (process from top to n-1)
     for (let p: i32 = top; p < n; p++) {
-      const j: i32 = unchecked(xi[p])  // Column to process
+      const j: i32 = unchecked(xi[p]) // Column to process
       let pj: i32 = j
       if (pinv !== null) {
         pj = unchecked(pinv[j])
@@ -465,20 +461,20 @@ export function csSpsolve(
         }
       }
 
-      unchecked(x[j] = x[j] / diagVal)
+      unchecked((x[j] = x[j] / diagVal))
 
       // x[i] -= L[i,j] * x[j] for i > j
       for (let k: i32 = diagStart; k < diagEnd; k++) {
         const i: i32 = unchecked(gIndex[k])
         if (i !== pj) {
-          unchecked(x[i] -= unchecked(gValues[k]) * x[j])
+          unchecked((x[i] -= unchecked(gValues[k]) * x[j]))
         }
       }
     }
   } else {
     // Back substitution (process from n-1 to top)
     for (let p: i32 = n - 1; p >= top; p--) {
-      const j: i32 = unchecked(xi[p])  // Column to process
+      const j: i32 = unchecked(xi[p]) // Column to process
       let pj: i32 = j
       if (pinv !== null) {
         pj = unchecked(pinv[j])
@@ -494,7 +490,7 @@ export function csSpsolve(
       for (let k: i32 = pStart; k < pEnd; k++) {
         const i: i32 = unchecked(gIndex[k])
         if (i !== pj) {
-          unchecked(x[i] -= unchecked(gValues[k]) * x[j])
+          unchecked((x[i] -= unchecked(gValues[k]) * x[j]))
         }
       }
 
@@ -506,7 +502,7 @@ export function csSpsolve(
           break
         }
       }
-      unchecked(x[j] = x[j] / diagVal)
+      unchecked((x[j] = x[j] / diagVal))
     }
   }
 }
@@ -539,13 +535,13 @@ export function csCholSymbolic(
   // Count nonzeros in each column of L
   // Using the column counts algorithm
   const colCount = new Int32Array(n)
-  const first = new Int32Array(n)  // First descendant
-  const level = new Int32Array(n)  // Level in tree
+  const first = new Int32Array(n) // First descendant
+  const level = new Int32Array(n) // Level in tree
 
   // Initialize
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(first[i] = -1)
-    unchecked(colCount[i] = 0)
+    unchecked((first[i] = -1))
+    unchecked((colCount[i] = 0))
   }
 
   // Post-order traversal to compute first descendant and levels
@@ -556,25 +552,25 @@ export function csCholSymbolic(
   for (let i: i32 = 0; i < n; i++) {
     const p: i32 = unchecked(parent[i])
     if (p >= 0) {
-      unchecked(level[i] = unchecked(level[p]) + 1)
+      unchecked((level[i] = unchecked(level[p]) + 1))
     } else {
-      unchecked(level[i] = 0)
+      unchecked((level[i] = 0))
     }
   }
 
   // Column count using row subtree method
   const ancestor = new Int32Array(n)
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(ancestor[i] = i)
+    unchecked((ancestor[i] = i))
   }
 
   let totalNnz: i32 = 0
 
   for (let k: i32 = 0; k < n; k++) {
-    const i: i32 = unchecked(post[k])  // Process in post-order
+    const i: i32 = unchecked(post[k]) // Process in post-order
 
     // Count diagonal
-    unchecked(colCount[i] = 1)
+    unchecked((colCount[i] = 1))
 
     // Process each row with nonzero in column i
     const pStart: i32 = unchecked(aPtr[i])
@@ -582,23 +578,23 @@ export function csCholSymbolic(
 
     for (let p: i32 = pStart; p < pEnd; p++) {
       let j: i32 = unchecked(aIndex[p])
-      if (j >= i) continue  // Only lower triangle
+      if (j >= i) continue // Only lower triangle
 
       // Path from j to current subtree root
       while (j !== -1 && j < i) {
         const jnext: i32 = unchecked(ancestor[j])
-        unchecked(ancestor[j] = i)  // Path compression
+        unchecked((ancestor[j] = i)) // Path compression
 
         if (jnext === j) {
           // j is root of its subtree
-          unchecked(colCount[i] += unchecked(level[i]) - unchecked(level[j]))
+          unchecked((colCount[i] += unchecked(level[i]) - unchecked(level[j])))
           break
         }
         j = jnext
       }
     }
 
-    unchecked(lnz[i] = unchecked(colCount[i]))
+    unchecked((lnz[i] = unchecked(colCount[i])))
     totalNnz += unchecked(colCount[i])
   }
 
@@ -630,13 +626,13 @@ export function csChol(
   lPtr: Int32Array
 ): i32 {
   // Workspace
-  const x = new Float64Array(n)  // Dense accumulator
-  const c = new Int32Array(n)    // Column pointers into L
-  const s = new Int32Array(n)    // Stack for nonzero pattern
+  const x = new Float64Array(n) // Dense accumulator
+  const c = new Int32Array(n) // Column pointers into L
+  const s = new Int32Array(n) // Stack for nonzero pattern
 
   // Initialize column pointers in L
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(c[i] = unchecked(lPtr[i]))
+    unchecked((c[i] = unchecked(lPtr[i])))
   }
 
   // Process each column k
@@ -649,29 +645,30 @@ export function csChol(
     const aEnd: i32 = unchecked(aPtr[k + 1])
     for (let p: i32 = aStart; p < aEnd; p++) {
       const i: i32 = unchecked(aIndex[p])
-      if (i >= k) {  // Lower triangle only
-        unchecked(x[i] = unchecked(aValues[p]))
+      if (i >= k) {
+        // Lower triangle only
+        unchecked((x[i] = unchecked(aValues[p])))
       }
     }
 
     // Compute L[:,k]
-    let d: f64 = unchecked(x[k])  // Diagonal
-    unchecked(x[k] = 0.0)
+    let d: f64 = unchecked(x[k]) // Diagonal
+    unchecked((x[k] = 0.0))
 
     // Process nonzeros in L[:,k] in order
     for (let p: i32 = top; p < n; p++) {
-      const i: i32 = unchecked(s[p])  // L[i,k] is nonzero
+      const i: i32 = unchecked(s[p]) // L[i,k] is nonzero
 
       // Get L[i,k] = x[i] / L[k,k] (but we need L[k,k] first)
       const lki: f64 = unchecked(x[i]) / unchecked(lValues[unchecked(lPtr[i])])
-      unchecked(x[i] = 0.0)
+      unchecked((x[i] = 0.0))
 
       // Subtract L[i,k] * L[j,k] from x[j] for j > i
-      const lStart: i32 = unchecked(lPtr[i]) + 1  // Skip diagonal
+      const lStart: i32 = unchecked(lPtr[i]) + 1 // Skip diagonal
       const lEnd: i32 = unchecked(c[i])
       for (let q: i32 = lStart; q < lEnd; q++) {
         const j: i32 = unchecked(lIndex[q])
-        unchecked(x[j] -= unchecked(lValues[q]) * lki)
+        unchecked((x[j] -= unchecked(lValues[q]) * lki))
       }
 
       // Update diagonal
@@ -679,21 +676,21 @@ export function csChol(
 
       // Store L[k,i]
       const cp: i32 = unchecked(c[i])
-      unchecked(lIndex[cp] = k)
-      unchecked(lValues[cp] = lki)
-      unchecked(c[i] = cp + 1)
+      unchecked((lIndex[cp] = k))
+      unchecked((lValues[cp] = lki))
+      unchecked((c[i] = cp + 1))
     }
 
     // Check positive definite
     if (d <= 0.0) {
-      return -1  // Not positive definite
+      return -1 // Not positive definite
     }
 
     // Store diagonal L[k,k] = sqrt(d)
     const ck: i32 = unchecked(c[k])
-    unchecked(lIndex[ck] = k)
-    unchecked(lValues[ck] = Math.sqrt(d))
-    unchecked(c[k] = ck + 1)
+    unchecked((lIndex[ck] = k))
+    unchecked((lValues[ck] = Math.sqrt(d)))
+    unchecked((c[k] = ck + 1))
   }
 
   return 0
@@ -715,7 +712,7 @@ function csEreach(
   let top: i32 = n
 
   // Mark k as visited
-  const mark: i32 = -(k + 2)  // Use negative values as marks
+  const mark: i32 = -(k + 2) // Use negative values as marks
 
   const pStart: i32 = unchecked(aPtr[k])
   const pEnd: i32 = unchecked(aPtr[k + 1])
@@ -723,15 +720,15 @@ function csEreach(
   // Process each nonzero in A[:,k]
   for (let p: i32 = pStart; p < pEnd; p++) {
     let i: i32 = unchecked(aIndex[p])
-    if (i > k) continue  // Only upper triangle
+    if (i > k) continue // Only upper triangle
 
     // Path from i to k
     let len: i32 = 0
     while (i !== -1 && i < k) {
-      if (unchecked(s[i]) === mark) break  // Already visited
-      unchecked(s[n - 1 - len] = i)  // Push to temp stack
+      if (unchecked(s[i]) === mark) break // Already visited
+      unchecked((s[n - 1 - len] = i)) // Push to temp stack
       len++
-      unchecked(s[i] = mark)  // Mark visited
+      unchecked((s[i] = mark)) // Mark visited
       i = unchecked(parent[i])
     }
 
@@ -739,7 +736,7 @@ function csEreach(
     while (len > 0) {
       len--
       top--
-      unchecked(s[top] = unchecked(s[n - 1 - len]))
+      unchecked((s[top] = unchecked(s[n - 1 - len])))
     }
   }
 
@@ -778,12 +775,12 @@ export function csLu(
   pinv: Int32Array
 ): i32 {
   // Workspace
-  const x = new Float64Array(n)      // Dense accumulator
-  const xi = new Int32Array(2 * n)   // Nonzero pattern
+  const x = new Float64Array(n) // Dense accumulator
+  const xi = new Int32Array(2 * n) // Nonzero pattern
 
   // Initialize pinv
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(pinv[i] = -1)
+    unchecked((pinv[i] = -1))
   }
 
   let lnz: i32 = 0
@@ -792,21 +789,21 @@ export function csLu(
   // Process each column k
   for (let k: i32 = 0; k < n; k++) {
     // Set column pointers
-    unchecked(lPtr[k] = lnz)
-    unchecked(uPtr[k] = unz)
+    unchecked((lPtr[k] = lnz))
+    unchecked((uPtr[k] = unz))
 
     // Compute x = L\A(:,k) using symbolic pattern
     let top: i32 = csSpsolvePattern(aIndex, aPtr, lIndex, lPtr, k, xi, pinv, n)
 
     // Initialize x with A[:,k]
     for (let p: i32 = top; p < n; p++) {
-      unchecked(x[unchecked(xi[p])] = 0.0)
+      unchecked((x[unchecked(xi[p])] = 0.0))
     }
     const aStart: i32 = unchecked(aPtr[k])
     const aEnd: i32 = unchecked(aPtr[k + 1])
     for (let p: i32 = aStart; p < aEnd; p++) {
       const i: i32 = unchecked(aIndex[p])
-      unchecked(x[i] = unchecked(aValues[p]))
+      unchecked((x[i] = unchecked(aValues[p])))
     }
 
     // Sparse triangular solve L\A[:,k]
@@ -814,21 +811,21 @@ export function csLu(
       const j: i32 = unchecked(xi[p])
       const jnew: i32 = unchecked(pinv[j])
 
-      if (jnew < 0) continue  // Column j of L not yet computed
+      if (jnew < 0) continue // Column j of L not yet computed
 
       // x[j] = x[j] / L[j,j]
       const ljj: f64 = unchecked(lValues[unchecked(lPtr[jnew])])
       if (ljj === 0.0) continue
 
       const xj: f64 = unchecked(x[j]) / ljj
-      unchecked(x[j] = xj)
+      unchecked((x[j] = xj))
 
       // Subtract L[i,j] * x[j] from x[i]
       const lStart: i32 = unchecked(lPtr[jnew]) + 1
       const lEnd: i32 = unchecked(lPtr[jnew + 1])
       for (let q: i32 = lStart; q < lEnd; q++) {
         const i: i32 = unchecked(lIndex[q])
-        unchecked(x[i] -= unchecked(lValues[q]) * xj)
+        unchecked((x[i] -= unchecked(lValues[q]) * xj))
       }
     }
 
@@ -838,7 +835,8 @@ export function csLu(
 
     for (let p: i32 = top; p < n; p++) {
       const i: i32 = unchecked(xi[p])
-      if (unchecked(pinv[i]) < 0) {  // Row not yet used as pivot
+      if (unchecked(pinv[i]) < 0) {
+        // Row not yet used as pivot
         const t: f64 = Math.abs(unchecked(x[i]))
         if (t > pivotVal) {
           pivotVal = t
@@ -860,50 +858,50 @@ export function csLu(
       const i: i32 = unchecked(xi[p])
       if (unchecked(pinv[i]) < 0) {
         if (Math.abs(unchecked(x[i])) >= thresh && i < ipiv) {
-          ipiv = i  // Prefer smaller row index
+          ipiv = i // Prefer smaller row index
         }
       }
     }
 
     // Record pivot
-    unchecked(pinv[ipiv] = k)
+    unchecked((pinv[ipiv] = k))
 
     // Store U[:,k] (rows with pinv[i] >= 0 or i == pivot)
     for (let p: i32 = top; p < n; p++) {
       const i: i32 = unchecked(xi[p])
       if (unchecked(pinv[i]) < k || i === ipiv) {
         // This is in U
-        unchecked(uIndex[unz] = i)
-        unchecked(uValues[unz] = unchecked(x[i]))
+        unchecked((uIndex[unz] = i))
+        unchecked((uValues[unz] = unchecked(x[i])))
         unz++
-        unchecked(x[i] = 0.0)
+        unchecked((x[i] = 0.0))
       }
     }
 
     // Store L[:,k] (rows with pinv[i] < 0)
-    const ukk: f64 = unchecked(x[ipiv])  // Diagonal of U
-    unchecked(x[ipiv] = 0.0)
+    const ukk: f64 = unchecked(x[ipiv]) // Diagonal of U
+    unchecked((x[ipiv] = 0.0))
 
     // Store diagonal of L as 1
-    unchecked(lIndex[lnz] = ipiv)
-    unchecked(lValues[lnz] = 1.0)
+    unchecked((lIndex[lnz] = ipiv))
+    unchecked((lValues[lnz] = 1.0))
     lnz++
 
     // Store off-diagonal of L
     for (let p: i32 = top; p < n; p++) {
       const i: i32 = unchecked(xi[p])
       if (unchecked(pinv[i]) < 0 && i !== ipiv) {
-        unchecked(lIndex[lnz] = i)
-        unchecked(lValues[lnz] = unchecked(x[i]) / ukk)
+        unchecked((lIndex[lnz] = i))
+        unchecked((lValues[lnz] = unchecked(x[i]) / ukk))
         lnz++
-        unchecked(x[i] = 0.0)
+        unchecked((x[i] = 0.0))
       }
     }
   }
 
   // Finalize
-  unchecked(lPtr[n] = lnz)
-  unchecked(uPtr[n] = unz)
+  unchecked((lPtr[n] = lnz))
+  unchecked((uPtr[n] = unz))
 
   return 0
 }
@@ -939,9 +937,9 @@ function csSpsolvePattern(
     const stack = new Int32Array(n)
     const stackPos = new Int32Array(n)
 
-    unchecked(stack[depth] = i)
+    unchecked((stack[depth] = i))
     let pi: i32 = unchecked(pinv[i])
-    unchecked(stackPos[depth] = pi >= 0 ? unchecked(lPtr[pi]) : 0)
+    unchecked((stackPos[depth] = pi >= 0 ? unchecked(lPtr[pi]) : 0))
 
     while (depth >= 0) {
       const j: i32 = unchecked(stack[depth])
@@ -953,9 +951,9 @@ function csSpsolvePattern(
       }
 
       if (pj < 0) {
-        unchecked(mark[j] = currentMark)
+        unchecked((mark[j] = currentMark))
         top--
-        unchecked(xi[top] = j)
+        unchecked((xi[top] = j))
         depth--
         continue
       }
@@ -967,20 +965,20 @@ function csSpsolvePattern(
       for (let q: i32 = pos; q < pEnd; q++) {
         const child: i32 = unchecked(lIndex[q])
         if (unchecked(mark[child]) !== currentMark) {
-          unchecked(stackPos[depth] = q + 1)
+          unchecked((stackPos[depth] = q + 1))
           depth++
-          unchecked(stack[depth] = child)
+          unchecked((stack[depth] = child))
           const pc: i32 = unchecked(pinv[child])
-          unchecked(stackPos[depth] = pc >= 0 ? unchecked(lPtr[pc]) : 0)
+          unchecked((stackPos[depth] = pc >= 0 ? unchecked(lPtr[pc]) : 0))
           foundChild = true
           break
         }
       }
 
       if (!foundChild) {
-        unchecked(mark[j] = currentMark)
+        unchecked((mark[j] = currentMark))
         top--
-        unchecked(xi[top] = j)
+        unchecked((xi[top] = j))
         depth--
       }
     }
@@ -1030,12 +1028,12 @@ export function csQr(
   // For simplicity, we work with a dense representation of each column
 
   for (let k: i32 = 0; k < n; k++) {
-    unchecked(rPtr[k] = rnz)
-    unchecked(vPtr[k] = vnz)
+    unchecked((rPtr[k] = rnz))
+    unchecked((vPtr[k] = vnz))
 
     // Clear x
     for (let i: i32 = 0; i < m; i++) {
-      unchecked(x[i] = 0.0)
+      unchecked((x[i] = 0.0))
     }
 
     // Load A[:,k] into x
@@ -1043,7 +1041,7 @@ export function csQr(
     const aEnd: i32 = unchecked(aPtr[k + 1])
     for (let p: i32 = aStart; p < aEnd; p++) {
       const i: i32 = unchecked(aIndex[p])
-      unchecked(x[i] = unchecked(aValues[p]))
+      unchecked((x[i] = unchecked(aValues[p])))
     }
 
     // Apply previous Householder transformations
@@ -1063,7 +1061,7 @@ export function csQr(
       // x = x - beta * v * (v^T * x)
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = unchecked(vIndex[p])
-        unchecked(x[i] -= betaJ * unchecked(vValues[p]) * vTx)
+        unchecked((x[i] -= betaJ * unchecked(vValues[p]) * vTx))
       }
     }
 
@@ -1077,7 +1075,7 @@ export function csQr(
 
     if (sigma === 0.0) {
       // Zero column
-      unchecked(beta[k] = 0.0)
+      unchecked((beta[k] = 0.0))
     } else {
       // v = x[k:m], v[0] = x[k] + sign(x[k])*sigma
       const xk: f64 = unchecked(x[k])
@@ -1087,26 +1085,26 @@ export function csQr(
       // Store R[0:k, k] (above diagonal)
       for (let i: i32 = 0; i < k; i++) {
         if (unchecked(x[i]) !== 0.0) {
-          unchecked(rIndex[rnz] = i)
-          unchecked(rValues[rnz] = unchecked(x[i]))
+          unchecked((rIndex[rnz] = i))
+          unchecked((rValues[rnz] = unchecked(x[i])))
           rnz++
         }
       }
 
       // Store R[k,k] = -sign(x[k]) * sigma
-      unchecked(rIndex[rnz] = k)
-      unchecked(rValues[rnz] = -s * sigma)
+      unchecked((rIndex[rnz] = k))
+      unchecked((rValues[rnz] = -s * sigma))
       rnz++
 
       // Store Householder vector (normalized so first element is 1)
-      unchecked(vIndex[vnz] = k)
-      unchecked(vValues[vnz] = 1.0)
+      unchecked((vIndex[vnz] = k))
+      unchecked((vValues[vnz] = 1.0))
       vnz++
 
       for (let i: i32 = k + 1; i < m; i++) {
         if (unchecked(x[i]) !== 0.0) {
-          unchecked(vIndex[vnz] = i)
-          unchecked(vValues[vnz] = unchecked(x[i]) / v0)
+          unchecked((vIndex[vnz] = i))
+          unchecked((vValues[vnz] = unchecked(x[i]) / v0))
           vnz++
         }
       }
@@ -1117,13 +1115,13 @@ export function csQr(
         const vi: f64 = unchecked(x[i])
         vTv += vi * vi
       }
-      unchecked(beta[k] = 2.0 * v0 * v0 / vTv)
+      unchecked((beta[k] = (2.0 * v0 * v0) / vTv))
     }
   }
 
   // Finalize
-  unchecked(rPtr[n] = rnz)
-  unchecked(vPtr[n] = vnz)
+  unchecked((rPtr[n] = rnz))
+  unchecked((vPtr[n] = vnz))
 
   return 0
 }
@@ -1155,7 +1153,7 @@ export function csQmult(
 ): void {
   // Copy x to y
   for (let i: i32 = 0; i < m; i++) {
-    unchecked(y[i] = unchecked(x[i]))
+    unchecked((y[i] = unchecked(x[i])))
   }
 
   // Apply Householder transformations
@@ -1180,7 +1178,7 @@ export function csQmult(
 
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = unchecked(vIndex[p])
-        unchecked(y[i] -= betaK * unchecked(vValues[p]) * vTy)
+        unchecked((y[i] -= betaK * unchecked(vValues[p]) * vTy))
       }
     }
   } else {
@@ -1200,7 +1198,7 @@ export function csQmult(
 
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = unchecked(vIndex[p])
-        unchecked(y[i] -= betaK * unchecked(vValues[p]) * vTy)
+        unchecked((y[i] -= betaK * unchecked(vValues[p]) * vTy))
       }
     }
   }
@@ -1230,12 +1228,12 @@ export function csAmd(
 ): void {
   // Compute degree of each node
   const degree = new Int32Array(n)
-  const eliminated = new Int32Array(n)  // 1 if node is eliminated
+  const eliminated = new Int32Array(n) // 1 if node is eliminated
 
   // Initial degrees (number of neighbors)
   for (let j: i32 = 0; j < n; j++) {
     const count: i32 = unchecked(aPtr[j + 1]) - unchecked(aPtr[j])
-    unchecked(degree[j] = count)
+    unchecked((degree[j] = count))
   }
 
   // Minimum degree ordering
@@ -1257,8 +1255,8 @@ export function csAmd(
     }
 
     // Eliminate minNode
-    unchecked(perm[k] = minNode)
-    unchecked(eliminated[minNode] = 1)
+    unchecked((perm[k] = minNode))
+    unchecked((eliminated[minNode] = 1))
 
     // Update degrees of neighbors
     // In a proper AMD, we would compute the element (quotient graph)
@@ -1269,9 +1267,9 @@ export function csAmd(
     for (let p: i32 = pStart; p < pEnd; p++) {
       const neighbor: i32 = unchecked(aIndex[p])
       if (unchecked(eliminated[neighbor]) === 0) {
-        unchecked(degree[neighbor] = unchecked(degree[neighbor]) - 1)
+        unchecked((degree[neighbor] = unchecked(degree[neighbor]) - 1))
         if (unchecked(degree[neighbor]) < 0) {
-          unchecked(degree[neighbor] = 0)
+          unchecked((degree[neighbor] = 0))
         }
       }
     }
@@ -1313,7 +1311,7 @@ export function csRcm(
 
   // Compute degrees
   for (let j: i32 = 0; j < n; j++) {
-    unchecked(degree[j] = unchecked(aPtr[j + 1]) - unchecked(aPtr[j]))
+    unchecked((degree[j] = unchecked(aPtr[j + 1]) - unchecked(aPtr[j])))
   }
 
   let head: i32 = 0
@@ -1335,14 +1333,14 @@ export function csRcm(
     }
 
     // BFS from cStart
-    unchecked(queue[tail] = cStart)
+    unchecked((queue[tail] = cStart))
     tail++
-    unchecked(visited[cStart] = 1)
+    unchecked((visited[cStart] = 1))
 
     while (head < tail) {
       const node: i32 = unchecked(queue[head])
       head++
-      unchecked(perm[permIdx] = node)
+      unchecked((perm[permIdx] = node))
       permIdx++
 
       // Get neighbors and sort by degree
@@ -1355,9 +1353,9 @@ export function csRcm(
       for (let p: i32 = pStart; p < pEnd; p++) {
         const neighbor: i32 = unchecked(aIndex[p])
         if (unchecked(visited[neighbor]) === 0) {
-          unchecked(neighbors[numNeighbors] = neighbor)
+          unchecked((neighbors[numNeighbors] = neighbor))
           numNeighbors++
-          unchecked(visited[neighbor] = 1)
+          unchecked((visited[neighbor] = 1))
         }
       }
 
@@ -1368,15 +1366,15 @@ export function csRcm(
         let j: i32 = i - 1
 
         while (j >= 0 && unchecked(degree[unchecked(neighbors[j])]) > keyDeg) {
-          unchecked(neighbors[j + 1] = unchecked(neighbors[j]))
+          unchecked((neighbors[j + 1] = unchecked(neighbors[j])))
           j--
         }
-        unchecked(neighbors[j + 1] = key)
+        unchecked((neighbors[j + 1] = key))
       }
 
       // Add sorted neighbors to queue
       for (let i: i32 = 0; i < numNeighbors; i++) {
-        unchecked(queue[tail] = unchecked(neighbors[i]))
+        unchecked((queue[tail] = unchecked(neighbors[i])))
         tail++
       }
     }
@@ -1385,8 +1383,8 @@ export function csRcm(
   // Reverse the permutation (Cuthill-McKee -> Reverse Cuthill-McKee)
   for (let i: i32 = 0; i < n / 2; i++) {
     const temp: i32 = unchecked(perm[i])
-    unchecked(perm[i] = unchecked(perm[n - 1 - i]))
-    unchecked(perm[n - 1 - i] = temp)
+    unchecked((perm[i] = unchecked(perm[n - 1 - i])))
+    unchecked((perm[n - 1 - i] = temp))
   }
 }
 
@@ -1397,13 +1395,9 @@ export function csRcm(
  * @param n - Length
  * @param pinv - Output inverse permutation
  */
-export function csInvPerm(
-  perm: Int32Array,
-  n: i32,
-  pinv: Int32Array
-): void {
+export function csInvPerm(perm: Int32Array, n: i32, pinv: Int32Array): void {
   for (let i: i32 = 0; i < n; i++) {
-    unchecked(pinv[unchecked(perm[i])] = i)
+    unchecked((pinv[unchecked(perm[i])] = i))
   }
 }
 
@@ -1447,11 +1441,11 @@ export function csTranspose(
   // Compute column pointers of B
   let sum: i32 = 0
   for (let i: i32 = 0; i < m; i++) {
-    unchecked(bPtr[i] = sum)
+    unchecked((bPtr[i] = sum))
     sum += unchecked(count[i])
-    unchecked(count[i] = unchecked(bPtr[i]))  // Reset to use as cursor
+    unchecked((count[i] = unchecked(bPtr[i]))) // Reset to use as cursor
   }
-  unchecked(bPtr[m] = sum)
+  unchecked((bPtr[m] = sum))
 
   // Fill B
   for (let j: i32 = 0; j < n; j++) {
@@ -1461,9 +1455,9 @@ export function csTranspose(
     for (let p: i32 = pStart; p < pEnd; p++) {
       const i: i32 = unchecked(aIndex[p])
       const q: i32 = unchecked(count[i])
-      unchecked(bIndex[q] = j)
-      unchecked(bValues[q] = unchecked(aValues[p]))
-      unchecked(count[i] = q + 1)
+      unchecked((bIndex[q] = j))
+      unchecked((bValues[q] = unchecked(aValues[p])))
+      unchecked((count[i] = q + 1))
     }
   }
 
@@ -1503,13 +1497,13 @@ export function csMult(
 ): i32 {
   // Dense accumulator
   const x = new Float64Array(aRows)
-  const w = new Int32Array(aRows)  // Mark array
+  const w = new Int32Array(aRows) // Mark array
 
   let cnz: i32 = 0
 
   // Process each column of B
   for (let j: i32 = 0; j < bCols; j++) {
-    unchecked(cPtr[j] = cnz)
+    unchecked((cPtr[j] = cnz))
     const mark: i32 = j + 1
 
     // C[:,j] = A * B[:,j]
@@ -1518,7 +1512,7 @@ export function csMult(
 
     // Scatter B[:,j] into x, multiplied by A columns
     for (let p: i32 = bStart; p < bEnd; p++) {
-      const k: i32 = unchecked(bIndex[p])  // B[k,j]
+      const k: i32 = unchecked(bIndex[p]) // B[k,j]
       const bkj: f64 = unchecked(bValues[p])
 
       // Add bkj * A[:,k] to x
@@ -1529,13 +1523,13 @@ export function csMult(
         const i: i32 = unchecked(aIndex[q])
         if (unchecked(w[i]) < mark) {
           // First contribution to x[i]
-          unchecked(w[i] = mark)
-          unchecked(cIndex[cnz] = i)
+          unchecked((w[i] = mark))
+          unchecked((cIndex[cnz] = i))
           cnz++
-          unchecked(x[i] = unchecked(aValues[q]) * bkj)
+          unchecked((x[i] = unchecked(aValues[q]) * bkj))
         } else {
           // Add to existing
-          unchecked(x[i] += unchecked(aValues[q]) * bkj)
+          unchecked((x[i] += unchecked(aValues[q]) * bkj))
         }
       }
     }
@@ -1543,11 +1537,11 @@ export function csMult(
     // Gather x into C[:,j]
     for (let p: i32 = unchecked(cPtr[j]); p < cnz; p++) {
       const i: i32 = unchecked(cIndex[p])
-      unchecked(cValues[p] = unchecked(x[i]))
+      unchecked((cValues[p] = unchecked(x[i])))
     }
   }
 
-  unchecked(cPtr[bCols] = cnz)
+  unchecked((cPtr[bCols] = cnz))
   return cnz
 }
 

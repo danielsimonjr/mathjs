@@ -8,7 +8,15 @@ const dependencies = ['typed', 'config', '?bignumber']
 export const createUnaryMinus = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, bignumber }: { typed: any; config: any; bignumber?: any }) => {
+  ({
+    typed,
+    config,
+    bignumber
+  }: {
+    typed: any
+    config: any
+    bignumber?: any
+  }) => {
     /**
      * Inverse the sign of a value, apply a unary minus operation.
      *

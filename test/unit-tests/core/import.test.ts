@@ -427,10 +427,7 @@ describe('import', function () {
   })
 
   it('should import an Array', function () {
-    math.import([
-      { customValue: 100 },
-      { customFunc: (x) => x * 2 }
-    ])
+    math.import([{ customValue: 100 }, { customFunc: (x) => x * 2 }])
     assert.strictEqual(math.customValue, 100)
     assert.strictEqual(math.customFunc(5), 10)
   })

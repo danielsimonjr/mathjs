@@ -29,10 +29,7 @@
       "status": "completed",
       "wasmPriority": "Very High",
       "complexity": "Low",
-      "files": [
-        "src/plain/number/constants.js",
-        "src/wasm/plain/constants.ts"
-      ]
+      "files": ["src/plain/number/constants.js", "src/wasm/plain/constants.ts"]
     },
     {
       "id": "6.1.3",
@@ -42,10 +39,7 @@
       "status": "completed",
       "wasmPriority": "Very High",
       "complexity": "Low",
-      "files": [
-        "src/plain/number/bitwise.js",
-        "src/wasm/plain/bitwise.ts"
-      ]
+      "files": ["src/plain/number/bitwise.js", "src/wasm/plain/bitwise.ts"]
     },
     {
       "id": "6.1.4",
@@ -68,10 +62,7 @@
       "status": "completed",
       "wasmPriority": "Very High",
       "complexity": "Medium",
-      "files": [
-        "src/plain/number/*.js",
-        "src/wasm/plain/*.ts"
-      ]
+      "files": ["src/plain/number/*.js", "src/wasm/plain/*.ts"]
     }
   ],
   "acceptanceCriteria": [

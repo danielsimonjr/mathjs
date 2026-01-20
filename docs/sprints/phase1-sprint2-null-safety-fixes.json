@@ -31,9 +31,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS18047",
       "errorCount": 6,
-      "files": [
-        "src/expression/node/ConditionalNode.ts"
-      ]
+      "files": ["src/expression/node/ConditionalNode.ts"]
     },
     {
       "id": "1.2.3",
@@ -44,9 +42,7 @@
       "completedDate": "2026-01-18",
       "errorCode": "TS18047",
       "errorCount": 4,
-      "files": [
-        "src/expression/node/OperatorNode.ts"
-      ]
+      "files": ["src/expression/node/OperatorNode.ts"]
     },
     {
       "id": "1.2.4",
@@ -83,8 +79,6 @@
     "npm run compile:ts shows reduced error count",
     "Null checks use consistent pattern throughout codebase"
   ],
-  "dependencies": [
-    "phase1-sprint1"
-  ],
+  "dependencies": ["phase1-sprint1"],
   "blockedBy": []
 }

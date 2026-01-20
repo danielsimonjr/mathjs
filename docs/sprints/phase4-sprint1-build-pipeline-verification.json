@@ -15,10 +15,7 @@
       "estimatedHours": 0.25,
       "status": "completed",
       "completedDate": "2026-01-18",
-      "commands": [
-        "npm run build:clean",
-        "npm run compile:ts"
-      ],
+      "commands": ["npm run build:clean", "npm run compile:ts"],
       "files": []
     },
     {
@@ -28,15 +25,8 @@
       "estimatedHours": 0.25,
       "status": "completed",
       "completedDate": "2026-01-18",
-      "commands": [
-        "npm run compile",
-        "ls -la lib/esm/",
-        "ls -la lib/cjs/"
-      ],
-      "files": [
-        "lib/esm/",
-        "lib/cjs/"
-      ]
+      "commands": ["npm run compile", "ls -la lib/esm/", "ls -la lib/cjs/"],
+      "files": ["lib/esm/", "lib/cjs/"]
     },
     {
       "id": "4.1.3",
@@ -45,10 +35,7 @@
       "estimatedHours": 0.25,
       "status": "completed",
       "completedDate": "2026-01-18",
-      "commands": [
-        "npm run build:wasm",
-        "ls -la lib/wasm/"
-      ],
+      "commands": ["npm run build:wasm", "ls -la lib/wasm/"],
       "files": [
         "lib/wasm/index.wasm",
         "lib/wasm/index.wat",
@@ -68,10 +55,7 @@
         "ls -la lib/browser/",
         "ls -la lib/typescript/"
       ],
-      "files": [
-        "lib/browser/",
-        "lib/typescript/"
-      ]
+      "files": ["lib/browser/", "lib/typescript/"]
     },
     {
       "id": "4.1.5",
@@ -80,10 +64,7 @@
       "estimatedHours": 0.5,
       "status": "completed",
       "completedDate": "2026-01-18",
-      "files": [
-        "tsconfig.build.json",
-        "gulpfile.js"
-      ]
+      "files": ["tsconfig.build.json", "gulpfile.js"]
     }
   ],
   "acceptanceCriteria": [
@@ -95,8 +76,6 @@
     "lib/wasm/ directory contains WASM files",
     "Package exports work correctly"
   ],
-  "dependencies": [
-    "phase3-sprint2"
-  ],
+  "dependencies": ["phase3-sprint2"],
   "blockedBy": []
 }

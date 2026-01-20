@@ -87,8 +87,6 @@
     "All expression node tests pass",
     "TypeScript compilation succeeds"
   ],
-  "dependencies": [
-    "phase7-sprint2"
-  ],
+  "dependencies": ["phase7-sprint2"],
   "blockedBy": []
 }

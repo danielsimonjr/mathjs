@@ -34,7 +34,7 @@ export const createProd = /* #__PURE__ */ factory(name, dependencies, ({ typed, 
    */
   return typed(name, {
     // prod(string) - single string input
-    'string': function (x) {
+    string: function (x) {
       return parseNumberWithConfig(x)
     },
 

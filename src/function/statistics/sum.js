@@ -33,7 +33,7 @@ export const createSum = /* #__PURE__ */ factory(name, dependencies, ({ typed, c
    */
   return typed(name, {
     // sum(string) - single string input
-    'string': function (x) {
+    string: function (x) {
       return parseNumberWithConfig(x)
     },
 

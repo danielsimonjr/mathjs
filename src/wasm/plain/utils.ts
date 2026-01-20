@@ -16,7 +16,7 @@
  * @returns 1 if x is an integer, 0 otherwise
  */
 export function isIntegerNumber(x: f64): f64 {
-  return (x === Math.floor(x) && isFinite(x)) ? 1 : 0
+  return x === Math.floor(x) && isFinite(x) ? 1 : 0
 }
 
 /**

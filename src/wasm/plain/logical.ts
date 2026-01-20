@@ -26,7 +26,7 @@ export function notNumber(x: f64): f64 {
  * @returns 1 if x or y is truthy, 0 otherwise
  */
 export function orNumber(x: f64, y: f64): f64 {
-  return (x || y) ? 1 : 0
+  return x || y ? 1 : 0
 }
 
 /**
@@ -36,7 +36,7 @@ export function orNumber(x: f64, y: f64): f64 {
  * @returns 1 if exactly one of x or y is truthy, 0 otherwise
  */
 export function xorNumber(x: f64, y: f64): f64 {
-  return (!!x !== !!y) ? 1 : 0
+  return !!x !== !!y ? 1 : 0
 }
 
 /**
@@ -46,5 +46,5 @@ export function xorNumber(x: f64, y: f64): f64 {
  * @returns 1 if both x and y are truthy, 0 otherwise
  */
 export function andNumber(x: f64, y: f64): f64 {
-  return (x && y) ? 1 : 0
+  return x && y ? 1 : 0
 }

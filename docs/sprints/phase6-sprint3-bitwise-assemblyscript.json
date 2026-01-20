@@ -11,66 +11,44 @@
     {
       "id": "6.3.1",
       "category": "AssemblyScript Conversion",
-      "description": "Convert src/function/bitwise/bitAnd.js to src/wasm/bitwise/bitAnd.ts - Bitwise AND operation",
-      "estimatedHours": 0.25,
+      "description": "Implement all bitwise operations in src/wasm/bitwise/operations.ts - Consolidated bitwise functions",
+      "estimatedHours": 2.5,
       "status": "completed",
       "wasmPriority": "High",
       "complexity": "Low",
-      "files": [
-        "src/function/bitwise/bitAnd.js",
-        "src/wasm/bitwise/bitAnd.ts"
+      "files": ["src/wasm/bitwise/operations.ts"],
+      "functions": [
+        "bitAnd",
+        "bitOr",
+        "bitXor",
+        "bitNot",
+        "leftShift",
+        "rightArithShift",
+        "rightLogShift",
+        "popcount",
+        "ctz",
+        "clz",
+        "rotl",
+        "rotr"
       ]
     },
     {
       "id": "6.3.2",
       "category": "AssemblyScript Conversion",
-      "description": "Convert src/function/bitwise/bitOr.js to src/wasm/bitwise/bitOr.ts - Bitwise OR operation",
-      "estimatedHours": 0.25,
+      "description": "Implement plain number bitwise operations in src/wasm/plain/bitwise.ts",
+      "estimatedHours": 0.5,
       "status": "completed",
       "wasmPriority": "High",
       "complexity": "Low",
-      "files": [
-        "src/function/bitwise/bitOr.js",
-        "src/wasm/bitwise/bitOr.ts"
-      ]
-    },
-    {
-      "id": "6.3.3",
-      "category": "AssemblyScript Conversion",
-      "description": "Convert src/function/bitwise/bitXor.js to src/wasm/bitwise/bitXor.ts - Bitwise XOR operation",
-      "estimatedHours": 0.25,
-      "status": "completed",
-      "wasmPriority": "High",
-      "complexity": "Low",
-      "files": [
-        "src/function/bitwise/bitXor.js",
-        "src/wasm/bitwise/bitXor.ts"
-      ]
-    },
-    {
-      "id": "6.3.4",
-      "category": "AssemblyScript Conversion",
-      "description": "Convert src/function/bitwise/bitNot.js to src/wasm/bitwise/bitNot.ts - Bitwise NOT operation",
-      "estimatedHours": 0.25,
-      "status": "completed",
-      "wasmPriority": "High",
-      "complexity": "Low",
-      "files": [
-        "src/function/bitwise/bitNot.js",
-        "src/wasm/bitwise/bitNot.ts"
-      ]
-    },
-    {
-      "id": "6.3.5",
-      "category": "AssemblyScript Conversion",
-      "description": "Convert remaining bitwise operations (leftShift, rightArithShift, rightLogShift, rotateLeft, rotateRight) to AssemblyScript",
-      "estimatedHours": 1.5,
-      "status": "completed",
-      "wasmPriority": "High",
-      "complexity": "Low",
-      "files": [
-        "src/function/bitwise/*.js",
-        "src/wasm/bitwise/*.ts"
+      "files": ["src/wasm/plain/bitwise.ts"],
+      "functions": [
+        "bitAndNumber",
+        "bitOrNumber",
+        "bitXorNumber",
+        "bitNotNumber",
+        "leftShiftNumber",
+        "rightArithShiftNumber",
+        "rightLogShiftNumber"
       ]
     }
   ],
@@ -82,8 +60,6 @@
     "Unit tests pass for all bitwise functions",
     "BigNumber and Matrix support via TypeScript wrappers"
   ],
-  "dependencies": [
-    "phase6-sprint2"
-  ],
+  "dependencies": ["phase6-sprint2"],
   "blockedBy": []
 }

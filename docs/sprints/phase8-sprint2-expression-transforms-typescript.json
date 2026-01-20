@@ -75,8 +75,6 @@
     "All expression transform tests pass",
     "TypeScript compilation succeeds"
   ],
-  "dependencies": [
-    "phase8-sprint1"
-  ],
+  "dependencies": ["phase8-sprint1"],
   "blockedBy": []
 }
