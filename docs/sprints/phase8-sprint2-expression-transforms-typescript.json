@@ -4,7 +4,8 @@
   "title": "Expression Transforms - TypeScript",
   "week": "Week 12",
   "effort": "5-7 hours",
-  "status": "pending",
+  "status": "completed",
+  "completedDate": "2026-01-19",
   "description": "Convert expression transform functions from JavaScript to TypeScript. These are specialized transformations applied to mathematical expressions.",
   "tasks": [
     {
@@ -12,7 +13,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert basic transforms: concat.transform.js, filter.transform.js, forEach.transform.js, map.transform.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [
@@ -27,7 +28,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert index transforms: index.transform.js, column.transform.js, row.transform.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [
@@ -41,7 +42,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert statistical transforms: max.transform.js, mean.transform.js, min.transform.js, std.transform.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [
@@ -56,7 +57,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert remaining transforms: subset.transform.js, range.transform.js, etc. to TypeScript",
       "estimatedHours": 2,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [

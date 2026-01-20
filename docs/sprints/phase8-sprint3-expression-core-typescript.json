@@ -4,7 +4,8 @@
   "title": "Core Expression Files - TypeScript",
   "week": "Week 12",
   "effort": "3-5 hours",
-  "status": "pending",
+  "status": "completed",
+  "completedDate": "2026-01-19",
   "description": "Convert core expression system files from JavaScript to TypeScript. This includes the Parser and Help system.",
   "tasks": [
     {
@@ -12,7 +13,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert Parser.js to TypeScript with proper tokenization and parsing types",
       "estimatedHours": 2.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "High",
       "files": [
@@ -24,7 +25,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert Help.js to TypeScript with proper documentation types",
       "estimatedHours": 1,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [
@@ -36,7 +37,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert remaining core expression files: parse.js, compile.js, evaluate.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "High",
       "files": [

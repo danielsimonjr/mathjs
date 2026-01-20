@@ -4,7 +4,8 @@
   "title": "Algebra Functions - TypeScript",
   "week": "Week 7-8",
   "effort": "8-12 hours",
-  "status": "pending",
+  "status": "completed",
+  "completedDate": "2026-01-19",
   "description": "Convert algebra functions from JavaScript to TypeScript. These include equation solving, simplification, derivatives, and symbolic computation. WASM integration via existing algebra WASM modules when applicable.",
   "tasks": [
     {
@@ -12,7 +13,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert derivative functions: derivative.js, rationalize.js, resolve.js, simplify.js to TypeScript",
       "estimatedHours": 3,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "Low",
       "complexity": "High",
       "files": [
@@ -27,7 +28,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert solver functions: lsolve.js, lup.js, lusolve.js, qr.js, slu.js, usolve.js to TypeScript",
       "estimatedHours": 3,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "High",
       "complexity": "High",
       "files": [
@@ -44,7 +45,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert sparse algebra: sparse/*.js files (csAmd, csChol, csDFS, etc.) to TypeScript",
       "estimatedHours": 4,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "Medium",
       "complexity": "High",
       "files": [
@@ -56,7 +57,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert decomposition: decomposition/*.js files to TypeScript",
       "estimatedHours": 2,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "High",
       "complexity": "Medium",
       "files": [
@@ -68,7 +69,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert simplify core: simplifyCore.js, simplifyConstant.js, utils/*.js to TypeScript",
       "estimatedHours": 2,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "High",
       "files": [

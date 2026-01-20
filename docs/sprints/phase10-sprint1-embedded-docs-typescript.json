@@ -4,7 +4,8 @@
   "title": "Embedded Documentation - TypeScript",
   "week": "Week 14-16",
   "effort": "12-15 hours",
-  "status": "pending",
+  "status": "completed",
+  "completedDate": "2026-01-19",
   "description": "Convert embedded documentation files from JavaScript to TypeScript. These are documentation strings for all functions in the expression parser. MARKED FOR LAST - convert after all other work is complete.",
   "priority": "LOWEST",
   "tasks": [
@@ -13,7 +14,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert embedded docs for arithmetic functions (50+ files) to TypeScript",
       "estimatedHours": 3,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
       "files": [
@@ -25,7 +26,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert embedded docs for algebra, matrix, statistics functions (80+ files) to TypeScript",
       "estimatedHours": 4,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
       "files": [
@@ -39,7 +40,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert embedded docs for remaining function categories (125+ files) to TypeScript",
       "estimatedHours": 5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
       "files": [
@@ -51,7 +52,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert embedded docs core files: embeddedDocs.js, construction/*.js, constants/*.js to TypeScript",
       "estimatedHours": 2,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Low",
       "files": [

@@ -4,7 +4,8 @@
   "title": "Statistics & Probability - TypeScript",
   "week": "Week 8-9",
   "effort": "4-6 hours",
-  "status": "pending",
+  "status": "completed",
+  "completedDate": "2026-01-19",
   "description": "Convert statistics and probability functions from JavaScript to TypeScript. These functions calculate statistical measures and probability distributions.",
   "tasks": [
     {
@@ -12,7 +13,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert basic statistics: mean.js, median.js, mode.js, std.js, variance.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "Medium",
       "complexity": "Low",
       "files": [
@@ -28,7 +29,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert quantile functions: quantileSeq.js, mad.js, cumsum.js, prod.js, sum.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "Medium",
       "complexity": "Medium",
       "files": [
@@ -44,7 +45,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert remaining statistics: max.js, min.js, erf.js, corr.js, utils/*.js to TypeScript",
       "estimatedHours": 1,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "Medium",
       "complexity": "Low",
       "files": [
@@ -60,7 +61,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert probability distributions: pickRandom.js, random.js, randomInt.js to TypeScript",
       "estimatedHours": 1,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "Medium",
       "complexity": "Low",
       "files": [
@@ -74,7 +75,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert distribution utils: combinations.js, distribution.js, utils/*.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "Medium",
       "complexity": "Medium",
       "files": [

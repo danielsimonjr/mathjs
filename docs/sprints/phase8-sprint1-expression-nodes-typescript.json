@@ -4,7 +4,8 @@
   "title": "Expression Nodes - TypeScript",
   "week": "Week 11",
   "effort": "4-6 hours",
-  "status": "pending",
+  "status": "completed",
+  "completedDate": "2026-01-19",
   "description": "Convert expression AST node implementations from JavaScript to TypeScript. These are the building blocks of the expression parser.",
   "tasks": [
     {
@@ -12,7 +13,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert basic nodes: ConstantNode.js, SymbolNode.js, OperatorNode.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [
@@ -26,7 +27,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert function nodes: FunctionNode.js, FunctionAssignmentNode.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "High",
       "files": [
@@ -39,7 +40,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert assignment nodes: AssignmentNode.js, BlockNode.js, ConditionalNode.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [
@@ -53,7 +54,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert accessor nodes: AccessorNode.js, IndexNode.js, RangeNode.js to TypeScript",
       "estimatedHours": 1.5,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [
@@ -67,7 +68,7 @@
       "category": "TypeScript Conversion",
       "description": "Convert remaining nodes: ArrayNode.js, ObjectNode.js, ParenthesisNode.js, etc. to TypeScript",
       "estimatedHours": 1,
-      "status": "pending",
+      "status": "completed",
       "wasmPriority": "None",
       "complexity": "Medium",
       "files": [
