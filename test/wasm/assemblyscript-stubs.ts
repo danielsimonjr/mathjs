@@ -51,8 +51,23 @@ declare global {
   function unreachable(): never
 
   // Type conversion functions (used as f64(x), i32(x), etc.)
-  function f64(value: number | bigint): number
-  function f32(value: number | bigint): number
+  // These are both functions and namespaces with constants in AssemblyScript
+  interface F64Function {
+    (value: number | bigint): number
+    NaN: number
+    POSITIVE_INFINITY: number
+    NEGATIVE_INFINITY: number
+    MAX_VALUE: number
+    MIN_VALUE: number
+  }
+  interface F32Function {
+    (value: number | bigint): number
+    NaN: number
+    POSITIVE_INFINITY: number
+    NEGATIVE_INFINITY: number
+  }
+  const f64: F64Function
+  const f32: F32Function
   function i32(value: number | bigint): number
   function i64(value: number | bigint): bigint
   function u32(value: number | bigint): number
@@ -102,16 +117,40 @@ globalThis.unreachable = function (): never {
   throw new Error('Unreachable code executed')
 }
 
-// Type conversion functions
-// @ts-ignore - defining global function
-globalThis.f64 = function (value: number | bigint): number {
-  return typeof value === 'bigint' ? Number(value) : value
-}
+// Type conversion functions with namespace properties
+// AssemblyScript's f64 is both a function and a namespace with constants
 
-// @ts-ignore - defining global function
-globalThis.f32 = function (value: number | bigint): number {
+// @ts-ignore - defining global function with additional properties
+const f64Func = function (value: number | bigint): number {
   return typeof value === 'bigint' ? Number(value) : value
+} as ((value: number | bigint) => number) & {
+  NaN: number
+  POSITIVE_INFINITY: number
+  NEGATIVE_INFINITY: number
+  MAX_VALUE: number
+  MIN_VALUE: number
 }
+f64Func.NaN = NaN
+f64Func.POSITIVE_INFINITY = Infinity
+f64Func.NEGATIVE_INFINITY = -Infinity
+f64Func.MAX_VALUE = Number.MAX_VALUE
+f64Func.MIN_VALUE = Number.MIN_VALUE
+// @ts-ignore
+globalThis.f64 = f64Func
+
+// @ts-ignore - defining global function with additional properties
+const f32Func = function (value: number | bigint): number {
+  return typeof value === 'bigint' ? Number(value) : value
+} as ((value: number | bigint) => number) & {
+  NaN: number
+  POSITIVE_INFINITY: number
+  NEGATIVE_INFINITY: number
+}
+f32Func.NaN = NaN
+f32Func.POSITIVE_INFINITY = Infinity
+f32Func.NEGATIVE_INFINITY = -Infinity
+// @ts-ignore
+globalThis.f32 = f32Func
 
 // @ts-ignore - defining global function
 globalThis.i32 = function (value: number | bigint): number {

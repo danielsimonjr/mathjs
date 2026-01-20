@@ -3,7 +3,7 @@
  * These tests import directly from the compiled WASM module
  */
 import assert from 'assert'
-import * as wasm from '../../../lib/wasm/index.js'
+import * as wasm from '../../../../lib/wasm/index.js'
 
 // Tolerance for floating point comparisons
 const EPSILON = 1e-10

@@ -5,7 +5,7 @@
  * as TypeScript, allowing testing before the full WASM build.
  */
 import assert from 'assert'
-import '../../../assemblyscript-stubs'
+import '../../assemblyscript-stubs'
 
 // Tolerance for floating point comparisons
 const EPSILON = 1e-10
