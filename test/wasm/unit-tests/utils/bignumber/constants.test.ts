@@ -10,7 +10,7 @@ import {
   createBigNumberPhi,
   createBigNumberPi,
   createBigNumberTau
-} from '../../../../src/utils/bignumber/constants.js'
+} from '../../../../../src/utils/bignumber/constants.js'
 
 const Big32 = BigNumber.clone({ precision: 32 })
 const Big64 = BigNumber.clone({ precision: 64 })

@@ -3,8 +3,8 @@
  */
 // test pinv
 import assert from 'assert'
-import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxDeepEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 const pinv = math.pinv
 
 /**

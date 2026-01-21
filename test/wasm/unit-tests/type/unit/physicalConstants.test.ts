@@ -2,7 +2,7 @@
  * Test for physicalConstants - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { approxEqual } from '../../../../tools/approx.js'
+import { approxEqual } from '../../../../../tools/approx.js'
 import {
   createAtomicMass,
   createAvogadro,
@@ -56,8 +56,8 @@ import {
   createVacuumImpedance,
   createWeakMixingAngle,
   createWienDisplacement
-} from '../../../../src/type/unit/physicalConstants.js'
-import math from '../../../../src/defaultInstance.ts'
+} from '../../../../../src/type/unit/physicalConstants.js'
+import math from '../../../../../src/defaultInstance.ts'
 
 const { BigNumber, Unit } = math
 

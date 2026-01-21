@@ -4,8 +4,8 @@
 /* eslint-disable no-loss-of-precision */
 
 import assert from 'assert'
-import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxEqual, approxDeepEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 const lgamma = math.lgamma
 
 interface MathNode {

@@ -3,7 +3,7 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const add = math.add
 
 // TODO: make unit tests independent of math

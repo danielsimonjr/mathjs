@@ -4,7 +4,7 @@
 // test larger
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const bignumber = math.bignumber
 const complex = math.complex
 const fraction = math.fraction

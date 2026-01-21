@@ -2,7 +2,7 @@
  * Test for combinationsWithRep - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const combinationsWithRep = math.combinationsWithRep
 
 interface MathNode {

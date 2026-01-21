@@ -15,7 +15,7 @@
  */
 import assert from 'assert'
 import { describe, it } from 'vitest'
-import * as wasm from '../../../../lib/wasm/index.js'
+import * as wasm from '../../../../../lib/wasm/index.js'
 
 const EPSILON = 1e-10
 

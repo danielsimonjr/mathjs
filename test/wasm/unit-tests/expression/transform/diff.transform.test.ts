@@ -2,7 +2,7 @@
  * Test for diff.transform - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 const diff = math.expression.transform.diff
 

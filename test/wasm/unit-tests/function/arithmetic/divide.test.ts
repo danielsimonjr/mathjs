@@ -3,13 +3,13 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 interface MathNode {
   type: string
   toTex(): string
 }
-import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
+import { approxEqual, approxDeepEqual } from '../../../../../tools/approx.js'
 const divide = math.divide
 const bignumber = math.bignumber
 const complex = math.complex

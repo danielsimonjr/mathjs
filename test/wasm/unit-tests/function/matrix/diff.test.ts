@@ -2,8 +2,8 @@
  * Test for diff - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxDeepEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 
 // Parsing tests are inside diff.transform.test
 

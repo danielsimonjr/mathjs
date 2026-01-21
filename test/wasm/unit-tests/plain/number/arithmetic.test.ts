@@ -2,8 +2,8 @@
  * Test for plain/number/arithmetic - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { approxEqual } from '../../../../tools/approx.js'
-import { modNumber } from '../../../../src/plain/number/arithmetic.js'
+import { approxEqual } from '../../../../../tools/approx.js'
+import { modNumber } from '../../../../../src/plain/number/arithmetic.js'
 
 describe('mod', function (): void {
   it('should calculate the modulus of two numbers', function (): void {

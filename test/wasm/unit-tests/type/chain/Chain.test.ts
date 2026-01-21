@@ -3,8 +3,8 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
-import { hasOwnProperty } from '../../../../src/utils/object.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { hasOwnProperty } from '../../../../../src/utils/object.js'
 const Chain = math.Chain
 
 describe('Chain', function (): void {

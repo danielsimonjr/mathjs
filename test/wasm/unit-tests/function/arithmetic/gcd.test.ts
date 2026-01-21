@@ -2,9 +2,9 @@
  * Test for gcd - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { ArgumentsError } from '../../../../src/error/ArgumentsError.js'
+import { ArgumentsError } from '../../../../../src/error/ArgumentsError.js'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 interface MathNode {
   type: string
   toTex(): string

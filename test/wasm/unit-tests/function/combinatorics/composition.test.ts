@@ -2,7 +2,7 @@
  * Test for composition - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const composition = math.composition
 
 describe('composition', function (): void {

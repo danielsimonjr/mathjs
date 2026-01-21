@@ -2,7 +2,7 @@
  * Test for isInteger function - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 const isInteger = math.isInteger
 const bignumber = math.bignumber

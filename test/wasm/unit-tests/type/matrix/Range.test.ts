@@ -3,7 +3,7 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const Range = math.Range
 
 describe('range', function (): void {

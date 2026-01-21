@@ -2,8 +2,8 @@
  * Test for subset - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
-import { DimensionError } from '../../../../src/error/DimensionError.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { DimensionError } from '../../../../../src/error/DimensionError.js'
 import sinon from 'sinon'
 
 const subset = math.subset

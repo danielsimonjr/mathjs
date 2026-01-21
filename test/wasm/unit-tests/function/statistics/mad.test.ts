@@ -2,7 +2,7 @@
  * Test for mad - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const BigNumber = math.BigNumber
 const DenseMatrix = math.DenseMatrix
 const Complex = math.Complex

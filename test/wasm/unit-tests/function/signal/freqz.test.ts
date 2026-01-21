@@ -1,9 +1,9 @@
 /**
  * Test for freqz - AssemblyScript-friendly TypeScript
  */
-import { approxDeepEqual } from '../../../../tools/approx.js'
+import { approxDeepEqual } from '../../../../../tools/approx.js'
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 const freqz = math.freqz
 

@@ -2,7 +2,7 @@
  * Test for clone function - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('clone', function (): void {
   it('should clone a boolean', function (): void {

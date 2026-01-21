@@ -10,8 +10,8 @@ interface MathNode {
 }
 
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
-import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { approxEqual, approxDeepEqual } from '../../../../../tools/approx.js'
 const pi = math.pi
 const acoth = math.acoth
 const coth = math.coth

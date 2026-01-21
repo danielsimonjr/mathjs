@@ -2,8 +2,8 @@
  * Test for help - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
-import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDocs.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { embeddedDocs } from '../../../../../src/expression/embeddedDocs/embeddedDocs.js'
 
 interface MathNode {
   type: string

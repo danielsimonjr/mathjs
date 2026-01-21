@@ -2,8 +2,8 @@
  * Test for reshape - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
-import { DimensionError } from '../../../../src/error/DimensionError.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { DimensionError } from '../../../../../src/error/DimensionError.js'
 
 interface MathNode {
   type: string

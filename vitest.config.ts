@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { defineConfig } from 'vitest/config'
+import path from 'path'
 
 export default defineConfig({
   test: {
@@ -19,6 +20,10 @@ export default defineConfig({
   resolve: {
     // Allow importing TypeScript files
     extensions: ['.ts', '.js', '.mjs'],
+    alias: {
+      // Resolve src imports
+      '@': path.resolve(__dirname, './src'),
+    },
   },
   esbuild: {
     // Handle TypeScript features like enums

@@ -1,7 +1,7 @@
 /**
  * Test for toBest - AssemblyScript-friendly TypeScript
  */
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 import assert from 'assert'
 
 const Unit = math.create().Unit

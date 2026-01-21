@@ -2,7 +2,7 @@
  * Test for corr - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const corr = math.corr
 const BigNumber = math.BigNumber
 

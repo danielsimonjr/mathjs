@@ -3,8 +3,8 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
-import { toObject } from '../../../../src/utils/map.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { toObject } from '../../../../../src/utils/map.js'
 
 interface MathNode { type: string; toTex(): string }
 

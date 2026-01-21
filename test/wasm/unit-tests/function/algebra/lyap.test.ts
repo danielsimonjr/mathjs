@@ -3,7 +3,7 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('lyap', function (): void {
   it('should solve lyapunov equation of order 5 with Matrices', function (): void {

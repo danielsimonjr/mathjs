@@ -2,7 +2,7 @@
  * Test for SparseMatrix - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const index = math.index
 const Matrix = math.Matrix
 const SparseMatrix = math.SparseMatrix

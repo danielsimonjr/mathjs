@@ -4,7 +4,7 @@
 // test transpose
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const ctranspose = math.ctranspose
 
 interface MathNode {

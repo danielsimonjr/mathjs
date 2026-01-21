@@ -2,7 +2,7 @@
  * Test for FibonacciHeap - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const FibonacciHeap = math.FibonacciHeap
 
 describe('FibonacciHeap', function (): void {

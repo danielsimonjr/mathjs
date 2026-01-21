@@ -2,7 +2,7 @@
  * Test for distance - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('distance', function (): void {
   it('should calculate the distance of two 1D points', function (): void {

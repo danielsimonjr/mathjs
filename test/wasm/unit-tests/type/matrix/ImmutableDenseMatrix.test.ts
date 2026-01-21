@@ -2,7 +2,7 @@
  * Test for ImmutableDenseMatrix - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const Matrix = math.Matrix
 const DenseMatrix = math.DenseMatrix
 const ImmutableDenseMatrix = math.ImmutableDenseMatrix

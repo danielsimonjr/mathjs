@@ -2,7 +2,7 @@
  * Test for nullish - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const { sparse, matrix, nullish } = math
 
 describe('nullish', function (): void {

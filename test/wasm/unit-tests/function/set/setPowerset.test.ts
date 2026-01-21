@@ -3,7 +3,7 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('setPowerset', function (): void {
   it('should return the powerset of a set', function (): void {

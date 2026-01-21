@@ -2,7 +2,7 @@
  * Test for isNegative function - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 const isNegative = math.isNegative
 const bignumber = math.bignumber

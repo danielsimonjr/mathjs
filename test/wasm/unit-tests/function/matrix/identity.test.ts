@@ -2,7 +2,7 @@
  * Test for identity - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const matrix = math.matrix
 const identity = math.identity
 

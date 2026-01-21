@@ -2,7 +2,7 @@
  * Test for stirlingS2 - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const stirlingS2 = math.stirlingS2
 
 interface MathNode {

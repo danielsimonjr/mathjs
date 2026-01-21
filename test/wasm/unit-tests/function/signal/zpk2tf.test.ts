@@ -1,8 +1,8 @@
 /**
  * Test for zpk2tf - AssemblyScript-friendly TypeScript
  */
-import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxDeepEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 
 const zpk2tf = math.zpk2tf
 

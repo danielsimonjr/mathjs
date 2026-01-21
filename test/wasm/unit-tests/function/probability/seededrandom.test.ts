@@ -2,7 +2,7 @@
  * Test for seededrandom - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('seed', function (): void {
   it('should generate same number with seed', function (): void {

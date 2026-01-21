@@ -1,7 +1,7 @@
 /**
  * Test for bignumber/nearlyEqual - AssemblyScript-friendly TypeScript
  */
-import { nearlyEqual } from '../../../../src/utils/bignumber/nearlyEqual.js'
+import { nearlyEqual } from '../../../../../src/utils/bignumber/nearlyEqual.js'
 
 import assert from 'assert'
 import BigNumber from 'decimal.js'

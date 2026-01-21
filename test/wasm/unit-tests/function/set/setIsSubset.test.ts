@@ -3,7 +3,7 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('setIsSubset', function (): void {
   it('should return true or false', function (): void {

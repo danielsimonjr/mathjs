@@ -2,7 +2,7 @@
  * Test for Spa - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const Spa = math.Spa
 
 describe('Spa', function (): void {

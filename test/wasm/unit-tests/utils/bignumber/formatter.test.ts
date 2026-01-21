@@ -7,7 +7,7 @@ import {
   format,
   toExponential,
   toFixed
-} from '../../../../src/utils/bignumber/formatter.js'
+} from '../../../../../src/utils/bignumber/formatter.js'
 
 describe('format', function (): void {
   describe('format', function (): void {

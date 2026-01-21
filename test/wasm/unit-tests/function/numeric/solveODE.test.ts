@@ -2,8 +2,8 @@
  * Test for solveODE - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
-import { approxDeepEqual } from '../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { approxDeepEqual } from '../../../../../tools/approx.js'
 
 const solveODE = math.solveODE
 const matrix = math.matrix

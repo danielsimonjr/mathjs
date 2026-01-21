@@ -2,8 +2,8 @@
  * Test for mean - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 const BigNumber = math.BigNumber
 const Complex = math.Complex
 const DenseMatrix = math.DenseMatrix

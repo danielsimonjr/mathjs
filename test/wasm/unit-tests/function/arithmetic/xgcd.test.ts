@@ -3,7 +3,7 @@
  */
 import assert from 'assert'
 
-import defaultMath from '../../../../src/defaultInstance.ts'
+import defaultMath from '../../../../../src/defaultInstance.ts'
 
 interface MathNode {
   type: string

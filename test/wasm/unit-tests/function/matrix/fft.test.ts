@@ -1,8 +1,8 @@
 /**
  * Test for fft - AssemblyScript-friendly TypeScript
  */
-import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxDeepEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 const fft = math.fft
 
 describe('fft', function (): void {

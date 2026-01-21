@@ -2,8 +2,8 @@
  * Test for collection - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { isCollection } from '../../../../src/utils/is.js'
-import math from '../../../../src/defaultInstance.ts'
+import { isCollection } from '../../../../../src/utils/is.js'
+import math from '../../../../../src/defaultInstance.ts'
 const DenseMatrix = math.DenseMatrix
 const SparseMatrix = math.SparseMatrix
 

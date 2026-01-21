@@ -4,8 +4,8 @@
 // test sqrtm
 import assert from 'assert'
 
-import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxDeepEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 
 interface MathNode {
   type: string

@@ -2,13 +2,12 @@
 
 ## Document Purpose
 
-This document provides a **granular, file-by-file task list** for converting the remaining 612 JavaScript files to TypeScript with WASM compilation feasibility. Each task includes:
-- File path
-- Complexity rating
-- WASM compilation priority
-- Dependencies
-- Estimated effort
-- Special considerations
+This document tracks the TypeScript + WASM refactoring progress. **All JavaScript files have been converted to TypeScript.** The original JS files are retained for benchmarking purposes.
+
+Current focus areas:
+- Type quality improvements (reducing `any` usage)
+- WASM integration verification
+- Performance benchmarking
 
 ---
 
@@ -31,28 +30,47 @@ This document provides a **granular, file-by-file task list** for converting the
 
 ### Overall Progress
 
-| Category | Total | Converted | Remaining | % Complete |
-|----------|-------|-----------|-----------|------------|
-| **Functions** | 253 | 50 | 203 | 20% |
-| **Expression** | 312 | 0 | 312 | 0% |
-| **Types** | 45 | 2 | 43 | 4% |
-| **Utils** | 27 | 5 | 22 | 19% |
-| **Plain** | 12 | 0 | 12 | 0% |
-| **Entry/Core** | 11 | 2 | 9 | 18% |
-| **Error** | 3 | 0 | 3 | 0% |
-| **JSON** | 2 | 0 | 2 | 0% |
-| **Root** | 8 | 0 | 8 | 0% |
-| **TOTAL** | **673** | **61** | **612** | **9%** |
+| Category | TS Files | Status | Notes |
+|----------|----------|--------|-------|
+| **Functions** | 254 | ✅ Complete | All function categories converted |
+| **Expression** | 313 | ✅ Complete | Parser, nodes, transforms converted |
+| **Types** | 49 | ✅ Complete | Complex, Fraction, BigNumber, Unit, Matrix |
+| **Utils** | 32 | ✅ Complete | All utilities converted |
+| **Plain** | 12 | ✅ Complete | Plain number implementations |
+| **Entry** | 589 | ✅ Complete | Entry points and embedded docs |
+| **Core** | 5 | ✅ Complete | Core system files |
+| **Error** | 3 | ✅ Complete | Error classes |
+| **JSON** | 2 | ✅ Complete | JSON utilities |
+| **WASM** | 55 | ✅ Complete | 21 module directories |
+| **TOTAL** | **1331** | ✅ **100%** | TypeScript errors: 0 |
 
-### WASM Compilation Priorities
+### WASM Implementation Status
 
-| Priority | Files | Description |
-|----------|-------|-------------|
-| **Very High** | 36 | Plain implementations, combinatorics, numeric |
-| **High** | 85 | Arithmetic, algebra, trigonometry, bitwise |
-| **Medium** | 45 | Statistics, probability, matrix algorithms |
-| **Low** | 30 | Relational, logical, set, string |
-| **None** | 416 | Expression system, types, utilities, entry |
+| Category | Module | Status | Tests |
+|----------|--------|--------|-------|
+| **Arithmetic** | basic, logarithmic, advanced | ✅ Complete | ✅ |
+| **Algebra** | decomposition, sparse, solver | ✅ Complete | ✅ |
+| **Matrix** | multiply, linalg, basic, rotation | ✅ Complete | ✅ |
+| **Trigonometry** | basic | ✅ Complete | ✅ |
+| **Statistics** | basic, select | ✅ Complete | ✅ |
+| **Combinatorics** | basic | ✅ Complete | ✅ |
+| **Probability** | distributions | ✅ Complete | ✅ |
+| **Signal** | fft, processing | ✅ Complete | ✅ |
+| **Numeric** | calculus, interpolation, ode, rootfinding | ✅ Complete | ✅ |
+
+### Legend
+
+**Complexity**:
+- 🟢 **Low**: Simple conversion, minimal types
+- 🟡 **Medium**: Moderate types, some complexity
+- 🔴 **High**: Complex types, algorithms, dependencies
+
+**WASM Priority**:
+- 🔥 **Very High**: Must have WASM
+- ⚡ **High**: Should have WASM
+- 💡 **Medium**: Could have WASM
+- 🌙 **Low**: Optional WASM
+- ⛔ **None**: No WASM
 
 ### Legend
 

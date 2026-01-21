@@ -2,7 +2,7 @@
  * Test for BigNumber - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 import Decimal from 'decimal.js'
 
 describe('BigNumber', function (): void {

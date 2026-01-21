@@ -3,8 +3,8 @@
  */
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
-import { format } from '../../../../src/utils/number.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { format } from '../../../../../src/utils/number.js'
 
 interface MathNode {
   type: string

@@ -2,7 +2,7 @@
  * Test for Fraction - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('Fraction', function (): void {
   it('should have a property isFraction', function (): void {

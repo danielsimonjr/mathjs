@@ -3,8 +3,8 @@
  */
 import assert from 'assert'
 
-import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxDeepEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 import Decimal from 'decimal.js'
 
 interface MathNode {

@@ -2,8 +2,8 @@
  * Test for bernoulli - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxEqual } from '../../../../../tools/approx.js'
+import math from '../../../../../src/defaultInstance.ts'
 const bernoulli = math.bernoulli
 
 const EPSILON = 1e-14

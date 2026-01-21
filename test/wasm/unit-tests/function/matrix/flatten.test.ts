@@ -2,7 +2,7 @@
  * Test for flatten - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const matrix = math.matrix
 const flatten = math.flatten
 const sparse = math.sparse
