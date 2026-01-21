@@ -141,6 +141,7 @@ export { OperatorNodeDependencies } from './dependenciesNumber/dependenciesOpera
 export { orDependencies } from './dependenciesNumber/dependenciesOr.generated.js'
 export { ParenthesisNodeDependencies } from './dependenciesNumber/dependenciesParenthesisNode.generated.js'
 export { parseDependencies } from './dependenciesNumber/dependenciesParse.generated.js'
+export { parseNumberWithConfigDependencies } from './dependenciesNumber/dependenciesParseNumberWithConfig.generated.js'
 export { parserDependencies } from './dependenciesNumber/dependenciesParser.generated.js'
 export { ParserDependencies } from './dependenciesNumber/dependenciesParserClass.generated.js'
 export { partitionSelectDependencies } from './dependenciesNumber/dependenciesPartitionSelect.generated.js'

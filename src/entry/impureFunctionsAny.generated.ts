@@ -173,6 +173,7 @@ import {
   matrixFromFunction,
   multiply,
   ones,
+  parseNumberWithConfig,
   randomInt,
   resize,
   sech,
@@ -391,159 +392,29 @@ export const ConditionalNode: any = createConditionalNode({ Node })
 export const RangeNode: any = createRangeNode({ Node })
 export const reviver: any = createReviver({ classes })
 export const Chain: any = createChainClass({ math, typed })
-export const FunctionAssignmentNode: any = createFunctionAssignmentNode({
-  Node,
-  typed
-})
+export const FunctionAssignmentNode: any = createFunctionAssignmentNode({ Node, typed })
 export const chain: any = createChain({ Chain, typed })
 export const ConstantNode: any = createConstantNode({ Node, isBounded })
 export const IndexNode: any = createIndexNode({ Node, size })
 export const AccessorNode: any = createAccessorNode({ Node, subset })
-export const AssignmentNode: any = createAssignmentNode({
-  matrix,
-  Node,
-  subset
-})
+export const AssignmentNode: any = createAssignmentNode({ matrix, Node, subset })
 export const SymbolNode: any = createSymbolNode({ Unit, Node, math })
 export const FunctionNode: any = createFunctionNode({ Node, SymbolNode, math })
-export const parse: any = createParse({
-  AccessorNode,
-  ArrayNode,
-  AssignmentNode,
-  BlockNode,
-  ConditionalNode,
-  ConstantNode,
-  FunctionAssignmentNode,
-  FunctionNode,
-  IndexNode,
-  ObjectNode,
-  OperatorNode,
-  ParenthesisNode,
-  RangeNode,
-  RelationalNode,
-  SymbolNode,
-  config,
-  numeric,
-  typed
-})
-export const resolve: any = createResolve({
-  ConstantNode,
-  FunctionNode,
-  OperatorNode,
-  ParenthesisNode,
-  parse,
-  typed
-})
-export const simplifyConstant: any = createSimplifyConstant({
-  bignumber,
-  fraction,
-  AccessorNode,
-  ArrayNode,
-  ConstantNode,
-  FunctionNode,
-  IndexNode,
-  ObjectNode,
-  OperatorNode,
-  SymbolNode,
-  config,
-  isBounded,
-  mathWithTransform,
-  matrix,
-  typed
-})
+export const parse: any = createParse({ AccessorNode, ArrayNode, AssignmentNode, BlockNode, ConditionalNode, ConstantNode, FunctionAssignmentNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, RangeNode, RelationalNode, SymbolNode, config, numeric, typed })
+export const resolve: any = createResolve({ ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, parse, typed })
+export const simplifyConstant: any = createSimplifyConstant({ bignumber, fraction, AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, SymbolNode, config, isBounded, mathWithTransform, matrix, typed })
 export const compile: any = createCompile({ parse, typed })
 export const leafCount: any = createLeafCount({ parse, typed })
-export const simplifyCore: any = createSimplifyCore({
-  AccessorNode,
-  ArrayNode,
-  ConstantNode,
-  FunctionNode,
-  IndexNode,
-  ObjectNode,
-  OperatorNode,
-  ParenthesisNode,
-  SymbolNode,
-  add,
-  divide,
-  equal,
-  isZero,
-  multiply,
-  parse,
-  pow,
-  subtract,
-  typed
-})
+export const simplifyCore: any = createSimplifyCore({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, add, divide, equal, isZero, multiply, parse, pow, subtract, typed })
 export const evaluate: any = createEvaluate({ parse, typed })
 export const Help: any = createHelpClass({ evaluate })
 export const Parser: any = createParserClass({ evaluate, parse })
 export const parser: any = createParser({ Parser, typed })
-export const simplify: any = createSimplify({
-  AccessorNode,
-  ArrayNode,
-  ConstantNode,
-  FunctionNode,
-  IndexNode,
-  ObjectNode,
-  OperatorNode,
-  ParenthesisNode,
-  SymbolNode,
-  equal,
-  parse,
-  replacer,
-  resolve,
-  simplifyConstant,
-  simplifyCore,
-  typed
-})
-export const symbolicEqual: any = createSymbolicEqual({
-  OperatorNode,
-  parse,
-  simplify,
-  typed
-})
-export const derivative: any = createDerivative({
-  ConstantNode,
-  FunctionNode,
-  OperatorNode,
-  ParenthesisNode,
-  SymbolNode,
-  config,
-  equal,
-  isZero,
-  numeric,
-  parse,
-  simplify,
-  typed
-})
+export const simplify: any = createSimplify({ AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, equal, parse, replacer, resolve, simplifyConstant, simplifyCore, typed })
+export const symbolicEqual: any = createSymbolicEqual({ OperatorNode, parse, simplify, typed })
+export const derivative: any = createDerivative({ ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode, config, equal, isZero, numeric, parse, simplify, typed })
 export const help: any = createHelp({ Help, mathWithTransform, typed })
-export const rationalize: any = createRationalize({
-  bignumber,
-  fraction,
-  AccessorNode,
-  ArrayNode,
-  ConstantNode,
-  FunctionNode,
-  IndexNode,
-  ObjectNode,
-  OperatorNode,
-  ParenthesisNode,
-  SymbolNode,
-  add,
-  config,
-  divide,
-  equal,
-  isZero,
-  mathWithTransform,
-  matrix,
-  multiply,
-  parse,
-  pow,
-  simplify,
-  simplifyConstant,
-  simplifyCore,
-  subtract,
-  typed
-})
+export const rationalize: any = createRationalize({ bignumber, fraction, AccessorNode, ArrayNode, ConstantNode, FunctionNode, IndexNode, ObjectNode, OperatorNode, ParenthesisNode, SymbolNode, add, config, divide, equal, isZero, mathWithTransform, matrix, multiply, parse, pow, simplify, simplifyConstant, simplifyCore, subtract, typed })
 
 Object.assign(math, {
   e,
@@ -560,7 +431,7 @@ Object.assign(math, {
   sackurTetrode,
   tau,
   true: _true,
-  E: e,
+  'E': e,
   version,
   efimovFactor,
   LN2,
@@ -569,7 +440,7 @@ Object.assign(math, {
   reviver,
   SQRT2,
   typed,
-  PI: pi,
+  'PI': pi,
   weakMixingAngle,
   abs,
   acos,
@@ -649,6 +520,7 @@ Object.assign(math, {
   matrixFromFunction,
   multiply,
   ones,
+  parseNumberWithConfig,
   randomInt,
   resize,
   sech,
@@ -866,80 +738,23 @@ Object.assign(mathWithTransform, math, {
   filter: createFilterTransform({ typed }),
   forEach: createForEachTransform({ typed }),
   mapSlices: createMapSlicesTransform({ isInteger, typed }),
-  and: createAndTransform({
-    add,
-    concat,
-    equalScalar,
-    matrix,
-    not,
-    typed,
-    zeros
-  }),
+  and: createAndTransform({ add, concat, equalScalar, matrix, not, typed, zeros }),
   cumsum: createCumSumTransform({ add, typed, unaryPlus }),
   nullish: createNullishTransform({ deepEqual, flatten, matrix, size, typed }),
   print: createPrintTransform({ add, matrix, typed, zeros }),
-  bitAnd: createBitAndTransform({
-    add,
-    concat,
-    equalScalar,
-    matrix,
-    not,
-    typed,
-    zeros
-  }),
+  bitAnd: createBitAndTransform({ add, concat, equalScalar, matrix, not, typed, zeros }),
   concat: createConcatTransform({ isInteger, matrix, typed }),
   diff: createDiffTransform({ bignumber, matrix, number, subtract, typed }),
   max: createMaxTransform({ config, isNaN, larger, numeric, typed }),
   min: createMinTransform({ config, isNaN, numeric, smaller, typed }),
   or: createOrTransform({ DenseMatrix, concat, equalScalar, matrix, typed }),
   subset: createSubsetTransform({ add, matrix, typed, zeros }),
-  bitOr: createBitOrTransform({
-    DenseMatrix,
-    concat,
-    equalScalar,
-    matrix,
-    typed
-  }),
+  bitOr: createBitOrTransform({ DenseMatrix, concat, equalScalar, matrix, typed }),
   sum: createSumTransform({ add, config, numeric, typed }),
-  variance: createVarianceTransform({
-    add,
-    divide,
-    isNaN,
-    mapSlices,
-    multiply,
-    subtract,
-    typed
-  }),
+  variance: createVarianceTransform({ add, divide, isNaN, mapSlices, multiply, subtract, typed }),
   index: createIndexTransform({ Index, getMatrixDataType }),
-  quantileSeq: createQuantileSeqTransform({
-    add,
-    bignumber,
-    compare,
-    divide,
-    isInteger,
-    larger,
-    mapSlices,
-    multiply,
-    partitionSelect,
-    smaller,
-    smallerEq,
-    subtract,
-    typed
-  }),
-  range: createRangeTransform({
-    bignumber,
-    matrix,
-    add,
-    config,
-    equal,
-    isPositive,
-    isZero,
-    larger,
-    largerEq,
-    smaller,
-    smallerEq,
-    typed
-  }),
+  quantileSeq: createQuantileSeqTransform({ add, bignumber, compare, divide, isInteger, larger, mapSlices, multiply, partitionSelect, smaller, smallerEq, subtract, typed }),
+  range: createRangeTransform({ bignumber, matrix, add, config, equal, isPositive, isZero, larger, largerEq, smaller, smallerEq, typed }),
   column: createColumnTransform({ Index, matrix, range, typed }),
   row: createRowTransform({ Index, matrix, range, typed }),
   mean: createMeanTransform({ add, divide, typed }),

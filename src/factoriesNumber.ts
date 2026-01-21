@@ -500,6 +500,7 @@ export { createIsFinite } from './function/utils/isFinite.ts'
 export { createTypeOf } from './function/utils/typeOf.ts'
 export { createIsPrime } from './function/utils/isPrime.ts'
 export { createNumeric } from './function/utils/numeric.ts'
+export { createParseNumberWithConfig } from './utils/parseNumber.ts'
 
 // json
 export { createReviver } from './json/reviver.ts'

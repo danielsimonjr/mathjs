@@ -328,6 +328,7 @@ export { createIsFinite } from './function/utils/isFinite.js'
 export { createTypeOf } from './function/utils/typeOf.js'
 export { createIsPrime } from './function/utils/isPrime.js'
 export { createNumeric } from './function/utils/numeric.js'
+export { createParseNumberWithConfig } from './utils/parseNumber.js'
 
 // json
 export { createReviver } from './json/reviver.js'

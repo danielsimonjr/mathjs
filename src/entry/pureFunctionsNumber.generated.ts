@@ -14,6 +14,7 @@ import {
   createMatrix,
   createNaN,
   createNull,
+  createParseNumberWithConfig,
   createPhi,
   createRangeClass,
   createReplacer,
@@ -177,6 +178,7 @@ export const LOG10E: any = /* #__PURE__ */ createLOG10E({ config })
 export const matrix: any = /* #__PURE__ */ createMatrix({})
 export const _NaN: any = /* #__PURE__ */ createNaN({ config })
 export const _null: any = /* #__PURE__ */ createNull({})
+export const parseNumberWithConfig: any = /* #__PURE__ */ createParseNumberWithConfig({ config })
 export const phi: any = /* #__PURE__ */ createPhi({ config })
 export const Range: any = /* #__PURE__ */ createRangeClass({})
 export const replacer: any = /* #__PURE__ */ createReplacer({})
@@ -211,10 +213,7 @@ export const cot: any = /* #__PURE__ */ createCot({ typed })
 export const csc: any = /* #__PURE__ */ createCsc({ typed })
 export const cube: any = /* #__PURE__ */ createCube({ typed })
 export const divide: any = /* #__PURE__ */ createDivide({ typed })
-export const equalScalar: any = /* #__PURE__ */ createEqualScalar({
-  config,
-  typed
-})
+export const equalScalar: any = /* #__PURE__ */ createEqualScalar({ config, typed })
 export const erf: any = /* #__PURE__ */ createErf({ typed })
 export const exp: any = /* #__PURE__ */ createExp({ typed })
 export const filter: any = /* #__PURE__ */ createFilter({ typed })
@@ -252,286 +251,84 @@ export const string: any = /* #__PURE__ */ createString({ typed })
 export const subtract: any = /* #__PURE__ */ createSubtract({ typed })
 export const tanh: any = /* #__PURE__ */ createTanh({ typed })
 export const typeOf: any = /* #__PURE__ */ createTypeOf({ typed })
-export const unequal: any = /* #__PURE__ */ createUnequal({
-  equalScalar,
-  typed
-})
+export const unequal: any = /* #__PURE__ */ createUnequal({ equalScalar, typed })
 export const xgcd: any = /* #__PURE__ */ createXgcd({ typed })
 export const acoth: any = /* #__PURE__ */ createAcoth({ typed })
 export const addScalar: any = /* #__PURE__ */ createAddScalar({ typed })
 export const asech: any = /* #__PURE__ */ createAsech({ typed })
-export const bernoulli: any = /* #__PURE__ */ createBernoulli({
-  config,
-  isInteger,
-  number,
-  typed
-})
+export const bernoulli: any = /* #__PURE__ */ createBernoulli({ config, isInteger, number, typed })
 export const bitOr: any = /* #__PURE__ */ createBitOr({ typed })
-export const combinationsWithRep: any =
-  /* #__PURE__ */ createCombinationsWithRep({ typed })
+export const combinationsWithRep: any = /* #__PURE__ */ createCombinationsWithRep({ typed })
 export const cosh: any = /* #__PURE__ */ createCosh({ typed })
 export const csch: any = /* #__PURE__ */ createCsch({ typed })
 export const divideScalar: any = /* #__PURE__ */ createDivideScalar({ typed })
-export const equalText: any = /* #__PURE__ */ createEqualText({
-  compareText,
-  isZero,
-  typed
-})
+export const equalText: any = /* #__PURE__ */ createEqualText({ compareText, isZero, typed })
 export const expm1: any = /* #__PURE__ */ createExpm1({ typed })
 export const isNaN: any = /* #__PURE__ */ createIsNaN({ typed })
 export const isPrime: any = /* #__PURE__ */ createIsPrime({ typed })
 export const larger: any = /* #__PURE__ */ createLarger({ config, typed })
 export const lgamma: any = /* #__PURE__ */ createLgamma({ typed })
 export const log2: any = /* #__PURE__ */ createLog2({ typed })
-export const mapSlices: any = /* #__PURE__ */ createMapSlices({
-  isInteger,
-  typed
-})
+export const mapSlices: any = /* #__PURE__ */ createMapSlices({ isInteger, typed })
 export const apply: any = mapSlices
-export const multiplyScalar: any = /* #__PURE__ */ createMultiplyScalar({
-  typed
-})
+export const multiplyScalar: any = /* #__PURE__ */ createMultiplyScalar({ typed })
 export const nthRoot: any = /* #__PURE__ */ createNthRoot({ typed })
-export const pickRandom: any = /* #__PURE__ */ createPickRandom({
-  config,
-  typed
-})
-export const randomInt: any = /* #__PURE__ */ createRandomInt({
-  config,
-  log2,
-  typed
-})
-export const rightArithShift: any = /* #__PURE__ */ createRightArithShift({
-  typed
-})
+export const pickRandom: any = /* #__PURE__ */ createPickRandom({ config, typed })
+export const randomInt: any = /* #__PURE__ */ createRandomInt({ config, log2, typed })
+export const rightArithShift: any = /* #__PURE__ */ createRightArithShift({ typed })
 export const sec: any = /* #__PURE__ */ createSec({ typed })
 export const sinh: any = /* #__PURE__ */ createSinh({ typed })
 export const sqrt: any = /* #__PURE__ */ createSqrt({ typed })
 export const tan: any = /* #__PURE__ */ createTan({ typed })
 export const unaryMinus: any = /* #__PURE__ */ createUnaryMinus({ typed })
-export const variance: any = /* #__PURE__ */ createVariance({
-  add,
-  divide,
-  isNaN,
-  mapSlices,
-  multiply,
-  subtract,
-  typed
-})
+export const variance: any = /* #__PURE__ */ createVariance({ add, divide, isNaN, mapSlices, multiply, subtract, typed })
 export const acosh: any = /* #__PURE__ */ createAcosh({ typed })
 export const atan2: any = /* #__PURE__ */ createAtan2({ typed })
 export const bitAnd: any = /* #__PURE__ */ createBitAnd({ typed })
-export const catalan: any = /* #__PURE__ */ createCatalan({
-  addScalar,
-  combinations,
-  divideScalar,
-  isInteger,
-  isNegative,
-  multiplyScalar,
-  typed
-})
+export const catalan: any = /* #__PURE__ */ createCatalan({ addScalar, combinations, divideScalar, isInteger, isNegative, multiplyScalar, typed })
 export const clone: any = /* #__PURE__ */ createClone({ typed })
-export const composition: any = /* #__PURE__ */ createComposition({
-  addScalar,
-  combinations,
-  isInteger,
-  isNegative,
-  isPositive,
-  larger,
-  typed
-})
+export const composition: any = /* #__PURE__ */ createComposition({ addScalar, combinations, isInteger, isNegative, isPositive, larger, typed })
 export const coth: any = /* #__PURE__ */ createCoth({ typed })
 export const equal: any = /* #__PURE__ */ createEqual({ equalScalar, typed })
 export const factorial: any = /* #__PURE__ */ createFactorial({ gamma, typed })
-export const isFinite: any = /* #__PURE__ */ createIsFinite({
-  isBounded,
-  map,
-  typed
-})
+export const isFinite: any = /* #__PURE__ */ createIsFinite({ isBounded, map, typed })
 export const LN2: any = /* #__PURE__ */ createLN2({ config })
 export const log10: any = /* #__PURE__ */ createLog10({ typed })
-export const multinomial: any = /* #__PURE__ */ createMultinomial({
-  add,
-  divide,
-  factorial,
-  isInteger,
-  isPositive,
-  multiply,
-  typed
-})
+export const multinomial: any = /* #__PURE__ */ createMultinomial({ add, divide, factorial, isInteger, isPositive, multiply, typed })
 export const numeric: any = /* #__PURE__ */ createNumeric({ number })
-export const permutations: any = /* #__PURE__ */ createPermutations({
-  factorial,
-  typed
-})
-export const prod: any = /* #__PURE__ */ createProd({
-  config,
-  multiplyScalar,
-  numeric,
-  typed
-})
+export const permutations: any = /* #__PURE__ */ createPermutations({ factorial, typed })
+export const prod: any = /* #__PURE__ */ createProd({ config, multiplyScalar, numeric, parseNumberWithConfig, typed })
 export const round: any = /* #__PURE__ */ createRound({ typed })
 export const smaller: any = /* #__PURE__ */ createSmaller({ config, typed })
-export const subtractScalar: any = /* #__PURE__ */ createSubtractScalar({
-  typed
-})
-export const zeta: any = /* #__PURE__ */ createZeta({
-  add,
-  config,
-  divide,
-  equal,
-  factorial,
-  gamma,
-  isBounded,
-  isNegative,
-  multiply,
-  pi,
-  pow,
-  sin,
-  smallerEq,
-  subtract,
-  typed
-})
+export const subtractScalar: any = /* #__PURE__ */ createSubtractScalar({ typed })
+export const zeta: any = /* #__PURE__ */ createZeta({ add, config, divide, equal, factorial, gamma, isBounded, isNegative, multiply, pi, pow, sin, smallerEq, subtract, typed })
 export const acsch: any = /* #__PURE__ */ createAcsch({ typed })
-export const compareNatural: any = /* #__PURE__ */ createCompareNatural({
-  compare,
-  typed
-})
-export const cumsum: any = /* #__PURE__ */ createCumSum({
-  add,
-  typed,
-  unaryPlus
-})
+export const compareNatural: any = /* #__PURE__ */ createCompareNatural({ compare, typed })
+export const cumsum: any = /* #__PURE__ */ createCumSum({ add, typed, unaryPlus })
 export const floor: any = /* #__PURE__ */ createFloor({ config, round, typed })
-export const hypot: any = /* #__PURE__ */ createHypot({
-  abs,
-  addScalar,
-  divideScalar,
-  isPositive,
-  multiplyScalar,
-  smaller,
-  sqrt,
-  typed
-})
+export const hypot: any = /* #__PURE__ */ createHypot({ abs, addScalar, divideScalar, isPositive, multiplyScalar, smaller, sqrt, typed })
 export const lcm: any = /* #__PURE__ */ createLcm({ typed })
-export const max: any = /* #__PURE__ */ createMax({
-  config,
-  isNaN,
-  larger,
-  numeric,
-  typed
-})
-export const min: any = /* #__PURE__ */ createMin({
-  config,
-  isNaN,
-  numeric,
-  smaller,
-  typed
-})
+export const max: any = /* #__PURE__ */ createMax({ config, isNaN, larger, numeric, typed })
+export const min: any = /* #__PURE__ */ createMin({ config, isNaN, numeric, smaller, typed })
 export const norm: any = /* #__PURE__ */ createNorm({ typed })
 export const print: any = /* #__PURE__ */ createPrint({ typed })
-export const range: any = /* #__PURE__ */ createRange({
-  matrix,
-  add,
-  config,
-  equal,
-  isPositive,
-  isZero,
-  larger,
-  largerEq,
-  smaller,
-  smallerEq,
-  typed
-})
+export const range: any = /* #__PURE__ */ createRange({ matrix, add, config, equal, isPositive, isZero, larger, largerEq, smaller, smallerEq, typed })
 export const sign: any = /* #__PURE__ */ createSign({ typed })
-export const std: any = /* #__PURE__ */ createStd({
-  map,
-  sqrt,
-  typed,
-  variance
-})
-export const sum: any = /* #__PURE__ */ createSum({
-  add,
-  config,
-  numeric,
-  typed
-})
+export const std: any = /* #__PURE__ */ createStd({ map, sqrt, typed, variance })
+export const sum: any = /* #__PURE__ */ createSum({ add, config, numeric, parseNumberWithConfig, typed })
 export const asinh: any = /* #__PURE__ */ createAsinh({ typed })
 export const ceil: any = /* #__PURE__ */ createCeil({ config, round, typed })
-export const corr: any = /* #__PURE__ */ createCorr({
-  add,
-  divide,
-  matrix,
-  mean,
-  multiply,
-  pow,
-  sqrt,
-  subtract,
-  sum,
-  typed
-})
+export const corr: any = /* #__PURE__ */ createCorr({ add, divide, matrix, mean, multiply, pow, sqrt, subtract, sum, typed })
 export const fix: any = /* #__PURE__ */ createFix({ ceil, floor, typed })
 export const isNumeric: any = /* #__PURE__ */ createIsNumeric({ typed })
-export const partitionSelect: any = /* #__PURE__ */ createPartitionSelect({
-  compare,
-  isNaN,
-  isNumeric,
-  typed
-})
-export const stirlingS2: any = /* #__PURE__ */ createStirlingS2({
-  addScalar,
-  combinations,
-  divideScalar,
-  factorial,
-  isInteger,
-  isNegative,
-  larger,
-  multiplyScalar,
-  number,
-  pow,
-  subtractScalar,
-  typed
-})
-export const bellNumbers: any = /* #__PURE__ */ createBellNumbers({
-  addScalar,
-  isInteger,
-  isNegative,
-  stirlingS2,
-  typed
-})
+export const partitionSelect: any = /* #__PURE__ */ createPartitionSelect({ compare, isNaN, isNumeric, typed })
+export const stirlingS2: any = /* #__PURE__ */ createStirlingS2({ addScalar, combinations, divideScalar, factorial, isInteger, isNegative, larger, multiplyScalar, number, pow, subtractScalar, typed })
+export const bellNumbers: any = /* #__PURE__ */ createBellNumbers({ addScalar, isInteger, isNegative, stirlingS2, typed })
 export const deepEqual: any = /* #__PURE__ */ createDeepEqual({ equal, typed })
 export const gcd: any = /* #__PURE__ */ createGcd({ typed })
-export const median: any = /* #__PURE__ */ createMedian({
-  add,
-  compare,
-  divide,
-  partitionSelect,
-  typed
-})
-export const quantileSeq: any = /* #__PURE__ */ createQuantileSeq({
-  add,
-  compare,
-  divide,
-  isInteger,
-  larger,
-  mapSlices,
-  multiply,
-  partitionSelect,
-  smaller,
-  smallerEq,
-  subtract,
-  typed
-})
+export const median: any = /* #__PURE__ */ createMedian({ add, compare, divide, partitionSelect, typed })
+export const quantileSeq: any = /* #__PURE__ */ createQuantileSeq({ add, compare, divide, isInteger, larger, mapSlices, multiply, partitionSelect, smaller, smallerEq, subtract, typed })
 export const mode: any = /* #__PURE__ */ createMode({ isNaN, isNumeric, typed })
 export const _true: any = /* #__PURE__ */ createTrue({})
-export const hasNumericValue: any = /* #__PURE__ */ createHasNumericValue({
-  isNumeric,
-  typed
-})
-export const mad: any = /* #__PURE__ */ createMad({
-  abs,
-  map,
-  median,
-  subtract,
-  typed
-})
+export const hasNumericValue: any = /* #__PURE__ */ createHasNumericValue({ isNumeric, typed })
+export const mad: any = /* #__PURE__ */ createMad({ abs, map, median, subtract, typed })
