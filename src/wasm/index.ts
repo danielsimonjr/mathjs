@@ -323,5 +323,133 @@ export {
   solve as laSolve
 } from './matrix/linalg'
 
-// Note: Eigenvalue operations (eigs, eigsSymmetric, powerIteration, spectralRadius)
-// are not yet implemented in AssemblyScript. Use the JavaScript implementations.
+// Eigenvalue operations
+export {
+  eigsSymmetric,
+  powerIteration,
+  spectralRadius,
+  inverseIteration
+} from './matrix/eigs'
+
+// Complex eigenvalue operations
+export {
+  balanceMatrix,
+  reduceToHessenberg,
+  eigenvalues2x2,
+  qrIterationStep,
+  qrAlgorithm,
+  hessenbergQRStep
+} from './matrix/complexEigs'
+
+// Matrix exponential
+export {
+  expm,
+  expmSmall,
+  expmv
+} from './matrix/expm'
+
+// Matrix square root
+export {
+  sqrtm,
+  sqrtmNewtonSchulz,
+  sqrtmCholesky
+} from './matrix/sqrtm'
+
+// Sparse LU decomposition
+export {
+  sparseLu,
+  sparseForwardSolve,
+  sparseBackwardSolve,
+  sparseLuSolve
+} from './algebra/sparseLu'
+
+// Sparse Cholesky decomposition
+export {
+  sparseChol,
+  sparseCholSolve,
+  eliminationTree,
+  columnCounts
+} from './algebra/sparseChol'
+
+// Plain number operations (with 'plain' prefix for non-conflicting exports)
+export {
+  abs as plainAbs,
+  add as plainAdd,
+  subtract as plainSubtract,
+  multiply as plainMultiply,
+  divide as plainDivide,
+  unaryMinus as plainUnaryMinus,
+  unaryPlus as plainUnaryPlus,
+  cbrt as plainCbrt,
+  cube as plainCube,
+  exp as plainExp,
+  expm1 as plainExpm1,
+  gcd as plainGcd,
+  lcm as plainLcm,
+  log as plainLog,
+  log2 as plainLog2,
+  log10 as plainLog10,
+  log1p as plainLog1p,
+  mod as plainMod,
+  nthRoot as plainNthRoot,
+  sign as plainSign,
+  sqrt as plainSqrt,
+  square as plainSquare,
+  pow as plainPow,
+  norm as plainNorm,
+  bitAnd as plainBitAnd,
+  bitNot as plainBitNot,
+  bitOr as plainBitOr,
+  bitXor as plainBitXor,
+  leftShift as plainLeftShift,
+  rightArithShift as plainRightArithShift,
+  rightLogShift as plainRightLogShift,
+  combinations as plainCombinations,
+  PI as plainPI,
+  TAU as plainTAU,
+  E as plainE,
+  PHI as plainPHI,
+  not as plainNot,
+  or as plainOr,
+  xor as plainXor,
+  and as plainAnd,
+  equal as plainEqual,
+  unequal as plainUnequal,
+  smaller as plainSmaller,
+  smallerEq as plainSmallerEq,
+  larger as plainLarger,
+  largerEq as plainLargerEq,
+  compare as plainCompare,
+  gamma as plainGamma,
+  lgamma as plainLgamma,
+  acos as plainAcos,
+  acosh as plainAcosh,
+  acot as plainAcot,
+  acoth as plainAcoth,
+  acsc as plainAcsc,
+  acsch as plainAcsch,
+  asec as plainAsec,
+  asech as plainAsech,
+  asin as plainAsin,
+  asinh as plainAsinh,
+  atan as plainAtan,
+  atan2 as plainAtan2,
+  atanh as plainAtanh,
+  cos as plainCos,
+  cosh as plainCosh,
+  cot as plainCot,
+  coth as plainCoth,
+  csc as plainCsc,
+  csch as plainCsch,
+  sec as plainSec,
+  sech as plainSech,
+  sin as plainSin,
+  sinh as plainSinh,
+  tan as plainTan,
+  tanh as plainTanh,
+  isIntegerValue as plainIsIntegerValue,
+  isNegative as plainIsNegative,
+  isPositive as plainIsPositive,
+  isZero as plainIsZero,
+  isNaN as plainIsNaN
+} from './plain/operations'
