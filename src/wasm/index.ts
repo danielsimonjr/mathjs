@@ -272,3 +272,61 @@ export {
   simdVectorSizeF64,
   simdVectorSizeF32
 } from './simd/operations'
+
+// Statistics operations
+export {
+  mean as statsMean,
+  median as statsMedian,
+  medianUnsorted as statsMedianUnsorted,
+  variance as statsVariance,
+  std as statsStd,
+  sum as statsSum,
+  prod as statsProd,
+  mad as statsMad,
+  kurtosis as statsKurtosis,
+  skewness as statsSkewness,
+  coefficientOfVariation as statsCV,
+  correlation as statsCorrelation,
+  covariance as statsCovariance,
+  geometricMean as statsGeometricMean,
+  harmonicMean as statsHarmonicMean,
+  rms as statsRms,
+  quantile as statsQuantile,
+  percentile as statsPercentile,
+  interquartileRange as statsIQR,
+  range as statsRange,
+  cumsum as statsCumsum,
+  zscore as statsZscore
+} from './statistics/basic'
+
+// Linear algebra operations from linalg module
+export {
+  det as laDet,
+  inv as laInv,
+  inv2x2 as laInv2x2,
+  inv3x3 as laInv3x3,
+  norm1 as laNorm1,
+  norm2 as laNorm2,
+  normP as laNormP,
+  normInf as laNormInf,
+  normFro as laNormFro,
+  matrixNorm1 as laMatrixNorm1,
+  matrixNormInf as laMatrixNormInf,
+  normalize as laNormalize,
+  kron as laKron,
+  cross as laCross,
+  dot as laDot,
+  outer as laOuter,
+  cond1 as laCond1,
+  condInf as laCondInf,
+  rank as laRank,
+  solve as laSolve
+} from './matrix/linalg'
+
+// Eigenvalue operations
+export {
+  eigs as laEigs,
+  eigsSymmetric as laEigsSymmetric,
+  powerIteration as laPowerIteration,
+  spectralRadius as laSpectralRadius
+} from './matrix/linalg'

@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.2.0] - 2026-01-21
+
+### Added - 2026-01-21
+
+**WASM Acceleration Integration for TypeScript Functions**
+
+- **Enhanced** `src/wasm/WasmLoader.ts` - Extended WasmModule interface with additional function signatures:
+  - Linear algebra: `laDet`, `laInv`, `laKron`, `laDot`, `laCross`, `laNorm2`, `laSolve`
+  - SIMD operations: `simdDotF64`, `simdSumF64`, `simdSumSquaresF64`, `simdNormF64`, `simdMeanF64`, `simdVarianceF64`, `simdStdF64`, `simdAddF64`, `simdSubF64`, `simdMulF64`, `simdScaleF64`, `simdAbsF64`, `simdMatMulF64`
+  - Statistics: `statsMean`, `statsMedian`, `statsVariance`, `statsStd`, `statsSum`, `statsProd`, `statsMad`, `statsCorrelation`, `statsCovariance`
+
+- **Updated** `src/function/matrix/det.ts` - WASM acceleration for determinant calculation
+  - Uses `laDet` for matrices ≥4x4 with plain number elements
+  - Automatic fallback to JavaScript for complex/BigNumber types
+
+- **Updated** `src/function/matrix/kron.ts` - WASM acceleration for Kronecker product
+  - Uses `laKron` for 2D matrices with ≥64 total elements
+  - Automatic fallback for non-numeric or small matrices
+
+- **Updated** `src/function/statistics/corr.ts` - WASM acceleration for correlation coefficient
+  - Uses `statsCorrelation` for arrays with ≥200 elements
+  - Automatic fallback for mixed types
+
+- **Updated** `src/function/statistics/mad.ts` - WASM acceleration for median absolute deviation
+  - Uses `statsMad` for arrays with ≥500 elements
+  - Automatic fallback for non-numeric arrays
+
+- **Added** WASM integration notes in `src/function/matrix/fft.ts`
+  - Documents complex number format conversion requirements for full WASM FFT acceleration
+
+---
+
 ## [Unreleased]
 
 ### Added - 2026-01-19

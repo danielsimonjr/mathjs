@@ -2103,7 +2103,16 @@ export const createParse = /* #__PURE__ */ factory(
     }
 
     // Now that we can parse, automatically convert strings to Nodes by parsing
-    typed.addConversion({ from: 'string', to: 'Node', convert: parse })
+    // Wrap in try-catch to handle case when both JS and TS versions are loaded
+    // in the same process (they share the same typed-function singleton)
+    try {
+      typed.addConversion({ from: 'string', to: 'Node', convert: parse })
+    } catch (e: any) {
+      // Ignore "already exists" error when conversion was registered by another instance
+      if (!e.message?.includes('already a conversion')) {
+        throw e
+      }
+    }
 
     return parse
   }

@@ -162,7 +162,16 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
    * @param {SimplifyOptions} [options] Optional configuration settings
    * @return {Node} Returns the simplified form of `expr`
    */
-  typed.addConversion({ from: 'Object', to: 'Map', convert: createMap })
+  // Wrap in try-catch to handle case when both JS and TS versions are loaded
+  // in the same process (they share the same typed-function singleton)
+  try {
+    typed.addConversion({ from: 'Object', to: 'Map', convert: createMap })
+  } catch (e) {
+    // Ignore "already exists" error when conversion was registered by another instance
+    if (!e.message?.includes('already a conversion')) {
+      throw e
+    }
+  }
   const simplify = typed('simplify', {
     Node: _simplify,
     'Node, Map': (expr, scope) => _simplify(expr, false, scope),

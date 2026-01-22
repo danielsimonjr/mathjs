@@ -1,6 +1,22 @@
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 
 import { TypedFunction, Matrix } from '../../types.ts'
+
+// Minimum array length for WASM to be beneficial
+const WASM_CORR_THRESHOLD = 200
+
+/**
+ * Check if an array contains only plain numbers
+ */
+function isPlainNumberArray(arr: any[]): boolean {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== 'number') {
+      return false
+    }
+  }
+  return true
+}
 
 const name = 'corr'
 const dependencies = [
@@ -105,6 +121,32 @@ export const createCorr = /* #__PURE__ */ factory(
     }
     function correlation(A: any, B: any) {
       const n = A.length
+
+      // Try WASM for large arrays with plain numbers
+      const wasm = wasmLoader.getModule()
+      if (
+        wasm &&
+        n >= WASM_CORR_THRESHOLD &&
+        isPlainNumberArray(A) &&
+        isPlainNumberArray(B)
+      ) {
+        try {
+          const aAlloc = wasmLoader.allocateFloat64Array(A)
+          const bAlloc = wasmLoader.allocateFloat64Array(B)
+
+          try {
+            const result = wasm.statsCorrelation(aAlloc.ptr, bAlloc.ptr, n)
+            return result
+          } finally {
+            wasmLoader.free(aAlloc.ptr)
+            wasmLoader.free(bAlloc.ptr)
+          }
+        } catch {
+          // Fall back to JS implementation on WASM error
+        }
+      }
+
+      // JavaScript fallback
       const sumX = sum(A)
       const sumY = sum(B)
       const sumXY = A.reduce(

@@ -1,5 +1,7 @@
 import { arraySize } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+// WASM integration for FFT is complex due to complex number format differences
+// See note above dependencies array for details
 
 // Type definitions for FFT operations
 type ComplexNumber = { re: number; im: number } | number
@@ -50,6 +52,15 @@ interface Dependencies {
   ceil: TypedFunction
   log2: TypedFunction
 }
+
+// FFT WASM integration note:
+// The WASM fft function expects interleaved complex numbers [re, im, re, im, ...]
+// while mathjs uses Complex objects with {re, im} properties.
+// Full WASM acceleration requires format conversion which may negate benefits
+// for small arrays. The existing JavaScript implementation with Chirp-Z transform
+// is already well-optimized. WASM acceleration is most beneficial for large
+// power-of-2 sized arrays with pure number inputs.
+// TODO: Add WASM acceleration for large power-of-2 FFTs
 
 const name = 'fft'
 const dependencies = [

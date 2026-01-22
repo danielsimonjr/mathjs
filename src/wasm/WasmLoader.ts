@@ -58,7 +58,7 @@ export interface WasmModule {
   ) => void
   dotProduct: (aPtr: number, bPtr: number, size: number) => number
 
-  // Linear algebra
+  // Linear algebra decompositions
   luDecomposition: (aPtr: number, n: number, permPtr: number) => number
   qrDecomposition: (
     aPtr: number,
@@ -76,6 +76,77 @@ export interface WasmModule {
     xPtr: number
   ) => void
   luDeterminant: (luPtr: number, n: number, permPtr: number) => number
+
+  // Linear algebra (linalg module)
+  laDet: (aPtr: number, n: number) => number
+  laInv: (aPtr: number, n: number) => number // returns ptr to result
+  laKron: (
+    aPtr: number,
+    aRows: number,
+    aCols: number,
+    bPtr: number,
+    bRows: number,
+    bCols: number
+  ) => number // returns ptr to result
+  laDot: (aPtr: number, bPtr: number, n: number) => number
+  laCross: (aPtr: number, bPtr: number) => number // returns ptr to result (3 elements)
+  laNorm2: (xPtr: number, n: number) => number
+  laSolve: (aPtr: number, bPtr: number, n: number) => number // returns ptr to result
+
+  // SIMD operations
+  simdDotF64: (aPtr: number, bPtr: number, length: number) => number
+  simdSumF64: (aPtr: number, length: number) => number
+  simdSumSquaresF64: (aPtr: number, length: number) => number
+  simdNormF64: (aPtr: number, length: number) => number
+  simdMinF64: (aPtr: number, length: number) => number
+  simdMaxF64: (aPtr: number, length: number) => number
+  simdMeanF64: (aPtr: number, length: number) => number
+  simdVarianceF64: (aPtr: number, length: number, ddof: number) => number
+  simdStdF64: (aPtr: number, length: number, ddof: number) => number
+  simdAddF64: (
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
+    length: number
+  ) => void
+  simdSubF64: (
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
+    length: number
+  ) => void
+  simdMulF64: (
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
+    length: number
+  ) => void
+  simdScaleF64: (
+    aPtr: number,
+    scalar: number,
+    resultPtr: number,
+    length: number
+  ) => void
+  simdAbsF64: (aPtr: number, resultPtr: number, length: number) => void
+  simdMatMulF64: (
+    aPtr: number,
+    bPtr: number,
+    cPtr: number,
+    m: number,
+    k: number,
+    n: number
+  ) => void
+
+  // Statistics operations
+  statsMean: (aPtr: number, n: number) => number
+  statsMedian: (aPtr: number, n: number) => number
+  statsVariance: (aPtr: number, n: number, ddof: number) => number
+  statsStd: (aPtr: number, n: number, ddof: number) => number
+  statsSum: (aPtr: number, n: number) => number
+  statsProd: (aPtr: number, n: number) => number
+  statsMad: (aPtr: number, n: number) => number
+  statsCorrelation: (aPtr: number, bPtr: number, n: number) => number
+  statsCovariance: (aPtr: number, bPtr: number, n: number, ddof: number) => number
 
   // Signal processing
   fft: (dataPtr: number, n: number, inverse: number) => void
