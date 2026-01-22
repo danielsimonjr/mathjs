@@ -1,6 +1,5 @@
 import { deepForEach } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
-import { safeNumberType } from '../../utils/number.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
 
 // Type definitions for statistical operations
@@ -40,9 +39,9 @@ export const createProd = /* #__PURE__ */ factory(
   dependencies,
   ({
     typed,
-    config,
+    config: _config,
     multiplyScalar,
-    numeric,
+    numeric: _numeric,
     parseNumberWithConfig
   }: Dependencies) => {
     /**

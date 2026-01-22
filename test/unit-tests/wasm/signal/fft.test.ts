@@ -1,9 +1,9 @@
 import assert from 'assert'
 import {
   fft,
-  fft2d,
+  fft2d as _fft2d,
   ifft,
-  ifft2d,
+  ifft2d as _ifft2d,
   rfft,
   irfft,
   convolve,

@@ -27,7 +27,7 @@ import {
   isNegative,
   isZero,
   isNaN,
-  isFinite,
+  isFinite as _isFinite,
   isInteger,
   sign,
   signArray

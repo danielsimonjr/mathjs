@@ -4,7 +4,7 @@
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
-const { parse, ConstantNode, SymbolNode } = math
+const { parse: _parse, ConstantNode: _ConstantNode, SymbolNode } = math
 
 function isOperatorNode(value: unknown): boolean {
   return (

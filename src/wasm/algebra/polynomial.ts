@@ -24,9 +24,9 @@ export function polyEval(coeffsPtr: usize, n: i32, x: f64): f64 {
   if (n === 0) return 0.0
 
   // Horner's method: ((an*x + an-1)*x + ... )*x + a0
-  let result: f64 = load<f64>(coeffsPtr + (<usize>(n - 1) << 3))
+  let result: f64 = load<f64>(coeffsPtr + ((<usize>(n - 1)) << 3))
   for (let i: i32 = n - 2; i >= 0; i--) {
-    result = result * x + load<f64>(coeffsPtr + (<usize>i << 3))
+    result = result * x + load<f64>(coeffsPtr + ((<usize>i) << 3))
   }
   return result
 }
@@ -57,12 +57,12 @@ export function polyEvalWithDerivative(
   }
 
   // Horner's method for polynomial and derivative
-  let p: f64 = load<f64>(coeffsPtr + (<usize>(n - 1) << 3))
+  let p: f64 = load<f64>(coeffsPtr + ((<usize>(n - 1)) << 3))
   let dp: f64 = 0.0
 
   for (let i: i32 = n - 2; i >= 0; i--) {
     dp = dp * x + p
-    p = p * x + load<f64>(coeffsPtr + (<usize>i << 3))
+    p = p * x + load<f64>(coeffsPtr + ((<usize>i) << 3))
   }
 
   store<f64>(resultPtr, p)
@@ -135,7 +135,14 @@ export function quadraticRoots(a: f64, b: f64, c: f64, resultPtr: usize): void {
  * @param resultPtr - Pointer to output [real1, imag1, real2, imag2, real3, imag3] (f64, 6 elements)
  * @param workPtr - Working memory for quadratic roots (f64, 4 elements)
  */
-export function cubicRoots(a: f64, b: f64, c: f64, d: f64, resultPtr: usize, workPtr: usize): void {
+export function cubicRoots(
+  a: f64,
+  b: f64,
+  c: f64,
+  d: f64,
+  resultPtr: usize,
+  workPtr: usize
+): void {
   if (Math.abs(a) < 1e-14) {
     // Quadratic equation
     quadraticRoots(b, c, d, workPtr)
@@ -187,9 +194,15 @@ export function cubicRoots(a: f64, b: f64, c: f64, d: f64, resultPtr: usize, wor
 
     store<f64>(resultPtr, m * Math.cos(theta) + shift)
     store<f64>(resultPtr + 8, 0.0)
-    store<f64>(resultPtr + 16, m * Math.cos(theta - (2.0 * Math.PI) / 3.0) + shift)
+    store<f64>(
+      resultPtr + 16,
+      m * Math.cos(theta - (2.0 * Math.PI) / 3.0) + shift
+    )
     store<f64>(resultPtr + 24, 0.0)
-    store<f64>(resultPtr + 32, m * Math.cos(theta - (4.0 * Math.PI) / 3.0) + shift)
+    store<f64>(
+      resultPtr + 32,
+      m * Math.cos(theta - (4.0 * Math.PI) / 3.0) + shift
+    )
     store<f64>(resultPtr + 40, 0.0)
   } else {
     // Multiple roots (discriminant ≈ 0)
@@ -240,7 +253,10 @@ export function quarticRoots(
   if (Math.abs(a) < 1e-14) {
     cubicRoots(b, c, d, e, workPtr, workPtr + 48)
     for (let i: i32 = 0; i < 6; i++) {
-      store<f64>(resultPtr + (<usize>i << 3), load<f64>(workPtr + (<usize>i << 3)))
+      store<f64>(
+        resultPtr + ((<usize>i) << 3),
+        load<f64>(workPtr + ((<usize>i) << 3))
+      )
     }
     store<f64>(resultPtr + 48, f64.NaN)
     store<f64>(resultPtr + 56, 0.0)
@@ -335,7 +351,11 @@ export function quarticRoots(
     const cRoot3Re: f64 = load<f64>(workPtr + 32)
     const cRoot3Im: f64 = load<f64>(workPtr + 40)
 
-    if (cRoot1Im === 0.0 && cRoot2Im === 0.0 && Math.abs(cRoot2Re) > Math.abs(y)) {
+    if (
+      cRoot1Im === 0.0 &&
+      cRoot2Im === 0.0 &&
+      Math.abs(cRoot2Re) > Math.abs(y)
+    ) {
       y = cRoot2Re
     }
     if (cRoot3Im === 0.0 && Math.abs(cRoot3Re) > Math.abs(y)) {
@@ -363,8 +383,11 @@ export function quarticRoots(
       // Use quadratic formula with complex arithmetic
       // This is a simplified handling for the complex case
       for (let i: i32 = 0; i < 8; i += 2) {
-        store<f64>(resultPtr + (<usize>i << 3), shift)
-        store<f64>(resultPtr + (<usize>(i + 1) << 3), (sqrtNegW / 2.0) * (i < 4 ? 1.0 : -1.0))
+        store<f64>(resultPtr + ((<usize>i) << 3), shift)
+        store<f64>(
+          resultPtr + ((<usize>(i + 1)) << 3),
+          (sqrtNegW / 2.0) * (i < 4 ? 1.0 : -1.0)
+        )
       }
     }
   }
@@ -441,19 +464,23 @@ export function polyRoots(
   }
 
   // Normalize the polynomial
-  const an: f64 = load<f64>(coeffsPtr + (<usize>degree << 3))
+  const an: f64 = load<f64>(coeffsPtr + ((<usize>degree) << 3))
   const normCoeffsPtr: usize = workPtr
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(normCoeffsPtr + (<usize>i << 3), load<f64>(coeffsPtr + (<usize>i << 3)) / an)
+    store<f64>(
+      normCoeffsPtr + ((<usize>i) << 3),
+      load<f64>(coeffsPtr + ((<usize>i) << 3)) / an
+    )
   }
 
   // Initialize roots on a circle
-  const radius: f64 = 1.0 + Math.abs(load<f64>(normCoeffsPtr + (<usize>(degree - 1) << 3)))
+  const radius: f64 =
+    1.0 + Math.abs(load<f64>(normCoeffsPtr + ((<usize>(degree - 1)) << 3)))
 
   for (let i: i32 = 0; i < degree; i++) {
     const angle: f64 = (2.0 * Math.PI * f64(i)) / f64(degree) + 0.1
-    store<f64>(rootsPtr + (<usize>(i * 2) << 3), radius * Math.cos(angle))
-    store<f64>(rootsPtr + (<usize>(i * 2 + 1) << 3), radius * Math.sin(angle))
+    store<f64>(rootsPtr + ((<usize>(i * 2)) << 3), radius * Math.cos(angle))
+    store<f64>(rootsPtr + ((<usize>(i * 2 + 1)) << 3), radius * Math.sin(angle))
   }
 
   // Durand-Kerner iteration
@@ -462,18 +489,18 @@ export function polyRoots(
 
     for (let i: i32 = 0; i < degree; i++) {
       // Evaluate polynomial at root[i]
-      const zi_re: f64 = load<f64>(rootsPtr + (<usize>(i * 2) << 3))
-      const zi_im: f64 = load<f64>(rootsPtr + (<usize>(i * 2 + 1) << 3))
+      const zi_re: f64 = load<f64>(rootsPtr + ((<usize>(i * 2)) << 3))
+      const zi_im: f64 = load<f64>(rootsPtr + ((<usize>(i * 2 + 1)) << 3))
 
       // p(zi)
-      let p_re: f64 = load<f64>(normCoeffsPtr + (<usize>degree << 3))
+      let p_re: f64 = load<f64>(normCoeffsPtr + ((<usize>degree) << 3))
       let p_im: f64 = 0.0
 
       for (let j: i32 = degree - 1; j >= 0; j--) {
         // (p_re + p_im*i) * (zi_re + zi_im*i)
         const temp_re: f64 = p_re * zi_re - p_im * zi_im
         const temp_im: f64 = p_re * zi_im + p_im * zi_re
-        p_re = temp_re + load<f64>(normCoeffsPtr + (<usize>j << 3))
+        p_re = temp_re + load<f64>(normCoeffsPtr + ((<usize>j) << 3))
         p_im = temp_im
       }
 
@@ -483,8 +510,10 @@ export function polyRoots(
 
       for (let j: i32 = 0; j < degree; j++) {
         if (j !== i) {
-          const diff_re: f64 = zi_re - load<f64>(rootsPtr + (<usize>(j * 2) << 3))
-          const diff_im: f64 = zi_im - load<f64>(rootsPtr + (<usize>(j * 2 + 1) << 3))
+          const diff_re: f64 =
+            zi_re - load<f64>(rootsPtr + ((<usize>(j * 2)) << 3))
+          const diff_im: f64 =
+            zi_im - load<f64>(rootsPtr + ((<usize>(j * 2 + 1)) << 3))
 
           const new_re: f64 = prod_re * diff_re - prod_im * diff_im
           const new_im: f64 = prod_re * diff_im + prod_im * diff_re
@@ -501,8 +530,8 @@ export function polyRoots(
       const delta_im: f64 = (p_im * prod_re - p_re * prod_im) / denom
 
       // Update root
-      store<f64>(rootsPtr + (<usize>(i * 2) << 3), zi_re - delta_re)
-      store<f64>(rootsPtr + (<usize>(i * 2 + 1) << 3), zi_im - delta_im)
+      store<f64>(rootsPtr + ((<usize>(i * 2)) << 3), zi_re - delta_re)
+      store<f64>(rootsPtr + ((<usize>(i * 2 + 1)) << 3), zi_im - delta_im)
 
       const deltaMag: f64 = Math.sqrt(delta_re * delta_re + delta_im * delta_im)
       if (deltaMag > maxDelta) {
@@ -517,9 +546,9 @@ export function polyRoots(
 
   // Clean up near-real roots
   for (let i: i32 = 0; i < degree; i++) {
-    const imag: f64 = load<f64>(rootsPtr + (<usize>(i * 2 + 1) << 3))
+    const imag: f64 = load<f64>(rootsPtr + ((<usize>(i * 2 + 1)) << 3))
     if (Math.abs(imag) < tol) {
-      store<f64>(rootsPtr + (<usize>(i * 2 + 1) << 3), 0.0)
+      store<f64>(rootsPtr + ((<usize>(i * 2 + 1)) << 3), 0.0)
     }
   }
 
@@ -537,14 +566,21 @@ export function polyRoots(
  * @param resultPtr - Pointer to derivative coefficients [a1, 2*a2, ..., n*an] (f64, n-1 elements)
  * @returns Number of coefficients in derivative (n-1, or 1 if n <= 1)
  */
-export function polyDerivative(coeffsPtr: usize, n: i32, resultPtr: usize): i32 {
+export function polyDerivative(
+  coeffsPtr: usize,
+  n: i32,
+  resultPtr: usize
+): i32 {
   if (n <= 1) {
     store<f64>(resultPtr, 0.0) // Constant polynomial has derivative 0
     return 1
   }
 
   for (let i: i32 = 1; i < n; i++) {
-    store<f64>(resultPtr + (<usize>(i - 1) << 3), f64(i) * load<f64>(coeffsPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>(i - 1)) << 3),
+      f64(i) * load<f64>(coeffsPtr + ((<usize>i) << 3))
+    )
   }
   return n - 1
 }
@@ -573,15 +609,18 @@ export function polyMultiply(
 
   // Initialize result to zero
   for (let i: i32 = 0; i < nc; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
 
   for (let i: i32 = 0; i < na; i++) {
-    const ai: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const ai: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     for (let j: i32 = 0; j < nb; j++) {
       const idx: i32 = i + j
-      const current: f64 = load<f64>(resultPtr + (<usize>idx << 3))
-      store<f64>(resultPtr + (<usize>idx << 3), current + ai * load<f64>(bPtr + (<usize>j << 3)))
+      const current: f64 = load<f64>(resultPtr + ((<usize>idx) << 3))
+      store<f64>(
+        resultPtr + ((<usize>idx) << 3),
+        current + ai * load<f64>(bPtr + ((<usize>j) << 3))
+      )
     }
   }
 
@@ -623,30 +662,36 @@ export function polyDivide(
 
   // Copy a to working memory (remainder)
   for (let i: i32 = 0; i < na; i++) {
-    store<f64>(workPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(workPtr + ((<usize>i) << 3), load<f64>(aPtr + ((<usize>i) << 3)))
   }
 
   // Initialize quotient to zero
   for (let i: i32 = 0; i < nq; i++) {
-    store<f64>(quotPtr + (<usize>i << 3), 0.0)
+    store<f64>(quotPtr + ((<usize>i) << 3), 0.0)
   }
 
-  const bn: f64 = load<f64>(bPtr + (<usize>(nb - 1) << 3))
+  const bn: f64 = load<f64>(bPtr + ((<usize>(nb - 1)) << 3))
 
   for (let i: i32 = na - 1; i >= nb - 1; i--) {
-    const q: f64 = load<f64>(workPtr + (<usize>i << 3)) / bn
-    store<f64>(quotPtr + (<usize>(i - nb + 1) << 3), q)
+    const q: f64 = load<f64>(workPtr + ((<usize>i) << 3)) / bn
+    store<f64>(quotPtr + ((<usize>(i - nb + 1)) << 3), q)
 
     for (let j: i32 = 0; j < nb; j++) {
       const idx: i32 = i - nb + 1 + j
-      const current: f64 = load<f64>(workPtr + (<usize>idx << 3))
-      store<f64>(workPtr + (<usize>idx << 3), current - q * load<f64>(bPtr + (<usize>j << 3)))
+      const current: f64 = load<f64>(workPtr + ((<usize>idx) << 3))
+      store<f64>(
+        workPtr + ((<usize>idx) << 3),
+        current - q * load<f64>(bPtr + ((<usize>j) << 3))
+      )
     }
   }
 
   // Copy remainder
   for (let i: i32 = 0; i < nr; i++) {
-    store<f64>(remPtr + (<usize>i << 3), load<f64>(workPtr + (<usize>i << 3)))
+    store<f64>(
+      remPtr + ((<usize>i) << 3),
+      load<f64>(workPtr + ((<usize>i) << 3))
+    )
   }
 
   return nq

@@ -472,7 +472,7 @@ async function benchmarkDeterminant(impl: Implementations): Promise<void> {
 
     // Generate a random matrix
     const matrix = generateMatrix(size, size)
-    const flatMatrix = generateFlatMatrix(size, size)
+    const _flatMatrix = generateFlatMatrix(size, size)
 
     const bench = new Bench({ time: 3000, iterations: 5 })
 

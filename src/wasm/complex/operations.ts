@@ -23,8 +23,8 @@ export function arg(re: f64, im: f64): f64 {
  */
 export function argArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    const srcOffset: usize = <usize>(i << 1) << 3
-    const dstOffset: usize = <usize>i << 3
+    const srcOffset: usize = (<usize>(i << 1)) << 3
+    const dstOffset: usize = (<usize>i) << 3
     const re: f64 = load<f64>(dataPtr + srcOffset)
     const im: f64 = load<f64>(dataPtr + srcOffset + 8)
     store<f64>(resultPtr + dstOffset, Math.atan2(im, re))
@@ -50,7 +50,7 @@ export function conj(re: f64, im: f64, resultPtr: usize): void {
  */
 export function conjArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    const offset: usize = <usize>(i << 1) << 3
+    const offset: usize = (<usize>(i << 1)) << 3
     store<f64>(resultPtr + offset, load<f64>(dataPtr + offset)) // real part unchanged
     store<f64>(resultPtr + offset + 8, -load<f64>(dataPtr + offset + 8)) // imaginary part negated
   }
@@ -74,8 +74,8 @@ export function re(re: f64, im: f64): f64 {
  */
 export function reArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    const srcOffset: usize = <usize>(i << 1) << 3
-    const dstOffset: usize = <usize>i << 3
+    const srcOffset: usize = (<usize>(i << 1)) << 3
+    const dstOffset: usize = (<usize>i) << 3
     store<f64>(resultPtr + dstOffset, load<f64>(dataPtr + srcOffset))
   }
 }
@@ -98,8 +98,8 @@ export function im(re: f64, im: f64): f64 {
  */
 export function imArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    const srcOffset: usize = <usize>(i << 1) << 3 + 8
-    const dstOffset: usize = <usize>i << 3
+    const srcOffset: usize = (<usize>(i << 1)) << (3 + 8)
+    const dstOffset: usize = (<usize>i) << 3
     store<f64>(resultPtr + dstOffset, load<f64>(dataPtr + srcOffset))
   }
 }
@@ -122,8 +122,8 @@ export function abs(re: f64, im: f64): f64 {
  */
 export function absArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    const srcOffset: usize = <usize>(i << 1) << 3
-    const dstOffset: usize = <usize>i << 3
+    const srcOffset: usize = (<usize>(i << 1)) << 3
+    const dstOffset: usize = (<usize>i) << 3
     const re: f64 = load<f64>(dataPtr + srcOffset)
     const im: f64 = load<f64>(dataPtr + srcOffset + 8)
     store<f64>(resultPtr + dstOffset, Math.sqrt(re * re + im * im))
@@ -228,7 +228,10 @@ export function sqrtComplex(re: f64, im: f64, resultPtr: usize): void {
     }
   } else {
     store<f64>(resultPtr, Math.sqrt((r + re) / 2.0))
-    store<f64>(resultPtr + 8, (im >= 0.0 ? 1.0 : -1.0) * Math.sqrt((r - re) / 2.0))
+    store<f64>(
+      resultPtr + 8,
+      (im >= 0.0 ? 1.0 : -1.0) * Math.sqrt((r - re) / 2.0)
+    )
   }
 }
 
@@ -306,7 +309,12 @@ export function tanComplex(re: f64, im: f64, resultPtr: usize): void {
  * @param n - Power (real number)
  * @param resultPtr - Pointer to output [real, imag]
  */
-export function powComplexReal(re: f64, im: f64, n: f64, resultPtr: usize): void {
+export function powComplexReal(
+  re: f64,
+  im: f64,
+  n: f64,
+  resultPtr: usize
+): void {
   const r: f64 = Math.sqrt(re * re + im * im)
   const theta: f64 = Math.atan2(im, re)
   const rn: f64 = Math.pow(r, n)

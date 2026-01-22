@@ -239,7 +239,7 @@ export function unaryMinusArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, -load<f64>(inputPtr + offset))
   }
 }
@@ -256,7 +256,7 @@ export function squareArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const x: f64 = load<f64>(inputPtr + offset)
     store<f64>(outputPtr + offset, x * x)
   }
@@ -274,7 +274,7 @@ export function cubeArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const x: f64 = load<f64>(inputPtr + offset)
     store<f64>(outputPtr + offset, x * x * x)
   }
@@ -286,13 +286,9 @@ export function cubeArray(
  * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
-export function absArray(
-  inputPtr: usize,
-  outputPtr: usize,
-  length: i32
-): void {
+export function absArray(inputPtr: usize, outputPtr: usize, length: i32): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.abs(load<f64>(inputPtr + offset)))
   }
 }
@@ -309,7 +305,7 @@ export function signArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const x: f64 = load<f64>(inputPtr + offset)
     store<f64>(outputPtr + offset, x > 0 ? 1.0 : x < 0 ? -1.0 : 0.0)
   }
@@ -329,8 +325,11 @@ export function addArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(outputPtr + offset, load<f64>(aPtr + offset) + load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      outputPtr + offset,
+      load<f64>(aPtr + offset) + load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -348,8 +347,11 @@ export function subtractArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(outputPtr + offset, load<f64>(aPtr + offset) - load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      outputPtr + offset,
+      load<f64>(aPtr + offset) - load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -367,8 +369,11 @@ export function multiplyArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(outputPtr + offset, load<f64>(aPtr + offset) * load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      outputPtr + offset,
+      load<f64>(aPtr + offset) * load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -386,8 +391,11 @@ export function divideArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(outputPtr + offset, load<f64>(aPtr + offset) / load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      outputPtr + offset,
+      load<f64>(aPtr + offset) / load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -405,7 +413,7 @@ export function addScalarArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, load<f64>(inputPtr + offset) + scalar)
   }
 }
@@ -424,7 +432,7 @@ export function multiplyScalarArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, load<f64>(inputPtr + offset) * scalar)
   }
 }

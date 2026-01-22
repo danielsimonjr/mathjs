@@ -52,14 +52,14 @@ export function rk45Step(
 
   // Compute 5th order solution
   for (let i: i32 = 0; i < n; i++) {
-    const yOffset: usize = <usize>i << 3
-    const k1Offset: usize = <usize>i << 3
-    const k2Offset: usize = <usize>(n + i) << 3
-    const k3Offset: usize = <usize>(2 * n + i) << 3
-    const k4Offset: usize = <usize>(3 * n + i) << 3
-    const k5Offset: usize = <usize>(4 * n + i) << 3
-    const k6Offset: usize = <usize>(5 * n + i) << 3
-    const k7Offset: usize = <usize>(6 * n + i) << 3
+    const yOffset: usize = (<usize>i) << 3
+    const k1Offset: usize = (<usize>i) << 3
+    const k2Offset: usize = (<usize>(n + i)) << 3
+    const k3Offset: usize = (<usize>(2 * n + i)) << 3
+    const k4Offset: usize = (<usize>(3 * n + i)) << 3
+    const k5Offset: usize = (<usize>(4 * n + i)) << 3
+    const k6Offset: usize = (<usize>(5 * n + i)) << 3
+    const k7Offset: usize = (<usize>(6 * n + i)) << 3
 
     const yVal: f64 = load<f64>(yPtr + yOffset)
     const k1: f64 = load<f64>(kPtr + k1Offset)
@@ -72,22 +72,21 @@ export function rk45Step(
 
     const yNext: f64 =
       yVal +
-      h *
-        (b1 * k1 + b2 * k2 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6 + b7 * k7)
+      h * (b1 * k1 + b2 * k2 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6 + b7 * k7)
 
     store<f64>(yNextPtr + yOffset, yNext)
   }
 
   // Compute 4th order solution and error estimate
   for (let i: i32 = 0; i < n; i++) {
-    const yOffset: usize = <usize>i << 3
-    const k1Offset: usize = <usize>i << 3
-    const k2Offset: usize = <usize>(n + i) << 3
-    const k3Offset: usize = <usize>(2 * n + i) << 3
-    const k4Offset: usize = <usize>(3 * n + i) << 3
-    const k5Offset: usize = <usize>(4 * n + i) << 3
-    const k6Offset: usize = <usize>(5 * n + i) << 3
-    const k7Offset: usize = <usize>(6 * n + i) << 3
+    const yOffset: usize = (<usize>i) << 3
+    const k1Offset: usize = (<usize>i) << 3
+    const k2Offset: usize = (<usize>(n + i)) << 3
+    const k3Offset: usize = (<usize>(2 * n + i)) << 3
+    const k4Offset: usize = (<usize>(3 * n + i)) << 3
+    const k5Offset: usize = (<usize>(4 * n + i)) << 3
+    const k6Offset: usize = (<usize>(5 * n + i)) << 3
+    const k7Offset: usize = (<usize>(6 * n + i)) << 3
 
     const yVal: f64 = load<f64>(yPtr + yOffset)
     const k1: f64 = load<f64>(kPtr + k1Offset)
@@ -154,11 +153,11 @@ export function rk23Step(
 
   // Compute 3rd order solution
   for (let i: i32 = 0; i < n; i++) {
-    const yOffset: usize = <usize>i << 3
-    const k1Offset: usize = <usize>i << 3
-    const k2Offset: usize = <usize>(n + i) << 3
-    const k3Offset: usize = <usize>(2 * n + i) << 3
-    const k4Offset: usize = <usize>(3 * n + i) << 3
+    const yOffset: usize = (<usize>i) << 3
+    const k1Offset: usize = (<usize>i) << 3
+    const k2Offset: usize = (<usize>(n + i)) << 3
+    const k3Offset: usize = (<usize>(2 * n + i)) << 3
+    const k4Offset: usize = (<usize>(3 * n + i)) << 3
 
     const yVal: f64 = load<f64>(yPtr + yOffset)
     const k1: f64 = load<f64>(kPtr + k1Offset)
@@ -172,11 +171,11 @@ export function rk23Step(
 
   // Compute 2nd order solution and error estimate
   for (let i: i32 = 0; i < n; i++) {
-    const yOffset: usize = <usize>i << 3
-    const k1Offset: usize = <usize>i << 3
-    const k2Offset: usize = <usize>(n + i) << 3
-    const k3Offset: usize = <usize>(2 * n + i) << 3
-    const k4Offset: usize = <usize>(3 * n + i) << 3
+    const yOffset: usize = (<usize>i) << 3
+    const k1Offset: usize = (<usize>i) << 3
+    const k2Offset: usize = (<usize>(n + i)) << 3
+    const k3Offset: usize = (<usize>(2 * n + i)) << 3
+    const k4Offset: usize = (<usize>(3 * n + i)) << 3
 
     const yVal: f64 = load<f64>(yPtr + yOffset)
     const k1: f64 = load<f64>(kPtr + k1Offset)
@@ -199,7 +198,7 @@ export function rk23Step(
 export function maxError(errorPtr: usize, n: i32): f64 {
   let maxErr: f64 = 0.0
   for (let i: i32 = 0; i < n; i++) {
-    const err: f64 = Math.abs(load<f64>(errorPtr + (<usize>i << 3)))
+    const err: f64 = Math.abs(load<f64>(errorPtr + ((<usize>i) << 3)))
     if (err > maxErr) {
       maxErr = err
     }
@@ -262,7 +261,7 @@ export function interpolate(
   const beta: f64 = 1.0 - alpha
 
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const y0: f64 = load<f64>(y0Ptr + offset)
     const y1: f64 = load<f64>(y1Ptr + offset)
     store<f64>(resultPtr + offset, beta * y0 + alpha * y1)
@@ -277,7 +276,7 @@ export function interpolate(
  */
 export function vectorCopy(srcPtr: usize, n: i32, dstPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(dstPtr + offset, load<f64>(srcPtr + offset))
   }
 }
@@ -296,7 +295,7 @@ export function vectorScale(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(vecPtr + offset) * scale)
   }
 }
@@ -315,7 +314,7 @@ export function vectorAdd(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(
       resultPtr + offset,
       load<f64>(aPtr + offset) + load<f64>(bPtr + offset)

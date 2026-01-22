@@ -20,6 +20,7 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+// eslint-disable-next-line no-unused-vars
 const rootDir = path.join(__dirname, '../..')
 
 console.log('='.repeat(90))
@@ -368,6 +369,7 @@ async function benchmarkDeterminant (impl) {
     // WASM (using LU decomposition)
     if (impl.wasm && impl.wasm.luDecomposition) {
       bench.add(`WASM LU det ${size}`, () => {
+        // eslint-disable-next-line no-unused-vars
         const luResult = impl.wasm.luDecomposition(flatMatrix, size)
         // Note: luResult is an internal reference, actual det calculation would need additional wrapper
       })

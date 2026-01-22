@@ -61,7 +61,11 @@ function isPlainNumberMatrix(matrix: any[][]): boolean {
 /**
  * Flatten a 2D array to a Float64Array in row-major order
  */
-function flattenToFloat64(matrix: number[][], rows: number, cols: number): Float64Array {
+function flattenToFloat64(
+  matrix: number[][],
+  rows: number,
+  cols: number
+): Float64Array {
   const result = new Float64Array(rows * cols)
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {

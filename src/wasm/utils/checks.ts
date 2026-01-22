@@ -185,7 +185,7 @@ export function countCondition(
   let count: i32 = 0
 
   for (let i: i32 = 0; i < length; i++) {
-    const x: f64 = load<f64>(arrPtr + (<usize>i << 3))
+    const x: f64 = load<f64>(arrPtr + ((<usize>i) << 3))
     let match: i32 = 0
 
     if (condition === 0) {
@@ -214,7 +214,7 @@ export function countCondition(
  */
 export function allFinite(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (isFinite(load<f64>(arrPtr + (<usize>i << 3))) === 0) {
+    if (isFinite(load<f64>(arrPtr + ((<usize>i) << 3))) === 0) {
       return 0
     }
   }
@@ -229,7 +229,7 @@ export function allFinite(arrPtr: usize, length: i32): i32 {
  */
 export function anyNaN(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (isNaN(load<f64>(arrPtr + (<usize>i << 3))) === 1) {
+    if (isNaN(load<f64>(arrPtr + ((<usize>i) << 3))) === 1) {
       return 1
     }
   }
@@ -244,7 +244,7 @@ export function anyNaN(arrPtr: usize, length: i32): i32 {
  */
 export function allPositive(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (load<f64>(arrPtr + (<usize>i << 3)) <= 0.0) {
+    if (load<f64>(arrPtr + ((<usize>i) << 3)) <= 0.0) {
       return 0
     }
   }
@@ -259,7 +259,7 @@ export function allPositive(arrPtr: usize, length: i32): i32 {
  */
 export function allNonNegative(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (load<f64>(arrPtr + (<usize>i << 3)) < 0.0) {
+    if (load<f64>(arrPtr + ((<usize>i) << 3)) < 0.0) {
       return 0
     }
   }
@@ -274,7 +274,7 @@ export function allNonNegative(arrPtr: usize, length: i32): i32 {
  */
 export function allIntegers(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (isInteger(load<f64>(arrPtr + (<usize>i << 3))) === 0) {
+    if (isInteger(load<f64>(arrPtr + ((<usize>i) << 3))) === 0) {
       return 0
     }
   }
@@ -290,7 +290,7 @@ export function allIntegers(arrPtr: usize, length: i32): i32 {
  */
 export function findFirst(arrPtr: usize, length: i32, condition: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    const x: f64 = load<f64>(arrPtr + (<usize>i << 3))
+    const x: f64 = load<f64>(arrPtr + ((<usize>i) << 3))
     let match: i32 = 0
 
     if (condition === 0) {
@@ -329,13 +329,9 @@ export function sign(x: f64): f64 {
  * @param outputPtr - Pointer to output array (f64)
  * @param length - Number of elements
  */
-export function signArray(
-  arrPtr: usize,
-  outputPtr: usize,
-  length: i32
-): void {
+export function signArray(arrPtr: usize, outputPtr: usize, length: i32): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, sign(load<f64>(arrPtr + offset)))
   }
 }

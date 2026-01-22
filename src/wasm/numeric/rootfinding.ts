@@ -23,7 +23,13 @@
  *                   [nextX, currentA, currentB, fa, fb, status]
  *                   status: 1 = continue, 0 = converged, -1 = no bracket
  */
-export function bisectionSetup(fa: f64, fb: f64, a: f64, b: f64, statePtr: usize): void {
+export function bisectionSetup(
+  fa: f64,
+  fb: f64,
+  a: f64,
+  b: f64,
+  statePtr: usize
+): void {
   if (fa * fb > 0) {
     store<f64>(statePtr + 40, -1.0) // No bracket
     return
@@ -44,11 +50,7 @@ export function bisectionSetup(fa: f64, fb: f64, a: f64, b: f64, statePtr: usize
  * @param fmid - Function value at midpoint
  * @param tol - Tolerance
  */
-export function bisectionStep(
-  statePtr: usize,
-  fmid: f64,
-  tol: f64
-): void {
+export function bisectionStep(statePtr: usize, fmid: f64, tol: f64): void {
   const mid: f64 = load<f64>(statePtr)
   let a: f64 = load<f64>(statePtr + 8)
   let b: f64 = load<f64>(statePtr + 16)
@@ -99,12 +101,7 @@ export function newtonSetup(x0: f64, statePtr: usize): void {
  * @param fpx - f'(x) value (derivative)
  * @param tol - Tolerance
  */
-export function newtonStep(
-  statePtr: usize,
-  fx: f64,
-  fpx: f64,
-  tol: f64
-): void {
+export function newtonStep(statePtr: usize, fx: f64, fpx: f64, tol: f64): void {
   const x: f64 = load<f64>(statePtr)
 
   // Check convergence
@@ -208,7 +205,13 @@ export function secantUpdate(statePtr: usize, fNewX: f64): void {
  * @param statePtr - Pointer to output state array (f64, 9 elements):
  *                   [a, b, c, fa, fb, fc, d, e, status]
  */
-export function brentSetup(a: f64, b: f64, fa: f64, fb: f64, statePtr: usize): void {
+export function brentSetup(
+  a: f64,
+  b: f64,
+  fa: f64,
+  fb: f64,
+  statePtr: usize
+): void {
   // Ensure |f(b)| <= |f(a)|
   let aa: f64 = a
   let bb: f64 = b
@@ -374,11 +377,7 @@ export function fixedPointSetup(x0: f64, statePtr: usize): void {
  * @param gx - g(x) value
  * @param tol - Tolerance
  */
-export function fixedPointStep(
-  statePtr: usize,
-  gx: f64,
-  tol: f64
-): void {
+export function fixedPointStep(statePtr: usize, gx: f64, tol: f64): void {
   const x: f64 = load<f64>(statePtr)
 
   // Check convergence
@@ -403,7 +402,13 @@ export function fixedPointStep(
  * @param statePtr - Pointer to output state array (f64, 6 elements):
  *                   [a, b, fa, fb, side, status]
  */
-export function illinoisSetup(a: f64, b: f64, fa: f64, fb: f64, statePtr: usize): void {
+export function illinoisSetup(
+  a: f64,
+  b: f64,
+  fa: f64,
+  fb: f64,
+  statePtr: usize
+): void {
   if (fa * fb > 0) {
     store<f64>(statePtr + 40, -1.0) // No bracket
     return
@@ -424,11 +429,7 @@ export function illinoisSetup(a: f64, b: f64, fa: f64, fb: f64, statePtr: usize)
  * @param fc - f(c) where c is the secant point
  * @param tol - Tolerance
  */
-export function illinoisStep(
-  statePtr: usize,
-  fc: f64,
-  tol: f64
-): void {
+export function illinoisStep(statePtr: usize, fc: f64, tol: f64): void {
   let a: f64 = load<f64>(statePtr)
   let b: f64 = load<f64>(statePtr + 8)
   let fa: f64 = load<f64>(statePtr + 16)

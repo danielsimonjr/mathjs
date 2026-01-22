@@ -11,7 +11,7 @@
  * and single-threaded WASM for medium operations.
  */
 
-import { MathWorkerPool, OptimalChunkSizes } from './WorkerPool.ts'
+import { MathWorkerPool } from './WorkerPool.ts'
 
 export interface ParallelWasmConfig {
   maxWorkers?: number

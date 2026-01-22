@@ -1449,10 +1449,10 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
         }
 
         // helper function to iterate over index dimensions
-        function _forEachIndex(
+        const _forEachIndex = (
           idx: any,
           callback: (dataIndex: number, subIndex: [number]) => void
-        ) {
+        ) => {
           // iterate cases where index is a Matrix or a Number
           if (isNumber(idx)) callback(idx, [0])
           else idx.forEach(callback)

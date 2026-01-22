@@ -42,7 +42,7 @@ describe('wasm/algebra/schur', function () {
 
       assert.strictEqual(result.length, 8)
       const Q = getSchurQ(result, 2)
-      const T = getSchurT(result, 2)
+      const _T = getSchurT(result, 2)
 
       // For diagonal matrix, Q should be close to identity (possibly permuted)
       // T should have eigenvalues on diagonal

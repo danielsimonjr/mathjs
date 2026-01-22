@@ -20,7 +20,7 @@ console.log(`Node.js: ${process.version}`)
 // Pure JavaScript (Baseline)
 // =============================================================================
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function jsMatrixMultiply(
   a: Float64Array,
   aRows: number,

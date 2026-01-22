@@ -158,7 +158,7 @@ export function fillUniform(
   max: f64
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, uniform(min, max))
   }
 }
@@ -177,7 +177,7 @@ export function fillNormal(
   sigma: f64
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, normal(mu, sigma))
   }
 }
@@ -259,15 +259,11 @@ export function exponentialCDF(x: f64, lambda: f64): f64 {
  * @param length - Number of elements
  * @returns KL divergence D_KL(P || Q)
  */
-export function klDivergence(
-  pPtr: usize,
-  qPtr: usize,
-  length: i32
-): f64 {
+export function klDivergence(pPtr: usize, qPtr: usize, length: i32): f64 {
   let kl: f64 = 0.0
 
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const pVal: f64 = load<f64>(pPtr + offset)
     const qVal: f64 = load<f64>(qPtr + offset)
     if (pVal > 0.0 && qVal > 0.0) {
@@ -294,13 +290,16 @@ export function jsDivergence(
 ): f64 {
   // Compute m = 0.5 * (p + q)
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const pVal: f64 = load<f64>(pPtr + offset)
     const qVal: f64 = load<f64>(qPtr + offset)
     store<f64>(workPtr + offset, 0.5 * (pVal + qVal))
   }
 
-  return 0.5 * klDivergence(pPtr, workPtr, length) + 0.5 * klDivergence(qPtr, workPtr, length)
+  return (
+    0.5 * klDivergence(pPtr, workPtr, length) +
+    0.5 * klDivergence(qPtr, workPtr, length)
+  )
 }
 
 /**
@@ -313,7 +312,7 @@ export function entropy(pPtr: usize, length: i32): f64 {
   let h: f64 = 0.0
 
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const pVal: f64 = load<f64>(pPtr + offset)
     if (pVal > 0.0) {
       h -= pVal * Math.log(pVal)
@@ -331,8 +330,8 @@ export function entropy(pPtr: usize, length: i32): f64 {
 export function shuffle(arrPtr: usize, length: i32): void {
   for (let i: i32 = length - 1; i > 0; i--) {
     const j: i32 = randomInt(0, i)
-    const iOffset: usize = <usize>i << 3
-    const jOffset: usize = <usize>j << 3
+    const iOffset: usize = (<usize>i) << 3
+    const jOffset: usize = (<usize>j) << 3
     const temp: f64 = load<f64>(arrPtr + iOffset)
     store<f64>(arrPtr + iOffset, load<f64>(arrPtr + jOffset))
     store<f64>(arrPtr + jOffset, temp)
@@ -356,15 +355,15 @@ export function sampleWithoutReplacement(
 ): void {
   // Copy array to working memory
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(workPtr + offset, load<f64>(arrPtr + offset))
   }
 
   // Partial Fisher-Yates
   for (let i: i32 = 0; i < k; i++) {
     const j: i32 = randomInt(i, length - 1)
-    const iOffset: usize = <usize>i << 3
-    const jOffset: usize = <usize>j << 3
+    const iOffset: usize = (<usize>i) << 3
+    const jOffset: usize = (<usize>j) << 3
     const temp: f64 = load<f64>(workPtr + iOffset)
     store<f64>(workPtr + iOffset, load<f64>(workPtr + jOffset))
     store<f64>(workPtr + jOffset, temp)
@@ -387,8 +386,8 @@ export function sampleWithReplacement(
 ): void {
   for (let i: i32 = 0; i < k; i++) {
     const j: i32 = randomInt(0, length - 1)
-    const iOffset: usize = <usize>i << 3
-    const jOffset: usize = <usize>j << 3
+    const iOffset: usize = (<usize>i) << 3
+    const jOffset: usize = (<usize>j) << 3
     store<f64>(outputPtr + iOffset, load<f64>(arrPtr + jOffset))
   }
 }

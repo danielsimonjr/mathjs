@@ -448,6 +448,7 @@ async function benchmarkDeterminant (impl) {
 
     // Generate a random matrix
     const matrix = generateMatrix(size, size)
+    // eslint-disable-next-line no-unused-vars
     const flatMatrix = generateFlatMatrix(size, size)
 
     const bench = new Bench({ time: 3000, iterations: 5 })

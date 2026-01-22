@@ -474,9 +474,30 @@ export {
   isNaN as plainIsNaN
 } from './plain/operations'
 
-// WorkPtr size validation utilities
+// WorkPtr size validation utilities - individual constants
 export {
-  WorkPtrSizes,
+  WORK_EIGS_SYMMETRIC,
+  WORK_POWER_ITERATION,
+  WORK_INVERSE_ITERATION_VECTOR,
+  WORK_INVERSE_ITERATION_MATRIX,
+  WORK_QR_ALGORITHM_VECTOR,
+  WORK_QR_ALGORITHM_MATRIX,
+  WORK_BALANCE_MATRIX,
+  WORK_EXPM,
+  WORK_EXPMV,
+  WORK_SQRTM,
+  WORK_SQRTM_NEWTON_SCHULZ,
+  WORK_SPARSE_LU_VECTOR,
+  WORK_SPARSE_LU_INT,
+  WORK_SPARSE_CHOL_VECTOR,
+  WORK_SPARSE_CHOL_INT,
+  WORK_COLUMN_COUNTS,
+  WORK_LU_DECOMPOSITION,
+  WORK_QR_DECOMPOSITION,
+  WORK_CHOLESKY_DECOMPOSITION,
+  WORK_FFT_2D,
+  WORK_IRFFT,
+  WORK_BLOCKED_MULTIPLY,
   eigsSymmetricWorkSize,
   powerIterationWorkSize,
   inverseIterationWorkSize,

@@ -15,13 +15,13 @@
  * @returns Index of pivot after partitioning
  */
 function partition(arrPtr: usize, left: i32, right: i32): i32 {
-  const pivot: f64 = load<f64>(arrPtr + (<usize>right << 3))
+  const pivot: f64 = load<f64>(arrPtr + ((<usize>right) << 3))
   let i: i32 = left
 
   for (let j: i32 = left; j < right; j++) {
-    const jOffset: usize = <usize>j << 3
+    const jOffset: usize = (<usize>j) << 3
     if (load<f64>(arrPtr + jOffset) <= pivot) {
-      const iOffset: usize = <usize>i << 3
+      const iOffset: usize = (<usize>i) << 3
       const temp: f64 = load<f64>(arrPtr + iOffset)
       store<f64>(arrPtr + iOffset, load<f64>(arrPtr + jOffset))
       store<f64>(arrPtr + jOffset, temp)
@@ -29,8 +29,8 @@ function partition(arrPtr: usize, left: i32, right: i32): i32 {
     }
   }
 
-  const iOffset: usize = <usize>i << 3
-  const rightOffset: usize = <usize>right << 3
+  const iOffset: usize = (<usize>i) << 3
+  const rightOffset: usize = (<usize>right) << 3
   const temp: f64 = load<f64>(arrPtr + iOffset)
   store<f64>(arrPtr + iOffset, load<f64>(arrPtr + rightOffset))
   store<f64>(arrPtr + rightOffset, temp)
@@ -47,14 +47,19 @@ function partition(arrPtr: usize, left: i32, right: i32): i32 {
  * @param workPtr - Pointer to working memory (f64, n elements)
  * @returns k-th smallest element
  */
-export function partitionSelect(dataPtr: usize, n: i32, k: i32, workPtr: usize): f64 {
+export function partitionSelect(
+  dataPtr: usize,
+  n: i32,
+  k: i32,
+  workPtr: usize
+): f64 {
   if (n === 0 || k < 0 || k >= n) {
     return f64.NaN
   }
 
   // Copy to working memory
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(workPtr + offset, load<f64>(dataPtr + offset))
   }
 
@@ -65,7 +70,7 @@ export function partitionSelect(dataPtr: usize, n: i32, k: i32, workPtr: usize):
     const pivotIndex: i32 = partition(workPtr, left, right)
 
     if (pivotIndex === k) {
-      return load<f64>(workPtr + (<usize>k << 3))
+      return load<f64>(workPtr + ((<usize>k) << 3))
     } else if (pivotIndex < k) {
       left = pivotIndex + 1
     } else {
@@ -73,7 +78,7 @@ export function partitionSelect(dataPtr: usize, n: i32, k: i32, workPtr: usize):
     }
   }
 
-  return load<f64>(workPtr + (<usize>k << 3))
+  return load<f64>(workPtr + ((<usize>k) << 3))
 }
 
 /**
@@ -135,7 +140,7 @@ export function selectKSmallest(
   }
   if (k >= n) {
     for (let i: i32 = 0; i < n; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(resultPtr + offset, load<f64>(dataPtr + offset))
     }
     return n
@@ -143,7 +148,7 @@ export function selectKSmallest(
 
   // Copy to working memory
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(workPtr + offset, load<f64>(dataPtr + offset))
   }
 
@@ -165,7 +170,7 @@ export function selectKSmallest(
 
   // Copy k smallest elements
   for (let i: i32 = 0; i < k; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(workPtr + offset))
   }
 
@@ -193,7 +198,7 @@ export function selectKLargest(
   }
   if (k >= n) {
     for (let i: i32 = 0; i < n; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(resultPtr + offset, load<f64>(dataPtr + offset))
     }
     return n
@@ -201,7 +206,7 @@ export function selectKLargest(
 
   // Copy to working memory
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(workPtr + offset, load<f64>(dataPtr + offset))
   }
 
@@ -224,8 +229,8 @@ export function selectKLargest(
 
   // Copy k largest elements
   for (let i: i32 = 0; i < k; i++) {
-    const offset: usize = <usize>(target + i) << 3
-    const outOffset: usize = <usize>i << 3
+    const offset: usize = (<usize>(target + i)) << 3
+    const outOffset: usize = (<usize>i) << 3
     store<f64>(resultPtr + outOffset, load<f64>(workPtr + offset))
   }
 
@@ -240,7 +245,12 @@ export function selectKLargest(
  * @param workPtr - Pointer to working memory (f64, n elements)
  * @returns Quantile value
  */
-export function selectQuantile(dataPtr: usize, n: i32, q: f64, workPtr: usize): f64 {
+export function selectQuantile(
+  dataPtr: usize,
+  n: i32,
+  q: f64,
+  workPtr: usize
+): f64 {
   if (n === 0 || q < 0.0 || q > 1.0) {
     return f64.NaN
   }
@@ -269,7 +279,7 @@ export function partitionSelectIndex(
 
   // Initialize index array
   for (let i: i32 = 0; i < n; i++) {
-    store<i32>(indicesPtr + (<usize>i << 2), i)
+    store<i32>(indicesPtr + ((<usize>i) << 2), i)
   }
 
   // Modified partition that moves indices with values
@@ -277,15 +287,15 @@ export function partitionSelectIndex(
   let right: i32 = n - 1
 
   while (left < right) {
-    const pivotIdx: i32 = load<i32>(indicesPtr + (<usize>right << 2))
-    const pivot: f64 = load<f64>(dataPtr + (<usize>pivotIdx << 3))
+    const pivotIdx: i32 = load<i32>(indicesPtr + ((<usize>right) << 2))
+    const pivot: f64 = load<f64>(dataPtr + ((<usize>pivotIdx) << 3))
     let i: i32 = left
 
     for (let j: i32 = left; j < right; j++) {
-      const jIdx: i32 = load<i32>(indicesPtr + (<usize>j << 2))
-      if (load<f64>(dataPtr + (<usize>jIdx << 3)) <= pivot) {
-        const iOffset: usize = <usize>i << 2
-        const jOffset: usize = <usize>j << 2
+      const jIdx: i32 = load<i32>(indicesPtr + ((<usize>j) << 2))
+      if (load<f64>(dataPtr + ((<usize>jIdx) << 3)) <= pivot) {
+        const iOffset: usize = (<usize>i) << 2
+        const jOffset: usize = (<usize>j) << 2
         const temp: i32 = load<i32>(indicesPtr + iOffset)
         store<i32>(indicesPtr + iOffset, load<i32>(indicesPtr + jOffset))
         store<i32>(indicesPtr + jOffset, temp)
@@ -293,14 +303,14 @@ export function partitionSelectIndex(
       }
     }
 
-    const iOffset: usize = <usize>i << 2
-    const rightOffset: usize = <usize>right << 2
+    const iOffset: usize = (<usize>i) << 2
+    const rightOffset: usize = (<usize>right) << 2
     const temp: i32 = load<i32>(indicesPtr + iOffset)
     store<i32>(indicesPtr + iOffset, load<i32>(indicesPtr + rightOffset))
     store<i32>(indicesPtr + rightOffset, temp)
 
     if (i === k) {
-      return load<i32>(indicesPtr + (<usize>k << 2))
+      return load<i32>(indicesPtr + ((<usize>k) << 2))
     } else if (i < k) {
       left = i + 1
     } else {
@@ -308,5 +318,5 @@ export function partitionSelectIndex(
     }
   }
 
-  return load<i32>(indicesPtr + (<usize>k << 2))
+  return load<i32>(indicesPtr + ((<usize>k) << 2))
 }

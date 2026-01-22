@@ -1,6 +1,5 @@
 import { containsCollections, deepForEach, reduce } from '../../utils/collection.js'
 import { factory } from '../../utils/factory.js'
-import { safeNumberType } from '../../utils/number.js'
 import { improveErrorMessage } from './utils/improveErrorMessage.js'
 
 const name = 'sum'

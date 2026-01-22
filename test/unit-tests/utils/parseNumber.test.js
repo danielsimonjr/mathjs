@@ -58,6 +58,7 @@ describe('parseNumberWithConfig', function () {
 
   it('should throw Error when BigNumber is not available', function () {
     // Create instance without BigNumber support
+    // eslint-disable-next-line no-unused-vars
     const mathInstance = math.create({
       number: 'BigNumber'
     })

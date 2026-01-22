@@ -15,17 +15,17 @@
 function quicksort(arrPtr: usize, left: i32, right: i32): void {
   if (left >= right) return
 
-  const pivot: f64 = load<f64>(arrPtr + (<usize>((left + right) >> 1) << 3))
+  const pivot: f64 = load<f64>(arrPtr + ((<usize>((left + right) >> 1)) << 3))
   let i: i32 = left
   let j: i32 = right
 
   while (i <= j) {
-    while (load<f64>(arrPtr + (<usize>i << 3)) < pivot) i++
-    while (load<f64>(arrPtr + (<usize>j << 3)) > pivot) j--
+    while (load<f64>(arrPtr + ((<usize>i) << 3)) < pivot) i++
+    while (load<f64>(arrPtr + ((<usize>j) << 3)) > pivot) j--
 
     if (i <= j) {
-      const iOffset: usize = <usize>i << 3
-      const jOffset: usize = <usize>j << 3
+      const iOffset: usize = (<usize>i) << 3
+      const jOffset: usize = (<usize>j) << 3
       const temp: f64 = load<f64>(arrPtr + iOffset)
       store<f64>(arrPtr + iOffset, load<f64>(arrPtr + jOffset))
       store<f64>(arrPtr + jOffset, temp)
@@ -50,7 +50,7 @@ export function createSet(arrPtr: usize, n: i32, resultPtr: usize): i32 {
 
   // Copy to result
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(arrPtr + offset))
   }
 
@@ -60,10 +60,15 @@ export function createSet(arrPtr: usize, n: i32, resultPtr: usize): i32 {
   // Remove duplicates in place
   let uniqueCount: i32 = 1
   for (let i: i32 = 1; i < n; i++) {
-    const currOffset: usize = <usize>i << 3
-    const prevOffset: usize = <usize>(uniqueCount - 1) << 3
-    if (load<f64>(resultPtr + currOffset) !== load<f64>(resultPtr + prevOffset)) {
-      store<f64>(resultPtr + (<usize>uniqueCount << 3), load<f64>(resultPtr + currOffset))
+    const currOffset: usize = (<usize>i) << 3
+    const prevOffset: usize = (<usize>(uniqueCount - 1)) << 3
+    if (
+      load<f64>(resultPtr + currOffset) !== load<f64>(resultPtr + prevOffset)
+    ) {
+      store<f64>(
+        resultPtr + ((<usize>uniqueCount) << 3),
+        load<f64>(resultPtr + currOffset)
+      )
       uniqueCount++
     }
   }
@@ -90,14 +95,14 @@ export function setUnion(
   if (na === 0 && nb === 0) return 0
   if (na === 0) {
     for (let i: i32 = 0; i < nb; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(resultPtr + offset, load<f64>(bPtr + offset))
     }
     return nb
   }
   if (nb === 0) {
     for (let i: i32 = 0; i < na; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(resultPtr + offset, load<f64>(aPtr + offset))
     }
     return na
@@ -108,20 +113,20 @@ export function setUnion(
   let k: i32 = 0
 
   while (i < na && j < nb) {
-    const aVal: f64 = load<f64>(aPtr + (<usize>i << 3))
-    const bVal: f64 = load<f64>(bPtr + (<usize>j << 3))
+    const aVal: f64 = load<f64>(aPtr + ((<usize>i) << 3))
+    const bVal: f64 = load<f64>(bPtr + ((<usize>j) << 3))
 
     if (aVal < bVal) {
-      store<f64>(resultPtr + (<usize>k << 3), aVal)
+      store<f64>(resultPtr + ((<usize>k) << 3), aVal)
       i++
       k++
     } else if (aVal > bVal) {
-      store<f64>(resultPtr + (<usize>k << 3), bVal)
+      store<f64>(resultPtr + ((<usize>k) << 3), bVal)
       j++
       k++
     } else {
       // Equal, add once
-      store<f64>(resultPtr + (<usize>k << 3), aVal)
+      store<f64>(resultPtr + ((<usize>k) << 3), aVal)
       i++
       j++
       k++
@@ -130,14 +135,20 @@ export function setUnion(
 
   // Add remaining elements from a
   while (i < na) {
-    store<f64>(resultPtr + (<usize>k << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>k) << 3),
+      load<f64>(aPtr + ((<usize>i) << 3))
+    )
     i++
     k++
   }
 
   // Add remaining elements from b
   while (j < nb) {
-    store<f64>(resultPtr + (<usize>k << 3), load<f64>(bPtr + (<usize>j << 3)))
+    store<f64>(
+      resultPtr + ((<usize>k) << 3),
+      load<f64>(bPtr + ((<usize>j) << 3))
+    )
     j++
     k++
   }
@@ -168,8 +179,8 @@ export function setIntersect(
   let k: i32 = 0
 
   while (i < na && j < nb) {
-    const aVal: f64 = load<f64>(aPtr + (<usize>i << 3))
-    const bVal: f64 = load<f64>(bPtr + (<usize>j << 3))
+    const aVal: f64 = load<f64>(aPtr + ((<usize>i) << 3))
+    const bVal: f64 = load<f64>(bPtr + ((<usize>j) << 3))
 
     if (aVal < bVal) {
       i++
@@ -177,7 +188,7 @@ export function setIntersect(
       j++
     } else {
       // Equal, add to result
-      store<f64>(resultPtr + (<usize>k << 3), aVal)
+      store<f64>(resultPtr + ((<usize>k) << 3), aVal)
       i++
       j++
       k++
@@ -207,7 +218,7 @@ export function setDifference(
   if (na === 0) return 0
   if (nb === 0) {
     for (let i: i32 = 0; i < na; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(resultPtr + offset, load<f64>(aPtr + offset))
     }
     return na
@@ -218,12 +229,12 @@ export function setDifference(
   let k: i32 = 0
 
   while (i < na && j < nb) {
-    const aVal: f64 = load<f64>(aPtr + (<usize>i << 3))
-    const bVal: f64 = load<f64>(bPtr + (<usize>j << 3))
+    const aVal: f64 = load<f64>(aPtr + ((<usize>i) << 3))
+    const bVal: f64 = load<f64>(bPtr + ((<usize>j) << 3))
 
     if (aVal < bVal) {
       // a[i] is not in b
-      store<f64>(resultPtr + (<usize>k << 3), aVal)
+      store<f64>(resultPtr + ((<usize>k) << 3), aVal)
       i++
       k++
     } else if (aVal > bVal) {
@@ -237,7 +248,10 @@ export function setDifference(
 
   // Add remaining elements from a (they're not in b)
   while (i < na) {
-    store<f64>(resultPtr + (<usize>k << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>k) << 3),
+      load<f64>(aPtr + ((<usize>i) << 3))
+    )
     i++
     k++
   }
@@ -265,14 +279,14 @@ export function setSymDifference(
   if (na === 0 && nb === 0) return 0
   if (na === 0) {
     for (let i: i32 = 0; i < nb; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(resultPtr + offset, load<f64>(bPtr + offset))
     }
     return nb
   }
   if (nb === 0) {
     for (let i: i32 = 0; i < na; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(resultPtr + offset, load<f64>(aPtr + offset))
     }
     return na
@@ -283,15 +297,15 @@ export function setSymDifference(
   let k: i32 = 0
 
   while (i < na && j < nb) {
-    const aVal: f64 = load<f64>(aPtr + (<usize>i << 3))
-    const bVal: f64 = load<f64>(bPtr + (<usize>j << 3))
+    const aVal: f64 = load<f64>(aPtr + ((<usize>i) << 3))
+    const bVal: f64 = load<f64>(bPtr + ((<usize>j) << 3))
 
     if (aVal < bVal) {
-      store<f64>(resultPtr + (<usize>k << 3), aVal)
+      store<f64>(resultPtr + ((<usize>k) << 3), aVal)
       i++
       k++
     } else if (aVal > bVal) {
-      store<f64>(resultPtr + (<usize>k << 3), bVal)
+      store<f64>(resultPtr + ((<usize>k) << 3), bVal)
       j++
       k++
     } else {
@@ -303,14 +317,20 @@ export function setSymDifference(
 
   // Add remaining elements from a
   while (i < na) {
-    store<f64>(resultPtr + (<usize>k << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>k) << 3),
+      load<f64>(aPtr + ((<usize>i) << 3))
+    )
     i++
     k++
   }
 
   // Add remaining elements from b
   while (j < nb) {
-    store<f64>(resultPtr + (<usize>k << 3), load<f64>(bPtr + (<usize>j << 3)))
+    store<f64>(
+      resultPtr + ((<usize>k) << 3),
+      load<f64>(bPtr + ((<usize>j) << 3))
+    )
     j++
     k++
   }
@@ -340,8 +360,8 @@ export function setIsSubset(aPtr: usize, na: i32, bPtr: usize, nb: i32): i32 {
   let j: i32 = 0
 
   while (i < na && j < nb) {
-    const aVal: f64 = load<f64>(aPtr + (<usize>i << 3))
-    const bVal: f64 = load<f64>(bPtr + (<usize>j << 3))
+    const aVal: f64 = load<f64>(aPtr + ((<usize>i) << 3))
+    const bVal: f64 = load<f64>(bPtr + ((<usize>j) << 3))
 
     if (aVal < bVal) {
       // Element in a not found in b
@@ -418,7 +438,7 @@ export function setEquals(aPtr: usize, na: i32, bPtr: usize, nb: i32): i32 {
   if (na !== nb) return 0
 
   for (let i: i32 = 0; i < na; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     if (load<f64>(aPtr + offset) !== load<f64>(bPtr + offset)) return 0
   }
 
@@ -440,8 +460,8 @@ export function setIsDisjoint(aPtr: usize, na: i32, bPtr: usize, nb: i32): i32 {
   let j: i32 = 0
 
   while (i < na && j < nb) {
-    const aVal: f64 = load<f64>(aPtr + (<usize>i << 3))
-    const bVal: f64 = load<f64>(bPtr + (<usize>j << 3))
+    const aVal: f64 = load<f64>(aPtr + ((<usize>i) << 3))
+    const bVal: f64 = load<f64>(bPtr + ((<usize>j) << 3))
 
     if (aVal < bVal) {
       i++
@@ -481,7 +501,7 @@ export function setContains(aPtr: usize, n: i32, value: f64): i32 {
 
   while (left <= right) {
     const mid: i32 = (left + right) >> 1
-    const midVal: f64 = load<f64>(aPtr + (<usize>mid << 3))
+    const midVal: f64 = load<f64>(aPtr + ((<usize>mid) << 3))
     if (midVal === value) {
       return 1
     } else if (midVal < value) {
@@ -502,12 +522,7 @@ export function setContains(aPtr: usize, n: i32, value: f64): i32 {
  * @param resultPtr - Pointer to output array (f64, must have space for n+1 elements)
  * @returns New length of set
  */
-export function setAdd(
-  aPtr: usize,
-  n: i32,
-  value: f64,
-  resultPtr: usize
-): i32 {
+export function setAdd(aPtr: usize, n: i32, value: f64, resultPtr: usize): i32 {
   if (n === 0) {
     store<f64>(resultPtr, value)
     return 1
@@ -519,7 +534,7 @@ export function setAdd(
 
   while (left < right) {
     const mid: i32 = (left + right) >> 1
-    if (load<f64>(aPtr + (<usize>mid << 3)) < value) {
+    if (load<f64>(aPtr + ((<usize>mid) << 3)) < value) {
       left = mid + 1
     } else {
       right = mid
@@ -527,10 +542,10 @@ export function setAdd(
   }
 
   // Check if value already exists
-  if (left < n && load<f64>(aPtr + (<usize>left << 3)) === value) {
+  if (left < n && load<f64>(aPtr + ((<usize>left) << 3)) === value) {
     // Value already in set, just copy
     for (let i: i32 = 0; i < n; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(resultPtr + offset, load<f64>(aPtr + offset))
     }
     return n
@@ -538,13 +553,13 @@ export function setAdd(
 
   // Insert at position left
   for (let i: i32 = 0; i < left; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(aPtr + offset))
   }
-  store<f64>(resultPtr + (<usize>left << 3), value)
+  store<f64>(resultPtr + ((<usize>left) << 3), value)
   for (let i: i32 = left; i < n; i++) {
-    const srcOffset: usize = <usize>i << 3
-    const dstOffset: usize = <usize>(i + 1) << 3
+    const srcOffset: usize = (<usize>i) << 3
+    const dstOffset: usize = (<usize>(i + 1)) << 3
     store<f64>(resultPtr + dstOffset, load<f64>(aPtr + srcOffset))
   }
 
@@ -573,16 +588,16 @@ export function setRemove(
 
   while (left <= right) {
     const mid: i32 = (left + right) >> 1
-    const midVal: f64 = load<f64>(aPtr + (<usize>mid << 3))
+    const midVal: f64 = load<f64>(aPtr + ((<usize>mid) << 3))
     if (midVal === value) {
       // Found, remove it
       for (let i: i32 = 0; i < mid; i++) {
-        const offset: usize = <usize>i << 3
+        const offset: usize = (<usize>i) << 3
         store<f64>(resultPtr + offset, load<f64>(aPtr + offset))
       }
       for (let i: i32 = mid + 1; i < n; i++) {
-        const srcOffset: usize = <usize>i << 3
-        const dstOffset: usize = <usize>(i - 1) << 3
+        const srcOffset: usize = (<usize>i) << 3
+        const dstOffset: usize = (<usize>(i - 1)) << 3
         store<f64>(resultPtr + dstOffset, load<f64>(aPtr + srcOffset))
       }
       return n - 1
@@ -595,7 +610,7 @@ export function setRemove(
 
   // Value not found, just copy
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(aPtr + offset))
   }
   return n
@@ -622,11 +637,11 @@ export function setCartesian(
 
   let k: i32 = 0
   for (let i: i32 = 0; i < na; i++) {
-    const aVal: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const aVal: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     for (let j: i32 = 0; j < nb; j++) {
-      const bVal: f64 = load<f64>(bPtr + (<usize>j << 3))
-      store<f64>(resultPtr + (<usize>k << 3), aVal)
-      store<f64>(resultPtr + (<usize>(k + 1) << 3), bVal)
+      const bVal: f64 = load<f64>(bPtr + ((<usize>j) << 3))
+      store<f64>(resultPtr + ((<usize>k) << 3), aVal)
+      store<f64>(resultPtr + ((<usize>(k + 1)) << 3), bVal)
       k += 2
     }
   }
@@ -661,7 +676,10 @@ export function setGetSubset(
 
   for (let i: i32 = 0; i < n; i++) {
     if ((index & (1 << i)) !== 0) {
-      store<f64>(resultPtr + (<usize>k << 3), load<f64>(aPtr + (<usize>i << 3)))
+      store<f64>(
+        resultPtr + ((<usize>k) << 3),
+        load<f64>(aPtr + ((<usize>i) << 3))
+      )
       k++
     }
   }

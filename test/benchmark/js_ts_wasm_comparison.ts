@@ -21,7 +21,7 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const rootDir = path.join(__dirname, '../..')
+const _rootDir = path.join(__dirname, '../..')
 
 console.log('='.repeat(90))
 console.log('BENCHMARK: JavaScript vs TypeScript vs WASM')
@@ -381,8 +381,8 @@ async function benchmarkDeterminant(impl: Implementations): Promise<void> {
     // WASM (using LU decomposition)
     if (impl.wasm && impl.wasm.luDecomposition) {
       bench.add(`WASM LU det ${size}`, () => {
-        const luResult = impl.wasm.luDecomposition(flatMatrix, size)
-        // Note: luResult is an internal reference, actual det calculation would need additional wrapper
+        const _luResult = impl.wasm.luDecomposition(flatMatrix, size)
+        // Note: _luResult is an internal reference, actual det calculation would need additional wrapper
       })
     }
 
