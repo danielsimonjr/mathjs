@@ -84,7 +84,7 @@ function isInteger(value: f64): bool {
  */
 export function gcd(a: f64, b: f64): f64 {
   if (!isInteger(a) || !isInteger(b)) {
-    throw new Error('Parameters in function gcd must be integer numbers')
+    return f64.NaN // Return NaN for non-integer inputs (WASM compatible)
   }
 
   let r: f64
@@ -101,7 +101,7 @@ export function gcd(a: f64, b: f64): f64 {
  */
 export function lcm(a: f64, b: f64): f64 {
   if (!isInteger(a) || !isInteger(b)) {
-    throw new Error('Parameters in function lcm must be integer numbers')
+    return f64.NaN // Return NaN for non-integer inputs (WASM compatible)
   }
 
   if (a === 0 || b === 0) {
@@ -151,10 +151,10 @@ export function nthRoot(a: f64, root: f64): f64 {
   }
 
   if (root === 0) {
-    throw new Error('Root must be non-zero')
+    return f64.NaN // Return NaN for zero root (WASM compatible)
   }
   if (a < 0 && Math.abs(root) % 2 !== 1) {
-    throw new Error('Root must be odd when a is negative.')
+    return f64.NaN // Return NaN for even root of negative (WASM compatible)
   }
 
   // edge cases zero and infinity
@@ -249,17 +249,13 @@ function product(start: f64, end: f64): f64 {
  */
 export function combinations(n: f64, k: f64): f64 {
   if (!isInteger(n) || n < 0) {
-    throw new TypeError(
-      'Positive integer value expected in function combinations'
-    )
+    return f64.NaN // Return NaN for non-positive-integer n (WASM compatible)
   }
   if (!isInteger(k) || k < 0) {
-    throw new TypeError(
-      'Positive integer value expected in function combinations'
-    )
+    return f64.NaN // Return NaN for non-positive-integer k (WASM compatible)
   }
   if (k > n) {
-    throw new TypeError('k must be less than or equal to n')
+    return f64.NaN // Return NaN when k > n (WASM compatible)
   }
 
   const nMinusk = n - k
@@ -356,16 +352,29 @@ export function compare(x: f64, y: f64): i32 {
 
 // Gamma function constants
 const GAMMA_G: f64 = 4.7421875
+const GAMMA_P_LENGTH: i32 = 15
 
-const GAMMA_P: f64[] = [
-  0.99999999999999709182, 57.156235665862923517, -59.597960355475491248,
-  14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4,
-  0.46523628927048575665e-4, -0.98374475304879564677e-4,
-  0.15808870322491248884e-3, -0.21026444172410488319e-3,
-  0.2174396181152126432e-3, -0.16431810653676389022e-3,
-  0.84418223983852743293e-4, -0.2619083840158140867e-4,
-  0.36899182659531622704e-5
-]
+/**
+ * Inline lookup function for GAMMA_P coefficients (WASM compatible - no arrays)
+ */
+function getGammaP(index: i32): f64 {
+  if (index === 0) return 0.99999999999999709182
+  if (index === 1) return 57.156235665862923517
+  if (index === 2) return -59.597960355475491248
+  if (index === 3) return 14.136097974741747174
+  if (index === 4) return -0.49191381609762019978
+  if (index === 5) return 0.33994649984811888699e-4
+  if (index === 6) return 0.46523628927048575665e-4
+  if (index === 7) return -0.98374475304879564677e-4
+  if (index === 8) return 0.15808870322491248884e-3
+  if (index === 9) return -0.21026444172410488319e-3
+  if (index === 10) return 0.2174396181152126432e-3
+  if (index === 11) return -0.16431810653676389022e-3
+  if (index === 12) return 0.84418223983852743293e-4
+  if (index === 13) return -0.2619083840158140867e-4
+  if (index === 14) return 0.36899182659531622704e-5
+  return 0.0
+}
 
 /**
  * Gamma function
@@ -412,9 +421,9 @@ export function gamma(n: f64): f64 {
   }
 
   --n
-  x = GAMMA_P[0]
-  for (let i: i32 = 1; i < GAMMA_P.length; ++i) {
-    x += GAMMA_P[i] / (n + <f64>i)
+  x = getGammaP(0)
+  for (let i: i32 = 1; i < GAMMA_P_LENGTH; ++i) {
+    x += getGammaP(i) / (n + <f64>i)
   }
 
   const t = n + GAMMA_G + 0.5
@@ -426,10 +435,19 @@ const LN_SQRT_2PI: f64 = 0.91893853320467274178
 const LGAMMA_G: f64 = 5
 const LGAMMA_N: i32 = 7
 
-const LGAMMA_SERIES: f64[] = [
-  1.000000000190015, 76.18009172947146, -86.50532032941677, 24.01409824083091,
-  -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5
-]
+/**
+ * Inline lookup function for LGAMMA_SERIES coefficients (WASM compatible - no arrays)
+ */
+function getLgammaSeries(index: i32): f64 {
+  if (index === 0) return 1.000000000190015
+  if (index === 1) return 76.18009172947146
+  if (index === 2) return -86.50532032941677
+  if (index === 3) return 24.01409824083091
+  if (index === 4) return -1.231739572450155
+  if (index === 5) return 0.1208650973866179e-2
+  if (index === 6) return -0.5395239384953e-5
+  return 0.0
+}
 
 /**
  * Natural logarithm of gamma function
@@ -445,10 +463,10 @@ export function lgamma(n: f64): f64 {
 
   n = n - 1
   const base = n + LGAMMA_G + 0.5
-  let sum = LGAMMA_SERIES[0]
+  let sum = getLgammaSeries(0)
 
   for (let i: i32 = LGAMMA_N - 1; i >= 1; i--) {
-    sum += LGAMMA_SERIES[i] / (n + <f64>i)
+    sum += getLgammaSeries(i) / (n + <f64>i)
   }
 
   return LN_SQRT_2PI + (n + 0.5) * Math.log(base) - base + Math.log(sum)

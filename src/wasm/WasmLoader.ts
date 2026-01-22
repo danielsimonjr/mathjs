@@ -80,6 +80,10 @@ export interface WasmModule {
   // Linear algebra (linalg module)
   laDet: (aPtr: number, n: number) => number
   laInv: (aPtr: number, n: number) => number // returns ptr to result
+  laInv2x2: (aPtr: number, resultPtr: number) => number // returns 0 on success, -1 if singular
+  laInv3x3: (aPtr: number, resultPtr: number) => number // returns 0 on success, -1 if singular
+  laCond1: (aPtr: number, n: number, workPtr: number) => number // 1-norm condition number
+  laCondInf: (aPtr: number, n: number, workPtr: number) => number // infinity-norm condition number
   laKron: (
     aPtr: number,
     aRows: number,
@@ -92,6 +96,215 @@ export interface WasmModule {
   laCross: (aPtr: number, bPtr: number) => number // returns ptr to result (3 elements)
   laNorm2: (xPtr: number, n: number) => number
   laSolve: (aPtr: number, bPtr: number, n: number) => number // returns ptr to result
+
+  // Eigenvalue operations
+  eigsSymmetric: (
+    matrixPtr: number,
+    n: number,
+    eigenvaluesPtr: number,
+    eigenvectorsPtr: number,
+    workPtr: number,
+    maxIterations: number,
+    tolerance: number
+  ) => number // returns number of iterations, -1 on failure
+  powerIteration: (
+    matrixPtr: number,
+    n: number,
+    eigenvaluePtr: number,
+    eigenvectorPtr: number,
+    workPtr: number,
+    maxIterations: number,
+    tolerance: number
+  ) => number // returns number of iterations
+  spectralRadius: (
+    matrixPtr: number,
+    n: number,
+    workPtr: number,
+    maxIterations: number,
+    tolerance: number
+  ) => number // returns spectral radius
+  inverseIteration: (
+    matrixPtr: number,
+    n: number,
+    shift: number,
+    eigenvectorPtr: number,
+    workPtr: number,
+    maxIterations: number,
+    tolerance: number
+  ) => number // returns number of iterations
+
+  // Complex eigenvalue operations
+  balanceMatrix: (
+    matrixPtr: number,
+    n: number,
+    scalePtr: number,
+    transformPtr: number
+  ) => void
+  reduceToHessenberg: (
+    matrixPtr: number,
+    n: number,
+    transformPtr: number
+  ) => void
+  eigenvalues2x2: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    realPtr: number,
+    imagPtr: number
+  ) => void
+  qrIterationStep: (
+    matrixPtr: number,
+    n: number,
+    workPtr: number,
+    shift: number
+  ) => void
+  qrAlgorithm: (
+    matrixPtr: number,
+    n: number,
+    eigenvaluesRealPtr: number,
+    eigenvaluesImagPtr: number,
+    workPtr: number,
+    maxIterations: number,
+    tolerance: number
+  ) => number // returns number of iterations
+  hessenbergQRStep: (
+    matrixPtr: number,
+    n: number,
+    startRow: number,
+    endRow: number,
+    shift: number
+  ) => void
+
+  // Matrix exponential
+  expm: (
+    matrixPtr: number,
+    n: number,
+    resultPtr: number,
+    workPtr: number
+  ) => number // returns 0 on success
+  expmSmall: (
+    matrixPtr: number,
+    n: number,
+    resultPtr: number,
+    workPtr: number,
+    terms: number
+  ) => void
+  expmv: (
+    matrixPtr: number,
+    n: number,
+    vectorPtr: number,
+    resultPtr: number,
+    workPtr: number,
+    t: number
+  ) => void
+
+  // Matrix square root
+  sqrtm: (
+    matrixPtr: number,
+    n: number,
+    resultPtr: number,
+    workPtr: number,
+    maxIterations: number,
+    tolerance: number
+  ) => number // returns number of iterations, -1 on failure
+  sqrtmNewtonSchulz: (
+    matrixPtr: number,
+    n: number,
+    resultPtr: number,
+    workPtr: number,
+    maxIterations: number,
+    tolerance: number
+  ) => number // returns number of iterations
+  sqrtmCholesky: (
+    matrixPtr: number,
+    n: number,
+    resultPtr: number,
+    workPtr: number
+  ) => number // returns 0 on success, -1 if not positive definite
+
+  // Sparse LU decomposition (CSC format)
+  sparseLu: (
+    valuesPtr: number,
+    rowIndPtr: number,
+    colPtrPtr: number,
+    n: number,
+    nnz: number,
+    lValuesPtr: number,
+    lRowIndPtr: number,
+    lColPtrPtr: number,
+    uValuesPtr: number,
+    uRowIndPtr: number,
+    uColPtrPtr: number,
+    permPtr: number,
+    workPtr: number
+  ) => number // returns 0 on success
+  sparseForwardSolve: (
+    lValuesPtr: number,
+    lRowIndPtr: number,
+    lColPtrPtr: number,
+    n: number,
+    bPtr: number,
+    xPtr: number
+  ) => void
+  sparseBackwardSolve: (
+    uValuesPtr: number,
+    uRowIndPtr: number,
+    uColPtrPtr: number,
+    n: number,
+    bPtr: number,
+    xPtr: number
+  ) => void
+  sparseLuSolve: (
+    lValuesPtr: number,
+    lRowIndPtr: number,
+    lColPtrPtr: number,
+    uValuesPtr: number,
+    uRowIndPtr: number,
+    uColPtrPtr: number,
+    n: number,
+    permPtr: number,
+    bPtr: number,
+    xPtr: number,
+    workPtr: number
+  ) => void
+
+  // Sparse Cholesky decomposition (CSC format)
+  sparseChol: (
+    valuesPtr: number,
+    rowIndPtr: number,
+    colPtrPtr: number,
+    n: number,
+    nnz: number,
+    lValuesPtr: number,
+    lRowIndPtr: number,
+    lColPtrPtr: number,
+    parentPtr: number,
+    workPtr: number
+  ) => number // returns 0 on success, -1 if not positive definite
+  sparseCholSolve: (
+    lValuesPtr: number,
+    lRowIndPtr: number,
+    lColPtrPtr: number,
+    n: number,
+    bPtr: number,
+    xPtr: number,
+    workPtr: number
+  ) => void
+  eliminationTree: (
+    rowIndPtr: number,
+    colPtrPtr: number,
+    n: number,
+    parentPtr: number
+  ) => void
+  columnCounts: (
+    rowIndPtr: number,
+    colPtrPtr: number,
+    n: number,
+    parentPtr: number,
+    countsPtr: number,
+    workPtr: number
+  ) => void
 
   // SIMD operations
   simdDotF64: (aPtr: number, bPtr: number, length: number) => number
