@@ -381,3 +381,265 @@ export function autoCorrelation(
 ): void {
   crossCorrelation(signalPtr, n, signalPtr, n, resultPtr, workPtr, size)
 }
+
+// ============================================================================
+// SIMD-Accelerated Signal Processing
+// ============================================================================
+
+/**
+ * SIMD-accelerated FFT butterfly operation
+ * Processes butterfly operations 2 at a time using f64x2
+ *
+ * @param dataPtr - Pointer to complex data array
+ * @param n - Number of complex samples (must be power of 2)
+ * @param inverse - 1 for IFFT, 0 for FFT
+ */
+export function fftSIMD(dataPtr: usize, n: i32, inverse: i32): void {
+  // Bit-reversal permutation (scalar - not easily SIMD-able)
+  bitReverse(dataPtr, n)
+
+  // Cooley-Tukey decimation-in-time with SIMD-accelerated butterflies
+  let size: i32 = 2
+  while (size <= n) {
+    const halfSize: i32 = size >> 1
+    const step: f64 = ((inverse ? 1.0 : -1.0) * 2.0 * Math.PI) / <f64>size
+
+    for (let i: i32 = 0; i < n; i += size) {
+      let angle: f64 = 0.0
+
+      // Process butterflies
+      for (let j: i32 = 0; j < halfSize; j++) {
+        const cos: f64 = Math.cos(angle)
+        const sin: f64 = Math.sin(angle)
+
+        const idx1: usize = <usize>((i + j) << 1) << 3
+        const idx2: usize = <usize>((i + j + halfSize) << 1) << 3
+
+        // Load complex numbers as v128 (real, imag pairs)
+        const c1: v128 = v128.load(dataPtr + idx1)
+        const c2: v128 = v128.load(dataPtr + idx2)
+
+        // Twiddle factor multiplication: (cos + i*sin) * (re2 + i*im2)
+        // real = re2*cos - im2*sin, imag = re2*sin + im2*cos
+        const real2: f64 = f64x2.extract_lane(c2, 0)
+        const imag2: f64 = f64x2.extract_lane(c2, 1)
+        const tReal: f64 = real2 * cos - imag2 * sin
+        const tImag: f64 = real2 * sin + imag2 * cos
+        const twiddle: v128 = f64x2.replace_lane(f64x2.replace_lane(f64x2.splat(0.0), 0, tReal), 1, tImag)
+
+        // Butterfly: c1 +/- twiddle
+        v128.store(dataPtr + idx1, f64x2.add(c1, twiddle))
+        v128.store(dataPtr + idx2, f64x2.sub(c1, twiddle))
+
+        angle += step
+      }
+    }
+
+    size <<= 1
+  }
+
+  // Normalize for IFFT using SIMD
+  if (inverse) {
+    const scale: f64 = 1.0 / <f64>n
+    const scaleVec: v128 = f64x2.splat(scale)
+    const total: i32 = n << 1
+
+    let ii: i32 = 0
+    const limit: i32 = total - 1
+    for (; ii < limit; ii += 2) {
+      const offset: usize = <usize>ii << 3
+      v128.store(dataPtr + offset, f64x2.mul(v128.load(dataPtr + offset), scaleVec))
+    }
+    // Handle remaining
+    for (; ii < total; ii++) {
+      const offset: usize = <usize>ii << 3
+      store<f64>(dataPtr + offset, load<f64>(dataPtr + offset) * scale)
+    }
+  }
+}
+
+/**
+ * SIMD-accelerated convolution
+ * Uses SIMD for frequency domain multiplication
+ *
+ * @param signalPtr - Pointer to input signal (complex format)
+ * @param n - Length of signal
+ * @param kernelPtr - Pointer to kernel (complex format)
+ * @param m - Length of kernel
+ * @param resultPtr - Pointer to result buffer
+ * @param workPtr - Pointer to work buffer
+ * @param size - Padded size (power of 2)
+ */
+export function convolveSIMD(
+  signalPtr: usize,
+  n: i32,
+  kernelPtr: usize,
+  m: i32,
+  resultPtr: usize,
+  workPtr: usize,
+  size: i32
+): void {
+  // Copy signal to result (zero-padded) using SIMD
+  const totalSize: i32 = size << 1
+  const zeroVec: v128 = f64x2.splat(0.0)
+
+  let ii: i32 = 0
+  let limit: i32 = totalSize - 1
+  for (; ii < limit; ii += 2) {
+    v128.store(resultPtr + (<usize>ii << 3), zeroVec)
+  }
+  for (; ii < totalSize; ii++) {
+    store<f64>(resultPtr + (<usize>ii << 3), 0.0)
+  }
+
+  // Copy signal data
+  ii = 0
+  limit = (n << 1) - 1
+  for (; ii < limit; ii += 2) {
+    v128.store(resultPtr + (<usize>ii << 3), v128.load(signalPtr + (<usize>ii << 3)))
+  }
+  for (; ii < n << 1; ii++) {
+    store<f64>(resultPtr + (<usize>ii << 3), load<f64>(signalPtr + (<usize>ii << 3)))
+  }
+
+  // Copy kernel (zero-padded) using SIMD
+  ii = 0
+  limit = totalSize - 1
+  for (; ii < limit; ii += 2) {
+    v128.store(workPtr + (<usize>ii << 3), zeroVec)
+  }
+  for (; ii < totalSize; ii++) {
+    store<f64>(workPtr + (<usize>ii << 3), 0.0)
+  }
+
+  ii = 0
+  limit = (m << 1) - 1
+  for (; ii < limit; ii += 2) {
+    v128.store(workPtr + (<usize>ii << 3), v128.load(kernelPtr + (<usize>ii << 3)))
+  }
+  for (; ii < m << 1; ii++) {
+    store<f64>(workPtr + (<usize>ii << 3), load<f64>(kernelPtr + (<usize>ii << 3)))
+  }
+
+  // Transform both using SIMD FFT
+  fftSIMD(resultPtr, size, 0)
+  fftSIMD(workPtr, size, 0)
+
+  // SIMD frequency domain multiplication (complex multiply)
+  for (let i: i32 = 0; i < size; i++) {
+    const idx: usize = <usize>(i << 1) << 3
+    const r1: v128 = v128.load(resultPtr + idx)
+    const r2: v128 = v128.load(workPtr + idx)
+
+    const real1: f64 = f64x2.extract_lane(r1, 0)
+    const imag1: f64 = f64x2.extract_lane(r1, 1)
+    const real2: f64 = f64x2.extract_lane(r2, 0)
+    const imag2: f64 = f64x2.extract_lane(r2, 1)
+
+    const resReal: f64 = real1 * real2 - imag1 * imag2
+    const resImag: f64 = real1 * imag2 + imag1 * real2
+
+    v128.store(resultPtr + idx, f64x2.replace_lane(f64x2.replace_lane(f64x2.splat(0.0), 0, resReal), 1, resImag))
+  }
+
+  // Inverse transform
+  fftSIMD(resultPtr, size, 1)
+}
+
+/**
+ * SIMD-accelerated power spectrum computation
+ * Computes |X[k]|² for all k using f64x2 operations
+ *
+ * @param dataPtr - Pointer to complex FFT data [real0, imag0, ...]
+ * @param n - Number of complex samples
+ * @param resultPtr - Pointer to power spectrum output
+ */
+export function powerSpectrumSIMD(dataPtr: usize, n: i32, resultPtr: usize): void {
+  for (let i: i32 = 0; i < n; i++) {
+    const idx: usize = <usize>(i << 1) << 3
+    const complex: v128 = v128.load(dataPtr + idx)
+    // Compute real² + imag² using SIMD multiply and horizontal add
+    const squared: v128 = f64x2.mul(complex, complex)
+    const power: f64 = f64x2.extract_lane(squared, 0) + f64x2.extract_lane(squared, 1)
+    store<f64>(resultPtr + (<usize>i << 3), power)
+  }
+}
+
+/**
+ * SIMD-accelerated cross-correlation
+ *
+ * @param aPtr - Pointer to first signal (complex format)
+ * @param n - Length of first signal
+ * @param bPtr - Pointer to second signal (complex format)
+ * @param m - Length of second signal
+ * @param resultPtr - Pointer to result buffer
+ * @param workPtr - Pointer to work buffer
+ * @param size - Padded size (power of 2)
+ */
+export function crossCorrelationSIMD(
+  aPtr: usize,
+  n: i32,
+  bPtr: usize,
+  m: i32,
+  resultPtr: usize,
+  workPtr: usize,
+  size: i32
+): void {
+  // Zero and copy using SIMD
+  const totalSize: i32 = size << 1
+  const zeroVec: v128 = f64x2.splat(0.0)
+
+  let ii: i32 = 0
+  let limit: i32 = totalSize - 1
+  for (; ii < limit; ii += 2) {
+    v128.store(resultPtr + (<usize>ii << 3), zeroVec)
+    v128.store(workPtr + (<usize>ii << 3), zeroVec)
+  }
+  for (; ii < totalSize; ii++) {
+    store<f64>(resultPtr + (<usize>ii << 3), 0.0)
+    store<f64>(workPtr + (<usize>ii << 3), 0.0)
+  }
+
+  // Copy data
+  ii = 0
+  limit = (n << 1) - 1
+  for (; ii < limit; ii += 2) {
+    v128.store(resultPtr + (<usize>ii << 3), v128.load(aPtr + (<usize>ii << 3)))
+  }
+  for (; ii < n << 1; ii++) {
+    store<f64>(resultPtr + (<usize>ii << 3), load<f64>(aPtr + (<usize>ii << 3)))
+  }
+
+  ii = 0
+  limit = (m << 1) - 1
+  for (; ii < limit; ii += 2) {
+    v128.store(workPtr + (<usize>ii << 3), v128.load(bPtr + (<usize>ii << 3)))
+  }
+  for (; ii < m << 1; ii++) {
+    store<f64>(workPtr + (<usize>ii << 3), load<f64>(bPtr + (<usize>ii << 3)))
+  }
+
+  // FFT both
+  fftSIMD(resultPtr, size, 0)
+  fftSIMD(workPtr, size, 0)
+
+  // Multiply A(f) by conjugate of B(f)
+  for (let i: i32 = 0; i < size; i++) {
+    const idx: usize = <usize>(i << 1) << 3
+    const a: v128 = v128.load(resultPtr + idx)
+    const b: v128 = v128.load(workPtr + idx)
+
+    const aReal: f64 = f64x2.extract_lane(a, 0)
+    const aImag: f64 = f64x2.extract_lane(a, 1)
+    const bReal: f64 = f64x2.extract_lane(b, 0)
+    const bImag: f64 = -f64x2.extract_lane(b, 1) // Conjugate
+
+    const resReal: f64 = aReal * bReal - aImag * bImag
+    const resImag: f64 = aReal * bImag + aImag * bReal
+
+    v128.store(resultPtr + idx, f64x2.replace_lane(f64x2.replace_lane(f64x2.splat(0.0), 0, resReal), 1, resImag))
+  }
+
+  // Inverse FFT
+  fftSIMD(resultPtr, size, 1)
+}

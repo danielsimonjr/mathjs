@@ -12,7 +12,15 @@ export {
   add,
   subtract,
   scalarMultiply,
-  dotProduct
+  dotProduct,
+  // SIMD and cache-optimized versions
+  multiplyBlockedSIMD,
+  addSIMD,
+  subtractSIMD,
+  scalarMultiplySIMD,
+  dotProductSIMD,
+  multiplyVectorSIMD,
+  transposeSIMD
 } from './matrix/multiply'
 
 // Linear algebra decompositions
@@ -21,7 +29,11 @@ export {
   qrDecomposition,
   choleskyDecomposition,
   luSolve,
-  luDeterminant
+  luDeterminant,
+  // SIMD-accelerated decompositions
+  luDecompositionSIMD,
+  qrDecompositionSIMD,
+  choleskyDecompositionSIMD
 } from './algebra/decomposition'
 
 // Signal processing
@@ -31,7 +43,12 @@ export {
   convolve,
   rfft,
   irfft,
-  isPowerOf2
+  isPowerOf2,
+  // SIMD-accelerated signal processing
+  fftSIMD,
+  convolveSIMD,
+  powerSpectrumSIMD,
+  crossCorrelationSIMD
 } from './signal/fft'
 
 export {
@@ -328,7 +345,10 @@ export {
   eigsSymmetric,
   powerIteration,
   spectralRadius,
-  inverseIteration
+  inverseIteration,
+  // SIMD-accelerated eigenvalue operations
+  eigsSymmetricSIMD,
+  powerIterationSIMD
 } from './matrix/eigs'
 
 // Complex eigenvalue operations
@@ -453,3 +473,24 @@ export {
   isZero as plainIsZero,
   isNaN as plainIsNaN
 } from './plain/operations'
+
+// WorkPtr size validation utilities
+export {
+  WorkPtrSizes,
+  eigsSymmetricWorkSize,
+  powerIterationWorkSize,
+  inverseIterationWorkSize,
+  qrAlgorithmWorkSize,
+  expmWorkSize,
+  sqrtmWorkSize,
+  sqrtmNewtonSchulzWorkSize,
+  sparseLuWorkSize,
+  sparseCholWorkSize,
+  columnCountsWorkSize,
+  fft2dWorkSize,
+  irfftWorkSize,
+  blockedMultiplyWorkSize,
+  condWorkSize,
+  validateWorkPtrSize,
+  getWorkPtrRequirement
+} from './utils/workPtrValidation'

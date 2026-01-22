@@ -583,3 +583,348 @@ export function inverseIteration(
 
   return maxIterations
 }
+
+// ============================================================================
+// SIMD-Accelerated Eigenvalue Operations
+// ============================================================================
+
+/**
+ * SIMD-accelerated Jacobi eigenvalue algorithm
+ * Uses f64x2 SIMD for rotation operations
+ *
+ * @param matrixPtr - Pointer to input symmetric matrix (N x N, row-major)
+ * @param n - Matrix dimension
+ * @param precision - Convergence tolerance
+ * @param eigenvaluesPtr - Pointer to output eigenvalues (size N)
+ * @param eigenvectorsPtr - Pointer to output eigenvectors (N x N), or 0 to skip
+ * @param workPtr - Pointer to workspace (2*N f64 values)
+ * @returns Number of iterations, or -1 if max iterations exceeded
+ */
+export function eigsSymmetricSIMD(
+  matrixPtr: usize,
+  n: i32,
+  precision: f64,
+  eigenvaluesPtr: usize,
+  eigenvectorsPtr: usize,
+  workPtr: usize
+): i32 {
+  const computeVectors: bool = eigenvectorsPtr !== 0
+  const e0: f64 = Math.abs(precision / <f64>n)
+  const maxIterations: i32 = n * n * 30
+
+  const AkiPtr: usize = workPtr
+  const AkjPtr: usize = workPtr + (<usize>n << 3)
+
+  // Initialize eigenvectors to identity
+  if (computeVectors) {
+    for (let i: i32 = 0; i < n; i++) {
+      for (let j: i32 = 0; j < n; j++) {
+        const idx: usize = (<usize>(i * n + j)) << 3
+        store<f64>(eigenvectorsPtr + idx, i === j ? 1.0 : 0.0)
+      }
+    }
+  }
+
+  let iterations: i32 = 0
+  let maxOffDiag: f64 = getMaxOffDiagonal(matrixPtr, n)
+
+  while (Math.abs(maxOffDiag) >= e0 && iterations < maxIterations) {
+    const ij: i64 = findMaxOffDiagonalIndices(matrixPtr, n)
+    const i: i32 = <i32>(ij >> 32)
+    const j: i32 = <i32>(ij & 0xFFFFFFFF)
+
+    const theta: f64 = getTheta(matrixPtr, n, i, j, precision)
+
+    // Apply SIMD-accelerated Jacobi rotation
+    applyJacobiRotationSIMD(matrixPtr, n, theta, i, j, AkiPtr, AkjPtr)
+
+    if (computeVectors) {
+      applyJacobiRotationToVectorsSIMD(eigenvectorsPtr, n, theta, i, j, AkiPtr, AkjPtr)
+    }
+
+    maxOffDiag = getMaxOffDiagonal(matrixPtr, n)
+    iterations++
+  }
+
+  // Extract eigenvalues
+  for (let ii: i32 = 0; ii < n; ii++) {
+    const diagIdx: usize = (<usize>(ii * n + ii)) << 3
+    store<f64>(eigenvaluesPtr + (<usize>ii << 3), load<f64>(matrixPtr + diagIdx))
+  }
+
+  sortEigenvalues(eigenvaluesPtr, eigenvectorsPtr, n, computeVectors)
+
+  return iterations < maxIterations ? iterations : -1
+}
+
+/**
+ * SIMD-accelerated Jacobi rotation
+ */
+function applyJacobiRotationSIMD(
+  matrixPtr: usize,
+  n: i32,
+  theta: f64,
+  i: i32,
+  j: i32,
+  AkiPtr: usize,
+  AkjPtr: usize
+): void {
+  const c: f64 = Math.cos(theta)
+  const s: f64 = Math.sin(theta)
+  const c2: f64 = c * c
+  const s2: f64 = s * s
+
+  const iiIdx: usize = (<usize>(i * n + i)) << 3
+  const jjIdx: usize = (<usize>(j * n + j)) << 3
+  const ijIdx: usize = (<usize>(i * n + j)) << 3
+  const jiIdx: usize = (<usize>(j * n + i)) << 3
+
+  const Hii: f64 = load<f64>(matrixPtr + iiIdx)
+  const Hjj: f64 = load<f64>(matrixPtr + jjIdx)
+  const Hij: f64 = load<f64>(matrixPtr + ijIdx)
+
+  const Aii: f64 = c2 * Hii - 2.0 * c * s * Hij + s2 * Hjj
+  const Ajj: f64 = s2 * Hii + 2.0 * c * s * Hij + c2 * Hjj
+
+  // SIMD rotation coefficients
+  const cVec: v128 = f64x2.splat(c)
+  const sVec: v128 = f64x2.splat(s)
+
+  // Compute rotated rows/columns using SIMD where possible
+  let k: i32 = 0
+  const limit: i32 = n - 1
+
+  for (; k < limit; k += 2) {
+    const k0: i32 = k
+    const k1: i32 = k + 1
+
+    const ik0Idx: usize = (<usize>(i * n + k0)) << 3
+    const jk0Idx: usize = (<usize>(j * n + k0)) << 3
+    const ik1Idx: usize = (<usize>(i * n + k1)) << 3
+    const jk1Idx: usize = (<usize>(j * n + k1)) << 3
+
+    // Load pairs
+    const Hik: v128 = f64x2.replace_lane(
+      f64x2.replace_lane(f64x2.splat(0.0), 0, load<f64>(matrixPtr + ik0Idx)),
+      1, load<f64>(matrixPtr + ik1Idx)
+    )
+    const Hjk: v128 = f64x2.replace_lane(
+      f64x2.replace_lane(f64x2.splat(0.0), 0, load<f64>(matrixPtr + jk0Idx)),
+      1, load<f64>(matrixPtr + jk1Idx)
+    )
+
+    // Aki = c * Hik - s * Hjk
+    const Aki: v128 = f64x2.sub(f64x2.mul(cVec, Hik), f64x2.mul(sVec, Hjk))
+    // Akj = s * Hik + c * Hjk
+    const Akj: v128 = f64x2.add(f64x2.mul(sVec, Hik), f64x2.mul(cVec, Hjk))
+
+    store<f64>(AkiPtr + (<usize>k0 << 3), f64x2.extract_lane(Aki, 0))
+    store<f64>(AkiPtr + (<usize>k1 << 3), f64x2.extract_lane(Aki, 1))
+    store<f64>(AkjPtr + (<usize>k0 << 3), f64x2.extract_lane(Akj, 0))
+    store<f64>(AkjPtr + (<usize>k1 << 3), f64x2.extract_lane(Akj, 1))
+  }
+
+  // Handle remaining element
+  for (; k < n; k++) {
+    const ikIdx: usize = (<usize>(i * n + k)) << 3
+    const jkIdx: usize = (<usize>(j * n + k)) << 3
+    const Hik: f64 = load<f64>(matrixPtr + ikIdx)
+    const Hjk: f64 = load<f64>(matrixPtr + jkIdx)
+
+    store<f64>(AkiPtr + (<usize>k << 3), c * Hik - s * Hjk)
+    store<f64>(AkjPtr + (<usize>k << 3), s * Hik + c * Hjk)
+  }
+
+  // Update matrix
+  store<f64>(matrixPtr + iiIdx, Aii)
+  store<f64>(matrixPtr + jjIdx, Ajj)
+  store<f64>(matrixPtr + ijIdx, 0.0)
+  store<f64>(matrixPtr + jiIdx, 0.0)
+
+  for (k = 0; k < n; k++) {
+    if (k !== i && k !== j) {
+      const Aki: f64 = load<f64>(AkiPtr + (<usize>k << 3))
+      const Akj: f64 = load<f64>(AkjPtr + (<usize>k << 3))
+
+      const ikIdx: usize = (<usize>(i * n + k)) << 3
+      const kiIdx: usize = (<usize>(k * n + i)) << 3
+      const jkIdx: usize = (<usize>(j * n + k)) << 3
+      const kjIdx: usize = (<usize>(k * n + j)) << 3
+
+      store<f64>(matrixPtr + ikIdx, Aki)
+      store<f64>(matrixPtr + kiIdx, Aki)
+      store<f64>(matrixPtr + jkIdx, Akj)
+      store<f64>(matrixPtr + kjIdx, Akj)
+    }
+  }
+}
+
+/**
+ * SIMD-accelerated rotation for eigenvectors
+ */
+function applyJacobiRotationToVectorsSIMD(
+  vectorsPtr: usize,
+  n: i32,
+  theta: f64,
+  i: i32,
+  j: i32,
+  SkiPtr: usize,
+  SkjPtr: usize
+): void {
+  const c: f64 = Math.cos(theta)
+  const s: f64 = Math.sin(theta)
+  const cVec: v128 = f64x2.splat(c)
+  const sVec: v128 = f64x2.splat(s)
+
+  // Compute rotated columns using SIMD
+  let k: i32 = 0
+  const limit: i32 = n - 1
+
+  for (; k < limit; k += 2) {
+    const k0: i32 = k
+    const k1: i32 = k + 1
+
+    const ki0Idx: usize = (<usize>(k0 * n + i)) << 3
+    const kj0Idx: usize = (<usize>(k0 * n + j)) << 3
+    const ki1Idx: usize = (<usize>(k1 * n + i)) << 3
+    const kj1Idx: usize = (<usize>(k1 * n + j)) << 3
+
+    const Ski: v128 = f64x2.replace_lane(
+      f64x2.replace_lane(f64x2.splat(0.0), 0, load<f64>(vectorsPtr + ki0Idx)),
+      1, load<f64>(vectorsPtr + ki1Idx)
+    )
+    const Skj: v128 = f64x2.replace_lane(
+      f64x2.replace_lane(f64x2.splat(0.0), 0, load<f64>(vectorsPtr + kj0Idx)),
+      1, load<f64>(vectorsPtr + kj1Idx)
+    )
+
+    const newSki: v128 = f64x2.sub(f64x2.mul(cVec, Ski), f64x2.mul(sVec, Skj))
+    const newSkj: v128 = f64x2.add(f64x2.mul(sVec, Ski), f64x2.mul(cVec, Skj))
+
+    store<f64>(SkiPtr + (<usize>k0 << 3), f64x2.extract_lane(newSki, 0))
+    store<f64>(SkiPtr + (<usize>k1 << 3), f64x2.extract_lane(newSki, 1))
+    store<f64>(SkjPtr + (<usize>k0 << 3), f64x2.extract_lane(newSkj, 0))
+    store<f64>(SkjPtr + (<usize>k1 << 3), f64x2.extract_lane(newSkj, 1))
+  }
+
+  // Handle remaining
+  for (; k < n; k++) {
+    const kiIdx: usize = (<usize>(k * n + i)) << 3
+    const kjIdx: usize = (<usize>(k * n + j)) << 3
+    const Ski: f64 = load<f64>(vectorsPtr + kiIdx)
+    const Skj: f64 = load<f64>(vectorsPtr + kjIdx)
+
+    store<f64>(SkiPtr + (<usize>k << 3), c * Ski - s * Skj)
+    store<f64>(SkjPtr + (<usize>k << 3), s * Ski + c * Skj)
+  }
+
+  // Update eigenvector matrix
+  for (k = 0; k < n; k++) {
+    const kiIdx: usize = (<usize>(k * n + i)) << 3
+    const kjIdx: usize = (<usize>(k * n + j)) << 3
+    store<f64>(vectorsPtr + kiIdx, load<f64>(SkiPtr + (<usize>k << 3)))
+    store<f64>(vectorsPtr + kjIdx, load<f64>(SkjPtr + (<usize>k << 3)))
+  }
+}
+
+/**
+ * SIMD-accelerated power iteration
+ *
+ * @param matrixPtr - Pointer to input matrix (N x N)
+ * @param n - Matrix dimension
+ * @param maxIterations - Maximum iterations
+ * @param tolerance - Convergence tolerance
+ * @param eigenvaluePtr - Pointer to output eigenvalue
+ * @param eigenvectorPtr - Pointer to output eigenvector
+ * @param workPtr - Pointer to workspace (N f64 values)
+ * @returns Number of iterations
+ */
+export function powerIterationSIMD(
+  matrixPtr: usize,
+  n: i32,
+  maxIterations: i32,
+  tolerance: f64,
+  eigenvaluePtr: usize,
+  eigenvectorPtr: usize,
+  workPtr: usize
+): i32 {
+  // Initialize eigenvector
+  const initVal: f64 = 1.0 / Math.sqrt(<f64>n)
+  for (let ii: i32 = 0; ii < n; ii++) {
+    store<f64>(eigenvectorPtr + (<usize>ii << 3), initVal)
+  }
+
+  let prevEigenvalue: f64 = 0.0
+
+  for (let iter: i32 = 0; iter < maxIterations; iter++) {
+    // SIMD matrix-vector multiply
+    for (let ii: i32 = 0; ii < n; ii++) {
+      const rowPtr: usize = matrixPtr + (<usize>(ii * n) << 3)
+      let sumVec: v128 = f64x2.splat(0.0)
+      let jj: i32 = 0
+      const limit: i32 = n - 1
+
+      for (; jj < limit; jj += 2) {
+        const offset: usize = <usize>jj << 3
+        const aVec: v128 = v128.load(rowPtr + offset)
+        const vVec: v128 = v128.load(eigenvectorPtr + offset)
+        sumVec = f64x2.add(sumVec, f64x2.mul(aVec, vVec))
+      }
+
+      let sum: f64 = f64x2.extract_lane(sumVec, 0) + f64x2.extract_lane(sumVec, 1)
+
+      for (; jj < n; jj++) {
+        sum += load<f64>(rowPtr + (<usize>jj << 3)) * load<f64>(eigenvectorPtr + (<usize>jj << 3))
+      }
+
+      store<f64>(workPtr + (<usize>ii << 3), sum)
+    }
+
+    // Compute norm using SIMD
+    let normVec: v128 = f64x2.splat(0.0)
+    let ii: i32 = 0
+    let limit: i32 = n - 1
+
+    for (; ii < limit; ii += 2) {
+      const v: v128 = v128.load(workPtr + (<usize>ii << 3))
+      normVec = f64x2.add(normVec, f64x2.mul(v, v))
+    }
+
+    let norm: f64 = f64x2.extract_lane(normVec, 0) + f64x2.extract_lane(normVec, 1)
+
+    for (; ii < n; ii++) {
+      const val: f64 = load<f64>(workPtr + (<usize>ii << 3))
+      norm += val * val
+    }
+    norm = Math.sqrt(norm)
+
+    if (norm < 1e-15) {
+      store<f64>(eigenvaluePtr, 0.0)
+      return iter
+    }
+
+    const eigenvalue: f64 = norm
+    const invNorm: f64 = 1.0 / norm
+    const invNormVec: v128 = f64x2.splat(invNorm)
+
+    // Normalize using SIMD
+    ii = 0
+    for (; ii < limit; ii += 2) {
+      const offset: usize = <usize>ii << 3
+      v128.store(eigenvectorPtr + offset, f64x2.mul(v128.load(workPtr + offset), invNormVec))
+    }
+    for (; ii < n; ii++) {
+      store<f64>(eigenvectorPtr + (<usize>ii << 3), load<f64>(workPtr + (<usize>ii << 3)) * invNorm)
+    }
+
+    if (Math.abs(eigenvalue - prevEigenvalue) < tolerance) {
+      store<f64>(eigenvaluePtr, eigenvalue)
+      return iter + 1
+    }
+
+    prevEigenvalue = eigenvalue
+  }
+
+  store<f64>(eigenvaluePtr, prevEigenvalue)
+  return -1
+}
