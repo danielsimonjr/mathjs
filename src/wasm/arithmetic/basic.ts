@@ -5,6 +5,8 @@
  * for maximum performance. They are called from the JavaScript/TypeScript layer
  * when operating on large arrays or when WASM acceleration is enabled.
  *
+ * All array functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
  * Performance: 2-5x faster than JavaScript for simple operations
  */
 
@@ -227,167 +229,202 @@ export function divideInt(x: i32, y: i32): i32 {
 
 /**
  * Vectorized unary minus operation
- * @param input Input array
- * @param output Output array (must be same length as input)
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64, must be same length as input)
  * @param length Length of arrays
  */
 export function unaryMinusArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = -unchecked(input[i])))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, -load<f64>(inputPtr + offset))
   }
 }
 
 /**
  * Vectorized square operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function squareArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const x = unchecked(input[i])
-    unchecked((output[i] = x * x))
+    const offset: usize = <usize>i << 3
+    const x: f64 = load<f64>(inputPtr + offset)
+    store<f64>(outputPtr + offset, x * x)
   }
 }
 
 /**
  * Vectorized cube operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function cubeArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const x = unchecked(input[i])
-    unchecked((output[i] = x * x * x))
+    const offset: usize = <usize>i << 3
+    const x: f64 = load<f64>(inputPtr + offset)
+    store<f64>(outputPtr + offset, x * x * x)
   }
 }
 
 /**
  * Vectorized absolute value operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function absArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.abs(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.abs(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized sign operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function signArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const x = unchecked(input[i])
-    unchecked((output[i] = x > 0 ? 1.0 : x < 0 ? -1.0 : 0.0))
+    const offset: usize = <usize>i << 3
+    const x: f64 = load<f64>(inputPtr + offset)
+    store<f64>(outputPtr + offset, x > 0 ? 1.0 : x < 0 ? -1.0 : 0.0)
   }
 }
 
 /**
  * Vectorized addition
+ * @param aPtr Pointer to first input array (f64)
+ * @param bPtr Pointer to second input array (f64)
+ * @param outputPtr Pointer to output array (f64)
+ * @param length Length of arrays
  */
 export function addArray(
-  a: Float64Array,
-  b: Float64Array,
-  output: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = unchecked(a[i]) + unchecked(b[i])))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, load<f64>(aPtr + offset) + load<f64>(bPtr + offset))
   }
 }
 
 /**
  * Vectorized subtraction
+ * @param aPtr Pointer to first input array (f64)
+ * @param bPtr Pointer to second input array (f64)
+ * @param outputPtr Pointer to output array (f64)
+ * @param length Length of arrays
  */
 export function subtractArray(
-  a: Float64Array,
-  b: Float64Array,
-  output: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = unchecked(a[i]) - unchecked(b[i])))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, load<f64>(aPtr + offset) - load<f64>(bPtr + offset))
   }
 }
 
 /**
  * Vectorized multiplication
+ * @param aPtr Pointer to first input array (f64)
+ * @param bPtr Pointer to second input array (f64)
+ * @param outputPtr Pointer to output array (f64)
+ * @param length Length of arrays
  */
 export function multiplyArray(
-  a: Float64Array,
-  b: Float64Array,
-  output: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = unchecked(a[i]) * unchecked(b[i])))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, load<f64>(aPtr + offset) * load<f64>(bPtr + offset))
   }
 }
 
 /**
  * Vectorized division
+ * @param aPtr Pointer to first input array (f64)
+ * @param bPtr Pointer to second input array (f64)
+ * @param outputPtr Pointer to output array (f64)
+ * @param length Length of arrays
  */
 export function divideArray(
-  a: Float64Array,
-  b: Float64Array,
-  output: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = unchecked(a[i]) / unchecked(b[i])))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, load<f64>(aPtr + offset) / load<f64>(bPtr + offset))
   }
 }
 
 /**
  * Scalar addition to array
+ * @param inputPtr Pointer to input array (f64)
+ * @param scalar Scalar value to add
+ * @param outputPtr Pointer to output array (f64)
+ * @param length Length of arrays
  */
 export function addScalarArray(
-  input: Float64Array,
+  inputPtr: usize,
   scalar: f64,
-  output: Float64Array,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = unchecked(input[i]) + scalar))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, load<f64>(inputPtr + offset) + scalar)
   }
 }
 
 /**
  * Scalar multiplication to array
+ * @param inputPtr Pointer to input array (f64)
+ * @param scalar Scalar value to multiply
+ * @param outputPtr Pointer to output array (f64)
+ * @param length Length of arrays
  */
 export function multiplyScalarArray(
-  input: Float64Array,
+  inputPtr: usize,
   scalar: f64,
-  output: Float64Array,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = unchecked(input[i]) * scalar))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, load<f64>(inputPtr + offset) * scalar)
   }
 }

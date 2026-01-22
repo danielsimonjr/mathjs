@@ -14,6 +14,8 @@
  * - A conversion factor (to SI base)
  * - An offset (for non-linear conversions like temperature)
  * - Dimension vector (for dimensional analysis)
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
  */
 
 // ============================================================================
@@ -443,25 +445,25 @@ export function convert(value: f64, fromUnit: i32, toUnit: i32): f64 {
 
 /**
  * Convert array of values
- * @param values Array of values
+ * @param valuesPtr Pointer to input values (f64 array)
  * @param fromUnit Source unit code
  * @param toUnit Target unit code
  * @param n Number of values
- * @returns Converted values
+ * @param resultPtr Pointer to output values (f64 array)
  */
 export function convertArray(
-  values: Float64Array,
+  valuesPtr: usize,
   fromUnit: i32,
   toUnit: i32,
-  n: i32
-): Float64Array {
-  const result = new Float64Array(n)
-
+  n: i32,
+  resultPtr: usize
+): void {
   if (fromUnit === toUnit) {
     for (let i: i32 = 0; i < n; i++) {
-      result[i] = values[i]
+      const offset: usize = <usize>i << 3
+      store<f64>(resultPtr + offset, load<f64>(valuesPtr + offset))
     }
-    return result
+    return
   }
 
   if (isTemperatureUnit(fromUnit) && isTemperatureUnit(toUnit)) {
@@ -471,19 +473,19 @@ export function convertArray(
     const factorTo = getConversionFactor(toUnit)
 
     for (let i: i32 = 0; i < n; i++) {
-      const kelvin = values[i] * factor + offsetFrom
-      result[i] = (kelvin - offsetTo) / factorTo
+      const offset: usize = <usize>i << 3
+      const kelvin = load<f64>(valuesPtr + offset) * factor + offsetFrom
+      store<f64>(resultPtr + offset, (kelvin - offsetTo) / factorTo)
     }
   } else {
     const factorRatio =
       getConversionFactor(fromUnit) / getConversionFactor(toUnit)
 
     for (let i: i32 = 0; i < n; i++) {
-      result[i] = values[i] * factorRatio
+      const offset: usize = <usize>i << 3
+      store<f64>(resultPtr + offset, load<f64>(valuesPtr + offset) * factorRatio)
     }
   }
-
-  return result
 }
 
 /**
@@ -522,193 +524,210 @@ export function fromSI(siValue: f64, toUnit: i32): f64 {
 
 /**
  * Get the dimension vector for a unit
- * Returns [length, mass, time, current, temperature, amount, luminosity]
+ * Writes [length, mass, time, current, temperature, amount, luminosity] to resultPtr
  * @param unitCode Unit code
- * @returns Dimension vector as Float64Array
+ * @param resultPtr Pointer to output dimension vector (7 f64s)
  */
-export function getDimensions(unitCode: i32): Float64Array {
-  const dims = new Float64Array(NUM_DIMENSIONS)
+export function getDimensions(unitCode: i32, resultPtr: usize): void {
+  // Zero out first
+  for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
+    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+  }
 
   // Base units
   if (unitCode >= 100 && unitCode < 200) {
     // Length
-    dims[DIM_LENGTH] = 1
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 1.0)
   } else if (unitCode >= 200 && unitCode < 300) {
     // Mass
-    dims[DIM_MASS] = 1
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
   } else if (unitCode >= 300 && unitCode < 400) {
     // Time
-    dims[DIM_TIME] = 1
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), 1.0)
   } else if (unitCode >= 400 && unitCode < 500) {
     // Temperature
-    dims[DIM_TEMPERATURE] = 1
+    store<f64>(resultPtr + (<usize>DIM_TEMPERATURE << 3), 1.0)
   } else if (unitCode >= 500 && unitCode < 600) {
     // Current
-    dims[DIM_CURRENT] = 1
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), 1.0)
   } else if (unitCode >= 600 && unitCode < 700) {
     // Amount
-    dims[DIM_AMOUNT] = 1
+    store<f64>(resultPtr + (<usize>DIM_AMOUNT << 3), 1.0)
   } else if (unitCode >= 700 && unitCode < 800) {
     // Luminosity
-    dims[DIM_LUMINOSITY] = 1
+    store<f64>(resultPtr + (<usize>DIM_LUMINOSITY << 3), 1.0)
   }
   // Force: kg·m/s² = M¹L¹T⁻²
   else if (unitCode >= 800 && unitCode < 900) {
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = 1
-    dims[DIM_TIME] = -2
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
   }
   // Energy: kg·m²/s² = M¹L²T⁻²
   else if (unitCode >= 900 && unitCode < 1000) {
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = 2
-    dims[DIM_TIME] = -2
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
   }
   // Power: kg·m²/s³ = M¹L²T⁻³
   else if (unitCode >= 1000 && unitCode < 1100) {
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = 2
-    dims[DIM_TIME] = -3
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -3.0)
   }
   // Pressure: kg/(m·s²) = M¹L⁻¹T⁻²
   else if (unitCode >= 1100 && unitCode < 1200) {
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = -1
-    dims[DIM_TIME] = -2
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), -1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
   }
   // Frequency: 1/s = T⁻¹
   else if (unitCode >= 1200 && unitCode < 1300) {
-    dims[DIM_TIME] = -1
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -1.0)
   }
   // Electric derived units
-  else if (unitCode === UNIT_VOLT) {
+  else if (unitCode === UNIT_VOLT || unitCode === UNIT_MILLIVOLT) {
     // kg·m²/(A·s³)
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = 2
-    dims[DIM_TIME] = -3
-    dims[DIM_CURRENT] = -1
-  } else if (unitCode === UNIT_MILLIVOLT) {
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = 2
-    dims[DIM_TIME] = -3
-    dims[DIM_CURRENT] = -1
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -3.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -1.0)
   } else if (
     unitCode === UNIT_OHM ||
     unitCode === UNIT_KILOHM ||
     unitCode === UNIT_MEGOHM
   ) {
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = 2
-    dims[DIM_TIME] = -3
-    dims[DIM_CURRENT] = -2
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -3.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -2.0)
   } else if (unitCode >= 1305 && unitCode <= 1308) {
     // Farad
-    dims[DIM_MASS] = -1
-    dims[DIM_LENGTH] = -2
-    dims[DIM_TIME] = 4
-    dims[DIM_CURRENT] = 2
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), -1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), 4.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), 2.0)
   } else if (unitCode === UNIT_COULOMB) {
     // A·s
-    dims[DIM_CURRENT] = 1
-    dims[DIM_TIME] = 1
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), 1.0)
   } else if (unitCode === UNIT_HENRY) {
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = 2
-    dims[DIM_TIME] = -2
-    dims[DIM_CURRENT] = -2
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -2.0)
   } else if (unitCode === UNIT_SIEMENS) {
-    dims[DIM_MASS] = -1
-    dims[DIM_LENGTH] = -2
-    dims[DIM_TIME] = 3
-    dims[DIM_CURRENT] = 2
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), -1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), 3.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), 2.0)
   } else if (unitCode === UNIT_WEBER) {
-    dims[DIM_MASS] = 1
-    dims[DIM_LENGTH] = 2
-    dims[DIM_TIME] = -2
-    dims[DIM_CURRENT] = -1
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -1.0)
   } else if (unitCode === UNIT_TESLA) {
-    dims[DIM_MASS] = 1
-    dims[DIM_TIME] = -2
-    dims[DIM_CURRENT] = -1
+    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -1.0)
   }
   // Area: L²
   else if (unitCode >= 1400 && unitCode < 1500) {
-    dims[DIM_LENGTH] = 2
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
   }
   // Volume: L³
   else if (unitCode >= 1500 && unitCode < 1600) {
-    dims[DIM_LENGTH] = 3
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 3.0)
   }
   // Speed: L/T
   else if (unitCode >= 1600 && unitCode < 1700) {
-    dims[DIM_LENGTH] = 1
-    dims[DIM_TIME] = -1
+    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -1.0)
   }
   // Angle and data are dimensionless in SI
   // (but can be tracked separately if needed)
-
-  return dims
 }
 
 /**
  * Check if two units are dimensionally compatible
+ * @param unit1 First unit code
+ * @param unit2 Second unit code
+ * @param workPtr Working memory for two dimension vectors (14 f64s)
+ * @returns true if compatible
  */
-export function areCompatible(unit1: i32, unit2: i32): bool {
-  const d1 = getDimensions(unit1)
-  const d2 = getDimensions(unit2)
+export function areCompatible(unit1: i32, unit2: i32, workPtr: usize): bool {
+  const d1Ptr: usize = workPtr
+  const d2Ptr: usize = workPtr + (<usize>NUM_DIMENSIONS << 3)
+
+  getDimensions(unit1, d1Ptr)
+  getDimensions(unit2, d2Ptr)
 
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
-    if (d1[i] !== d2[i]) return false
+    const offset: usize = <usize>i << 3
+    if (load<f64>(d1Ptr + offset) !== load<f64>(d2Ptr + offset)) return false
   }
   return true
 }
 
 /**
  * Multiply unit dimensions (for compound units)
- * Returns new dimension vector
+ * @param dims1Ptr Pointer to first dimension vector (7 f64s)
+ * @param dims2Ptr Pointer to second dimension vector (7 f64s)
+ * @param resultPtr Pointer to output dimension vector (7 f64s)
  */
 export function multiplyDimensions(
-  dims1: Float64Array,
-  dims2: Float64Array
-): Float64Array {
-  const result = new Float64Array(NUM_DIMENSIONS)
+  dims1Ptr: usize,
+  dims2Ptr: usize,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
-    result[i] = dims1[i] + dims2[i]
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, load<f64>(dims1Ptr + offset) + load<f64>(dims2Ptr + offset))
   }
-  return result
 }
 
 /**
  * Divide unit dimensions
+ * @param dims1Ptr Pointer to first dimension vector (7 f64s)
+ * @param dims2Ptr Pointer to second dimension vector (7 f64s)
+ * @param resultPtr Pointer to output dimension vector (7 f64s)
  */
 export function divideDimensions(
-  dims1: Float64Array,
-  dims2: Float64Array
-): Float64Array {
-  const result = new Float64Array(NUM_DIMENSIONS)
+  dims1Ptr: usize,
+  dims2Ptr: usize,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
-    result[i] = dims1[i] - dims2[i]
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, load<f64>(dims1Ptr + offset) - load<f64>(dims2Ptr + offset))
   }
-  return result
 }
 
 /**
  * Raise dimensions to a power
+ * @param dimsPtr Pointer to input dimension vector (7 f64s)
+ * @param power The power to raise to
+ * @param resultPtr Pointer to output dimension vector (7 f64s)
  */
-export function powerDimensions(dims: Float64Array, power: f64): Float64Array {
-  const result = new Float64Array(NUM_DIMENSIONS)
+export function powerDimensions(
+  dimsPtr: usize,
+  power: f64,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
-    result[i] = dims[i] * power
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, load<f64>(dimsPtr + offset) * power)
   }
-  return result
 }
 
 /**
  * Check if dimension vector is dimensionless
+ * @param dimsPtr Pointer to dimension vector (7 f64s)
+ * @returns true if dimensionless
  */
-export function isDimensionless(dims: Float64Array): bool {
+export function isDimensionless(dimsPtr: usize): bool {
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
-    if (dims[i] !== 0.0) return false
+    if (load<f64>(dimsPtr + (<usize>i << 3)) !== 0.0) return false
   }
   return true
 }

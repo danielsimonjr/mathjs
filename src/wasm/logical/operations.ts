@@ -1,6 +1,8 @@
 /**
  * WASM-optimized logical operations using AssemblyScript
  * Uses i32 for boolean values (0 = false, non-zero = true)
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
 
 /**
@@ -15,19 +17,23 @@ export function and(a: i32, b: i32): i32 {
 
 /**
  * Logical AND for arrays (element-wise)
- * @param a - First array
- * @param b - Second array
- * @returns Element-wise AND result
+ * @param aPtr - Pointer to first array (i32)
+ * @param bPtr - Pointer to second array (i32)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32)
  */
-export function andArray(a: Int32Array, b: Int32Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function andArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] !== 0 && b[i] !== 0 ? 1 : 0
+    const offset: usize = <usize>i << 2
+    const a: i32 = load<i32>(aPtr + offset)
+    const b: i32 = load<i32>(bPtr + offset)
+    store<i32>(resultPtr + offset, a !== 0 && b !== 0 ? 1 : 0)
   }
-
-  return result
 }
 
 /**
@@ -42,19 +48,23 @@ export function or(a: i32, b: i32): i32 {
 
 /**
  * Logical OR for arrays (element-wise)
- * @param a - First array
- * @param b - Second array
- * @returns Element-wise OR result
+ * @param aPtr - Pointer to first array (i32)
+ * @param bPtr - Pointer to second array (i32)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32)
  */
-export function orArray(a: Int32Array, b: Int32Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function orArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] !== 0 || b[i] !== 0 ? 1 : 0
+    const offset: usize = <usize>i << 2
+    const a: i32 = load<i32>(aPtr + offset)
+    const b: i32 = load<i32>(bPtr + offset)
+    store<i32>(resultPtr + offset, a !== 0 || b !== 0 ? 1 : 0)
   }
-
-  return result
 }
 
 /**
@@ -68,18 +78,15 @@ export function not(a: i32): i32 {
 
 /**
  * Logical NOT for arrays (element-wise)
- * @param a - Input array
- * @returns Element-wise NOT result
+ * @param aPtr - Pointer to input array (i32)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32)
  */
-export function notArray(a: Int32Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function notArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] === 0 ? 1 : 0
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) === 0 ? 1 : 0)
   }
-
-  return result
 }
 
 /**
@@ -96,21 +103,23 @@ export function xor(a: i32, b: i32): i32 {
 
 /**
  * Logical XOR for arrays (element-wise)
- * @param a - First array
- * @param b - Second array
- * @returns Element-wise XOR result
+ * @param aPtr - Pointer to first array (i32)
+ * @param bPtr - Pointer to second array (i32)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32)
  */
-export function xorArray(a: Int32Array, b: Int32Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function xorArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    const aBool: bool = a[i] !== 0
-    const bBool: bool = b[i] !== 0
-    result[i] = (aBool && !bBool) || (!aBool && bBool) ? 1 : 0
+    const offset: usize = <usize>i << 2
+    const aBool: bool = load<i32>(aPtr + offset) !== 0
+    const bBool: bool = load<i32>(bPtr + offset) !== 0
+    store<i32>(resultPtr + offset, (aBool && !bBool) || (!aBool && bBool) ? 1 : 0)
   }
-
-  return result
 }
 
 /**
@@ -147,105 +156,86 @@ export function xnor(a: i32, b: i32): i32 {
 
 /**
  * Count number of true values in array
- * @param a - Input array
+ * @param aPtr - Pointer to input array (i32)
+ * @param n - Array length
  * @returns Count of non-zero values
  */
-export function countTrue(a: Int32Array): i32 {
-  const n: i32 = a.length
+export function countTrue(aPtr: usize, n: i32): i32 {
   let count: i32 = 0
-
   for (let i: i32 = 0; i < n; i++) {
-    if (a[i] !== 0) count++
+    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) count++
   }
-
   return count
 }
 
 /**
  * Check if all values are true
- * @param a - Input array
+ * @param aPtr - Pointer to input array (i32)
+ * @param n - Array length
  * @returns 1 if all non-zero, 0 otherwise
  */
-export function all(a: Int32Array): i32 {
-  const n: i32 = a.length
-
+export function all(aPtr: usize, n: i32): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    if (a[i] === 0) return 0
+    if (load<i32>(aPtr + (<usize>i << 2)) === 0) return 0
   }
-
   return 1
 }
 
 /**
  * Check if any value is true
- * @param a - Input array
+ * @param aPtr - Pointer to input array (i32)
+ * @param n - Array length
  * @returns 1 if any non-zero, 0 otherwise
  */
-export function any(a: Int32Array): i32 {
-  const n: i32 = a.length
-
+export function any(aPtr: usize, n: i32): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    if (a[i] !== 0) return 1
+    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) return 1
   }
-
   return 0
 }
 
 /**
  * Find index of first true value
- * @param a - Input array
+ * @param aPtr - Pointer to input array (i32)
+ * @param n - Array length
  * @returns Index of first non-zero value, or -1 if none
  */
-export function findFirst(a: Int32Array): i32 {
-  const n: i32 = a.length
-
+export function findFirst(aPtr: usize, n: i32): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    if (a[i] !== 0) return i
+    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) return i
   }
-
   return -1
 }
 
 /**
  * Find index of last true value
- * @param a - Input array
+ * @param aPtr - Pointer to input array (i32)
+ * @param n - Array length
  * @returns Index of last non-zero value, or -1 if none
  */
-export function findLast(a: Int32Array): i32 {
-  const n: i32 = a.length
-
+export function findLast(aPtr: usize, n: i32): i32 {
   for (let i: i32 = n - 1; i >= 0; i--) {
-    if (a[i] !== 0) return i
+    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) return i
   }
-
   return -1
 }
 
 /**
  * Get indices of all true values
- * @param a - Input array
- * @returns Array of indices where values are non-zero
+ * @param aPtr - Pointer to input array (i32)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, must have space for up to n values)
+ * @returns Number of true values found
  */
-export function findAll(a: Int32Array): Int32Array {
-  const n: i32 = a.length
-
-  // First pass: count non-zero values
-  let count: i32 = 0
-  for (let i: i32 = 0; i < n; i++) {
-    if (a[i] !== 0) count++
-  }
-
-  // Second pass: collect indices
-  const result = new Int32Array(count)
+export function findAll(aPtr: usize, n: i32, resultPtr: usize): i32 {
   let j: i32 = 0
   for (let i: i32 = 0; i < n; i++) {
-    if (a[i] !== 0) {
-      result[j] = i
+    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) {
+      store<i32>(resultPtr + (<usize>j << 2), i)
       j++
     }
   }
-
-  return result
+  return j
 }
 
 /**
@@ -261,22 +251,25 @@ export function select(condition: i32, a: f64, b: f64): f64 {
 
 /**
  * Element-wise conditional select for arrays
- * @param condition - Condition array
- * @param a - Values if true
- * @param b - Values if false
- * @returns Selected values
+ * @param conditionPtr - Pointer to condition array (i32)
+ * @param aPtr - Pointer to values if true (f64)
+ * @param bPtr - Pointer to values if false (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (f64)
  */
 export function selectArray(
-  condition: Int32Array,
-  a: Float64Array,
-  b: Float64Array
-): Float64Array {
-  const n: i32 = condition.length
-  const result = new Float64Array(n)
-
+  conditionPtr: usize,
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = condition[i] !== 0 ? a[i] : b[i]
+    const condOffset: usize = <usize>i << 2
+    const valOffset: usize = <usize>i << 3
+    const condition: i32 = load<i32>(conditionPtr + condOffset)
+    const aVal: f64 = load<f64>(aPtr + valOffset)
+    const bVal: f64 = load<f64>(bPtr + valOffset)
+    store<f64>(resultPtr + valOffset, condition !== 0 ? aVal : bVal)
   }
-
-  return result
 }

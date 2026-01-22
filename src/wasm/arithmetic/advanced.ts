@@ -5,6 +5,8 @@
  * These functions provide WASM-accelerated implementations of advanced
  * arithmetic operations including GCD, LCM, hypot, and norm calculations.
  *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
  * Performance: 3-6x faster than JavaScript for these integer-heavy operations
  */
 
@@ -45,9 +47,9 @@ export function lcm(a: i64, b: i64): i64 {
  * Computes gcd(a, b) and coefficients x, y such that ax + by = gcd(a, b)
  * @param a First integer
  * @param b Second integer
- * @param result Array to store [gcd, x, y]
+ * @param resultPtr Pointer to store [gcd, x, y] (i64, 3 elements)
  */
-export function xgcd(a: i64, b: i64, result: Int64Array): void {
+export function xgcd(a: i64, b: i64, resultPtr: usize): void {
   let oldR: i64 = a
   let r: i64 = b
   let oldS: i64 = 1
@@ -72,9 +74,9 @@ export function xgcd(a: i64, b: i64, result: Int64Array): void {
   }
 
   // Store results: [gcd, x, y]
-  unchecked((result[0] = oldR))
-  unchecked((result[1] = oldS))
-  unchecked((result[2] = oldT))
+  store<i64>(resultPtr, oldR)
+  store<i64>(resultPtr + 8, oldS)
+  store<i64>(resultPtr + 16, oldT)
 }
 
 /**
@@ -82,14 +84,14 @@ export function xgcd(a: i64, b: i64, result: Int64Array): void {
  * Returns x such that (a * x) mod m = 1
  * @param a The value
  * @param m The modulus
+ * @param workPtr Pointer to working memory (i64, 3 elements)
  * @returns Modular inverse or 0 if not exists
  */
-export function invmod(a: i64, m: i64): i64 {
-  const result = new Int64Array(3)
-  xgcd(a, m, result)
+export function invmod(a: i64, m: i64, workPtr: usize): i64 {
+  xgcd(a, m, workPtr)
 
-  const gcdVal = unchecked(result[0])
-  const x = unchecked(result[1])
+  const gcdVal = load<i64>(workPtr)
+  const x = load<i64>(workPtr + 8)
 
   // Inverse exists only if gcd(a, m) = 1
   if (gcdVal !== 1) return 0
@@ -124,14 +126,14 @@ export function hypot3(x: f64, y: f64, z: f64): f64 {
 /**
  * Euclidean norm for array of values
  * sqrt(sum(x[i]^2))
- * @param values Input array
+ * @param valuesPtr Pointer to input array (f64)
  * @param length Length of array
  * @returns Euclidean norm
  */
-export function hypotArray(values: Float64Array, length: i32): f64 {
+export function hypotArray(valuesPtr: usize, length: i32): f64 {
   let sum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const val = unchecked(values[i])
+    const val = load<f64>(valuesPtr + (<usize>i << 3))
     sum += val * val
   }
   return Math.sqrt(sum)
@@ -140,14 +142,14 @@ export function hypotArray(values: Float64Array, length: i32): f64 {
 /**
  * L1 norm (Manhattan distance)
  * sum(|x[i]|)
- * @param values Input array
+ * @param valuesPtr Pointer to input array (f64)
  * @param length Length of array
  * @returns L1 norm
  */
-export function norm1(values: Float64Array, length: i32): f64 {
+export function norm1(valuesPtr: usize, length: i32): f64 {
   let sum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    sum += Math.abs(unchecked(values[i]))
+    sum += Math.abs(load<f64>(valuesPtr + (<usize>i << 3)))
   }
   return sum
 }
@@ -155,25 +157,25 @@ export function norm1(values: Float64Array, length: i32): f64 {
 /**
  * L2 norm (Euclidean norm)
  * sqrt(sum(x[i]^2))
- * @param values Input array
+ * @param valuesPtr Pointer to input array (f64)
  * @param length Length of array
  * @returns L2 norm
  */
-export function norm2(values: Float64Array, length: i32): f64 {
-  return hypotArray(values, length)
+export function norm2(valuesPtr: usize, length: i32): f64 {
+  return hypotArray(valuesPtr, length)
 }
 
 /**
  * L-infinity norm (maximum absolute value)
  * max(|x[i]|)
- * @param values Input array
+ * @param valuesPtr Pointer to input array (f64)
  * @param length Length of array
  * @returns L-infinity norm
  */
-export function normInf(values: Float64Array, length: i32): f64 {
+export function normInf(valuesPtr: usize, length: i32): f64 {
   let max: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const absVal = Math.abs(unchecked(values[i]))
+    const absVal = Math.abs(load<f64>(valuesPtr + (<usize>i << 3)))
     if (absVal > max) max = absVal
   }
   return max
@@ -182,19 +184,19 @@ export function normInf(values: Float64Array, length: i32): f64 {
 /**
  * Lp norm (generalized norm)
  * (sum(|x[i]|^p))^(1/p)
- * @param values Input array
+ * @param valuesPtr Pointer to input array (f64)
  * @param p The norm degree
  * @param length Length of array
  * @returns Lp norm
  */
-export function normP(values: Float64Array, p: f64, length: i32): f64 {
-  if (p === 1.0) return norm1(values, length)
-  if (p === 2.0) return norm2(values, length)
-  if (p === f64.POSITIVE_INFINITY) return normInf(values, length)
+export function normP(valuesPtr: usize, p: f64, length: i32): f64 {
+  if (p === 1.0) return norm1(valuesPtr, length)
+  if (p === 2.0) return norm2(valuesPtr, length)
+  if (p === f64.POSITIVE_INFINITY) return normInf(valuesPtr, length)
 
   let sum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const absVal = Math.abs(unchecked(values[i]))
+    const absVal = Math.abs(load<f64>(valuesPtr + (<usize>i << 3)))
     sum += Math.pow(absVal, p)
   }
   return Math.pow(sum, 1.0 / p)
@@ -214,57 +216,60 @@ export function mod(x: f64, y: f64): f64 {
 
 /**
  * Vectorized modulo operation
- * @param input Input array (dividends)
+ * @param inputPtr Pointer to input array (dividends) (f64)
  * @param divisor The divisor (constant)
- * @param output Output array
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function modArray(
-  input: Float64Array,
+  inputPtr: usize,
   divisor: f64,
-  output: Float64Array,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const x = unchecked(input[i])
+    const offset: usize = <usize>i << 3
+    const x = load<f64>(inputPtr + offset)
     const result = x % divisor
-    unchecked((output[i] = result < 0 ? result + divisor : result))
+    store<f64>(outputPtr + offset, result < 0 ? result + divisor : result)
   }
 }
 
 /**
  * Vectorized GCD operation for integer arrays
- * @param inputA First input array
- * @param inputB Second input array
- * @param output Output array
+ * @param inputAPtr Pointer to first input array (i64)
+ * @param inputBPtr Pointer to second input array (i64)
+ * @param outputPtr Pointer to output array (i64)
  * @param length Length of arrays
  */
 export function gcdArray(
-  inputA: Int64Array,
-  inputB: Int64Array,
-  output: Int64Array,
+  inputAPtr: usize,
+  inputBPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = gcd(unchecked(inputA[i]), unchecked(inputB[i]))))
+    const offset: usize = <usize>i << 3
+    store<i64>(outputPtr + offset, gcd(load<i64>(inputAPtr + offset), load<i64>(inputBPtr + offset)))
   }
 }
 
 /**
  * Vectorized LCM operation for integer arrays
- * @param inputA First input array
- * @param inputB Second input array
- * @param output Output array
+ * @param inputAPtr Pointer to first input array (i64)
+ * @param inputBPtr Pointer to second input array (i64)
+ * @param outputPtr Pointer to output array (i64)
  * @param length Length of arrays
  */
 export function lcmArray(
-  inputA: Int64Array,
-  inputB: Int64Array,
-  output: Int64Array,
+  inputAPtr: usize,
+  inputBPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = lcm(unchecked(inputA[i]), unchecked(inputB[i]))))
+    const offset: usize = <usize>i << 3
+    store<i64>(outputPtr + offset, lcm(load<i64>(inputAPtr + offset), load<i64>(inputBPtr + offset)))
   }
 }
 
@@ -272,15 +277,15 @@ export function lcmArray(
  * Compute the nth roots of unity
  * Returns n complex numbers e^(2πik/n) for k = 0, 1, ..., n-1
  * @param n Number of roots
- * @param output Output array of size 2*n [re0, im0, re1, im1, ...]
+ * @param outputPtr Pointer to output array of size 2*n [re0, im0, re1, im1, ...] (f64)
  */
-export function nthRootsOfUnity(n: i32, output: Float64Array): void {
+export function nthRootsOfUnity(n: i32, outputPtr: usize): void {
   const twoPiOverN = (2.0 * Math.PI) / f64(n)
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = twoPiOverN * f64(k)
-    unchecked((output[k * 2] = Math.cos(angle))) // Real part
-    unchecked((output[k * 2 + 1] = Math.sin(angle))) // Imaginary part
+    store<f64>(outputPtr + (<usize>(k * 2) << 3), Math.cos(angle)) // Real part
+    store<f64>(outputPtr + (<usize>(k * 2 + 1) << 3), Math.sin(angle)) // Imaginary part
   }
 }
 
@@ -289,20 +294,20 @@ export function nthRootsOfUnity(n: i32, output: Float64Array): void {
  * Returns n complex numbers: x^(1/n) * e^(2πik/n) for k = 0, 1, ..., n-1
  * @param x The real number
  * @param n Root degree
- * @param output Output array of size 2*n [re0, im0, re1, im1, ...]
+ * @param outputPtr Pointer to output array of size 2*n [re0, im0, re1, im1, ...] (f64)
  */
-export function nthRootsReal(x: f64, n: i32, output: Float64Array): void {
+export function nthRootsReal(x: f64, n: i32, outputPtr: usize): void {
   // Handle special cases
   if (n <= 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      unchecked((output[i] = f64.NaN))
+      store<f64>(outputPtr + (<usize>i << 3), f64.NaN)
     }
     return
   }
 
   if (x === 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      unchecked((output[i] = 0))
+      store<f64>(outputPtr + (<usize>i << 3), 0)
     }
     return
   }
@@ -321,8 +326,8 @@ export function nthRootsReal(x: f64, n: i32, output: Float64Array): void {
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = (theta + twoPiOverN * f64(k)) / f64(n)
-    unchecked((output[k * 2] = r * Math.cos(angle))) // Real part
-    unchecked((output[k * 2 + 1] = r * Math.sin(angle))) // Imaginary part
+    store<f64>(outputPtr + (<usize>(k * 2) << 3), r * Math.cos(angle)) // Real part
+    store<f64>(outputPtr + (<usize>(k * 2 + 1) << 3), r * Math.sin(angle)) // Imaginary part
   }
 }
 
@@ -332,24 +337,24 @@ export function nthRootsReal(x: f64, n: i32, output: Float64Array): void {
  * @param re Real part of input
  * @param im Imaginary part of input
  * @param n Root degree
- * @param output Output array of size 2*n [re0, im0, re1, im1, ...]
+ * @param outputPtr Pointer to output array of size 2*n [re0, im0, re1, im1, ...] (f64)
  */
 export function nthRootsComplex(
   re: f64,
   im: f64,
   n: i32,
-  output: Float64Array
+  outputPtr: usize
 ): void {
   if (n <= 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      unchecked((output[i] = f64.NaN))
+      store<f64>(outputPtr + (<usize>i << 3), f64.NaN)
     }
     return
   }
 
   if (re === 0 && im === 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      unchecked((output[i] = 0))
+      store<f64>(outputPtr + (<usize>i << 3), 0)
     }
     return
   }
@@ -365,8 +370,8 @@ export function nthRootsComplex(
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = (theta + twoPiOverN * f64(k)) / f64(n)
-    unchecked((output[k * 2] = rootR * Math.cos(angle))) // Real part
-    unchecked((output[k * 2 + 1] = rootR * Math.sin(angle))) // Imaginary part
+    store<f64>(outputPtr + (<usize>(k * 2) << 3), rootR * Math.cos(angle)) // Real part
+    store<f64>(outputPtr + (<usize>(k * 2 + 1) << 3), rootR * Math.sin(angle)) // Imaginary part
   }
 }
 
@@ -462,9 +467,9 @@ export function lcmF64(a: f64, b: f64): f64 {
  * Computes gcd(a, b) and coefficients x, y such that ax + by = gcd(a, b)
  * @param a First integer (as f64)
  * @param b Second integer (as f64)
- * @param result Float64Array to store [gcd, x, y]
+ * @param resultPtr Pointer to store [gcd, x, y] (f64, 3 elements)
  */
-export function xgcdF64(a: f64, b: f64, result: Float64Array): void {
+export function xgcdF64(a: f64, b: f64, resultPtr: usize): void {
   a = Math.floor(a)
   b = Math.floor(b)
 
@@ -492,9 +497,9 @@ export function xgcdF64(a: f64, b: f64, result: Float64Array): void {
   }
 
   // Store results: [gcd, x, y]
-  unchecked((result[0] = oldR))
-  unchecked((result[1] = oldS))
-  unchecked((result[2] = oldT))
+  store<f64>(resultPtr, oldR)
+  store<f64>(resultPtr + 8, oldS)
+  store<f64>(resultPtr + 16, oldT)
 }
 
 /**
@@ -502,14 +507,14 @@ export function xgcdF64(a: f64, b: f64, result: Float64Array): void {
  * Returns x such that (a * x) mod m = 1
  * @param a The value (as f64)
  * @param m The modulus (as f64)
+ * @param workPtr Pointer to working memory (f64, 3 elements)
  * @returns Modular inverse or 0 if not exists
  */
-export function invmodF64(a: f64, m: f64): f64 {
-  const result = new Float64Array(3)
-  xgcdF64(a, m, result)
+export function invmodF64(a: f64, m: f64, workPtr: usize): f64 {
+  xgcdF64(a, m, workPtr)
 
-  const gcdVal = unchecked(result[0])
-  const x = unchecked(result[1])
+  const gcdVal = load<f64>(workPtr)
+  const x = load<f64>(workPtr + 8)
 
   // Inverse exists only if gcd(a, m) = 1
   if (Math.abs(gcdVal - 1) > 0.5) return 0

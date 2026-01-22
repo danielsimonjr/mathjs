@@ -3,22 +3,29 @@
  *
  * Implements NumPy-style broadcasting for element-wise operations
  * between matrices of compatible but different shapes.
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
  */
 
 /**
  * Check if two shapes are compatible for broadcasting
- * @param shape1 - First shape [rows, cols]
- * @param shape2 - Second shape [rows, cols]
+ * @param shape1Ptr - Pointer to first shape (i32)
+ * @param n1 - Length of first shape
+ * @param shape2Ptr - Pointer to second shape (i32)
+ * @param n2 - Length of second shape
  * @returns true if shapes are broadcast-compatible
  */
-export function canBroadcast(shape1: Int32Array, shape2: Int32Array): bool {
-  const n1: i32 = shape1.length
-  const n2: i32 = shape2.length
+export function canBroadcast(
+  shape1Ptr: usize,
+  n1: i32,
+  shape2Ptr: usize,
+  n2: i32
+): bool {
   const maxLen: i32 = n1 > n2 ? n1 : n2
 
   for (let i: i32 = 0; i < maxLen; i++) {
-    const d1: i32 = i < n1 ? shape1[n1 - 1 - i] : 1
-    const d2: i32 = i < n2 ? shape2[n2 - 1 - i] : 1
+    const d1: i32 = i < n1 ? load<i32>(shape1Ptr + (<usize>(n1 - 1 - i) << 2)) : 1
+    const d2: i32 = i < n2 ? load<i32>(shape2Ptr + (<usize>(n2 - 1 - i) << 2)) : 1
     if (d1 !== d2 && d1 !== 1 && d2 !== 1) {
       return false
     }
@@ -28,36 +35,38 @@ export function canBroadcast(shape1: Int32Array, shape2: Int32Array): bool {
 
 /**
  * Compute the output shape after broadcasting two shapes
- * @param shape1 - First shape [rows, cols]
- * @param shape2 - Second shape [rows, cols]
- * @returns Output shape or empty array if incompatible
+ * @param shape1Ptr - Pointer to first shape (i32)
+ * @param n1 - Length of first shape
+ * @param shape2Ptr - Pointer to second shape (i32)
+ * @param n2 - Length of second shape
+ * @param resultPtr - Pointer to output shape (i32, size max(n1,n2))
+ * @returns Length of result shape, or 0 if incompatible
  */
 export function broadcastShape(
-  shape1: Int32Array,
-  shape2: Int32Array
-): Int32Array {
-  const n1: i32 = shape1.length
-  const n2: i32 = shape2.length
+  shape1Ptr: usize,
+  n1: i32,
+  shape2Ptr: usize,
+  n2: i32,
+  resultPtr: usize
+): i32 {
   const maxLen: i32 = n1 > n2 ? n1 : n2
 
-  const result = new Int32Array(maxLen)
-
   for (let i: i32 = 0; i < maxLen; i++) {
-    const d1: i32 = i < n1 ? shape1[n1 - 1 - i] : 1
-    const d2: i32 = i < n2 ? shape2[n2 - 1 - i] : 1
+    const d1: i32 = i < n1 ? load<i32>(shape1Ptr + (<usize>(n1 - 1 - i) << 2)) : 1
+    const d2: i32 = i < n2 ? load<i32>(shape2Ptr + (<usize>(n2 - 1 - i) << 2)) : 1
 
     if (d1 === d2) {
-      result[maxLen - 1 - i] = d1
+      store<i32>(resultPtr + (<usize>(maxLen - 1 - i) << 2), d1)
     } else if (d1 === 1) {
-      result[maxLen - 1 - i] = d2
+      store<i32>(resultPtr + (<usize>(maxLen - 1 - i) << 2), d2)
     } else if (d2 === 1) {
-      result[maxLen - 1 - i] = d1
+      store<i32>(resultPtr + (<usize>(maxLen - 1 - i) << 2), d1)
     } else {
-      return new Int32Array(0)
+      return 0 // Incompatible
     }
   }
 
-  return result
+  return maxLen
 }
 
 /**
@@ -70,7 +79,7 @@ function getBroadcastIndex(
   inRows: i32,
   inCols: i32
 ): i32 {
-  const outRow: i32 = Math.floor(f64(outIdx) / f64(outCols)) as i32
+  const outRow: i32 = outIdx / outCols
   const outCol: i32 = outIdx % outCols
 
   const inRow: i32 = inRows === 1 ? 0 : outRow
@@ -81,22 +90,28 @@ function getBroadcastIndex(
 
 /**
  * Broadcast multiply two matrices element-wise
- * @param A - First matrix (rows1 x cols1, row-major)
+ * @param aPtr - Pointer to first matrix (f64, rows1 x cols1, row-major)
  * @param rows1 - Rows in A
  * @param cols1 - Columns in A
- * @param B - Second matrix (rows2 x cols2, row-major)
+ * @param bPtr - Pointer to second matrix (f64, rows2 x cols2, row-major)
  * @param rows2 - Rows in B
  * @param cols2 - Columns in B
- * @returns Result matrix or empty if shapes incompatible
+ * @param resultPtr - Pointer to result matrix (f64, pre-allocated)
+ * @param outRowsPtr - Pointer to output rows count (i32, single value)
+ * @param outColsPtr - Pointer to output cols count (i32, single value)
+ * @returns 1 on success, 0 if shapes incompatible
  */
 export function broadcastMultiply(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -105,31 +120,35 @@ export function broadcastMultiply(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] * B[idxB]
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>idxA << 3)) * load<f64>(bPtr + (<usize>idxB << 3)))
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast divide two matrices element-wise (A / B)
  */
 export function broadcastDivide(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -137,31 +156,35 @@ export function broadcastDivide(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] / B[idxB]
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>idxA << 3)) / load<f64>(bPtr + (<usize>idxB << 3)))
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast add two matrices element-wise
  */
 export function broadcastAdd(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -169,31 +192,35 @@ export function broadcastAdd(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] + B[idxB]
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>idxA << 3)) + load<f64>(bPtr + (<usize>idxB << 3)))
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast subtract two matrices element-wise (A - B)
  */
 export function broadcastSubtract(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -201,31 +228,35 @@ export function broadcastSubtract(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] - B[idxB]
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>idxA << 3)) - load<f64>(bPtr + (<usize>idxB << 3)))
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast power two matrices element-wise (A ^ B)
  */
 export function broadcastPow(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -233,31 +264,35 @@ export function broadcastPow(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = Math.pow(A[idxA], B[idxB])
+    store<f64>(resultPtr + (<usize>i << 3), Math.pow(load<f64>(aPtr + (<usize>idxA << 3)), load<f64>(bPtr + (<usize>idxB << 3))))
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast minimum of two matrices element-wise
  */
 export function broadcastMin(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -265,31 +300,37 @@ export function broadcastMin(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] < B[idxB] ? A[idxA] : B[idxB]
+    const a: f64 = load<f64>(aPtr + (<usize>idxA << 3))
+    const b: f64 = load<f64>(bPtr + (<usize>idxB << 3))
+    store<f64>(resultPtr + (<usize>i << 3), a < b ? a : b)
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast maximum of two matrices element-wise
  */
 export function broadcastMax(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -297,31 +338,37 @@ export function broadcastMax(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] > B[idxB] ? A[idxA] : B[idxB]
+    const a: f64 = load<f64>(aPtr + (<usize>idxA << 3))
+    const b: f64 = load<f64>(bPtr + (<usize>idxB << 3))
+    store<f64>(resultPtr + (<usize>i << 3), a > b ? a : b)
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast modulo of two matrices element-wise (A % B)
  */
 export function broadcastMod(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -329,32 +376,36 @@ export function broadcastMod(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] % B[idxB]
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>idxA << 3)) % load<f64>(bPtr + (<usize>idxB << 3)))
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast equality comparison (A == B), returns 1.0 or 0.0
  */
 export function broadcastEqual(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
   cols2: i32,
-  tol: f64
-): Float64Array {
+  tol: f64,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -362,31 +413,35 @@ export function broadcastEqual(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = Math.abs(A[idxA] - B[idxB]) < tol ? 1.0 : 0.0
+    store<f64>(resultPtr + (<usize>i << 3), Math.abs(load<f64>(aPtr + (<usize>idxA << 3)) - load<f64>(bPtr + (<usize>idxB << 3))) < tol ? 1.0 : 0.0)
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast less-than comparison (A < B), returns 1.0 or 0.0
  */
 export function broadcastLess(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -394,31 +449,35 @@ export function broadcastLess(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] < B[idxB] ? 1.0 : 0.0
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>idxA << 3)) < load<f64>(bPtr + (<usize>idxB << 3)) ? 1.0 : 0.0)
   }
 
-  return result
+  return 1
 }
 
 /**
  * Broadcast greater-than comparison (A > B), returns 1.0 or 0.0
  */
 export function broadcastGreater(
-  A: Float64Array,
+  aPtr: usize,
   rows1: i32,
   cols1: i32,
-  B: Float64Array,
+  bPtr: usize,
   rows2: i32,
-  cols2: i32
-): Float64Array {
+  cols2: i32,
+  resultPtr: usize,
+  outRowsPtr: usize,
+  outColsPtr: usize
+): i32 {
   const outRows: i32 = rows1 > rows2 ? rows1 : rows2 > 1 ? rows2 : rows1
   const outCols: i32 = cols1 > cols2 ? cols1 : cols2 > 1 ? cols2 : cols1
 
@@ -426,82 +485,101 @@ export function broadcastGreater(
     (rows1 !== rows2 && rows1 !== 1 && rows2 !== 1) ||
     (cols1 !== cols2 && cols1 !== 1 && cols2 !== 1)
   ) {
-    return new Float64Array(0)
+    return 0
   }
 
-  const result = new Float64Array(outRows * outCols)
+  store<i32>(outRowsPtr, outRows)
+  store<i32>(outColsPtr, outCols)
 
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    result[i] = A[idxA] > B[idxB] ? 1.0 : 0.0
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>idxA << 3)) > load<f64>(bPtr + (<usize>idxB << 3)) ? 1.0 : 0.0)
   }
 
-  return result
+  return 1
 }
 
 /**
  * Scalar broadcast - multiply matrix by scalar
+ * @param aPtr - Pointer to input matrix (f64)
+ * @param n - Number of elements
+ * @param scalar - Scalar value
+ * @param resultPtr - Pointer to output matrix (f64)
  */
 export function broadcastScalarMultiply(
-  A: Float64Array,
-  scalar: f64
-): Float64Array {
-  const n: i32 = A.length
-  const result = new Float64Array(n)
+  aPtr: usize,
+  n: i32,
+  scalar: f64,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = A[i] * scalar
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)) * scalar)
   }
-  return result
 }
 
 /**
  * Scalar broadcast - add scalar to matrix
+ * @param aPtr - Pointer to input matrix (f64)
+ * @param n - Number of elements
+ * @param scalar - Scalar value
+ * @param resultPtr - Pointer to output matrix (f64)
  */
-export function broadcastScalarAdd(A: Float64Array, scalar: f64): Float64Array {
-  const n: i32 = A.length
-  const result = new Float64Array(n)
+export function broadcastScalarAdd(
+  aPtr: usize,
+  n: i32,
+  scalar: f64,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = A[i] + scalar
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)) + scalar)
   }
-  return result
 }
 
 /**
  * Apply function element-wise with broadcasting
  * For matrices with same shape
+ * @param aPtr - Pointer to first matrix (f64)
+ * @param bPtr - Pointer to second matrix (f64)
+ * @param n - Number of elements (must be same for both)
+ * @param op - Operation: 0=add, 1=sub, 2=mul, 3=div, 4=pow, 5=min, 6=max, 7=mod
+ * @param resultPtr - Pointer to output matrix (f64)
+ * @returns 1 on success, 0 if lengths don't match
  */
 export function broadcastApply(
-  A: Float64Array,
-  B: Float64Array,
-  op: i32 // 0=add, 1=sub, 2=mul, 3=div, 4=pow, 5=min, 6=max, 7=mod
-): Float64Array {
-  const n: i32 = A.length
-  if (B.length !== n) {
-    return new Float64Array(0)
-  }
-
-  const result = new Float64Array(n)
-
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  op: i32,
+  resultPtr: usize
+): i32 {
   for (let i: i32 = 0; i < n; i++) {
+    const a: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const b: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let result: f64
+
     if (op === 0) {
-      result[i] = A[i] + B[i]
+      result = a + b
     } else if (op === 1) {
-      result[i] = A[i] - B[i]
+      result = a - b
     } else if (op === 2) {
-      result[i] = A[i] * B[i]
+      result = a * b
     } else if (op === 3) {
-      result[i] = A[i] / B[i]
+      result = a / b
     } else if (op === 4) {
-      result[i] = Math.pow(A[i], B[i])
+      result = Math.pow(a, b)
     } else if (op === 5) {
-      result[i] = A[i] < B[i] ? A[i] : B[i]
+      result = a < b ? a : b
     } else if (op === 6) {
-      result[i] = A[i] > B[i] ? A[i] : B[i]
+      result = a > b ? a : b
     } else if (op === 7) {
-      result[i] = A[i] % B[i]
+      result = a % b
+    } else {
+      result = 0.0
     }
+
+    store<f64>(resultPtr + (<usize>i << 3), result)
   }
 
-  return result
+  return 1
 }

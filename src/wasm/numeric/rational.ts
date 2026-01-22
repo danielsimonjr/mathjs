@@ -6,8 +6,9 @@
  * alternative to the Fraction class (which uses BigInt/OOP).
  *
  * Rationals are represented as pairs of i64: [numerator, denominator]
- * Stored in Float64Array as [num1, den1, num2, den2, ...] for batch operations
- * or StaticArray<i64> for single rationals.
+ * Stored as [num1, den1, num2, den2, ...] for batch operations.
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
  *
  * Note: i64 limits: -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807
  * For large numerators/denominators, overflow checking is critical.
@@ -80,25 +81,23 @@ export function lcm(a: i64, b: i64): i64 {
 
 /**
  * Reduce a rational to lowest terms
- * Returns [numerator, denominator] with denominator > 0
+ * Stores [numerator, denominator] with denominator > 0
  * @param num Numerator
  * @param den Denominator
- * @returns Reduced [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
-export function reduce(num: i64, den: i64): StaticArray<i64> {
-  const result = new StaticArray<i64>(2)
-
+export function reduce(num: i64, den: i64, resultPtr: usize): void {
   if (den === 0) {
-    // Return [sign, 0] for infinity representation
-    result[0] = num > 0 ? 1 : num < 0 ? -1 : 0
-    result[1] = 0
-    return result
+    // Store [sign, 0] for infinity representation
+    store<i64>(resultPtr, num > 0 ? 1 : num < 0 ? -1 : 0)
+    store<i64>(resultPtr + 8, 0)
+    return
   }
 
   if (num === 0) {
-    result[0] = 0
-    result[1] = 1
-    return result
+    store<i64>(resultPtr, 0)
+    store<i64>(resultPtr + 8, 1)
+    return
   }
 
   // Make denominator positive
@@ -108,9 +107,8 @@ export function reduce(num: i64, den: i64): StaticArray<i64> {
   }
 
   const g = gcd(num, den)
-  result[0] = num / g
-  result[1] = den / g
-  return result
+  store<i64>(resultPtr, num / g)
+  store<i64>(resultPtr + 8, den / g)
 }
 
 // ============================================================================
@@ -124,14 +122,15 @@ export function reduce(num: i64, den: i64): StaticArray<i64> {
  * @param den1 Denominator of first rational
  * @param num2 Numerator of second rational
  * @param den2 Denominator of second rational
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
 export function add(
   num1: i64,
   den1: i64,
   num2: i64,
-  den2: i64
-): StaticArray<i64> {
+  den2: i64,
+  resultPtr: usize
+): void {
   // Use LCM to minimize overflow risk
   const g = gcd(den1, den2)
   const d1 = den1 / g
@@ -140,33 +139,35 @@ export function add(
   const num = num1 * d2 + num2 * d1
   const den = den1 * d2
 
-  return reduce(num, den)
+  reduce(num, den, resultPtr)
 }
 
 /**
  * Subtract two rationals: a/b - c/d
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
 export function subtract(
   num1: i64,
   den1: i64,
   num2: i64,
-  den2: i64
-): StaticArray<i64> {
-  return add(num1, den1, -num2, den2)
+  den2: i64,
+  resultPtr: usize
+): void {
+  add(num1, den1, -num2, den2, resultPtr)
 }
 
 /**
  * Multiply two rationals: (a/b) * (c/d) = (a*c) / (b*d)
  * Cross-reduces to minimize overflow
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
 export function multiply(
   num1: i64,
   den1: i64,
   num2: i64,
-  den2: i64
-): StaticArray<i64> {
+  den2: i64,
+  resultPtr: usize
+): void {
   // Cross-reduce to minimize overflow
   const g1 = gcd(num1, den2)
   const g2 = gcd(num2, den1)
@@ -174,58 +175,53 @@ export function multiply(
   const num = (num1 / g1) * (num2 / g2)
   const den = (den1 / g2) * (den2 / g1)
 
-  return reduce(num, den)
+  reduce(num, den, resultPtr)
 }
 
 /**
  * Divide two rationals: (a/b) / (c/d) = (a*d) / (b*c)
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
 export function divide(
   num1: i64,
   den1: i64,
   num2: i64,
-  den2: i64
-): StaticArray<i64> {
-  return multiply(num1, den1, den2, num2)
+  den2: i64,
+  resultPtr: usize
+): void {
+  multiply(num1, den1, den2, num2, resultPtr)
 }
 
 /**
  * Negate a rational: -(a/b) = -a/b
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
-export function negate(num: i64, den: i64): StaticArray<i64> {
-  const result = new StaticArray<i64>(2)
-  result[0] = -num
-  result[1] = den
-  return result
+export function negate(num: i64, den: i64, resultPtr: usize): void {
+  store<i64>(resultPtr, -num)
+  store<i64>(resultPtr + 8, den)
 }
 
 /**
  * Absolute value of rational
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
-export function abs(num: i64, den: i64): StaticArray<i64> {
-  const result = new StaticArray<i64>(2)
-  result[0] = num < 0 ? -num : num
-  result[1] = den < 0 ? -den : den
-  return result
+export function abs(num: i64, den: i64, resultPtr: usize): void {
+  store<i64>(resultPtr, num < 0 ? -num : num)
+  store<i64>(resultPtr + 8, den < 0 ? -den : den)
 }
 
 /**
  * Reciprocal: (a/b) → (b/a)
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
-export function reciprocal(num: i64, den: i64): StaticArray<i64> {
-  const result = new StaticArray<i64>(2)
+export function reciprocal(num: i64, den: i64, resultPtr: usize): void {
   if (num < 0) {
-    result[0] = -den
-    result[1] = -num
+    store<i64>(resultPtr, -den)
+    store<i64>(resultPtr + 8, -num)
   } else {
-    result[0] = den
-    result[1] = num
+    store<i64>(resultPtr, den)
+    store<i64>(resultPtr + 8, num)
   }
-  return result
 }
 
 // ============================================================================
@@ -297,11 +293,13 @@ export function isNegative(num: i64, den: i64): bool {
 
 /**
  * Check if rational represents an integer
+ * @param workPtr Pointer to 16 bytes for temporary storage
  */
-export function isInteger(num: i64, den: i64): bool {
+export function isInteger(num: i64, den: i64, workPtr: usize): bool {
   if (den === 0) return false
-  const r = reduce(num, den)
-  return r[1] === 1 || r[1] === -1
+  reduce(num, den, workPtr)
+  const rDen = load<i64>(workPtr + 8)
+  return rDen === 1 || rDen === -1
 }
 
 // ============================================================================
@@ -324,21 +322,19 @@ export function toFloat(num: i64, den: i64): f64 {
  * Convert f64 to rational approximation using continued fractions
  * @param value The float value
  * @param maxDenom Maximum allowed denominator
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
-export function fromFloat(value: f64, maxDenom: i64): StaticArray<i64> {
-  const result = new StaticArray<i64>(2)
-
+export function fromFloat(value: f64, maxDenom: i64, resultPtr: usize): void {
   if (!isFinite(value)) {
-    result[0] = value > 0 ? 1 : value < 0 ? -1 : 0
-    result[1] = 0
-    return result
+    store<i64>(resultPtr, value > 0 ? 1 : value < 0 ? -1 : 0)
+    store<i64>(resultPtr + 8, 0)
+    return
   }
 
   if (value === 0.0) {
-    result[0] = 0
-    result[1] = 1
-    return result
+    store<i64>(resultPtr, 0)
+    store<i64>(resultPtr + 8, 1)
+    return
   }
 
   const neg = value < 0
@@ -373,21 +369,18 @@ export function fromFloat(value: f64, maxDenom: i64): StaticArray<i64> {
     if (!isFinite(x)) break
   }
 
-  result[0] = neg ? -h1 : h1
-  result[1] = k1
-  return result
+  store<i64>(resultPtr, neg ? -h1 : h1)
+  store<i64>(resultPtr + 8, k1)
 }
 
 /**
- * Parse integer string to rational
- * @param str Integer string
- * @returns [numerator, 1]
+ * Create rational from integer
+ * @param value Integer value
+ * @param resultPtr Pointer to store 2 i64 values [numerator, 1]
  */
-export function fromInteger(value: i64): StaticArray<i64> {
-  const result = new StaticArray<i64>(2)
-  result[0] = value
-  result[1] = 1
-  return result
+export function fromInteger(value: i64, resultPtr: usize): void {
+  store<i64>(resultPtr, value)
+  store<i64>(resultPtr + 8, 1)
 }
 
 // ============================================================================
@@ -399,14 +392,13 @@ export function fromInteger(value: i64): StaticArray<i64> {
  * @param num Numerator
  * @param den Denominator
  * @param exp Integer exponent (can be negative)
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
-export function pow(num: i64, den: i64, exp: i32): StaticArray<i64> {
+export function pow(num: i64, den: i64, exp: i32, resultPtr: usize): void {
   if (exp === 0) {
-    const result = new StaticArray<i64>(2)
-    result[0] = 1
-    result[1] = 1
-    return result
+    store<i64>(resultPtr, 1)
+    store<i64>(resultPtr + 8, 1)
+    return
   }
 
   if (exp < 0) {
@@ -430,7 +422,7 @@ export function pow(num: i64, den: i64, exp: i32): StaticArray<i64> {
     exp >>= 1
   }
 
-  return reduce(resNum, resDen)
+  reduce(resNum, resDen, resultPtr)
 }
 
 /**
@@ -466,15 +458,13 @@ export function isPerfectSquare(n: i64): bool {
 /**
  * Simplify square root: sqrt(n) = a * sqrt(b) where b is square-free
  * @param n The radicand
- * @returns [a, b] such that sqrt(n) = a * sqrt(b)
+ * @param resultPtr Pointer to store 2 i64 values [a, b] such that sqrt(n) = a * sqrt(b)
  */
-export function simplifySqrt(n: i64): StaticArray<i64> {
-  const result = new StaticArray<i64>(2)
-
+export function simplifySqrt(n: i64, resultPtr: usize): void {
   if (n <= 0) {
-    result[0] = 0
-    result[1] = n < 0 ? -n : 0
-    return result
+    store<i64>(resultPtr, 0)
+    store<i64>(resultPtr + 8, n < 0 ? -n : 0)
+    return
   }
 
   let a: i64 = 1
@@ -490,9 +480,8 @@ export function simplifySqrt(n: i64): StaticArray<i64> {
     d++
   }
 
-  result[0] = a
-  result[1] = b
-  return result
+  store<i64>(resultPtr, a)
+  store<i64>(resultPtr + 8, b)
 }
 
 // ============================================================================
@@ -536,25 +525,32 @@ export function modInverse(a: i64, m: i64): i64 {
 /**
  * Rational modulo (floor definition)
  * (a/b) mod n = (a mod (b*n)) / b
+ * @param workPtr Pointer to 16 bytes for temporary storage
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
-export function mod(num: i64, den: i64, n: i64): StaticArray<i64> {
+export function mod(
+  num: i64,
+  den: i64,
+  n: i64,
+  workPtr: usize,
+  resultPtr: usize
+): void {
   if (n === 0) {
-    const result = new StaticArray<i64>(2)
-    result[0] = num
-    result[1] = den
-    return result
+    store<i64>(resultPtr, num)
+    store<i64>(resultPtr + 8, den)
+    return
   }
 
-  // Convert to same denominator
-  const r = reduce(num, den)
-  const rNum = r[0]
-  const rDen = r[1]
+  // Reduce first
+  reduce(num, den, workPtr)
+  const rNum = load<i64>(workPtr)
+  const rDen = load<i64>(workPtr + 8)
 
   // Compute floor((a/b) / n) * n
   const floored = (rNum / (rDen * n)) * n * rDen
   const newNum = rNum - floored
 
-  return reduce(newNum, rDen)
+  reduce(newNum, rDen, resultPtr)
 }
 
 // ============================================================================
@@ -563,65 +559,114 @@ export function mod(num: i64, den: i64, n: i64): StaticArray<i64> {
 
 /**
  * Add array of rationals
- * Input format: [num1, den1, num2, den2, ...]
- * @param rationals Flat array of [num, den] pairs
+ * Input format: [num1, den1, num2, den2, ...] as f64 values
+ * @param rationalsPtr Pointer to flat array of [num, den] pairs as f64
  * @param count Number of rationals
- * @returns [sum_numerator, sum_denominator]
+ * @param resultPtr Pointer to store 2 i64 values [sum_numerator, sum_denominator]
  */
 export function sumArray(
-  rationals: Float64Array,
-  count: i32
-): StaticArray<i64> {
+  rationalsPtr: usize,
+  count: i32,
+  resultPtr: usize
+): void {
   if (count === 0) {
-    const result = new StaticArray<i64>(2)
-    result[0] = 0
-    result[1] = 1
-    return result
+    store<i64>(resultPtr, 0)
+    store<i64>(resultPtr + 8, 1)
+    return
   }
 
-  let resNum: i64 = i64(rationals[0])
-  let resDen: i64 = i64(rationals[1])
+  let resNum: i64 = i64(load<f64>(rationalsPtr))
+  let resDen: i64 = i64(load<f64>(rationalsPtr + 8))
 
   for (let i: i32 = 1; i < count; i++) {
-    const num = i64(rationals[i * 2])
-    const den = i64(rationals[i * 2 + 1])
-    const r = add(resNum, resDen, num, den)
-    resNum = r[0]
-    resDen = r[1]
+    const offset: usize = <usize>(i * 2) << 3
+    const num = i64(load<f64>(rationalsPtr + offset))
+    const den = i64(load<f64>(rationalsPtr + offset + 8))
+
+    // Inline add logic to avoid temp storage
+    const g = gcd(resDen, den)
+    const d1 = resDen / g
+    const d2 = den / g
+    const newNum = resNum * d2 + num * d1
+    const newDen = resDen * d2
+
+    // Inline reduce
+    if (newDen === 0) {
+      resNum = newNum > 0 ? 1 : newNum < 0 ? -1 : 0
+      resDen = 0
+    } else if (newNum === 0) {
+      resNum = 0
+      resDen = 1
+    } else {
+      let rNum = newNum
+      let rDen = newDen
+      if (rDen < 0) {
+        rNum = -rNum
+        rDen = -rDen
+      }
+      const g2 = gcd(rNum, rDen)
+      resNum = rNum / g2
+      resDen = rDen / g2
+    }
   }
 
-  return reduce(resNum, resDen)
+  store<i64>(resultPtr, resNum)
+  store<i64>(resultPtr + 8, resDen)
 }
 
 /**
  * Multiply array of rationals
- * @param rationals Flat array of [num, den] pairs
+ * @param rationalsPtr Pointer to flat array of [num, den] pairs as f64
  * @param count Number of rationals
- * @returns [product_numerator, product_denominator]
+ * @param resultPtr Pointer to store 2 i64 values [product_numerator, product_denominator]
  */
 export function productArray(
-  rationals: Float64Array,
-  count: i32
-): StaticArray<i64> {
+  rationalsPtr: usize,
+  count: i32,
+  resultPtr: usize
+): void {
   if (count === 0) {
-    const result = new StaticArray<i64>(2)
-    result[0] = 1
-    result[1] = 1
-    return result
+    store<i64>(resultPtr, 1)
+    store<i64>(resultPtr + 8, 1)
+    return
   }
 
-  let resNum: i64 = i64(rationals[0])
-  let resDen: i64 = i64(rationals[1])
+  let resNum: i64 = i64(load<f64>(rationalsPtr))
+  let resDen: i64 = i64(load<f64>(rationalsPtr + 8))
 
   for (let i: i32 = 1; i < count; i++) {
-    const num = i64(rationals[i * 2])
-    const den = i64(rationals[i * 2 + 1])
-    const r = multiply(resNum, resDen, num, den)
-    resNum = r[0]
-    resDen = r[1]
+    const offset: usize = <usize>(i * 2) << 3
+    const num = i64(load<f64>(rationalsPtr + offset))
+    const den = i64(load<f64>(rationalsPtr + offset + 8))
+
+    // Inline multiply with cross-reduce
+    const g1 = gcd(resNum, den)
+    const g2 = gcd(num, resDen)
+    const newNum = (resNum / g1) * (num / g2)
+    const newDen = (resDen / g2) * (den / g1)
+
+    // Inline reduce
+    if (newDen === 0) {
+      resNum = newNum > 0 ? 1 : newNum < 0 ? -1 : 0
+      resDen = 0
+    } else if (newNum === 0) {
+      resNum = 0
+      resDen = 1
+    } else {
+      let rNum = newNum
+      let rDen = newDen
+      if (rDen < 0) {
+        rNum = -rNum
+        rDen = -rDen
+      }
+      const g3 = gcd(rNum, rDen)
+      resNum = rNum / g3
+      resDen = rDen / g3
+    }
   }
 
-  return reduce(resNum, resDen)
+  store<i64>(resultPtr, resNum)
+  store<i64>(resultPtr + 8, resDen)
 }
 
 /**
@@ -629,14 +674,15 @@ export function productArray(
  * @param num Numerator
  * @param den Denominator
  * @param maxTerms Maximum number of terms
- * @returns Array of continued fraction coefficients
+ * @param resultPtr Pointer to store i32 terms
+ * @returns Number of terms actually stored
  */
 export function toContinuedFraction(
   num: i64,
   den: i64,
-  maxTerms: i32
-): Int32Array {
-  const terms = new Int32Array(maxTerms)
+  maxTerms: i32,
+  resultPtr: usize
+): i32 {
   let count: i32 = 0
 
   if (den < 0) {
@@ -646,7 +692,7 @@ export function toContinuedFraction(
 
   while (den !== 0 && count < maxTerms) {
     const q = num / den
-    terms[count] = i32(q)
+    store<i32>(resultPtr + (<usize>count << 2), i32(q))
     count++
 
     const r = num - q * den
@@ -654,38 +700,33 @@ export function toContinuedFraction(
     den = r
   }
 
-  // Return only the used portion
-  const result = new Int32Array(count)
-  for (let i: i32 = 0; i < count; i++) {
-    result[i] = terms[i]
-  }
-  return result
+  return count
 }
 
 /**
  * Convert continued fraction back to rational
- * @param terms Continued fraction coefficients
+ * @param termsPtr Pointer to i32 continued fraction coefficients
  * @param n Number of terms
- * @returns [numerator, denominator]
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
 export function fromContinuedFraction(
-  terms: Int32Array,
-  n: i32
-): StaticArray<i64> {
+  termsPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   if (n === 0) {
-    const result = new StaticArray<i64>(2)
-    result[0] = 0
-    result[1] = 1
-    return result
+    store<i64>(resultPtr, 0)
+    store<i64>(resultPtr + 8, 1)
+    return
   }
 
   let h0: i64 = 1,
-    h1: i64 = i64(terms[0])
+    h1: i64 = i64(load<i32>(termsPtr))
   let k0: i64 = 0,
     k1: i64 = 1
 
   for (let i: i32 = 1; i < n; i++) {
-    const a = i64(terms[i])
+    const a = i64(load<i32>(termsPtr + (<usize>i << 2)))
     const h2 = a * h1 + h0
     const k2 = a * k1 + k0
 
@@ -695,7 +736,7 @@ export function fromContinuedFraction(
     k1 = k2
   }
 
-  return reduce(h1, k1)
+  reduce(h1, k1, resultPtr)
 }
 
 // ============================================================================
@@ -705,26 +746,32 @@ export function fromContinuedFraction(
 /**
  * Compute mediant of two fractions: (a+c)/(b+d)
  * Used in Stern-Brocot tree and Farey sequences
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
 export function mediant(
   num1: i64,
   den1: i64,
   num2: i64,
-  den2: i64
-): StaticArray<i64> {
-  return reduce(num1 + num2, den1 + den2)
+  den2: i64,
+  resultPtr: usize
+): void {
+  reduce(num1 + num2, den1 + den2, resultPtr)
 }
 
 /**
  * Find best rational approximation with denominator <= maxDenom
  * Uses Stern-Brocot tree search
+ * @param resultPtr Pointer to store 2 i64 values [numerator, denominator]
  */
-export function bestApproximation(value: f64, maxDenom: i64): StaticArray<i64> {
+export function bestApproximation(
+  value: f64,
+  maxDenom: i64,
+  resultPtr: usize
+): void {
   if (!isFinite(value)) {
-    const result = new StaticArray<i64>(2)
-    result[0] = value > 0 ? 1 : value < 0 ? -1 : 0
-    result[1] = 0
-    return result
+    store<i64>(resultPtr, value > 0 ? 1 : value < 0 ? -1 : 0)
+    store<i64>(resultPtr + 8, 0)
+    return
   }
 
   const neg = value < 0
@@ -745,10 +792,9 @@ export function bestApproximation(value: f64, maxDenom: i64): StaticArray<i64> {
     const mVal = f64(mNum) / f64(mDen)
 
     if (Math.abs(mVal - value) < 1e-15) {
-      const result = new StaticArray<i64>(2)
-      result[0] = neg ? -mNum : mNum
-      result[1] = mDen
-      return result
+      store<i64>(resultPtr, neg ? -mNum : mNum)
+      store<i64>(resultPtr + 8, mDen)
+      return
     }
 
     if (mVal < value) {
@@ -764,20 +810,18 @@ export function bestApproximation(value: f64, maxDenom: i64): StaticArray<i64> {
   const aErr = Math.abs(f64(aNum) / f64(aDen) - value)
   const bErr = bDen > 0 ? Math.abs(f64(bNum) / f64(bDen) - value) : Infinity
 
-  const result = new StaticArray<i64>(2)
   if (aErr <= bErr) {
-    result[0] = neg ? -aNum : aNum
-    result[1] = aDen
+    store<i64>(resultPtr, neg ? -aNum : aNum)
+    store<i64>(resultPtr + 8, aDen)
   } else {
-    result[0] = neg ? -bNum : bNum
-    result[1] = bDen
+    store<i64>(resultPtr, neg ? -bNum : bNum)
+    store<i64>(resultPtr + 8, bDen)
   }
-  return result
 }
 
 // ============================================================================
 // F64 ALTERNATIVES FOR PRE-COMPILE TESTING
-// These use f64 instead of i64 and Float64Array instead of StaticArray<i64>
+// These use f64 instead of i64 and raw pointers instead of typed arrays
 // for compatibility with Node.js imports (pre-compile testing)
 // Works correctly for integers up to Number.MAX_SAFE_INTEGER (2^53 - 1)
 // ============================================================================
@@ -823,21 +867,21 @@ export function lcmF64(a: f64, b: f64): f64 {
  * Reduce a rational to lowest terms (f64 version)
  * @param num Numerator (as f64)
  * @param den Denominator (as f64)
- * @param result Float64Array[2] to store [numerator, denominator]
+ * @param resultPtr Pointer to store 2 f64 values [numerator, denominator]
  */
-export function reduceF64(num: f64, den: f64, result: Float64Array): void {
+export function reduceF64(num: f64, den: f64, resultPtr: usize): void {
   num = Math.floor(num)
   den = Math.floor(den)
 
   if (den === 0) {
-    unchecked((result[0] = num > 0 ? 1 : num < 0 ? -1 : 0))
-    unchecked((result[1] = 0))
+    store<f64>(resultPtr, num > 0 ? 1 : num < 0 ? -1 : 0)
+    store<f64>(resultPtr + 8, 0)
     return
   }
 
   if (num === 0) {
-    unchecked((result[0] = 0))
-    unchecked((result[1] = 1))
+    store<f64>(resultPtr, 0)
+    store<f64>(resultPtr + 8, 1)
     return
   }
 
@@ -848,8 +892,8 @@ export function reduceF64(num: f64, den: f64, result: Float64Array): void {
   }
 
   const g = gcdF64(num < 0 ? -num : num, den)
-  unchecked((result[0] = num / g))
-  unchecked((result[1] = den / g))
+  store<f64>(resultPtr, num / g)
+  store<f64>(resultPtr + 8, den / g)
 }
 
 /**
@@ -858,14 +902,14 @@ export function reduceF64(num: f64, den: f64, result: Float64Array): void {
  * @param den1 Denominator of first rational
  * @param num2 Numerator of second rational
  * @param den2 Denominator of second rational
- * @param result Float64Array[2] to store [numerator, denominator]
+ * @param resultPtr Pointer to store 2 f64 values [numerator, denominator]
  */
 export function addF64(
   num1: f64,
   den1: f64,
   num2: f64,
   den2: f64,
-  result: Float64Array
+  resultPtr: usize
 ): void {
   const g = gcdF64(den1, den2)
   const d1 = den1 / g
@@ -874,7 +918,7 @@ export function addF64(
   const num = num1 * d2 + num2 * d1
   const den = den1 * d2
 
-  reduceF64(num, den, result)
+  reduceF64(num, den, resultPtr)
 }
 
 /**
@@ -883,14 +927,14 @@ export function addF64(
  * @param den1 Denominator of first rational
  * @param num2 Numerator of second rational
  * @param den2 Denominator of second rational
- * @param result Float64Array[2] to store [numerator, denominator]
+ * @param resultPtr Pointer to store 2 f64 values [numerator, denominator]
  */
 export function multiplyF64(
   num1: f64,
   den1: f64,
   num2: f64,
   den2: f64,
-  result: Float64Array
+  resultPtr: usize
 ): void {
   // Cross-reduce to minimize overflow
   const g1 = gcdF64(Math.abs(num1), Math.abs(den2))
@@ -899,7 +943,7 @@ export function multiplyF64(
   const num = (num1 / g1) * (num2 / g2)
   const den = (den1 / g2) * (den2 / g1)
 
-  reduceF64(num, den, result)
+  reduceF64(num, den, resultPtr)
 }
 
 /**
@@ -938,16 +982,16 @@ export function compareF64(num1: f64, den1: f64, num2: f64, den2: f64): i32 {
  * Uses continued fraction expansion
  * @param value The floating-point value
  * @param maxDenom Maximum denominator
- * @param result Float64Array[2] to store [numerator, denominator]
+ * @param resultPtr Pointer to store 2 f64 values [numerator, denominator]
  */
 export function fromFloatF64(
   value: f64,
   maxDenom: f64,
-  result: Float64Array
+  resultPtr: usize
 ): void {
   if (!isFinite(value)) {
-    unchecked((result[0] = value > 0 ? 1 : value < 0 ? -1 : 0))
-    unchecked((result[1] = 0))
+    store<f64>(resultPtr, value > 0 ? 1 : value < 0 ? -1 : 0)
+    store<f64>(resultPtr + 8, 0)
     return
   }
 
@@ -968,8 +1012,8 @@ export function fromFloatF64(
     const mVal = mNum / mDen
 
     if (Math.abs(mVal - value) < 1e-15) {
-      unchecked((result[0] = neg ? -mNum : mNum))
-      unchecked((result[1] = mDen))
+      store<f64>(resultPtr, neg ? -mNum : mNum)
+      store<f64>(resultPtr + 8, mDen)
       return
     }
 
@@ -987,10 +1031,10 @@ export function fromFloatF64(
   const bErr = bDen > 0 ? Math.abs(bNum / bDen - value) : Infinity
 
   if (aErr <= bErr) {
-    unchecked((result[0] = neg ? -aNum : aNum))
-    unchecked((result[1] = aDen))
+    store<f64>(resultPtr, neg ? -aNum : aNum)
+    store<f64>(resultPtr + 8, aDen)
   } else {
-    unchecked((result[0] = neg ? -bNum : bNum))
-    unchecked((result[1] = bDen))
+    store<f64>(resultPtr, neg ? -bNum : bNum)
+    store<f64>(resultPtr + 8, bDen)
   }
 }

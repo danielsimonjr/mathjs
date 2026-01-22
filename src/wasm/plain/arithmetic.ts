@@ -4,6 +4,8 @@
  * High-performance numeric operations for WebAssembly compilation.
  * Converted from src/plain/number/arithmetic.js
  *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
  * Sprint: Phase 6 - Sprint 1 - Plain Number Implementations
  * Task: 6.1.1
  */
@@ -223,18 +225,16 @@ export function lcmNumber(a: f64, b: f64): f64 {
  * Calculate xgcd for two numbers (Extended Euclidean Algorithm)
  * @param a - First number (must be integer)
  * @param b - Second number (must be integer)
- * @returns Array [gcd, x, y] where gcd = a*x + b*y
- *
- * NOTE: AssemblyScript returns StaticArray instead of regular array
+ * @param resultPtr - Pointer to output array (3 f64s): [gcd, x, y] where gcd = a*x + b*y
+ * @returns 1 if successful, 0 if inputs are not integers
  */
-export function xgcdNumber(a: f64, b: f64): StaticArray<f64> {
+export function xgcdNumber(a: f64, b: f64, resultPtr: usize): i32 {
   if (!isIntegerNumber(a) || !isIntegerNumber(b)) {
-    // Return array with NaN for error case
-    const err = new StaticArray<f64>(3)
-    err[0] = f64.NaN
-    err[1] = f64.NaN
-    err[2] = f64.NaN
-    return err
+    // Store NaN for error case
+    store<f64>(resultPtr, f64.NaN)
+    store<f64>(resultPtr + 8, f64.NaN)
+    store<f64>(resultPtr + 16, f64.NaN)
+    return 0
   }
 
   // source: https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
@@ -262,17 +262,16 @@ export function xgcdNumber(a: f64, b: f64): StaticArray<f64> {
     b = r
   }
 
-  const res = new StaticArray<f64>(3)
   if (a < 0) {
-    res[0] = -a
-    res[1] = -lastx
-    res[2] = -lasty
+    store<f64>(resultPtr, -a)
+    store<f64>(resultPtr + 8, -lastx)
+    store<f64>(resultPtr + 16, -lasty)
   } else {
-    res[0] = a
-    res[1] = a !== 0 ? lastx : 0
-    res[2] = lasty
+    store<f64>(resultPtr, a)
+    store<f64>(resultPtr + 8, a !== 0 ? lastx : 0)
+    store<f64>(resultPtr + 16, lasty)
   }
-  return res
+  return 1
 }
 
 // ============================================================================

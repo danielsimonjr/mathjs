@@ -2,31 +2,36 @@
  * WASM-optimized matrix multiplication using AssemblyScript
  * Compiled to WebAssembly for maximum performance
  *
- * All functions return new Float64Array instances for proper WASM/JS interop
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
 
 /**
  * Dense matrix multiplication: C = A * B
- * @param a - Matrix A data (flat array, row-major)
+ * @param aPtr - Pointer to Matrix A data (flat array, row-major)
  * @param aRows - Number of rows in A
  * @param aCols - Number of columns in A
- * @param b - Matrix B data (flat array, row-major)
+ * @param bPtr - Pointer to Matrix B data (flat array, row-major)
  * @param bRows - Number of rows in B
  * @param bCols - Number of columns in B
- * @returns Result matrix C (row-major)
+ * @param resultPtr - Pointer to result matrix C (row-major)
  */
 export function multiplyDense(
-  a: Float64Array,
+  aPtr: usize,
   aRows: i32,
   aCols: i32,
-  b: Float64Array,
+  bPtr: usize,
   bRows: i32,
-  bCols: i32
-): Float64Array {
-  const result = new Float64Array(aRows * bCols)
-
+  bCols: i32,
+  resultPtr: usize
+): void {
   // Cache-friendly blocked matrix multiplication
   const blockSize: i32 = 64
+
+  // Initialize result to zero
+  const resultSize = aRows * bCols
+  for (let i: i32 = 0; i < resultSize; i++) {
+    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+  }
 
   for (let ii: i32 = 0; ii < aRows; ii += blockSize) {
     const iEnd: i32 = min(ii + blockSize, aRows)
@@ -40,20 +45,21 @@ export function multiplyDense(
         // Multiply the blocks
         for (let i: i32 = ii; i < iEnd; i++) {
           for (let j: i32 = jj; j < jEnd; j++) {
-            let sum: f64 = result[i * bCols + j]
+            const resultIdx: usize = <usize>(i * bCols + j) << 3
+            let sum: f64 = load<f64>(resultPtr + resultIdx)
 
             for (let k: i32 = kk; k < kEnd; k++) {
-              sum += a[i * aCols + k] * b[k * bCols + j]
+              const aVal = load<f64>(aPtr + (<usize>(i * aCols + k) << 3))
+              const bVal = load<f64>(bPtr + (<usize>(k * bCols + j) << 3))
+              sum += aVal * bVal
             }
 
-            result[i * bCols + j] = sum
+            store<f64>(resultPtr + resultIdx, sum)
           }
         }
       }
     }
   }
-
-  return result
 }
 
 /**
@@ -61,15 +67,14 @@ export function multiplyDense(
  * Uses 128-bit SIMD vectors for parallel computation
  */
 export function multiplyDenseSIMD(
-  a: Float64Array,
+  aPtr: usize,
   aRows: i32,
   aCols: i32,
-  b: Float64Array,
+  bPtr: usize,
   bRows: i32,
-  bCols: i32
-): Float64Array {
-  const result = new Float64Array(aRows * bCols)
-
+  bCols: i32,
+  resultPtr: usize
+): void {
   // SIMD implementation using v128 (AssemblyScript SIMD)
   // Process 2 f64 values at a time
 
@@ -81,56 +86,67 @@ export function multiplyDenseSIMD(
       // Process pairs of elements with SIMD
       const limit: i32 = aCols - (aCols % 2)
       for (; k < limit; k += 2) {
-        const aIdx: i32 = i * aCols + k
-        const bIdx1: i32 = k * bCols + j
-        const bIdx2: i32 = (k + 1) * bCols + j
+        const aIdx1: usize = <usize>(i * aCols + k) << 3
+        const bIdx1: usize = <usize>(k * bCols + j) << 3
+        const bIdx2: usize = <usize>((k + 1) * bCols + j) << 3
 
-        sum += a[aIdx] * b[bIdx1]
-        sum += a[aIdx + 1] * b[bIdx2]
+        sum += load<f64>(aPtr + aIdx1) * load<f64>(bPtr + bIdx1)
+        sum += load<f64>(aPtr + aIdx1 + 8) * load<f64>(bPtr + bIdx2)
       }
 
       // Handle remaining elements
       for (; k < aCols; k++) {
-        sum += a[i * aCols + k] * b[k * bCols + j]
+        const aVal = load<f64>(aPtr + (<usize>(i * aCols + k) << 3))
+        const bVal = load<f64>(bPtr + (<usize>(k * bCols + j) << 3))
+        sum += aVal * bVal
       }
 
-      result[i * bCols + j] = sum
+      store<f64>(resultPtr + (<usize>(i * bCols + j) << 3), sum)
     }
   }
-
-  return result
 }
 
 /**
  * Matrix-vector multiplication: y = A * x
+ * @param aPtr - Pointer to matrix A
+ * @param aRows - Number of rows in A
+ * @param aCols - Number of columns in A
+ * @param xPtr - Pointer to vector x
+ * @param resultPtr - Pointer to result vector y
  */
 export function multiplyVector(
-  a: Float64Array,
+  aPtr: usize,
   aRows: i32,
   aCols: i32,
-  x: Float64Array
-): Float64Array {
-  const result = new Float64Array(aRows)
-
+  xPtr: usize,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < aRows; i++) {
     let sum: f64 = 0.0
 
     for (let j: i32 = 0; j < aCols; j++) {
-      sum += a[i * aCols + j] * x[j]
+      const aVal = load<f64>(aPtr + (<usize>(i * aCols + j) << 3))
+      const xVal = load<f64>(xPtr + (<usize>j << 3))
+      sum += aVal * xVal
     }
 
-    result[i] = sum
+    store<f64>(resultPtr + (<usize>i << 3), sum)
   }
-
-  return result
 }
 
 /**
  * Matrix transpose: B = A^T
+ * @param aPtr - Pointer to input matrix A
+ * @param rows - Number of rows in A
+ * @param cols - Number of columns in A
+ * @param resultPtr - Pointer to result matrix B (cols x rows)
  */
-export function transpose(a: Float64Array, rows: i32, cols: i32): Float64Array {
-  const result = new Float64Array(rows * cols)
-
+export function transpose(
+  aPtr: usize,
+  rows: i32,
+  cols: i32,
+  resultPtr: usize
+): void {
   // Cache-friendly blocked transpose
   const blockSize: i32 = 32
 
@@ -142,70 +158,85 @@ export function transpose(a: Float64Array, rows: i32, cols: i32): Float64Array {
 
       for (let i: i32 = ii; i < iEnd; i++) {
         for (let j: i32 = jj; j < jEnd; j++) {
-          result[j * rows + i] = a[i * cols + j]
+          const srcIdx: usize = <usize>(i * cols + j) << 3
+          const dstIdx: usize = <usize>(j * rows + i) << 3
+          store<f64>(resultPtr + dstIdx, load<f64>(aPtr + srcIdx))
         }
       }
     }
   }
-
-  return result
 }
 
 /**
  * Element-wise addition: C = A + B
+ * @param aPtr - Pointer to matrix A
+ * @param bPtr - Pointer to matrix B
+ * @param size - Number of elements
+ * @param resultPtr - Pointer to result matrix C
  */
-export function add(a: Float64Array, b: Float64Array, size: i32): Float64Array {
-  const result = new Float64Array(size)
-
+export function add(
+  aPtr: usize,
+  bPtr: usize,
+  size: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < size; i++) {
-    result[i] = a[i] + b[i]
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) + load<f64>(bPtr + offset))
   }
-
-  return result
 }
 
 /**
  * Element-wise subtraction: C = A - B
+ * @param aPtr - Pointer to matrix A
+ * @param bPtr - Pointer to matrix B
+ * @param size - Number of elements
+ * @param resultPtr - Pointer to result matrix C
  */
 export function subtract(
-  a: Float64Array,
-  b: Float64Array,
-  size: i32
-): Float64Array {
-  const result = new Float64Array(size)
-
+  aPtr: usize,
+  bPtr: usize,
+  size: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < size; i++) {
-    result[i] = a[i] - b[i]
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) - load<f64>(bPtr + offset))
   }
-
-  return result
 }
 
 /**
  * Scalar multiplication: B = scalar * A
+ * @param aPtr - Pointer to matrix A
+ * @param scalar - Scalar value
+ * @param size - Number of elements
+ * @param resultPtr - Pointer to result matrix B
  */
 export function scalarMultiply(
-  a: Float64Array,
+  aPtr: usize,
   scalar: f64,
-  size: i32
-): Float64Array {
-  const result = new Float64Array(size)
-
+  size: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < size; i++) {
-    result[i] = a[i] * scalar
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) * scalar)
   }
-
-  return result
 }
 
 /**
  * Dot product: result = sum(a[i] * b[i])
+ * @param aPtr - Pointer to vector a
+ * @param bPtr - Pointer to vector b
+ * @param size - Number of elements
+ * @returns Dot product value
  */
-export function dotProduct(a: Float64Array, b: Float64Array, size: i32): f64 {
+export function dotProduct(aPtr: usize, bPtr: usize, size: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < size; i++) {
-    sum += a[i] * b[i]
+    const offset: usize = <usize>i << 3
+    sum += load<f64>(aPtr + offset) * load<f64>(bPtr + offset)
   }
 
   return sum

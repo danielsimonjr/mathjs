@@ -4,7 +4,7 @@
  * Includes Lyapunov and Sylvester equation solvers using
  * the vectorization (Kronecker product) approach.
  *
- * All matrices are flat Float64Array in row-major order
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
  */
 
 // ============================================
@@ -12,105 +12,112 @@
 // ============================================
 
 /**
- * Matrix transpose
- * @param a - Input matrix (rows x cols)
+ * Matrix transpose (internal helper)
+ * @param aPtr - Input matrix pointer (rows x cols, f64)
  * @param rows - Number of rows
  * @param cols - Number of columns
- * @returns Transposed matrix (cols x rows)
+ * @param resultPtr - Output transposed matrix (cols x rows, f64)
  */
-function transpose(a: Float64Array, rows: i32, cols: i32): Float64Array {
-  const result = new Float64Array(rows * cols)
-
+function transpose(aPtr: usize, rows: i32, cols: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < rows; i++) {
     for (let j: i32 = 0; j < cols; j++) {
-      result[j * rows + i] = a[i * cols + j]
+      store<f64>(
+        resultPtr + (<usize>(j * rows + i) << 3),
+        load<f64>(aPtr + (<usize>(i * cols + j) << 3))
+      )
     }
   }
-
-  return result
 }
 
 /**
- * Create identity matrix
+ * Create identity matrix (internal helper)
  * @param n - Size of identity matrix
- * @returns Identity matrix (n x n)
+ * @param resultPtr - Output identity matrix (n x n, f64)
  */
-function eye(n: i32): Float64Array {
-  const result = new Float64Array(n * n)
-
-  for (let i: i32 = 0; i < n; i++) {
-    result[i * n + i] = 1.0
+function eye(n: i32, resultPtr: usize): void {
+  const n2: i32 = n * n
+  for (let i: i32 = 0; i < n2; i++) {
+    store<f64>(resultPtr + (<usize>i << 3), 0.0)
   }
-
-  return result
+  for (let i: i32 = 0; i < n; i++) {
+    store<f64>(resultPtr + (<usize>(i * n + i) << 3), 1.0)
+  }
 }
 
 /**
- * Kronecker product: C = A ⊗ B
- * @param a - First matrix (aRows x aCols)
+ * Kronecker product: C = A ⊗ B (internal helper)
+ * @param aPtr - First matrix (aRows x aCols, f64)
  * @param aRows - Rows in A
  * @param aCols - Columns in A
- * @param b - Second matrix (bRows x bCols)
+ * @param bPtr - Second matrix (bRows x bCols, f64)
  * @param bRows - Rows in B
  * @param bCols - Columns in B
- * @returns Kronecker product
+ * @param resultPtr - Output Kronecker product (aRows*bRows x aCols*bCols, f64)
  */
 function kron(
-  a: Float64Array,
+  aPtr: usize,
   aRows: i32,
   aCols: i32,
-  b: Float64Array,
+  bPtr: usize,
   bRows: i32,
-  bCols: i32
-): Float64Array {
-  const resultRows: i32 = aRows * bRows
+  bCols: i32,
+  resultPtr: usize
+): void {
   const resultCols: i32 = aCols * bCols
-  const result = new Float64Array(resultRows * resultCols)
 
   for (let i: i32 = 0; i < aRows; i++) {
     for (let j: i32 = 0; j < aCols; j++) {
-      const aVal: f64 = a[i * aCols + j]
+      const aVal: f64 = load<f64>(aPtr + (<usize>(i * aCols + j) << 3))
 
       for (let k: i32 = 0; k < bRows; k++) {
         for (let l: i32 = 0; l < bCols; l++) {
           const row: i32 = i * bRows + k
           const col: i32 = j * bCols + l
-          result[row * resultCols + col] = aVal * b[k * bCols + l]
+          store<f64>(
+            resultPtr + (<usize>(row * resultCols + col) << 3),
+            aVal * load<f64>(bPtr + (<usize>(k * bCols + l) << 3))
+          )
         }
       }
     }
   }
-
-  return result
 }
 
 /**
  * Solve linear system Ax = b using LU decomposition with partial pivoting
- * @param a - Coefficient matrix (n x n)
- * @param b - Right-hand side (n)
+ * @param aPtr - Coefficient matrix (n x n, f64)
+ * @param bPtr - Right-hand side (n, f64)
  * @param n - Size
- * @returns Solution vector x, or empty if singular
+ * @param xPtr - Solution vector output (n, f64)
+ * @param workPtr - Work buffer (at least n*n f64 + n i32)
+ * @returns 1 if successful, 0 if singular
  */
-function solveLinear(a: Float64Array, b: Float64Array, n: i32): Float64Array {
-  // LU decomposition with partial pivoting
-  const lu = new Float64Array(n * n)
-  const perm = new Int32Array(n)
+function solveLinear(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  xPtr: usize,
+  workPtr: usize
+): i32 {
+  const luPtr = workPtr
+  const permPtr = workPtr + (<usize>(n * n) << 3)
 
+  // Copy a to lu
   for (let i: i32 = 0; i < n * n; i++) {
-    lu[i] = a[i]
+    store<f64>(luPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
   }
 
   for (let i: i32 = 0; i < n; i++) {
-    perm[i] = i
+    store<i32>(permPtr + (<usize>i << 2), i)
   }
 
   for (let k: i32 = 0; k < n - 1; k++) {
     // Find pivot
-    let maxVal: f64 = Math.abs(lu[k * n + k])
+    let maxVal: f64 = Math.abs(load<f64>(luPtr + (<usize>(k * n + k) << 3)))
     let pivotRow: i32 = k
 
     for (let i: i32 = k + 1; i < n; i++) {
-      const val: f64 = Math.abs(lu[i * n + k])
+      const val: f64 = Math.abs(load<f64>(luPtr + (<usize>(i * n + k) << 3)))
       if (val > maxVal) {
         maxVal = val
         pivotRow = i
@@ -118,65 +125,70 @@ function solveLinear(a: Float64Array, b: Float64Array, n: i32): Float64Array {
     }
 
     if (maxVal < 1e-14) {
-      return new Float64Array(0) // Singular
+      return 0 // Singular
     }
 
     if (pivotRow !== k) {
       // Swap rows in LU
       for (let j: i32 = 0; j < n; j++) {
-        const temp: f64 = lu[k * n + j]
-        lu[k * n + j] = lu[pivotRow * n + j]
-        lu[pivotRow * n + j] = temp
+        const temp: f64 = load<f64>(luPtr + (<usize>(k * n + j) << 3))
+        store<f64>(
+          luPtr + (<usize>(k * n + j) << 3),
+          load<f64>(luPtr + (<usize>(pivotRow * n + j) << 3))
+        )
+        store<f64>(luPtr + (<usize>(pivotRow * n + j) << 3), temp)
       }
 
       // Swap in permutation
-      const tempP: i32 = perm[k]
-      perm[k] = perm[pivotRow]
-      perm[pivotRow] = tempP
+      const tempP: i32 = load<i32>(permPtr + (<usize>k << 2))
+      store<i32>(permPtr + (<usize>k << 2), load<i32>(permPtr + (<usize>pivotRow << 2)))
+      store<i32>(permPtr + (<usize>pivotRow << 2), tempP)
     }
 
     // Eliminate
-    const pivot: f64 = lu[k * n + k]
+    const pivot: f64 = load<f64>(luPtr + (<usize>(k * n + k) << 3))
     for (let i: i32 = k + 1; i < n; i++) {
-      const factor: f64 = lu[i * n + k] / pivot
-      lu[i * n + k] = factor
+      const factor: f64 = load<f64>(luPtr + (<usize>(i * n + k) << 3)) / pivot
+      store<f64>(luPtr + (<usize>(i * n + k) << 3), factor)
 
       for (let j: i32 = k + 1; j < n; j++) {
-        lu[i * n + j] -= factor * lu[k * n + j]
+        store<f64>(
+          luPtr + (<usize>(i * n + j) << 3),
+          load<f64>(luPtr + (<usize>(i * n + j) << 3)) -
+            factor * load<f64>(luPtr + (<usize>(k * n + j) << 3))
+        )
       }
     }
   }
 
   // Check last pivot for singularity
-  if (Math.abs(lu[(n - 1) * n + (n - 1)]) < 1e-14) {
-    return new Float64Array(0) // Singular
+  if (Math.abs(load<f64>(luPtr + (<usize>((n - 1) * n + (n - 1)) << 3))) < 1e-14) {
+    return 0 // Singular
   }
 
   // Forward substitution: Ly = Pb
-  const x = new Float64Array(n)
-
   for (let i: i32 = 0; i < n; i++) {
-    let sum: f64 = b[perm[i]]
+    let sum: f64 = load<f64>(bPtr + (<usize>load<i32>(permPtr + (<usize>i << 2)) << 3))
 
     for (let j: i32 = 0; j < i; j++) {
-      sum -= lu[i * n + j] * x[j]
+      sum -= load<f64>(luPtr + (<usize>(i * n + j) << 3)) * load<f64>(xPtr + (<usize>j << 3))
     }
 
-    x[i] = sum
+    store<f64>(xPtr + (<usize>i << 3), sum)
   }
 
   // Backward substitution: Ux = y
   for (let i: i32 = n - 1; i >= 0; i--) {
-    let sum: f64 = x[i]
+    let sum: f64 = load<f64>(xPtr + (<usize>i << 3))
 
     for (let j: i32 = i + 1; j < n; j++) {
-      sum -= lu[i * n + j] * x[j]
+      sum -= load<f64>(luPtr + (<usize>(i * n + j) << 3)) * load<f64>(xPtr + (<usize>j << 3))
     }
 
-    x[i] = sum / lu[i * n + i]
+    store<f64>(xPtr + (<usize>i << 3), sum / load<f64>(luPtr + (<usize>(i * n + i) << 3)))
   }
 
-  return x
+  return 1
 }
 
 // ============================================
@@ -187,67 +199,97 @@ function solveLinear(a: Float64Array, b: Float64Array, n: i32): Float64Array {
  * Solve the Sylvester equation: AX + XB = C
  *
  * Uses vectorization: (I ⊗ A + B^T ⊗ I) * vec(X) = vec(C)
- * where vec(X) stacks columns of X into a vector
  *
- * @param a - Matrix A (n x n)
+ * @param aPtr - Pointer to matrix A (n x n, f64)
  * @param n - Size of A
- * @param b - Matrix B (m x m)
+ * @param bPtr - Pointer to matrix B (m x m, f64)
  * @param m - Size of B
- * @param c - Matrix C (n x m)
- * @returns Solution X (n x m), or empty array if no unique solution
+ * @param cPtr - Pointer to matrix C (n x m, f64)
+ * @param xPtr - Pointer to solution X output (n x m, f64)
+ * @param workPtr - Pointer to work buffer (needs (nm)^2 + 4*max(n,m)^2 + nm + n*m + nm f64 values)
+ * @returns 1 if successful, 0 if no unique solution
  */
 export function sylvester(
-  a: Float64Array,
+  aPtr: usize,
   n: i32,
-  b: Float64Array,
+  bPtr: usize,
   m: i32,
-  c: Float64Array
-): Float64Array {
-  // Vectorize: (I_m ⊗ A + B^T ⊗ I_n) * vec(X) = vec(C)
-  const I_n = eye(n)
-  const I_m = eye(m)
-  const BT = transpose(b, m, m)
+  cPtr: usize,
+  xPtr: usize,
+  workPtr: usize
+): i32 {
+  const nm: i32 = n * m
+  const nm2: i32 = nm * nm
+
+  // Work buffer layout:
+  // - I_n: n*n f64
+  // - I_m: m*m f64
+  // - BT: m*m f64
+  // - term1: nm*nm f64
+  // - term2: nm*nm f64
+  // - coeff: nm*nm f64
+  // - vecC: nm f64
+  // - vecX: nm f64
+  // - solveWork: nm*nm f64 + nm i32
+  const I_nPtr = workPtr
+  const I_mPtr = I_nPtr + (<usize>(n * n) << 3)
+  const BTPtr = I_mPtr + (<usize>(m * m) << 3)
+  const term1Ptr = BTPtr + (<usize>(m * m) << 3)
+  const term2Ptr = term1Ptr + (<usize>nm2 << 3)
+  const coeffPtr = term2Ptr + (<usize>nm2 << 3)
+  const vecCPtr = coeffPtr + (<usize>nm2 << 3)
+  const vecXPtr = vecCPtr + (<usize>nm << 3)
+  const solveWorkPtr = vecXPtr + (<usize>nm << 3)
+
+  // Create identity matrices
+  eye(n, I_nPtr)
+  eye(m, I_mPtr)
+
+  // Transpose B
+  transpose(bPtr, m, m, BTPtr)
 
   // First term: I_m ⊗ A (size: nm x nm)
-  const term1 = kron(I_m, m, m, a, n, n)
+  kron(I_mPtr, m, m, aPtr, n, n, term1Ptr)
 
   // Second term: B^T ⊗ I_n (size: nm x nm)
-  const term2 = kron(BT, m, m, I_n, n, n)
+  kron(BTPtr, m, m, I_nPtr, n, n, term2Ptr)
 
   // Coefficient matrix: term1 + term2
-  const nm: i32 = n * m
-  const coeff = new Float64Array(nm * nm)
-
-  for (let i: i32 = 0; i < nm * nm; i++) {
-    coeff[i] = term1[i] + term2[i]
+  for (let i: i32 = 0; i < nm2; i++) {
+    store<f64>(
+      coeffPtr + (<usize>i << 3),
+      load<f64>(term1Ptr + (<usize>i << 3)) + load<f64>(term2Ptr + (<usize>i << 3))
+    )
   }
 
   // vec(C): stack columns of C
-  const vecC = new Float64Array(nm)
-
   for (let j: i32 = 0; j < m; j++) {
     for (let i: i32 = 0; i < n; i++) {
-      vecC[j * n + i] = c[i * m + j]
+      store<f64>(
+        vecCPtr + (<usize>(j * n + i) << 3),
+        load<f64>(cPtr + (<usize>(i * m + j) << 3))
+      )
     }
   }
 
   // Solve the linear system
-  const vecX = solveLinear(coeff, vecC, nm)
+  const success = solveLinear(coeffPtr, vecCPtr, nm, vecXPtr, solveWorkPtr)
 
-  if (vecX.length === 0) {
-    return new Float64Array(0) // No unique solution
+  if (success === 0) {
+    return 0 // No unique solution
   }
 
   // Unvectorize: reshape vec(X) to X
-  const result = new Float64Array(n * m)
-
   for (let j: i32 = 0; j < m; j++) {
     for (let i: i32 = 0; i < n; i++) {
-      result[i * m + j] = vecX[j * n + i]
+      store<f64>(
+        xPtr + (<usize>(i * m + j) << 3),
+        load<f64>(vecXPtr + (<usize>(j * n + i) << 3))
+      )
     }
   }
 
-  return result
+  return 1
 }
 
 // ============================================
@@ -257,119 +299,150 @@ export function sylvester(
 /**
  * Solve the continuous-time Lyapunov equation: AX + XA^T = Q
  *
- * Uses vectorization: (I ⊗ A + A ⊗ I) * vec(X) = vec(Q)
- *
- * @param a - Matrix A (n x n)
+ * @param aPtr - Pointer to matrix A (n x n, f64)
  * @param n - Size of A
- * @param q - Matrix Q (n x n, should be symmetric for meaningful solutions)
- * @returns Solution X (n x n), or empty array if no unique solution
+ * @param qPtr - Pointer to matrix Q (n x n, f64)
+ * @param xPtr - Pointer to solution X output (n x n, f64)
+ * @param workPtr - Pointer to work buffer
+ * @returns 1 if successful, 0 if no unique solution
  */
-export function lyap(a: Float64Array, n: i32, q: Float64Array): Float64Array {
-  // The continuous Lyapunov equation AX + XA^T = Q
-  // Vectorized: (I ⊗ A + A ⊗ I) * vec(X) = vec(Q)
+export function lyap(
+  aPtr: usize,
+  n: i32,
+  qPtr: usize,
+  xPtr: usize,
+  workPtr: usize
+): i32 {
+  const n2: i32 = n * n
+  const n4: i32 = n2 * n2
 
-  const I_n = eye(n)
+  // Work buffer layout
+  const I_nPtr = workPtr
+  const term1Ptr = I_nPtr + (<usize>n2 << 3)
+  const term2Ptr = term1Ptr + (<usize>n4 << 3)
+  const coeffPtr = term2Ptr + (<usize>n4 << 3)
+  const vecQPtr = coeffPtr + (<usize>n4 << 3)
+  const vecXPtr = vecQPtr + (<usize>n2 << 3)
+  const solveWorkPtr = vecXPtr + (<usize>n2 << 3)
+
+  // Create identity matrix
+  eye(n, I_nPtr)
 
   // First term: I ⊗ A
-  const term1 = kron(I_n, n, n, a, n, n)
+  kron(I_nPtr, n, n, aPtr, n, n, term1Ptr)
 
   // Second term: A ⊗ I
-  const term2 = kron(a, n, n, I_n, n, n)
+  kron(aPtr, n, n, I_nPtr, n, n, term2Ptr)
 
   // Coefficient matrix
-  const n2: i32 = n * n
-  const coeff = new Float64Array(n2 * n2)
-
-  for (let i: i32 = 0; i < n2 * n2; i++) {
-    coeff[i] = term1[i] + term2[i]
+  for (let i: i32 = 0; i < n4; i++) {
+    store<f64>(
+      coeffPtr + (<usize>i << 3),
+      load<f64>(term1Ptr + (<usize>i << 3)) + load<f64>(term2Ptr + (<usize>i << 3))
+    )
   }
 
   // vec(Q): stack columns
-  const vecQ = new Float64Array(n2)
-
   for (let j: i32 = 0; j < n; j++) {
     for (let i: i32 = 0; i < n; i++) {
-      vecQ[j * n + i] = q[i * n + j]
+      store<f64>(
+        vecQPtr + (<usize>(j * n + i) << 3),
+        load<f64>(qPtr + (<usize>(i * n + j) << 3))
+      )
     }
   }
 
   // Solve
-  const vecX = solveLinear(coeff, vecQ, n2)
+  const success = solveLinear(coeffPtr, vecQPtr, n2, vecXPtr, solveWorkPtr)
 
-  if (vecX.length === 0) {
-    return new Float64Array(0) // No unique solution
+  if (success === 0) {
+    return 0 // No unique solution
   }
 
   // Unvectorize
-  const result = new Float64Array(n2)
-
   for (let j: i32 = 0; j < n; j++) {
     for (let i: i32 = 0; i < n; i++) {
-      result[i * n + j] = vecX[j * n + i]
+      store<f64>(
+        xPtr + (<usize>(i * n + j) << 3),
+        load<f64>(vecXPtr + (<usize>(j * n + i) << 3))
+      )
     }
   }
 
-  return result
+  return 1
 }
 
 /**
  * Solve the discrete-time Lyapunov equation: AXA^T - X = Q
  *
- * Rearranged: AXA^T - X = Q => (A ⊗ A - I) * vec(X) = vec(Q)
- *
- * @param a - Matrix A (n x n)
+ * @param aPtr - Pointer to matrix A (n x n, f64)
  * @param n - Size of A
- * @param q - Matrix Q (n x n)
- * @returns Solution X (n x n), or empty array if no unique solution
+ * @param qPtr - Pointer to matrix Q (n x n, f64)
+ * @param xPtr - Pointer to solution X output (n x n, f64)
+ * @param workPtr - Pointer to work buffer
+ * @returns 1 if successful, 0 if no unique solution
  */
-export function dlyap(a: Float64Array, n: i32, q: Float64Array): Float64Array {
-  // Discrete Lyapunov: AXA^T - X = Q
-  // Vectorized: (A ⊗ A) * vec(X) - vec(X) = vec(Q)
-  //           : (A ⊗ A - I) * vec(X) = vec(Q)
-
+export function dlyap(
+  aPtr: usize,
+  n: i32,
+  qPtr: usize,
+  xPtr: usize,
+  workPtr: usize
+): i32 {
   const n2: i32 = n * n
+  const n4: i32 = n2 * n2
+
+  // Work buffer layout
+  const AkronAPtr = workPtr
+  const coeffPtr = AkronAPtr + (<usize>n4 << 3)
+  const vecQPtr = coeffPtr + (<usize>n4 << 3)
+  const vecXPtr = vecQPtr + (<usize>n2 << 3)
+  const solveWorkPtr = vecXPtr + (<usize>n2 << 3)
 
   // A ⊗ A
-  const AkronA = kron(a, n, n, a, n, n)
+  kron(aPtr, n, n, aPtr, n, n, AkronAPtr)
 
   // Coefficient matrix: A ⊗ A - I
-  const coeff = new Float64Array(n2 * n2)
-
-  for (let i: i32 = 0; i < n2 * n2; i++) {
-    coeff[i] = AkronA[i]
+  for (let i: i32 = 0; i < n4; i++) {
+    store<f64>(coeffPtr + (<usize>i << 3), load<f64>(AkronAPtr + (<usize>i << 3)))
   }
 
   // Subtract identity
   for (let i: i32 = 0; i < n2; i++) {
-    coeff[i * n2 + i] -= 1.0
+    store<f64>(
+      coeffPtr + (<usize>(i * n2 + i) << 3),
+      load<f64>(coeffPtr + (<usize>(i * n2 + i) << 3)) - 1.0
+    )
   }
 
   // vec(Q)
-  const vecQ = new Float64Array(n2)
-
   for (let j: i32 = 0; j < n; j++) {
     for (let i: i32 = 0; i < n; i++) {
-      vecQ[j * n + i] = q[i * n + j]
+      store<f64>(
+        vecQPtr + (<usize>(j * n + i) << 3),
+        load<f64>(qPtr + (<usize>(i * n + j) << 3))
+      )
     }
   }
 
   // Solve
-  const vecX = solveLinear(coeff, vecQ, n2)
+  const success = solveLinear(coeffPtr, vecQPtr, n2, vecXPtr, solveWorkPtr)
 
-  if (vecX.length === 0) {
-    return new Float64Array(0)
+  if (success === 0) {
+    return 0
   }
 
   // Unvectorize
-  const result = new Float64Array(n2)
-
   for (let j: i32 = 0; j < n; j++) {
     for (let i: i32 = 0; i < n; i++) {
-      result[i * n + j] = vecX[j * n + i]
+      store<f64>(
+        xPtr + (<usize>(i * n + j) << 3),
+        load<f64>(vecXPtr + (<usize>(j * n + i) << 3))
+      )
     }
   }
 
-  return result
+  return 1
 }
 
 // ============================================
@@ -378,45 +451,50 @@ export function dlyap(a: Float64Array, n: i32, q: Float64Array): Float64Array {
 
 /**
  * Compute the residual of Sylvester equation: ||AX + XB - C||_F
- * @param a - Matrix A (n x n)
+ * @param aPtr - Matrix A (n x n, f64)
  * @param n - Size of A
- * @param x - Solution X (n x m)
- * @param b - Matrix B (m x m)
+ * @param xPtr - Solution X (n x m, f64)
+ * @param bPtr - Matrix B (m x m, f64)
  * @param m - Size of B
- * @param c - Matrix C (n x m)
+ * @param cPtr - Matrix C (n x m, f64)
+ * @param workPtr - Work buffer (at least 2*n*m f64)
  * @returns Frobenius norm of residual
  */
 export function sylvesterResidual(
-  a: Float64Array,
+  aPtr: usize,
   n: i32,
-  x: Float64Array,
-  b: Float64Array,
+  xPtr: usize,
+  bPtr: usize,
   m: i32,
-  c: Float64Array
+  cPtr: usize,
+  workPtr: usize
 ): f64 {
-  // Compute AX
-  const ax = new Float64Array(n * m)
+  const axPtr = workPtr
+  const xbPtr = axPtr + (<usize>(n * m) << 3)
 
+  // Compute AX
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < m; j++) {
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
-        sum += a[i * n + k] * x[k * m + j]
+        sum +=
+          load<f64>(aPtr + (<usize>(i * n + k) << 3)) *
+          load<f64>(xPtr + (<usize>(k * m + j) << 3))
       }
-      ax[i * m + j] = sum
+      store<f64>(axPtr + (<usize>(i * m + j) << 3), sum)
     }
   }
 
   // Compute XB
-  const xb = new Float64Array(n * m)
-
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < m; j++) {
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < m; k++) {
-        sum += x[i * m + k] * b[k * m + j]
+        sum +=
+          load<f64>(xPtr + (<usize>(i * m + k) << 3)) *
+          load<f64>(bPtr + (<usize>(k * m + j) << 3))
       }
-      xb[i * m + j] = sum
+      store<f64>(xbPtr + (<usize>(i * m + j) << 3), sum)
     }
   }
 
@@ -424,7 +502,10 @@ export function sylvesterResidual(
   let normSq: f64 = 0.0
 
   for (let i: i32 = 0; i < n * m; i++) {
-    const diff: f64 = ax[i] + xb[i] - c[i]
+    const diff: f64 =
+      load<f64>(axPtr + (<usize>i << 3)) +
+      load<f64>(xbPtr + (<usize>i << 3)) -
+      load<f64>(cPtr + (<usize>i << 3))
     normSq += diff * diff
   }
 
@@ -433,49 +514,58 @@ export function sylvesterResidual(
 
 /**
  * Compute the residual of Lyapunov equation: ||AX + XA^T - Q||_F
- * @param a - Matrix A (n x n)
+ * @param aPtr - Matrix A (n x n, f64)
  * @param n - Size of A
- * @param x - Solution X (n x n)
- * @param q - Matrix Q (n x n)
+ * @param xPtr - Solution X (n x n, f64)
+ * @param qPtr - Matrix Q (n x n, f64)
+ * @param workPtr - Work buffer (at least 2*n*n f64)
  * @returns Frobenius norm of residual
  */
 export function lyapResidual(
-  a: Float64Array,
+  aPtr: usize,
   n: i32,
-  x: Float64Array,
-  q: Float64Array
+  xPtr: usize,
+  qPtr: usize,
+  workPtr: usize
 ): f64 {
-  // Compute AX
-  const ax = new Float64Array(n * n)
+  const n2: i32 = n * n
+  const axPtr = workPtr
+  const xatPtr = axPtr + (<usize>n2 << 3)
 
+  // Compute AX
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
-        sum += a[i * n + k] * x[k * n + j]
+        sum +=
+          load<f64>(aPtr + (<usize>(i * n + k) << 3)) *
+          load<f64>(xPtr + (<usize>(k * n + j) << 3))
       }
-      ax[i * n + j] = sum
+      store<f64>(axPtr + (<usize>(i * n + j) << 3), sum)
     }
   }
 
   // Compute XA^T
-  const xat = new Float64Array(n * n)
-
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
-        sum += x[i * n + k] * a[j * n + k] // A^T[k,j] = A[j,k]
+        sum +=
+          load<f64>(xPtr + (<usize>(i * n + k) << 3)) *
+          load<f64>(aPtr + (<usize>(j * n + k) << 3)) // A^T[k,j] = A[j,k]
       }
-      xat[i * n + j] = sum
+      store<f64>(xatPtr + (<usize>(i * n + j) << 3), sum)
     }
   }
 
   // Compute Frobenius norm of AX + XA^T - Q
   let normSq: f64 = 0.0
 
-  for (let i: i32 = 0; i < n * n; i++) {
-    const diff: f64 = ax[i] + xat[i] - q[i]
+  for (let i: i32 = 0; i < n2; i++) {
+    const diff: f64 =
+      load<f64>(axPtr + (<usize>i << 3)) +
+      load<f64>(xatPtr + (<usize>i << 3)) -
+      load<f64>(qPtr + (<usize>i << 3))
     normSq += diff * diff
   }
 
@@ -484,49 +574,58 @@ export function lyapResidual(
 
 /**
  * Compute the residual of discrete Lyapunov: ||AXA^T - X - Q||_F
- * @param a - Matrix A (n x n)
+ * @param aPtr - Matrix A (n x n, f64)
  * @param n - Size of A
- * @param x - Solution X (n x n)
- * @param q - Matrix Q (n x n)
+ * @param xPtr - Solution X (n x n, f64)
+ * @param qPtr - Matrix Q (n x n, f64)
+ * @param workPtr - Work buffer (at least 2*n*n f64)
  * @returns Frobenius norm of residual
  */
 export function dlyapResidual(
-  a: Float64Array,
+  aPtr: usize,
   n: i32,
-  x: Float64Array,
-  q: Float64Array
+  xPtr: usize,
+  qPtr: usize,
+  workPtr: usize
 ): f64 {
-  // Compute AX
-  const ax = new Float64Array(n * n)
+  const n2: i32 = n * n
+  const axPtr = workPtr
+  const axatPtr = axPtr + (<usize>n2 << 3)
 
+  // Compute AX
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
-        sum += a[i * n + k] * x[k * n + j]
+        sum +=
+          load<f64>(aPtr + (<usize>(i * n + k) << 3)) *
+          load<f64>(xPtr + (<usize>(k * n + j) << 3))
       }
-      ax[i * n + j] = sum
+      store<f64>(axPtr + (<usize>(i * n + j) << 3), sum)
     }
   }
 
   // Compute (AX)A^T
-  const axat = new Float64Array(n * n)
-
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
-        sum += ax[i * n + k] * a[j * n + k]
+        sum +=
+          load<f64>(axPtr + (<usize>(i * n + k) << 3)) *
+          load<f64>(aPtr + (<usize>(j * n + k) << 3))
       }
-      axat[i * n + j] = sum
+      store<f64>(axatPtr + (<usize>(i * n + j) << 3), sum)
     }
   }
 
   // Compute Frobenius norm of AXA^T - X - Q
   let normSq: f64 = 0.0
 
-  for (let i: i32 = 0; i < n * n; i++) {
-    const diff: f64 = axat[i] - x[i] - q[i]
+  for (let i: i32 = 0; i < n2; i++) {
+    const diff: f64 =
+      load<f64>(axatPtr + (<usize>i << 3)) -
+      load<f64>(xPtr + (<usize>i << 3)) -
+      load<f64>(qPtr + (<usize>i << 3))
     normSq += diff * diff
   }
 

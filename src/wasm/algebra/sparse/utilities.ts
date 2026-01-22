@@ -5,6 +5,8 @@
  * utilities based on the CSparse library algorithms. Critical for sparse
  * matrix performance in scientific computing.
  *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
  * Performance: 5-10x faster than JavaScript for sparse operations
  */
 
@@ -29,126 +31,135 @@ export function csUnflip(i: i32): i32 {
 
 /**
  * Check if a node is marked
- * @param w Working array
+ * @param wPtr Working array pointer (i32)
  * @param j Node index
  * @returns true if marked
  */
-export function csMarked(w: Int32Array, j: i32): boolean {
-  return unchecked(w[j]) < 0
+export function csMarked(wPtr: usize, j: i32): boolean {
+  return load<i32>(wPtr + (<usize>j << 2)) < 0
 }
 
 /**
  * Mark a node
- * @param w Working array
+ * @param wPtr Working array pointer (i32)
  * @param j Node index
  */
-export function csMark(w: Int32Array, j: i32): void {
-  unchecked((w[j] = csFlip(unchecked(w[j]))))
+export function csMark(wPtr: usize, j: i32): void {
+  const offset: usize = <usize>j << 2
+  store<i32>(wPtr + offset, csFlip(load<i32>(wPtr + offset)))
 }
 
 /**
  * Cumulative sum
  * Computes p[0..n] = cumulative sum of c[0..n-1], and then c[0..n-1] = p[0..n-1]
- * @param p Output array (size n+1)
- * @param c Input/working array (size n)
+ * @param pPtr Output array pointer (i32, size n+1)
+ * @param cPtr Input/working array pointer (i32, size n)
  * @param n Length
  * @returns Sum of c
  */
-export function csCumsum(p: Int32Array, c: Int32Array, n: i32): i32 {
+export function csCumsum(pPtr: usize, cPtr: usize, n: i32): i32 {
   let nz: i32 = 0
   for (let i: i32 = 0; i < n; i++) {
-    unchecked((p[i] = nz))
-    const ci = unchecked(c[i])
+    const offset: usize = <usize>i << 2
+    store<i32>(pPtr + offset, nz)
+    const ci = load<i32>(cPtr + offset)
     nz += ci
-    unchecked((c[i] = unchecked(p[i])))
+    store<i32>(cPtr + offset, load<i32>(pPtr + offset))
   }
-  unchecked((p[n] = nz))
+  store<i32>(pPtr + (<usize>n << 2), nz)
   return nz
 }
 
 /**
  * Sparse matrix permutation C = PAQ
  * Permutes columns and rows of sparse matrix
- * @param values Values array of A
- * @param index Row indices of A
- * @param ptr Column pointers of A
+ * @param valuesPtr Values array pointer of A (f64)
+ * @param indexPtr Row indices pointer of A (i32)
+ * @param ptrPtr Column pointers pointer of A (i32)
  * @param m Number of rows
  * @param n Number of columns
- * @param pinv Row permutation (inverse)
- * @param q Column permutation
- * @param cValues Output values array
- * @param cIndex Output row indices
- * @param cPtr Output column pointers
+ * @param pinvPtr Row permutation (inverse) pointer (i32), 0 for no permutation
+ * @param qPtr Column permutation pointer (i32), 0 for no permutation
+ * @param cValuesPtr Output values array pointer (f64)
+ * @param cIndexPtr Output row indices pointer (i32)
+ * @param cPtrPtr Output column pointers pointer (i32)
  */
 export function csPermute(
-  values: Float64Array,
-  index: Int32Array,
-  ptr: Int32Array,
+  valuesPtr: usize,
+  indexPtr: usize,
+  ptrPtr: usize,
   m: i32,
   n: i32,
-  pinv: Int32Array,
-  q: Int32Array,
-  cValues: Float64Array,
-  cIndex: Int32Array,
-  cPtr: Int32Array
+  pinvPtr: usize,
+  qPtr: usize,
+  cValuesPtr: usize,
+  cIndexPtr: usize,
+  cPtrPtr: usize
 ): void {
   let nz: i32 = 0
 
   for (let k: i32 = 0; k < n; k++) {
-    unchecked((cPtr[k] = nz))
-    const j = q ? unchecked(q[k]) : k
+    store<i32>(cPtrPtr + (<usize>k << 2), nz)
+    const j = qPtr !== 0 ? load<i32>(qPtr + (<usize>k << 2)) : k
 
-    for (let t: i32 = unchecked(ptr[j]); t < unchecked(ptr[j + 1]); t++) {
-      const i = pinv
-        ? unchecked(pinv[unchecked(index[t])])
-        : unchecked(index[t])
+    const ptrJ = load<i32>(ptrPtr + (<usize>j << 2))
+    const ptrJ1 = load<i32>(ptrPtr + (<usize>(j + 1) << 2))
 
-      unchecked((cIndex[nz] = i))
-      unchecked((cValues[nz] = unchecked(values[t])))
+    for (let t: i32 = ptrJ; t < ptrJ1; t++) {
+      const indexT = load<i32>(indexPtr + (<usize>t << 2))
+      const i = pinvPtr !== 0
+        ? load<i32>(pinvPtr + (<usize>indexT << 2))
+        : indexT
+
+      store<i32>(cIndexPtr + (<usize>nz << 2), i)
+      store<f64>(cValuesPtr + (<usize>nz << 3), load<f64>(valuesPtr + (<usize>t << 3)))
       nz++
     }
   }
-  unchecked((cPtr[n] = nz))
+  store<i32>(cPtrPtr + (<usize>n << 2), nz)
 }
 
 /**
  * Find a leaf in the elimination tree
  * @param i Row index
  * @param j Column index
- * @param first First array
- * @param maxfirst Maxfirst array
- * @param prevleaf Previous leaf array
- * @param ancestor Ancestor array
- * @returns Leaf information [jleaf, jinit]
+ * @param firstPtr First array pointer (i32)
+ * @param maxfirstPtr Maxfirst array pointer (i32)
+ * @param prevleafPtr Previous leaf array pointer (i32)
+ * @param ancestorPtr Ancestor array pointer (i32)
+ * @returns Leaf information
  */
 export function csLeaf(
   i: i32,
   j: i32,
-  first: Int32Array,
-  maxfirst: Int32Array,
-  prevleaf: Int32Array,
-  ancestor: Int32Array
+  firstPtr: usize,
+  maxfirstPtr: usize,
+  prevleafPtr: usize,
+  ancestorPtr: usize
 ): i32 {
   let q: i32
-  let s: i32
+  let s: i32 = -1
   let sparent: i32
   let jprev: i32
 
   let jleaf: i32 = 0
-  if (i <= j || unchecked(first[j]) <= unchecked(maxfirst[i])) {
+  const firstJ = load<i32>(firstPtr + (<usize>j << 2))
+  const maxfirstI = load<i32>(maxfirstPtr + (<usize>i << 2))
+
+  if (i <= j || firstJ <= maxfirstI) {
     return jleaf
   }
 
-  unchecked((maxfirst[i] = unchecked(first[j])))
-  jprev = unchecked(prevleaf[i])
-  unchecked((prevleaf[i] = j))
+  store<i32>(maxfirstPtr + (<usize>i << 2), firstJ)
+  jprev = load<i32>(prevleafPtr + (<usize>i << 2))
+  store<i32>(prevleafPtr + (<usize>i << 2), j)
 
   if (jprev === -1) {
     jleaf = i
   } else {
     jleaf = -1
 
-    for (q = jprev; q !== -1 && q !== j; q = unchecked(ancestor[q])) {
+    for (q = jprev; q !== -1 && q !== j; q = load<i32>(ancestorPtr + (<usize>q << 2))) {
       s = q
     }
 
@@ -157,8 +168,8 @@ export function csLeaf(
     }
 
     for (q = jprev; q !== s; q = sparent) {
-      sparent = unchecked(ancestor[q])
-      unchecked((ancestor[q] = j))
+      sparent = load<i32>(ancestorPtr + (<usize>q << 2))
+      store<i32>(ancestorPtr + (<usize>q << 2), j)
     }
   }
 
@@ -167,36 +178,43 @@ export function csLeaf(
 
 /**
  * Compute elimination tree
- * @param index Row indices
- * @param ptr Column pointers
+ * @param indexPtr Row indices pointer (i32)
+ * @param ptrPtr Column pointers pointer (i32)
  * @param m Number of rows
  * @param n Number of columns
- * @param parent Output parent array
+ * @param parentPtr Output parent array pointer (i32)
+ * @param workPtr Working array pointer (i32, size n for ancestor)
  */
 export function csEtree(
-  index: Int32Array,
-  ptr: Int32Array,
+  indexPtr: usize,
+  ptrPtr: usize,
   m: i32,
   n: i32,
-  parent: Int32Array
+  parentPtr: usize,
+  workPtr: usize
 ): void {
-  const ancestor = new Int32Array(n)
+  // workPtr is used for ancestor array
 
   for (let i: i32 = 0; i < n; i++) {
-    unchecked((parent[i] = -1))
-    unchecked((ancestor[i] = -1))
+    const offset: usize = <usize>i << 2
+    store<i32>(parentPtr + offset, -1)
+    store<i32>(workPtr + offset, -1)
   }
 
   for (let k: i32 = 0; k < n; k++) {
-    for (let p: i32 = unchecked(ptr[k]); p < unchecked(ptr[k + 1]); p++) {
-      let i: i32 = unchecked(index[p])
+    const ptrK = load<i32>(ptrPtr + (<usize>k << 2))
+    const ptrK1 = load<i32>(ptrPtr + (<usize>(k + 1) << 2))
+
+    for (let p: i32 = ptrK; p < ptrK1; p++) {
+      let i: i32 = load<i32>(indexPtr + (<usize>p << 2))
 
       while (i !== -1 && i < k) {
-        const inext = unchecked(ancestor[i])
-        unchecked((ancestor[i] = k))
+        const iOffset: usize = <usize>i << 2
+        const inext = load<i32>(workPtr + iOffset)
+        store<i32>(workPtr + iOffset, k)
 
         if (inext === -1) {
-          unchecked((parent[i] = k))
+          store<i32>(parentPtr + iOffset, k)
         }
 
         i = inext
@@ -208,60 +226,63 @@ export function csEtree(
 /**
  * Depth-first search (DFS) for nonzero pattern
  * @param j Starting column
- * @param index Row indices
- * @param ptr Column pointers
+ * @param indexPtr Row indices pointer (i32)
+ * @param ptrPtr Column pointers pointer (i32)
  * @param top Top of stack
- * @param xi Stack/output array
- * @param pstack Stack pointer array
- * @param pinv Inverse permutation
- * @param marked Marked array
+ * @param xiPtr Stack/output array pointer (i32)
+ * @param pstackPtr Stack pointer array (i32)
+ * @param pinvPtr Inverse permutation pointer (i32), 0 for no permutation
+ * @param markedPtr Marked array pointer (i32)
  * @returns New top of stack
  */
 export function csDfs(
   j: i32,
-  index: Int32Array,
-  ptr: Int32Array,
+  indexPtr: usize,
+  ptrPtr: usize,
   top: i32,
-  xi: Int32Array,
-  pstack: Int32Array,
-  pinv: Int32Array,
-  marked: Int32Array
+  xiPtr: usize,
+  pstackPtr: usize,
+  pinvPtr: usize,
+  markedPtr: usize
 ): i32 {
   let head: i32 = 0
   let done: boolean = false
   let p: i32
   let p2: i32
 
-  unchecked((xi[0] = j))
+  store<i32>(xiPtr, j)
 
   while (head >= 0) {
-    j = unchecked(xi[head])
-    const jnew = pinv ? unchecked(pinv[j]) : j
+    j = load<i32>(xiPtr + (<usize>head << 2))
+    const jnew = pinvPtr !== 0 ? load<i32>(pinvPtr + (<usize>j << 2)) : j
 
-    if (!csMarked(marked, j)) {
-      csMark(marked, j)
-      unchecked((pstack[head] = jnew < 0 ? 0 : unchecked(ptr[jnew])))
+    if (!csMarked(markedPtr, j)) {
+      csMark(markedPtr, j)
+      const pstackVal = jnew < 0 ? 0 : load<i32>(ptrPtr + (<usize>jnew << 2))
+      store<i32>(pstackPtr + (<usize>head << 2), pstackVal)
     }
 
     done = true
-    p2 = jnew < 0 ? 0 : unchecked(ptr[jnew + 1])
+    p2 = jnew < 0 ? 0 : load<i32>(ptrPtr + (<usize>(jnew + 1) << 2))
 
-    for (p = unchecked(pstack[head]); p < p2; p++) {
-      const i = unchecked(index[p])
+    for (p = load<i32>(pstackPtr + (<usize>head << 2)); p < p2; p++) {
+      const i = load<i32>(indexPtr + (<usize>p << 2))
 
-      if (csMarked(marked, i)) {
+      if (csMarked(markedPtr, i)) {
         continue
       }
 
-      unchecked((pstack[head] = p))
-      unchecked((xi[++head] = i))
+      store<i32>(pstackPtr + (<usize>head << 2), p)
+      head++
+      store<i32>(xiPtr + (<usize>head << 2), i)
       done = false
       break
     }
 
     if (done) {
       head--
-      unchecked((xi[--top] = j))
+      top--
+      store<i32>(xiPtr + (<usize>top << 2), j)
     }
   }
 
@@ -270,66 +291,87 @@ export function csDfs(
 
 /**
  * Solve sparse triangular system (lower or upper)
- * @param G Sparse matrix (index, ptr, values)
- * @param B Right-hand side
- * @param xi Pattern array
- * @param x Solution array
- * @param pinv Inverse permutation
+ * @param gIndexPtr Row indices pointer (i32)
+ * @param gPtrPtr Column pointers pointer (i32)
+ * @param gValuesPtr Values pointer (f64)
+ * @param BPtr Right-hand side pointer (f64)
+ * @param xiPtr Pattern array pointer (i32)
+ * @param xPtr Solution array pointer (f64)
+ * @param pinvPtr Inverse permutation pointer (i32), 0 for no permutation
  * @param lo true for lower triangular, false for upper
+ * @param n Size
+ * @param workPtr Working memory pointer (i32, size 2*n for pstack and marked)
  * @returns Number of nonzeros in solution
  */
 export function csSpsolve(
-  gIndex: Int32Array,
-  gPtr: Int32Array,
-  gValues: Float64Array,
-  B: Float64Array,
-  xi: Int32Array,
-  x: Float64Array,
-  pinv: Int32Array,
+  gIndexPtr: usize,
+  gPtrPtr: usize,
+  gValuesPtr: usize,
+  BPtr: usize,
+  xiPtr: usize,
+  xPtr: usize,
+  pinvPtr: usize,
   lo: boolean,
-  n: i32
+  n: i32,
+  workPtr: usize
 ): i32 {
   let top: i32 = n
 
+  // workPtr layout: pstack (n i32s), marked (n i32s)
+  const pstackPtr: usize = workPtr
+  const markedPtr: usize = workPtr + (<usize>n << 2)
+
+  // Initialize marked array
+  for (let i: i32 = 0; i < n; i++) {
+    store<i32>(markedPtr + (<usize>i << 2), i)
+  }
+
   // Find nonzero pattern
   for (let k: i32 = 0; k < n; k++) {
-    if (unchecked(B[k]) !== 0) {
+    if (load<f64>(BPtr + (<usize>k << 3)) !== 0) {
+      // Reset marked for this DFS
+      for (let i: i32 = 0; i < n; i++) {
+        store<i32>(markedPtr + (<usize>i << 2), i)
+      }
       top = csDfs(
         k,
-        gIndex,
-        gPtr,
+        gIndexPtr,
+        gPtrPtr,
         top,
-        xi,
-        new Int32Array(n),
-        pinv,
-        new Int32Array(n)
+        xiPtr,
+        pstackPtr,
+        pinvPtr,
+        markedPtr
       )
     }
   }
 
   // Initialize x with B
   for (let p: i32 = top; p < n; p++) {
-    unchecked((x[unchecked(xi[p])] = unchecked(B[unchecked(xi[p])])))
+    const xiP = load<i32>(xiPtr + (<usize>p << 2))
+    store<f64>(xPtr + (<usize>xiP << 3), load<f64>(BPtr + (<usize>xiP << 3)))
   }
 
   // Solve
   for (let px: i32 = top; px < n; px++) {
-    const j = unchecked(xi[px])
-    const J = pinv ? unchecked(pinv[j]) : j
+    const j = load<i32>(xiPtr + (<usize>px << 2))
+    const J = pinvPtr !== 0 ? load<i32>(pinvPtr + (<usize>j << 2)) : j
 
     if (J < 0) continue
 
-    const xj = unchecked(x[j])
-    const p1 = unchecked(gPtr[J])
-    const p2 = unchecked(gPtr[J + 1])
+    const xj = load<f64>(xPtr + (<usize>j << 3))
+    const p1 = load<i32>(gPtrPtr + (<usize>J << 2))
+    const p2 = load<i32>(gPtrPtr + (<usize>(J + 1) << 2))
 
     for (
       let p: i32 = lo ? p1 : p2 - 1;
       lo ? p < p2 : p >= p1;
       p = lo ? p + 1 : p - 1
     ) {
-      const i = unchecked(gIndex[p])
-      unchecked((x[i] -= unchecked(gValues[p]) * xj))
+      const i = load<i32>(gIndexPtr + (<usize>p << 2))
+      const gVal = load<f64>(gValuesPtr + (<usize>p << 3))
+      const xi = load<f64>(xPtr + (<usize>i << 3))
+      store<f64>(xPtr + (<usize>i << 3), xi - gVal * xj)
     }
   }
 

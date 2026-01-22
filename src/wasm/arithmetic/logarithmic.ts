@@ -4,6 +4,8 @@
  * These functions provide WASM-accelerated implementations of logarithmic
  * and exponential operations for plain numbers.
  *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
  * Performance: 2-4x faster than JavaScript for these transcendental functions
  */
 
@@ -106,98 +108,104 @@ export function pow(x: f64, y: f64): f64 {
 
 /**
  * Vectorized exponential operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function expArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.exp(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.exp(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized natural logarithm operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function logArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.log(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.log(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized base-10 logarithm operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function log10Array(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.log10(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.log10(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized base-2 logarithm operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function log2Array(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.log2(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.log2(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized square root operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function sqrtArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.sqrt(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.sqrt(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized power operation (x^y for constant y)
- * @param input Input array (bases)
+ * @param inputPtr Pointer to input array (bases) (f64)
  * @param exponent The exponent (constant)
- * @param output Output array
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function powConstantArray(
-  input: Float64Array,
+  inputPtr: usize,
   exponent: f64,
-  output: Float64Array,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.pow(unchecked(input[i]), exponent)))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.pow(load<f64>(inputPtr + offset), exponent))
   }
 }

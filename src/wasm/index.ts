@@ -323,10 +323,5 @@ export {
   solve as laSolve
 } from './matrix/linalg'
 
-// Eigenvalue operations
-export {
-  eigs as laEigs,
-  eigsSymmetric as laEigsSymmetric,
-  powerIteration as laPowerIteration,
-  spectralRadius as laSpectralRadius
-} from './matrix/linalg'
+// Note: Eigenvalue operations (eigs, eigsSymmetric, powerIteration, spectralRadius)
+// are not yet implemented in AssemblyScript. Use the JavaScript implementations.

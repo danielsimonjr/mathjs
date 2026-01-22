@@ -4,6 +4,8 @@
  * These functions provide WASM-accelerated implementations of combinatorial
  * calculations including factorials, combinations, and permutations.
  *
+ * All array functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
  * Performance: 4-8x faster than JavaScript for large values
  */
 
@@ -14,19 +16,33 @@
  * @returns n!
  */
 export function factorial(n: i32): f64 {
-  // Lookup table for small factorials
-  if (n <= 20) {
-    const factorials: f64[] = [
-      1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
-      479001600, 6227020800, 87178291200, 1307674368000, 20922789888000,
-      355687428096000, 6402373705728000, 121645100408832000, 2432902008176640000
-    ]
-    return factorials[n]
-  }
+  // Lookup table for small factorials (stored as constants)
+  if (n < 0) return f64.NaN
+  if (n === 0) return 1
+  if (n === 1) return 1
+  if (n === 2) return 2
+  if (n === 3) return 6
+  if (n === 4) return 24
+  if (n === 5) return 120
+  if (n === 6) return 720
+  if (n === 7) return 5040
+  if (n === 8) return 40320
+  if (n === 9) return 362880
+  if (n === 10) return 3628800
+  if (n === 11) return 39916800
+  if (n === 12) return 479001600
+  if (n === 13) return 6227020800
+  if (n === 14) return 87178291200
+  if (n === 15) return 1307674368000
+  if (n === 16) return 20922789888000
+  if (n === 17) return 355687428096000
+  if (n === 18) return 6402373705728000
+  if (n === 19) return 121645100408832000
+  if (n === 20) return 2432902008176640000
 
   // For larger values, compute iteratively
-  let result: f64 = 1
-  for (let i: i32 = 2; i <= n; i++) {
+  let result: f64 = 2432902008176640000 // 20!
+  for (let i: i32 = 21; i <= n; i++) {
     result *= f64(i)
   }
   return result
@@ -88,42 +104,43 @@ export function permutations(n: i32, k: i32): f64 {
 /**
  * Stirling numbers of the second kind S(n, k)
  * Number of ways to partition n items into k non-empty subsets
- * Uses dynamic programming
+ * Uses dynamic programming with working memory
  * @param n Number of items
  * @param k Number of subsets
+ * @param workPtr Pointer to working memory (f64, (n+1)*(k+1) elements)
  * @returns S(n, k)
  */
-export function stirlingS2(n: i32, k: i32): f64 {
+export function stirlingS2(n: i32, k: i32, workPtr: usize): f64 {
   if (n < 0 || k < 0) return 0
   if (n === 0 && k === 0) return 1
   if (n === 0 || k === 0) return 0
   if (k > n) return 0
   if (k === 1 || k === n) return 1
 
-  // Use recurrence: S(n,k) = k*S(n-1,k) + S(n-1,k-1)
-  const dp = new Float64Array((n + 1) * (k + 1))
+  const kp1: i32 = k + 1
 
+  // Initialize dp table
   for (let i: i32 = 0; i <= n; i++) {
-    unchecked((dp[i * (k + 1) + 0] = 0))
+    for (let j: i32 = 0; j <= k; j++) {
+      store<f64>(workPtr + (<usize>(i * kp1 + j) << 3), 0.0)
+    }
   }
-  for (let j: i32 = 0; j <= k; j++) {
-    unchecked((dp[0 * (k + 1) + j] = 0))
-  }
-  unchecked((dp[0] = 1))
+  store<f64>(workPtr, 1.0) // dp[0][0] = 1
 
+  // Fill using recurrence: S(n,k) = k*S(n-1,k) + S(n-1,k-1)
   for (let i: i32 = 1; i <= n; i++) {
-    for (let j: i32 = 1; j <= min(i, k); j++) {
+    for (let j: i32 = 1; j <= (i < k ? i : k); j++) {
       if (j === 1 || j === i) {
-        unchecked((dp[i * (k + 1) + j] = 1))
+        store<f64>(workPtr + (<usize>(i * kp1 + j) << 3), 1.0)
       } else {
-        const val1 = unchecked(dp[(i - 1) * (k + 1) + j])
-        const val2 = unchecked(dp[(i - 1) * (k + 1) + (j - 1)])
-        unchecked((dp[i * (k + 1) + j] = f64(j) * val1 + val2))
+        const val1: f64 = load<f64>(workPtr + (<usize>((i - 1) * kp1 + j) << 3))
+        const val2: f64 = load<f64>(workPtr + (<usize>((i - 1) * kp1 + (j - 1)) << 3))
+        store<f64>(workPtr + (<usize>(i * kp1 + j) << 3), f64(j) * val1 + val2)
       }
     }
   }
 
-  return unchecked(dp[n * (k + 1) + k])
+  return load<f64>(workPtr + (<usize>(n * kp1 + k) << 3))
 }
 
 /**
@@ -131,15 +148,16 @@ export function stirlingS2(n: i32, k: i32): f64 {
  * Number of ways to partition n items
  * Sum of Stirling numbers: B(n) = sum(S(n, k)) for k=0..n
  * @param n Number of items
+ * @param workPtr Pointer to working memory (f64, (n+1)*(n+1) elements)
  * @returns B(n)
  */
-export function bellNumbers(n: i32): f64 {
+export function bellNumbers(n: i32, workPtr: usize): f64 {
   if (n < 0) return 0
   if (n === 0) return 1
 
   let sum: f64 = 0
   for (let k: i32 = 0; k <= n; k++) {
-    sum += stirlingS2(n, k)
+    sum += stirlingS2(n, k, workPtr)
   }
   return sum
 }
@@ -177,16 +195,16 @@ export function composition(n: i32, k: i32): f64 {
  * Multinomial coefficient
  * (n; k1, k2, ..., km) = n! / (k1! * k2! * ... * km!)
  * @param n Total items
- * @param k Array of group sizes
+ * @param kPtr Pointer to array of group sizes (i32)
  * @param m Number of groups
  * @returns Multinomial coefficient
  */
-export function multinomial(n: i32, k: Int32Array, m: i32): f64 {
+export function multinomial(n: i32, kPtr: usize, m: i32): f64 {
   let result: f64 = 1
   let sum: i32 = 0
 
   for (let i: i32 = 0; i < m; i++) {
-    const ki = unchecked(k[i])
+    const ki: i32 = load<i32>(kPtr + (<usize>i << 2))
     result *= combinations(n - sum, ki)
     sum += ki
   }
@@ -196,65 +214,64 @@ export function multinomial(n: i32, k: Int32Array, m: i32): f64 {
 
 /**
  * Vectorized factorial for array of values
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (i32)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function factorialArray(
-  input: Int32Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = factorial(unchecked(input[i]))))
+    const inOffset: usize = <usize>i << 2
+    const outOffset: usize = <usize>i << 3
+    store<f64>(outputPtr + outOffset, factorial(load<i32>(inputPtr + inOffset)))
   }
 }
 
 /**
  * Vectorized combinations for arrays of n and k values
- * @param nArray Array of n values
- * @param kArray Array of k values
- * @param output Output array
+ * @param nArrayPtr Pointer to array of n values (i32)
+ * @param kArrayPtr Pointer to array of k values (i32)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function combinationsArray(
-  nArray: Int32Array,
-  kArray: Int32Array,
-  output: Float64Array,
+  nArrayPtr: usize,
+  kArrayPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(
-      (output[i] = combinations(unchecked(nArray[i]), unchecked(kArray[i])))
-    )
+    const inOffset: usize = <usize>i << 2
+    const outOffset: usize = <usize>i << 3
+    const nVal: i32 = load<i32>(nArrayPtr + inOffset)
+    const kVal: i32 = load<i32>(kArrayPtr + inOffset)
+    store<f64>(outputPtr + outOffset, combinations(nVal, kVal))
   }
 }
 
 /**
  * Vectorized permutations for arrays
- * @param nArray Array of n values
- * @param kArray Array of k values
- * @param output Output array
+ * @param nArrayPtr Pointer to array of n values (i32)
+ * @param kArrayPtr Pointer to array of k values (i32)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function permutationsArray(
-  nArray: Int32Array,
-  kArray: Int32Array,
-  output: Float64Array,
+  nArrayPtr: usize,
+  kArrayPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked(
-      (output[i] = permutations(unchecked(nArray[i]), unchecked(kArray[i])))
-    )
+    const inOffset: usize = <usize>i << 2
+    const outOffset: usize = <usize>i << 3
+    const nVal: i32 = load<i32>(nArrayPtr + inOffset)
+    const kVal: i32 = load<i32>(kArrayPtr + inOffset)
+    store<f64>(outputPtr + outOffset, permutations(nVal, kVal))
   }
-}
-
-/**
- * Helper: minimum of two integers
- */
-function min(a: i32, b: i32): i32 {
-  return a < b ? a : b
 }
 
 /**
@@ -264,7 +281,7 @@ function min(a: i32, b: i32): i32 {
  * @returns n!!
  */
 export function doubleFactorial(n: i32): f64 {
-  if (n < 0) return NaN
+  if (n < 0) return f64.NaN
   if (n <= 1) return 1
 
   let result: f64 = 1
@@ -281,7 +298,7 @@ export function doubleFactorial(n: i32): f64 {
  * @returns !n
  */
 export function subfactorial(n: i32): f64 {
-  if (n < 0) return NaN
+  if (n < 0) return f64.NaN
   if (n === 0) return 1
   if (n === 1) return 0
 
@@ -305,7 +322,7 @@ export function subfactorial(n: i32): f64 {
  * @returns Falling factorial
  */
 export function fallingFactorial(x: f64, n: i32): f64 {
-  if (n < 0) return NaN
+  if (n < 0) return f64.NaN
   if (n === 0) return 1
 
   let result: f64 = 1
@@ -323,7 +340,7 @@ export function fallingFactorial(x: f64, n: i32): f64 {
  * @returns Rising factorial
  */
 export function risingFactorial(x: f64, n: i32): f64 {
-  if (n < 0) return NaN
+  if (n < 0) return f64.NaN
   if (n === 0) return 1
 
   let result: f64 = 1
@@ -339,7 +356,7 @@ export function risingFactorial(x: f64, n: i32): f64 {
  * @returns F(n)
  */
 export function fibonacci(n: i32): f64 {
-  if (n < 0) return NaN
+  if (n < 0) return f64.NaN
   if (n <= 1) return f64(n)
 
   let prev2: f64 = 0
@@ -359,7 +376,7 @@ export function fibonacci(n: i32): f64 {
  * @returns L(n)
  */
 export function lucas(n: i32): f64 {
-  if (n < 0) return NaN
+  if (n < 0) return f64.NaN
   if (n === 0) return 2
   if (n === 1) return 1
 

@@ -3,68 +3,63 @@
  *
  * Numerical methods for finding zeros of functions.
  * These complement the symbolic equation solving that cannot be converted to WASM.
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
+ * State arrays use the following conventions:
+ * - Status codes: 1.0 = continue, 0.0 = converged, -1.0 = failed/no bracket
+ * - 2.0 = need function evaluation (caller must evaluate and update)
  */
 
 /**
- * Bisection method for finding a root in [a, b]
+ * Bisection method setup
  * Requires f(a) and f(b) have opposite signs
  *
  * @param fa - f(a) value
  * @param fb - f(b) value
  * @param a - Left endpoint
  * @param b - Right endpoint
- * @param fValues - Array to store intermediate f values (caller evaluates)
- * @param xValues - Array to store intermediate x values
- * @param maxIter - Maximum iterations
- * @param tol - Tolerance for convergence
- * @returns Number of iterations used, or -1 if no root bracketed
+ * @param statePtr - Pointer to output state array (f64, 6 elements):
+ *                   [nextX, currentA, currentB, fa, fb, status]
+ *                   status: 1 = continue, 0 = converged, -1 = no bracket
  */
-export function bisectionSetup(fa: f64, fb: f64, a: f64, b: f64): Float64Array {
-  // Returns [nextX, currentA, currentB, fa, fb, status]
-  // status: 1 = continue, 0 = converged, -1 = no bracket
-  const result = new Float64Array(6)
-
+export function bisectionSetup(fa: f64, fb: f64, a: f64, b: f64, statePtr: usize): void {
   if (fa * fb > 0) {
-    result[5] = -1.0 // No bracket
-    return result
+    store<f64>(statePtr + 40, -1.0) // No bracket
+    return
   }
 
-  result[0] = (a + b) / 2.0 // nextX (midpoint)
-  result[1] = a
-  result[2] = b
-  result[3] = fa
-  result[4] = fb
-  result[5] = 1.0 // Continue
-
-  return result
+  store<f64>(statePtr, (a + b) / 2.0) // nextX (midpoint)
+  store<f64>(statePtr + 8, a)
+  store<f64>(statePtr + 16, b)
+  store<f64>(statePtr + 24, fa)
+  store<f64>(statePtr + 32, fb)
+  store<f64>(statePtr + 40, 1.0) // Continue
 }
 
 /**
  * Bisection iteration step
  *
- * @param state - Current state [nextX, a, b, fa, fb, status]
+ * @param statePtr - Pointer to state array [nextX, a, b, fa, fb, status]
  * @param fmid - Function value at midpoint
  * @param tol - Tolerance
- * @returns Updated state
  */
 export function bisectionStep(
-  state: Float64Array,
+  statePtr: usize,
   fmid: f64,
   tol: f64
-): Float64Array {
-  const result = new Float64Array(6)
-
-  const mid: f64 = state[0]
-  let a: f64 = state[1]
-  let b: f64 = state[2]
-  let fa: f64 = state[3]
-  let fb: f64 = state[4]
+): void {
+  const mid: f64 = load<f64>(statePtr)
+  let a: f64 = load<f64>(statePtr + 8)
+  let b: f64 = load<f64>(statePtr + 16)
+  let fa: f64 = load<f64>(statePtr + 24)
+  let fb: f64 = load<f64>(statePtr + 32)
 
   // Check convergence
   if (Math.abs(fmid) < tol || (b - a) / 2.0 < tol) {
-    result[0] = mid
-    result[5] = 0.0 // Converged
-    return result
+    store<f64>(statePtr, mid)
+    store<f64>(statePtr + 40, 0.0) // Converged
+    return
   }
 
   // Update bracket
@@ -76,66 +71,57 @@ export function bisectionStep(
     fa = fmid
   }
 
-  result[0] = (a + b) / 2.0
-  result[1] = a
-  result[2] = b
-  result[3] = fa
-  result[4] = fb
-  result[5] = 1.0 // Continue
-
-  return result
+  store<f64>(statePtr, (a + b) / 2.0)
+  store<f64>(statePtr + 8, a)
+  store<f64>(statePtr + 16, b)
+  store<f64>(statePtr + 24, fa)
+  store<f64>(statePtr + 32, fb)
+  store<f64>(statePtr + 40, 1.0) // Continue
 }
 
 /**
  * Newton-Raphson method setup
  *
  * @param x0 - Initial guess
- * @returns State array [currentX, status]
+ * @param statePtr - Pointer to output state array (f64, 2 elements): [currentX, status]
  */
-export function newtonSetup(x0: f64): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = x0
-  result[1] = 1.0 // Continue
-  return result
+export function newtonSetup(x0: f64, statePtr: usize): void {
+  store<f64>(statePtr, x0)
+  store<f64>(statePtr + 8, 1.0) // Continue
 }
 
 /**
  * Newton-Raphson iteration step
  * x_{n+1} = x_n - f(x_n) / f'(x_n)
  *
- * @param state - Current state [x, status]
+ * @param statePtr - Pointer to state array [x, status]
  * @param fx - f(x) value
  * @param fpx - f'(x) value (derivative)
  * @param tol - Tolerance
- * @returns Updated state [newX, status]
  */
 export function newtonStep(
-  state: Float64Array,
+  statePtr: usize,
   fx: f64,
   fpx: f64,
   tol: f64
-): Float64Array {
-  const result = new Float64Array(2)
+): void {
+  const x: f64 = load<f64>(statePtr)
 
   // Check convergence
   if (Math.abs(fx) < tol) {
-    result[0] = state[0]
-    result[1] = 0.0 // Converged
-    return result
+    store<f64>(statePtr + 8, 0.0) // Converged
+    return
   }
 
   // Check for zero derivative
   if (Math.abs(fpx) < 1e-15) {
-    result[0] = state[0]
-    result[1] = -1.0 // Failed (zero derivative)
-    return result
+    store<f64>(statePtr + 8, -1.0) // Failed (zero derivative)
+    return
   }
 
-  const newX: f64 = state[0] - fx / fpx
-  result[0] = newX
-  result[1] = 1.0 // Continue
-
-  return result
+  const newX: f64 = x - fx / fpx
+  store<f64>(statePtr, newX)
+  store<f64>(statePtr + 8, 1.0) // Continue
 }
 
 /**
@@ -145,77 +131,71 @@ export function newtonStep(
  * @param x1 - Second initial point
  * @param fx0 - f(x0)
  * @param fx1 - f(x1)
- * @returns State array [currentX, prevX, currentF, prevF, status]
+ * @param statePtr - Pointer to output state array (f64, 5 elements):
+ *                   [currentX, prevX, currentF, prevF, status]
  */
 export function secantSetup(
   x0: f64,
   x1: f64,
   fx0: f64,
-  fx1: f64
-): Float64Array {
-  const result = new Float64Array(5)
-  result[0] = x1
-  result[1] = x0
-  result[2] = fx1
-  result[3] = fx0
-  result[4] = 1.0 // Continue
-  return result
+  fx1: f64,
+  statePtr: usize
+): void {
+  store<f64>(statePtr, x1)
+  store<f64>(statePtr + 8, x0)
+  store<f64>(statePtr + 16, fx1)
+  store<f64>(statePtr + 24, fx0)
+  store<f64>(statePtr + 32, 1.0) // Continue
 }
 
 /**
  * Secant method iteration step
  * x_{n+1} = x_n - f(x_n) * (x_n - x_{n-1}) / (f(x_n) - f(x_{n-1}))
  *
- * @param state - Current state [x, xPrev, fx, fxPrev, status]
+ * @param statePtr - Pointer to state array [x, xPrev, fx, fxPrev, status]
  * @param tol - Tolerance
- * @returns Updated state
+ * @returns New x value to evaluate (if status becomes 2.0)
  */
-export function secantStep(state: Float64Array, tol: f64): Float64Array {
-  const result = new Float64Array(5)
-
-  const x: f64 = state[0]
-  const xPrev: f64 = state[1]
-  const fx: f64 = state[2]
-  const fxPrev: f64 = state[3]
+export function secantStep(statePtr: usize, tol: f64): f64 {
+  const x: f64 = load<f64>(statePtr)
+  const xPrev: f64 = load<f64>(statePtr + 8)
+  const fx: f64 = load<f64>(statePtr + 16)
+  const fxPrev: f64 = load<f64>(statePtr + 24)
 
   // Check convergence
   if (Math.abs(fx) < tol) {
-    result[0] = x
-    result[4] = 0.0 // Converged
-    return result
+    store<f64>(statePtr + 32, 0.0) // Converged
+    return x
   }
 
   const denom: f64 = fx - fxPrev
 
   // Check for zero denominator
   if (Math.abs(denom) < 1e-15) {
-    result[0] = x
-    result[4] = -1.0 // Failed
-    return result
+    store<f64>(statePtr + 32, -1.0) // Failed
+    return x
   }
 
   const newX: f64 = x - (fx * (x - xPrev)) / denom
 
-  result[0] = newX // Return new x for evaluation
-  result[1] = x
-  result[2] = 0.0 // Placeholder for f(newX) - caller must fill
-  result[3] = fx
-  result[4] = 2.0 // Need function evaluation
+  store<f64>(statePtr, newX) // Return new x for evaluation
+  store<f64>(statePtr + 8, x)
+  store<f64>(statePtr + 16, 0.0) // Placeholder for f(newX) - caller must fill
+  store<f64>(statePtr + 24, fx)
+  store<f64>(statePtr + 32, 2.0) // Need function evaluation
 
-  return result
+  return newX
 }
 
 /**
  * Update secant state after function evaluation
  *
- * @param state - State after secantStep
+ * @param statePtr - Pointer to state array after secantStep
  * @param fNewX - f(newX) value
- * @returns Updated state
  */
-export function secantUpdate(state: Float64Array, fNewX: f64): Float64Array {
-  state[2] = fNewX
-  state[4] = 1.0 // Continue
-  return state
+export function secantUpdate(statePtr: usize, fNewX: f64): void {
+  store<f64>(statePtr + 16, fNewX)
+  store<f64>(statePtr + 32, 1.0) // Continue
 }
 
 /**
@@ -225,11 +205,10 @@ export function secantUpdate(state: Float64Array, fNewX: f64): Float64Array {
  * @param b - Right endpoint
  * @param fa - f(a)
  * @param fb - f(b)
- * @returns State [a, b, c, fa, fb, fc, d, e, status]
+ * @param statePtr - Pointer to output state array (f64, 9 elements):
+ *                   [a, b, c, fa, fb, fc, d, e, status]
  */
-export function brentSetup(a: f64, b: f64, fa: f64, fb: f64): Float64Array {
-  const result = new Float64Array(9)
-
+export function brentSetup(a: f64, b: f64, fa: f64, fb: f64, statePtr: usize): void {
   // Ensure |f(b)| <= |f(a)|
   let aa: f64 = a
   let bb: f64 = b
@@ -244,44 +223,42 @@ export function brentSetup(a: f64, b: f64, fa: f64, fb: f64): Float64Array {
   }
 
   if (faa * fbb > 0) {
-    result[8] = -1.0 // No bracket
-    return result
+    store<f64>(statePtr + 64, -1.0) // No bracket
+    return
   }
 
-  result[0] = aa // a
-  result[1] = bb // b (best guess)
-  result[2] = aa // c = a initially
-  result[3] = faa // fa
-  result[4] = fbb // fb
-  result[5] = faa // fc = fa
-  result[6] = bb - aa // d
-  result[7] = bb - aa // e
-  result[8] = 1.0 // Continue
-
-  return result
+  store<f64>(statePtr, aa) // a
+  store<f64>(statePtr + 8, bb) // b (best guess)
+  store<f64>(statePtr + 16, aa) // c = a initially
+  store<f64>(statePtr + 24, faa) // fa
+  store<f64>(statePtr + 32, fbb) // fb
+  store<f64>(statePtr + 40, faa) // fc = fa
+  store<f64>(statePtr + 48, bb - aa) // d
+  store<f64>(statePtr + 56, bb - aa) // e
+  store<f64>(statePtr + 64, 1.0) // Continue
 }
 
 /**
  * Brent's method iteration step
  *
- * @param state - Current state
+ * @param statePtr - Pointer to state array
  * @param tol - Tolerance
- * @returns Updated state with next x to evaluate in state[1]
+ * @returns Next x value to evaluate (b in state)
  */
-export function brentStep(state: Float64Array, tol: f64): Float64Array {
-  let a: f64 = state[0]
-  let b: f64 = state[1]
-  let c: f64 = state[2]
-  let fa: f64 = state[3]
-  let fb: f64 = state[4]
-  let fc: f64 = state[5]
-  let d: f64 = state[6]
-  let e: f64 = state[7]
+export function brentStep(statePtr: usize, tol: f64): f64 {
+  let a: f64 = load<f64>(statePtr)
+  let b: f64 = load<f64>(statePtr + 8)
+  let c: f64 = load<f64>(statePtr + 16)
+  let fa: f64 = load<f64>(statePtr + 24)
+  let fb: f64 = load<f64>(statePtr + 32)
+  let fc: f64 = load<f64>(statePtr + 40)
+  let d: f64 = load<f64>(statePtr + 48)
+  let e: f64 = load<f64>(statePtr + 56)
 
   // Check convergence
   if (Math.abs(fb) < tol) {
-    state[8] = 0.0 // Converged
-    return state
+    store<f64>(statePtr + 64, 0.0) // Converged
+    return b
   }
 
   // Ensure f(c) and f(b) have opposite signs
@@ -306,9 +283,9 @@ export function brentStep(state: Float64Array, tol: f64): Float64Array {
   const m: f64 = 0.5 * (c - b)
 
   if (Math.abs(m) <= tolAbs || fb === 0) {
-    state[1] = b
-    state[8] = 0.0 // Converged
-    return state
+    store<f64>(statePtr + 8, b)
+    store<f64>(statePtr + 64, 0.0) // Converged
+    return b
   }
 
   let newB: f64
@@ -354,30 +331,28 @@ export function brentStep(state: Float64Array, tol: f64): Float64Array {
   fa = fb
   b = newB
 
-  state[0] = a
-  state[1] = b // Next x to evaluate
-  state[2] = c
-  state[3] = fa
-  state[4] = 0.0 // Placeholder for f(newB)
-  state[5] = fc
-  state[6] = d
-  state[7] = e
-  state[8] = 2.0 // Need function evaluation
+  store<f64>(statePtr, a)
+  store<f64>(statePtr + 8, b) // Next x to evaluate
+  store<f64>(statePtr + 16, c)
+  store<f64>(statePtr + 24, fa)
+  store<f64>(statePtr + 32, 0.0) // Placeholder for f(newB)
+  store<f64>(statePtr + 40, fc)
+  store<f64>(statePtr + 48, d)
+  store<f64>(statePtr + 56, e)
+  store<f64>(statePtr + 64, 2.0) // Need function evaluation
 
-  return state
+  return newB
 }
 
 /**
  * Update Brent state after function evaluation
  *
- * @param state - State after brentStep
+ * @param statePtr - Pointer to state array after brentStep
  * @param fNewB - f(newB) value
- * @returns Updated state
  */
-export function brentUpdate(state: Float64Array, fNewB: f64): Float64Array {
-  state[4] = fNewB
-  state[8] = 1.0 // Continue
-  return state
+export function brentUpdate(statePtr: usize, fNewB: f64): void {
+  store<f64>(statePtr + 32, fNewB)
+  store<f64>(statePtr + 64, 1.0) // Continue
 }
 
 /**
@@ -385,43 +360,36 @@ export function brentUpdate(state: Float64Array, fNewB: f64): Float64Array {
  * Setup for iteration
  *
  * @param x0 - Initial guess
- * @returns State [x, status]
+ * @param statePtr - Pointer to output state array (f64, 2 elements): [x, status]
  */
-export function fixedPointSetup(x0: f64): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = x0
-  result[1] = 1.0 // Continue
-  return result
+export function fixedPointSetup(x0: f64, statePtr: usize): void {
+  store<f64>(statePtr, x0)
+  store<f64>(statePtr + 8, 1.0) // Continue
 }
 
 /**
  * Fixed-point iteration step
  *
- * @param state - Current state [x, status]
+ * @param statePtr - Pointer to state array [x, status]
  * @param gx - g(x) value
  * @param tol - Tolerance
- * @returns Updated state
  */
 export function fixedPointStep(
-  state: Float64Array,
+  statePtr: usize,
   gx: f64,
   tol: f64
-): Float64Array {
-  const result = new Float64Array(2)
-
-  const x: f64 = state[0]
+): void {
+  const x: f64 = load<f64>(statePtr)
 
   // Check convergence
   if (Math.abs(gx - x) < tol) {
-    result[0] = gx
-    result[1] = 0.0 // Converged
-    return result
+    store<f64>(statePtr, gx)
+    store<f64>(statePtr + 8, 0.0) // Converged
+    return
   }
 
-  result[0] = gx
-  result[1] = 1.0 // Continue
-
-  return result
+  store<f64>(statePtr, gx)
+  store<f64>(statePtr + 8, 1.0) // Continue
 }
 
 /**
@@ -432,53 +400,49 @@ export function fixedPointStep(
  * @param b - Right endpoint
  * @param fa - f(a)
  * @param fb - f(b)
- * @returns State [a, b, fa, fb, side, status]
+ * @param statePtr - Pointer to output state array (f64, 6 elements):
+ *                   [a, b, fa, fb, side, status]
  */
-export function illinoisSetup(a: f64, b: f64, fa: f64, fb: f64): Float64Array {
-  const result = new Float64Array(6)
-
+export function illinoisSetup(a: f64, b: f64, fa: f64, fb: f64, statePtr: usize): void {
   if (fa * fb > 0) {
-    result[5] = -1.0 // No bracket
-    return result
+    store<f64>(statePtr + 40, -1.0) // No bracket
+    return
   }
 
-  result[0] = a
-  result[1] = b
-  result[2] = fa
-  result[3] = fb
-  result[4] = 0.0 // side indicator
-  result[5] = 1.0 // Continue
-
-  return result
+  store<f64>(statePtr, a)
+  store<f64>(statePtr + 8, b)
+  store<f64>(statePtr + 16, fa)
+  store<f64>(statePtr + 24, fb)
+  store<f64>(statePtr + 32, 0.0) // side indicator
+  store<f64>(statePtr + 40, 1.0) // Continue
 }
 
 /**
  * Illinois method step
  *
- * @param state - Current state
+ * @param statePtr - Pointer to state array
  * @param fc - f(c) where c is the secant point
  * @param tol - Tolerance
- * @returns Updated state
  */
 export function illinoisStep(
-  state: Float64Array,
+  statePtr: usize,
   fc: f64,
   tol: f64
-): Float64Array {
-  let a: f64 = state[0]
-  let b: f64 = state[1]
-  let fa: f64 = state[2]
-  let fb: f64 = state[3]
-  let side: f64 = state[4]
+): void {
+  let a: f64 = load<f64>(statePtr)
+  let b: f64 = load<f64>(statePtr + 8)
+  let fa: f64 = load<f64>(statePtr + 16)
+  let fb: f64 = load<f64>(statePtr + 24)
+  let side: f64 = load<f64>(statePtr + 32)
 
   // Compute secant point
   const c: f64 = (fa * b - fb * a) / (fa - fb)
 
   // Check convergence
   if (Math.abs(fc) < tol || Math.abs(b - a) < tol) {
-    state[0] = c
-    state[5] = 0.0 // Converged
-    return state
+    store<f64>(statePtr, c)
+    store<f64>(statePtr + 40, 0.0) // Converged
+    return
   }
 
   // Update bracket
@@ -497,27 +461,25 @@ export function illinoisStep(
   b = c
   fb = fc
 
-  state[0] = a
-  state[1] = b
-  state[2] = fa
-  state[3] = fb
-  state[4] = side
+  store<f64>(statePtr, a)
+  store<f64>(statePtr + 8, b)
+  store<f64>(statePtr + 16, fa)
+  store<f64>(statePtr + 24, fb)
+  store<f64>(statePtr + 32, side)
   // state[5] already = 1.0 (Continue)
-
-  return state
 }
 
 /**
  * Get the next x value to evaluate for Illinois method
  *
- * @param state - Current state
+ * @param statePtr - Pointer to state array
  * @returns x value to evaluate
  */
-export function illinoisNextX(state: Float64Array): f64 {
-  const a: f64 = state[0]
-  const b: f64 = state[1]
-  const fa: f64 = state[2]
-  const fb: f64 = state[3]
+export function illinoisNextX(statePtr: usize): f64 {
+  const a: f64 = load<f64>(statePtr)
+  const b: f64 = load<f64>(statePtr + 8)
+  const fa: f64 = load<f64>(statePtr + 16)
+  const fb: f64 = load<f64>(statePtr + 24)
 
   return (fa * b - fb * a) / (fa - fb)
 }
@@ -532,7 +494,8 @@ export function illinoisNextX(state: Float64Array): f64 {
  * @param f0 - f(x0)
  * @param f1 - f(x1)
  * @param f2 - f(x2)
- * @returns [newX, status] - New estimate
+ * @param tol - Tolerance
+ * @param resultPtr - Pointer to output array (f64, 2 elements): [newX, status]
  */
 export function mullerStep(
   x0: f64,
@@ -541,14 +504,13 @@ export function mullerStep(
   f0: f64,
   f1: f64,
   f2: f64,
-  tol: f64
-): Float64Array {
-  const result = new Float64Array(2)
-
+  tol: f64,
+  resultPtr: usize
+): void {
   if (Math.abs(f2) < tol) {
-    result[0] = x2
-    result[1] = 0.0 // Converged
-    return result
+    store<f64>(resultPtr, x2)
+    store<f64>(resultPtr + 8, 0.0) // Converged
+    return
   }
 
   const h1: f64 = x1 - x0
@@ -577,15 +539,13 @@ export function mullerStep(
   }
 
   if (Math.abs(denom) < 1e-15) {
-    result[0] = x2
-    result[1] = -1.0 // Failed
-    return result
+    store<f64>(resultPtr, x2)
+    store<f64>(resultPtr + 8, -1.0) // Failed
+    return
   }
 
-  result[0] = x2 - (2.0 * c) / denom
-  result[1] = 1.0 // Continue
-
-  return result
+  store<f64>(resultPtr, x2 - (2.0 * c) / denom)
+  store<f64>(resultPtr + 8, 1.0) // Continue
 }
 
 /**
@@ -596,34 +556,31 @@ export function mullerStep(
  * @param fx - f(x)
  * @param fxpfx - f(x + f(x))
  * @param tol - Tolerance
- * @returns [newX, status]
+ * @param resultPtr - Pointer to output array (f64, 2 elements): [newX, status]
  */
 export function steffensenStep(
   x: f64,
   fx: f64,
   fxpfx: f64,
-  tol: f64
-): Float64Array {
-  const result = new Float64Array(2)
-
+  tol: f64,
+  resultPtr: usize
+): void {
   if (Math.abs(fx) < tol) {
-    result[0] = x
-    result[1] = 0.0 // Converged
-    return result
+    store<f64>(resultPtr, x)
+    store<f64>(resultPtr + 8, 0.0) // Converged
+    return
   }
 
   const denom: f64 = fxpfx - fx
 
   if (Math.abs(denom) < 1e-15) {
-    result[0] = x
-    result[1] = -1.0 // Failed
-    return result
+    store<f64>(resultPtr, x)
+    store<f64>(resultPtr + 8, -1.0) // Failed
+    return
   }
 
-  result[0] = x - (fx * fx) / denom
-  result[1] = 1.0 // Continue
-
-  return result
+  store<f64>(resultPtr, x - (fx * fx) / denom)
+  store<f64>(resultPtr + 8, 1.0) // Continue
 }
 
 /**
@@ -635,33 +592,53 @@ export function steffensenStep(
  * @param fpx - f'(x)
  * @param fppx - f''(x)
  * @param tol - Tolerance
- * @returns [newX, status]
+ * @param resultPtr - Pointer to output array (f64, 2 elements): [newX, status]
  */
 export function halleyStep(
   x: f64,
   fx: f64,
   fpx: f64,
   fppx: f64,
-  tol: f64
-): Float64Array {
-  const result = new Float64Array(2)
-
+  tol: f64,
+  resultPtr: usize
+): void {
   if (Math.abs(fx) < tol) {
-    result[0] = x
-    result[1] = 0.0 // Converged
-    return result
+    store<f64>(resultPtr, x)
+    store<f64>(resultPtr + 8, 0.0) // Converged
+    return
   }
 
   const denom: f64 = 2.0 * fpx * fpx - fx * fppx
 
   if (Math.abs(denom) < 1e-15) {
-    result[0] = x
-    result[1] = -1.0 // Failed
-    return result
+    store<f64>(resultPtr, x)
+    store<f64>(resultPtr + 8, -1.0) // Failed
+    return
   }
 
-  result[0] = x - (2.0 * fx * fpx) / denom
-  result[1] = 1.0 // Continue
+  store<f64>(resultPtr, x - (2.0 * fx * fpx) / denom)
+  store<f64>(resultPtr + 8, 1.0) // Continue
+}
 
-  return result
+/**
+ * Get status from a state array
+ * Utility function to read the status field from different state arrays
+ *
+ * @param statePtr - Pointer to state array
+ * @param statusOffset - Byte offset of status field (e.g., 8 for 2-element, 40 for 6-element)
+ * @returns Status value: 1.0 = continue, 0.0 = converged, -1.0 = failed, 2.0 = need eval
+ */
+export function getStatus(statePtr: usize, statusOffset: i32): f64 {
+  return load<f64>(statePtr + <usize>statusOffset)
+}
+
+/**
+ * Get current best estimate from a state array
+ *
+ * @param statePtr - Pointer to state array
+ * @param estimateOffset - Byte offset of estimate field (usually 0 or 8)
+ * @returns Current estimate
+ */
+export function getEstimate(statePtr: usize, estimateOffset: i32): f64 {
+  return load<f64>(statePtr + <usize>estimateOffset)
 }

@@ -1,5 +1,7 @@
 /**
  * WASM-optimized geometry operations using AssemblyScript
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
 
 /**
@@ -42,16 +44,17 @@ export function distance3D(
 
 /**
  * Calculate Euclidean distance between two points in N dimensions
- * @param p1 - First point coordinates
- * @param p2 - Second point coordinates
+ * @param p1Ptr - Pointer to first point coordinates
+ * @param p2Ptr - Pointer to second point coordinates
+ * @param n - Number of dimensions
  * @returns The distance
  */
-export function distanceND(p1: Float64Array, p2: Float64Array): f64 {
-  const n: i32 = p1.length
+export function distanceND(p1Ptr: usize, p2Ptr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    const d: f64 = p2[i] - p1[i]
+    const offset: usize = <usize>i << 3
+    const d: f64 = load<f64>(p2Ptr + offset) - load<f64>(p1Ptr + offset)
     sum += d * d
   }
 
@@ -72,16 +75,17 @@ export function manhattanDistance2D(x1: f64, y1: f64, x2: f64, y2: f64): f64 {
 
 /**
  * Calculate Manhattan distance between two points in N dimensions
- * @param p1 - First point coordinates
- * @param p2 - Second point coordinates
+ * @param p1Ptr - Pointer to first point coordinates
+ * @param p2Ptr - Pointer to second point coordinates
+ * @param n - Number of dimensions
  * @returns The Manhattan distance
  */
-export function manhattanDistanceND(p1: Float64Array, p2: Float64Array): f64 {
-  const n: i32 = p1.length
+export function manhattanDistanceND(p1Ptr: usize, p2Ptr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    sum += Math.abs(p2[i] - p1[i])
+    const offset: usize = <usize>i << 3
+    sum += Math.abs(load<f64>(p2Ptr + offset) - load<f64>(p1Ptr + offset))
   }
 
   return sum
@@ -91,7 +95,7 @@ export function manhattanDistanceND(p1: Float64Array, p2: Float64Array): f64 {
  * Calculate the intersection point of two 2D line segments
  * Line 1: (x1,y1) to (x2,y2)
  * Line 2: (x3,y3) to (x4,y4)
- * @returns Float64Array with [x, y, exists] where exists is 1.0 if intersection exists, 0.0 otherwise
+ * @param resultPtr - Pointer to output [x, y, exists] where exists is 1.0 if intersection exists, 0.0 otherwise
  */
 export function intersect2DLines(
   x1: f64,
@@ -101,18 +105,17 @@ export function intersect2DLines(
   x3: f64,
   y3: f64,
   x4: f64,
-  y4: f64
-): Float64Array {
-  const result = new Float64Array(3)
-
+  y4: f64,
+  resultPtr: usize
+): void {
   const denom: f64 = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
   // Check if lines are parallel
   if (Math.abs(denom) < 1e-10) {
-    result[0] = 0.0
-    result[1] = 0.0
-    result[2] = 0.0 // No intersection
-    return result
+    store<f64>(resultPtr, 0.0)
+    store<f64>(resultPtr + 8, 0.0)
+    store<f64>(resultPtr + 16, 0.0) // No intersection
+    return
   }
 
   const t: f64 = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom
@@ -120,23 +123,21 @@ export function intersect2DLines(
 
   // Check if intersection is within both line segments
   if (t >= 0.0 && t <= 1.0 && u >= 0.0 && u <= 1.0) {
-    result[0] = x1 + t * (x2 - x1)
-    result[1] = y1 + t * (y2 - y1)
-    result[2] = 1.0 // Intersection exists
+    store<f64>(resultPtr, x1 + t * (x2 - x1))
+    store<f64>(resultPtr + 8, y1 + t * (y2 - y1))
+    store<f64>(resultPtr + 16, 1.0) // Intersection exists
   } else {
-    result[0] = x1 + t * (x2 - x1)
-    result[1] = y1 + t * (y2 - y1)
-    result[2] = 0.0 // Lines intersect but not within segments
+    store<f64>(resultPtr, x1 + t * (x2 - x1))
+    store<f64>(resultPtr + 8, y1 + t * (y2 - y1))
+    store<f64>(resultPtr + 16, 0.0) // Lines intersect but not within segments
   }
-
-  return result
 }
 
 /**
  * Calculate the intersection point of two infinite 2D lines
  * Line 1: passes through (x1,y1) and (x2,y2)
  * Line 2: passes through (x3,y3) and (x4,y4)
- * @returns Float64Array with [x, y, exists] where exists is 1.0 if intersection exists, 0.0 if parallel
+ * @param resultPtr - Pointer to output [x, y, exists] where exists is 1.0 if intersection exists, 0.0 if parallel
  */
 export function intersect2DInfiniteLines(
   x1: f64,
@@ -146,34 +147,31 @@ export function intersect2DInfiniteLines(
   x3: f64,
   y3: f64,
   x4: f64,
-  y4: f64
-): Float64Array {
-  const result = new Float64Array(3)
-
+  y4: f64,
+  resultPtr: usize
+): void {
   const denom: f64 = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
   // Check if lines are parallel
   if (Math.abs(denom) < 1e-10) {
-    result[0] = 0.0
-    result[1] = 0.0
-    result[2] = 0.0 // No intersection (parallel)
-    return result
+    store<f64>(resultPtr, 0.0)
+    store<f64>(resultPtr + 8, 0.0)
+    store<f64>(resultPtr + 16, 0.0) // No intersection (parallel)
+    return
   }
 
   const t: f64 = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom
 
-  result[0] = x1 + t * (x2 - x1)
-  result[1] = y1 + t * (y2 - y1)
-  result[2] = 1.0 // Intersection exists
-
-  return result
+  store<f64>(resultPtr, x1 + t * (x2 - x1))
+  store<f64>(resultPtr + 8, y1 + t * (y2 - y1))
+  store<f64>(resultPtr + 16, 1.0) // Intersection exists
 }
 
 /**
  * Calculate the intersection of a line and a plane in 3D
  * Line: point (px,py,pz) with direction (dx,dy,dz)
  * Plane: ax + by + cz + d = 0
- * @returns Float64Array with [x, y, z, exists] where exists is 1.0 if intersection exists
+ * @param resultPtr - Pointer to output [x, y, z, exists] where exists is 1.0 if intersection exists
  */
 export function intersectLinePlane(
   px: f64,
@@ -185,29 +183,26 @@ export function intersectLinePlane(
   a: f64,
   b: f64,
   c: f64,
-  d: f64
-): Float64Array {
-  const result = new Float64Array(4)
-
+  d: f64,
+  resultPtr: usize
+): void {
   const denom: f64 = a * dx + b * dy + c * dz
 
   // Check if line is parallel to plane
   if (Math.abs(denom) < 1e-10) {
-    result[0] = 0.0
-    result[1] = 0.0
-    result[2] = 0.0
-    result[3] = 0.0 // No intersection (parallel)
-    return result
+    store<f64>(resultPtr, 0.0)
+    store<f64>(resultPtr + 8, 0.0)
+    store<f64>(resultPtr + 16, 0.0)
+    store<f64>(resultPtr + 24, 0.0) // No intersection (parallel)
+    return
   }
 
   const t: f64 = -(a * px + b * py + c * pz + d) / denom
 
-  result[0] = px + t * dx
-  result[1] = py + t * dy
-  result[2] = pz + t * dz
-  result[3] = 1.0 // Intersection exists
-
-  return result
+  store<f64>(resultPtr, px + t * dx)
+  store<f64>(resultPtr + 8, py + t * dy)
+  store<f64>(resultPtr + 16, pz + t * dz)
+  store<f64>(resultPtr + 24, 1.0) // Intersection exists
 }
 
 /**
@@ -218,7 +213,7 @@ export function intersectLinePlane(
  * @param bx - X component of second vector
  * @param by - Y component of second vector
  * @param bz - Z component of second vector
- * @returns Float64Array with [x, y, z] components of cross product
+ * @param resultPtr - Pointer to output [x, y, z] components of cross product
  */
 export function cross3D(
   ax: f64,
@@ -226,27 +221,27 @@ export function cross3D(
   az: f64,
   bx: f64,
   by: f64,
-  bz: f64
-): Float64Array {
-  const result = new Float64Array(3)
-  result[0] = ay * bz - az * by
-  result[1] = az * bx - ax * bz
-  result[2] = ax * by - ay * bx
-  return result
+  bz: f64,
+  resultPtr: usize
+): void {
+  store<f64>(resultPtr, ay * bz - az * by)
+  store<f64>(resultPtr + 8, az * bx - ax * bz)
+  store<f64>(resultPtr + 16, ax * by - ay * bx)
 }
 
 /**
  * Calculate the dot product of two vectors
- * @param a - First vector
- * @param b - Second vector
+ * @param aPtr - Pointer to first vector
+ * @param bPtr - Pointer to second vector
+ * @param n - Number of dimensions
  * @returns The dot product
  */
-export function dotND(a: Float64Array, b: Float64Array): f64 {
-  const n: i32 = a.length
+export function dotND(aPtr: usize, bPtr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    sum += a[i] * b[i]
+    const offset: usize = <usize>i << 3
+    sum += load<f64>(aPtr + offset) * load<f64>(bPtr + offset)
   }
 
   return sum
@@ -370,35 +365,37 @@ export function pointInTriangle2D(
 
 /**
  * Normalize a vector
- * @param v - Input vector
- * @returns Normalized vector
+ * @param vPtr - Pointer to input vector
+ * @param n - Number of dimensions
+ * @param resultPtr - Pointer to output normalized vector
  */
-export function normalizeND(v: Float64Array): Float64Array {
-  const n: i32 = v.length
-  const result = new Float64Array(n)
-
+export function normalizeND(vPtr: usize, n: i32, resultPtr: usize): void {
   let mag: f64 = 0.0
   for (let i: i32 = 0; i < n; i++) {
-    mag += v[i] * v[i]
+    const val: f64 = load<f64>(vPtr + (<usize>i << 3))
+    mag += val * val
   }
   mag = Math.sqrt(mag)
 
   if (mag < 1e-10) {
-    return result // Return zero vector
+    // Return zero vector
+    for (let i: i32 = 0; i < n; i++) {
+      store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    }
+    return
   }
 
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = v[i] / mag
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, load<f64>(vPtr + offset) / mag)
   }
-
-  return result
 }
 
 /**
  * Calculate intersection points of a line and a circle in 2D
  * Line: point (px,py) with direction (dx,dy)
  * Circle: center (cx,cy) with radius r
- * @returns Float64Array with [x1, y1, x2, y2, count] where count is 0, 1, or 2
+ * @param resultPtr - Pointer to output [x1, y1, x2, y2, count] where count is 0, 1, or 2
  */
 export function intersectLineCircle(
   px: f64,
@@ -407,10 +404,9 @@ export function intersectLineCircle(
   dy: f64,
   cx: f64,
   cy: f64,
-  r: f64
-): Float64Array {
-  const result = new Float64Array(5)
-
+  r: f64,
+  resultPtr: usize
+): void {
   // Translate so circle is at origin
   const ox: f64 = px - cx
   const oy: f64 = py - cy
@@ -424,17 +420,17 @@ export function intersectLineCircle(
 
   if (discriminant < 0 || a < 1e-14) {
     // No intersection
-    result[4] = 0.0
-    return result
+    store<f64>(resultPtr + 32, 0.0)
+    return
   }
 
   if (discriminant < 1e-10) {
     // One intersection (tangent)
     const t: f64 = -b / (2.0 * a)
-    result[0] = px + t * dx
-    result[1] = py + t * dy
-    result[4] = 1.0
-    return result
+    store<f64>(resultPtr, px + t * dx)
+    store<f64>(resultPtr + 8, py + t * dy)
+    store<f64>(resultPtr + 32, 1.0)
+    return
   }
 
   // Two intersections
@@ -442,20 +438,18 @@ export function intersectLineCircle(
   const t1: f64 = (-b - sqrtDisc) / (2.0 * a)
   const t2: f64 = (-b + sqrtDisc) / (2.0 * a)
 
-  result[0] = px + t1 * dx
-  result[1] = py + t1 * dy
-  result[2] = px + t2 * dx
-  result[3] = py + t2 * dy
-  result[4] = 2.0
-
-  return result
+  store<f64>(resultPtr, px + t1 * dx)
+  store<f64>(resultPtr + 8, py + t1 * dy)
+  store<f64>(resultPtr + 16, px + t2 * dx)
+  store<f64>(resultPtr + 24, py + t2 * dy)
+  store<f64>(resultPtr + 32, 2.0)
 }
 
 /**
  * Calculate intersection points of a line and a sphere in 3D
  * Line: point (px,py,pz) with direction (dx,dy,dz)
  * Sphere: center (cx,cy,cz) with radius r
- * @returns Float64Array with [x1, y1, z1, x2, y2, z2, count] where count is 0, 1, or 2
+ * @param resultPtr - Pointer to output [x1, y1, z1, x2, y2, z2, count] where count is 0, 1, or 2
  */
 export function intersectLineSphere(
   px: f64,
@@ -467,10 +461,9 @@ export function intersectLineSphere(
   cx: f64,
   cy: f64,
   cz: f64,
-  r: f64
-): Float64Array {
-  const result = new Float64Array(7)
-
+  r: f64,
+  resultPtr: usize
+): void {
   // Translate so sphere is at origin
   const ox: f64 = px - cx
   const oy: f64 = py - cy
@@ -485,18 +478,18 @@ export function intersectLineSphere(
 
   if (discriminant < 0 || a < 1e-14) {
     // No intersection
-    result[6] = 0.0
-    return result
+    store<f64>(resultPtr + 48, 0.0)
+    return
   }
 
   if (discriminant < 1e-10) {
     // One intersection (tangent)
     const t: f64 = -b / (2.0 * a)
-    result[0] = px + t * dx
-    result[1] = py + t * dy
-    result[2] = pz + t * dz
-    result[6] = 1.0
-    return result
+    store<f64>(resultPtr, px + t * dx)
+    store<f64>(resultPtr + 8, py + t * dy)
+    store<f64>(resultPtr + 16, pz + t * dz)
+    store<f64>(resultPtr + 48, 1.0)
+    return
   }
 
   // Two intersections
@@ -504,22 +497,20 @@ export function intersectLineSphere(
   const t1: f64 = (-b - sqrtDisc) / (2.0 * a)
   const t2: f64 = (-b + sqrtDisc) / (2.0 * a)
 
-  result[0] = px + t1 * dx
-  result[1] = py + t1 * dy
-  result[2] = pz + t1 * dz
-  result[3] = px + t2 * dx
-  result[4] = py + t2 * dy
-  result[5] = pz + t2 * dz
-  result[6] = 2.0
-
-  return result
+  store<f64>(resultPtr, px + t1 * dx)
+  store<f64>(resultPtr + 8, py + t1 * dy)
+  store<f64>(resultPtr + 16, pz + t1 * dz)
+  store<f64>(resultPtr + 24, px + t2 * dx)
+  store<f64>(resultPtr + 32, py + t2 * dy)
+  store<f64>(resultPtr + 40, pz + t2 * dz)
+  store<f64>(resultPtr + 48, 2.0)
 }
 
 /**
  * Calculate intersection points of two circles in 2D
  * Circle 1: center (x1,y1) with radius r1
  * Circle 2: center (x2,y2) with radius r2
- * @returns Float64Array with [px1, py1, px2, py2, count] where count is 0, 1, or 2
+ * @param resultPtr - Pointer to output [px1, py1, px2, py2, count] where count is 0, 1, or 2
  */
 export function intersectCircles(
   x1: f64,
@@ -527,26 +518,25 @@ export function intersectCircles(
   r1: f64,
   x2: f64,
   y2: f64,
-  r2: f64
-): Float64Array {
-  const result = new Float64Array(5)
-
+  r2: f64,
+  resultPtr: usize
+): void {
   const dx: f64 = x2 - x1
   const dy: f64 = y2 - y1
   const d: f64 = Math.sqrt(dx * dx + dy * dy)
 
   // Check for no solution cases
   if (d > r1 + r2 || d < Math.abs(r1 - r2) || d < 1e-14) {
-    result[4] = 0.0
-    return result
+    store<f64>(resultPtr + 32, 0.0)
+    return
   }
 
   const a: f64 = (r1 * r1 - r2 * r2 + d * d) / (2.0 * d)
   const h2: f64 = r1 * r1 - a * a
 
   if (h2 < 0) {
-    result[4] = 0.0
-    return result
+    store<f64>(resultPtr + 32, 0.0)
+    return
   }
 
   const h: f64 = Math.sqrt(h2)
@@ -557,27 +547,25 @@ export function intersectCircles(
 
   if (h < 1e-10) {
     // One intersection (tangent)
-    result[0] = px
-    result[1] = py
-    result[4] = 1.0
-    return result
+    store<f64>(resultPtr, px)
+    store<f64>(resultPtr + 8, py)
+    store<f64>(resultPtr + 32, 1.0)
+    return
   }
 
   // Two intersections
-  result[0] = px + (h * dy) / d
-  result[1] = py - (h * dx) / d
-  result[2] = px - (h * dy) / d
-  result[3] = py + (h * dx) / d
-  result[4] = 2.0
-
-  return result
+  store<f64>(resultPtr, px + (h * dy) / d)
+  store<f64>(resultPtr + 8, py - (h * dx) / d)
+  store<f64>(resultPtr + 16, px - (h * dy) / d)
+  store<f64>(resultPtr + 24, py + (h * dx) / d)
+  store<f64>(resultPtr + 32, 2.0)
 }
 
 /**
  * Project a point onto a line in 2D
  * Point: (px, py)
  * Line: passes through (x1, y1) and (x2, y2)
- * @returns Float64Array with [projected_x, projected_y, t] where t is parameter on line
+ * @param resultPtr - Pointer to output [projected_x, projected_y, t] where t is parameter on line
  */
 export function projectPointOnLine2D(
   px: f64,
@@ -585,28 +573,25 @@ export function projectPointOnLine2D(
   x1: f64,
   y1: f64,
   x2: f64,
-  y2: f64
-): Float64Array {
-  const result = new Float64Array(3)
-
+  y2: f64,
+  resultPtr: usize
+): void {
   const dx: f64 = x2 - x1
   const dy: f64 = y2 - y1
   const lenSq: f64 = dx * dx + dy * dy
 
   if (lenSq < 1e-14) {
-    result[0] = x1
-    result[1] = y1
-    result[2] = 0.0
-    return result
+    store<f64>(resultPtr, x1)
+    store<f64>(resultPtr + 8, y1)
+    store<f64>(resultPtr + 16, 0.0)
+    return
   }
 
   const t: f64 = ((px - x1) * dx + (py - y1) * dy) / lenSq
 
-  result[0] = x1 + t * dx
-  result[1] = y1 + t * dy
-  result[2] = t
-
-  return result
+  store<f64>(resultPtr, x1 + t * dx)
+  store<f64>(resultPtr + 8, y1 + t * dy)
+  store<f64>(resultPtr + 16, t)
 }
 
 /**
@@ -661,15 +646,15 @@ export function distancePointToPlane(
 
 /**
  * Calculate the centroid of a polygon in 2D
- * @param vertices - Flat array of [x1, y1, x2, y2, ..., xn, yn]
- * @returns Float64Array with [cx, cy]
+ * @param verticesPtr - Pointer to flat array of [x1, y1, x2, y2, ..., xn, yn]
+ * @param n - Number of vertices
+ * @param resultPtr - Pointer to output [cx, cy]
  */
-export function polygonCentroid2D(vertices: Float64Array): Float64Array {
-  const result = new Float64Array(2)
-  const n: i32 = (vertices.length / 2) as i32
-
+export function polygonCentroid2D(verticesPtr: usize, n: i32, resultPtr: usize): void {
   if (n < 3) {
-    return result
+    store<f64>(resultPtr, 0.0)
+    store<f64>(resultPtr + 8, 0.0)
+    return
   }
 
   let cx: f64 = 0.0
@@ -678,10 +663,10 @@ export function polygonCentroid2D(vertices: Float64Array): Float64Array {
 
   for (let i: i32 = 0; i < n; i++) {
     const j: i32 = (i + 1) % n
-    const x0: f64 = vertices[i * 2]
-    const y0: f64 = vertices[i * 2 + 1]
-    const x1: f64 = vertices[j * 2]
-    const y1: f64 = vertices[j * 2 + 1]
+    const x0: f64 = load<f64>(verticesPtr + (<usize>(i << 1) << 3))
+    const y0: f64 = load<f64>(verticesPtr + (<usize>(i << 1) << 3) + 8)
+    const x1: f64 = load<f64>(verticesPtr + (<usize>(j << 1) << 3))
+    const y1: f64 = load<f64>(verticesPtr + (<usize>(j << 1) << 3) + 8)
 
     const a: f64 = x0 * y1 - x1 * y0
     signedArea += a
@@ -693,32 +678,31 @@ export function polygonCentroid2D(vertices: Float64Array): Float64Array {
 
   if (Math.abs(signedArea) < 1e-14) {
     // Degenerate polygon - return average of vertices
+    let sumX: f64 = 0.0
+    let sumY: f64 = 0.0
     for (let i: i32 = 0; i < n; i++) {
-      cx += vertices[i * 2]
-      cy += vertices[i * 2 + 1]
+      sumX += load<f64>(verticesPtr + (<usize>(i << 1) << 3))
+      sumY += load<f64>(verticesPtr + (<usize>(i << 1) << 3) + 8)
     }
-    result[0] = cx / f64(n)
-    result[1] = cy / f64(n)
-    return result
+    store<f64>(resultPtr, sumX / f64(n))
+    store<f64>(resultPtr + 8, sumY / f64(n))
+    return
   }
 
   cx /= 6.0 * signedArea
   cy /= 6.0 * signedArea
 
-  result[0] = cx
-  result[1] = cy
-
-  return result
+  store<f64>(resultPtr, cx)
+  store<f64>(resultPtr + 8, cy)
 }
 
 /**
  * Calculate the area of a polygon in 2D using shoelace formula
- * @param vertices - Flat array of [x1, y1, x2, y2, ..., xn, yn]
+ * @param verticesPtr - Pointer to flat array of [x1, y1, x2, y2, ..., xn, yn]
+ * @param n - Number of vertices
  * @returns The area (positive)
  */
-export function polygonArea2D(vertices: Float64Array): f64 {
-  const n: i32 = (vertices.length / 2) as i32
-
+export function polygonArea2D(verticesPtr: usize, n: i32): f64 {
   if (n < 3) {
     return 0.0
   }
@@ -727,8 +711,8 @@ export function polygonArea2D(vertices: Float64Array): f64 {
 
   for (let i: i32 = 0; i < n; i++) {
     const j: i32 = (i + 1) % n
-    area += vertices[i * 2] * vertices[j * 2 + 1]
-    area -= vertices[j * 2] * vertices[i * 2 + 1]
+    area += load<f64>(verticesPtr + (<usize>(i << 1) << 3)) * load<f64>(verticesPtr + (<usize>(j << 1) << 3) + 8)
+    area -= load<f64>(verticesPtr + (<usize>(j << 1) << 3)) * load<f64>(verticesPtr + (<usize>(i << 1) << 3) + 8)
   }
 
   return Math.abs(area) / 2.0
@@ -739,16 +723,16 @@ export function polygonArea2D(vertices: Float64Array): f64 {
  * Uses cross product method
  * @param px - X coordinate of point
  * @param py - Y coordinate of point
- * @param vertices - Flat array of polygon vertices [x1, y1, x2, y2, ...]
+ * @param verticesPtr - Pointer to flat array of polygon vertices [x1, y1, x2, y2, ...]
+ * @param n - Number of vertices
  * @returns 1.0 if inside, 0.0 if outside
  */
 export function pointInConvexPolygon2D(
   px: f64,
   py: f64,
-  vertices: Float64Array
+  verticesPtr: usize,
+  n: i32
 ): f64 {
-  const n: i32 = (vertices.length / 2) as i32
-
   if (n < 3) {
     return 0.0
   }
@@ -757,10 +741,10 @@ export function pointInConvexPolygon2D(
 
   for (let i: i32 = 0; i < n; i++) {
     const j: i32 = (i + 1) % n
-    const x1: f64 = vertices[i * 2]
-    const y1: f64 = vertices[i * 2 + 1]
-    const x2: f64 = vertices[j * 2]
-    const y2: f64 = vertices[j * 2 + 1]
+    const x1: f64 = load<f64>(verticesPtr + (<usize>(i << 1) << 3))
+    const y1: f64 = load<f64>(verticesPtr + (<usize>(i << 1) << 3) + 8)
+    const x2: f64 = load<f64>(verticesPtr + (<usize>(j << 1) << 3))
+    const y2: f64 = load<f64>(verticesPtr + (<usize>(j << 1) << 3) + 8)
 
     const cross: f64 = (x2 - x1) * (py - y1) - (y2 - y1) * (px - x1)
 

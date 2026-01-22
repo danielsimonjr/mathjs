@@ -2,30 +2,19 @@
  * WASM-optimized Fast Fourier Transform (FFT)
  * Cooley-Tukey radix-2 decimation-in-time algorithm
  *
- * All functions return new arrays for proper WASM/JS interop
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop
+ * Complex numbers are represented as interleaved [real0, imag0, real1, imag1, ...]
  */
 
 /**
- * Complex number representation (interleaved real/imaginary)
- * [real0, imag0, real1, imag1, ...]
- */
-
-/**
- * FFT (Cooley-Tukey radix-2)
- * @param data - Complex data array [real0, imag0, real1, imag1, ...]
+ * FFT (Cooley-Tukey radix-2) - in-place
+ * @param dataPtr - Pointer to complex data array [real0, imag0, real1, imag1, ...]
  * @param n - Number of complex samples (must be power of 2)
  * @param inverse - 1 for IFFT, 0 for FFT
- * @returns Transformed complex data
  */
-export function fft(data: Float64Array, n: i32, inverse: i32): Float64Array {
-  // Copy data
-  const result = new Float64Array(n << 1)
-  for (let i: i32 = 0; i < n << 1; i++) {
-    result[i] = data[i]
-  }
-
+export function fft(dataPtr: usize, n: i32, inverse: i32): void {
   // Bit-reversal permutation
-  bitReverse(result, n)
+  bitReverse(dataPtr, n)
 
   // Cooley-Tukey decimation-in-time
   let size: i32 = 2
@@ -40,23 +29,23 @@ export function fft(data: Float64Array, n: i32, inverse: i32): Float64Array {
         const cos: f64 = Math.cos(angle)
         const sin: f64 = Math.sin(angle)
 
-        const idx1: i32 = (i + j) << 1
-        const idx2: i32 = (i + j + halfSize) << 1
+        const idx1: usize = <usize>((i + j) << 1) << 3
+        const idx2: usize = <usize>((i + j + halfSize) << 1) << 3
 
-        const real1: f64 = result[idx1]
-        const imag1: f64 = result[idx1 + 1]
-        const real2: f64 = result[idx2]
-        const imag2: f64 = result[idx2 + 1]
+        const real1: f64 = load<f64>(dataPtr + idx1)
+        const imag1: f64 = load<f64>(dataPtr + idx1 + 8)
+        const real2: f64 = load<f64>(dataPtr + idx2)
+        const imag2: f64 = load<f64>(dataPtr + idx2 + 8)
 
-        // Complex multiplication: twiddle * result[idx2]
+        // Complex multiplication: twiddle * data[idx2]
         const tReal: f64 = real2 * cos - imag2 * sin
         const tImag: f64 = real2 * sin + imag2 * cos
 
         // Butterfly operation
-        result[idx1] = real1 + tReal
-        result[idx1 + 1] = imag1 + tImag
-        result[idx2] = real1 - tReal
-        result[idx2 + 1] = imag1 - tImag
+        store<f64>(dataPtr + idx1, real1 + tReal)
+        store<f64>(dataPtr + idx1 + 8, imag1 + tImag)
+        store<f64>(dataPtr + idx2, real1 - tReal)
+        store<f64>(dataPtr + idx2 + 8, imag1 - tImag)
 
         angle += step
       }
@@ -68,33 +57,33 @@ export function fft(data: Float64Array, n: i32, inverse: i32): Float64Array {
   // Normalize for IFFT
   if (inverse) {
     const scale: f64 = 1.0 / <f64>n
-    for (let i: i32 = 0; i < n << 1; i++) {
-      result[i] *= scale
+    const total: i32 = n << 1
+    for (let i: i32 = 0; i < total; i++) {
+      const offset: usize = <usize>i << 3
+      store<f64>(dataPtr + offset, load<f64>(dataPtr + offset) * scale)
     }
   }
-
-  return result
 }
 
 /**
  * Bit-reversal permutation for FFT (in-place)
  */
-function bitReverse(data: Float64Array, n: i32): void {
+function bitReverse(dataPtr: usize, n: i32): void {
   let j: i32 = 0
 
   for (let i: i32 = 0; i < n - 1; i++) {
     if (i < j) {
       // Swap complex numbers at positions i and j
-      const idx1: i32 = i << 1
-      const idx2: i32 = j << 1
+      const idx1: usize = <usize>(i << 1) << 3
+      const idx2: usize = <usize>(j << 1) << 3
 
-      let temp: f64 = data[idx1]
-      data[idx1] = data[idx2]
-      data[idx2] = temp
+      let temp: f64 = load<f64>(dataPtr + idx1)
+      store<f64>(dataPtr + idx1, load<f64>(dataPtr + idx2))
+      store<f64>(dataPtr + idx2, temp)
 
-      temp = data[idx1 + 1]
-      data[idx1 + 1] = data[idx2 + 1]
-      data[idx2 + 1] = temp
+      temp = load<f64>(dataPtr + idx1 + 8)
+      store<f64>(dataPtr + idx1 + 8, load<f64>(dataPtr + idx2 + 8))
+      store<f64>(dataPtr + idx2 + 8, temp)
     }
 
     let k: i32 = n >> 1
@@ -108,224 +97,163 @@ function bitReverse(data: Float64Array, n: i32): void {
 
 /**
  * 2D FFT for image processing and matrix operations
- * @param data - 2D complex data (row-major)
+ * @param dataPtr - Pointer to 2D complex data (row-major)
  * @param rows - Number of rows
  * @param cols - Number of columns
  * @param inverse - 1 for IFFT, 0 for FFT
- * @returns Transformed 2D complex data
+ * @param workPtr - Pointer to work buffer (must be at least max(rows,cols)*2*8 bytes)
  */
 export function fft2d(
-  data: Float64Array,
+  dataPtr: usize,
   rows: i32,
   cols: i32,
-  inverse: i32
-): Float64Array {
-  // Copy data
-  const result = new Float64Array(rows * cols * 2)
-  for (let i: i32 = 0; i < rows * cols * 2; i++) {
-    result[i] = data[i]
-  }
-
+  inverse: i32,
+  workPtr: usize
+): void {
   // FFT on rows
-  const rowData: Float64Array = new Float64Array(cols << 1)
   for (let i: i32 = 0; i < rows; i++) {
-    // Extract row
+    // Extract row into work buffer
+    const rowOffset: usize = <usize>(i * cols << 1) << 3
     for (let j: i32 = 0; j < cols; j++) {
-      const idx: i32 = (i * cols + j) << 1
-      rowData[j << 1] = result[idx]
-      rowData[(j << 1) + 1] = result[idx + 1]
+      const srcOffset: usize = rowOffset + (<usize>(j << 1) << 3)
+      const dstOffset: usize = <usize>(j << 1) << 3
+      store<f64>(workPtr + dstOffset, load<f64>(dataPtr + srcOffset))
+      store<f64>(workPtr + dstOffset + 8, load<f64>(dataPtr + srcOffset + 8))
     }
 
     // Transform row
-    const transformedRow = fftInPlace(rowData, cols, inverse)
+    fft(workPtr, cols, inverse)
 
     // Write back
     for (let j: i32 = 0; j < cols; j++) {
-      const idx: i32 = (i * cols + j) << 1
-      result[idx] = transformedRow[j << 1]
-      result[idx + 1] = transformedRow[(j << 1) + 1]
+      const srcOffset: usize = <usize>(j << 1) << 3
+      const dstOffset: usize = rowOffset + (<usize>(j << 1) << 3)
+      store<f64>(dataPtr + dstOffset, load<f64>(workPtr + srcOffset))
+      store<f64>(dataPtr + dstOffset + 8, load<f64>(workPtr + srcOffset + 8))
     }
   }
 
   // FFT on columns
-  const colData: Float64Array = new Float64Array(rows << 1)
   for (let j: i32 = 0; j < cols; j++) {
-    // Extract column
+    // Extract column into work buffer
     for (let i: i32 = 0; i < rows; i++) {
-      const idx: i32 = (i * cols + j) << 1
-      colData[i << 1] = result[idx]
-      colData[(i << 1) + 1] = result[idx + 1]
+      const srcOffset: usize = (<usize>(i * cols + j) << 1) << 3
+      const dstOffset: usize = <usize>(i << 1) << 3
+      store<f64>(workPtr + dstOffset, load<f64>(dataPtr + srcOffset))
+      store<f64>(workPtr + dstOffset + 8, load<f64>(dataPtr + srcOffset + 8))
     }
 
     // Transform column
-    const transformedCol = fftInPlace(colData, rows, inverse)
+    fft(workPtr, rows, inverse)
 
     // Write back
     for (let i: i32 = 0; i < rows; i++) {
-      const idx: i32 = (i * cols + j) << 1
-      result[idx] = transformedCol[i << 1]
-      result[idx + 1] = transformedCol[(i << 1) + 1]
+      const srcOffset: usize = <usize>(i << 1) << 3
+      const dstOffset: usize = (<usize>(i * cols + j) << 1) << 3
+      store<f64>(dataPtr + dstOffset, load<f64>(workPtr + srcOffset))
+      store<f64>(dataPtr + dstOffset + 8, load<f64>(workPtr + srcOffset + 8))
     }
   }
-
-  return result
-}
-
-/**
- * Internal in-place FFT helper
- */
-function fftInPlace(data: Float64Array, n: i32, inverse: i32): Float64Array {
-  // Bit-reversal permutation
-  bitReverse(data, n)
-
-  // Cooley-Tukey decimation-in-time
-  let size: i32 = 2
-  while (size <= n) {
-    const halfSize: i32 = size >> 1
-    const step: f64 = ((inverse ? 1.0 : -1.0) * 2.0 * Math.PI) / <f64>size
-
-    for (let i: i32 = 0; i < n; i += size) {
-      let angle: f64 = 0.0
-
-      for (let j: i32 = 0; j < halfSize; j++) {
-        const cos: f64 = Math.cos(angle)
-        const sin: f64 = Math.sin(angle)
-
-        const idx1: i32 = (i + j) << 1
-        const idx2: i32 = (i + j + halfSize) << 1
-
-        const real1: f64 = data[idx1]
-        const imag1: f64 = data[idx1 + 1]
-        const real2: f64 = data[idx2]
-        const imag2: f64 = data[idx2 + 1]
-
-        const tReal: f64 = real2 * cos - imag2 * sin
-        const tImag: f64 = real2 * sin + imag2 * cos
-
-        data[idx1] = real1 + tReal
-        data[idx1 + 1] = imag1 + tImag
-        data[idx2] = real1 - tReal
-        data[idx2 + 1] = imag1 - tImag
-
-        angle += step
-      }
-    }
-
-    size <<= 1
-  }
-
-  // Normalize for IFFT
-  if (inverse) {
-    const scale: f64 = 1.0 / <f64>n
-    for (let i: i32 = 0; i < n << 1; i++) {
-      data[i] *= scale
-    }
-  }
-
-  return data
 }
 
 /**
  * Convolution using FFT (circular convolution)
- * @param signal - Input signal (real)
- * @param n - Length of signal
- * @param kernel - Convolution kernel (real)
- * @param m - Length of kernel
- * @returns Convolution result (real)
+ * @param signalPtr - Pointer to input signal (complex format)
+ * @param n - Length of signal (complex samples)
+ * @param kernelPtr - Pointer to convolution kernel (complex format)
+ * @param m - Length of kernel (complex samples)
+ * @param resultPtr - Pointer to result buffer (must be size*2*8 bytes where size is next power of 2 of n+m-1)
+ * @param workPtr - Pointer to work buffer (must be size*2*8 bytes)
+ * @param size - Padded size (must be power of 2 >= n+m-1)
  */
 export function convolve(
-  signal: Float64Array,
+  signalPtr: usize,
   n: i32,
-  kernel: Float64Array,
-  m: i32
-): Float64Array {
-  // Find next power of 2
-  const size: i32 = nextPowerOf2(n + m - 1)
-
-  // Pad and convert to complex
-  const signalComplex: Float64Array = new Float64Array(size << 1)
-  const kernelComplex: Float64Array = new Float64Array(size << 1)
-
-  for (let i: i32 = 0; i < n; i++) {
-    signalComplex[i << 1] = signal[i]
+  kernelPtr: usize,
+  m: i32,
+  resultPtr: usize,
+  workPtr: usize,
+  size: i32
+): void {
+  // Copy signal to result (zero-padded)
+  const totalSize: i32 = size << 1
+  for (let i: i32 = 0; i < totalSize; i++) {
+    store<f64>(resultPtr + (<usize>i << 3), 0.0)
   }
-  for (let i: i32 = 0; i < m; i++) {
-    kernelComplex[i << 1] = kernel[i]
+  for (let i: i32 = 0; i < n << 1; i++) {
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(signalPtr + (<usize>i << 3)))
+  }
+
+  // Copy kernel to work buffer (zero-padded)
+  for (let i: i32 = 0; i < totalSize; i++) {
+    store<f64>(workPtr + (<usize>i << 3), 0.0)
+  }
+  for (let i: i32 = 0; i < m << 1; i++) {
+    store<f64>(workPtr + (<usize>i << 3), load<f64>(kernelPtr + (<usize>i << 3)))
   }
 
   // Transform both signals
-  const signalFFT = fft(signalComplex, size, 0)
-  const kernelFFT = fft(kernelComplex, size, 0)
+  fft(resultPtr, size, 0)
+  fft(workPtr, size, 0)
 
   // Multiply in frequency domain
-  const productFFT = new Float64Array(size << 1)
   for (let i: i32 = 0; i < size; i++) {
-    const idx: i32 = i << 1
-    const real1: f64 = signalFFT[idx]
-    const imag1: f64 = signalFFT[idx + 1]
-    const real2: f64 = kernelFFT[idx]
-    const imag2: f64 = kernelFFT[idx + 1]
+    const idx: usize = <usize>(i << 1) << 3
+    const real1: f64 = load<f64>(resultPtr + idx)
+    const imag1: f64 = load<f64>(resultPtr + idx + 8)
+    const real2: f64 = load<f64>(workPtr + idx)
+    const imag2: f64 = load<f64>(workPtr + idx + 8)
 
-    productFFT[idx] = real1 * real2 - imag1 * imag2
-    productFFT[idx + 1] = real1 * imag2 + imag1 * real2
+    store<f64>(resultPtr + idx, real1 * real2 - imag1 * imag2)
+    store<f64>(resultPtr + idx + 8, real1 * imag2 + imag1 * real2)
   }
 
   // Inverse transform
-  const convolved = fft(productFFT, size, 1)
-
-  // Extract real part
-  const result = new Float64Array(n + m - 1)
-  for (let i: i32 = 0; i < n + m - 1; i++) {
-    result[i] = convolved[i << 1]
-  }
-
-  return result
+  fft(resultPtr, size, 1)
 }
 
 /**
  * Real FFT (for real-valued input, more efficient)
- * @param data - Real input data
+ * @param dataPtr - Pointer to real input data
  * @param n - Number of samples (must be power of 2)
- * @returns Complex output [real0, imag0, ...]
+ * @param resultPtr - Pointer to complex output [real0, imag0, ...]
  */
-export function rfft(data: Float64Array, n: i32): Float64Array {
+export function rfft(dataPtr: usize, n: i32, resultPtr: usize): void {
   // Convert to complex format
-  const complex = new Float64Array(n << 1)
   for (let i: i32 = 0; i < n; i++) {
-    complex[i << 1] = data[i]
-    complex[(i << 1) + 1] = 0.0
+    const srcOffset: usize = <usize>i << 3
+    const dstOffset: usize = <usize>(i << 1) << 3
+    store<f64>(resultPtr + dstOffset, load<f64>(dataPtr + srcOffset))
+    store<f64>(resultPtr + dstOffset + 8, 0.0)
   }
 
   // Perform complex FFT
-  return fft(complex, n, 0)
+  fft(resultPtr, n, 0)
 }
 
 /**
  * Inverse real FFT
- * @param data - Complex input [real0, imag0, ...]
+ * @param dataPtr - Pointer to complex input [real0, imag0, ...]
  * @param n - Number of complex samples
- * @returns Real output
+ * @param resultPtr - Pointer to real output
+ * @param workPtr - Pointer to work buffer (must be n*2*8 bytes)
  */
-export function irfft(data: Float64Array, n: i32): Float64Array {
+export function irfft(dataPtr: usize, n: i32, resultPtr: usize, workPtr: usize): void {
+  // Copy to work buffer
+  const totalSize: i32 = n << 1
+  for (let i: i32 = 0; i < totalSize; i++) {
+    store<f64>(workPtr + (<usize>i << 3), load<f64>(dataPtr + (<usize>i << 3)))
+  }
+
   // Perform inverse FFT
-  const temp = fft(data, n, 1)
+  fft(workPtr, n, 1)
 
   // Extract real part
-  const result = new Float64Array(n)
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = temp[i << 1]
+    const srcOffset: usize = <usize>(i << 1) << 3
+    const dstOffset: usize = <usize>i << 3
+    store<f64>(resultPtr + dstOffset, load<f64>(workPtr + srcOffset))
   }
-
-  return result
-}
-
-// Helper function: find next power of 2
-function nextPowerOf2(n: i32): i32 {
-  let power: i32 = 1
-  while (power < n) {
-    power <<= 1
-  }
-  return power
 }
 
 /**
@@ -336,144 +264,120 @@ export function isPowerOf2(n: i32): i32 {
 }
 
 /**
- * Inverse FFT (convenience wrapper)
- * @param data - Complex data array [real0, imag0, real1, imag1, ...]
- * @param n - Number of complex samples (must be power of 2)
- * @returns Inverse transformed complex data
- */
-export function ifft(data: Float64Array, n: i32): Float64Array {
-  return fft(data, n, 1)
-}
-
-/**
- * Inverse 2D FFT (convenience wrapper)
- * @param data - 2D complex data (row-major)
- * @param rows - Number of rows
- * @param cols - Number of columns
- * @returns Inverse transformed 2D complex data
- */
-export function ifft2d(data: Float64Array, rows: i32, cols: i32): Float64Array {
-  return fft2d(data, rows, cols, 1)
-}
-
-/**
  * Compute power spectrum (magnitude squared) of a signal
- * @param data - Complex FFT data [real0, imag0, ...]
+ * @param dataPtr - Pointer to complex FFT data [real0, imag0, ...]
  * @param n - Number of complex samples
- * @returns Power spectrum (real values, length n)
+ * @param resultPtr - Pointer to power spectrum output (real values, length n)
  */
-export function powerSpectrum(data: Float64Array, n: i32): Float64Array {
-  const result = new Float64Array(n)
-
+export function powerSpectrum(dataPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const idx: i32 = i << 1
-    const real: f64 = data[idx]
-    const imag: f64 = data[idx + 1]
-    result[i] = real * real + imag * imag
+    const idx: usize = <usize>(i << 1) << 3
+    const real: f64 = load<f64>(dataPtr + idx)
+    const imag: f64 = load<f64>(dataPtr + idx + 8)
+    store<f64>(resultPtr + (<usize>i << 3), real * real + imag * imag)
   }
-
-  return result
 }
 
 /**
  * Compute magnitude spectrum of a signal
- * @param data - Complex FFT data [real0, imag0, ...]
+ * @param dataPtr - Pointer to complex FFT data [real0, imag0, ...]
  * @param n - Number of complex samples
- * @returns Magnitude spectrum (real values, length n)
+ * @param resultPtr - Pointer to magnitude spectrum output (real values, length n)
  */
-export function magnitudeSpectrum(data: Float64Array, n: i32): Float64Array {
-  const result = new Float64Array(n)
-
+export function magnitudeSpectrum(dataPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const idx: i32 = i << 1
-    const real: f64 = data[idx]
-    const imag: f64 = data[idx + 1]
-    result[i] = Math.sqrt(real * real + imag * imag)
+    const idx: usize = <usize>(i << 1) << 3
+    const real: f64 = load<f64>(dataPtr + idx)
+    const imag: f64 = load<f64>(dataPtr + idx + 8)
+    store<f64>(resultPtr + (<usize>i << 3), Math.sqrt(real * real + imag * imag))
   }
-
-  return result
 }
 
 /**
  * Compute phase spectrum of a signal
- * @param data - Complex FFT data [real0, imag0, ...]
+ * @param dataPtr - Pointer to complex FFT data [real0, imag0, ...]
  * @param n - Number of complex samples
- * @returns Phase spectrum (in radians, length n)
+ * @param resultPtr - Pointer to phase spectrum output (in radians, length n)
  */
-export function phaseSpectrum(data: Float64Array, n: i32): Float64Array {
-  const result = new Float64Array(n)
-
+export function phaseSpectrum(dataPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const idx: i32 = i << 1
-    result[i] = Math.atan2(data[idx + 1], data[idx])
+    const idx: usize = <usize>(i << 1) << 3
+    const real: f64 = load<f64>(dataPtr + idx)
+    const imag: f64 = load<f64>(dataPtr + idx + 8)
+    store<f64>(resultPtr + (<usize>i << 3), Math.atan2(imag, real))
   }
-
-  return result
 }
 
 /**
  * Cross-correlation using FFT
- * @param a - First signal (real)
- * @param n - Length of first signal
- * @param b - Second signal (real)
- * @param m - Length of second signal
- * @returns Cross-correlation result (real)
+ * @param aPtr - Pointer to first signal (complex format)
+ * @param n - Length of first signal (complex samples)
+ * @param bPtr - Pointer to second signal (complex format)
+ * @param m - Length of second signal (complex samples)
+ * @param resultPtr - Pointer to result buffer (size*2*8 bytes where size is power of 2)
+ * @param workPtr - Pointer to work buffer (size*2*8 bytes)
+ * @param size - Padded size (must be power of 2 >= n+m-1)
  */
 export function crossCorrelation(
-  a: Float64Array,
+  aPtr: usize,
   n: i32,
-  b: Float64Array,
-  m: i32
-): Float64Array {
-  // Size for FFT
-  const size: i32 = nextPowerOf2(n + m - 1)
-
-  // Convert to complex and pad
-  const aComplex = new Float64Array(size << 1)
-  const bComplex = new Float64Array(size << 1)
-
-  for (let i: i32 = 0; i < n; i++) {
-    aComplex[i << 1] = a[i]
+  bPtr: usize,
+  m: i32,
+  resultPtr: usize,
+  workPtr: usize,
+  size: i32
+): void {
+  // Copy a to result (zero-padded)
+  const totalSize: i32 = size << 1
+  for (let i: i32 = 0; i < totalSize; i++) {
+    store<f64>(resultPtr + (<usize>i << 3), 0.0)
   }
-  for (let i: i32 = 0; i < m; i++) {
-    bComplex[i << 1] = b[i]
+  for (let i: i32 = 0; i < n << 1; i++) {
+    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
+  }
+
+  // Copy b to work buffer (zero-padded)
+  for (let i: i32 = 0; i < totalSize; i++) {
+    store<f64>(workPtr + (<usize>i << 3), 0.0)
+  }
+  for (let i: i32 = 0; i < m << 1; i++) {
+    store<f64>(workPtr + (<usize>i << 3), load<f64>(bPtr + (<usize>i << 3)))
   }
 
   // FFT of both signals
-  const aFFT = fft(aComplex, size, 0)
-  const bFFT = fft(bComplex, size, 0)
+  fft(resultPtr, size, 0)
+  fft(workPtr, size, 0)
 
   // Multiply A(f) by conjugate of B(f)
-  const product = new Float64Array(size << 1)
   for (let i: i32 = 0; i < size; i++) {
-    const idx: i32 = i << 1
-    const aReal: f64 = aFFT[idx]
-    const aImag: f64 = aFFT[idx + 1]
-    const bReal: f64 = bFFT[idx]
-    const bImag: f64 = -bFFT[idx + 1] // Conjugate
+    const idx: usize = <usize>(i << 1) << 3
+    const aReal: f64 = load<f64>(resultPtr + idx)
+    const aImag: f64 = load<f64>(resultPtr + idx + 8)
+    const bReal: f64 = load<f64>(workPtr + idx)
+    const bImag: f64 = -load<f64>(workPtr + idx + 8) // Conjugate
 
-    product[idx] = aReal * bReal - aImag * bImag
-    product[idx + 1] = aReal * bImag + aImag * bReal
+    store<f64>(resultPtr + idx, aReal * bReal - aImag * bImag)
+    store<f64>(resultPtr + idx + 8, aReal * bImag + aImag * bReal)
   }
 
   // Inverse FFT
-  const corr = fft(product, size, 1)
-
-  // Extract real part
-  const result = new Float64Array(n + m - 1)
-  for (let i: i32 = 0; i < n + m - 1; i++) {
-    result[i] = corr[i << 1]
-  }
-
-  return result
+  fft(resultPtr, size, 1)
 }
 
 /**
  * Auto-correlation using FFT
- * @param signal - Input signal (real)
- * @param n - Length of signal
- * @returns Auto-correlation result (real)
+ * @param signalPtr - Pointer to input signal (complex format)
+ * @param n - Length of signal (complex samples)
+ * @param resultPtr - Pointer to result buffer (size*2*8 bytes where size is power of 2)
+ * @param workPtr - Pointer to work buffer (size*2*8 bytes)
+ * @param size - Padded size (must be power of 2 >= 2*n-1)
  */
-export function autoCorrelation(signal: Float64Array, n: i32): Float64Array {
-  return crossCorrelation(signal, n, signal, n)
+export function autoCorrelation(
+  signalPtr: usize,
+  n: i32,
+  resultPtr: usize,
+  workPtr: usize,
+  size: i32
+): void {
+  crossCorrelation(signalPtr, n, signalPtr, n, resultPtr, workPtr, size)
 }

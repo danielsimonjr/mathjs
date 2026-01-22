@@ -4,6 +4,8 @@
  * These functions provide WASM-accelerated implementations of trigonometric
  * operations for plain numbers. All angles are in radians.
  *
+ * All array functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
  * Performance: 2-4x faster than JavaScript for these transcendental functions
  */
 
@@ -253,96 +255,102 @@ export function radToDeg(rad: f64): f64 {
 
 /**
  * Vectorized sine operation
- * @param input Input array (angles in radians)
- * @param output Output array
+ * @param inputPtr Pointer to input array (angles in radians, f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function sinArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.sin(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.sin(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized cosine operation
- * @param input Input array (angles in radians)
- * @param output Output array
+ * @param inputPtr Pointer to input array (angles in radians, f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function cosArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.cos(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.cos(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized tangent operation
- * @param input Input array (angles in radians)
- * @param output Output array
+ * @param inputPtr Pointer to input array (angles in radians, f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function tanArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.tan(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.tan(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized hyperbolic sine operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function sinhArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.sinh(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.sinh(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized hyperbolic cosine operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function coshArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.cosh(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.cosh(load<f64>(inputPtr + offset)))
   }
 }
 
 /**
  * Vectorized hyperbolic tangent operation
- * @param input Input array
- * @param output Output array
+ * @param inputPtr Pointer to input array (f64)
+ * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
 export function tanhArray(
-  input: Float64Array,
-  output: Float64Array,
+  inputPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((output[i] = Math.tanh(unchecked(input[i]))))
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, Math.tanh(load<f64>(inputPtr + offset)))
   }
 }

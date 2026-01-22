@@ -1,8 +1,11 @@
 /**
- * WASM-optimized linear algebra operations using AssemblyScript
+ * WASM-optimized linear algebra operations using raw memory pointers
+ *
+ * All functions use raw memory pointers (usize) for array parameters to ensure
+ * proper interop with JavaScript/TypeScript callers via WasmLoader.
  *
  * Includes: determinant, inverse, norms, Kronecker product, cross product
- * All matrices are flat Float64Array in row-major order
+ * All matrices are flat arrays in row-major order
  */
 
 // ============================================
@@ -11,35 +14,45 @@
 
 /**
  * Compute the determinant of a square matrix using LU decomposition
- * @param a - Input matrix (n x n, row-major)
+ * @param aPtr - Pointer to input matrix (n x n, row-major)
  * @param n - Size of the matrix
+ * @param workPtr - Pointer to work buffer (n*n f64 values)
  * @returns Determinant value
  */
-export function det(a: Float64Array, n: i32): f64 {
+export function det(aPtr: usize, n: i32, workPtr: usize): f64 {
   if (n === 1) {
-    return a[0]
+    return load<f64>(aPtr)
   }
 
   if (n === 2) {
-    return a[0] * a[3] - a[1] * a[2]
+    return load<f64>(aPtr) * load<f64>(aPtr + 24) - load<f64>(aPtr + 8) * load<f64>(aPtr + 16)
   }
 
   if (n === 3) {
     // Sarrus' rule for 3x3
+    const a00 = load<f64>(aPtr)
+    const a01 = load<f64>(aPtr + 8)
+    const a02 = load<f64>(aPtr + 16)
+    const a10 = load<f64>(aPtr + 24)
+    const a11 = load<f64>(aPtr + 32)
+    const a12 = load<f64>(aPtr + 40)
+    const a20 = load<f64>(aPtr + 48)
+    const a21 = load<f64>(aPtr + 56)
+    const a22 = load<f64>(aPtr + 64)
     return (
-      a[0] * a[4] * a[8] +
-      a[1] * a[5] * a[6] +
-      a[2] * a[3] * a[7] -
-      a[2] * a[4] * a[6] -
-      a[1] * a[3] * a[8] -
-      a[0] * a[5] * a[7]
+      a00 * a11 * a22 +
+      a01 * a12 * a20 +
+      a02 * a10 * a21 -
+      a02 * a11 * a20 -
+      a01 * a10 * a22 -
+      a00 * a12 * a21
     )
   }
 
-  // LU decomposition for larger matrices
-  const lu = new Float64Array(n * n)
-  for (let i: i32 = 0; i < n * n; i++) {
-    lu[i] = a[i]
+  // Copy to work buffer for LU decomposition
+  const nn = n * n
+  for (let i: i32 = 0; i < nn; i++) {
+    store<f64>(workPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
   }
 
   let sign: f64 = 1.0
@@ -47,11 +60,11 @@ export function det(a: Float64Array, n: i32): f64 {
   // Gaussian elimination with partial pivoting
   for (let k: i32 = 0; k < n - 1; k++) {
     // Find pivot
-    let maxVal: f64 = Math.abs(lu[k * n + k])
+    let maxVal: f64 = Math.abs(load<f64>(workPtr + (<usize>(k * n + k) << 3)))
     let pivotRow: i32 = k
 
     for (let i: i32 = k + 1; i < n; i++) {
-      const val: f64 = Math.abs(lu[i * n + k])
+      const val: f64 = Math.abs(load<f64>(workPtr + (<usize>(i * n + k) << 3)))
       if (val > maxVal) {
         maxVal = val
         pivotRow = i
@@ -66,20 +79,23 @@ export function det(a: Float64Array, n: i32): f64 {
     // Swap rows if necessary
     if (pivotRow !== k) {
       for (let j: i32 = 0; j < n; j++) {
-        const temp: f64 = lu[k * n + j]
-        lu[k * n + j] = lu[pivotRow * n + j]
-        lu[pivotRow * n + j] = temp
+        const kIdx = <usize>(k * n + j) << 3
+        const pIdx = <usize>(pivotRow * n + j) << 3
+        const temp: f64 = load<f64>(workPtr + kIdx)
+        store<f64>(workPtr + kIdx, load<f64>(workPtr + pIdx))
+        store<f64>(workPtr + pIdx, temp)
       }
       sign = -sign
     }
 
     // Eliminate column
-    const pivot: f64 = lu[k * n + k]
+    const pivot: f64 = load<f64>(workPtr + (<usize>(k * n + k) << 3))
     for (let i: i32 = k + 1; i < n; i++) {
-      const factor: f64 = lu[i * n + k] / pivot
+      const factor: f64 = load<f64>(workPtr + (<usize>(i * n + k) << 3)) / pivot
 
       for (let j: i32 = k + 1; j < n; j++) {
-        lu[i * n + j] -= factor * lu[k * n + j]
+        const idx = <usize>(i * n + j) << 3
+        store<f64>(workPtr + idx, load<f64>(workPtr + idx) - factor * load<f64>(workPtr + (<usize>(k * n + j) << 3)))
       }
     }
   }
@@ -87,7 +103,7 @@ export function det(a: Float64Array, n: i32): f64 {
   // Product of diagonal
   let result: f64 = sign
   for (let i: i32 = 0; i < n; i++) {
-    result *= lu[i * n + i]
+    result *= load<f64>(workPtr + (<usize>(i * n + i) << 3))
   }
 
   return result
@@ -99,31 +115,31 @@ export function det(a: Float64Array, n: i32): f64 {
 
 /**
  * Compute the inverse of a square matrix using Gauss-Jordan elimination
- * @param a - Input matrix (n x n, row-major)
+ * @param aPtr - Pointer to input matrix (n x n, row-major)
  * @param n - Size of the matrix
- * @returns Inverse matrix, or empty array if singular
+ * @param resultPtr - Pointer to output matrix (n x n)
+ * @param workPtr - Pointer to work buffer (n * 2n f64 values for augmented matrix)
+ * @returns 1 if successful, 0 if singular
  */
-export function inv(a: Float64Array, n: i32): Float64Array {
-  // Create augmented matrix [A | I]
-  const aug = new Float64Array(n * n * 2)
+export function inv(aPtr: usize, n: i32, resultPtr: usize, workPtr: usize): i32 {
+  const width: i32 = 2 * n
 
+  // Create augmented matrix [A | I] in work buffer
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      aug[i * (2 * n) + j] = a[i * n + j]
-      aug[i * (2 * n) + n + j] = i === j ? 1.0 : 0.0
+      store<f64>(workPtr + (<usize>(i * width + j) << 3), load<f64>(aPtr + (<usize>(i * n + j) << 3)))
+      store<f64>(workPtr + (<usize>(i * width + n + j) << 3), i === j ? 1.0 : 0.0)
     }
   }
-
-  const width: i32 = 2 * n
 
   // Forward elimination with partial pivoting
   for (let k: i32 = 0; k < n; k++) {
     // Find pivot
-    let maxVal: f64 = Math.abs(aug[k * width + k])
+    let maxVal: f64 = Math.abs(load<f64>(workPtr + (<usize>(k * width + k) << 3)))
     let pivotRow: i32 = k
 
     for (let i: i32 = k + 1; i < n; i++) {
-      const val: f64 = Math.abs(aug[i * width + k])
+      const val: f64 = Math.abs(load<f64>(workPtr + (<usize>(i * width + k) << 3)))
       if (val > maxVal) {
         maxVal = val
         pivotRow = i
@@ -132,98 +148,47 @@ export function inv(a: Float64Array, n: i32): Float64Array {
 
     // Check for singularity
     if (maxVal < 1e-14) {
-      return new Float64Array(0) // Singular matrix
+      return 0 // Singular matrix
     }
 
     // Swap rows if necessary
     if (pivotRow !== k) {
       for (let j: i32 = 0; j < width; j++) {
-        const temp: f64 = aug[k * width + j]
-        aug[k * width + j] = aug[pivotRow * width + j]
-        aug[pivotRow * width + j] = temp
+        const kIdx = <usize>(k * width + j) << 3
+        const pIdx = <usize>(pivotRow * width + j) << 3
+        const temp: f64 = load<f64>(workPtr + kIdx)
+        store<f64>(workPtr + kIdx, load<f64>(workPtr + pIdx))
+        store<f64>(workPtr + pIdx, temp)
       }
     }
 
     // Scale pivot row
-    const pivot: f64 = aug[k * width + k]
+    const pivot: f64 = load<f64>(workPtr + (<usize>(k * width + k) << 3))
     for (let j: i32 = 0; j < width; j++) {
-      aug[k * width + j] /= pivot
+      const idx = <usize>(k * width + j) << 3
+      store<f64>(workPtr + idx, load<f64>(workPtr + idx) / pivot)
     }
 
     // Eliminate column
     for (let i: i32 = 0; i < n; i++) {
       if (i !== k) {
-        const factor: f64 = aug[i * width + k]
+        const factor: f64 = load<f64>(workPtr + (<usize>(i * width + k) << 3))
         for (let j: i32 = 0; j < width; j++) {
-          aug[i * width + j] -= factor * aug[k * width + j]
+          const idx = <usize>(i * width + j) << 3
+          store<f64>(workPtr + idx, load<f64>(workPtr + idx) - factor * load<f64>(workPtr + (<usize>(k * width + j) << 3)))
         }
       }
     }
   }
 
   // Extract inverse from right half
-  const result = new Float64Array(n * n)
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      result[i * n + j] = aug[i * width + n + j]
+      store<f64>(resultPtr + (<usize>(i * n + j) << 3), load<f64>(workPtr + (<usize>(i * width + n + j) << 3)))
     }
   }
 
-  return result
-}
-
-/**
- * Compute inverse of a 2x2 matrix (optimized)
- * @param a - Input 2x2 matrix
- * @returns Inverse matrix
- */
-export function inv2x2(a: Float64Array): Float64Array {
-  const det: f64 = a[0] * a[3] - a[1] * a[2]
-
-  if (Math.abs(det) < 1e-14) {
-    return new Float64Array(0) // Singular
-  }
-
-  const invDet: f64 = 1.0 / det
-  const result = new Float64Array(4)
-
-  result[0] = a[3] * invDet
-  result[1] = -a[1] * invDet
-  result[2] = -a[2] * invDet
-  result[3] = a[0] * invDet
-
-  return result
-}
-
-/**
- * Compute inverse of a 3x3 matrix (optimized)
- * @param a - Input 3x3 matrix
- * @returns Inverse matrix
- */
-export function inv3x3(a: Float64Array): Float64Array {
-  const det: f64 =
-    a[0] * (a[4] * a[8] - a[5] * a[7]) -
-    a[1] * (a[3] * a[8] - a[5] * a[6]) +
-    a[2] * (a[3] * a[7] - a[4] * a[6])
-
-  if (Math.abs(det) < 1e-14) {
-    return new Float64Array(0) // Singular
-  }
-
-  const invDet: f64 = 1.0 / det
-  const result = new Float64Array(9)
-
-  result[0] = (a[4] * a[8] - a[5] * a[7]) * invDet
-  result[1] = (a[2] * a[7] - a[1] * a[8]) * invDet
-  result[2] = (a[1] * a[5] - a[2] * a[4]) * invDet
-  result[3] = (a[5] * a[6] - a[3] * a[8]) * invDet
-  result[4] = (a[0] * a[8] - a[2] * a[6]) * invDet
-  result[5] = (a[2] * a[3] - a[0] * a[5]) * invDet
-  result[6] = (a[3] * a[7] - a[4] * a[6]) * invDet
-  result[7] = (a[1] * a[6] - a[0] * a[7]) * invDet
-  result[8] = (a[0] * a[4] - a[1] * a[3]) * invDet
-
-  return result
+  return 1
 }
 
 // ============================================
@@ -232,15 +197,15 @@ export function inv3x3(a: Float64Array): Float64Array {
 
 /**
  * Compute the L1 norm (sum of absolute values) of a vector
- * @param x - Input vector
+ * @param xPtr - Pointer to input vector
  * @param n - Length
  * @returns L1 norm
  */
-export function norm1(x: Float64Array, n: i32): f64 {
+export function norm1(xPtr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    sum += Math.abs(x[i])
+    sum += Math.abs(load<f64>(xPtr + (<usize>i << 3)))
   }
 
   return sum
@@ -248,15 +213,16 @@ export function norm1(x: Float64Array, n: i32): f64 {
 
 /**
  * Compute the L2 norm (Euclidean norm) of a vector
- * @param x - Input vector
+ * @param xPtr - Pointer to input vector
  * @param n - Length
  * @returns L2 norm
  */
-export function norm2(x: Float64Array, n: i32): f64 {
+export function norm2(xPtr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    sum += x[i] * x[i]
+    const val = load<f64>(xPtr + (<usize>i << 3))
+    sum += val * val
   }
 
   return Math.sqrt(sum)
@@ -264,24 +230,24 @@ export function norm2(x: Float64Array, n: i32): f64 {
 
 /**
  * Compute the Lp norm of a vector
- * @param x - Input vector
+ * @param xPtr - Pointer to input vector
  * @param n - Length
  * @param p - Norm order (p >= 1)
  * @returns Lp norm
  */
-export function normP(x: Float64Array, n: i32, p: f64): f64 {
+export function normP(xPtr: usize, n: i32, p: f64): f64 {
   if (p === 1.0) {
-    return norm1(x, n)
+    return norm1(xPtr, n)
   }
 
   if (p === 2.0) {
-    return norm2(x, n)
+    return norm2(xPtr, n)
   }
 
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    sum += Math.pow(Math.abs(x[i]), p)
+    sum += Math.pow(Math.abs(load<f64>(xPtr + (<usize>i << 3))), p)
   }
 
   return Math.pow(sum, 1.0 / p)
@@ -289,15 +255,15 @@ export function normP(x: Float64Array, n: i32, p: f64): f64 {
 
 /**
  * Compute the infinity norm (max absolute value) of a vector
- * @param x - Input vector
+ * @param xPtr - Pointer to input vector
  * @param n - Length
  * @returns Infinity norm
  */
-export function normInf(x: Float64Array, n: i32): f64 {
+export function normInf(xPtr: usize, n: i32): f64 {
   let maxVal: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    const absVal: f64 = Math.abs(x[i])
+    const absVal: f64 = Math.abs(load<f64>(xPtr + (<usize>i << 3)))
     if (absVal > maxVal) {
       maxVal = absVal
     }
@@ -308,29 +274,29 @@ export function normInf(x: Float64Array, n: i32): f64 {
 
 /**
  * Compute the Frobenius norm of a matrix
- * @param a - Input matrix
+ * @param aPtr - Pointer to input matrix
  * @param size - Total number of elements
  * @returns Frobenius norm
  */
-export function normFro(a: Float64Array, size: i32): f64 {
-  return norm2(a, size)
+export function normFro(aPtr: usize, size: i32): f64 {
+  return norm2(aPtr, size)
 }
 
 /**
  * Compute the 1-norm (max column sum) of a matrix
- * @param a - Input matrix (row-major)
+ * @param aPtr - Pointer to input matrix (row-major)
  * @param rows - Number of rows
  * @param cols - Number of columns
  * @returns Matrix 1-norm
  */
-export function matrixNorm1(a: Float64Array, rows: i32, cols: i32): f64 {
+export function matrixNorm1(aPtr: usize, rows: i32, cols: i32): f64 {
   let maxColSum: f64 = 0.0
 
   for (let j: i32 = 0; j < cols; j++) {
     let colSum: f64 = 0.0
 
     for (let i: i32 = 0; i < rows; i++) {
-      colSum += Math.abs(a[i * cols + j])
+      colSum += Math.abs(load<f64>(aPtr + (<usize>(i * cols + j) << 3)))
     }
 
     if (colSum > maxColSum) {
@@ -343,19 +309,19 @@ export function matrixNorm1(a: Float64Array, rows: i32, cols: i32): f64 {
 
 /**
  * Compute the infinity-norm (max row sum) of a matrix
- * @param a - Input matrix (row-major)
+ * @param aPtr - Pointer to input matrix (row-major)
  * @param rows - Number of rows
  * @param cols - Number of columns
  * @returns Matrix infinity-norm
  */
-export function matrixNormInf(a: Float64Array, rows: i32, cols: i32): f64 {
+export function matrixNormInf(aPtr: usize, rows: i32, cols: i32): f64 {
   let maxRowSum: f64 = 0.0
 
   for (let i: i32 = 0; i < rows; i++) {
     let rowSum: f64 = 0.0
 
     for (let j: i32 = 0; j < cols; j++) {
-      rowSum += Math.abs(a[i * cols + j])
+      rowSum += Math.abs(load<f64>(aPtr + (<usize>(i * cols + j) << 3)))
     }
 
     if (rowSum > maxRowSum) {
@@ -367,25 +333,24 @@ export function matrixNormInf(a: Float64Array, rows: i32, cols: i32): f64 {
 }
 
 /**
- * Normalize a vector to unit length
- * @param x - Input vector
+ * Normalize a vector to unit length (in-place)
+ * @param xPtr - Pointer to input/output vector
  * @param n - Length
- * @returns Normalized vector
+ * @returns The original norm (0 if vector was zero)
  */
-export function normalize(x: Float64Array, n: i32): Float64Array {
-  const norm: f64 = norm2(x, n)
+export function normalize(xPtr: usize, n: i32): f64 {
+  const norm: f64 = norm2(xPtr, n)
 
   if (norm < 1e-14) {
-    return new Float64Array(n) // Return zeros if norm is too small
+    return 0.0 // Vector is essentially zero
   }
-
-  const result = new Float64Array(n)
 
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = x[i] / norm
+    const idx = <usize>i << 3
+    store<f64>(xPtr + idx, load<f64>(xPtr + idx) / norm)
   }
 
-  return result
+  return norm
 }
 
 // ============================================
@@ -394,41 +359,39 @@ export function normalize(x: Float64Array, n: i32): Float64Array {
 
 /**
  * Compute the Kronecker product of two matrices: C = A ⊗ B
- * @param a - First matrix (m x n, row-major)
+ * @param aPtr - Pointer to first matrix (m x n, row-major)
  * @param aRows - Rows in A
  * @param aCols - Columns in A
- * @param b - Second matrix (p x q, row-major)
+ * @param bPtr - Pointer to second matrix (p x q, row-major)
  * @param bRows - Rows in B
  * @param bCols - Columns in B
- * @returns Kronecker product (m*p x n*q)
+ * @param resultPtr - Pointer to result matrix (m*p x n*q)
  */
 export function kron(
-  a: Float64Array,
+  aPtr: usize,
   aRows: i32,
   aCols: i32,
-  b: Float64Array,
+  bPtr: usize,
   bRows: i32,
-  bCols: i32
-): Float64Array {
-  const resultRows: i32 = aRows * bRows
+  bCols: i32,
+  resultPtr: usize
+): void {
   const resultCols: i32 = aCols * bCols
-  const result = new Float64Array(resultRows * resultCols)
 
   for (let i: i32 = 0; i < aRows; i++) {
     for (let j: i32 = 0; j < aCols; j++) {
-      const aVal: f64 = a[i * aCols + j]
+      const aVal: f64 = load<f64>(aPtr + (<usize>(i * aCols + j) << 3))
 
       for (let k: i32 = 0; k < bRows; k++) {
         for (let l: i32 = 0; l < bCols; l++) {
           const row: i32 = i * bRows + k
           const col: i32 = j * bCols + l
-          result[row * resultCols + col] = aVal * b[k * bCols + l]
+          const bVal: f64 = load<f64>(bPtr + (<usize>(k * bCols + l) << 3))
+          store<f64>(resultPtr + (<usize>(row * resultCols + col) << 3), aVal * bVal)
         }
       }
     }
   }
-
-  return result
 }
 
 // ============================================
@@ -437,32 +400,35 @@ export function kron(
 
 /**
  * Compute the cross product of two 3D vectors
- * @param a - First vector (length 3)
- * @param b - Second vector (length 3)
- * @returns Cross product (length 3)
+ * @param aPtr - Pointer to first vector (length 3)
+ * @param bPtr - Pointer to second vector (length 3)
+ * @param resultPtr - Pointer to result vector (length 3)
  */
-export function cross(a: Float64Array, b: Float64Array): Float64Array {
-  const result = new Float64Array(3)
+export function cross(aPtr: usize, bPtr: usize, resultPtr: usize): void {
+  const a0 = load<f64>(aPtr)
+  const a1 = load<f64>(aPtr + 8)
+  const a2 = load<f64>(aPtr + 16)
+  const b0 = load<f64>(bPtr)
+  const b1 = load<f64>(bPtr + 8)
+  const b2 = load<f64>(bPtr + 16)
 
-  result[0] = a[1] * b[2] - a[2] * b[1]
-  result[1] = a[2] * b[0] - a[0] * b[2]
-  result[2] = a[0] * b[1] - a[1] * b[0]
-
-  return result
+  store<f64>(resultPtr, a1 * b2 - a2 * b1)
+  store<f64>(resultPtr + 8, a2 * b0 - a0 * b2)
+  store<f64>(resultPtr + 16, a0 * b1 - a1 * b0)
 }
 
 /**
  * Compute the dot product of two vectors
- * @param a - First vector
- * @param b - Second vector
+ * @param aPtr - Pointer to first vector
+ * @param bPtr - Pointer to second vector
  * @param n - Length
  * @returns Dot product
  */
-export function dot(a: Float64Array, b: Float64Array, n: i32): f64 {
+export function dot(aPtr: usize, bPtr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    sum += a[i] * b[i]
+    sum += load<f64>(aPtr + (<usize>i << 3)) * load<f64>(bPtr + (<usize>i << 3))
   }
 
   return sum
@@ -474,70 +440,25 @@ export function dot(a: Float64Array, b: Float64Array, n: i32): f64 {
 
 /**
  * Compute the outer product of two vectors: C = a * b^T
- * @param a - First vector (length m)
+ * @param aPtr - Pointer to first vector (length m)
  * @param m - Length of a
- * @param b - Second vector (length n)
+ * @param bPtr - Pointer to second vector (length n)
  * @param n - Length of b
- * @returns Outer product (m x n matrix)
+ * @param resultPtr - Pointer to result matrix (m x n)
  */
 export function outer(
-  a: Float64Array,
+  aPtr: usize,
   m: i32,
-  b: Float64Array,
-  n: i32
-): Float64Array {
-  const result = new Float64Array(m * n)
-
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < m; i++) {
+    const aVal = load<f64>(aPtr + (<usize>i << 3))
     for (let j: i32 = 0; j < n; j++) {
-      result[i * n + j] = a[i] * b[j]
+      store<f64>(resultPtr + (<usize>(i * n + j) << 3), aVal * load<f64>(bPtr + (<usize>j << 3)))
     }
   }
-
-  return result
-}
-
-// ============================================
-// CONDITION NUMBER
-// ============================================
-
-/**
- * Estimate the condition number using 1-norm
- * cond(A) = ||A||_1 * ||A^-1||_1
- * @param a - Input matrix (n x n)
- * @param n - Size
- * @returns Condition number estimate, or Infinity if singular
- */
-export function cond1(a: Float64Array, n: i32): f64 {
-  const aInv = inv(a, n)
-
-  if (aInv.length === 0) {
-    return Infinity // Singular
-  }
-
-  const normA: f64 = matrixNorm1(a, n, n)
-  const normAInv: f64 = matrixNorm1(aInv, n, n)
-
-  return normA * normAInv
-}
-
-/**
- * Estimate the condition number using infinity-norm
- * @param a - Input matrix (n x n)
- * @param n - Size
- * @returns Condition number estimate, or Infinity if singular
- */
-export function condInf(a: Float64Array, n: i32): f64 {
-  const aInv = inv(a, n)
-
-  if (aInv.length === 0) {
-    return Infinity // Singular
-  }
-
-  const normA: f64 = matrixNormInf(a, n, n)
-  const normAInv: f64 = matrixNormInf(aInv, n, n)
-
-  return normA * normAInv
 }
 
 // ============================================
@@ -546,17 +467,18 @@ export function condInf(a: Float64Array, n: i32): f64 {
 
 /**
  * Estimate the rank of a matrix using Gaussian elimination
- * @param a - Input matrix (rows x cols)
+ * @param aPtr - Pointer to input matrix (rows x cols)
  * @param rows - Number of rows
  * @param cols - Number of columns
  * @param tol - Tolerance for zero detection
+ * @param workPtr - Pointer to work buffer (rows * cols f64 values)
  * @returns Estimated rank
  */
-export function rank(a: Float64Array, rows: i32, cols: i32, tol: f64): i32 {
-  // Copy matrix
-  const work = new Float64Array(rows * cols)
-  for (let i: i32 = 0; i < rows * cols; i++) {
-    work[i] = a[i]
+export function rank(aPtr: usize, rows: i32, cols: i32, tol: f64, workPtr: usize): i32 {
+  // Copy matrix to work buffer
+  const size = rows * cols
+  for (let i: i32 = 0; i < size; i++) {
+    store<f64>(workPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
   }
 
   let r: i32 = 0
@@ -568,7 +490,7 @@ export function rank(a: Float64Array, rows: i32, cols: i32, tol: f64): i32 {
     let pivotRow: i32 = -1
 
     for (let i: i32 = r; i < rows; i++) {
-      const val: f64 = Math.abs(work[i * cols + k])
+      const val: f64 = Math.abs(load<f64>(workPtr + (<usize>(i * cols + k) << 3)))
       if (val > maxVal) {
         maxVal = val
         pivotRow = i
@@ -582,18 +504,21 @@ export function rank(a: Float64Array, rows: i32, cols: i32, tol: f64): i32 {
     // Swap rows
     if (pivotRow !== r) {
       for (let j: i32 = 0; j < cols; j++) {
-        const temp: f64 = work[r * cols + j]
-        work[r * cols + j] = work[pivotRow * cols + j]
-        work[pivotRow * cols + j] = temp
+        const rIdx = <usize>(r * cols + j) << 3
+        const pIdx = <usize>(pivotRow * cols + j) << 3
+        const temp: f64 = load<f64>(workPtr + rIdx)
+        store<f64>(workPtr + rIdx, load<f64>(workPtr + pIdx))
+        store<f64>(workPtr + pIdx, temp)
       }
     }
 
     // Eliminate
-    const pivot: f64 = work[r * cols + k]
+    const pivot: f64 = load<f64>(workPtr + (<usize>(r * cols + k) << 3))
     for (let i: i32 = r + 1; i < rows; i++) {
-      const factor: f64 = work[i * cols + k] / pivot
+      const factor: f64 = load<f64>(workPtr + (<usize>(i * cols + k) << 3)) / pivot
       for (let j: i32 = k; j < cols; j++) {
-        work[i * cols + j] -= factor * work[r * cols + j]
+        const idx = <usize>(i * cols + j) << 3
+        store<f64>(workPtr + idx, load<f64>(workPtr + idx) - factor * load<f64>(workPtr + (<usize>(r * cols + j) << 3)))
       }
     }
 
@@ -609,31 +534,35 @@ export function rank(a: Float64Array, rows: i32, cols: i32, tol: f64): i32 {
 
 /**
  * Solve a linear system Ax = b using LU decomposition
- * @param a - Coefficient matrix (n x n)
- * @param b - Right-hand side (n)
+ * @param aPtr - Pointer to coefficient matrix (n x n)
+ * @param bPtr - Pointer to right-hand side (n)
  * @param n - Size
- * @returns Solution vector x, or empty if singular
+ * @param resultPtr - Pointer to solution vector (n)
+ * @param workPtr - Pointer to work buffer (n*n + n for LU and perm)
+ * @returns 1 if successful, 0 if singular
  */
-export function solve(a: Float64Array, b: Float64Array, n: i32): Float64Array {
-  // LU decomposition with partial pivoting
-  const lu = new Float64Array(n * n)
-  const perm = new Int32Array(n)
+export function solve(aPtr: usize, bPtr: usize, n: i32, resultPtr: usize, workPtr: usize): i32 {
+  const luPtr = workPtr
+  const permPtr = workPtr + (<usize>(n * n) << 3)
 
+  // Copy A to LU
   for (let i: i32 = 0; i < n * n; i++) {
-    lu[i] = a[i]
+    store<f64>(luPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
   }
 
+  // Initialize permutation
   for (let i: i32 = 0; i < n; i++) {
-    perm[i] = i
+    store<i32>(permPtr + (<usize>i << 2), i)
   }
 
+  // LU decomposition with partial pivoting
   for (let k: i32 = 0; k < n - 1; k++) {
     // Find pivot
-    let maxVal: f64 = Math.abs(lu[k * n + k])
+    let maxVal: f64 = Math.abs(load<f64>(luPtr + (<usize>(k * n + k) << 3)))
     let pivotRow: i32 = k
 
     for (let i: i32 = k + 1; i < n; i++) {
-      const val: f64 = Math.abs(lu[i * n + k])
+      const val: f64 = Math.abs(load<f64>(luPtr + (<usize>(i * n + k) << 3)))
       if (val > maxVal) {
         maxVal = val
         pivotRow = i
@@ -641,63 +570,212 @@ export function solve(a: Float64Array, b: Float64Array, n: i32): Float64Array {
     }
 
     if (maxVal < 1e-14) {
-      return new Float64Array(0) // Singular
+      return 0 // Singular
     }
 
     if (pivotRow !== k) {
       // Swap rows in LU
       for (let j: i32 = 0; j < n; j++) {
-        const temp: f64 = lu[k * n + j]
-        lu[k * n + j] = lu[pivotRow * n + j]
-        lu[pivotRow * n + j] = temp
+        const kIdx = <usize>(k * n + j) << 3
+        const pIdx = <usize>(pivotRow * n + j) << 3
+        const temp: f64 = load<f64>(luPtr + kIdx)
+        store<f64>(luPtr + kIdx, load<f64>(luPtr + pIdx))
+        store<f64>(luPtr + pIdx, temp)
       }
 
       // Swap in permutation
-      const tempP: i32 = perm[k]
-      perm[k] = perm[pivotRow]
-      perm[pivotRow] = tempP
+      const kPermIdx = <usize>k << 2
+      const pPermIdx = <usize>pivotRow << 2
+      const tempP: i32 = load<i32>(permPtr + kPermIdx)
+      store<i32>(permPtr + kPermIdx, load<i32>(permPtr + pPermIdx))
+      store<i32>(permPtr + pPermIdx, tempP)
     }
 
     // Eliminate
-    const pivot: f64 = lu[k * n + k]
+    const pivot: f64 = load<f64>(luPtr + (<usize>(k * n + k) << 3))
     for (let i: i32 = k + 1; i < n; i++) {
-      const factor: f64 = lu[i * n + k] / pivot
-      lu[i * n + k] = factor
+      const factorIdx = <usize>(i * n + k) << 3
+      const factor: f64 = load<f64>(luPtr + factorIdx) / pivot
+      store<f64>(luPtr + factorIdx, factor)
 
       for (let j: i32 = k + 1; j < n; j++) {
-        lu[i * n + j] -= factor * lu[k * n + j]
+        const idx = <usize>(i * n + j) << 3
+        store<f64>(luPtr + idx, load<f64>(luPtr + idx) - factor * load<f64>(luPtr + (<usize>(k * n + j) << 3)))
       }
     }
   }
 
   // Check last pivot for singularity
-  if (Math.abs(lu[(n - 1) * n + (n - 1)]) < 1e-14) {
-    return new Float64Array(0) // Singular
+  if (Math.abs(load<f64>(luPtr + (<usize>((n - 1) * n + (n - 1)) << 3))) < 1e-14) {
+    return 0 // Singular
   }
 
   // Forward substitution: Ly = Pb
-  const x = new Float64Array(n)
-
   for (let i: i32 = 0; i < n; i++) {
-    let sum: f64 = b[perm[i]]
+    let sum: f64 = load<f64>(bPtr + (<usize>load<i32>(permPtr + (<usize>i << 2)) << 3))
 
     for (let j: i32 = 0; j < i; j++) {
-      sum -= lu[i * n + j] * x[j]
+      sum -= load<f64>(luPtr + (<usize>(i * n + j) << 3)) * load<f64>(resultPtr + (<usize>j << 3))
     }
 
-    x[i] = sum
+    store<f64>(resultPtr + (<usize>i << 3), sum)
   }
 
   // Backward substitution: Ux = y
   for (let i: i32 = n - 1; i >= 0; i--) {
-    let sum: f64 = x[i]
+    let sum: f64 = load<f64>(resultPtr + (<usize>i << 3))
 
     for (let j: i32 = i + 1; j < n; j++) {
-      sum -= lu[i * n + j] * x[j]
+      sum -= load<f64>(luPtr + (<usize>(i * n + j) << 3)) * load<f64>(resultPtr + (<usize>j << 3))
     }
 
-    x[i] = sum / lu[i * n + i]
+    store<f64>(resultPtr + (<usize>i << 3), sum / load<f64>(luPtr + (<usize>(i * n + i) << 3)))
   }
 
-  return x
+  return 1
+}
+
+// ============================================
+// OPTIMIZED 2x2 INVERSE
+// ============================================
+
+/**
+ * Compute the inverse of a 2x2 matrix using direct formula
+ * @param aPtr - Pointer to input matrix (2x2, row-major)
+ * @param resultPtr - Pointer to output matrix (2x2)
+ * @returns 1 if successful, 0 if singular
+ */
+export function inv2x2(aPtr: usize, resultPtr: usize): i32 {
+  const a = load<f64>(aPtr)
+  const b = load<f64>(aPtr + 8)
+  const c = load<f64>(aPtr + 16)
+  const d = load<f64>(aPtr + 24)
+
+  const det = a * d - b * c
+
+  if (Math.abs(det) < 1e-14) {
+    return 0 // Singular
+  }
+
+  const invDet = 1.0 / det
+
+  store<f64>(resultPtr, d * invDet)
+  store<f64>(resultPtr + 8, -b * invDet)
+  store<f64>(resultPtr + 16, -c * invDet)
+  store<f64>(resultPtr + 24, a * invDet)
+
+  return 1
+}
+
+// ============================================
+// OPTIMIZED 3x3 INVERSE
+// ============================================
+
+/**
+ * Compute the inverse of a 3x3 matrix using direct formula (cofactors)
+ * @param aPtr - Pointer to input matrix (3x3, row-major)
+ * @param resultPtr - Pointer to output matrix (3x3)
+ * @returns 1 if successful, 0 if singular
+ */
+export function inv3x3(aPtr: usize, resultPtr: usize): i32 {
+  const a00 = load<f64>(aPtr)
+  const a01 = load<f64>(aPtr + 8)
+  const a02 = load<f64>(aPtr + 16)
+  const a10 = load<f64>(aPtr + 24)
+  const a11 = load<f64>(aPtr + 32)
+  const a12 = load<f64>(aPtr + 40)
+  const a20 = load<f64>(aPtr + 48)
+  const a21 = load<f64>(aPtr + 56)
+  const a22 = load<f64>(aPtr + 64)
+
+  // Compute cofactors
+  const c00 = a11 * a22 - a12 * a21
+  const c01 = a12 * a20 - a10 * a22
+  const c02 = a10 * a21 - a11 * a20
+  const c10 = a02 * a21 - a01 * a22
+  const c11 = a00 * a22 - a02 * a20
+  const c12 = a01 * a20 - a00 * a21
+  const c20 = a01 * a12 - a02 * a11
+  const c21 = a02 * a10 - a00 * a12
+  const c22 = a00 * a11 - a01 * a10
+
+  // Determinant via first row expansion
+  const det = a00 * c00 + a01 * c01 + a02 * c02
+
+  if (Math.abs(det) < 1e-14) {
+    return 0 // Singular
+  }
+
+  const invDet = 1.0 / det
+
+  // Inverse is adjugate (transpose of cofactor) divided by determinant
+  store<f64>(resultPtr, c00 * invDet)
+  store<f64>(resultPtr + 8, c10 * invDet)
+  store<f64>(resultPtr + 16, c20 * invDet)
+  store<f64>(resultPtr + 24, c01 * invDet)
+  store<f64>(resultPtr + 32, c11 * invDet)
+  store<f64>(resultPtr + 40, c21 * invDet)
+  store<f64>(resultPtr + 48, c02 * invDet)
+  store<f64>(resultPtr + 56, c12 * invDet)
+  store<f64>(resultPtr + 64, c22 * invDet)
+
+  return 1
+}
+
+// ============================================
+// CONDITION NUMBER
+// ============================================
+
+/**
+ * Compute the condition number of a matrix using 1-norm
+ * cond1(A) = ||A||_1 * ||A^(-1)||_1
+ * @param aPtr - Pointer to input matrix (n x n)
+ * @param n - Size of the matrix
+ * @param workPtr - Work buffer: n*2n for inv + n*n for invA storage
+ * @returns Condition number (Infinity if singular)
+ */
+export function cond1(aPtr: usize, n: i32, workPtr: usize): f64 {
+  const invAPtr = workPtr
+  const invWorkPtr = workPtr + (<usize>(n * n) << 3)
+
+  // Compute ||A||_1
+  const normA = matrixNorm1(aPtr, n, n)
+
+  // Compute inverse
+  const success = inv(aPtr, n, invAPtr, invWorkPtr)
+  if (success === 0) {
+    return f64.POSITIVE_INFINITY
+  }
+
+  // Compute ||A^(-1)||_1
+  const normAinv = matrixNorm1(invAPtr, n, n)
+
+  return normA * normAinv
+}
+
+/**
+ * Compute the condition number of a matrix using infinity-norm
+ * condInf(A) = ||A||_inf * ||A^(-1)||_inf
+ * @param aPtr - Pointer to input matrix (n x n)
+ * @param n - Size of the matrix
+ * @param workPtr - Work buffer: n*2n for inv + n*n for invA storage
+ * @returns Condition number (Infinity if singular)
+ */
+export function condInf(aPtr: usize, n: i32, workPtr: usize): f64 {
+  const invAPtr = workPtr
+  const invWorkPtr = workPtr + (<usize>(n * n) << 3)
+
+  // Compute ||A||_inf
+  const normA = matrixNormInf(aPtr, n, n)
+
+  // Compute inverse
+  const success = inv(aPtr, n, invAPtr, invWorkPtr)
+  if (success === 0) {
+    return f64.POSITIVE_INFINITY
+  }
+
+  // Compute ||A^(-1)||_inf
+  const normAinv = matrixNormInf(invAPtr, n, n)
+
+  return normA * normAinv
 }

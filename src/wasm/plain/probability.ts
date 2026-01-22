@@ -4,6 +4,8 @@
  * Probability and statistical functions for WebAssembly compilation.
  * Converted from src/plain/number/probability.js
  *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
+ *
  * Sprint: Phase 6 - Sprint 1 - Plain Number Implementations
  * Task: 6.1.5
  */
@@ -33,15 +35,25 @@ function product(start: f64, end: f64): f64 {
 export const gammaG: f64 = 4.7421875
 
 // Coefficients for gamma function approximation
-export const gammaP: StaticArray<f64> = [
-  0.99999999999999709182, 57.156235665862923517, -59.597960355475491248,
-  14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4,
-  0.46523628927048575665e-4, -0.98374475304879564677e-4,
-  0.15808870322491248884e-3, -0.21026444172410488319e-3,
-  0.2174396181152126432e-3, -0.16431810653676389022e-3,
-  0.84418223983852743293e-4, -0.2619083840158140867e-4,
-  0.36899182659531622704e-5
-]
+// Using inline function to access coefficients instead of StaticArray
+function getGammaP(index: i32): f64 {
+  if (index === 0) return 0.99999999999999709182
+  if (index === 1) return 57.156235665862923517
+  if (index === 2) return -59.597960355475491248
+  if (index === 3) return 14.136097974741747174
+  if (index === 4) return -0.49191381609762019978
+  if (index === 5) return 0.33994649984811888699e-4
+  if (index === 6) return 0.46523628927048575665e-4
+  if (index === 7) return -0.98374475304879564677e-4
+  if (index === 8) return 0.15808870322491248884e-3
+  if (index === 9) return -0.21026444172410488319e-3
+  if (index === 10) return 0.2174396181152126432e-3
+  if (index === 11) return -0.16431810653676389022e-3
+  if (index === 12) return 0.84418223983852743293e-4
+  if (index === 13) return -0.2619083840158140867e-4
+  if (index === 14) return 0.36899182659531622704e-5
+  return 0.0
+}
 
 /**
  * Gamma function
@@ -92,9 +104,9 @@ export function gammaNumber(n: f64): f64 {
   }
 
   n = n - 1
-  x = gammaP[0]
+  x = getGammaP(0)
   for (let i: i32 = 1; i < 15; i++) {
-    x += gammaP[i] / (n + f64(i))
+    x += getGammaP(i) / (n + f64(i))
   }
 
   const t = n + gammaG + 0.5
@@ -112,10 +124,17 @@ export const lgammaG: f64 = 5 // Lanczos parameter "g"
 export const lgammaN: i32 = 7 // Range of coefficients "n"
 
 // lgamma implementation ref: https://mrob.com/pub/ries/lanczos-gamma.html#code
-export const lgammaSeries: StaticArray<f64> = [
-  1.000000000190015, 76.18009172947146, -86.50532032941677, 24.01409824083091,
-  -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5
-]
+// Using inline function to access coefficients instead of StaticArray
+function getLgammaSeries(index: i32): f64 {
+  if (index === 0) return 1.000000000190015
+  if (index === 1) return 76.18009172947146
+  if (index === 2) return -86.50532032941677
+  if (index === 3) return 24.01409824083091
+  if (index === 4) return -1.231739572450155
+  if (index === 5) return 0.1208650973866179e-2
+  if (index === 6) return -0.5395239384953e-5
+  return 0.0
+}
 
 /**
  * Log-gamma function
@@ -137,11 +156,11 @@ export function lgammaNumber(n: f64): f64 {
   // Compute the logarithm of the Gamma function using the Lanczos method
   let nAdjusted = n - 1
   const base = nAdjusted + lgammaG + 0.5 // Base of the Lanczos exponential
-  let sum = lgammaSeries[0]
+  let sum = getLgammaSeries(0)
 
   // We start with the terms that have the smallest coefficients and largest denominator
   for (let i: i32 = lgammaN - 1; i >= 1; i--) {
-    sum += lgammaSeries[i] / (nAdjusted + f64(i))
+    sum += getLgammaSeries(i) / (nAdjusted + f64(i))
   }
 
   return lnSqrt2PI + (nAdjusted + 0.5) * Math.log(base) - base + Math.log(sum)

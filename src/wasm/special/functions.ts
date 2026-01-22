@@ -1,5 +1,7 @@
 /**
  * WASM-optimized special mathematical functions using AssemblyScript
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
 
 // Constants
@@ -20,11 +22,15 @@ const ERF_P: f64 = 0.3275911
 
 // Coefficients for gamma function (Lanczos approximation)
 const LANCZOS_G: f64 = 7.0
-const LANCZOS_COEFFICIENTS: StaticArray<f64> = [
-  0.99999999999980993, 676.5203681218851, -1259.1392167224028,
-  771.32342877765313, -176.61502916214059, 12.507343278686905,
-  -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
-]
+const LANCZOS_C0: f64 = 0.99999999999980993
+const LANCZOS_C1: f64 = 676.5203681218851
+const LANCZOS_C2: f64 = -1259.1392167224028
+const LANCZOS_C3: f64 = 771.32342877765313
+const LANCZOS_C4: f64 = -176.61502916214059
+const LANCZOS_C5: f64 = 12.507343278686905
+const LANCZOS_C6: f64 = -0.13857109526572012
+const LANCZOS_C7: f64 = 9.9843695780195716e-6
+const LANCZOS_C8: f64 = 1.5056327351493116e-7
 
 /**
  * Compute the error function erf(x)
@@ -54,18 +60,15 @@ export function erf(x: f64): f64 {
 
 /**
  * Compute erf for an array of values
- * @param a - Input array
- * @returns Array of erf values
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (f64)
  */
-export function erfArray(a: Float64Array): Float64Array {
-  const n: i32 = a.length
-  const result = new Float64Array(n)
-
+export function erfArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = erf(a[i])
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, erf(load<f64>(aPtr + offset)))
   }
-
-  return result
 }
 
 /**
@@ -79,18 +82,15 @@ export function erfc(x: f64): f64 {
 
 /**
  * Compute erfc for an array of values
- * @param a - Input array
- * @returns Array of erfc values
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (f64)
  */
-export function erfcArray(a: Float64Array): Float64Array {
-  const n: i32 = a.length
-  const result = new Float64Array(n)
-
+export function erfcArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = erfc(a[i])
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, erfc(load<f64>(aPtr + offset)))
   }
-
-  return result
 }
 
 /**
@@ -109,30 +109,32 @@ export function gamma(x: f64): f64 {
 
   x -= 1.0
 
-  let a: f64 = LANCZOS_COEFFICIENTS[0]
+  let a: f64 = LANCZOS_C0
   const t: f64 = x + LANCZOS_G + 0.5
 
-  for (let i: i32 = 1; i < 9; i++) {
-    a += LANCZOS_COEFFICIENTS[i] / (x + <f64>i)
-  }
+  a += LANCZOS_C1 / (x + 1.0)
+  a += LANCZOS_C2 / (x + 2.0)
+  a += LANCZOS_C3 / (x + 3.0)
+  a += LANCZOS_C4 / (x + 4.0)
+  a += LANCZOS_C5 / (x + 5.0)
+  a += LANCZOS_C6 / (x + 6.0)
+  a += LANCZOS_C7 / (x + 7.0)
+  a += LANCZOS_C8 / (x + 8.0)
 
   return SQRT_2 * SQRT_PI * Math.pow(t, x + 0.5) * Math.exp(-t) * a
 }
 
 /**
  * Compute gamma for an array of values
- * @param a - Input array
- * @returns Array of gamma values
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (f64)
  */
-export function gammaArray(a: Float64Array): Float64Array {
-  const n: i32 = a.length
-  const result = new Float64Array(n)
-
+export function gammaArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = gamma(a[i])
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, gamma(load<f64>(aPtr + offset)))
   }
-
-  return result
 }
 
 /**
@@ -150,30 +152,32 @@ export function lgamma(x: f64): f64 {
 
   x -= 1.0
 
-  let a: f64 = LANCZOS_COEFFICIENTS[0]
+  let a: f64 = LANCZOS_C0
   const t: f64 = x + LANCZOS_G + 0.5
 
-  for (let i: i32 = 1; i < 9; i++) {
-    a += LANCZOS_COEFFICIENTS[i] / (x + <f64>i)
-  }
+  a += LANCZOS_C1 / (x + 1.0)
+  a += LANCZOS_C2 / (x + 2.0)
+  a += LANCZOS_C3 / (x + 3.0)
+  a += LANCZOS_C4 / (x + 4.0)
+  a += LANCZOS_C5 / (x + 5.0)
+  a += LANCZOS_C6 / (x + 6.0)
+  a += LANCZOS_C7 / (x + 7.0)
+  a += LANCZOS_C8 / (x + 8.0)
 
   return 0.5 * Math.log(2.0 * PI) + (x + 0.5) * Math.log(t) - t + Math.log(a)
 }
 
 /**
  * Compute lgamma for an array of values
- * @param a - Input array
- * @returns Array of lgamma values
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (f64)
  */
-export function lgammaArray(a: Float64Array): Float64Array {
-  const n: i32 = a.length
-  const result = new Float64Array(n)
-
+export function lgammaArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = lgamma(a[i])
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, lgamma(load<f64>(aPtr + offset)))
   }
-
-  return result
 }
 
 /**
@@ -244,18 +248,15 @@ function zetaPositive(s: f64): f64 {
 
 /**
  * Compute zeta for an array of values
- * @param a - Input array
- * @returns Array of zeta values
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (f64)
  */
-export function zetaArray(a: Float64Array): Float64Array {
-  const n: i32 = a.length
-  const result = new Float64Array(n)
-
+export function zetaArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = zeta(a[i])
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, zeta(load<f64>(aPtr + offset)))
   }
-
-  return result
 }
 
 /**
@@ -375,18 +376,15 @@ export function digamma(x: f64): f64 {
 
 /**
  * Compute digamma for an array of values
- * @param a - Input array
- * @returns Array of digamma values
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (f64)
  */
-export function digammaArray(a: Float64Array): Float64Array {
-  const n: i32 = a.length
-  const result = new Float64Array(n)
-
+export function digammaArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = digamma(a[i])
+    const offset: usize = <usize>i << 3
+    store<f64>(resultPtr + offset, digamma(load<f64>(aPtr + offset)))
   }
-
-  return result
 }
 
 /**

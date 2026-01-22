@@ -1,7 +1,8 @@
-// @ts-nocheck
 /**
  * WASM-optimized relational operations using AssemblyScript
  * Returns i32 for boolean results (0 = false, 1 = true)
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
 
 // Tolerance for floating-point comparisons
@@ -21,25 +22,30 @@ export function compare(a: f64, b: f64): i32 {
 
 /**
  * Compare arrays element-wise
- * @param a - First array
- * @param b - Second array
- * @returns Array of comparison results (-1, 0, or 1)
+ * @param aPtr - Pointer to first array (f64)
+ * @param bPtr - Pointer to second array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, -1, 0, or 1)
  */
-export function compareArray(a: Float64Array, b: Float64Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function compareArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    if (a[i] < b[i]) {
-      result[i] = -1
-    } else if (a[i] > b[i]) {
-      result[i] = 1
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    const a: f64 = load<f64>(aPtr + f64Offset)
+    const b: f64 = load<f64>(bPtr + f64Offset)
+    if (a < b) {
+      store<i32>(resultPtr + i32Offset, -1)
+    } else if (a > b) {
+      store<i32>(resultPtr + i32Offset, 1)
     } else {
-      result[i] = 0
+      store<i32>(resultPtr + i32Offset, 0)
     }
   }
-
-  return result
 }
 
 /**
@@ -65,19 +71,24 @@ export function nearlyEqual(a: f64, b: f64, tolerance: f64): i32 {
 
 /**
  * Element-wise equality check for arrays
- * @param a - First array
- * @param b - Second array
- * @returns Array of equality results (0 or 1)
+ * @param aPtr - Pointer to first array (f64)
+ * @param bPtr - Pointer to second array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, 0 or 1)
  */
-export function equalArray(a: Float64Array, b: Float64Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function equalArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] === b[i] ? 1 : 0
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    const a: f64 = load<f64>(aPtr + f64Offset)
+    const b: f64 = load<f64>(bPtr + f64Offset)
+    store<i32>(resultPtr + i32Offset, a === b ? 1 : 0)
   }
-
-  return result
 }
 
 /**
@@ -92,19 +103,24 @@ export function unequal(a: f64, b: f64): i32 {
 
 /**
  * Element-wise inequality check for arrays
- * @param a - First array
- * @param b - Second array
- * @returns Array of inequality results (0 or 1)
+ * @param aPtr - Pointer to first array (f64)
+ * @param bPtr - Pointer to second array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, 0 or 1)
  */
-export function unequalArray(a: Float64Array, b: Float64Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function unequalArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] !== b[i] ? 1 : 0
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    const a: f64 = load<f64>(aPtr + f64Offset)
+    const b: f64 = load<f64>(bPtr + f64Offset)
+    store<i32>(resultPtr + i32Offset, a !== b ? 1 : 0)
   }
-
-  return result
 }
 
 /**
@@ -119,19 +135,25 @@ export function larger(a: f64, b: f64): i32 {
 
 /**
  * Element-wise larger check for arrays
- * @param a - First array
- * @param b - Second array
- * @returns Array of results (0 or 1)
+ * @param aPtr - Pointer to first array (f64)
+ * @param bPtr - Pointer to second array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, 0 or 1)
  */
-export function largerArray(a: Float64Array, b: Float64Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function largerArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] > b[i] ? 1 : 0
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    store<i32>(
+      resultPtr + i32Offset,
+      load<f64>(aPtr + f64Offset) > load<f64>(bPtr + f64Offset) ? 1 : 0
+    )
   }
-
-  return result
 }
 
 /**
@@ -146,19 +168,25 @@ export function largerEq(a: f64, b: f64): i32 {
 
 /**
  * Element-wise largerEq check for arrays
- * @param a - First array
- * @param b - Second array
- * @returns Array of results (0 or 1)
+ * @param aPtr - Pointer to first array (f64)
+ * @param bPtr - Pointer to second array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, 0 or 1)
  */
-export function largerEqArray(a: Float64Array, b: Float64Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function largerEqArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] >= b[i] ? 1 : 0
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    store<i32>(
+      resultPtr + i32Offset,
+      load<f64>(aPtr + f64Offset) >= load<f64>(bPtr + f64Offset) ? 1 : 0
+    )
   }
-
-  return result
 }
 
 /**
@@ -173,19 +201,25 @@ export function smaller(a: f64, b: f64): i32 {
 
 /**
  * Element-wise smaller check for arrays
- * @param a - First array
- * @param b - Second array
- * @returns Array of results (0 or 1)
+ * @param aPtr - Pointer to first array (f64)
+ * @param bPtr - Pointer to second array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, 0 or 1)
  */
-export function smallerArray(a: Float64Array, b: Float64Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function smallerArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] < b[i] ? 1 : 0
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    store<i32>(
+      resultPtr + i32Offset,
+      load<f64>(aPtr + f64Offset) < load<f64>(bPtr + f64Offset) ? 1 : 0
+    )
   }
-
-  return result
 }
 
 /**
@@ -200,33 +234,40 @@ export function smallerEq(a: f64, b: f64): i32 {
 
 /**
  * Element-wise smallerEq check for arrays
- * @param a - First array
- * @param b - Second array
- * @returns Array of results (0 or 1)
+ * @param aPtr - Pointer to first array (f64)
+ * @param bPtr - Pointer to second array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, 0 or 1)
  */
-export function smallerEqArray(a: Float64Array, b: Float64Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function smallerEqArray(
+  aPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] <= b[i] ? 1 : 0
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    store<i32>(
+      resultPtr + i32Offset,
+      load<f64>(aPtr + f64Offset) <= load<f64>(bPtr + f64Offset) ? 1 : 0
+    )
   }
-
-  return result
 }
 
 /**
  * Find minimum value in array
- * @param a - Input array
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
  * @returns Minimum value
  */
-export function min(a: Float64Array): f64 {
-  const n: i32 = a.length
+export function min(aPtr: usize, n: i32): f64 {
   if (n === 0) return f64.NaN
 
-  let minVal: f64 = a[0]
+  let minVal: f64 = load<f64>(aPtr)
   for (let i: i32 = 1; i < n; i++) {
-    if (a[i] < minVal) minVal = a[i]
+    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    if (val < minVal) minVal = val
   }
 
   return minVal
@@ -234,16 +275,17 @@ export function min(a: Float64Array): f64 {
 
 /**
  * Find maximum value in array
- * @param a - Input array
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
  * @returns Maximum value
  */
-export function max(a: Float64Array): f64 {
-  const n: i32 = a.length
+export function max(aPtr: usize, n: i32): f64 {
   if (n === 0) return f64.NaN
 
-  let maxVal: f64 = a[0]
+  let maxVal: f64 = load<f64>(aPtr)
   for (let i: i32 = 1; i < n; i++) {
-    if (a[i] > maxVal) maxVal = a[i]
+    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    if (val > maxVal) maxVal = val
   }
 
   return maxVal
@@ -251,19 +293,20 @@ export function max(a: Float64Array): f64 {
 
 /**
  * Find index of minimum value in array
- * @param a - Input array
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
  * @returns Index of minimum value
  */
-export function argmin(a: Float64Array): i32 {
-  const n: i32 = a.length
+export function argmin(aPtr: usize, n: i32): i32 {
   if (n === 0) return -1
 
   let minIdx: i32 = 0
-  let minVal: f64 = a[0]
+  let minVal: f64 = load<f64>(aPtr)
 
   for (let i: i32 = 1; i < n; i++) {
-    if (a[i] < minVal) {
-      minVal = a[i]
+    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    if (val < minVal) {
+      minVal = val
       minIdx = i
     }
   }
@@ -273,19 +316,20 @@ export function argmin(a: Float64Array): i32 {
 
 /**
  * Find index of maximum value in array
- * @param a - Input array
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
  * @returns Index of maximum value
  */
-export function argmax(a: Float64Array): i32 {
-  const n: i32 = a.length
+export function argmax(aPtr: usize, n: i32): i32 {
   if (n === 0) return -1
 
   let maxIdx: i32 = 0
-  let maxVal: f64 = a[0]
+  let maxVal: f64 = load<f64>(aPtr)
 
   for (let i: i32 = 1; i < n; i++) {
-    if (a[i] > maxVal) {
-      maxVal = a[i]
+    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    if (val > maxVal) {
+      maxVal = val
       maxIdx = i
     }
   }
@@ -308,27 +352,26 @@ export function clamp(value: f64, minVal: f64, maxVal: f64): f64 {
 
 /**
  * Element-wise clamp for arrays
- * @param a - Input array
+ * @param aPtr - Pointer to input array (f64)
  * @param minVal - Minimum allowed value
  * @param maxVal - Maximum allowed value
- * @returns Clamped array
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (f64)
  */
 export function clampArray(
-  a: Float64Array,
+  aPtr: usize,
   minVal: f64,
-  maxVal: f64
-): Float64Array {
-  const n: i32 = a.length
-  const result = new Float64Array(n)
-
+  maxVal: f64,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    let v: f64 = a[i]
+    const offset: usize = <usize>i << 3
+    let v: f64 = load<f64>(aPtr + offset)
     if (v < minVal) v = minVal
     if (v > maxVal) v = maxVal
-    result[i] = v
+    store<f64>(resultPtr + offset, v)
   }
-
-  return result
 }
 
 /**
@@ -344,24 +387,25 @@ export function inRange(value: f64, minVal: f64, maxVal: f64): i32 {
 
 /**
  * Element-wise range check for arrays
- * @param a - Input array
+ * @param aPtr - Pointer to input array (f64)
  * @param minVal - Minimum of range
  * @param maxVal - Maximum of range
- * @returns Array of results (0 or 1)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, 0 or 1)
  */
 export function inRangeArray(
-  a: Float64Array,
+  aPtr: usize,
   minVal: f64,
-  maxVal: f64
-): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+  maxVal: f64,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    result[i] = a[i] >= minVal && a[i] <= maxVal ? 1 : 0
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    const val: f64 = load<f64>(aPtr + f64Offset)
+    store<i32>(resultPtr + i32Offset, val >= minVal && val <= maxVal ? 1 : 0)
   }
-
-  return result
 }
 
 /**
@@ -433,22 +477,21 @@ export function sign(a: f64): i32 {
 
 /**
  * Element-wise sign for arrays
- * @param a - Input array
- * @returns Array of signs (-1, 0, or 1)
+ * @param aPtr - Pointer to input array (f64)
+ * @param n - Array length
+ * @param resultPtr - Pointer to output array (i32, -1, 0, or 1)
  */
-export function signArray(a: Float64Array): Int32Array {
-  const n: i32 = a.length
-  const result = new Int32Array(n)
-
+export function signArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    if (a[i] > 0) {
-      result[i] = 1
-    } else if (a[i] < 0) {
-      result[i] = -1
+    const f64Offset: usize = <usize>i << 3
+    const i32Offset: usize = <usize>i << 2
+    const val: f64 = load<f64>(aPtr + f64Offset)
+    if (val > 0) {
+      store<i32>(resultPtr + i32Offset, 1)
+    } else if (val < 0) {
+      store<i32>(resultPtr + i32Offset, -1)
     } else {
-      result[i] = 0
+      store<i32>(resultPtr + i32Offset, 0)
     }
   }
-
-  return result
 }

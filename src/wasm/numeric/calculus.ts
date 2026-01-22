@@ -1,10 +1,11 @@
-// @ts-nocheck
 /**
  * WASM-optimized numerical calculus operations
  *
  * Provides numerical alternatives to symbolic differentiation and integration.
  * These are WASM-compatible replacements for functions that cannot be converted
  * due to their symbolic/AST-manipulation nature.
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
  */
 
 // ============================================
@@ -108,39 +109,36 @@ export function richardsonExtrapolation(d1: f64, d2: f64, order: i32): f64 {
  * Compute numerical gradient of a function at a point
  * Uses central differences for each dimension
  *
- * @param fValues - Function values: [f(x-h), f(x+h), f(y-h), f(y+h), ...]
+ * @param fValuesPtr - Pointer to function values: [f(x-h), f(x+h), f(y-h), f(y+h), ...]
  * @param h - Step size
  * @param n - Number of dimensions
- * @returns Gradient vector
+ * @param resultPtr - Pointer to output gradient vector (f64, n elements)
  */
-export function gradient(fValues: Float64Array, h: f64, n: i32): Float64Array {
-  const result = new Float64Array(n)
-
+export function gradient(fValuesPtr: usize, h: f64, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const fminus: f64 = fValues[i * 2]
-    const fplus: f64 = fValues[i * 2 + 1]
-    result[i] = (fplus - fminus) / (2.0 * h)
+    const fminus: f64 = load<f64>(fValuesPtr + (<usize>(i * 2) << 3))
+    const fplus: f64 = load<f64>(fValuesPtr + (<usize>(i * 2 + 1) << 3))
+    store<f64>(resultPtr + (<usize>i << 3), (fplus - fminus) / (2.0 * h))
   }
-
-  return result
 }
 
 /**
  * Compute numerical Hessian matrix (second derivatives)
  *
- * @param fValues - Function values for Hessian computation
- *                  Layout: [f(x), f(x+h_i), f(x-h_i), f(x+h_i+h_j), ...]
+ * @param fValuesPtr - Pointer to function values for Hessian computation
+ *                     Layout: [f(x+h_i), f(x-h_i), f(x+h_i+h_j), ...]
+ * @param fx - Value at center point
  * @param h - Step size
  * @param n - Number of dimensions
- * @returns Hessian matrix (row-major, n x n)
+ * @param resultPtr - Pointer to output Hessian matrix (f64, n*n elements, row-major)
  */
 export function hessian(
-  fValues: Float64Array,
+  fValuesPtr: usize,
   fx: f64,
   h: f64,
-  n: i32
-): Float64Array {
-  const result = new Float64Array(n * n)
+  n: i32,
+  resultPtr: usize
+): void {
   const h2: f64 = h * h
 
   let idx: i32 = 0
@@ -148,25 +146,23 @@ export function hessian(
     for (let j: i32 = 0; j < n; j++) {
       if (i === j) {
         // Diagonal: (f(x+h_i) - 2f(x) + f(x-h_i)) / h²
-        const fplus: f64 = fValues[idx]
-        const fminus: f64 = fValues[idx + 1]
-        result[i * n + j] = (fplus - 2.0 * fx + fminus) / h2
+        const fplus: f64 = load<f64>(fValuesPtr + (<usize>idx << 3))
+        const fminus: f64 = load<f64>(fValuesPtr + (<usize>(idx + 1) << 3))
+        store<f64>(resultPtr + (<usize>(i * n + j) << 3), (fplus - 2.0 * fx + fminus) / h2)
         idx += 2
       } else if (j > i) {
         // Off-diagonal: (f(x+h_i+h_j) - f(x+h_i-h_j) - f(x-h_i+h_j) + f(x-h_i-h_j)) / (4h²)
-        const fpp: f64 = fValues[idx]
-        const fpm: f64 = fValues[idx + 1]
-        const fmp: f64 = fValues[idx + 2]
-        const fmm: f64 = fValues[idx + 3]
+        const fpp: f64 = load<f64>(fValuesPtr + (<usize>idx << 3))
+        const fpm: f64 = load<f64>(fValuesPtr + (<usize>(idx + 1) << 3))
+        const fmp: f64 = load<f64>(fValuesPtr + (<usize>(idx + 2) << 3))
+        const fmm: f64 = load<f64>(fValuesPtr + (<usize>(idx + 3) << 3))
         const val: f64 = (fpp - fpm - fmp + fmm) / (4.0 * h2)
-        result[i * n + j] = val
-        result[j * n + i] = val // Symmetric
+        store<f64>(resultPtr + (<usize>(i * n + j) << 3), val)
+        store<f64>(resultPtr + (<usize>(j * n + i) << 3), val) // Symmetric
         idx += 4
       }
     }
   }
-
-  return result
 }
 
 // ============================================
@@ -177,18 +173,18 @@ export function hessian(
  * Trapezoidal rule integration
  * ∫f(x)dx ≈ h * (f0/2 + f1 + f2 + ... + fn-1 + fn/2)
  *
- * @param fValues - Function values at equally spaced points
+ * @param fValuesPtr - Pointer to function values at equally spaced points (f64)
  * @param h - Step size
  * @param n - Number of points
  * @returns Approximate integral
  */
-export function trapezoidalRule(fValues: Float64Array, h: f64, n: i32): f64 {
+export function trapezoidalRule(fValuesPtr: usize, h: f64, n: i32): f64 {
   if (n < 2) return 0.0
 
-  let sum: f64 = (fValues[0] + fValues[n - 1]) / 2.0
+  let sum: f64 = (load<f64>(fValuesPtr) + load<f64>(fValuesPtr + (<usize>(n - 1) << 3))) / 2.0
 
   for (let i: i32 = 1; i < n - 1; i++) {
-    sum += fValues[i]
+    sum += load<f64>(fValuesPtr + (<usize>i << 3))
   }
 
   return sum * h
@@ -198,21 +194,21 @@ export function trapezoidalRule(fValues: Float64Array, h: f64, n: i32): f64 {
  * Simpson's 1/3 rule integration (requires odd number of points)
  * ∫f(x)dx ≈ (h/3) * (f0 + 4f1 + 2f2 + 4f3 + ... + fn)
  *
- * @param fValues - Function values at equally spaced points
+ * @param fValuesPtr - Pointer to function values at equally spaced points (f64)
  * @param h - Step size
  * @param n - Number of points (must be odd)
  * @returns Approximate integral
  */
-export function simpsonsRule(fValues: Float64Array, h: f64, n: i32): f64 {
+export function simpsonsRule(fValuesPtr: usize, h: f64, n: i32): f64 {
   if (n < 3 || n % 2 === 0) return f64.NaN
 
-  let sum: f64 = fValues[0] + fValues[n - 1]
+  let sum: f64 = load<f64>(fValuesPtr) + load<f64>(fValuesPtr + (<usize>(n - 1) << 3))
 
   for (let i: i32 = 1; i < n - 1; i++) {
     if (i % 2 === 1) {
-      sum += 4.0 * fValues[i]
+      sum += 4.0 * load<f64>(fValuesPtr + (<usize>i << 3))
     } else {
-      sum += 2.0 * fValues[i]
+      sum += 2.0 * load<f64>(fValuesPtr + (<usize>i << 3))
     }
   }
 
@@ -222,21 +218,21 @@ export function simpsonsRule(fValues: Float64Array, h: f64, n: i32): f64 {
 /**
  * Simpson's 3/8 rule integration (requires 4, 7, 10, ... points)
  *
- * @param fValues - Function values at equally spaced points
+ * @param fValuesPtr - Pointer to function values at equally spaced points (f64)
  * @param h - Step size
  * @param n - Number of points (must be 3k+1)
  * @returns Approximate integral
  */
-export function simpsons38Rule(fValues: Float64Array, h: f64, n: i32): f64 {
+export function simpsons38Rule(fValuesPtr: usize, h: f64, n: i32): f64 {
   if (n < 4 || (n - 1) % 3 !== 0) return f64.NaN
 
-  let sum: f64 = fValues[0] + fValues[n - 1]
+  let sum: f64 = load<f64>(fValuesPtr) + load<f64>(fValuesPtr + (<usize>(n - 1) << 3))
 
   for (let i: i32 = 1; i < n - 1; i++) {
     if (i % 3 === 0) {
-      sum += 2.0 * fValues[i]
+      sum += 2.0 * load<f64>(fValuesPtr + (<usize>i << 3))
     } else {
-      sum += 3.0 * fValues[i]
+      sum += 3.0 * load<f64>(fValuesPtr + (<usize>i << 3))
     }
   }
 
@@ -247,12 +243,12 @@ export function simpsons38Rule(fValues: Float64Array, h: f64, n: i32): f64 {
  * Boole's rule integration (requires 5, 9, 13, ... points)
  * Higher order than Simpson's
  *
- * @param fValues - Function values at equally spaced points
+ * @param fValuesPtr - Pointer to function values at equally spaced points (f64)
  * @param h - Step size
  * @param n - Number of points (must be 4k+1)
  * @returns Approximate integral
  */
-export function boolesRule(fValues: Float64Array, h: f64, n: i32): f64 {
+export function boolesRule(fValuesPtr: usize, h: f64, n: i32): f64 {
   if (n < 5 || (n - 1) % 4 !== 0) return f64.NaN
 
   let sum: f64 = 0.0
@@ -260,17 +256,17 @@ export function boolesRule(fValues: Float64Array, h: f64, n: i32): f64 {
 
   for (let panel: i32 = 0; panel < numPanels; panel++) {
     const base: i32 = panel * 4
-    sum += 7.0 * fValues[base]
-    sum += 32.0 * fValues[base + 1]
-    sum += 12.0 * fValues[base + 2]
-    sum += 32.0 * fValues[base + 3]
-    sum += 7.0 * fValues[base + 4]
+    sum += 7.0 * load<f64>(fValuesPtr + (<usize>base << 3))
+    sum += 32.0 * load<f64>(fValuesPtr + (<usize>(base + 1) << 3))
+    sum += 12.0 * load<f64>(fValuesPtr + (<usize>(base + 2) << 3))
+    sum += 32.0 * load<f64>(fValuesPtr + (<usize>(base + 3) << 3))
+    sum += 7.0 * load<f64>(fValuesPtr + (<usize>(base + 4) << 3))
   }
 
   // Subtract overcounted endpoints for multiple panels
   if (numPanels > 1) {
     for (let i: i32 = 1; i < numPanels; i++) {
-      sum -= 7.0 * fValues[i * 4]
+      sum -= 7.0 * load<f64>(fValuesPtr + (<usize>(i * 4) << 3))
     }
   }
 
@@ -279,35 +275,40 @@ export function boolesRule(fValues: Float64Array, h: f64, n: i32): f64 {
 
 // Gauss-Legendre quadrature nodes and weights (stored as constants)
 // 2-point
-const GL2_NODES: StaticArray<f64> = [-0.5773502691896257, 0.5773502691896257]
-const GL2_WEIGHTS: StaticArray<f64> = [1.0, 1.0]
+const GL2_NODE_0: f64 = -0.5773502691896257
+const GL2_NODE_1: f64 = 0.5773502691896257
+const GL2_WEIGHT_0: f64 = 1.0
+const GL2_WEIGHT_1: f64 = 1.0
 
 // 3-point
-const GL3_NODES: StaticArray<f64> = [
-  -0.7745966692414834, 0.0, 0.7745966692414834
-]
-const GL3_WEIGHTS: StaticArray<f64> = [
-  0.5555555555555556, 0.8888888888888888, 0.5555555555555556
-]
+const GL3_NODE_0: f64 = -0.7745966692414834
+const GL3_NODE_1: f64 = 0.0
+const GL3_NODE_2: f64 = 0.7745966692414834
+const GL3_WEIGHT_0: f64 = 0.5555555555555556
+const GL3_WEIGHT_1: f64 = 0.8888888888888888
+const GL3_WEIGHT_2: f64 = 0.5555555555555556
 
 // 4-point
-const GL4_NODES: StaticArray<f64> = [
-  -0.8611363115940526, -0.3399810435848563, 0.3399810435848563,
-  0.8611363115940526
-]
-const GL4_WEIGHTS: StaticArray<f64> = [
-  0.3478548451374538, 0.6521451548625461, 0.6521451548625461, 0.3478548451374538
-]
+const GL4_NODE_0: f64 = -0.8611363115940526
+const GL4_NODE_1: f64 = -0.3399810435848563
+const GL4_NODE_2: f64 = 0.3399810435848563
+const GL4_NODE_3: f64 = 0.8611363115940526
+const GL4_WEIGHT_0: f64 = 0.3478548451374538
+const GL4_WEIGHT_1: f64 = 0.6521451548625461
+const GL4_WEIGHT_2: f64 = 0.6521451548625461
+const GL4_WEIGHT_3: f64 = 0.3478548451374538
 
 // 5-point
-const GL5_NODES: StaticArray<f64> = [
-  -0.906179845938664, -0.5384693101056831, 0.0, 0.5384693101056831,
-  0.906179845938664
-]
-const GL5_WEIGHTS: StaticArray<f64> = [
-  0.2369268850561891, 0.4786286704993665, 0.5688888888888889,
-  0.4786286704993665, 0.2369268850561891
-]
+const GL5_NODE_0: f64 = -0.906179845938664
+const GL5_NODE_1: f64 = -0.5384693101056831
+const GL5_NODE_2: f64 = 0.0
+const GL5_NODE_3: f64 = 0.5384693101056831
+const GL5_NODE_4: f64 = 0.906179845938664
+const GL5_WEIGHT_0: f64 = 0.2369268850561891
+const GL5_WEIGHT_1: f64 = 0.4786286704993665
+const GL5_WEIGHT_2: f64 = 0.5688888888888889
+const GL5_WEIGHT_3: f64 = 0.4786286704993665
+const GL5_WEIGHT_4: f64 = 0.2369268850561891
 
 /**
  * Get Gauss-Legendre nodes for a given number of points
@@ -316,31 +317,38 @@ const GL5_WEIGHTS: StaticArray<f64> = [
  * @param a - Lower bound
  * @param b - Upper bound
  * @param nPoints - Number of quadrature points (2-5 supported)
- * @returns Array of evaluation points
+ * @param resultPtr - Pointer to output array (f64, nPoints elements)
+ * @returns Number of nodes written (0 if unsupported)
  */
-export function gaussLegendreNodes(a: f64, b: f64, nPoints: i32): Float64Array {
-  const result = new Float64Array(nPoints)
+export function gaussLegendreNodes(a: f64, b: f64, nPoints: i32, resultPtr: usize): i32 {
   const mid: f64 = (a + b) / 2.0
   const halfWidth: f64 = (b - a) / 2.0
 
-  let nodes: StaticArray<f64>
   if (nPoints === 2) {
-    nodes = GL2_NODES
+    store<f64>(resultPtr, mid + halfWidth * GL2_NODE_0)
+    store<f64>(resultPtr + 8, mid + halfWidth * GL2_NODE_1)
+    return 2
   } else if (nPoints === 3) {
-    nodes = GL3_NODES
+    store<f64>(resultPtr, mid + halfWidth * GL3_NODE_0)
+    store<f64>(resultPtr + 8, mid + halfWidth * GL3_NODE_1)
+    store<f64>(resultPtr + 16, mid + halfWidth * GL3_NODE_2)
+    return 3
   } else if (nPoints === 4) {
-    nodes = GL4_NODES
+    store<f64>(resultPtr, mid + halfWidth * GL4_NODE_0)
+    store<f64>(resultPtr + 8, mid + halfWidth * GL4_NODE_1)
+    store<f64>(resultPtr + 16, mid + halfWidth * GL4_NODE_2)
+    store<f64>(resultPtr + 24, mid + halfWidth * GL4_NODE_3)
+    return 4
   } else if (nPoints === 5) {
-    nodes = GL5_NODES
-  } else {
-    return result // Empty for unsupported
+    store<f64>(resultPtr, mid + halfWidth * GL5_NODE_0)
+    store<f64>(resultPtr + 8, mid + halfWidth * GL5_NODE_1)
+    store<f64>(resultPtr + 16, mid + halfWidth * GL5_NODE_2)
+    store<f64>(resultPtr + 24, mid + halfWidth * GL5_NODE_3)
+    store<f64>(resultPtr + 32, mid + halfWidth * GL5_NODE_4)
+    return 5
   }
 
-  for (let i: i32 = 0; i < nPoints; i++) {
-    result[i] = mid + halfWidth * nodes[i]
-  }
-
-  return result
+  return 0 // Unsupported
 }
 
 /**
@@ -350,54 +358,63 @@ export function gaussLegendreNodes(a: f64, b: f64, nPoints: i32): Float64Array {
  * @param a - Lower bound
  * @param b - Upper bound
  * @param nPoints - Number of quadrature points (2-5 supported)
- * @returns Array of weights
+ * @param resultPtr - Pointer to output array (f64, nPoints elements)
+ * @returns Number of weights written (0 if unsupported)
  */
 export function gaussLegendreWeights(
   a: f64,
   b: f64,
-  nPoints: i32
-): Float64Array {
-  const result = new Float64Array(nPoints)
+  nPoints: i32,
+  resultPtr: usize
+): i32 {
   const halfWidth: f64 = (b - a) / 2.0
 
-  let weights: StaticArray<f64>
   if (nPoints === 2) {
-    weights = GL2_WEIGHTS
+    store<f64>(resultPtr, halfWidth * GL2_WEIGHT_0)
+    store<f64>(resultPtr + 8, halfWidth * GL2_WEIGHT_1)
+    return 2
   } else if (nPoints === 3) {
-    weights = GL3_WEIGHTS
+    store<f64>(resultPtr, halfWidth * GL3_WEIGHT_0)
+    store<f64>(resultPtr + 8, halfWidth * GL3_WEIGHT_1)
+    store<f64>(resultPtr + 16, halfWidth * GL3_WEIGHT_2)
+    return 3
   } else if (nPoints === 4) {
-    weights = GL4_WEIGHTS
+    store<f64>(resultPtr, halfWidth * GL4_WEIGHT_0)
+    store<f64>(resultPtr + 8, halfWidth * GL4_WEIGHT_1)
+    store<f64>(resultPtr + 16, halfWidth * GL4_WEIGHT_2)
+    store<f64>(resultPtr + 24, halfWidth * GL4_WEIGHT_3)
+    return 4
   } else if (nPoints === 5) {
-    weights = GL5_WEIGHTS
-  } else {
-    return result
+    store<f64>(resultPtr, halfWidth * GL5_WEIGHT_0)
+    store<f64>(resultPtr + 8, halfWidth * GL5_WEIGHT_1)
+    store<f64>(resultPtr + 16, halfWidth * GL5_WEIGHT_2)
+    store<f64>(resultPtr + 24, halfWidth * GL5_WEIGHT_3)
+    store<f64>(resultPtr + 32, halfWidth * GL5_WEIGHT_4)
+    return 5
   }
 
-  for (let i: i32 = 0; i < nPoints; i++) {
-    result[i] = halfWidth * weights[i]
-  }
-
-  return result
+  return 0 // Unsupported
 }
 
 /**
  * Gauss-Legendre quadrature integration
  * Given pre-computed function values at Gauss-Legendre nodes
  *
- * @param fValues - Function values at GL nodes
- * @param weights - GL weights (from gaussLegendreWeights)
+ * @param fValuesPtr - Pointer to function values at GL nodes (f64)
+ * @param weightsPtr - Pointer to GL weights (f64)
  * @param nPoints - Number of points
  * @returns Approximate integral
  */
 export function gaussLegendre(
-  fValues: Float64Array,
-  weights: Float64Array,
+  fValuesPtr: usize,
+  weightsPtr: usize,
   nPoints: i32
 ): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < nPoints; i++) {
-    sum += weights[i] * fValues[i]
+    const offset: usize = <usize>i << 3
+    sum += load<f64>(weightsPtr + offset) * load<f64>(fValuesPtr + offset)
   }
 
   return sum
@@ -407,19 +424,21 @@ export function gaussLegendre(
  * Composite Gauss-Legendre quadrature
  * Divides [a,b] into subintervals and applies GL quadrature to each
  *
- * @param fValues - Function values at all GL nodes across subintervals
+ * @param fValuesPtr - Pointer to function values at all GL nodes across subintervals (f64)
  * @param a - Lower bound
  * @param b - Upper bound
  * @param nSubintervals - Number of subintervals
  * @param nPoints - GL points per subinterval (2-5)
+ * @param workPtr - Pointer to working memory for weights (f64, nPoints elements)
  * @returns Approximate integral
  */
 export function compositeGaussLegendre(
-  fValues: Float64Array,
+  fValuesPtr: usize,
   a: f64,
   b: f64,
   nSubintervals: i32,
-  nPoints: i32
+  nPoints: i32,
+  workPtr: usize
 ): f64 {
   const subWidth: f64 = (b - a) / f64(nSubintervals)
   let sum: f64 = 0.0
@@ -427,10 +446,12 @@ export function compositeGaussLegendre(
   for (let sub: i32 = 0; sub < nSubintervals; sub++) {
     const subA: f64 = a + f64(sub) * subWidth
     const subB: f64 = subA + subWidth
-    const weights = gaussLegendreWeights(subA, subB, nPoints)
+    gaussLegendreWeights(subA, subB, nPoints, workPtr)
 
     for (let i: i32 = 0; i < nPoints; i++) {
-      sum += weights[i] * fValues[sub * nPoints + i]
+      const offset: usize = <usize>i << 3
+      const fIdx: usize = <usize>(sub * nPoints + i) << 3
+      sum += load<f64>(workPtr + offset) * load<f64>(fValuesPtr + fIdx)
     }
   }
 
@@ -440,32 +461,31 @@ export function compositeGaussLegendre(
 /**
  * Romberg integration (Richardson extrapolation on trapezoidal rule)
  *
- * @param trapValues - Trapezoidal estimates with h, h/2, h/4, ..., h/2^(n-1)
+ * @param trapValuesPtr - Pointer to trapezoidal estimates with h, h/2, h/4, ..., h/2^(n-1) (f64)
  * @param n - Number of estimates
+ * @param workPtr - Pointer to working memory for R matrix (f64, n*n elements)
  * @returns Improved estimate using Richardson extrapolation
  */
-export function romberg(trapValues: Float64Array, n: i32): f64 {
+export function romberg(trapValuesPtr: usize, n: i32, workPtr: usize): f64 {
   if (n < 1) return f64.NaN
-  if (n === 1) return trapValues[0]
-
-  // Create working copy
-  const R = new Float64Array(n * n)
+  if (n === 1) return load<f64>(trapValuesPtr)
 
   // First column is trapezoidal estimates
   for (let i: i32 = 0; i < n; i++) {
-    R[i * n] = trapValues[i]
+    store<f64>(workPtr + (<usize>(i * n) << 3), load<f64>(trapValuesPtr + (<usize>i << 3)))
   }
 
   // Apply Richardson extrapolation
   for (let j: i32 = 1; j < n; j++) {
     const factor: f64 = Math.pow(4.0, f64(j))
     for (let i: i32 = j; i < n; i++) {
-      R[i * n + j] =
-        (factor * R[i * n + j - 1] - R[(i - 1) * n + j - 1]) / (factor - 1.0)
+      const val1: f64 = load<f64>(workPtr + (<usize>(i * n + j - 1) << 3))
+      const val2: f64 = load<f64>(workPtr + (<usize>((i - 1) * n + j - 1) << 3))
+      store<f64>(workPtr + (<usize>(i * n + j) << 3), (factor * val1 - val2) / (factor - 1.0))
     }
   }
 
-  return R[(n - 1) * n + n - 1]
+  return load<f64>(workPtr + (<usize>((n - 1) * n + n - 1) << 3))
 }
 
 // ============================================
@@ -475,45 +495,42 @@ export function romberg(trapValues: Float64Array, n: i32): f64 {
 /**
  * Compute Jacobian matrix numerically
  *
- * @param fValues - Function values: for n functions, m variables
- *                  Layout: [f1(x+h1), f1(x-h1), f1(x+h2), ..., f2(x+h1), ...]
+ * @param fValuesPtr - Pointer to function values: for n functions, m variables
+ *                     Layout: [f1(x+h1), f1(x-h1), f1(x+h2), ..., f2(x+h1), ...]
  * @param h - Step size
  * @param nFunctions - Number of functions (rows)
  * @param nVariables - Number of variables (cols)
- * @returns Jacobian matrix (nFunctions x nVariables, row-major)
+ * @param resultPtr - Pointer to output Jacobian matrix (f64, nFunctions*nVariables, row-major)
  */
 export function jacobian(
-  fValues: Float64Array,
+  fValuesPtr: usize,
   h: f64,
   nFunctions: i32,
-  nVariables: i32
-): Float64Array {
-  const result = new Float64Array(nFunctions * nVariables)
-
+  nVariables: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < nFunctions; i++) {
     for (let j: i32 = 0; j < nVariables; j++) {
       const idx: i32 = (i * nVariables + j) * 2
-      const fplus: f64 = fValues[idx]
-      const fminus: f64 = fValues[idx + 1]
-      result[i * nVariables + j] = (fplus - fminus) / (2.0 * h)
+      const fplus: f64 = load<f64>(fValuesPtr + (<usize>idx << 3))
+      const fminus: f64 = load<f64>(fValuesPtr + (<usize>(idx + 1) << 3))
+      store<f64>(resultPtr + (<usize>(i * nVariables + j) << 3), (fplus - fminus) / (2.0 * h))
     }
   }
-
-  return result
 }
 
 /**
  * Laplacian (sum of second derivatives) using finite differences
  *
- * @param fValues - Function values at stencil points
- *                  For 2D: [f(x,y), f(x+h,y), f(x-h,y), f(x,y+h), f(x,y-h)]
+ * @param fValuesPtr - Pointer to function values at stencil points (f64)
+ *                     For 2D: [f(x+h,y), f(x-h,y), f(x,y+h), f(x,y-h)]
  * @param fx - Value at center point
  * @param h - Step size
  * @param nDim - Number of dimensions
  * @returns Laplacian value
  */
 export function laplacian(
-  fValues: Float64Array,
+  fValuesPtr: usize,
   fx: f64,
   h: f64,
   nDim: i32
@@ -522,7 +539,7 @@ export function laplacian(
   let sum: f64 = -2.0 * f64(nDim) * fx
 
   for (let i: i32 = 0; i < nDim; i++) {
-    sum += fValues[i * 2] + fValues[i * 2 + 1]
+    sum += load<f64>(fValuesPtr + (<usize>(i * 2) << 3)) + load<f64>(fValuesPtr + (<usize>(i * 2 + 1) << 3))
   }
 
   return sum / h2
@@ -531,18 +548,18 @@ export function laplacian(
 /**
  * Divergence of a vector field using central differences
  *
- * @param fieldValues - Field component values
- *                      Layout: [F1(x+h), F1(x-h), F2(y+h), F2(y-h), ...]
+ * @param fieldValuesPtr - Pointer to field component values (f64)
+ *                         Layout: [F1(x+h), F1(x-h), F2(y+h), F2(y-h), ...]
  * @param h - Step size
  * @param nDim - Number of dimensions
  * @returns Divergence value
  */
-export function divergence(fieldValues: Float64Array, h: f64, nDim: i32): f64 {
+export function divergence(fieldValuesPtr: usize, h: f64, nDim: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < nDim; i++) {
-    const fplus: f64 = fieldValues[i * 2]
-    const fminus: f64 = fieldValues[i * 2 + 1]
+    const fplus: f64 = load<f64>(fieldValuesPtr + (<usize>(i * 2) << 3))
+    const fminus: f64 = load<f64>(fieldValuesPtr + (<usize>(i * 2 + 1) << 3))
     sum += (fplus - fminus) / (2.0 * h)
   }
 
@@ -552,21 +569,17 @@ export function divergence(fieldValues: Float64Array, h: f64, nDim: i32): f64 {
 /**
  * Curl of a 3D vector field (returns 3D vector)
  *
- * @param fieldValues - Partial derivatives:
- *   [dFz/dy, dFy/dz, dFx/dz, dFz/dx, dFy/dx, dFx/dy]
- * @returns Curl vector [curlX, curlY, curlZ]
+ * @param fieldValuesPtr - Pointer to partial derivatives (f64):
+ *                         [dFz/dy, dFy/dz, dFx/dz, dFz/dx, dFy/dx, dFx/dy]
+ * @param resultPtr - Pointer to output curl vector (f64, 3 elements)
  */
-export function curl3D(fieldValues: Float64Array): Float64Array {
-  const result = new Float64Array(3)
-
+export function curl3D(fieldValuesPtr: usize, resultPtr: usize): void {
   // curl_x = dFz/dy - dFy/dz
-  result[0] = fieldValues[0] - fieldValues[1]
+  store<f64>(resultPtr, load<f64>(fieldValuesPtr) - load<f64>(fieldValuesPtr + 8))
 
   // curl_y = dFx/dz - dFz/dx
-  result[1] = fieldValues[2] - fieldValues[3]
+  store<f64>(resultPtr + 8, load<f64>(fieldValuesPtr + 16) - load<f64>(fieldValuesPtr + 24))
 
   // curl_z = dFy/dx - dFx/dy
-  result[2] = fieldValues[4] - fieldValues[5]
-
-  return result
+  store<f64>(resultPtr + 16, load<f64>(fieldValuesPtr + 32) - load<f64>(fieldValuesPtr + 40))
 }

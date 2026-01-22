@@ -1,7 +1,8 @@
-// @ts-nocheck
 /**
  * WASM-optimized utility functions for numeric checks
  * using AssemblyScript
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
  */
 
 /**
@@ -171,20 +172,20 @@ export function isPowerOfTwo(n: i64): i32 {
 
 /**
  * Count elements satisfying a condition in array
- * @param arr - Input array
+ * @param arrPtr - Pointer to input array (f64)
  * @param length - Number of elements
  * @param condition - 0=isZero, 1=isPositive, 2=isNegative, 3=isNaN, 4=isFinite
  * @returns Count of elements satisfying condition
  */
 export function countCondition(
-  arr: Float64Array,
+  arrPtr: usize,
   length: i32,
   condition: i32
 ): i32 {
   let count: i32 = 0
 
   for (let i: i32 = 0; i < length; i++) {
-    const x: f64 = arr[i]
+    const x: f64 = load<f64>(arrPtr + (<usize>i << 3))
     let match: i32 = 0
 
     if (condition === 0) {
@@ -207,13 +208,13 @@ export function countCondition(
 
 /**
  * Check all elements in array are finite
- * @param arr - Input array
+ * @param arrPtr - Pointer to input array (f64)
  * @param length - Number of elements
  * @returns 1 if all finite, 0 otherwise
  */
-export function allFinite(arr: Float64Array, length: i32): i32 {
+export function allFinite(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (isFinite(arr[i]) === 0) {
+    if (isFinite(load<f64>(arrPtr + (<usize>i << 3))) === 0) {
       return 0
     }
   }
@@ -222,13 +223,13 @@ export function allFinite(arr: Float64Array, length: i32): i32 {
 
 /**
  * Check if any element in array is NaN
- * @param arr - Input array
+ * @param arrPtr - Pointer to input array (f64)
  * @param length - Number of elements
  * @returns 1 if any NaN, 0 otherwise
  */
-export function anyNaN(arr: Float64Array, length: i32): i32 {
+export function anyNaN(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (isNaN(arr[i]) === 1) {
+    if (isNaN(load<f64>(arrPtr + (<usize>i << 3))) === 1) {
       return 1
     }
   }
@@ -237,13 +238,13 @@ export function anyNaN(arr: Float64Array, length: i32): i32 {
 
 /**
  * Check if all elements in array are positive
- * @param arr - Input array
+ * @param arrPtr - Pointer to input array (f64)
  * @param length - Number of elements
  * @returns 1 if all positive, 0 otherwise
  */
-export function allPositive(arr: Float64Array, length: i32): i32 {
+export function allPositive(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (arr[i] <= 0.0) {
+    if (load<f64>(arrPtr + (<usize>i << 3)) <= 0.0) {
       return 0
     }
   }
@@ -252,13 +253,13 @@ export function allPositive(arr: Float64Array, length: i32): i32 {
 
 /**
  * Check if all elements in array are non-negative
- * @param arr - Input array
+ * @param arrPtr - Pointer to input array (f64)
  * @param length - Number of elements
  * @returns 1 if all non-negative, 0 otherwise
  */
-export function allNonNegative(arr: Float64Array, length: i32): i32 {
+export function allNonNegative(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (arr[i] < 0.0) {
+    if (load<f64>(arrPtr + (<usize>i << 3)) < 0.0) {
       return 0
     }
   }
@@ -267,13 +268,13 @@ export function allNonNegative(arr: Float64Array, length: i32): i32 {
 
 /**
  * Check if all elements in array are integers
- * @param arr - Input array
+ * @param arrPtr - Pointer to input array (f64)
  * @param length - Number of elements
  * @returns 1 if all integers, 0 otherwise
  */
-export function allIntegers(arr: Float64Array, length: i32): i32 {
+export function allIntegers(arrPtr: usize, length: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    if (isInteger(arr[i]) === 0) {
+    if (isInteger(load<f64>(arrPtr + (<usize>i << 3))) === 0) {
       return 0
     }
   }
@@ -282,14 +283,14 @@ export function allIntegers(arr: Float64Array, length: i32): i32 {
 
 /**
  * Find first index where condition is true
- * @param arr - Input array
+ * @param arrPtr - Pointer to input array (f64)
  * @param length - Number of elements
  * @param condition - 0=isZero, 1=isPositive, 2=isNegative, 3=isNaN
  * @returns Index of first match, or -1 if not found
  */
-export function findFirst(arr: Float64Array, length: i32, condition: i32): i32 {
+export function findFirst(arrPtr: usize, length: i32, condition: i32): i32 {
   for (let i: i32 = 0; i < length; i++) {
-    const x: f64 = arr[i]
+    const x: f64 = load<f64>(arrPtr + (<usize>i << 3))
     let match: i32 = 0
 
     if (condition === 0) {
@@ -324,41 +325,40 @@ export function sign(x: f64): f64 {
 
 /**
  * Get signs of all elements in array
- * @param arr - Input array
- * @param output - Output array
+ * @param arrPtr - Pointer to input array (f64)
+ * @param outputPtr - Pointer to output array (f64)
  * @param length - Number of elements
  */
 export function signArray(
-  arr: Float64Array,
-  output: Float64Array,
+  arrPtr: usize,
+  outputPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    output[i] = sign(arr[i])
+    const offset: usize = <usize>i << 3
+    store<f64>(outputPtr + offset, sign(load<f64>(arrPtr + offset)))
   }
 }
 
 /**
  * Count primes up to n using Sieve of Eratosthenes
  * @param n - Upper bound
+ * @param workPtr - Working memory: needs (n + 1) bytes
  * @returns Count of primes <= n
  */
-export function countPrimesUpTo(n: i32): i32 {
+export function countPrimesUpTo(n: i32, workPtr: usize): i32 {
   if (n < 2) return 0
 
-  // Simple sieve (memory efficient for small n)
-  const sieve = new Uint8Array(n + 1)
-
-  // Initialize all as potentially prime
-  for (let i: i32 = 2; i <= n; i++) {
-    sieve[i] = 1
+  // Initialize all as potentially prime (1 byte per number)
+  for (let i: i32 = 0; i <= n; i++) {
+    store<u8>(workPtr + <usize>i, i >= 2 ? 1 : 0)
   }
 
   // Mark composites
   for (let i: i32 = 2; i * i <= n; i++) {
-    if (sieve[i] === 1) {
+    if (load<u8>(workPtr + <usize>i) === 1) {
       for (let j: i32 = i * i; j <= n; j += i) {
-        sieve[j] = 0
+        store<u8>(workPtr + <usize>j, 0)
       }
     }
   }
@@ -366,7 +366,7 @@ export function countPrimesUpTo(n: i32): i32 {
   // Count primes
   let count: i32 = 0
   for (let i: i32 = 2; i <= n; i++) {
-    count += <i32>sieve[i]
+    count += <i32>load<u8>(workPtr + <usize>i)
   }
 
   return count

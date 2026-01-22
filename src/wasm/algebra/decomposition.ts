@@ -2,77 +2,33 @@
  * WASM-optimized linear algebra decompositions
  * LU, QR, and Cholesky decompositions for high-performance computing
  *
- * All functions return new arrays for proper WASM/JS interop
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
-
-/**
- * Result of LU decomposition
- */
-class LUResult {
-  lu: Float64Array
-  perm: Int32Array
-  singular: bool
-
-  constructor(lu: Float64Array, perm: Int32Array, singular: bool) {
-    this.lu = lu
-    this.perm = perm
-    this.singular = singular
-  }
-}
-
-/**
- * Result of QR decomposition
- */
-class QRResult {
-  q: Float64Array
-  r: Float64Array
-
-  constructor(q: Float64Array, r: Float64Array) {
-    this.q = q
-    this.r = r
-  }
-}
-
-/**
- * Result of Cholesky decomposition
- */
-class CholeskyResult {
-  l: Float64Array
-  success: bool
-
-  constructor(l: Float64Array, success: bool) {
-    this.l = l
-    this.success = success
-  }
-}
 
 /**
  * LU Decomposition with partial pivoting: PA = LU
- * @param a - Input matrix (n x n, row-major)
+ * @param aPtr - Pointer to input matrix (n x n, row-major), modified in place to contain LU
  * @param n - Size of the square matrix
- * @returns LU matrix, permutation vector, and singular flag
+ * @param permPtr - Pointer to permutation vector (Int32Array)
+ * @returns 0 if successful, 1 if singular
  */
-export function luDecomposition(a: Float64Array, n: i32): LUResult {
-  // Copy input to output
-  const lu = new Float64Array(n * n)
-  for (let i: i32 = 0; i < n * n; i++) {
-    lu[i] = a[i]
-  }
-
-  const perm = new Int32Array(n)
-
+export function luDecomposition(
+  aPtr: usize,
+  n: i32,
+  permPtr: usize
+): i32 {
   // Initialize permutation vector
   for (let i: i32 = 0; i < n; i++) {
-    perm[i] = i
+    store<i32>(permPtr + (<usize>i << 2), i)
   }
 
   for (let k: i32 = 0; k < n - 1; k++) {
     // Find pivot
-    let maxVal: f64 = abs(lu[k * n + k])
+    let maxVal: f64 = abs(load<f64>(aPtr + (<usize>(k * n + k) << 3)))
     let pivotRow: i32 = k
 
     for (let i: i32 = k + 1; i < n; i++) {
-      const val: f64 = abs(lu[i * n + k])
+      const val: f64 = abs(load<f64>(aPtr + (<usize>(i * n + k) << 3)))
       if (val > maxVal) {
         maxVal = val
         pivotRow = i
@@ -81,72 +37,52 @@ export function luDecomposition(a: Float64Array, n: i32): LUResult {
 
     // Check for singularity
     if (maxVal < 1e-14) {
-      return new LUResult(lu, perm, true) // Singular matrix
+      return 1 // Singular matrix
     }
 
     // Swap rows if necessary
     if (pivotRow !== k) {
-      swapRows(lu, n, k, pivotRow)
-      const temp: i32 = perm[k]
-      perm[k] = perm[pivotRow]
-      perm[pivotRow] = temp
+      swapRows(aPtr, n, k, pivotRow)
+      const temp: i32 = load<i32>(permPtr + (<usize>k << 2))
+      store<i32>(permPtr + (<usize>k << 2), load<i32>(permPtr + (<usize>pivotRow << 2)))
+      store<i32>(permPtr + (<usize>pivotRow << 2), temp)
     }
 
     // Eliminate column
-    const pivot: f64 = lu[k * n + k]
+    const pivot: f64 = load<f64>(aPtr + (<usize>(k * n + k) << 3))
     for (let i: i32 = k + 1; i < n; i++) {
-      const factor: f64 = lu[i * n + k] / pivot
-      lu[i * n + k] = factor // Store L factor
+      const idx: usize = <usize>(i * n + k) << 3
+      const factor: f64 = load<f64>(aPtr + idx) / pivot
+      store<f64>(aPtr + idx, factor) // Store L factor
 
       for (let j: i32 = k + 1; j < n; j++) {
-        lu[i * n + j] -= factor * lu[k * n + j]
+        const ijIdx: usize = <usize>(i * n + j) << 3
+        const kjIdx: usize = <usize>(k * n + j) << 3
+        store<f64>(aPtr + ijIdx, load<f64>(aPtr + ijIdx) - factor * load<f64>(aPtr + kjIdx))
       }
     }
   }
 
-  return new LUResult(lu, perm, false) // Success
-}
-
-/**
- * Get LU matrix from decomposition result
- */
-export function getLUMatrix(result: LUResult): Float64Array {
-  return result.lu
-}
-
-/**
- * Get permutation from decomposition result
- */
-export function getLUPerm(result: LUResult): Int32Array {
-  return result.perm
-}
-
-/**
- * Check if LU decomposition found singular matrix
- */
-export function isLUSingular(result: LUResult): bool {
-  return result.singular
+  return 0 // Success
 }
 
 /**
  * QR Decomposition using Householder reflections
- * @param a - Input matrix (m x n)
+ * @param aPtr - Pointer to input matrix (m x n), will contain R after decomposition
  * @param m - Number of rows
  * @param n - Number of columns
- * @returns Q matrix (m x m, orthogonal) and R matrix (m x n, upper triangular)
+ * @param qPtr - Pointer to output Q matrix (m x m, orthogonal)
  */
-export function qrDecomposition(a: Float64Array, m: i32, n: i32): QRResult {
-  // Copy a to r
-  const r = new Float64Array(m * n)
-  for (let i: i32 = 0; i < m * n; i++) {
-    r[i] = a[i]
-  }
-
+export function qrDecomposition(
+  aPtr: usize,
+  m: i32,
+  n: i32,
+  qPtr: usize
+): void {
   // Initialize Q as identity matrix
-  const q = new Float64Array(m * m)
   for (let i: i32 = 0; i < m; i++) {
     for (let j: i32 = 0; j < m; j++) {
-      q[i * m + j] = i === j ? 1.0 : 0.0
+      store<f64>(qPtr + (<usize>(i * m + j) << 3), i === j ? 1.0 : 0.0)
     }
   }
 
@@ -156,177 +92,163 @@ export function qrDecomposition(a: Float64Array, m: i32, n: i32): QRResult {
     // Compute Householder vector
     let norm: f64 = 0.0
     for (let i: i32 = k; i < m; i++) {
-      const val: f64 = r[i * n + k]
+      const val: f64 = load<f64>(aPtr + (<usize>(i * n + k) << 3))
       norm += val * val
     }
     norm = sqrt(norm)
 
     if (norm < 1e-14) continue
 
-    const sign: f64 = r[k * n + k] >= 0.0 ? 1.0 : -1.0
-    const u1: f64 = r[k * n + k] + sign * norm
+    const akk: f64 = load<f64>(aPtr + (<usize>(k * n + k) << 3))
+    const sign: f64 = akk >= 0.0 ? 1.0 : -1.0
+    const u1: f64 = akk + sign * norm
 
-    // Store Householder vector in v (temporary)
-    const vSize: i32 = m - k
-    const v: Float64Array = new Float64Array(vSize)
-    v[0] = 1.0
-    for (let i: i32 = 1; i < vSize; i++) {
-      v[i] = r[(k + i) * n + k] / u1
-    }
-
-    // Compute 2 / (v^T * v)
-    let vDotV: f64 = 0.0
-    for (let i: i32 = 0; i < vSize; i++) {
-      vDotV += v[i] * v[i]
+    // Compute 2 / (v^T * v) and apply Householder reflection
+    let vDotV: f64 = 1.0
+    for (let i: i32 = k + 1; i < m; i++) {
+      const vi: f64 = load<f64>(aPtr + (<usize>(i * n + k) << 3)) / u1
+      vDotV += vi * vi
     }
     const tau: f64 = 2.0 / vDotV
 
-    // Apply Householder reflection to R
+    // Apply Householder reflection to R (a)
     for (let j: i32 = k; j < n; j++) {
-      let vDotCol: f64 = 0.0
-      for (let i: i32 = 0; i < vSize; i++) {
-        vDotCol += v[i] * r[(k + i) * n + j]
+      let vDotCol: f64 = load<f64>(aPtr + (<usize>(k * n + j) << 3))
+      for (let i: i32 = k + 1; i < m; i++) {
+        const vi: f64 = load<f64>(aPtr + (<usize>(i * n + k) << 3)) / u1
+        vDotCol += vi * load<f64>(aPtr + (<usize>(i * n + j) << 3))
       }
 
       const factor: f64 = tau * vDotCol
-      for (let i: i32 = 0; i < vSize; i++) {
-        r[(k + i) * n + j] -= factor * v[i]
+      store<f64>(aPtr + (<usize>(k * n + j) << 3), load<f64>(aPtr + (<usize>(k * n + j) << 3)) - factor)
+      for (let i: i32 = k + 1; i < m; i++) {
+        const vi: f64 = load<f64>(aPtr + (<usize>(i * n + k) << 3)) / u1
+        const idx: usize = <usize>(i * n + j) << 3
+        store<f64>(aPtr + idx, load<f64>(aPtr + idx) - factor * vi)
       }
     }
 
     // Apply Householder reflection to Q
     for (let j: i32 = 0; j < m; j++) {
-      let vDotCol: f64 = 0.0
-      for (let i: i32 = 0; i < vSize; i++) {
-        vDotCol += v[i] * q[(k + i) * m + j]
+      let vDotCol: f64 = load<f64>(qPtr + (<usize>(k * m + j) << 3))
+      for (let i: i32 = k + 1; i < m; i++) {
+        const vi: f64 = load<f64>(aPtr + (<usize>(i * n + k) << 3)) / u1
+        vDotCol += vi * load<f64>(qPtr + (<usize>(i * m + j) << 3))
       }
 
       const factor: f64 = tau * vDotCol
-      for (let i: i32 = 0; i < vSize; i++) {
-        q[(k + i) * m + j] -= factor * v[i]
+      store<f64>(qPtr + (<usize>(k * m + j) << 3), load<f64>(qPtr + (<usize>(k * m + j) << 3)) - factor)
+      for (let i: i32 = k + 1; i < m; i++) {
+        const vi: f64 = load<f64>(aPtr + (<usize>(i * n + k) << 3)) / u1
+        const idx: usize = <usize>(i * m + j) << 3
+        store<f64>(qPtr + idx, load<f64>(qPtr + idx) - factor * vi)
       }
     }
+
+    // Zero out below diagonal for this column
+    for (let i: i32 = k + 1; i < m; i++) {
+      store<f64>(aPtr + (<usize>(i * n + k) << 3), 0.0)
+    }
   }
-
-  return new QRResult(q, r)
-}
-
-/**
- * Get Q matrix from QR result
- */
-export function getQMatrix(result: QRResult): Float64Array {
-  return result.q
-}
-
-/**
- * Get R matrix from QR result
- */
-export function getRMatrix(result: QRResult): Float64Array {
-  return result.r
 }
 
 /**
  * Cholesky Decomposition: A = L * L^T
  * For symmetric positive-definite matrices
- * @param a - Input matrix (symmetric, positive-definite, n x n)
+ * @param aPtr - Pointer to input matrix (symmetric, positive-definite, n x n)
  * @param n - Size of the matrix
- * @returns Lower triangular matrix L and success flag
+ * @param lPtr - Pointer to output lower triangular matrix L
+ * @returns 0 if successful, 1 if not positive-definite
  */
-export function choleskyDecomposition(a: Float64Array, n: i32): CholeskyResult {
+export function choleskyDecomposition(
+  aPtr: usize,
+  n: i32,
+  lPtr: usize
+): i32 {
   // Initialize L to zero
-  const l = new Float64Array(n * n)
   for (let i: i32 = 0; i < n * n; i++) {
-    l[i] = 0.0
+    store<f64>(lPtr + (<usize>i << 3), 0.0)
   }
 
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j <= i; j++) {
-      let sum: f64 = a[i * n + j]
+      let sum: f64 = load<f64>(aPtr + (<usize>(i * n + j) << 3))
 
       for (let k: i32 = 0; k < j; k++) {
-        sum -= l[i * n + k] * l[j * n + k]
+        const lik: f64 = load<f64>(lPtr + (<usize>(i * n + k) << 3))
+        const ljk: f64 = load<f64>(lPtr + (<usize>(j * n + k) << 3))
+        sum -= lik * ljk
       }
 
       if (i === j) {
         if (sum <= 0.0) {
-          return new CholeskyResult(l, false) // Not positive-definite
+          return 1 // Not positive-definite
         }
-        l[i * n + j] = sqrt(sum)
+        store<f64>(lPtr + (<usize>(i * n + j) << 3), sqrt(sum))
       } else {
-        l[i * n + j] = sum / l[j * n + j]
+        const ljj: f64 = load<f64>(lPtr + (<usize>(j * n + j) << 3))
+        store<f64>(lPtr + (<usize>(i * n + j) << 3), sum / ljj)
       }
     }
   }
 
-  return new CholeskyResult(l, true) // Success
-}
-
-/**
- * Get L matrix from Cholesky result
- */
-export function getCholeskyL(result: CholeskyResult): Float64Array {
-  return result.l
-}
-
-/**
- * Check if Cholesky succeeded
- */
-export function isCholeskySuccess(result: CholeskyResult): bool {
-  return result.success
+  return 0 // Success
 }
 
 /**
  * Solve linear system using LU decomposition: Ax = b
- * @param lu - LU decomposition of A
+ * @param luPtr - Pointer to LU decomposition of A
  * @param n - Size of the system
- * @param perm - Permutation vector from LU decomposition
- * @param b - Right-hand side vector
- * @returns Solution vector x
+ * @param permPtr - Pointer to permutation vector from LU decomposition
+ * @param bPtr - Pointer to right-hand side vector
+ * @param xPtr - Pointer to solution vector x
  */
 export function luSolve(
-  lu: Float64Array,
+  luPtr: usize,
   n: i32,
-  perm: Int32Array,
-  b: Float64Array
-): Float64Array {
-  const x = new Float64Array(n)
-
+  permPtr: usize,
+  bPtr: usize,
+  xPtr: usize
+): void {
   // Forward substitution: Ly = Pb
   for (let i: i32 = 0; i < n; i++) {
-    let sum: f64 = b[perm[i]]
+    const pi: i32 = load<i32>(permPtr + (<usize>i << 2))
+    let sum: f64 = load<f64>(bPtr + (<usize>pi << 3))
     for (let j: i32 = 0; j < i; j++) {
-      sum -= lu[i * n + j] * x[j]
+      sum -= load<f64>(luPtr + (<usize>(i * n + j) << 3)) * load<f64>(xPtr + (<usize>j << 3))
     }
-    x[i] = sum
+    store<f64>(xPtr + (<usize>i << 3), sum)
   }
 
   // Backward substitution: Ux = y
   for (let i: i32 = n - 1; i >= 0; i--) {
-    let sum: f64 = x[i]
+    let sum: f64 = load<f64>(xPtr + (<usize>i << 3))
     for (let j: i32 = i + 1; j < n; j++) {
-      sum -= lu[i * n + j] * x[j]
+      sum -= load<f64>(luPtr + (<usize>(i * n + j) << 3)) * load<f64>(xPtr + (<usize>j << 3))
     }
-    x[i] = sum / lu[i * n + i]
+    store<f64>(xPtr + (<usize>i << 3), sum / load<f64>(luPtr + (<usize>(i * n + i) << 3)))
   }
-
-  return x
 }
 
 /**
  * Compute determinant from LU decomposition
+ * @param luPtr - Pointer to LU matrix
+ * @param n - Size of the matrix
+ * @param permPtr - Pointer to permutation vector
+ * @returns Determinant value
  */
-export function luDeterminant(lu: Float64Array, n: i32, perm: Int32Array): f64 {
+export function luDeterminant(luPtr: usize, n: i32, permPtr: usize): f64 {
   let det: f64 = 1.0
 
   // Product of diagonal elements
   for (let i: i32 = 0; i < n; i++) {
-    det *= lu[i * n + i]
+    det *= load<f64>(luPtr + (<usize>(i * n + i) << 3))
   }
 
   // Account for row swaps
   let swaps: i32 = 0
   for (let i: i32 = 0; i < n; i++) {
-    if (perm[i] !== i) swaps++
+    if (load<i32>(permPtr + (<usize>i << 2)) !== i) swaps++
   }
 
   return swaps % 2 === 0 ? det : -det
@@ -342,10 +264,12 @@ function sqrt(x: f64): f64 {
   return Math.sqrt(x)
 }
 
-function swapRows(a: Float64Array, n: i32, row1: i32, row2: i32): void {
+function swapRows(aPtr: usize, n: i32, row1: i32, row2: i32): void {
   for (let j: i32 = 0; j < n; j++) {
-    const temp: f64 = a[row1 * n + j]
-    a[row1 * n + j] = a[row2 * n + j]
-    a[row2 * n + j] = temp
+    const idx1: usize = <usize>(row1 * n + j) << 3
+    const idx2: usize = <usize>(row2 * n + j) << 3
+    const temp: f64 = load<f64>(aPtr + idx1)
+    store<f64>(aPtr + idx1, load<f64>(aPtr + idx2))
+    store<f64>(aPtr + idx2, temp)
   }
 }

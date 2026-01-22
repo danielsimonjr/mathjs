@@ -7,7 +7,7 @@
  * SIMD support: WebAssembly SIMD is widely supported in modern browsers (Chrome 91+,
  * Firefox 89+, Safari 16.4+, Edge 91+) and Node.js 16+.
  *
- * Note: All operations use v128.load/store with type-specific SIMD operations.
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop.
  */
 
 // ============================================================================
@@ -17,30 +17,32 @@
 /**
  * SIMD vector addition: result[i] = a[i] + b[i]
  * Processes 2 elements at a time using f64x2 SIMD
- * @param a First input array
- * @param b Second input array
- * @param result Output array
+ * @param aPtr Pointer to first input array
+ * @param bPtr Pointer to second input array
+ * @param resultPtr Pointer to output array
  * @param length Number of elements (should be even for optimal performance)
  */
 export function simdAddF64(
-  a: Float64Array,
-  b: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~1 // Round down to even number
 
   // Process 2 elements at a time with SIMD
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     const vr = f64x2.add(va, vb)
-    v128.store(changetype<usize>(result.dataStart) + (i << 3), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   // Handle remaining odd element
   if (length & 1) {
-    unchecked((result[simdLength] = a[simdLength] + b[simdLength]))
+    const offset: usize = <usize>simdLength << 3
+    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) + load<f64>(bPtr + offset))
   }
 }
 
@@ -48,22 +50,24 @@ export function simdAddF64(
  * SIMD vector subtraction: result[i] = a[i] - b[i]
  */
 export function simdSubF64(
-  a: Float64Array,
-  b: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     const vr = f64x2.sub(va, vb)
-    v128.store(changetype<usize>(result.dataStart) + (i << 3), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   if (length & 1) {
-    unchecked((result[simdLength] = a[simdLength] - b[simdLength]))
+    const offset: usize = <usize>simdLength << 3
+    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) - load<f64>(bPtr + offset))
   }
 }
 
@@ -71,22 +75,24 @@ export function simdSubF64(
  * SIMD vector multiplication: result[i] = a[i] * b[i]
  */
 export function simdMulF64(
-  a: Float64Array,
-  b: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     const vr = f64x2.mul(va, vb)
-    v128.store(changetype<usize>(result.dataStart) + (i << 3), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   if (length & 1) {
-    unchecked((result[simdLength] = a[simdLength] * b[simdLength]))
+    const offset: usize = <usize>simdLength << 3
+    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) * load<f64>(bPtr + offset))
   }
 }
 
@@ -94,22 +100,24 @@ export function simdMulF64(
  * SIMD vector division: result[i] = a[i] / b[i]
  */
 export function simdDivF64(
-  a: Float64Array,
-  b: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     const vr = f64x2.div(va, vb)
-    v128.store(changetype<usize>(result.dataStart) + (i << 3), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   if (length & 1) {
-    unchecked((result[simdLength] = a[simdLength] / b[simdLength]))
+    const offset: usize = <usize>simdLength << 3
+    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) / load<f64>(bPtr + offset))
   }
 }
 
@@ -117,22 +125,24 @@ export function simdDivF64(
  * SIMD scalar multiplication: result[i] = a[i] * scalar
  */
 export function simdScaleF64(
-  a: Float64Array,
+  aPtr: usize,
   scalar: f64,
-  result: Float64Array,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~1
   const vs = f64x2.splat(scalar)
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     const vr = f64x2.mul(va, vs)
-    v128.store(changetype<usize>(result.dataStart) + (i << 3), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   if (length & 1) {
-    unchecked((result[simdLength] = a[simdLength] * scalar))
+    const offset: usize = <usize>simdLength << 3
+    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) * scalar)
   }
 }
 
@@ -140,13 +150,14 @@ export function simdScaleF64(
  * SIMD dot product: sum(a[i] * b[i])
  * Uses horizontal addition for final reduction
  */
-export function simdDotF64(a: Float64Array, b: Float64Array, length: i32): f64 {
+export function simdDotF64(aPtr: usize, bPtr: usize, length: i32): f64 {
   const simdLength = length & ~1
   let sum: v128 = f64x2.splat(0.0)
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     sum = f64x2.add(sum, f64x2.mul(va, vb))
   }
 
@@ -155,7 +166,8 @@ export function simdDotF64(a: Float64Array, b: Float64Array, length: i32): f64 {
 
   // Handle remaining odd element
   if (length & 1) {
-    result += unchecked(a[simdLength]) * unchecked(b[simdLength])
+    const offset: usize = <usize>simdLength << 3
+    result += load<f64>(aPtr + offset) * load<f64>(bPtr + offset)
   }
 
   return result
@@ -164,19 +176,20 @@ export function simdDotF64(a: Float64Array, b: Float64Array, length: i32): f64 {
 /**
  * SIMD sum of array elements
  */
-export function simdSumF64(a: Float64Array, length: i32): f64 {
+export function simdSumF64(aPtr: usize, length: i32): f64 {
   const simdLength = length & ~1
   let sum: v128 = f64x2.splat(0.0)
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     sum = f64x2.add(sum, va)
   }
 
   let result = f64x2.extract_lane(sum, 0) + f64x2.extract_lane(sum, 1)
 
   if (length & 1) {
-    result += unchecked(a[simdLength])
+    result += load<f64>(aPtr + (<usize>simdLength << 3))
   }
 
   return result
@@ -185,19 +198,20 @@ export function simdSumF64(a: Float64Array, length: i32): f64 {
 /**
  * SIMD squared sum: sum(a[i]^2) - useful for norm calculations
  */
-export function simdSumSquaresF64(a: Float64Array, length: i32): f64 {
+export function simdSumSquaresF64(aPtr: usize, length: i32): f64 {
   const simdLength = length & ~1
   let sum: v128 = f64x2.splat(0.0)
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     sum = f64x2.add(sum, f64x2.mul(va, va))
   }
 
   let result = f64x2.extract_lane(sum, 0) + f64x2.extract_lane(sum, 1)
 
   if (length & 1) {
-    const val = unchecked(a[simdLength])
+    const val = load<f64>(aPtr + (<usize>simdLength << 3))
     result += val * val
   }
 
@@ -207,21 +221,22 @@ export function simdSumSquaresF64(a: Float64Array, length: i32): f64 {
 /**
  * SIMD L2 norm (Euclidean norm): sqrt(sum(a[i]^2))
  */
-export function simdNormF64(a: Float64Array, length: i32): f64 {
-  return Math.sqrt(simdSumSquaresF64(a, length))
+export function simdNormF64(aPtr: usize, length: i32): f64 {
+  return Math.sqrt(simdSumSquaresF64(aPtr, length))
 }
 
 /**
  * SIMD min of array elements
  */
-export function simdMinF64(a: Float64Array, length: i32): f64 {
+export function simdMinF64(aPtr: usize, length: i32): f64 {
   if (length === 0) return f64.NaN
 
   const simdLength = length & ~1
   let minVec: v128 = f64x2.splat(f64.MAX_VALUE)
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     minVec = f64x2.min(minVec, va)
   }
 
@@ -231,7 +246,7 @@ export function simdMinF64(a: Float64Array, length: i32): f64 {
   )
 
   if (length & 1) {
-    result = Math.min(result, unchecked(a[simdLength]))
+    result = Math.min(result, load<f64>(aPtr + (<usize>simdLength << 3)))
   }
 
   return result
@@ -240,14 +255,15 @@ export function simdMinF64(a: Float64Array, length: i32): f64 {
 /**
  * SIMD max of array elements
  */
-export function simdMaxF64(a: Float64Array, length: i32): f64 {
+export function simdMaxF64(aPtr: usize, length: i32): f64 {
   if (length === 0) return f64.NaN
 
   const simdLength = length & ~1
   let maxVec: v128 = f64x2.splat(f64.MIN_VALUE)
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     maxVec = f64x2.max(maxVec, va)
   }
 
@@ -257,7 +273,7 @@ export function simdMaxF64(a: Float64Array, length: i32): f64 {
   )
 
   if (length & 1) {
-    result = Math.max(result, unchecked(a[simdLength]))
+    result = Math.max(result, load<f64>(aPtr + (<usize>simdLength << 3)))
   }
 
   return result
@@ -267,20 +283,22 @@ export function simdMaxF64(a: Float64Array, length: i32): f64 {
  * SIMD absolute value: result[i] = |a[i]|
  */
 export function simdAbsF64(
-  a: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     const vr = f64x2.abs(va)
-    v128.store(changetype<usize>(result.dataStart) + (i << 3), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   if (length & 1) {
-    unchecked((result[simdLength] = Math.abs(a[simdLength])))
+    const offset: usize = <usize>simdLength << 3
+    store<f64>(resultPtr + offset, Math.abs(load<f64>(aPtr + offset)))
   }
 }
 
@@ -288,20 +306,22 @@ export function simdAbsF64(
  * SIMD square root: result[i] = sqrt(a[i])
  */
 export function simdSqrtF64(
-  a: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     const vr = f64x2.sqrt(va)
-    v128.store(changetype<usize>(result.dataStart) + (i << 3), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   if (length & 1) {
-    unchecked((result[simdLength] = Math.sqrt(a[simdLength])))
+    const offset: usize = <usize>simdLength << 3
+    store<f64>(resultPtr + offset, Math.sqrt(load<f64>(aPtr + offset)))
   }
 }
 
@@ -309,20 +329,22 @@ export function simdSqrtF64(
  * SIMD negation: result[i] = -a[i]
  */
 export function simdNegF64(
-  a: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~1
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     const vr = f64x2.neg(va)
-    v128.store(changetype<usize>(result.dataStart) + (i << 3), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   if (length & 1) {
-    unchecked((result[simdLength] = -a[simdLength]))
+    const offset: usize = <usize>simdLength << 3
+    store<f64>(resultPtr + offset, -load<f64>(aPtr + offset))
   }
 }
 
@@ -335,9 +357,9 @@ export function simdNegF64(
  * A is m x n, x is n x 1, result is m x 1
  */
 export function simdMatVecMulF64(
-  A: Float64Array,
-  x: Float64Array,
-  result: Float64Array,
+  APtr: usize,
+  xPtr: usize,
+  resultPtr: usize,
   m: i32,
   n: i32
 ): void {
@@ -345,14 +367,13 @@ export function simdMatVecMulF64(
 
   for (let i: i32 = 0; i < m; i++) {
     let sum: v128 = f64x2.splat(0.0)
-    const rowOffset = i * n
+    const rowOffset: usize = <usize>(i * n) << 3
 
     // SIMD part
     for (let j: i32 = 0; j < simdN; j += 2) {
-      const va = v128.load(
-        changetype<usize>(A.dataStart) + ((rowOffset + j) << 3)
-      )
-      const vx = v128.load(changetype<usize>(x.dataStart) + (j << 3))
+      const colOffset: usize = <usize>j << 3
+      const va = v128.load(APtr + rowOffset + colOffset)
+      const vx = v128.load(xPtr + colOffset)
       sum = f64x2.add(sum, f64x2.mul(va, vx))
     }
 
@@ -360,10 +381,12 @@ export function simdMatVecMulF64(
 
     // Handle remaining column
     if (n & 1) {
-      rowSum += unchecked(A[rowOffset + simdN]) * unchecked(x[simdN])
+      const aOffset: usize = rowOffset + (<usize>simdN << 3)
+      const xOffset: usize = <usize>simdN << 3
+      rowSum += load<f64>(APtr + aOffset) * load<f64>(xPtr + xOffset)
     }
 
-    unchecked((result[i] = rowSum))
+    store<f64>(resultPtr + (<usize>i << 3), rowSum)
   }
 }
 
@@ -372,56 +395,56 @@ export function simdMatVecMulF64(
  * All matrices are m x n stored in row-major order
  */
 export function simdMatAddF64(
-  A: Float64Array,
-  B: Float64Array,
-  C: Float64Array,
+  APtr: usize,
+  BPtr: usize,
+  CPtr: usize,
   m: i32,
   n: i32
 ): void {
   const total = m * n
-  simdAddF64(A, B, C, total)
+  simdAddF64(APtr, BPtr, CPtr, total)
 }
 
 /**
  * SIMD matrix subtraction: C = A - B
  */
 export function simdMatSubF64(
-  A: Float64Array,
-  B: Float64Array,
-  C: Float64Array,
+  APtr: usize,
+  BPtr: usize,
+  CPtr: usize,
   m: i32,
   n: i32
 ): void {
   const total = m * n
-  simdSubF64(A, B, C, total)
+  simdSubF64(APtr, BPtr, CPtr, total)
 }
 
 /**
  * SIMD element-wise matrix multiplication (Hadamard product): C = A .* B
  */
 export function simdMatDotMulF64(
-  A: Float64Array,
-  B: Float64Array,
-  C: Float64Array,
+  APtr: usize,
+  BPtr: usize,
+  CPtr: usize,
   m: i32,
   n: i32
 ): void {
   const total = m * n
-  simdMulF64(A, B, C, total)
+  simdMulF64(APtr, BPtr, CPtr, total)
 }
 
 /**
  * SIMD scalar matrix multiplication: B = scalar * A
  */
 export function simdMatScaleF64(
-  A: Float64Array,
+  APtr: usize,
   scalar: f64,
-  B: Float64Array,
+  BPtr: usize,
   m: i32,
   n: i32
 ): void {
   const total = m * n
-  simdScaleF64(A, scalar, B, total)
+  simdScaleF64(APtr, scalar, BPtr, total)
 }
 
 /**
@@ -430,9 +453,9 @@ export function simdMatScaleF64(
  * Uses SIMD for the inner loop (dot product)
  */
 export function simdMatMulF64(
-  A: Float64Array,
-  B: Float64Array,
-  C: Float64Array,
+  APtr: usize,
+  BPtr: usize,
+  CPtr: usize,
   m: i32,
   k: i32,
   n: i32
@@ -440,8 +463,8 @@ export function simdMatMulF64(
   const simdK = k & ~1
 
   for (let i: i32 = 0; i < m; i++) {
-    const rowOffsetA = i * k
-    const rowOffsetC = i * n
+    const rowOffsetA: usize = <usize>(i * k) << 3
+    const rowOffsetC: usize = <usize>(i * n) << 3
 
     for (let j: i32 = 0; j < n; j++) {
       let sum: v128 = f64x2.splat(0.0)
@@ -449,12 +472,10 @@ export function simdMatMulF64(
       // SIMD inner product
       for (let p: i32 = 0; p < simdK; p += 2) {
         // Load 2 elements from row of A
-        const va = v128.load(
-          changetype<usize>(A.dataStart) + ((rowOffsetA + p) << 3)
-        )
+        const va = v128.load(APtr + rowOffsetA + (<usize>p << 3))
         // Load 2 elements from column of B (non-contiguous, so manual load)
-        const b0 = unchecked(B[p * n + j])
-        const b1 = unchecked(B[(p + 1) * n + j])
+        const b0 = load<f64>(BPtr + (<usize>(p * n + j) << 3))
+        const b1 = load<f64>(BPtr + (<usize>((p + 1) * n + j) << 3))
         const vb = f64x2.replace_lane(
           f64x2.replace_lane(f64x2.splat(0.0), 0, b0),
           1,
@@ -467,10 +488,12 @@ export function simdMatMulF64(
 
       // Handle remaining element
       if (k & 1) {
-        dotSum += unchecked(A[rowOffsetA + simdK]) * unchecked(B[simdK * n + j])
+        const aVal = load<f64>(APtr + rowOffsetA + (<usize>simdK << 3))
+        const bVal = load<f64>(BPtr + (<usize>(simdK * n + j) << 3))
+        dotSum += aVal * bVal
       }
 
-      unchecked((C[rowOffsetC + j] = dotSum))
+      store<f64>(CPtr + rowOffsetC + (<usize>j << 3), dotSum)
     }
   }
 }
@@ -481,8 +504,8 @@ export function simdMatMulF64(
  * Note: Transpose is memory-bound, SIMD helps less here
  */
 export function simdMatTransposeF64(
-  A: Float64Array,
-  B: Float64Array,
+  APtr: usize,
+  BPtr: usize,
   m: i32,
   n: i32
 ): void {
@@ -494,30 +517,36 @@ export function simdMatTransposeF64(
   for (let i: i32 = 0; i < m2; i += 2) {
     for (let j: i32 = 0; j < n2; j += 2) {
       // Load 2x2 block from A
-      const a00 = unchecked(A[i * n + j])
-      const a01 = unchecked(A[i * n + j + 1])
-      const a10 = unchecked(A[(i + 1) * n + j])
-      const a11 = unchecked(A[(i + 1) * n + j + 1])
+      const a00 = load<f64>(APtr + (<usize>(i * n + j) << 3))
+      const a01 = load<f64>(APtr + (<usize>(i * n + j + 1) << 3))
+      const a10 = load<f64>(APtr + (<usize>((i + 1) * n + j) << 3))
+      const a11 = load<f64>(APtr + (<usize>((i + 1) * n + j + 1) << 3))
 
       // Store transposed 2x2 block to B
-      unchecked((B[j * m + i] = a00))
-      unchecked((B[j * m + i + 1] = a10))
-      unchecked((B[(j + 1) * m + i] = a01))
-      unchecked((B[(j + 1) * m + i + 1] = a11))
+      store<f64>(BPtr + (<usize>(j * m + i) << 3), a00)
+      store<f64>(BPtr + (<usize>(j * m + i + 1) << 3), a10)
+      store<f64>(BPtr + (<usize>((j + 1) * m + i) << 3), a01)
+      store<f64>(BPtr + (<usize>((j + 1) * m + i + 1) << 3), a11)
     }
   }
 
   // Handle remaining rows
   for (let i: i32 = m2; i < m; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      unchecked((B[j * m + i] = A[i * n + j]))
+      store<f64>(
+        BPtr + (<usize>(j * m + i) << 3),
+        load<f64>(APtr + (<usize>(i * n + j) << 3))
+      )
     }
   }
 
   // Handle remaining columns
   for (let i: i32 = 0; i < m2; i++) {
     for (let j: i32 = n2; j < n; j++) {
-      unchecked((B[j * m + i] = A[i * n + j]))
+      store<f64>(
+        BPtr + (<usize>(j * m + i) << 3),
+        load<f64>(APtr + (<usize>(i * n + j) << 3))
+      )
     }
   }
 }
@@ -529,9 +558,9 @@ export function simdMatTransposeF64(
 /**
  * SIMD mean of array elements
  */
-export function simdMeanF64(a: Float64Array, length: i32): f64 {
+export function simdMeanF64(aPtr: usize, length: i32): f64 {
   if (length === 0) return f64.NaN
-  return simdSumF64(a, length) / f64(length)
+  return simdSumF64(aPtr, length) / f64(length)
 }
 
 /**
@@ -539,19 +568,20 @@ export function simdMeanF64(a: Float64Array, length: i32): f64 {
  * Uses two-pass algorithm for numerical stability
  */
 export function simdVarianceF64(
-  a: Float64Array,
+  aPtr: usize,
   length: i32,
   ddof: i32 = 0
 ): f64 {
   if (length <= ddof) return f64.NaN
 
-  const mean = simdMeanF64(a, length)
+  const mean = simdMeanF64(aPtr, length)
   const simdLength = length & ~1
   let sumSq: v128 = f64x2.splat(0.0)
   const vMean: v128 = f64x2.splat(mean)
 
   for (let i: i32 = 0; i < simdLength; i += 2) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 3))
+    const offset: usize = <usize>i << 3
+    const va = v128.load(aPtr + offset)
     const diff = f64x2.sub(va, vMean)
     sumSq = f64x2.add(sumSq, f64x2.mul(diff, diff))
   }
@@ -559,7 +589,7 @@ export function simdVarianceF64(
   let result = f64x2.extract_lane(sumSq, 0) + f64x2.extract_lane(sumSq, 1)
 
   if (length & 1) {
-    const diff = unchecked(a[simdLength]) - mean
+    const diff = load<f64>(aPtr + (<usize>simdLength << 3)) - mean
     result += diff * diff
   }
 
@@ -569,8 +599,8 @@ export function simdVarianceF64(
 /**
  * SIMD standard deviation
  */
-export function simdStdF64(a: Float64Array, length: i32, ddof: i32 = 0): f64 {
-  return Math.sqrt(simdVarianceF64(a, length, ddof))
+export function simdStdF64(aPtr: usize, length: i32, ddof: i32 = 0): f64 {
+  return Math.sqrt(simdVarianceF64(aPtr, length, ddof))
 }
 
 // ============================================================================
@@ -581,23 +611,25 @@ export function simdStdF64(a: Float64Array, length: i32, ddof: i32 = 0): f64 {
  * SIMD vector addition using f32x4 (4 elements at a time)
  */
 export function simdAddF32(
-  a: Float32Array,
-  b: Float32Array,
-  result: Float32Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~3 // Round down to multiple of 4
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 2))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 2))
+    const offset: usize = <usize>i << 2
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     const vr = f32x4.add(va, vb)
-    v128.store(changetype<usize>(result.dataStart) + (i << 2), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   // Handle remaining elements
   for (let i: i32 = simdLength; i < length; i++) {
-    unchecked((result[i] = a[i] + b[i]))
+    const offset: usize = <usize>i << 2
+    store<f32>(resultPtr + offset, load<f32>(aPtr + offset) + load<f32>(bPtr + offset))
   }
 }
 
@@ -605,35 +637,38 @@ export function simdAddF32(
  * SIMD vector multiplication using f32x4
  */
 export function simdMulF32(
-  a: Float32Array,
-  b: Float32Array,
-  result: Float32Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~3
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 2))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 2))
+    const offset: usize = <usize>i << 2
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     const vr = f32x4.mul(va, vb)
-    v128.store(changetype<usize>(result.dataStart) + (i << 2), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   for (let i: i32 = simdLength; i < length; i++) {
-    unchecked((result[i] = a[i] * b[i]))
+    const offset: usize = <usize>i << 2
+    store<f32>(resultPtr + offset, load<f32>(aPtr + offset) * load<f32>(bPtr + offset))
   }
 }
 
 /**
  * SIMD dot product using f32x4
  */
-export function simdDotF32(a: Float32Array, b: Float32Array, length: i32): f32 {
+export function simdDotF32(aPtr: usize, bPtr: usize, length: i32): f32 {
   const simdLength = length & ~3
   let sum: v128 = f32x4.splat(0.0)
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 2))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 2))
+    const offset: usize = <usize>i << 2
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     sum = f32x4.add(sum, f32x4.mul(va, vb))
   }
 
@@ -645,7 +680,8 @@ export function simdDotF32(a: Float32Array, b: Float32Array, length: i32): f32 {
     f32x4.extract_lane(sum, 3)
 
   for (let i: i32 = simdLength; i < length; i++) {
-    result += unchecked(a[i]) * unchecked(b[i])
+    const offset: usize = <usize>i << 2
+    result += load<f32>(aPtr + offset) * load<f32>(bPtr + offset)
   }
 
   return result
@@ -654,12 +690,13 @@ export function simdDotF32(a: Float32Array, b: Float32Array, length: i32): f32 {
 /**
  * SIMD sum using f32x4
  */
-export function simdSumF32(a: Float32Array, length: i32): f32 {
+export function simdSumF32(aPtr: usize, length: i32): f32 {
   const simdLength = length & ~3
   let sum: v128 = f32x4.splat(0.0)
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 2))
+    const offset: usize = <usize>i << 2
+    const va = v128.load(aPtr + offset)
     sum = f32x4.add(sum, va)
   }
 
@@ -670,7 +707,7 @@ export function simdSumF32(a: Float32Array, length: i32): f32 {
     f32x4.extract_lane(sum, 3)
 
   for (let i: i32 = simdLength; i < length; i++) {
-    result += unchecked(a[i])
+    result += load<f32>(aPtr + (<usize>i << 2))
   }
 
   return result
@@ -685,22 +722,24 @@ export function simdSumF32(a: Float32Array, length: i32): f32 {
  * SIMD integer vector addition
  */
 export function simdAddI32(
-  a: Int32Array,
-  b: Int32Array,
-  result: Int32Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~3
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 2))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 2))
+    const offset: usize = <usize>i << 2
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     const vr = i32x4.add(va, vb)
-    v128.store(changetype<usize>(result.dataStart) + (i << 2), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   for (let i: i32 = simdLength; i < length; i++) {
-    unchecked((result[i] = a[i] + b[i]))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) + load<i32>(bPtr + offset))
   }
 }
 
@@ -708,22 +747,24 @@ export function simdAddI32(
  * SIMD integer vector multiplication
  */
 export function simdMulI32(
-  a: Int32Array,
-  b: Int32Array,
-  result: Int32Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   const simdLength = length & ~3
 
   for (let i: i32 = 0; i < simdLength; i += 4) {
-    const va = v128.load(changetype<usize>(a.dataStart) + (i << 2))
-    const vb = v128.load(changetype<usize>(b.dataStart) + (i << 2))
+    const offset: usize = <usize>i << 2
+    const va = v128.load(aPtr + offset)
+    const vb = v128.load(bPtr + offset)
     const vr = i32x4.mul(va, vb)
-    v128.store(changetype<usize>(result.dataStart) + (i << 2), vr)
+    v128.store(resultPtr + offset, vr)
   }
 
   for (let i: i32 = simdLength; i < length; i++) {
-    unchecked((result[i] = a[i] * b[i]))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) * load<i32>(bPtr + offset))
   }
 }
 
@@ -737,20 +778,20 @@ export function simdMulI32(
  * (a + bi)(c + di) = (ac - bd) + (ad + bc)i
  */
 export function simdComplexMulF64(
-  a: Float64Array,
-  b: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   count: i32
 ): void {
   for (let i: i32 = 0; i < count; i++) {
-    const idx = i * 2
-    const aRe = unchecked(a[idx])
-    const aIm = unchecked(a[idx + 1])
-    const bRe = unchecked(b[idx])
-    const bIm = unchecked(b[idx + 1])
+    const offset: usize = <usize>(i * 2) << 3
+    const aRe = load<f64>(aPtr + offset)
+    const aIm = load<f64>(aPtr + offset + 8)
+    const bRe = load<f64>(bPtr + offset)
+    const bIm = load<f64>(bPtr + offset + 8)
 
-    unchecked((result[idx] = aRe * bRe - aIm * bIm))
-    unchecked((result[idx + 1] = aRe * bIm + aIm * bRe))
+    store<f64>(resultPtr + offset, aRe * bRe - aIm * bIm)
+    store<f64>(resultPtr + offset + 8, aRe * bIm + aIm * bRe)
   }
 }
 
@@ -758,13 +799,13 @@ export function simdComplexMulF64(
  * SIMD complex addition
  */
 export function simdComplexAddF64(
-  a: Float64Array,
-  b: Float64Array,
-  result: Float64Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   count: i32
 ): void {
   // Complex numbers are just pairs of f64, so we can use regular SIMD add
-  simdAddF64(a, b, result, count * 2)
+  simdAddF64(aPtr, bPtr, resultPtr, count * 2)
 }
 
 // ============================================================================

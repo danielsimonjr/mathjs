@@ -1,9 +1,10 @@
-// @ts-nocheck
 /**
  * WASM-optimized bitwise operations
  *
  * These functions provide WASM-accelerated implementations of bitwise
  * operations on 32-bit integers.
+ *
+ * All array functions use raw memory pointers (usize) for proper WASM/JS interop.
  *
  * Performance: 2-3x faster than JavaScript for bitwise operations
  */
@@ -79,125 +80,132 @@ export function rightLogShift(x: i32, y: i32): i32 {
 
 /**
  * Vectorized bitwise AND
- * @param a First array
- * @param b Second array
- * @param result Output array
+ * @param aPtr Pointer to first array (i32)
+ * @param bPtr Pointer to second array (i32)
+ * @param resultPtr Pointer to output array (i32)
  * @param length Array length
  */
 export function bitAndArray(
-  a: Int32Array,
-  b: Int32Array,
-  result: Int32Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((result[i] = unchecked(a[i]) & unchecked(b[i])))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) & load<i32>(bPtr + offset))
   }
 }
 
 /**
  * Vectorized bitwise OR
- * @param a First array
- * @param b Second array
- * @param result Output array
+ * @param aPtr Pointer to first array (i32)
+ * @param bPtr Pointer to second array (i32)
+ * @param resultPtr Pointer to output array (i32)
  * @param length Array length
  */
 export function bitOrArray(
-  a: Int32Array,
-  b: Int32Array,
-  result: Int32Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((result[i] = unchecked(a[i]) | unchecked(b[i])))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) | load<i32>(bPtr + offset))
   }
 }
 
 /**
  * Vectorized bitwise XOR
- * @param a First array
- * @param b Second array
- * @param result Output array
+ * @param aPtr Pointer to first array (i32)
+ * @param bPtr Pointer to second array (i32)
+ * @param resultPtr Pointer to output array (i32)
  * @param length Array length
  */
 export function bitXorArray(
-  a: Int32Array,
-  b: Int32Array,
-  result: Int32Array,
+  aPtr: usize,
+  bPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((result[i] = unchecked(a[i]) ^ unchecked(b[i])))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) ^ load<i32>(bPtr + offset))
   }
 }
 
 /**
  * Vectorized bitwise NOT
- * @param input Input array
- * @param result Output array
+ * @param inputPtr Pointer to input array (i32)
+ * @param resultPtr Pointer to output array (i32)
  * @param length Array length
  */
 export function bitNotArray(
-  input: Int32Array,
-  result: Int32Array,
+  inputPtr: usize,
+  resultPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((result[i] = ~unchecked(input[i])))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, ~load<i32>(inputPtr + offset))
   }
 }
 
 /**
  * Vectorized left shift
- * @param values Values to shift
+ * @param valuesPtr Pointer to values to shift (i32)
  * @param shift Number of positions
- * @param result Output array
+ * @param resultPtr Pointer to output array (i32)
  * @param length Array length
  */
 export function leftShiftArray(
-  values: Int32Array,
+  valuesPtr: usize,
   shift: i32,
-  result: Int32Array,
+  resultPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((result[i] = unchecked(values[i]) << shift))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(valuesPtr + offset) << shift)
   }
 }
 
 /**
  * Vectorized right arithmetic shift
- * @param values Values to shift
+ * @param valuesPtr Pointer to values to shift (i32)
  * @param shift Number of positions
- * @param result Output array
+ * @param resultPtr Pointer to output array (i32)
  * @param length Array length
  */
 export function rightArithShiftArray(
-  values: Int32Array,
+  valuesPtr: usize,
   shift: i32,
-  result: Int32Array,
+  resultPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((result[i] = unchecked(values[i]) >> shift))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(valuesPtr + offset) >> shift)
   }
 }
 
 /**
  * Vectorized right logical shift
- * @param values Values to shift
+ * @param valuesPtr Pointer to values to shift (i32)
  * @param shift Number of positions
- * @param result Output array
+ * @param resultPtr Pointer to output array (i32)
  * @param length Array length
  */
 export function rightLogShiftArray(
-  values: Int32Array,
+  valuesPtr: usize,
   shift: i32,
-  result: Int32Array,
+  resultPtr: usize,
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((result[i] = unchecked(values[i]) >>> shift))
+    const offset: usize = <usize>i << 2
+    store<i32>(resultPtr + offset, load<i32>(valuesPtr + offset) >>> shift)
   }
 }
 

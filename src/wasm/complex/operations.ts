@@ -1,6 +1,8 @@
 /**
  * WASM-optimized complex number operations using AssemblyScript
- * Complex numbers are represented as Float64Array pairs [real, imag]
+ * Complex numbers are represented as interleaved pairs [real, imag]
+ *
+ * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
 
 /**
@@ -15,50 +17,43 @@ export function arg(re: f64, im: f64): f64 {
 
 /**
  * Compute the argument for an array of complex numbers
- * @param data - Interleaved array [re0, im0, re1, im1, ...]
- * @returns Array of arguments
+ * @param dataPtr - Pointer to interleaved array [re0, im0, re1, im1, ...]
+ * @param len - Number of complex numbers
+ * @param resultPtr - Pointer to output array of arguments
  */
-export function argArray(data: Float64Array): Float64Array {
-  const len: i32 = data.length / 2
-  const result = new Float64Array(len)
-
+export function argArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    const re: f64 = data[i * 2]
-    const im: f64 = data[i * 2 + 1]
-    result[i] = Math.atan2(im, re)
+    const srcOffset: usize = <usize>(i << 1) << 3
+    const dstOffset: usize = <usize>i << 3
+    const re: f64 = load<f64>(dataPtr + srcOffset)
+    const im: f64 = load<f64>(dataPtr + srcOffset + 8)
+    store<f64>(resultPtr + dstOffset, Math.atan2(im, re))
   }
-
-  return result
 }
 
 /**
- * Compute the complex conjugate
+ * Compute the complex conjugate and store in result
  * @param re - Real part
  * @param im - Imaginary part
- * @returns [real, -imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, -imag]
  */
-export function conj(re: f64, im: f64): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = re
-  result[1] = -im
-  return result
+export function conj(re: f64, im: f64, resultPtr: usize): void {
+  store<f64>(resultPtr, re)
+  store<f64>(resultPtr + 8, -im)
 }
 
 /**
  * Compute the complex conjugate for an array of complex numbers
- * @param data - Interleaved array [re0, im0, re1, im1, ...]
- * @returns Conjugated array
+ * @param dataPtr - Pointer to interleaved array [re0, im0, re1, im1, ...]
+ * @param len - Number of complex numbers
+ * @param resultPtr - Pointer to output conjugated array
  */
-export function conjArray(data: Float64Array): Float64Array {
-  const len: i32 = data.length
-  const result = new Float64Array(len)
-
-  for (let i: i32 = 0; i < len; i += 2) {
-    result[i] = data[i] // real part unchanged
-    result[i + 1] = -data[i + 1] // imaginary part negated
+export function conjArray(dataPtr: usize, len: i32, resultPtr: usize): void {
+  for (let i: i32 = 0; i < len; i++) {
+    const offset: usize = <usize>(i << 1) << 3
+    store<f64>(resultPtr + offset, load<f64>(dataPtr + offset)) // real part unchanged
+    store<f64>(resultPtr + offset + 8, -load<f64>(dataPtr + offset + 8)) // imaginary part negated
   }
-
-  return result
 }
 
 /**
@@ -73,18 +68,16 @@ export function re(re: f64, im: f64): f64 {
 
 /**
  * Get the real parts from an array of complex numbers
- * @param data - Interleaved array [re0, im0, re1, im1, ...]
- * @returns Array of real parts
+ * @param dataPtr - Pointer to interleaved array [re0, im0, re1, im1, ...]
+ * @param len - Number of complex numbers
+ * @param resultPtr - Pointer to output array of real parts
  */
-export function reArray(data: Float64Array): Float64Array {
-  const len: i32 = data.length / 2
-  const result = new Float64Array(len)
-
+export function reArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    result[i] = data[i * 2]
+    const srcOffset: usize = <usize>(i << 1) << 3
+    const dstOffset: usize = <usize>i << 3
+    store<f64>(resultPtr + dstOffset, load<f64>(dataPtr + srcOffset))
   }
-
-  return result
 }
 
 /**
@@ -99,18 +92,16 @@ export function im(re: f64, im: f64): f64 {
 
 /**
  * Get the imaginary parts from an array of complex numbers
- * @param data - Interleaved array [re0, im0, re1, im1, ...]
- * @returns Array of imaginary parts
+ * @param dataPtr - Pointer to interleaved array [re0, im0, re1, im1, ...]
+ * @param len - Number of complex numbers
+ * @param resultPtr - Pointer to output array of imaginary parts
  */
-export function imArray(data: Float64Array): Float64Array {
-  const len: i32 = data.length / 2
-  const result = new Float64Array(len)
-
+export function imArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    result[i] = data[i * 2 + 1]
+    const srcOffset: usize = <usize>(i << 1) << 3 + 8
+    const dstOffset: usize = <usize>i << 3
+    store<f64>(resultPtr + dstOffset, load<f64>(dataPtr + srcOffset))
   }
-
-  return result
 }
 
 /**
@@ -125,20 +116,18 @@ export function abs(re: f64, im: f64): f64 {
 
 /**
  * Compute absolute values for an array of complex numbers
- * @param data - Interleaved array [re0, im0, re1, im1, ...]
- * @returns Array of magnitudes
+ * @param dataPtr - Pointer to interleaved array [re0, im0, re1, im1, ...]
+ * @param len - Number of complex numbers
+ * @param resultPtr - Pointer to output array of magnitudes
  */
-export function absArray(data: Float64Array): Float64Array {
-  const len: i32 = data.length / 2
-  const result = new Float64Array(len)
-
+export function absArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    const re: f64 = data[i * 2]
-    const im: f64 = data[i * 2 + 1]
-    result[i] = Math.sqrt(re * re + im * im)
+    const srcOffset: usize = <usize>(i << 1) << 3
+    const dstOffset: usize = <usize>i << 3
+    const re: f64 = load<f64>(dataPtr + srcOffset)
+    const im: f64 = load<f64>(dataPtr + srcOffset + 8)
+    store<f64>(resultPtr + dstOffset, Math.sqrt(re * re + im * im))
   }
-
-  return result
 }
 
 /**
@@ -147,18 +136,17 @@ export function absArray(data: Float64Array): Float64Array {
  * @param im1 - Imaginary part of first number
  * @param re2 - Real part of second number
  * @param im2 - Imaginary part of second number
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
 export function addComplex(
   re1: f64,
   im1: f64,
   re2: f64,
-  im2: f64
-): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = re1 + re2
-  result[1] = im1 + im2
-  return result
+  im2: f64,
+  resultPtr: usize
+): void {
+  store<f64>(resultPtr, re1 + re2)
+  store<f64>(resultPtr + 8, im1 + im2)
 }
 
 /**
@@ -167,18 +155,17 @@ export function addComplex(
  * @param im1 - Imaginary part of first number
  * @param re2 - Real part of second number
  * @param im2 - Imaginary part of second number
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
 export function subComplex(
   re1: f64,
   im1: f64,
   re2: f64,
-  im2: f64
-): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = re1 - re2
-  result[1] = im1 - im2
-  return result
+  im2: f64,
+  resultPtr: usize
+): void {
+  store<f64>(resultPtr, re1 - re2)
+  store<f64>(resultPtr + 8, im1 - im2)
 }
 
 /**
@@ -188,18 +175,17 @@ export function subComplex(
  * @param im1 - Imaginary part of first number
  * @param re2 - Real part of second number
  * @param im2 - Imaginary part of second number
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
 export function mulComplex(
   re1: f64,
   im1: f64,
   re2: f64,
-  im2: f64
-): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = re1 * re2 - im1 * im2
-  result[1] = re1 * im2 + im1 * re2
-  return result
+  im2: f64,
+  resultPtr: usize
+): void {
+  store<f64>(resultPtr, re1 * re2 - im1 * im2)
+  store<f64>(resultPtr + 8, re1 * im2 + im1 * re2)
 }
 
 /**
@@ -209,59 +195,53 @@ export function mulComplex(
  * @param im1 - Imaginary part of first number
  * @param re2 - Real part of second number
  * @param im2 - Imaginary part of second number
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
 export function divComplex(
   re1: f64,
   im1: f64,
   re2: f64,
-  im2: f64
-): Float64Array {
-  const result = new Float64Array(2)
+  im2: f64,
+  resultPtr: usize
+): void {
   const denom: f64 = re2 * re2 + im2 * im2
-  result[0] = (re1 * re2 + im1 * im2) / denom
-  result[1] = (im1 * re2 - re1 * im2) / denom
-  return result
+  store<f64>(resultPtr, (re1 * re2 + im1 * im2) / denom)
+  store<f64>(resultPtr + 8, (im1 * re2 - re1 * im2) / denom)
 }
 
 /**
  * Compute the square root of a complex number
  * @param re - Real part
  * @param im - Imaginary part
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
-export function sqrtComplex(re: f64, im: f64): Float64Array {
-  const result = new Float64Array(2)
+export function sqrtComplex(re: f64, im: f64, resultPtr: usize): void {
   const r: f64 = Math.sqrt(re * re + im * im)
 
   if (im === 0.0) {
     if (re >= 0.0) {
-      result[0] = Math.sqrt(re)
-      result[1] = 0.0
+      store<f64>(resultPtr, Math.sqrt(re))
+      store<f64>(resultPtr + 8, 0.0)
     } else {
-      result[0] = 0.0
-      result[1] = Math.sqrt(-re)
+      store<f64>(resultPtr, 0.0)
+      store<f64>(resultPtr + 8, Math.sqrt(-re))
     }
   } else {
-    result[0] = Math.sqrt((r + re) / 2.0)
-    result[1] = (im >= 0.0 ? 1.0 : -1.0) * Math.sqrt((r - re) / 2.0)
+    store<f64>(resultPtr, Math.sqrt((r + re) / 2.0))
+    store<f64>(resultPtr + 8, (im >= 0.0 ? 1.0 : -1.0) * Math.sqrt((r - re) / 2.0))
   }
-
-  return result
 }
 
 /**
  * Compute e^(a + bi) = e^a * (cos(b) + i*sin(b))
  * @param re - Real part
  * @param im - Imaginary part
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
-export function expComplex(re: f64, im: f64): Float64Array {
-  const result = new Float64Array(2)
+export function expComplex(re: f64, im: f64, resultPtr: usize): void {
   const expRe: f64 = Math.exp(re)
-  result[0] = expRe * Math.cos(im)
-  result[1] = expRe * Math.sin(im)
-  return result
+  store<f64>(resultPtr, expRe * Math.cos(im))
+  store<f64>(resultPtr + 8, expRe * Math.sin(im))
 }
 
 /**
@@ -269,13 +249,11 @@ export function expComplex(re: f64, im: f64): Float64Array {
  * log(a + bi) = log(|z|) + i*arg(z)
  * @param re - Real part
  * @param im - Imaginary part
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
-export function logComplex(re: f64, im: f64): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = Math.log(Math.sqrt(re * re + im * im))
-  result[1] = Math.atan2(im, re)
-  return result
+export function logComplex(re: f64, im: f64, resultPtr: usize): void {
+  store<f64>(resultPtr, Math.log(Math.sqrt(re * re + im * im)))
+  store<f64>(resultPtr + 8, Math.atan2(im, re))
 }
 
 /**
@@ -283,13 +261,11 @@ export function logComplex(re: f64, im: f64): Float64Array {
  * sin(a + bi) = sin(a)cosh(b) + i*cos(a)sinh(b)
  * @param re - Real part
  * @param im - Imaginary part
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
-export function sinComplex(re: f64, im: f64): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = Math.sin(re) * Math.cosh(im)
-  result[1] = Math.cos(re) * Math.sinh(im)
-  return result
+export function sinComplex(re: f64, im: f64, resultPtr: usize): void {
+  store<f64>(resultPtr, Math.sin(re) * Math.cosh(im))
+  store<f64>(resultPtr + 8, Math.cos(re) * Math.sinh(im))
 }
 
 /**
@@ -297,13 +273,11 @@ export function sinComplex(re: f64, im: f64): Float64Array {
  * cos(a + bi) = cos(a)cosh(b) - i*sin(a)sinh(b)
  * @param re - Real part
  * @param im - Imaginary part
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
-export function cosComplex(re: f64, im: f64): Float64Array {
-  const result = new Float64Array(2)
-  result[0] = Math.cos(re) * Math.cosh(im)
-  result[1] = -Math.sin(re) * Math.sinh(im)
-  return result
+export function cosComplex(re: f64, im: f64, resultPtr: usize): void {
+  store<f64>(resultPtr, Math.cos(re) * Math.cosh(im))
+  store<f64>(resultPtr + 8, -Math.sin(re) * Math.sinh(im))
 }
 
 /**
@@ -311,15 +285,17 @@ export function cosComplex(re: f64, im: f64): Float64Array {
  * tan(z) = sin(z) / cos(z)
  * @param re - Real part
  * @param im - Imaginary part
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
-export function tanComplex(re: f64, im: f64): Float64Array {
+export function tanComplex(re: f64, im: f64, resultPtr: usize): void {
   const sinRe: f64 = Math.sin(re) * Math.cosh(im)
   const sinIm: f64 = Math.cos(re) * Math.sinh(im)
   const cosRe: f64 = Math.cos(re) * Math.cosh(im)
   const cosIm: f64 = -Math.sin(re) * Math.sinh(im)
 
-  return divComplex(sinRe, sinIm, cosRe, cosIm)
+  const denom: f64 = cosRe * cosRe + cosIm * cosIm
+  store<f64>(resultPtr, (sinRe * cosRe + sinIm * cosIm) / denom)
+  store<f64>(resultPtr + 8, (sinIm * cosRe - sinRe * cosIm) / denom)
 }
 
 /**
@@ -328,16 +304,14 @@ export function tanComplex(re: f64, im: f64): Float64Array {
  * @param re - Real part
  * @param im - Imaginary part
  * @param n - Power (real number)
- * @returns [real, imag] as Float64Array
+ * @param resultPtr - Pointer to output [real, imag]
  */
-export function powComplexReal(re: f64, im: f64, n: f64): Float64Array {
-  const result = new Float64Array(2)
+export function powComplexReal(re: f64, im: f64, n: f64, resultPtr: usize): void {
   const r: f64 = Math.sqrt(re * re + im * im)
   const theta: f64 = Math.atan2(im, re)
   const rn: f64 = Math.pow(r, n)
   const ntheta: f64 = n * theta
 
-  result[0] = rn * Math.cos(ntheta)
-  result[1] = rn * Math.sin(ntheta)
-  return result
+  store<f64>(resultPtr, rn * Math.cos(ntheta))
+  store<f64>(resultPtr + 8, rn * Math.sin(ntheta))
 }

@@ -1,24 +1,30 @@
 /**
- * WASM-optimized statistics operations
+ * WASM-optimized statistics operations using raw memory pointers
  *
  * These functions provide WASM-accelerated implementations of statistical
  * calculations for arrays and matrices.
  *
+ * All functions use raw memory pointers (usize) for array parameters to ensure
+ * proper interop with JavaScript/TypeScript callers via WasmLoader.
+ *
  * Performance: 3-6x faster than JavaScript for large datasets
  */
 
+// Size of f64 in bytes
+const F64_SIZE: usize = 8
+
 /**
  * Calculate mean (average) of an array
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Mean value
  */
-export function mean(data: Float64Array, length: i32): f64 {
+export function mean(dataPtr: usize, length: i32): f64 {
   if (length === 0) return 0
 
   let sum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    sum += unchecked(data[i])
+    sum += load<f64>(dataPtr + (<usize>i << 3))
   }
   return sum / f64(length)
 }
@@ -26,98 +32,97 @@ export function mean(data: Float64Array, length: i32): f64 {
 /**
  * Calculate median of a sorted array
  * Note: Array must be pre-sorted
- * @param data Input array (must be sorted)
+ * @param dataPtr Pointer to Float64Array data (must be sorted)
  * @param length Length of array
  * @returns Median value
  */
-export function median(data: Float64Array, length: i32): f64 {
+export function median(dataPtr: usize, length: i32): f64 {
   if (length === 0) return 0
-  if (length === 1) return unchecked(data[0])
+  if (length === 1) return load<f64>(dataPtr)
 
   const mid = length >> 1
   if (length & 1) {
     // Odd length
-    return unchecked(data[mid])
+    return load<f64>(dataPtr + (<usize>mid << 3))
   } else {
     // Even length
-    return (unchecked(data[mid - 1]) + unchecked(data[mid])) / 2.0
+    return (load<f64>(dataPtr + (<usize>(mid - 1) << 3)) + load<f64>(dataPtr + (<usize>mid << 3))) / 2.0
   }
 }
 
 /**
  * Calculate variance of an array
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
- * @param bias If true, use biased estimator (divide by n), otherwise unbiased (divide by n-1)
+ * @param ddof Delta degrees of freedom (0 for biased, 1 for unbiased)
  * @returns Variance
  */
-export function variance(data: Float64Array, length: i32, bias: boolean): f64 {
+export function variance(dataPtr: usize, length: i32, ddof: i32): f64 {
   if (length === 0) return 0
-  if (length === 1) return bias ? 0 : NaN
+  if (length <= ddof) return NaN
 
-  const m = mean(data, length)
+  const m = mean(dataPtr, length)
   let sumSquares: f64 = 0
 
   for (let i: i32 = 0; i < length; i++) {
-    const diff = unchecked(data[i]) - m
+    const diff = load<f64>(dataPtr + (<usize>i << 3)) - m
     sumSquares += diff * diff
   }
 
-  const divisor = bias ? f64(length) : f64(length - 1)
-  return sumSquares / divisor
+  return sumSquares / f64(length - ddof)
 }
 
 /**
  * Calculate standard deviation
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
- * @param bias If true, use biased estimator
+ * @param ddof Delta degrees of freedom (0 for biased, 1 for unbiased)
  * @returns Standard deviation
  */
-export function std(data: Float64Array, length: i32, bias: boolean): f64 {
-  return Math.sqrt(variance(data, length, bias))
+export function std(dataPtr: usize, length: i32, ddof: i32): f64 {
+  return Math.sqrt(variance(dataPtr, length, ddof))
 }
 
 /**
  * Calculate sum of array
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Sum of all elements
  */
-export function sum(data: Float64Array, length: i32): f64 {
+export function sum(dataPtr: usize, length: i32): f64 {
   let total: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    total += unchecked(data[i])
+    total += load<f64>(dataPtr + (<usize>i << 3))
   }
   return total
 }
 
 /**
  * Calculate product of array
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Product of all elements
  */
-export function prod(data: Float64Array, length: i32): f64 {
+export function prod(dataPtr: usize, length: i32): f64 {
   let product: f64 = 1
   for (let i: i32 = 0; i < length; i++) {
-    product *= unchecked(data[i])
+    product *= load<f64>(dataPtr + (<usize>i << 3))
   }
   return product
 }
 
 /**
  * Find minimum value in array
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Minimum value
  */
-export function min(data: Float64Array, length: i32): f64 {
+export function min(dataPtr: usize, length: i32): f64 {
   if (length === 0) return NaN
 
-  let minVal = unchecked(data[0])
+  let minVal = load<f64>(dataPtr)
   for (let i: i32 = 1; i < length; i++) {
-    const val = unchecked(data[i])
+    const val = load<f64>(dataPtr + (<usize>i << 3))
     if (val < minVal) minVal = val
   }
   return minVal
@@ -125,16 +130,16 @@ export function min(data: Float64Array, length: i32): f64 {
 
 /**
  * Find maximum value in array
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Maximum value
  */
-export function max(data: Float64Array, length: i32): f64 {
+export function max(dataPtr: usize, length: i32): f64 {
   if (length === 0) return NaN
 
-  let maxVal = unchecked(data[0])
+  let maxVal = load<f64>(dataPtr)
   for (let i: i32 = 1; i < length; i++) {
-    const val = unchecked(data[i])
+    const val = load<f64>(dataPtr + (<usize>i << 3))
     if (val > maxVal) maxVal = val
   }
   return maxVal
@@ -142,71 +147,98 @@ export function max(data: Float64Array, length: i32): f64 {
 
 /**
  * Calculate cumulative sum (in-place)
- * @param data Input/output array
+ * @param dataPtr Pointer to Float64Array data (modified in-place)
  * @param length Length of array
  */
-export function cumsum(data: Float64Array, length: i32): void {
+export function cumsum(dataPtr: usize, length: i32): void {
   if (length === 0) return
 
   for (let i: i32 = 1; i < length; i++) {
-    unchecked((data[i] += unchecked(data[i - 1])))
+    const prev = load<f64>(dataPtr + (<usize>(i - 1) << 3))
+    const curr = load<f64>(dataPtr + (<usize>i << 3))
+    store<f64>(dataPtr + (<usize>i << 3), prev + curr)
   }
 }
 
 /**
- * Calculate cumulative sum (to separate output)
- * @param input Input array
- * @param output Output array
- * @param length Length of arrays
+ * Quicksort for raw f64 array (in-place)
+ * @param dataPtr Pointer to Float64Array data
+ * @param left Left index
+ * @param right Right index
  */
-export function cumsumCopy(
-  input: Float64Array,
-  output: Float64Array,
-  length: i32
-): void {
-  if (length === 0) return
+function quicksortRaw(dataPtr: usize, left: i32, right: i32): void {
+  if (left >= right) return
 
-  unchecked((output[0] = unchecked(input[0])))
-  for (let i: i32 = 1; i < length; i++) {
-    unchecked((output[i] = unchecked(output[i - 1]) + unchecked(input[i])))
+  const pivotIndex = partitionRaw(dataPtr, left, right)
+  quicksortRaw(dataPtr, left, pivotIndex - 1)
+  quicksortRaw(dataPtr, pivotIndex + 1, right)
+}
+
+/**
+ * Partition helper for quicksort
+ */
+function partitionRaw(dataPtr: usize, left: i32, right: i32): i32 {
+  const pivot = load<f64>(dataPtr + (<usize>right << 3))
+  let i = left - 1
+
+  for (let j: i32 = left; j < right; j++) {
+    if (load<f64>(dataPtr + (<usize>j << 3)) <= pivot) {
+      i++
+      // Swap
+      const temp = load<f64>(dataPtr + (<usize>i << 3))
+      store<f64>(dataPtr + (<usize>i << 3), load<f64>(dataPtr + (<usize>j << 3)))
+      store<f64>(dataPtr + (<usize>j << 3), temp)
+    }
   }
+
+  // Swap pivot
+  const temp = load<f64>(dataPtr + (<usize>(i + 1) << 3))
+  store<f64>(dataPtr + (<usize>(i + 1) << 3), load<f64>(dataPtr + (<usize>right << 3)))
+  store<f64>(dataPtr + (<usize>right << 3), temp)
+
+  return i + 1
 }
 
 /**
  * Calculate median absolute deviation (MAD)
  * MAD = median(|x - median(x)|)
- * Note: Input array will be modified (sorted)
- * @param data Input array (will be modified)
+ * @param dataPtr Pointer to Float64Array data (will be modified - sorted)
  * @param length Length of array
+ * @param workPtr Pointer to work buffer (must be same size as data)
  * @returns MAD value
  */
-export function mad(data: Float64Array, length: i32): f64 {
+export function mad(dataPtr: usize, length: i32, workPtr: usize): f64 {
   if (length === 0) return 0
 
-  // Calculate median (requires sorting)
-  quicksort(data, 0, length - 1)
-  const med = median(data, length)
-
-  // Calculate absolute deviations
-  const deviations = new Float64Array(length)
+  // Copy data to work buffer for sorting
   for (let i: i32 = 0; i < length; i++) {
-    unchecked((deviations[i] = Math.abs(unchecked(data[i]) - med)))
+    store<f64>(workPtr + (<usize>i << 3), load<f64>(dataPtr + (<usize>i << 3)))
+  }
+
+  // Sort work buffer and get median
+  quicksortRaw(workPtr, 0, length - 1)
+  const med = median(workPtr, length)
+
+  // Calculate absolute deviations in work buffer
+  for (let i: i32 = 0; i < length; i++) {
+    const val = load<f64>(dataPtr + (<usize>i << 3))
+    store<f64>(workPtr + (<usize>i << 3), Math.abs(val - med))
   }
 
   // Sort deviations and find median
-  quicksort(deviations, 0, length - 1)
-  return median(deviations, length)
+  quicksortRaw(workPtr, 0, length - 1)
+  return median(workPtr, length)
 }
 
 /**
  * Calculate quantile (percentile)
  * Note: Array must be pre-sorted
- * @param data Input array (must be sorted)
+ * @param dataPtr Pointer to Float64Array data (must be sorted)
  * @param length Length of array
  * @param p Probability (0 to 1)
  * @returns Quantile value
  */
-export function quantile(data: Float64Array, length: i32, p: f64): f64 {
+export function quantile(dataPtr: usize, length: i32, p: f64): f64 {
   if (length === 0) return NaN
   if (p < 0 || p > 1) return NaN
 
@@ -215,148 +247,56 @@ export function quantile(data: Float64Array, length: i32, p: f64): f64 {
   const upper = i32(Math.ceil(index))
 
   if (lower === upper) {
-    return unchecked(data[lower])
+    return load<f64>(dataPtr + (<usize>lower << 3))
   }
 
   const fraction = index - f64(lower)
-  return (
-    unchecked(data[lower]) * (1 - fraction) + unchecked(data[upper]) * fraction
-  )
-}
-
-/**
- * Quicksort for Float64Array (in-place)
- * @param arr Array to sort
- * @param left Left index
- * @param right Right index
- */
-function quicksort(arr: Float64Array, left: i32, right: i32): void {
-  if (left >= right) return
-
-  const pivotIndex = partition(arr, left, right)
-  quicksort(arr, left, pivotIndex - 1)
-  quicksort(arr, pivotIndex + 1, right)
-}
-
-/**
- * Partition helper for quicksort
- */
-function partition(arr: Float64Array, left: i32, right: i32): i32 {
-  const pivot = unchecked(arr[right])
-  let i = left - 1
-
-  for (let j: i32 = left; j < right; j++) {
-    if (unchecked(arr[j]) <= pivot) {
-      i++
-      // Swap
-      const temp = unchecked(arr[i])
-      unchecked((arr[i] = unchecked(arr[j])))
-      unchecked((arr[j] = temp))
-    }
-  }
-
-  // Swap pivot
-  const temp = unchecked(arr[i + 1])
-  unchecked((arr[i + 1] = unchecked(arr[right])))
-  unchecked((arr[right] = temp))
-
-  return i + 1
-}
-
-/**
- * Calculate mode (most frequent value)
- * Note: For continuous data, this bins values with tolerance
- * Array must be pre-sorted
- * @param data Input array (must be sorted)
- * @param length Length of array
- * @param tolerance Values within this tolerance are considered equal
- * @returns Mode value
- */
-export function mode(data: Float64Array, length: i32, tolerance: f64): f64 {
-  if (length === 0) return NaN
-  if (length === 1) return unchecked(data[0])
-
-  let maxCount: i32 = 1
-  let currentCount: i32 = 1
-  let modeValue = unchecked(data[0])
-  let currentValue = unchecked(data[0])
-
-  for (let i: i32 = 1; i < length; i++) {
-    const val = unchecked(data[i])
-
-    if (Math.abs(val - currentValue) <= tolerance) {
-      currentCount++
-    } else {
-      if (currentCount > maxCount) {
-        maxCount = currentCount
-        modeValue = currentValue
-      }
-      currentValue = val
-      currentCount = 1
-    }
-  }
-
-  // Check last group
-  if (currentCount > maxCount) {
-    modeValue = currentValue
-  }
-
-  return modeValue
+  return load<f64>(dataPtr + (<usize>lower << 3)) * (1 - fraction) + load<f64>(dataPtr + (<usize>upper << 3)) * fraction
 }
 
 /**
  * Calculate covariance between two arrays
- * @param x First array
- * @param y Second array
+ * @param xPtr Pointer to first Float64Array
+ * @param yPtr Pointer to second Float64Array
  * @param length Length of arrays
- * @param bias If true, use biased estimator (divide by n)
+ * @param ddof Delta degrees of freedom
  * @returns Covariance
  */
-export function covariance(
-  x: Float64Array,
-  y: Float64Array,
-  length: i32,
-  bias: boolean
-): f64 {
+export function covariance(xPtr: usize, yPtr: usize, length: i32, ddof: i32): f64 {
   if (length === 0) return NaN
-  if (length === 1) return bias ? 0 : NaN
+  if (length <= ddof) return NaN
 
-  const meanX = mean(x, length)
-  const meanY = mean(y, length)
+  const meanX = mean(xPtr, length)
+  const meanY = mean(yPtr, length)
 
   let sumProd: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    sumProd += (unchecked(x[i]) - meanX) * (unchecked(y[i]) - meanY)
+    sumProd += (load<f64>(xPtr + (<usize>i << 3)) - meanX) * (load<f64>(yPtr + (<usize>i << 3)) - meanY)
   }
 
-  const divisor = bias ? f64(length) : f64(length - 1)
-  return sumProd / divisor
+  return sumProd / f64(length - ddof)
 }
 
 /**
  * Calculate Pearson correlation coefficient
- * @param x First array
- * @param y Second array
+ * @param xPtr Pointer to first Float64Array
+ * @param yPtr Pointer to second Float64Array
  * @param length Length of arrays
  * @returns Correlation coefficient (-1 to 1)
  */
-export function correlation(
-  x: Float64Array,
-  y: Float64Array,
-  length: i32
-): f64 {
+export function correlation(xPtr: usize, yPtr: usize, length: i32): f64 {
   if (length === 0) return NaN
 
-  const meanX = mean(x, length)
-  const meanY = mean(y, length)
+  const meanX = mean(xPtr, length)
+  const meanY = mean(yPtr, length)
 
   let sumXY: f64 = 0
   let sumX2: f64 = 0
   let sumY2: f64 = 0
 
   for (let i: i32 = 0; i < length; i++) {
-    const dx = unchecked(x[i]) - meanX
-    const dy = unchecked(y[i]) - meanY
+    const dx = load<f64>(xPtr + (<usize>i << 3)) - meanX
+    const dy = load<f64>(yPtr + (<usize>i << 3)) - meanY
     sumXY += dx * dy
     sumX2 += dx * dx
     sumY2 += dy * dy
@@ -369,26 +309,26 @@ export function correlation(
 
 /**
  * Calculate range (max - min)
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Range
  */
-export function range(data: Float64Array, length: i32): f64 {
-  return max(data, length) - min(data, length)
+export function range(dataPtr: usize, length: i32): f64 {
+  return max(dataPtr, length) - min(dataPtr, length)
 }
 
 /**
  * Calculate geometric mean
- * @param data Input array (all values must be positive)
+ * @param dataPtr Pointer to Float64Array data (all values must be positive)
  * @param length Length of array
  * @returns Geometric mean
  */
-export function geometricMean(data: Float64Array, length: i32): f64 {
+export function geometricMean(dataPtr: usize, length: i32): f64 {
   if (length === 0) return NaN
 
   let logSum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const val = unchecked(data[i])
+    const val = load<f64>(dataPtr + (<usize>i << 3))
     if (val <= 0) return NaN
     logSum += Math.log(val)
   }
@@ -397,16 +337,16 @@ export function geometricMean(data: Float64Array, length: i32): f64 {
 
 /**
  * Calculate harmonic mean
- * @param data Input array (all values must be positive)
+ * @param dataPtr Pointer to Float64Array data (all values must be positive)
  * @param length Length of array
  * @returns Harmonic mean
  */
-export function harmonicMean(data: Float64Array, length: i32): f64 {
+export function harmonicMean(dataPtr: usize, length: i32): f64 {
   if (length === 0) return NaN
 
   let recipSum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const val = unchecked(data[i])
+    const val = load<f64>(dataPtr + (<usize>i << 3))
     if (val === 0) return 0
     recipSum += 1.0 / val
   }
@@ -415,20 +355,20 @@ export function harmonicMean(data: Float64Array, length: i32): f64 {
 
 /**
  * Calculate skewness
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Skewness
  */
-export function skewness(data: Float64Array, length: i32): f64 {
+export function skewness(dataPtr: usize, length: i32): f64 {
   if (length < 3) return NaN
 
-  const m = mean(data, length)
-  const s = std(data, length, false)
+  const m = mean(dataPtr, length)
+  const s = std(dataPtr, length, 1)
   if (s === 0) return NaN
 
   let sum3: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const diff = (unchecked(data[i]) - m) / s
+    const diff = (load<f64>(dataPtr + (<usize>i << 3)) - m) / s
     sum3 += diff * diff * diff
   }
 
@@ -438,20 +378,20 @@ export function skewness(data: Float64Array, length: i32): f64 {
 
 /**
  * Calculate kurtosis (excess kurtosis)
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Excess kurtosis
  */
-export function kurtosis(data: Float64Array, length: i32): f64 {
+export function kurtosis(dataPtr: usize, length: i32): f64 {
   if (length < 4) return NaN
 
-  const m = mean(data, length)
-  const s = std(data, length, false)
+  const m = mean(dataPtr, length)
+  const s = std(dataPtr, length, 1)
   if (s === 0) return NaN
 
   let sum4: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const diff = (unchecked(data[i]) - m) / s
+    const diff = (load<f64>(dataPtr + (<usize>i << 3)) - m) / s
     const d2 = diff * diff
     sum4 += d2 * d2
   }
@@ -462,203 +402,94 @@ export function kurtosis(data: Float64Array, length: i32): f64 {
   return term1 * sum4 - term2
 }
 
-// ============================================
-// ADDITIONAL STATISTICS FUNCTIONS
-// ============================================
-
-/**
- * Calculate multiple quantiles at once
- * Note: The data array will be sorted in place
- * @param data Input array (will be sorted)
- * @param length Length of data array
- * @param probs Array of probabilities (each 0 to 1)
- * @param numProbs Number of probabilities
- * @returns Array of quantile values
- */
-export function quantileSeq(
-  data: Float64Array,
-  length: i32,
-  probs: Float64Array,
-  numProbs: i32
-): Float64Array {
-  if (length === 0) return new Float64Array(0)
-
-  // Sort the data
-  quicksort(data, 0, length - 1)
-
-  const result = new Float64Array(numProbs)
-  for (let i: i32 = 0; i < numProbs; i++) {
-    result[i] = quantile(data, length, probs[i])
-  }
-  return result
-}
-
 /**
  * Calculate interquartile range (IQR = Q3 - Q1)
- * Note: The data array will be sorted in place
- * @param data Input array (will be sorted)
+ * @param dataPtr Pointer to Float64Array data (will be sorted)
  * @param length Length of array
  * @returns IQR value
  */
-export function interquartileRange(data: Float64Array, length: i32): f64 {
+export function interquartileRange(dataPtr: usize, length: i32): f64 {
   if (length === 0) return NaN
 
-  quicksort(data, 0, length - 1)
-  const q1 = quantile(data, length, 0.25)
-  const q3 = quantile(data, length, 0.75)
+  quicksortRaw(dataPtr, 0, length - 1)
+  const q1 = quantile(dataPtr, length, 0.25)
+  const q3 = quantile(dataPtr, length, 0.75)
   return q3 - q1
 }
 
 /**
  * Calculate z-scores (standardized values)
- * @param data Input array
- * @param length Length of array
- * @returns Array of z-scores
+ * @param dataPtr Pointer to input Float64Array
+ * @param resultPtr Pointer to output Float64Array
+ * @param length Length of arrays
  */
-export function zscore(data: Float64Array, length: i32): Float64Array {
-  const result = new Float64Array(length)
-  if (length === 0) return result
+export function zscore(dataPtr: usize, resultPtr: usize, length: i32): void {
+  if (length === 0) return
 
-  const m = mean(data, length)
-  const s = std(data, length, false)
+  const m = mean(dataPtr, length)
+  const s = std(dataPtr, length, 1)
 
   if (s === 0) {
     // All values are the same
     for (let i: i32 = 0; i < length; i++) {
-      result[i] = 0
+      store<f64>(resultPtr + (<usize>i << 3), 0)
     }
-    return result
+    return
   }
 
   for (let i: i32 = 0; i < length; i++) {
-    result[i] = (data[i] - m) / s
+    store<f64>(resultPtr + (<usize>i << 3), (load<f64>(dataPtr + (<usize>i << 3)) - m) / s)
   }
-  return result
 }
 
 /**
  * Calculate percentile (same as quantile but takes 0-100 instead of 0-1)
- * Note: The data array must be pre-sorted
- * @param data Input array (must be sorted)
+ * @param dataPtr Pointer to Float64Array data (must be sorted)
  * @param length Length of array
  * @param p Percentile (0 to 100)
  * @returns Percentile value
  */
-export function percentile(data: Float64Array, length: i32, p: f64): f64 {
-  return quantile(data, length, p / 100.0)
+export function percentile(dataPtr: usize, length: i32, p: f64): f64 {
+  return quantile(dataPtr, length, p / 100.0)
 }
 
 /**
  * Calculate median without requiring pre-sorted data
- * Note: The data array will be sorted in place
- * @param data Input array (will be sorted)
+ * @param dataPtr Pointer to Float64Array data (will be sorted)
  * @param length Length of array
  * @returns Median value
  */
-export function medianUnsorted(data: Float64Array, length: i32): f64 {
+export function medianUnsorted(dataPtr: usize, length: i32): f64 {
   if (length === 0) return NaN
-  quicksort(data, 0, length - 1)
-  return median(data, length)
-}
-
-/**
- * Calculate weighted mean
- * @param data Values array
- * @param weights Weights array
- * @param length Length of arrays
- * @returns Weighted mean
- */
-export function weightedMean(
-  data: Float64Array,
-  weights: Float64Array,
-  length: i32
-): f64 {
-  if (length === 0) return NaN
-
-  let sumWeighted: f64 = 0
-  let sumWeights: f64 = 0
-
-  for (let i: i32 = 0; i < length; i++) {
-    sumWeighted += data[i] * weights[i]
-    sumWeights += weights[i]
-  }
-
-  if (sumWeights === 0) return NaN
-  return sumWeighted / sumWeights
+  quicksortRaw(dataPtr, 0, length - 1)
+  return median(dataPtr, length)
 }
 
 /**
  * Calculate root mean square (RMS)
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns RMS value
  */
-export function rms(data: Float64Array, length: i32): f64 {
+export function rms(dataPtr: usize, length: i32): f64 {
   if (length === 0) return NaN
 
   let sumSquares: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    sumSquares += data[i] * data[i]
+    const val = load<f64>(dataPtr + (<usize>i << 3))
+    sumSquares += val * val
   }
   return Math.sqrt(sumSquares / f64(length))
 }
 
 /**
- * Calculate mean absolute deviation
- * @param data Input array
- * @param length Length of array
- * @returns Mean absolute deviation
- */
-export function meanAbsoluteDeviation(data: Float64Array, length: i32): f64 {
-  if (length === 0) return NaN
-
-  const m = mean(data, length)
-  let sumAbs: f64 = 0
-
-  for (let i: i32 = 0; i < length; i++) {
-    sumAbs += Math.abs(data[i] - m)
-  }
-  return sumAbs / f64(length)
-}
-
-/**
  * Calculate coefficient of variation (CV = std/mean)
- * @param data Input array
+ * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Coefficient of variation
  */
-export function coefficientOfVariation(data: Float64Array, length: i32): f64 {
-  const m = mean(data, length)
+export function coefficientOfVariation(dataPtr: usize, length: i32): f64 {
+  const m = mean(dataPtr, length)
   if (m === 0) return NaN
-  return std(data, length, false) / Math.abs(m)
-}
-
-/**
- * Calculate standard error of the mean (SEM = std/sqrt(n))
- * @param data Input array
- * @param length Length of array
- * @returns Standard error
- */
-export function standardError(data: Float64Array, length: i32): f64 {
-  if (length === 0) return NaN
-  return std(data, length, false) / Math.sqrt(f64(length))
-}
-
-/**
- * Calculate sum of squares (SS = Σ(x - mean)²)
- * @param data Input array
- * @param length Length of array
- * @returns Sum of squares
- */
-export function sumOfSquares(data: Float64Array, length: i32): f64 {
-  if (length === 0) return 0
-
-  const m = mean(data, length)
-  let ss: f64 = 0
-
-  for (let i: i32 = 0; i < length; i++) {
-    const diff = data[i] - m
-    ss += diff * diff
-  }
-  return ss
+  return std(dataPtr, length, 1) / Math.abs(m)
 }
