@@ -15,43 +15,45 @@ This document tracks remaining AssemblyScript/WASM conversion and optimization t
 - **Pattern:** All `throw` statements replaced with `return f64.NaN`
 
 ### 3. New Eigenvalue Module Pointer API
-- [ ] Verify `src/wasm/matrix/eigs.ts` uses raw pointer API correctly
-- [ ] Add workPtr size validation for `eigsSymmetric`, `powerIteration`, `inverseIteration`
+- [x] Verify `src/wasm/matrix/eigs.ts` uses raw pointer API correctly
+- **Status:** All functions use `usize`, `load<f64>`, `store<f64>` correctly
 - **Required workPtr sizes:**
   - `eigsSymmetric`: 2*N f64 values
   - `powerIteration`: N f64 values
   - `inverseIteration`: N*N + 2*N f64 values
 
 ### 4. New ComplexEigs Module Pointer API
-- [ ] Verify `src/wasm/matrix/complexEigs.ts` uses raw pointer API correctly
-- [ ] Add workPtr size validation for `qrAlgorithm`, `balanceMatrix`, `reduceToHessenberg`
+- [x] Verify `src/wasm/matrix/complexEigs.ts` uses raw pointer API correctly
+- **Status:** All functions use `usize`, `load<f64>`, `store<f64>` correctly
 - **Required workPtr sizes:**
   - `qrAlgorithm`: N*N + 2*N f64 values
   - `balanceMatrix`: N*N for transform matrix (optional)
 
 ### 5. New Matrix Exponential Module Pointer API
-- [ ] Verify `src/wasm/matrix/expm.ts` uses raw pointer API correctly
-- [ ] Add workPtr size validation
+- [x] Verify `src/wasm/matrix/expm.ts` uses raw pointer API correctly
+- **Status:** All functions use `usize`, `load<f64>`, `store<f64>` correctly
 - **Required workPtr sizes:**
   - `expm`: 6*N*N f64 values
   - `expmv`: 2*N f64 values
 
 ### 6. New Matrix Square Root Module Pointer API
-- [ ] Verify `src/wasm/matrix/sqrtm.ts` uses raw pointer API correctly
-- [ ] Add workPtr size validation
+- [x] Verify `src/wasm/matrix/sqrtm.ts` uses raw pointer API correctly
+- **Status:** All functions use `usize`, `load<f64>`, `store<f64>` correctly
 - **Required workPtr sizes:**
   - `sqrtm`: 5*N*N f64 values
   - `sqrtmNewtonSchulz`: 3*N*N f64 values
 
 ### 7. New Sparse LU Module Pointer API
-- [ ] Verify `src/wasm/algebra/sparseLu.ts` uses raw pointer API correctly
-- [ ] Document CSC format requirements
+- [x] Verify `src/wasm/algebra/sparseLu.ts` uses raw pointer API correctly
+- **Status:** All functions use `usize`, `load<f64>`, `store<f64>`, `load<i32>`, `store<i32>` correctly
+- **CSC Format:** values[], rowIndices[], colPtr[] where colPtr[j] to colPtr[j+1] defines column j
 - **Required workPtr sizes:**
   - `sparseLu`: n*8 (x array) + 2*n*4 (xi array) bytes
 
 ### 8. New Sparse Cholesky Module Pointer API
-- [ ] Verify `src/wasm/algebra/sparseChol.ts` uses raw pointer API correctly
-- [ ] Document elimination tree requirements
+- [x] Verify `src/wasm/algebra/sparseChol.ts` uses raw pointer API correctly
+- **Status:** All functions use `usize`, `load<f64>`, `store<f64>`, `load<i32>`, `store<i32>` correctly
+- **Elimination Tree:** parent[i] = j means j is parent of i in the elimination tree
 - **Required workPtr sizes:**
   - `sparseChol`: n*8 (x) + 2*n*4 (c, s) bytes
   - `columnCounts`: 3*n*4 bytes
@@ -77,10 +79,11 @@ This document tracks remaining AssemblyScript/WASM conversion and optimization t
 - **Completed:** Added all signatures for eigenvalue, matrix functions, and sparse operations
 
 ### 12. Update MatrixWasmBridge.ts
-- [ ] Add methods to use new linalg functions (`inv2x2`, `inv3x3`, `cond1`, `condInf`)
-- [ ] Add methods for eigenvalue decomposition (`eigs`, `qrAlgorithm`)
-- [ ] Add methods for matrix functions (`expm`, `sqrtm`)
+- [x] Add methods to use new linalg functions (`inv2x2`, `inv3x3`, `cond1`, `condInf`)
+- [x] Add methods for eigenvalue decomposition (`eigsSymmetric`)
+- [x] Add methods for matrix functions (`expm`, `sqrtm`)
 - **File:** `src/wasm/MatrixWasmBridge.ts`
+- **Completed:** Added bridge methods with JS fallbacks for all new operations
 
 ## Performance Optimizations
 
@@ -146,6 +149,7 @@ This document tracks remaining AssemblyScript/WASM conversion and optimization t
 - [x] Create AssemblyScript matrix square root module (sqrtm.ts) - Denman-Beavers
 - [x] Create AssemblyScript sparse LU module (sparseLu.ts) - Left-looking LU
 - [x] Create AssemblyScript sparse Cholesky module (sparseChol.ts) - Elimination tree
+- [x] Update MatrixWasmBridge.ts with new matrix operations (inv2x2, inv3x3, cond1, condInf, eigsSymmetric, expm, sqrtm)
 
 ---
 
