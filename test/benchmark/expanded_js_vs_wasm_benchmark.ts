@@ -536,22 +536,30 @@ async function loadImplementations(): Promise<Implementations> {
 
   console.log('\nLoading implementations...')
 
-  // JavaScript/TypeScript (dist) - serves as JS baseline
+  // Original JavaScript (lib/esm/) - Babel-compiled from JS source
   try {
-    const jsModule = await import('../../dist/index.js')
+    const jsModule = await import('../../lib/esm/defaultInstance.js')
     impl.js = jsModule.default
-    console.log('  [OK] JavaScript/TypeScript (dist/)')
+    console.log('  [OK] JavaScript (lib/esm/) - Original JS build')
   } catch (e: any) {
-    console.log(`  [--] JavaScript: ${e.message}`)
+    console.log(`  [--] JavaScript (lib/esm/): ${e.message}`)
+    console.log('       Run: npx gulp compile')
   }
 
-  // TypeScript uses same dist/ as JS baseline above
-  impl.ts = impl.js
+  // TypeScript (dist/) - tsup-compiled from TS source
+  try {
+    const tsModule = await import('../../dist/index.js')
+    impl.ts = tsModule.default
+    console.log('  [OK] TypeScript (dist/) - TS build')
+  } catch (e: any) {
+    console.log(`  [--] TypeScript (dist/): ${e.message}`)
+    console.log('       Run: npm run compile')
+  }
 
-  // WASM
+  // WASM (lib/wasm/) - AssemblyScript compiled
   try {
     impl.wasm = await import('../../lib/wasm/index.js')
-    console.log('  [OK] WASM (lib/wasm/)')
+    console.log('  [OK] WASM (lib/wasm/) - AssemblyScript build')
 
     // Verify WASM works
     const testA = new Float64Array([1, 2, 3, 4])
@@ -560,6 +568,7 @@ async function loadImplementations(): Promise<Implementations> {
     console.log(`       Verification: dot([1,2,3,4], [5,6,7,8]) = ${result} (expected: 70)`)
   } catch (e: any) {
     console.log(`  [--] WASM: ${e.message}`)
+    console.log('       Run: npm run build:wasm')
   }
 
   return impl
