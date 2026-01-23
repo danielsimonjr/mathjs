@@ -10,7 +10,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module'
   },
-  ignorePatterns: ['*.generated.js', 'src/**/*.d.ts'],
+  ignorePatterns: ['*.generated.js', 'src/**/*.d.ts', 'src/wasm/**/*.ts', 'test/wasm/**/*.ts'],
   rules: {
     // Relaxed rules during TypeScript migration
     'prefer-spread': 'off',

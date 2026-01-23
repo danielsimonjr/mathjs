@@ -21,7 +21,7 @@
 export function zeros(rows: i32, cols: i32, resultPtr: usize): void {
   const size: i32 = rows * cols
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
 }
 
@@ -34,7 +34,7 @@ export function zeros(rows: i32, cols: i32, resultPtr: usize): void {
 export function ones(rows: i32, cols: i32, resultPtr: usize): void {
   const size: i32 = rows * cols
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 1.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 1.0)
   }
 }
 
@@ -47,11 +47,11 @@ export function identity(n: i32, resultPtr: usize): void {
   const size: i32 = n * n
   // First zero out the matrix
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
   // Set diagonal to 1
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>(i * n + i) << 3), 1.0)
+    store<f64>(resultPtr + ((<usize>(i * n + i)) << 3), 1.0)
   }
 }
 
@@ -65,7 +65,7 @@ export function identity(n: i32, resultPtr: usize): void {
 export function fill(rows: i32, cols: i32, value: f64, resultPtr: usize): void {
   const size: i32 = rows * cols
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), value)
+    store<f64>(resultPtr + ((<usize>i) << 3), value)
   }
 }
 
@@ -79,11 +79,14 @@ export function diagFromVector(diagPtr: usize, n: i32, resultPtr: usize): void {
   const size: i32 = n * n
   // First zero out the matrix
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
   // Set diagonal
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>(i * n + i) << 3), load<f64>(diagPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>(i * n + i)) << 3),
+      load<f64>(diagPtr + ((<usize>i) << 3))
+    )
   }
 }
 
@@ -97,20 +100,20 @@ export function eye(n: i32, k: i32, resultPtr: usize): void {
   const size: i32 = n * n
   // First zero out the matrix
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
 
   if (k >= 0) {
     // Upper diagonal
     const count: i32 = n - k
     for (let i: i32 = 0; i < count; i++) {
-      store<f64>(resultPtr + (<usize>(i * n + (i + k)) << 3), 1.0)
+      store<f64>(resultPtr + ((<usize>(i * n + (i + k))) << 3), 1.0)
     }
   } else {
     // Lower diagonal
     const count: i32 = n + k
     for (let i: i32 = 0; i < count; i++) {
-      store<f64>(resultPtr + (<usize>((i - k) * n + i) << 3), 1.0)
+      store<f64>(resultPtr + ((<usize>((i - k) * n + i)) << 3), 1.0)
     }
   }
 }
@@ -130,7 +133,10 @@ export function eye(n: i32, k: i32, resultPtr: usize): void {
 export function diag(aPtr: usize, rows: i32, cols: i32, resultPtr: usize): i32 {
   const n: i32 = rows < cols ? rows : cols
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>(i * cols + i) << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(aPtr + ((<usize>(i * cols + i)) << 3))
+    )
   }
   return n
 }
@@ -172,7 +178,10 @@ export function diagK(
   }
 
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>((startRow + i) * cols + (startCol + i)) << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(aPtr + ((<usize>((startRow + i) * cols + (startCol + i))) << 3))
+    )
   }
 
   return n
@@ -187,7 +196,7 @@ export function diagK(
 export function trace(aPtr: usize, n: i32): f64 {
   let sum: f64 = 0.0
   for (let i: i32 = 0; i < n; i++) {
-    sum += load<f64>(aPtr + (<usize>(i * n + i) << 3))
+    sum += load<f64>(aPtr + ((<usize>(i * n + i)) << 3))
   }
   return sum
 }
@@ -203,7 +212,7 @@ export function traceRect(aPtr: usize, rows: i32, cols: i32): f64 {
   const n: i32 = rows < cols ? rows : cols
   let sum: f64 = 0.0
   for (let i: i32 = 0; i < n; i++) {
-    sum += load<f64>(aPtr + (<usize>(i * cols + i) << 3))
+    sum += load<f64>(aPtr + ((<usize>(i * cols + i)) << 3))
   }
   return sum
 }
@@ -220,7 +229,10 @@ export function traceRect(aPtr: usize, rows: i32, cols: i32): f64 {
  */
 export function flatten(aPtr: usize, size: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(aPtr + ((<usize>i) << 3))
+    )
   }
 }
 
@@ -253,7 +265,10 @@ export function reshape(
 
   // Copy the data (same layout, different interpretation)
   for (let i: i32 = 0; i < newSize; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(aPtr + ((<usize>i) << 3))
+    )
   }
 
   return 1
@@ -268,7 +283,10 @@ export function reshape(
  */
 export function squeeze(aPtr: usize, size: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(aPtr + ((<usize>i) << 3))
+    )
   }
 }
 
@@ -285,7 +303,7 @@ export function squeeze(aPtr: usize, size: i32, resultPtr: usize): void {
 export function countNonZero(aPtr: usize, size: i32): i32 {
   let count: i32 = 0
   for (let i: i32 = 0; i < size; i++) {
-    if (load<f64>(aPtr + (<usize>i << 3)) !== 0.0) {
+    if (load<f64>(aPtr + ((<usize>i) << 3)) !== 0.0) {
       count++
     }
   }
@@ -303,7 +321,7 @@ export function min(aPtr: usize, size: i32): f64 {
 
   let minVal: f64 = load<f64>(aPtr)
   for (let i: i32 = 1; i < size; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     if (val < minVal) {
       minVal = val
     }
@@ -322,7 +340,7 @@ export function max(aPtr: usize, size: i32): f64 {
 
   let maxVal: f64 = load<f64>(aPtr)
   for (let i: i32 = 1; i < size; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     if (val > maxVal) {
       maxVal = val
     }
@@ -343,7 +361,7 @@ export function argmin(aPtr: usize, size: i32): i32 {
   let minVal: f64 = load<f64>(aPtr)
 
   for (let i: i32 = 1; i < size; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     if (val < minVal) {
       minVal = val
       minIdx = i
@@ -366,7 +384,7 @@ export function argmax(aPtr: usize, size: i32): i32 {
   let maxVal: f64 = load<f64>(aPtr)
 
   for (let i: i32 = 1; i < size; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     if (val > maxVal) {
       maxVal = val
       maxIdx = i
@@ -387,10 +405,18 @@ export function argmax(aPtr: usize, size: i32): i32 {
  * @param row - Row index to extract
  * @param resultPtr - Pointer to row output (f64, cols elements)
  */
-export function getRow(aPtr: usize, cols: i32, row: i32, resultPtr: usize): void {
+export function getRow(
+  aPtr: usize,
+  cols: i32,
+  row: i32,
+  resultPtr: usize
+): void {
   const offset: i32 = row * cols
   for (let j: i32 = 0; j < cols; j++) {
-    store<f64>(resultPtr + (<usize>j << 3), load<f64>(aPtr + (<usize>(offset + j) << 3)))
+    store<f64>(
+      resultPtr + ((<usize>j) << 3),
+      load<f64>(aPtr + ((<usize>(offset + j)) << 3))
+    )
   }
 }
 
@@ -410,7 +436,10 @@ export function getColumn(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < rows; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>(i * cols + col) << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(aPtr + ((<usize>(i * cols + col)) << 3))
+    )
   }
 }
 
@@ -429,7 +458,10 @@ export function setRow(
 ): void {
   const offset: i32 = row * cols
   for (let j: i32 = 0; j < cols; j++) {
-    store<f64>(aPtr + (<usize>(offset + j) << 3), load<f64>(valuesPtr + (<usize>j << 3)))
+    store<f64>(
+      aPtr + ((<usize>(offset + j)) << 3),
+      load<f64>(valuesPtr + ((<usize>j) << 3))
+    )
   }
 }
 
@@ -449,7 +481,10 @@ export function setColumn(
   valuesPtr: usize
 ): void {
   for (let i: i32 = 0; i < rows; i++) {
-    store<f64>(aPtr + (<usize>(i * cols + col) << 3), load<f64>(valuesPtr + (<usize>i << 3)))
+    store<f64>(
+      aPtr + ((<usize>(i * cols + col)) << 3),
+      load<f64>(valuesPtr + ((<usize>i) << 3))
+    )
   }
 }
 
@@ -460,18 +495,13 @@ export function setColumn(
  * @param row1 - First row index
  * @param row2 - Second row index
  */
-export function swapRows(
-  aPtr: usize,
-  cols: i32,
-  row1: i32,
-  row2: i32
-): void {
+export function swapRows(aPtr: usize, cols: i32, row1: i32, row2: i32): void {
   const offset1: i32 = row1 * cols
   const offset2: i32 = row2 * cols
 
   for (let j: i32 = 0; j < cols; j++) {
-    const idx1: usize = <usize>(offset1 + j) << 3
-    const idx2: usize = <usize>(offset2 + j) << 3
+    const idx1: usize = (<usize>(offset1 + j)) << 3
+    const idx2: usize = (<usize>(offset2 + j)) << 3
     const temp: f64 = load<f64>(aPtr + idx1)
     store<f64>(aPtr + idx1, load<f64>(aPtr + idx2))
     store<f64>(aPtr + idx2, temp)
@@ -494,8 +524,8 @@ export function swapColumns(
   col2: i32
 ): void {
   for (let i: i32 = 0; i < rows; i++) {
-    const idx1: usize = <usize>(i * cols + col1) << 3
-    const idx2: usize = <usize>(i * cols + col2) << 3
+    const idx1: usize = (<usize>(i * cols + col1)) << 3
+    const idx2: usize = (<usize>(i * cols + col2)) << 3
     const temp: f64 = load<f64>(aPtr + idx1)
     store<f64>(aPtr + idx1, load<f64>(aPtr + idx2))
     store<f64>(aPtr + idx2, temp)
@@ -520,8 +550,11 @@ export function dotMultiply(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) * load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      resultPtr + offset,
+      load<f64>(aPtr + offset) * load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -539,8 +572,11 @@ export function dotDivide(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) / load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      resultPtr + offset,
+      load<f64>(aPtr + offset) / load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -558,8 +594,11 @@ export function dotPow(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(resultPtr + offset, Math.pow(load<f64>(aPtr + offset), load<f64>(bPtr + offset)))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      resultPtr + offset,
+      Math.pow(load<f64>(aPtr + offset), load<f64>(bPtr + offset))
+    )
   }
 }
 
@@ -571,7 +610,7 @@ export function dotPow(
  */
 export function abs(aPtr: usize, size: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const val: f64 = load<f64>(aPtr + offset)
     store<f64>(resultPtr + offset, val >= 0.0 ? val : -val)
   }
@@ -585,7 +624,7 @@ export function abs(aPtr: usize, size: i32, resultPtr: usize): void {
  */
 export function sqrt(aPtr: usize, size: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, Math.sqrt(load<f64>(aPtr + offset)))
   }
 }
@@ -598,7 +637,7 @@ export function sqrt(aPtr: usize, size: i32, resultPtr: usize): void {
  */
 export function square(aPtr: usize, size: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const val: f64 = load<f64>(aPtr + offset)
     store<f64>(resultPtr + offset, val * val)
   }
@@ -617,7 +656,7 @@ export function square(aPtr: usize, size: i32, resultPtr: usize): void {
 export function sum(aPtr: usize, size: i32): f64 {
   let total: f64 = 0.0
   for (let i: i32 = 0; i < size; i++) {
-    total += load<f64>(aPtr + (<usize>i << 3))
+    total += load<f64>(aPtr + ((<usize>i) << 3))
   }
   return total
 }
@@ -631,7 +670,7 @@ export function sum(aPtr: usize, size: i32): f64 {
 export function prod(aPtr: usize, size: i32): f64 {
   let total: f64 = 1.0
   for (let i: i32 = 0; i < size; i++) {
-    total *= load<f64>(aPtr + (<usize>i << 3))
+    total *= load<f64>(aPtr + ((<usize>i) << 3))
   }
   return total
 }
@@ -643,16 +682,21 @@ export function prod(aPtr: usize, size: i32): f64 {
  * @param cols - Number of columns
  * @param resultPtr - Pointer to sum of each row (f64, rows elements)
  */
-export function sumRows(aPtr: usize, rows: i32, cols: i32, resultPtr: usize): void {
+export function sumRows(
+  aPtr: usize,
+  rows: i32,
+  cols: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < rows; i++) {
     let rowSum: f64 = 0.0
     const offset: i32 = i * cols
 
     for (let j: i32 = 0; j < cols; j++) {
-      rowSum += load<f64>(aPtr + (<usize>(offset + j) << 3))
+      rowSum += load<f64>(aPtr + ((<usize>(offset + j)) << 3))
     }
 
-    store<f64>(resultPtr + (<usize>i << 3), rowSum)
+    store<f64>(resultPtr + ((<usize>i) << 3), rowSum)
   }
 }
 
@@ -663,16 +707,25 @@ export function sumRows(aPtr: usize, rows: i32, cols: i32, resultPtr: usize): vo
  * @param cols - Number of columns
  * @param resultPtr - Pointer to sum of each column (f64, cols elements)
  */
-export function sumCols(aPtr: usize, rows: i32, cols: i32, resultPtr: usize): void {
+export function sumCols(
+  aPtr: usize,
+  rows: i32,
+  cols: i32,
+  resultPtr: usize
+): void {
   // Initialize to zero
   for (let j: i32 = 0; j < cols; j++) {
-    store<f64>(resultPtr + (<usize>j << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>j) << 3), 0.0)
   }
 
   for (let i: i32 = 0; i < rows; i++) {
     for (let j: i32 = 0; j < cols; j++) {
-      const jOffset: usize = <usize>j << 3
-      store<f64>(resultPtr + jOffset, load<f64>(resultPtr + jOffset) + load<f64>(aPtr + (<usize>(i * cols + j) << 3)))
+      const jOffset: usize = (<usize>j) << 3
+      store<f64>(
+        resultPtr + jOffset,
+        load<f64>(resultPtr + jOffset) +
+          load<f64>(aPtr + ((<usize>(i * cols + j)) << 3))
+      )
     }
   }
 }
@@ -689,7 +742,7 @@ export function sumCols(aPtr: usize, rows: i32, cols: i32, resultPtr: usize): vo
  */
 export function clone(aPtr: usize, size: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(aPtr + offset))
   }
 }
@@ -702,7 +755,7 @@ export function clone(aPtr: usize, size: i32, resultPtr: usize): void {
  */
 export function copy(srcPtr: usize, dstPtr: usize, size: i32): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(dstPtr + offset, load<f64>(srcPtr + offset))
   }
 }
@@ -715,7 +768,7 @@ export function copy(srcPtr: usize, dstPtr: usize, size: i32): void {
  */
 export function fillInPlace(aPtr: usize, size: i32, value: f64): void {
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(aPtr + (<usize>i << 3), value)
+    store<f64>(aPtr + ((<usize>i) << 3), value)
   }
 }
 
@@ -746,15 +799,15 @@ export function concatHorizontal(
     // Copy row from A
     for (let j: i32 = 0; j < aCols; j++) {
       store<f64>(
-        resultPtr + (<usize>(i * newCols + j) << 3),
-        load<f64>(aPtr + (<usize>(i * aCols + j) << 3))
+        resultPtr + ((<usize>(i * newCols + j)) << 3),
+        load<f64>(aPtr + ((<usize>(i * aCols + j)) << 3))
       )
     }
     // Copy row from B
     for (let j: i32 = 0; j < bCols; j++) {
       store<f64>(
-        resultPtr + (<usize>(i * newCols + aCols + j) << 3),
-        load<f64>(bPtr + (<usize>(i * bCols + j) << 3))
+        resultPtr + ((<usize>(i * newCols + aCols + j)) << 3),
+        load<f64>(bPtr + ((<usize>(i * bCols + j)) << 3))
       )
     }
   }
@@ -782,11 +835,17 @@ export function concatVertical(
 
   // Copy A
   for (let i: i32 = 0; i < aSize; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(aPtr + ((<usize>i) << 3))
+    )
   }
 
   // Copy B
   for (let i: i32 = 0; i < bSize; i++) {
-    store<f64>(resultPtr + (<usize>(aSize + i) << 3), load<f64>(bPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>(aSize + i)) << 3),
+      load<f64>(bPtr + ((<usize>i) << 3))
+    )
   }
 }

@@ -4,7 +4,6 @@ import {
   reduce
 } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
-import { safeNumberType } from '../../utils/number.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
 
 // Type definitions for statistical operations

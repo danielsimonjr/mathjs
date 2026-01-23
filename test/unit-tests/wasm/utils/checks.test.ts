@@ -8,13 +8,13 @@ import {
   isZero,
   isNonNegative,
   isNonPositive,
-  isPrime,
+  isPrime as _isPrime,
   isPrimeF64,
   isEven,
   isOdd,
   isBounded,
-  isPerfectSquare,
-  isPowerOfTwo,
+  isPerfectSquare as _isPerfectSquare,
+  isPowerOfTwo as _isPowerOfTwo,
   countCondition,
   allFinite,
   anyNaN,
@@ -25,10 +25,10 @@ import {
   sign,
   signArray,
   countPrimesUpTo,
-  nthPrime,
-  gcd,
-  lcm,
-  areCoprime
+  nthPrime as _nthPrime,
+  gcd as _gcd,
+  lcm as _lcm,
+  areCoprime as _areCoprime
 } from '../../../../src/wasm/utils/checks.ts'
 
 describe('wasm/utils/checks', function () {

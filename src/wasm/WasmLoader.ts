@@ -359,7 +359,12 @@ export interface WasmModule {
   statsProd: (aPtr: number, n: number) => number
   statsMad: (aPtr: number, n: number) => number
   statsCorrelation: (aPtr: number, bPtr: number, n: number) => number
-  statsCovariance: (aPtr: number, bPtr: number, n: number, ddof: number) => number
+  statsCovariance: (
+    aPtr: number,
+    bPtr: number,
+    n: number,
+    ddof: number
+  ) => number
 
   // Signal processing
   fft: (dataPtr: number, n: number, inverse: number) => void

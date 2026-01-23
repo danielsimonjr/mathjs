@@ -19,7 +19,7 @@ describe('Parallel Computing Integration Tests', function () {
         // Try to import workerpool
         await import('@danielsimonjr/workerpool')
         assert.ok(true, 'Workerpool module is available')
-      } catch (err) {
+      } catch {
         // Workerpool may not be available in all environments
         this.skip()
       }

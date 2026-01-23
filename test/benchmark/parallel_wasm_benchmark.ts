@@ -61,7 +61,7 @@ function jsAdd(a: Float64Array, b: Float64Array): Float64Array {
   return result
 }
 
-function jsMean(arr: Float64Array): number {
+function _jsMean(arr: Float64Array): number {
   return jsSum(arr) / arr.length
 }
 
@@ -127,7 +127,7 @@ async function runBenchmarks(): Promise<void> {
   try {
     await ParallelWasm.initWasm()
     console.log('  [OK] Parallel WASM ready')
-  } catch (e) {
+  } catch {
     console.log('  [FAIL] Parallel WASM not available')
   }
 

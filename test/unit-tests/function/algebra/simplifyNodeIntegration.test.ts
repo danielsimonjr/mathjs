@@ -5,8 +5,14 @@
 import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 
-const { parse, simplify, derivative, ConstantNode, SymbolNode, OperatorNode } =
-  math
+const {
+  parse,
+  simplify,
+  derivative,
+  ConstantNode: _ConstantNode,
+  SymbolNode,
+  OperatorNode: _OperatorNode
+} = math
 
 describe('simplify integration with Node operators', function () {
   describe('basic integration', function () {

@@ -10,7 +10,7 @@ import {
 
 const EPSILON = 1e-10
 
-function approxEqual(a: number, b: number, eps: number = EPSILON): boolean {
+function _approxEqual(a: number, b: number, eps: number = EPSILON): boolean {
   return Math.abs(a - b) < eps
 }
 

@@ -15,45 +15,43 @@
  * Workspace size requirements for various operations
  * All values are multipliers - multiply by matrix dimension as noted
  */
-export const WorkPtrSizes = {
-  // Eigenvalue operations (multiply by n for vector, n*n for matrix)
-  EIGS_SYMMETRIC: 2,        // 2*n f64 values
-  POWER_ITERATION: 1,       // n f64 values
-  INVERSE_ITERATION_VECTOR: 2, // 2*n f64 values
-  INVERSE_ITERATION_MATRIX: 1, // n*n f64 values (for shifted matrix)
+// Eigenvalue operations (multiply by n for vector, n*n for matrix)
+export const WORK_EIGS_SYMMETRIC: i32 = 2          // 2*n f64 values
+export const WORK_POWER_ITERATION: i32 = 1         // n f64 values
+export const WORK_INVERSE_ITERATION_VECTOR: i32 = 2 // 2*n f64 values
+export const WORK_INVERSE_ITERATION_MATRIX: i32 = 1 // n*n f64 values (for shifted matrix)
 
-  // Complex eigenvalue operations
-  QR_ALGORITHM_VECTOR: 2,   // 2*n f64 values
-  QR_ALGORITHM_MATRIX: 1,   // n*n f64 values
-  BALANCE_MATRIX: 1,        // n*n f64 values (optional transform)
+// Complex eigenvalue operations
+export const WORK_QR_ALGORITHM_VECTOR: i32 = 2    // 2*n f64 values
+export const WORK_QR_ALGORITHM_MATRIX: i32 = 1    // n*n f64 values
+export const WORK_BALANCE_MATRIX: i32 = 1         // n*n f64 values (optional transform)
 
-  // Matrix exponential
-  EXPM: 6,                  // 6*n*n f64 values
-  EXPMV: 2,                 // 2*n f64 values
+// Matrix exponential
+export const WORK_EXPM: i32 = 6                   // 6*n*n f64 values
+export const WORK_EXPMV: i32 = 2                  // 2*n f64 values
 
-  // Matrix square root
-  SQRTM: 5,                 // 5*n*n f64 values
-  SQRTM_NEWTON_SCHULZ: 3,   // 3*n*n f64 values
+// Matrix square root
+export const WORK_SQRTM: i32 = 5                  // 5*n*n f64 values
+export const WORK_SQRTM_NEWTON_SCHULZ: i32 = 3    // 3*n*n f64 values
 
-  // Sparse operations
-  SPARSE_LU_VECTOR: 1,      // n f64 values (x array)
-  SPARSE_LU_INT: 2,         // 2*n i32 values (xi array)
-  SPARSE_CHOL_VECTOR: 1,    // n f64 values (x)
-  SPARSE_CHOL_INT: 2,       // 2*n i32 values (c, s)
-  COLUMN_COUNTS: 3,         // 3*n i32 values
+// Sparse operations
+export const WORK_SPARSE_LU_VECTOR: i32 = 1       // n f64 values (x array)
+export const WORK_SPARSE_LU_INT: i32 = 2          // 2*n i32 values (xi array)
+export const WORK_SPARSE_CHOL_VECTOR: i32 = 1     // n f64 values (x)
+export const WORK_SPARSE_CHOL_INT: i32 = 2        // 2*n i32 values (c, s)
+export const WORK_COLUMN_COUNTS: i32 = 3          // 3*n i32 values
 
-  // Decompositions
-  LU_DECOMPOSITION: 0,      // In-place, no extra work needed
-  QR_DECOMPOSITION: 0,      // In-place, no extra work needed
-  CHOLESKY_DECOMPOSITION: 0, // In-place, no extra work needed
+// Decompositions
+export const WORK_LU_DECOMPOSITION: i32 = 0       // In-place, no extra work needed
+export const WORK_QR_DECOMPOSITION: i32 = 0       // In-place, no extra work needed
+export const WORK_CHOLESKY_DECOMPOSITION: i32 = 0 // In-place, no extra work needed
 
-  // FFT and signal processing
-  FFT_2D: 2,                // max(rows, cols) * 2 f64 values (complex)
-  IRFFT: 2,                 // n * 2 f64 values
+// FFT and signal processing
+export const WORK_FFT_2D: i32 = 2                 // max(rows, cols) * 2 f64 values (complex)
+export const WORK_IRFFT: i32 = 2                  // n * 2 f64 values
 
-  // Blocked matrix multiply
-  BLOCKED_MULTIPLY: 1       // bRows * bCols f64 values (for transposed B)
-} as const
+// Blocked matrix multiply
+export const WORK_BLOCKED_MULTIPLY: i32 = 1       // bRows * bCols f64 values (for transposed B)
 
 // ============================================================================
 // Size Calculation Functions

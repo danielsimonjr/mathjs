@@ -53,7 +53,7 @@ export function distanceND(p1Ptr: usize, p2Ptr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const d: f64 = load<f64>(p2Ptr + offset) - load<f64>(p1Ptr + offset)
     sum += d * d
   }
@@ -84,7 +84,7 @@ export function manhattanDistanceND(p1Ptr: usize, p2Ptr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     sum += Math.abs(load<f64>(p2Ptr + offset) - load<f64>(p1Ptr + offset))
   }
 
@@ -240,7 +240,7 @@ export function dotND(aPtr: usize, bPtr: usize, n: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     sum += load<f64>(aPtr + offset) * load<f64>(bPtr + offset)
   }
 
@@ -372,7 +372,7 @@ export function pointInTriangle2D(
 export function normalizeND(vPtr: usize, n: i32, resultPtr: usize): void {
   let mag: f64 = 0.0
   for (let i: i32 = 0; i < n; i++) {
-    const val: f64 = load<f64>(vPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(vPtr + ((<usize>i) << 3))
     mag += val * val
   }
   mag = Math.sqrt(mag)
@@ -380,13 +380,13 @@ export function normalizeND(vPtr: usize, n: i32, resultPtr: usize): void {
   if (mag < 1e-10) {
     // Return zero vector
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(resultPtr + (<usize>i << 3), 0.0)
+      store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
     }
     return
   }
 
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(vPtr + offset) / mag)
   }
 }
@@ -650,7 +650,11 @@ export function distancePointToPlane(
  * @param n - Number of vertices
  * @param resultPtr - Pointer to output [cx, cy]
  */
-export function polygonCentroid2D(verticesPtr: usize, n: i32, resultPtr: usize): void {
+export function polygonCentroid2D(
+  verticesPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   if (n < 3) {
     store<f64>(resultPtr, 0.0)
     store<f64>(resultPtr + 8, 0.0)
@@ -663,10 +667,10 @@ export function polygonCentroid2D(verticesPtr: usize, n: i32, resultPtr: usize):
 
   for (let i: i32 = 0; i < n; i++) {
     const j: i32 = (i + 1) % n
-    const x0: f64 = load<f64>(verticesPtr + (<usize>(i << 1) << 3))
-    const y0: f64 = load<f64>(verticesPtr + (<usize>(i << 1) << 3) + 8)
-    const x1: f64 = load<f64>(verticesPtr + (<usize>(j << 1) << 3))
-    const y1: f64 = load<f64>(verticesPtr + (<usize>(j << 1) << 3) + 8)
+    const x0: f64 = load<f64>(verticesPtr + ((<usize>(i << 1)) << 3))
+    const y0: f64 = load<f64>(verticesPtr + ((<usize>(i << 1)) << 3) + 8)
+    const x1: f64 = load<f64>(verticesPtr + ((<usize>(j << 1)) << 3))
+    const y1: f64 = load<f64>(verticesPtr + ((<usize>(j << 1)) << 3) + 8)
 
     const a: f64 = x0 * y1 - x1 * y0
     signedArea += a
@@ -681,8 +685,8 @@ export function polygonCentroid2D(verticesPtr: usize, n: i32, resultPtr: usize):
     let sumX: f64 = 0.0
     let sumY: f64 = 0.0
     for (let i: i32 = 0; i < n; i++) {
-      sumX += load<f64>(verticesPtr + (<usize>(i << 1) << 3))
-      sumY += load<f64>(verticesPtr + (<usize>(i << 1) << 3) + 8)
+      sumX += load<f64>(verticesPtr + ((<usize>(i << 1)) << 3))
+      sumY += load<f64>(verticesPtr + ((<usize>(i << 1)) << 3) + 8)
     }
     store<f64>(resultPtr, sumX / f64(n))
     store<f64>(resultPtr + 8, sumY / f64(n))
@@ -711,8 +715,12 @@ export function polygonArea2D(verticesPtr: usize, n: i32): f64 {
 
   for (let i: i32 = 0; i < n; i++) {
     const j: i32 = (i + 1) % n
-    area += load<f64>(verticesPtr + (<usize>(i << 1) << 3)) * load<f64>(verticesPtr + (<usize>(j << 1) << 3) + 8)
-    area -= load<f64>(verticesPtr + (<usize>(j << 1) << 3)) * load<f64>(verticesPtr + (<usize>(i << 1) << 3) + 8)
+    area +=
+      load<f64>(verticesPtr + ((<usize>(i << 1)) << 3)) *
+      load<f64>(verticesPtr + ((<usize>(j << 1)) << 3) + 8)
+    area -=
+      load<f64>(verticesPtr + ((<usize>(j << 1)) << 3)) *
+      load<f64>(verticesPtr + ((<usize>(i << 1)) << 3) + 8)
   }
 
   return Math.abs(area) / 2.0
@@ -741,10 +749,10 @@ export function pointInConvexPolygon2D(
 
   for (let i: i32 = 0; i < n; i++) {
     const j: i32 = (i + 1) % n
-    const x1: f64 = load<f64>(verticesPtr + (<usize>(i << 1) << 3))
-    const y1: f64 = load<f64>(verticesPtr + (<usize>(i << 1) << 3) + 8)
-    const x2: f64 = load<f64>(verticesPtr + (<usize>(j << 1) << 3))
-    const y2: f64 = load<f64>(verticesPtr + (<usize>(j << 1) << 3) + 8)
+    const x1: f64 = load<f64>(verticesPtr + ((<usize>(i << 1)) << 3))
+    const y1: f64 = load<f64>(verticesPtr + ((<usize>(i << 1)) << 3) + 8)
+    const x2: f64 = load<f64>(verticesPtr + ((<usize>(j << 1)) << 3))
+    const y2: f64 = load<f64>(verticesPtr + ((<usize>(j << 1)) << 3) + 8)
 
     const cross: f64 = (x2 - x1) * (py - y1) - (y2 - y1) * (px - x1)
 

@@ -92,8 +92,11 @@ export function bitAndArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 2
-    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) & load<i32>(bPtr + offset))
+    const offset: usize = (<usize>i) << 2
+    store<i32>(
+      resultPtr + offset,
+      load<i32>(aPtr + offset) & load<i32>(bPtr + offset)
+    )
   }
 }
 
@@ -111,8 +114,11 @@ export function bitOrArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 2
-    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) | load<i32>(bPtr + offset))
+    const offset: usize = (<usize>i) << 2
+    store<i32>(
+      resultPtr + offset,
+      load<i32>(aPtr + offset) | load<i32>(bPtr + offset)
+    )
   }
 }
 
@@ -130,8 +136,11 @@ export function bitXorArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 2
-    store<i32>(resultPtr + offset, load<i32>(aPtr + offset) ^ load<i32>(bPtr + offset))
+    const offset: usize = (<usize>i) << 2
+    store<i32>(
+      resultPtr + offset,
+      load<i32>(aPtr + offset) ^ load<i32>(bPtr + offset)
+    )
   }
 }
 
@@ -147,7 +156,7 @@ export function bitNotArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     store<i32>(resultPtr + offset, ~load<i32>(inputPtr + offset))
   }
 }
@@ -166,7 +175,7 @@ export function leftShiftArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     store<i32>(resultPtr + offset, load<i32>(valuesPtr + offset) << shift)
   }
 }
@@ -185,7 +194,7 @@ export function rightArithShiftArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     store<i32>(resultPtr + offset, load<i32>(valuesPtr + offset) >> shift)
   }
 }
@@ -204,7 +213,7 @@ export function rightLogShiftArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     store<i32>(resultPtr + offset, load<i32>(valuesPtr + offset) >>> shift)
   }
 }

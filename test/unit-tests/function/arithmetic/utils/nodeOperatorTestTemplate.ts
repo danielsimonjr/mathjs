@@ -11,9 +11,9 @@
  * 4. Customize test cases as needed for the specific operator
  */
 
-import assert from 'assert'
+import _assert from 'assert'
 import {
-  testData,
+  testData as _testData,
   nodeAssert,
   generateTestMatrix,
   runBackwardsCompatibilityTests,
@@ -37,7 +37,7 @@ const IS_VARIADIC = true // true for add/multiply, false for subtract/divide
 
 describe(`${FUNCTION_NAME} with Nodes`, function () {
   // Create isolated math instance for testing
-  const mathInstance = math.create()
+  const _mathInstance = math.create()
 
   describe('basic Node operations', function () {
     it('should return OperatorNode for number + Node', function () {

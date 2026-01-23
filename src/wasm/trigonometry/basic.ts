@@ -259,13 +259,9 @@ export function radToDeg(rad: f64): f64 {
  * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
-export function sinArray(
-  inputPtr: usize,
-  outputPtr: usize,
-  length: i32
-): void {
+export function sinArray(inputPtr: usize, outputPtr: usize, length: i32): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.sin(load<f64>(inputPtr + offset)))
   }
 }
@@ -276,13 +272,9 @@ export function sinArray(
  * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
-export function cosArray(
-  inputPtr: usize,
-  outputPtr: usize,
-  length: i32
-): void {
+export function cosArray(inputPtr: usize, outputPtr: usize, length: i32): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.cos(load<f64>(inputPtr + offset)))
   }
 }
@@ -293,13 +285,9 @@ export function cosArray(
  * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
-export function tanArray(
-  inputPtr: usize,
-  outputPtr: usize,
-  length: i32
-): void {
+export function tanArray(inputPtr: usize, outputPtr: usize, length: i32): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.tan(load<f64>(inputPtr + offset)))
   }
 }
@@ -316,7 +304,7 @@ export function sinhArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.sinh(load<f64>(inputPtr + offset)))
   }
 }
@@ -333,7 +321,7 @@ export function coshArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.cosh(load<f64>(inputPtr + offset)))
   }
 }
@@ -350,7 +338,7 @@ export function tanhArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.tanh(load<f64>(inputPtr + offset)))
   }
 }

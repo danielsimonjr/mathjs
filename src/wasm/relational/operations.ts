@@ -34,8 +34,8 @@ export function compareArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     const a: f64 = load<f64>(aPtr + f64Offset)
     const b: f64 = load<f64>(bPtr + f64Offset)
     if (a < b) {
@@ -83,8 +83,8 @@ export function equalArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     const a: f64 = load<f64>(aPtr + f64Offset)
     const b: f64 = load<f64>(bPtr + f64Offset)
     store<i32>(resultPtr + i32Offset, a === b ? 1 : 0)
@@ -115,8 +115,8 @@ export function unequalArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     const a: f64 = load<f64>(aPtr + f64Offset)
     const b: f64 = load<f64>(bPtr + f64Offset)
     store<i32>(resultPtr + i32Offset, a !== b ? 1 : 0)
@@ -147,8 +147,8 @@ export function largerArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     store<i32>(
       resultPtr + i32Offset,
       load<f64>(aPtr + f64Offset) > load<f64>(bPtr + f64Offset) ? 1 : 0
@@ -180,8 +180,8 @@ export function largerEqArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     store<i32>(
       resultPtr + i32Offset,
       load<f64>(aPtr + f64Offset) >= load<f64>(bPtr + f64Offset) ? 1 : 0
@@ -213,8 +213,8 @@ export function smallerArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     store<i32>(
       resultPtr + i32Offset,
       load<f64>(aPtr + f64Offset) < load<f64>(bPtr + f64Offset) ? 1 : 0
@@ -246,8 +246,8 @@ export function smallerEqArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     store<i32>(
       resultPtr + i32Offset,
       load<f64>(aPtr + f64Offset) <= load<f64>(bPtr + f64Offset) ? 1 : 0
@@ -266,7 +266,7 @@ export function min(aPtr: usize, n: i32): f64 {
 
   let minVal: f64 = load<f64>(aPtr)
   for (let i: i32 = 1; i < n; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     if (val < minVal) minVal = val
   }
 
@@ -284,7 +284,7 @@ export function max(aPtr: usize, n: i32): f64 {
 
   let maxVal: f64 = load<f64>(aPtr)
   for (let i: i32 = 1; i < n; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     if (val > maxVal) maxVal = val
   }
 
@@ -304,7 +304,7 @@ export function argmin(aPtr: usize, n: i32): i32 {
   let minVal: f64 = load<f64>(aPtr)
 
   for (let i: i32 = 1; i < n; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     if (val < minVal) {
       minVal = val
       minIdx = i
@@ -327,7 +327,7 @@ export function argmax(aPtr: usize, n: i32): i32 {
   let maxVal: f64 = load<f64>(aPtr)
 
   for (let i: i32 = 1; i < n; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     if (val > maxVal) {
       maxVal = val
       maxIdx = i
@@ -366,7 +366,7 @@ export function clampArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     let v: f64 = load<f64>(aPtr + offset)
     if (v < minVal) v = minVal
     if (v > maxVal) v = maxVal
@@ -401,8 +401,8 @@ export function inRangeArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     const val: f64 = load<f64>(aPtr + f64Offset)
     store<i32>(resultPtr + i32Offset, val >= minVal && val <= maxVal ? 1 : 0)
   }
@@ -483,8 +483,8 @@ export function sign(a: f64): i32 {
  */
 export function signArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const f64Offset: usize = <usize>i << 3
-    const i32Offset: usize = <usize>i << 2
+    const f64Offset: usize = (<usize>i) << 3
+    const i32Offset: usize = (<usize>i) << 2
     const val: f64 = load<f64>(aPtr + f64Offset)
     if (val > 0) {
       store<i32>(resultPtr + i32Offset, 1)

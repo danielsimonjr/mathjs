@@ -216,7 +216,7 @@ const jsImplementations = {
 // WASM IMPLEMENTATIONS (Import from src/wasm)
 // ============================================================================
 
-let wasmModule: any = null
+let _wasmModule: any = null
 let wasmExports: any = null
 
 async function loadWasmModule(): Promise<boolean> {
@@ -225,7 +225,7 @@ async function loadWasmModule(): Promise<boolean> {
     const wasm = (await import('../../lib/wasm/index.js')) as any
     wasmExports = wasm
 
-    wasmModule = {
+    _wasmModule = {
       // SIMD-optimized operations (may not be available in all builds)
       simdAddF64: wasm.simdAddF64 || null,
       simdMulF64: wasm.simdMulF64 || null,

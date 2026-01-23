@@ -139,7 +139,7 @@ describe('wasm/MatrixWasmBridge', function () {
       // cleanup may fail in test environment due to WASM GC, so we catch
       try {
         await MatrixWasmBridge.cleanup()
-      } catch (e) {
+      } catch {
         // WASM abort is expected in some test environments
       }
     })

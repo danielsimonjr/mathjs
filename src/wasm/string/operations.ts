@@ -96,14 +96,14 @@ export function parseIntFromCodes(codesPtr: usize, n: i32): f64 {
   let sign: f64 = 1.0
 
   // Skip leading whitespace
-  while (i < n && isWhitespace(load<i32>(codesPtr + (<usize>i << 2))) === 1) {
+  while (i < n && isWhitespace(load<i32>(codesPtr + ((<usize>i) << 2))) === 1) {
     i++
   }
 
   if (i >= n) return f64.NaN
 
   // Check for sign
-  const firstCode: i32 = load<i32>(codesPtr + (<usize>i << 2))
+  const firstCode: i32 = load<i32>(codesPtr + ((<usize>i) << 2))
   if (firstCode === CHAR_MINUS) {
     sign = -1.0
     i++
@@ -111,12 +111,14 @@ export function parseIntFromCodes(codesPtr: usize, n: i32): f64 {
     i++
   }
 
-  if (i >= n || isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 0) return f64.NaN
+  if (i >= n || isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 0)
+    return f64.NaN
 
   let result: f64 = 0.0
 
-  while (i < n && isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 1) {
-    result = result * 10.0 + <f64>(load<i32>(codesPtr + (<usize>i << 2)) - CHAR_0)
+  while (i < n && isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 1) {
+    result =
+      result * 10.0 + <f64>(load<i32>(codesPtr + ((<usize>i) << 2)) - CHAR_0)
     i++
   }
 
@@ -136,14 +138,14 @@ export function parseFloatFromCodes(codesPtr: usize, n: i32): f64 {
   let sign: f64 = 1.0
 
   // Skip leading whitespace
-  while (i < n && isWhitespace(load<i32>(codesPtr + (<usize>i << 2))) === 1) {
+  while (i < n && isWhitespace(load<i32>(codesPtr + ((<usize>i) << 2))) === 1) {
     i++
   }
 
   if (i >= n) return f64.NaN
 
   // Check for sign
-  const firstCode: i32 = load<i32>(codesPtr + (<usize>i << 2))
+  const firstCode: i32 = load<i32>(codesPtr + ((<usize>i) << 2))
   if (firstCode === CHAR_MINUS) {
     sign = -1.0
     i++
@@ -157,8 +159,9 @@ export function parseFloatFromCodes(codesPtr: usize, n: i32): f64 {
   let intPart: f64 = 0.0
   let hasIntPart: bool = false
 
-  while (i < n && isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 1) {
-    intPart = intPart * 10.0 + <f64>(load<i32>(codesPtr + (<usize>i << 2)) - CHAR_0)
+  while (i < n && isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 1) {
+    intPart =
+      intPart * 10.0 + <f64>(load<i32>(codesPtr + ((<usize>i) << 2)) - CHAR_0)
     hasIntPart = true
     i++
   }
@@ -168,10 +171,12 @@ export function parseFloatFromCodes(codesPtr: usize, n: i32): f64 {
   let fracDiv: f64 = 1.0
   let hasFracPart: bool = false
 
-  if (i < n && load<i32>(codesPtr + (<usize>i << 2)) === CHAR_DOT) {
+  if (i < n && load<i32>(codesPtr + ((<usize>i) << 2)) === CHAR_DOT) {
     i++
-    while (i < n && isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 1) {
-      fracPart = fracPart * 10.0 + <f64>(load<i32>(codesPtr + (<usize>i << 2)) - CHAR_0)
+    while (i < n && isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 1) {
+      fracPart =
+        fracPart * 10.0 +
+        <f64>(load<i32>(codesPtr + ((<usize>i) << 2)) - CHAR_0)
       fracDiv *= 10.0
       hasFracPart = true
       i++
@@ -184,13 +189,13 @@ export function parseFloatFromCodes(codesPtr: usize, n: i32): f64 {
 
   // Parse exponent
   if (i < n) {
-    const expChar: i32 = load<i32>(codesPtr + (<usize>i << 2))
+    const expChar: i32 = load<i32>(codesPtr + ((<usize>i) << 2))
     if (expChar === CHAR_E || expChar === CHAR_e) {
       i++
 
       let expSign: f64 = 1.0
       if (i < n) {
-        const expSignChar: i32 = load<i32>(codesPtr + (<usize>i << 2))
+        const expSignChar: i32 = load<i32>(codesPtr + ((<usize>i) << 2))
         if (expSignChar === CHAR_MINUS) {
           expSign = -1.0
           i++
@@ -200,8 +205,9 @@ export function parseFloatFromCodes(codesPtr: usize, n: i32): f64 {
       }
 
       let exp: f64 = 0.0
-      while (i < n && isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 1) {
-        exp = exp * 10.0 + <f64>(load<i32>(codesPtr + (<usize>i << 2)) - CHAR_0)
+      while (i < n && isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 1) {
+        exp =
+          exp * 10.0 + <f64>(load<i32>(codesPtr + ((<usize>i) << 2)) - CHAR_0)
         i++
       }
 
@@ -250,7 +256,7 @@ export function formatIntToCodes(value: i64, resultPtr: usize): i32 {
 
   let i: i32 = totalLen - 1
   while (value > 0) {
-    store<i32>(resultPtr + (<usize>i << 2), CHAR_0 + <i32>(value % 10))
+    store<i32>(resultPtr + ((<usize>i) << 2), CHAR_0 + <i32>(value % 10))
     value = value / 10
     i--
   }
@@ -327,19 +333,19 @@ export function formatFloatToCodes(
   }
 
   // Format integer part
-  const intLen: i32 = formatIntToCodes(intPart, resultPtr + (<usize>pos << 2))
+  const intLen: i32 = formatIntToCodes(intPart, resultPtr + ((<usize>pos) << 2))
   pos += intLen
 
   // Add decimal part
   if (decimals > 0) {
-    store<i32>(resultPtr + (<usize>pos << 2), CHAR_DOT)
+    store<i32>(resultPtr + ((<usize>pos) << 2), CHAR_DOT)
     pos++
 
     let frac: f64 = fracPart
     for (let i: i32 = 0; i < decimals; i++) {
       frac *= 10.0
       const digit: i32 = <i32>Math.floor(frac) % 10
-      store<i32>(resultPtr + (<usize>pos << 2), CHAR_0 + digit)
+      store<i32>(resultPtr + ((<usize>pos) << 2), CHAR_0 + digit)
       pos++
     }
   }
@@ -364,7 +370,7 @@ export function compareCodeArrays(
   const minLen: i32 = na < nb ? na : nb
 
   for (let i: i32 = 0; i < minLen; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     const aVal: i32 = load<i32>(aPtr + offset)
     const bVal: i32 = load<i32>(bPtr + offset)
     if (aVal < bVal) return -1
@@ -389,7 +395,7 @@ export function hashCodes(codesPtr: usize, n: i32): u32 {
   let hash: u32 = FNV_OFFSET
 
   for (let i: i32 = 0; i < n; i++) {
-    hash ^= <u32>load<i32>(codesPtr + (<usize>i << 2))
+    hash ^= <u32>load<i32>(codesPtr + ((<usize>i) << 2))
     hash *= FNV_PRIME
   }
 
@@ -420,8 +426,8 @@ export function findPattern(
 
     for (let j: i32 = 0; j < patternLen; j++) {
       if (
-        load<i32>(textPtr + (<usize>(i + j) << 2)) !==
-        load<i32>(patternPtr + (<usize>j << 2))
+        load<i32>(textPtr + ((<usize>(i + j)) << 2)) !==
+        load<i32>(patternPtr + ((<usize>j) << 2))
       ) {
         match = false
         break
@@ -459,8 +465,8 @@ export function countPattern(
 
     for (let j: i32 = 0; j < patternLen; j++) {
       if (
-        load<i32>(textPtr + (<usize>(i + j) << 2)) !==
-        load<i32>(patternPtr + (<usize>j << 2))
+        load<i32>(textPtr + ((<usize>(i + j)) << 2)) !==
+        load<i32>(patternPtr + ((<usize>j) << 2))
       ) {
         match = false
         break
@@ -488,7 +494,7 @@ export function utf8ByteLength(codesPtr: usize, n: i32): i32 {
   let byteLen: i32 = 0
 
   for (let i: i32 = 0; i < n; i++) {
-    const code: i32 = load<i32>(codesPtr + (<usize>i << 2))
+    const code: i32 = load<i32>(codesPtr + ((<usize>i) << 2))
     if (code <= 0x7f) {
       byteLen += 1
     } else if (code <= 0x7ff) {
@@ -515,26 +521,27 @@ export function isNumericString(codesPtr: usize, n: i32): i32 {
   let i: i32 = 0
 
   // Skip whitespace
-  while (i < n && isWhitespace(load<i32>(codesPtr + (<usize>i << 2))) === 1) i++
+  while (i < n && isWhitespace(load<i32>(codesPtr + ((<usize>i) << 2))) === 1)
+    i++
   if (i >= n) return 0
 
   // Optional sign
-  const signChar: i32 = load<i32>(codesPtr + (<usize>i << 2))
+  const signChar: i32 = load<i32>(codesPtr + ((<usize>i) << 2))
   if (signChar === CHAR_MINUS || signChar === CHAR_PLUS) i++
   if (i >= n) return 0
 
   let hasDigit: bool = false
 
   // Integer part
-  while (i < n && isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 1) {
+  while (i < n && isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 1) {
     hasDigit = true
     i++
   }
 
   // Decimal part
-  if (i < n && load<i32>(codesPtr + (<usize>i << 2)) === CHAR_DOT) {
+  if (i < n && load<i32>(codesPtr + ((<usize>i) << 2)) === CHAR_DOT) {
     i++
-    while (i < n && isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 1) {
+    while (i < n && isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 1) {
       hasDigit = true
       i++
     }
@@ -544,20 +551,23 @@ export function isNumericString(codesPtr: usize, n: i32): i32 {
 
   // Exponent
   if (i < n) {
-    const expChar: i32 = load<i32>(codesPtr + (<usize>i << 2))
+    const expChar: i32 = load<i32>(codesPtr + ((<usize>i) << 2))
     if (expChar === CHAR_E || expChar === CHAR_e) {
       i++
       if (i < n) {
-        const expSignChar: i32 = load<i32>(codesPtr + (<usize>i << 2))
+        const expSignChar: i32 = load<i32>(codesPtr + ((<usize>i) << 2))
         if (expSignChar === CHAR_MINUS || expSignChar === CHAR_PLUS) i++
       }
-      if (i >= n || isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 0) return 0
-      while (i < n && isDigit(load<i32>(codesPtr + (<usize>i << 2))) === 1) i++
+      if (i >= n || isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 0)
+        return 0
+      while (i < n && isDigit(load<i32>(codesPtr + ((<usize>i) << 2))) === 1)
+        i++
     }
   }
 
   // Skip trailing whitespace
-  while (i < n && isWhitespace(load<i32>(codesPtr + (<usize>i << 2))) === 1) i++
+  while (i < n && isWhitespace(load<i32>(codesPtr + ((<usize>i) << 2))) === 1)
+    i++
 
   return i === n ? 1 : 0
 }

@@ -55,7 +55,11 @@ function flatten2D(arr: number[][], rows: number, cols: number): Float64Array {
 /**
  * Unflatten a Float64Array to 2D array
  */
-function unflatten2D(flat: Float64Array, rows: number, cols: number): number[][] {
+function unflatten2D(
+  flat: Float64Array,
+  rows: number,
+  cols: number
+): number[][] {
   const result: number[][] = []
   for (let i = 0; i < rows; i++) {
     const row: number[] = []
@@ -176,7 +180,9 @@ export const createKron = /* #__PURE__ */ factory(
             const bAlloc = wasmLoader.allocateFloat64Array(bFlat)
             const resultRows = aRows * bRows
             const resultCols = aCols * bCols
-            const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(resultRows * resultCols)
+            const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(
+              resultRows * resultCols
+            )
 
             try {
               wasm.laKron(aAlloc.ptr, aRows, aCols, bAlloc.ptr, bRows, bCols)

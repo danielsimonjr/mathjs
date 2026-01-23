@@ -30,7 +30,7 @@ export function multiplyDense(
   // Initialize result to zero
   const resultSize = aRows * bCols
   for (let i: i32 = 0; i < resultSize; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
 
   for (let ii: i32 = 0; ii < aRows; ii += blockSize) {
@@ -45,12 +45,12 @@ export function multiplyDense(
         // Multiply the blocks
         for (let i: i32 = ii; i < iEnd; i++) {
           for (let j: i32 = jj; j < jEnd; j++) {
-            const resultIdx: usize = <usize>(i * bCols + j) << 3
+            const resultIdx: usize = (<usize>(i * bCols + j)) << 3
             let sum: f64 = load<f64>(resultPtr + resultIdx)
 
             for (let k: i32 = kk; k < kEnd; k++) {
-              const aVal = load<f64>(aPtr + (<usize>(i * aCols + k) << 3))
-              const bVal = load<f64>(bPtr + (<usize>(k * bCols + j) << 3))
+              const aVal = load<f64>(aPtr + ((<usize>(i * aCols + k)) << 3))
+              const bVal = load<f64>(bPtr + ((<usize>(k * bCols + j)) << 3))
               sum += aVal * bVal
             }
 
@@ -86,9 +86,9 @@ export function multiplyDenseSIMD(
       // Process pairs of elements with SIMD
       const limit: i32 = aCols - (aCols % 2)
       for (; k < limit; k += 2) {
-        const aIdx1: usize = <usize>(i * aCols + k) << 3
-        const bIdx1: usize = <usize>(k * bCols + j) << 3
-        const bIdx2: usize = <usize>((k + 1) * bCols + j) << 3
+        const aIdx1: usize = (<usize>(i * aCols + k)) << 3
+        const bIdx1: usize = (<usize>(k * bCols + j)) << 3
+        const bIdx2: usize = (<usize>((k + 1) * bCols + j)) << 3
 
         sum += load<f64>(aPtr + aIdx1) * load<f64>(bPtr + bIdx1)
         sum += load<f64>(aPtr + aIdx1 + 8) * load<f64>(bPtr + bIdx2)
@@ -96,12 +96,12 @@ export function multiplyDenseSIMD(
 
       // Handle remaining elements
       for (; k < aCols; k++) {
-        const aVal = load<f64>(aPtr + (<usize>(i * aCols + k) << 3))
-        const bVal = load<f64>(bPtr + (<usize>(k * bCols + j) << 3))
+        const aVal = load<f64>(aPtr + ((<usize>(i * aCols + k)) << 3))
+        const bVal = load<f64>(bPtr + ((<usize>(k * bCols + j)) << 3))
         sum += aVal * bVal
       }
 
-      store<f64>(resultPtr + (<usize>(i * bCols + j) << 3), sum)
+      store<f64>(resultPtr + ((<usize>(i * bCols + j)) << 3), sum)
     }
   }
 }
@@ -125,12 +125,12 @@ export function multiplyVector(
     let sum: f64 = 0.0
 
     for (let j: i32 = 0; j < aCols; j++) {
-      const aVal = load<f64>(aPtr + (<usize>(i * aCols + j) << 3))
-      const xVal = load<f64>(xPtr + (<usize>j << 3))
+      const aVal = load<f64>(aPtr + ((<usize>(i * aCols + j)) << 3))
+      const xVal = load<f64>(xPtr + ((<usize>j) << 3))
       sum += aVal * xVal
     }
 
-    store<f64>(resultPtr + (<usize>i << 3), sum)
+    store<f64>(resultPtr + ((<usize>i) << 3), sum)
   }
 }
 
@@ -158,8 +158,8 @@ export function transpose(
 
       for (let i: i32 = ii; i < iEnd; i++) {
         for (let j: i32 = jj; j < jEnd; j++) {
-          const srcIdx: usize = <usize>(i * cols + j) << 3
-          const dstIdx: usize = <usize>(j * rows + i) << 3
+          const srcIdx: usize = (<usize>(i * cols + j)) << 3
+          const dstIdx: usize = (<usize>(j * rows + i)) << 3
           store<f64>(resultPtr + dstIdx, load<f64>(aPtr + srcIdx))
         }
       }
@@ -181,8 +181,11 @@ export function add(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) + load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      resultPtr + offset,
+      load<f64>(aPtr + offset) + load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -200,8 +203,11 @@ export function subtract(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) - load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      resultPtr + offset,
+      load<f64>(aPtr + offset) - load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -219,7 +225,7 @@ export function scalarMultiply(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(aPtr + offset) * scalar)
   }
 }
@@ -235,7 +241,7 @@ export function dotProduct(aPtr: usize, bPtr: usize, size: i32): f64 {
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     sum += load<f64>(aPtr + offset) * load<f64>(bPtr + offset)
   }
 
@@ -275,9 +281,9 @@ export function multiplyBlockedSIMD(
   workPtr: usize
 ): void {
   // Block sizes tuned for typical L1/L2 cache (32KB-256KB)
-  const blockI: i32 = 64  // Rows of A per block
-  const blockJ: i32 = 64  // Cols of B per block
-  const blockK: i32 = 64  // Cols of A / Rows of B per block
+  const blockI: i32 = 64 // Rows of A per block
+  const blockJ: i32 = 64 // Cols of B per block
+  const blockK: i32 = 64 // Cols of A / Rows of B per block
 
   // Initialize result to zero using SIMD
   const resultSize: i32 = aRows * bCols
@@ -285,10 +291,10 @@ export function multiplyBlockedSIMD(
   let idx: i32 = 0
   const limit: i32 = resultSize - 1
   for (; idx < limit; idx += 2) {
-    v128.store(resultPtr + (<usize>idx << 3), zeroVec)
+    v128.store(resultPtr + ((<usize>idx) << 3), zeroVec)
   }
   for (; idx < resultSize; idx++) {
-    store<f64>(resultPtr + (<usize>idx << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>idx) << 3), 0.0)
   }
 
   // Transpose B into work buffer for better cache access
@@ -317,7 +323,7 @@ export function multiplyBlockedSIMD(
 
         // Inner block multiplication with SIMD
         for (let i: i32 = ii; i < iEnd; i++) {
-          const aRowPtr: usize = aPtr + (<usize>(i * aCols) << 3)
+          const aRowPtr: usize = aPtr + ((<usize>(i * aCols)) << 3)
 
           for (let j: i32 = jj; j < jEnd; j++) {
             const resultIdx: usize = (<usize>(i * bCols + j)) << 3
@@ -330,24 +336,29 @@ export function multiplyBlockedSIMD(
 
             if (useBt) {
               // Access transposed B for better cache locality
-              const btColPtr: usize = workPtr + (<usize>(j * bRows) << 3)
+              const btColPtr: usize = workPtr + ((<usize>(j * bRows)) << 3)
 
               for (; k < kLimit; k += 2) {
-                const kIdx: usize = <usize>k << 3
+                const kIdx: usize = (<usize>k) << 3
                 const aVec: v128 = v128.load(aRowPtr + kIdx)
                 const bVec: v128 = v128.load(btColPtr + kIdx)
                 sumVec = f64x2.add(sumVec, f64x2.mul(aVec, bVec))
               }
-              sum += f64x2.extract_lane(sumVec, 0) + f64x2.extract_lane(sumVec, 1)
+              sum +=
+                f64x2.extract_lane(sumVec, 0) + f64x2.extract_lane(sumVec, 1)
 
               // Remainder
               for (; k < kEnd; k++) {
-                sum += load<f64>(aRowPtr + (<usize>k << 3)) * load<f64>(btColPtr + (<usize>k << 3))
+                sum +=
+                  load<f64>(aRowPtr + ((<usize>k) << 3)) *
+                  load<f64>(btColPtr + ((<usize>k) << 3))
               }
             } else {
               // Direct access to B (column-strided)
               for (; k < kEnd; k++) {
-                sum += load<f64>(aRowPtr + (<usize>k << 3)) * load<f64>(bPtr + (<usize>(k * bCols + j) << 3))
+                sum +=
+                  load<f64>(aRowPtr + ((<usize>k) << 3)) *
+                  load<f64>(bPtr + ((<usize>(k * bCols + j)) << 3))
               }
             }
 
@@ -378,7 +389,7 @@ export function addSIMD(
 
   // Process pairs with SIMD
   for (; i < limit; i += 2) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const a: v128 = v128.load(aPtr + offset)
     const b: v128 = v128.load(bPtr + offset)
     v128.store(resultPtr + offset, f64x2.add(a, b))
@@ -386,8 +397,11 @@ export function addSIMD(
 
   // Handle remaining element
   for (; i < size; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) + load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      resultPtr + offset,
+      load<f64>(aPtr + offset) + load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -409,15 +423,18 @@ export function subtractSIMD(
   const limit: i32 = size - 1
 
   for (; i < limit; i += 2) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const a: v128 = v128.load(aPtr + offset)
     const b: v128 = v128.load(bPtr + offset)
     v128.store(resultPtr + offset, f64x2.sub(a, b))
   }
 
   for (; i < size; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(resultPtr + offset, load<f64>(aPtr + offset) - load<f64>(bPtr + offset))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      resultPtr + offset,
+      load<f64>(aPtr + offset) - load<f64>(bPtr + offset)
+    )
   }
 }
 
@@ -440,13 +457,13 @@ export function scalarMultiplySIMD(
   const limit: i32 = size - 1
 
   for (; i < limit; i += 2) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const a: v128 = v128.load(aPtr + offset)
     v128.store(resultPtr + offset, f64x2.mul(a, scalarVec))
   }
 
   for (; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(resultPtr + offset, load<f64>(aPtr + offset) * scalar)
   }
 }
@@ -466,7 +483,7 @@ export function dotProductSIMD(aPtr: usize, bPtr: usize, size: i32): f64 {
 
   // Process pairs with SIMD
   for (; i < limit; i += 2) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const a: v128 = v128.load(aPtr + offset)
     const b: v128 = v128.load(bPtr + offset)
     sumVec = f64x2.add(sumVec, f64x2.mul(a, b))
@@ -476,7 +493,7 @@ export function dotProductSIMD(aPtr: usize, bPtr: usize, size: i32): f64 {
 
   // Handle remaining element
   for (; i < size; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     sum += load<f64>(aPtr + offset) * load<f64>(bPtr + offset)
   }
 
@@ -500,14 +517,14 @@ export function multiplyVectorSIMD(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < aRows; i++) {
-    const rowPtr: usize = aPtr + (<usize>(i * aCols) << 3)
+    const rowPtr: usize = aPtr + ((<usize>(i * aCols)) << 3)
     let sumVec: v128 = f64x2.splat(0.0)
     let j: i32 = 0
     const limit: i32 = aCols - 1
 
     // SIMD inner loop
     for (; j < limit; j += 2) {
-      const offset: usize = <usize>j << 3
+      const offset: usize = (<usize>j) << 3
       const aVec: v128 = v128.load(rowPtr + offset)
       const xVec: v128 = v128.load(xPtr + offset)
       sumVec = f64x2.add(sumVec, f64x2.mul(aVec, xVec))
@@ -517,10 +534,12 @@ export function multiplyVectorSIMD(
 
     // Remainder
     for (; j < aCols; j++) {
-      sum += load<f64>(rowPtr + (<usize>j << 3)) * load<f64>(xPtr + (<usize>j << 3))
+      sum +=
+        load<f64>(rowPtr + ((<usize>j) << 3)) *
+        load<f64>(xPtr + ((<usize>j) << 3))
     }
 
-    store<f64>(resultPtr + (<usize>i << 3), sum)
+    store<f64>(resultPtr + ((<usize>i) << 3), sum)
   }
 }
 

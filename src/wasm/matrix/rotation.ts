@@ -223,7 +223,10 @@ export function rotationMatrixEulerXYZ(
  * @param qPtr - Pointer to quaternion [w, x, y, z] (f64, 4 elements)
  * @param resultPtr - Pointer to 3x3 rotation matrix (f64, 9 elements, row-major)
  */
-export function rotationMatrixFromQuaternion(qPtr: usize, resultPtr: usize): void {
+export function rotationMatrixFromQuaternion(
+  qPtr: usize,
+  resultPtr: usize
+): void {
   const w: f64 = load<f64>(qPtr)
   const x: f64 = load<f64>(qPtr + 8)
   const y: f64 = load<f64>(qPtr + 16)
@@ -245,7 +248,10 @@ export function rotationMatrixFromQuaternion(qPtr: usize, resultPtr: usize): voi
  * @param RPtr - Pointer to 3x3 rotation matrix (f64, 9 elements, row-major)
  * @param resultPtr - Pointer to quaternion output [w, x, y, z] (f64, 4 elements)
  */
-export function quaternionFromRotationMatrix(RPtr: usize, resultPtr: usize): void {
+export function quaternionFromRotationMatrix(
+  RPtr: usize,
+  resultPtr: usize
+): void {
   const R0: f64 = load<f64>(RPtr)
   const R1: f64 = load<f64>(RPtr + 8)
   const R2: f64 = load<f64>(RPtr + 16)
@@ -499,9 +505,22 @@ export function rotateByMatrix(
   const py: f64 = load<f64>(pointPtr + 8)
   const pz: f64 = load<f64>(pointPtr + 16)
 
-  store<f64>(resultPtr, load<f64>(RPtr) * px + load<f64>(RPtr + 8) * py + load<f64>(RPtr + 16) * pz)
-  store<f64>(resultPtr + 8, load<f64>(RPtr + 24) * px + load<f64>(RPtr + 32) * py + load<f64>(RPtr + 40) * pz)
-  store<f64>(resultPtr + 16, load<f64>(RPtr + 48) * px + load<f64>(RPtr + 56) * py + load<f64>(RPtr + 64) * pz)
+  store<f64>(
+    resultPtr,
+    load<f64>(RPtr) * px + load<f64>(RPtr + 8) * py + load<f64>(RPtr + 16) * pz
+  )
+  store<f64>(
+    resultPtr + 8,
+    load<f64>(RPtr + 24) * px +
+      load<f64>(RPtr + 32) * py +
+      load<f64>(RPtr + 40) * pz
+  )
+  store<f64>(
+    resultPtr + 16,
+    load<f64>(RPtr + 48) * px +
+      load<f64>(RPtr + 56) * py +
+      load<f64>(RPtr + 64) * pz
+  )
 }
 
 /**
@@ -517,15 +536,24 @@ export function eulerFromRotationMatrix(RPtr: usize, resultPtr: usize): void {
     store<f64>(resultPtr, 0.0) // yaw
     if (R6 < 0) {
       store<f64>(resultPtr + 8, Math.PI / 2.0) // pitch
-      store<f64>(resultPtr + 16, Math.atan2(load<f64>(RPtr + 8), load<f64>(RPtr + 32))) // roll
+      store<f64>(
+        resultPtr + 16,
+        Math.atan2(load<f64>(RPtr + 8), load<f64>(RPtr + 32))
+      ) // roll
     } else {
       store<f64>(resultPtr + 8, -Math.PI / 2.0) // pitch
-      store<f64>(resultPtr + 16, Math.atan2(-load<f64>(RPtr + 8), load<f64>(RPtr + 32))) // roll
+      store<f64>(
+        resultPtr + 16,
+        Math.atan2(-load<f64>(RPtr + 8), load<f64>(RPtr + 32))
+      ) // roll
     }
   } else {
     store<f64>(resultPtr + 8, Math.asin(-R6)) // pitch
     store<f64>(resultPtr, Math.atan2(load<f64>(RPtr + 24), load<f64>(RPtr))) // yaw
-    store<f64>(resultPtr + 16, Math.atan2(load<f64>(RPtr + 56), load<f64>(RPtr + 64))) // roll
+    store<f64>(
+      resultPtr + 16,
+      Math.atan2(load<f64>(RPtr + 56), load<f64>(RPtr + 64))
+    ) // roll
   }
 }
 
@@ -545,7 +573,7 @@ export function composeRotations(
   if (count <= 0) {
     // Return identity
     for (let i: i32 = 0; i < 9; i++) {
-      store<f64>(resultPtr + (<usize>i << 3), 0.0)
+      store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
     }
     store<f64>(resultPtr, 1.0)
     store<f64>(resultPtr + 32, 1.0)
@@ -555,26 +583,34 @@ export function composeRotations(
 
   // Start with first matrix
   for (let i: i32 = 0; i < 9; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(matricesPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(matricesPtr + ((<usize>i) << 3))
+    )
   }
 
   // Multiply remaining matrices
   for (let m: i32 = 1; m < count; m++) {
-    const offset: usize = <usize>(m * 9) << 3
+    const offset: usize = (<usize>(m * 9)) << 3
 
     for (let i: i32 = 0; i < 3; i++) {
       for (let j: i32 = 0; j < 3; j++) {
         let sum: f64 = 0.0
         for (let k: i32 = 0; k < 3; k++) {
-          sum += load<f64>(resultPtr + (<usize>(i * 3 + k) << 3)) * load<f64>(matricesPtr + offset + (<usize>(k * 3 + j) << 3))
+          sum +=
+            load<f64>(resultPtr + ((<usize>(i * 3 + k)) << 3)) *
+            load<f64>(matricesPtr + offset + ((<usize>(k * 3 + j)) << 3))
         }
-        store<f64>(workPtr + (<usize>(i * 3 + j) << 3), sum)
+        store<f64>(workPtr + ((<usize>(i * 3 + j)) << 3), sum)
       }
     }
 
     // Copy temp to result
     for (let i: i32 = 0; i < 9; i++) {
-      store<f64>(resultPtr + (<usize>i << 3), load<f64>(workPtr + (<usize>i << 3)))
+      store<f64>(
+        resultPtr + ((<usize>i) << 3),
+        load<f64>(workPtr + ((<usize>i) << 3))
+      )
     }
   }
 }
@@ -591,7 +627,9 @@ export function isRotationMatrix(RPtr: usize, tol: f64): bool {
     for (let j: i32 = 0; j < 3; j++) {
       let dot: f64 = 0.0
       for (let k: i32 = 0; k < 3; k++) {
-        dot += load<f64>(RPtr + (<usize>(k * 3 + i) << 3)) * load<f64>(RPtr + (<usize>(k * 3 + j) << 3))
+        dot +=
+          load<f64>(RPtr + ((<usize>(k * 3 + i)) << 3)) *
+          load<f64>(RPtr + ((<usize>(k * 3 + j)) << 3))
       }
       const expected: f64 = i === j ? 1.0 : 0.0
       if (Math.abs(dot - expected) > tol) {

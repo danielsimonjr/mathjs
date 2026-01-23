@@ -379,10 +379,14 @@ export class MatrixWasmBridge {
     }
   }
 
-  private static inv2x2JS(
-    data: number[] | Float64Array
-  ): { result: Float64Array; success: boolean } {
-    const a = data[0], b = data[1], c = data[2], d = data[3]
+  private static inv2x2JS(data: number[] | Float64Array): {
+    result: Float64Array
+    success: boolean
+  } {
+    const a = data[0],
+      b = data[1],
+      c = data[2],
+      d = data[3]
     const det = a * d - b * c
 
     if (Math.abs(det) < 1e-15) {
@@ -391,7 +395,12 @@ export class MatrixWasmBridge {
 
     const invDet = 1.0 / det
     return {
-      result: new Float64Array([d * invDet, -b * invDet, -c * invDet, a * invDet]),
+      result: new Float64Array([
+        d * invDet,
+        -b * invDet,
+        -c * invDet,
+        a * invDet
+      ]),
       success: true
     }
   }
@@ -421,9 +430,10 @@ export class MatrixWasmBridge {
     }
   }
 
-  private static inv3x3JS(
-    data: number[] | Float64Array
-  ): { result: Float64Array; success: boolean } {
+  private static inv3x3JS(data: number[] | Float64Array): {
+    result: Float64Array
+    success: boolean
+  } {
     const [a, b, c, d, e, f, g, h, i] = data
     const det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g)
 
@@ -434,9 +444,15 @@ export class MatrixWasmBridge {
     const invDet = 1.0 / det
     return {
       result: new Float64Array([
-        (e * i - f * h) * invDet, (c * h - b * i) * invDet, (b * f - c * e) * invDet,
-        (f * g - d * i) * invDet, (a * i - c * g) * invDet, (c * d - a * f) * invDet,
-        (d * h - e * g) * invDet, (b * g - a * h) * invDet, (a * e - b * d) * invDet
+        (e * i - f * h) * invDet,
+        (c * h - b * i) * invDet,
+        (b * f - c * e) * invDet,
+        (f * g - d * i) * invDet,
+        (a * i - c * g) * invDet,
+        (c * d - a * f) * invDet,
+        (d * h - e * g) * invDet,
+        (b * g - a * h) * invDet,
+        (a * e - b * d) * invDet
       ]),
       success: true
     }
@@ -480,10 +496,7 @@ export class MatrixWasmBridge {
     }
   }
 
-  private static cond1JS(
-    data: number[] | Float64Array,
-    n: number
-  ): number {
+  private static cond1JS(data: number[] | Float64Array, n: number): number {
     // Compute 1-norm of A
     let norm1 = 0
     for (let j = 0; j < n; j++) {
@@ -534,10 +547,7 @@ export class MatrixWasmBridge {
     }
   }
 
-  private static condInfJS(
-    data: number[] | Float64Array,
-    n: number
-  ): number {
+  private static condInfJS(data: number[] | Float64Array, n: number): number {
     // Compute infinity-norm of A
     let normInf = 0
     for (let i = 0; i < n; i++) {
@@ -613,7 +623,9 @@ export class MatrixWasmBridge {
 
       return {
         eigenvalues: new Float64Array(eigenvalues.array),
-        eigenvectors: eigenvectors ? new Float64Array(eigenvectors.array) : null,
+        eigenvectors: eigenvectors
+          ? new Float64Array(eigenvectors.array)
+          : null,
         iterations
       }
     } finally {

@@ -6,7 +6,7 @@ import {
   lagrangeInterp,
   lagrangeBasis,
   dividedDifferences,
-  newtonInterp,
+  newtonInterp as _newtonInterp,
   newtonInterpFull,
   barycentricWeights,
   barycentricInterp,

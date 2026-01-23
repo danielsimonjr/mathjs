@@ -4,6 +4,7 @@
  */
 import { createSQRT1_2 } from '../../factoriesNumber.js' // eslint-disable-line camelcase
 
-export const SQRT1_2Dependencies: Record<string, unknown> = { // eslint-disable-line camelcase
+export const SQRT1_2Dependencies: Record<string, unknown> = {
+  // eslint-disable-line camelcase
   createSQRT1_2
 }

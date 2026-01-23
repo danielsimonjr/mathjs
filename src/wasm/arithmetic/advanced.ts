@@ -133,7 +133,7 @@ export function hypot3(x: f64, y: f64, z: f64): f64 {
 export function hypotArray(valuesPtr: usize, length: i32): f64 {
   let sum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const val = load<f64>(valuesPtr + (<usize>i << 3))
+    const val = load<f64>(valuesPtr + ((<usize>i) << 3))
     sum += val * val
   }
   return Math.sqrt(sum)
@@ -149,7 +149,7 @@ export function hypotArray(valuesPtr: usize, length: i32): f64 {
 export function norm1(valuesPtr: usize, length: i32): f64 {
   let sum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    sum += Math.abs(load<f64>(valuesPtr + (<usize>i << 3)))
+    sum += Math.abs(load<f64>(valuesPtr + ((<usize>i) << 3)))
   }
   return sum
 }
@@ -175,7 +175,7 @@ export function norm2(valuesPtr: usize, length: i32): f64 {
 export function normInf(valuesPtr: usize, length: i32): f64 {
   let max: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const absVal = Math.abs(load<f64>(valuesPtr + (<usize>i << 3)))
+    const absVal = Math.abs(load<f64>(valuesPtr + ((<usize>i) << 3)))
     if (absVal > max) max = absVal
   }
   return max
@@ -196,7 +196,7 @@ export function normP(valuesPtr: usize, p: f64, length: i32): f64 {
 
   let sum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const absVal = Math.abs(load<f64>(valuesPtr + (<usize>i << 3)))
+    const absVal = Math.abs(load<f64>(valuesPtr + ((<usize>i) << 3)))
     sum += Math.pow(absVal, p)
   }
   return Math.pow(sum, 1.0 / p)
@@ -228,7 +228,7 @@ export function modArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     const x = load<f64>(inputPtr + offset)
     const result = x % divisor
     store<f64>(outputPtr + offset, result < 0 ? result + divisor : result)
@@ -249,8 +249,11 @@ export function gcdArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
-    store<i64>(outputPtr + offset, gcd(load<i64>(inputAPtr + offset), load<i64>(inputBPtr + offset)))
+    const offset: usize = (<usize>i) << 3
+    store<i64>(
+      outputPtr + offset,
+      gcd(load<i64>(inputAPtr + offset), load<i64>(inputBPtr + offset))
+    )
   }
 }
 
@@ -268,8 +271,11 @@ export function lcmArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
-    store<i64>(outputPtr + offset, lcm(load<i64>(inputAPtr + offset), load<i64>(inputBPtr + offset)))
+    const offset: usize = (<usize>i) << 3
+    store<i64>(
+      outputPtr + offset,
+      lcm(load<i64>(inputAPtr + offset), load<i64>(inputBPtr + offset))
+    )
   }
 }
 
@@ -284,8 +290,8 @@ export function nthRootsOfUnity(n: i32, outputPtr: usize): void {
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = twoPiOverN * f64(k)
-    store<f64>(outputPtr + (<usize>(k * 2) << 3), Math.cos(angle)) // Real part
-    store<f64>(outputPtr + (<usize>(k * 2 + 1) << 3), Math.sin(angle)) // Imaginary part
+    store<f64>(outputPtr + ((<usize>(k * 2)) << 3), Math.cos(angle)) // Real part
+    store<f64>(outputPtr + ((<usize>(k * 2 + 1)) << 3), Math.sin(angle)) // Imaginary part
   }
 }
 
@@ -300,14 +306,14 @@ export function nthRootsReal(x: f64, n: i32, outputPtr: usize): void {
   // Handle special cases
   if (n <= 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      store<f64>(outputPtr + (<usize>i << 3), f64.NaN)
+      store<f64>(outputPtr + ((<usize>i) << 3), f64.NaN)
     }
     return
   }
 
   if (x === 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      store<f64>(outputPtr + (<usize>i << 3), 0)
+      store<f64>(outputPtr + ((<usize>i) << 3), 0)
     }
     return
   }
@@ -326,8 +332,8 @@ export function nthRootsReal(x: f64, n: i32, outputPtr: usize): void {
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = (theta + twoPiOverN * f64(k)) / f64(n)
-    store<f64>(outputPtr + (<usize>(k * 2) << 3), r * Math.cos(angle)) // Real part
-    store<f64>(outputPtr + (<usize>(k * 2 + 1) << 3), r * Math.sin(angle)) // Imaginary part
+    store<f64>(outputPtr + ((<usize>(k * 2)) << 3), r * Math.cos(angle)) // Real part
+    store<f64>(outputPtr + ((<usize>(k * 2 + 1)) << 3), r * Math.sin(angle)) // Imaginary part
   }
 }
 
@@ -347,14 +353,14 @@ export function nthRootsComplex(
 ): void {
   if (n <= 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      store<f64>(outputPtr + (<usize>i << 3), f64.NaN)
+      store<f64>(outputPtr + ((<usize>i) << 3), f64.NaN)
     }
     return
   }
 
   if (re === 0 && im === 0) {
     for (let i: i32 = 0; i < n * 2; i++) {
-      store<f64>(outputPtr + (<usize>i << 3), 0)
+      store<f64>(outputPtr + ((<usize>i) << 3), 0)
     }
     return
   }
@@ -370,8 +376,8 @@ export function nthRootsComplex(
 
   for (let k: i32 = 0; k < n; k++) {
     const angle = (theta + twoPiOverN * f64(k)) / f64(n)
-    store<f64>(outputPtr + (<usize>(k * 2) << 3), rootR * Math.cos(angle)) // Real part
-    store<f64>(outputPtr + (<usize>(k * 2 + 1) << 3), rootR * Math.sin(angle)) // Imaginary part
+    store<f64>(outputPtr + ((<usize>(k * 2)) << 3), rootR * Math.cos(angle)) // Real part
+    store<f64>(outputPtr + ((<usize>(k * 2 + 1)) << 3), rootR * Math.sin(angle)) // Imaginary part
   }
 }
 

@@ -29,7 +29,7 @@ export function andArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     const a: i32 = load<i32>(aPtr + offset)
     const b: i32 = load<i32>(bPtr + offset)
     store<i32>(resultPtr + offset, a !== 0 && b !== 0 ? 1 : 0)
@@ -60,7 +60,7 @@ export function orArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     const a: i32 = load<i32>(aPtr + offset)
     const b: i32 = load<i32>(bPtr + offset)
     store<i32>(resultPtr + offset, a !== 0 || b !== 0 ? 1 : 0)
@@ -84,7 +84,7 @@ export function not(a: i32): i32 {
  */
 export function notArray(aPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     store<i32>(resultPtr + offset, load<i32>(aPtr + offset) === 0 ? 1 : 0)
   }
 }
@@ -115,10 +115,13 @@ export function xorArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const offset: usize = <usize>i << 2
+    const offset: usize = (<usize>i) << 2
     const aBool: bool = load<i32>(aPtr + offset) !== 0
     const bBool: bool = load<i32>(bPtr + offset) !== 0
-    store<i32>(resultPtr + offset, (aBool && !bBool) || (!aBool && bBool) ? 1 : 0)
+    store<i32>(
+      resultPtr + offset,
+      (aBool && !bBool) || (!aBool && bBool) ? 1 : 0
+    )
   }
 }
 
@@ -163,7 +166,7 @@ export function xnor(a: i32, b: i32): i32 {
 export function countTrue(aPtr: usize, n: i32): i32 {
   let count: i32 = 0
   for (let i: i32 = 0; i < n; i++) {
-    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) count++
+    if (load<i32>(aPtr + ((<usize>i) << 2)) !== 0) count++
   }
   return count
 }
@@ -176,7 +179,7 @@ export function countTrue(aPtr: usize, n: i32): i32 {
  */
 export function all(aPtr: usize, n: i32): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    if (load<i32>(aPtr + (<usize>i << 2)) === 0) return 0
+    if (load<i32>(aPtr + ((<usize>i) << 2)) === 0) return 0
   }
   return 1
 }
@@ -189,7 +192,7 @@ export function all(aPtr: usize, n: i32): i32 {
  */
 export function any(aPtr: usize, n: i32): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) return 1
+    if (load<i32>(aPtr + ((<usize>i) << 2)) !== 0) return 1
   }
   return 0
 }
@@ -202,7 +205,7 @@ export function any(aPtr: usize, n: i32): i32 {
  */
 export function findFirst(aPtr: usize, n: i32): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) return i
+    if (load<i32>(aPtr + ((<usize>i) << 2)) !== 0) return i
   }
   return -1
 }
@@ -215,7 +218,7 @@ export function findFirst(aPtr: usize, n: i32): i32 {
  */
 export function findLast(aPtr: usize, n: i32): i32 {
   for (let i: i32 = n - 1; i >= 0; i--) {
-    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) return i
+    if (load<i32>(aPtr + ((<usize>i) << 2)) !== 0) return i
   }
   return -1
 }
@@ -230,8 +233,8 @@ export function findLast(aPtr: usize, n: i32): i32 {
 export function findAll(aPtr: usize, n: i32, resultPtr: usize): i32 {
   let j: i32 = 0
   for (let i: i32 = 0; i < n; i++) {
-    if (load<i32>(aPtr + (<usize>i << 2)) !== 0) {
-      store<i32>(resultPtr + (<usize>j << 2), i)
+    if (load<i32>(aPtr + ((<usize>i) << 2)) !== 0) {
+      store<i32>(resultPtr + ((<usize>j) << 2), i)
       j++
     }
   }
@@ -265,8 +268,8 @@ export function selectArray(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    const condOffset: usize = <usize>i << 2
-    const valOffset: usize = <usize>i << 3
+    const condOffset: usize = (<usize>i) << 2
+    const valOffset: usize = (<usize>i) << 3
     const condition: i32 = load<i32>(conditionPtr + condOffset)
     const aVal: f64 = load<f64>(aPtr + valOffset)
     const bVal: f64 = load<f64>(bPtr + valOffset)

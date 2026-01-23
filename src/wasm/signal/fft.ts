@@ -29,8 +29,8 @@ export function fft(dataPtr: usize, n: i32, inverse: i32): void {
         const cos: f64 = Math.cos(angle)
         const sin: f64 = Math.sin(angle)
 
-        const idx1: usize = <usize>((i + j) << 1) << 3
-        const idx2: usize = <usize>((i + j + halfSize) << 1) << 3
+        const idx1: usize = (<usize>((i + j) << 1)) << 3
+        const idx2: usize = (<usize>((i + j + halfSize) << 1)) << 3
 
         const real1: f64 = load<f64>(dataPtr + idx1)
         const imag1: f64 = load<f64>(dataPtr + idx1 + 8)
@@ -59,7 +59,7 @@ export function fft(dataPtr: usize, n: i32, inverse: i32): void {
     const scale: f64 = 1.0 / <f64>n
     const total: i32 = n << 1
     for (let i: i32 = 0; i < total; i++) {
-      const offset: usize = <usize>i << 3
+      const offset: usize = (<usize>i) << 3
       store<f64>(dataPtr + offset, load<f64>(dataPtr + offset) * scale)
     }
   }
@@ -74,8 +74,8 @@ function bitReverse(dataPtr: usize, n: i32): void {
   for (let i: i32 = 0; i < n - 1; i++) {
     if (i < j) {
       // Swap complex numbers at positions i and j
-      const idx1: usize = <usize>(i << 1) << 3
-      const idx2: usize = <usize>(j << 1) << 3
+      const idx1: usize = (<usize>(i << 1)) << 3
+      const idx2: usize = (<usize>(j << 1)) << 3
 
       let temp: f64 = load<f64>(dataPtr + idx1)
       store<f64>(dataPtr + idx1, load<f64>(dataPtr + idx2))
@@ -113,10 +113,10 @@ export function fft2d(
   // FFT on rows
   for (let i: i32 = 0; i < rows; i++) {
     // Extract row into work buffer
-    const rowOffset: usize = <usize>(i * cols << 1) << 3
+    const rowOffset: usize = (<usize>((i * cols) << 1)) << 3
     for (let j: i32 = 0; j < cols; j++) {
-      const srcOffset: usize = rowOffset + (<usize>(j << 1) << 3)
-      const dstOffset: usize = <usize>(j << 1) << 3
+      const srcOffset: usize = rowOffset + ((<usize>(j << 1)) << 3)
+      const dstOffset: usize = (<usize>(j << 1)) << 3
       store<f64>(workPtr + dstOffset, load<f64>(dataPtr + srcOffset))
       store<f64>(workPtr + dstOffset + 8, load<f64>(dataPtr + srcOffset + 8))
     }
@@ -126,8 +126,8 @@ export function fft2d(
 
     // Write back
     for (let j: i32 = 0; j < cols; j++) {
-      const srcOffset: usize = <usize>(j << 1) << 3
-      const dstOffset: usize = rowOffset + (<usize>(j << 1) << 3)
+      const srcOffset: usize = (<usize>(j << 1)) << 3
+      const dstOffset: usize = rowOffset + ((<usize>(j << 1)) << 3)
       store<f64>(dataPtr + dstOffset, load<f64>(workPtr + srcOffset))
       store<f64>(dataPtr + dstOffset + 8, load<f64>(workPtr + srcOffset + 8))
     }
@@ -137,8 +137,8 @@ export function fft2d(
   for (let j: i32 = 0; j < cols; j++) {
     // Extract column into work buffer
     for (let i: i32 = 0; i < rows; i++) {
-      const srcOffset: usize = (<usize>(i * cols + j) << 1) << 3
-      const dstOffset: usize = <usize>(i << 1) << 3
+      const srcOffset: usize = ((<usize>(i * cols + j)) << 1) << 3
+      const dstOffset: usize = (<usize>(i << 1)) << 3
       store<f64>(workPtr + dstOffset, load<f64>(dataPtr + srcOffset))
       store<f64>(workPtr + dstOffset + 8, load<f64>(dataPtr + srcOffset + 8))
     }
@@ -148,8 +148,8 @@ export function fft2d(
 
     // Write back
     for (let i: i32 = 0; i < rows; i++) {
-      const srcOffset: usize = <usize>(i << 1) << 3
-      const dstOffset: usize = (<usize>(i * cols + j) << 1) << 3
+      const srcOffset: usize = (<usize>(i << 1)) << 3
+      const dstOffset: usize = ((<usize>(i * cols + j)) << 1) << 3
       store<f64>(dataPtr + dstOffset, load<f64>(workPtr + srcOffset))
       store<f64>(dataPtr + dstOffset + 8, load<f64>(workPtr + srcOffset + 8))
     }
@@ -178,18 +178,24 @@ export function convolve(
   // Copy signal to result (zero-padded)
   const totalSize: i32 = size << 1
   for (let i: i32 = 0; i < totalSize; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
   for (let i: i32 = 0; i < n << 1; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(signalPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(signalPtr + ((<usize>i) << 3))
+    )
   }
 
   // Copy kernel to work buffer (zero-padded)
   for (let i: i32 = 0; i < totalSize; i++) {
-    store<f64>(workPtr + (<usize>i << 3), 0.0)
+    store<f64>(workPtr + ((<usize>i) << 3), 0.0)
   }
   for (let i: i32 = 0; i < m << 1; i++) {
-    store<f64>(workPtr + (<usize>i << 3), load<f64>(kernelPtr + (<usize>i << 3)))
+    store<f64>(
+      workPtr + ((<usize>i) << 3),
+      load<f64>(kernelPtr + ((<usize>i) << 3))
+    )
   }
 
   // Transform both signals
@@ -198,7 +204,7 @@ export function convolve(
 
   // Multiply in frequency domain
   for (let i: i32 = 0; i < size; i++) {
-    const idx: usize = <usize>(i << 1) << 3
+    const idx: usize = (<usize>(i << 1)) << 3
     const real1: f64 = load<f64>(resultPtr + idx)
     const imag1: f64 = load<f64>(resultPtr + idx + 8)
     const real2: f64 = load<f64>(workPtr + idx)
@@ -221,8 +227,8 @@ export function convolve(
 export function rfft(dataPtr: usize, n: i32, resultPtr: usize): void {
   // Convert to complex format
   for (let i: i32 = 0; i < n; i++) {
-    const srcOffset: usize = <usize>i << 3
-    const dstOffset: usize = <usize>(i << 1) << 3
+    const srcOffset: usize = (<usize>i) << 3
+    const dstOffset: usize = (<usize>(i << 1)) << 3
     store<f64>(resultPtr + dstOffset, load<f64>(dataPtr + srcOffset))
     store<f64>(resultPtr + dstOffset + 8, 0.0)
   }
@@ -238,11 +244,19 @@ export function rfft(dataPtr: usize, n: i32, resultPtr: usize): void {
  * @param resultPtr - Pointer to real output
  * @param workPtr - Pointer to work buffer (must be n*2*8 bytes)
  */
-export function irfft(dataPtr: usize, n: i32, resultPtr: usize, workPtr: usize): void {
+export function irfft(
+  dataPtr: usize,
+  n: i32,
+  resultPtr: usize,
+  workPtr: usize
+): void {
   // Copy to work buffer
   const totalSize: i32 = n << 1
   for (let i: i32 = 0; i < totalSize; i++) {
-    store<f64>(workPtr + (<usize>i << 3), load<f64>(dataPtr + (<usize>i << 3)))
+    store<f64>(
+      workPtr + ((<usize>i) << 3),
+      load<f64>(dataPtr + ((<usize>i) << 3))
+    )
   }
 
   // Perform inverse FFT
@@ -250,8 +264,8 @@ export function irfft(dataPtr: usize, n: i32, resultPtr: usize, workPtr: usize):
 
   // Extract real part
   for (let i: i32 = 0; i < n; i++) {
-    const srcOffset: usize = <usize>(i << 1) << 3
-    const dstOffset: usize = <usize>i << 3
+    const srcOffset: usize = (<usize>(i << 1)) << 3
+    const dstOffset: usize = (<usize>i) << 3
     store<f64>(resultPtr + dstOffset, load<f64>(workPtr + srcOffset))
   }
 }
@@ -271,10 +285,10 @@ export function isPowerOf2(n: i32): i32 {
  */
 export function powerSpectrum(dataPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const idx: usize = <usize>(i << 1) << 3
+    const idx: usize = (<usize>(i << 1)) << 3
     const real: f64 = load<f64>(dataPtr + idx)
     const imag: f64 = load<f64>(dataPtr + idx + 8)
-    store<f64>(resultPtr + (<usize>i << 3), real * real + imag * imag)
+    store<f64>(resultPtr + ((<usize>i) << 3), real * real + imag * imag)
   }
 }
 
@@ -284,12 +298,19 @@ export function powerSpectrum(dataPtr: usize, n: i32, resultPtr: usize): void {
  * @param n - Number of complex samples
  * @param resultPtr - Pointer to magnitude spectrum output (real values, length n)
  */
-export function magnitudeSpectrum(dataPtr: usize, n: i32, resultPtr: usize): void {
+export function magnitudeSpectrum(
+  dataPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    const idx: usize = <usize>(i << 1) << 3
+    const idx: usize = (<usize>(i << 1)) << 3
     const real: f64 = load<f64>(dataPtr + idx)
     const imag: f64 = load<f64>(dataPtr + idx + 8)
-    store<f64>(resultPtr + (<usize>i << 3), Math.sqrt(real * real + imag * imag))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      Math.sqrt(real * real + imag * imag)
+    )
   }
 }
 
@@ -301,10 +322,10 @@ export function magnitudeSpectrum(dataPtr: usize, n: i32, resultPtr: usize): voi
  */
 export function phaseSpectrum(dataPtr: usize, n: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    const idx: usize = <usize>(i << 1) << 3
+    const idx: usize = (<usize>(i << 1)) << 3
     const real: f64 = load<f64>(dataPtr + idx)
     const imag: f64 = load<f64>(dataPtr + idx + 8)
-    store<f64>(resultPtr + (<usize>i << 3), Math.atan2(imag, real))
+    store<f64>(resultPtr + ((<usize>i) << 3), Math.atan2(imag, real))
   }
 }
 
@@ -330,18 +351,21 @@ export function crossCorrelation(
   // Copy a to result (zero-padded)
   const totalSize: i32 = size << 1
   for (let i: i32 = 0; i < totalSize; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
   for (let i: i32 = 0; i < n << 1; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)))
+    store<f64>(
+      resultPtr + ((<usize>i) << 3),
+      load<f64>(aPtr + ((<usize>i) << 3))
+    )
   }
 
   // Copy b to work buffer (zero-padded)
   for (let i: i32 = 0; i < totalSize; i++) {
-    store<f64>(workPtr + (<usize>i << 3), 0.0)
+    store<f64>(workPtr + ((<usize>i) << 3), 0.0)
   }
   for (let i: i32 = 0; i < m << 1; i++) {
-    store<f64>(workPtr + (<usize>i << 3), load<f64>(bPtr + (<usize>i << 3)))
+    store<f64>(workPtr + ((<usize>i) << 3), load<f64>(bPtr + ((<usize>i) << 3)))
   }
 
   // FFT of both signals
@@ -350,7 +374,7 @@ export function crossCorrelation(
 
   // Multiply A(f) by conjugate of B(f)
   for (let i: i32 = 0; i < size; i++) {
-    const idx: usize = <usize>(i << 1) << 3
+    const idx: usize = (<usize>(i << 1)) << 3
     const aReal: f64 = load<f64>(resultPtr + idx)
     const aImag: f64 = load<f64>(resultPtr + idx + 8)
     const bReal: f64 = load<f64>(workPtr + idx)
@@ -412,8 +436,8 @@ export function fftSIMD(dataPtr: usize, n: i32, inverse: i32): void {
         const cos: f64 = Math.cos(angle)
         const sin: f64 = Math.sin(angle)
 
-        const idx1: usize = <usize>((i + j) << 1) << 3
-        const idx2: usize = <usize>((i + j + halfSize) << 1) << 3
+        const idx1: usize = (<usize>((i + j) << 1)) << 3
+        const idx2: usize = (<usize>((i + j + halfSize) << 1)) << 3
 
         // Load complex numbers as v128 (real, imag pairs)
         const c1: v128 = v128.load(dataPtr + idx1)
@@ -425,7 +449,11 @@ export function fftSIMD(dataPtr: usize, n: i32, inverse: i32): void {
         const imag2: f64 = f64x2.extract_lane(c2, 1)
         const tReal: f64 = real2 * cos - imag2 * sin
         const tImag: f64 = real2 * sin + imag2 * cos
-        const twiddle: v128 = f64x2.replace_lane(f64x2.replace_lane(f64x2.splat(0.0), 0, tReal), 1, tImag)
+        const twiddle: v128 = f64x2.replace_lane(
+          f64x2.replace_lane(f64x2.splat(0.0), 0, tReal),
+          1,
+          tImag
+        )
 
         // Butterfly: c1 +/- twiddle
         v128.store(dataPtr + idx1, f64x2.add(c1, twiddle))
@@ -447,12 +475,15 @@ export function fftSIMD(dataPtr: usize, n: i32, inverse: i32): void {
     let ii: i32 = 0
     const limit: i32 = total - 1
     for (; ii < limit; ii += 2) {
-      const offset: usize = <usize>ii << 3
-      v128.store(dataPtr + offset, f64x2.mul(v128.load(dataPtr + offset), scaleVec))
+      const offset: usize = (<usize>ii) << 3
+      v128.store(
+        dataPtr + offset,
+        f64x2.mul(v128.load(dataPtr + offset), scaleVec)
+      )
     }
     // Handle remaining
     for (; ii < total; ii++) {
-      const offset: usize = <usize>ii << 3
+      const offset: usize = (<usize>ii) << 3
       store<f64>(dataPtr + offset, load<f64>(dataPtr + offset) * scale)
     }
   }
@@ -486,39 +517,51 @@ export function convolveSIMD(
   let ii: i32 = 0
   let limit: i32 = totalSize - 1
   for (; ii < limit; ii += 2) {
-    v128.store(resultPtr + (<usize>ii << 3), zeroVec)
+    v128.store(resultPtr + ((<usize>ii) << 3), zeroVec)
   }
   for (; ii < totalSize; ii++) {
-    store<f64>(resultPtr + (<usize>ii << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>ii) << 3), 0.0)
   }
 
   // Copy signal data
   ii = 0
   limit = (n << 1) - 1
   for (; ii < limit; ii += 2) {
-    v128.store(resultPtr + (<usize>ii << 3), v128.load(signalPtr + (<usize>ii << 3)))
+    v128.store(
+      resultPtr + ((<usize>ii) << 3),
+      v128.load(signalPtr + ((<usize>ii) << 3))
+    )
   }
   for (; ii < n << 1; ii++) {
-    store<f64>(resultPtr + (<usize>ii << 3), load<f64>(signalPtr + (<usize>ii << 3)))
+    store<f64>(
+      resultPtr + ((<usize>ii) << 3),
+      load<f64>(signalPtr + ((<usize>ii) << 3))
+    )
   }
 
   // Copy kernel (zero-padded) using SIMD
   ii = 0
   limit = totalSize - 1
   for (; ii < limit; ii += 2) {
-    v128.store(workPtr + (<usize>ii << 3), zeroVec)
+    v128.store(workPtr + ((<usize>ii) << 3), zeroVec)
   }
   for (; ii < totalSize; ii++) {
-    store<f64>(workPtr + (<usize>ii << 3), 0.0)
+    store<f64>(workPtr + ((<usize>ii) << 3), 0.0)
   }
 
   ii = 0
   limit = (m << 1) - 1
   for (; ii < limit; ii += 2) {
-    v128.store(workPtr + (<usize>ii << 3), v128.load(kernelPtr + (<usize>ii << 3)))
+    v128.store(
+      workPtr + ((<usize>ii) << 3),
+      v128.load(kernelPtr + ((<usize>ii) << 3))
+    )
   }
   for (; ii < m << 1; ii++) {
-    store<f64>(workPtr + (<usize>ii << 3), load<f64>(kernelPtr + (<usize>ii << 3)))
+    store<f64>(
+      workPtr + ((<usize>ii) << 3),
+      load<f64>(kernelPtr + ((<usize>ii) << 3))
+    )
   }
 
   // Transform both using SIMD FFT
@@ -527,7 +570,7 @@ export function convolveSIMD(
 
   // SIMD frequency domain multiplication (complex multiply)
   for (let i: i32 = 0; i < size; i++) {
-    const idx: usize = <usize>(i << 1) << 3
+    const idx: usize = (<usize>(i << 1)) << 3
     const r1: v128 = v128.load(resultPtr + idx)
     const r2: v128 = v128.load(workPtr + idx)
 
@@ -539,7 +582,14 @@ export function convolveSIMD(
     const resReal: f64 = real1 * real2 - imag1 * imag2
     const resImag: f64 = real1 * imag2 + imag1 * real2
 
-    v128.store(resultPtr + idx, f64x2.replace_lane(f64x2.replace_lane(f64x2.splat(0.0), 0, resReal), 1, resImag))
+    v128.store(
+      resultPtr + idx,
+      f64x2.replace_lane(
+        f64x2.replace_lane(f64x2.splat(0.0), 0, resReal),
+        1,
+        resImag
+      )
+    )
   }
 
   // Inverse transform
@@ -554,14 +604,19 @@ export function convolveSIMD(
  * @param n - Number of complex samples
  * @param resultPtr - Pointer to power spectrum output
  */
-export function powerSpectrumSIMD(dataPtr: usize, n: i32, resultPtr: usize): void {
+export function powerSpectrumSIMD(
+  dataPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
   for (let i: i32 = 0; i < n; i++) {
-    const idx: usize = <usize>(i << 1) << 3
+    const idx: usize = (<usize>(i << 1)) << 3
     const complex: v128 = v128.load(dataPtr + idx)
     // Compute real² + imag² using SIMD multiply and horizontal add
     const squared: v128 = f64x2.mul(complex, complex)
-    const power: f64 = f64x2.extract_lane(squared, 0) + f64x2.extract_lane(squared, 1)
-    store<f64>(resultPtr + (<usize>i << 3), power)
+    const power: f64 =
+      f64x2.extract_lane(squared, 0) + f64x2.extract_lane(squared, 1)
+    store<f64>(resultPtr + ((<usize>i) << 3), power)
   }
 }
 
@@ -592,31 +647,43 @@ export function crossCorrelationSIMD(
   let ii: i32 = 0
   let limit: i32 = totalSize - 1
   for (; ii < limit; ii += 2) {
-    v128.store(resultPtr + (<usize>ii << 3), zeroVec)
-    v128.store(workPtr + (<usize>ii << 3), zeroVec)
+    v128.store(resultPtr + ((<usize>ii) << 3), zeroVec)
+    v128.store(workPtr + ((<usize>ii) << 3), zeroVec)
   }
   for (; ii < totalSize; ii++) {
-    store<f64>(resultPtr + (<usize>ii << 3), 0.0)
-    store<f64>(workPtr + (<usize>ii << 3), 0.0)
+    store<f64>(resultPtr + ((<usize>ii) << 3), 0.0)
+    store<f64>(workPtr + ((<usize>ii) << 3), 0.0)
   }
 
   // Copy data
   ii = 0
   limit = (n << 1) - 1
   for (; ii < limit; ii += 2) {
-    v128.store(resultPtr + (<usize>ii << 3), v128.load(aPtr + (<usize>ii << 3)))
+    v128.store(
+      resultPtr + ((<usize>ii) << 3),
+      v128.load(aPtr + ((<usize>ii) << 3))
+    )
   }
   for (; ii < n << 1; ii++) {
-    store<f64>(resultPtr + (<usize>ii << 3), load<f64>(aPtr + (<usize>ii << 3)))
+    store<f64>(
+      resultPtr + ((<usize>ii) << 3),
+      load<f64>(aPtr + ((<usize>ii) << 3))
+    )
   }
 
   ii = 0
   limit = (m << 1) - 1
   for (; ii < limit; ii += 2) {
-    v128.store(workPtr + (<usize>ii << 3), v128.load(bPtr + (<usize>ii << 3)))
+    v128.store(
+      workPtr + ((<usize>ii) << 3),
+      v128.load(bPtr + ((<usize>ii) << 3))
+    )
   }
   for (; ii < m << 1; ii++) {
-    store<f64>(workPtr + (<usize>ii << 3), load<f64>(bPtr + (<usize>ii << 3)))
+    store<f64>(
+      workPtr + ((<usize>ii) << 3),
+      load<f64>(bPtr + ((<usize>ii) << 3))
+    )
   }
 
   // FFT both
@@ -625,7 +692,7 @@ export function crossCorrelationSIMD(
 
   // Multiply A(f) by conjugate of B(f)
   for (let i: i32 = 0; i < size; i++) {
-    const idx: usize = <usize>(i << 1) << 3
+    const idx: usize = (<usize>(i << 1)) << 3
     const a: v128 = v128.load(resultPtr + idx)
     const b: v128 = v128.load(workPtr + idx)
 
@@ -637,7 +704,14 @@ export function crossCorrelationSIMD(
     const resReal: f64 = aReal * bReal - aImag * bImag
     const resImag: f64 = aReal * bImag + aImag * bReal
 
-    v128.store(resultPtr + idx, f64x2.replace_lane(f64x2.replace_lane(f64x2.splat(0.0), 0, resReal), 1, resImag))
+    v128.store(
+      resultPtr + idx,
+      f64x2.replace_lane(
+        f64x2.replace_lane(f64x2.splat(0.0), 0, resReal),
+        1,
+        resImag
+      )
+    )
   }
 
   // Inverse FFT

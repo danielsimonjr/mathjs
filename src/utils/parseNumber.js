@@ -61,21 +61,23 @@ export const createParseNumberWithConfig = /* #__PURE__ */ factory(
             throw new SyntaxError(`String "${str}" is not a valid number`)
           }
 
-        case 'Fraction':
+        case 'Fraction': {
           // TODO: Add fraction dependency when Fraction support needed
           const fracNum = Number(str)
           if (isNaN(fracNum)) {
             throw new SyntaxError(`String "${str}" is not a valid number`)
           }
           return fracNum
+        }
 
         case 'number':
-        default:
+        default: {
           const num = Number(str)
           if (isNaN(num)) {
             throw new SyntaxError(`String "${str}" is not a valid number`)
           }
           return num
+        }
       }
     }
 

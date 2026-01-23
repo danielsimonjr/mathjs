@@ -112,13 +112,9 @@ export function pow(x: f64, y: f64): f64 {
  * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
-export function expArray(
-  inputPtr: usize,
-  outputPtr: usize,
-  length: i32
-): void {
+export function expArray(inputPtr: usize, outputPtr: usize, length: i32): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.exp(load<f64>(inputPtr + offset)))
   }
 }
@@ -129,13 +125,9 @@ export function expArray(
  * @param outputPtr Pointer to output array (f64)
  * @param length Length of arrays
  */
-export function logArray(
-  inputPtr: usize,
-  outputPtr: usize,
-  length: i32
-): void {
+export function logArray(inputPtr: usize, outputPtr: usize, length: i32): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.log(load<f64>(inputPtr + offset)))
   }
 }
@@ -152,7 +144,7 @@ export function log10Array(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.log10(load<f64>(inputPtr + offset)))
   }
 }
@@ -169,7 +161,7 @@ export function log2Array(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.log2(load<f64>(inputPtr + offset)))
   }
 }
@@ -186,7 +178,7 @@ export function sqrtArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
+    const offset: usize = (<usize>i) << 3
     store<f64>(outputPtr + offset, Math.sqrt(load<f64>(inputPtr + offset)))
   }
 }
@@ -205,7 +197,10 @@ export function powConstantArray(
   length: i32
 ): void {
   for (let i: i32 = 0; i < length; i++) {
-    const offset: usize = <usize>i << 3
-    store<f64>(outputPtr + offset, Math.pow(load<f64>(inputPtr + offset), exponent))
+    const offset: usize = (<usize>i) << 3
+    store<f64>(
+      outputPtr + offset,
+      Math.pow(load<f64>(inputPtr + offset), exponent)
+    )
   }
 }
