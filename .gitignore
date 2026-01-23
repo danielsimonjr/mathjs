@@ -12,7 +12,9 @@ node_modules
 /coverage
 .eslintcache
 
-lib
+# Ignore lib subdirectories except esm (original JS build)
+/lib/*
+!/lib/esm/
 test-results
 *.generated.js
 .note.txt
