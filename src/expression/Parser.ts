@@ -1,6 +1,12 @@
 import { factory } from '../utils/factory.ts'
 import { isFunction } from '../utils/is.ts'
 import { createEmptyMap, toObject } from '../utils/map.ts'
+import type { TypedFunction } from '../core/function/typed.ts'
+
+interface ParserClassDependencies {
+  evaluate: TypedFunction
+  parse: TypedFunction
+}
 
 const name = 'Parser'
 const dependencies = ['evaluate', 'parse'] as const
@@ -8,7 +14,7 @@ const dependencies = ['evaluate', 'parse'] as const
 export const createParserClass = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({ evaluate, parse }: { evaluate: any; parse: any }) => {
+  ({ evaluate, parse }: ParserClassDependencies) => {
     /**
      * @constructor Parser
      * Parser contains methods to evaluate or parse expressions, and has a number

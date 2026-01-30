@@ -1,7 +1,12 @@
 import { errorTransform } from '../../transform/utils/errorTransform.ts'
 import { getSafeProperty } from '../../../utils/customs.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
 
-export function accessFactory({ subset }: { subset: any }) {
+interface AccessFactoryDependencies {
+  subset: TypedFunction
+}
+
+export function accessFactory({ subset }: AccessFactoryDependencies) {
   /**
    * Retrieve part of an object:
    *

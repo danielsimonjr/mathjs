@@ -1,4 +1,15 @@
 import { factory } from '../../utils/factory.ts'
+import type { MathJsConfig } from '../../core/config.ts'
+import type { Decimal } from 'decimal.js'
+
+interface BigNumberConstructor {
+  new (value: string | number): Decimal
+}
+
+interface NumberFactoryDependencies {
+  config: MathJsConfig
+  BigNumber: BigNumberConstructor
+}
 
 // Source: https://en.wikipedia.org/wiki/Physical_constant
 
@@ -300,13 +311,13 @@ function unitFactory(name: any, valueStr: any, unitStr: any) {
 
 // helper function to create a factory function which creates a numeric constant,
 // either a number or BigNumber depending on the configuration
-function numberFactory(name: any, value: any) {
+function numberFactory(name: string, value: number | string) {
   const dependencies = ['config', 'BigNumber']
 
   return factory(
     name,
     dependencies,
-    ({ config, BigNumber }: { config: any; BigNumber: any }) => {
+    ({ config, BigNumber }: NumberFactoryDependencies) => {
       return config.number === 'BigNumber' ? new BigNumber(value) : value
     }
   )

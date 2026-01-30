@@ -27,6 +27,7 @@ import { clone, deepStrictEqual } from '../../utils/object.ts'
 import { DimensionError } from '../../error/DimensionError.ts'
 import { factory } from '../../utils/factory.ts'
 import { optimizeCallback } from '../../utils/optimizeCallback.ts'
+import type { MathJsConfig } from '../../core/config.ts'
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]
@@ -104,13 +105,18 @@ interface OptimizedCallback {
   isUnary: boolean
 }
 
+interface DenseMatrixDependencies {
+  Matrix: new (...args: any[]) => Matrix
+  config: MathJsConfig
+}
+
 const name = 'DenseMatrix'
 const dependencies = ['Matrix', 'config']
 
 export const createDenseMatrixClass = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ Matrix, config }: { Matrix: any; config: any }) => {
+  ({ Matrix, config }: DenseMatrixDependencies) => {
     /**
      * Dense Matrix implementation. A regular, dense matrix, supporting multi-dimensional matrices. This is the default matrix type.
      * @class DenseMatrix
