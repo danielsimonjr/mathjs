@@ -7,6 +7,19 @@ import {
   deepMap
 } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for map
+interface MatrixType {
+  map(callback: MapCallback): MatrixType
+  toArray(): unknown[]
+}
+
+type MapCallback = (value: unknown, index: number[], matrix: unknown) => unknown
+
+interface MapDependencies {
+  typed: TypedFunction
+}
 
 const name = 'map'
 const dependencies = ['typed']
@@ -14,7 +27,7 @@ const dependencies = ['typed']
 export const createMap = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: MapDependencies) => {
     /**
      * Create a new matrix or array with the results of a callback function executed on
      * each entry of a given matrix/array.
@@ -63,14 +76,14 @@ export const createMap = /* #__PURE__ */ factory(
     return typed(name, {
       'Array, function': _mapArray,
 
-      'Matrix, function': function (x: any, callback: Function): any {
+      'Matrix, function': function (x: MatrixType, callback: MapCallback): MatrixType {
         return x.map(callback)
       },
 
       'Array|Matrix, Array|Matrix, ...Array|Matrix|function': (
-        A: any,
-        B: any,
-        rest: any[]
+        A: unknown[] | MatrixType,
+        B: unknown[] | MatrixType,
+        rest: (unknown[] | MatrixType | MapCallback)[]
       ) =>
         _mapMultiple(
           [A, B, ...rest.slice(0, rest.length - 1)],
@@ -89,7 +102,7 @@ export const createMap = /* #__PURE__ */ factory(
      * @example
      * _mapMultiple([[1, 2, 3], [4, 5, 6]], (a, b) => a + b); // Returns [5, 7, 9]
      */
-    function _mapMultiple(Arrays: any[], multiCallback: Function): any {
+    function _mapMultiple(Arrays: (unknown[] | MatrixType)[], multiCallback: MapCallback): unknown[] | MatrixType {
       if (typeof multiCallback !== 'function') {
         throw new Error('Last argument must be a callback function')
       }

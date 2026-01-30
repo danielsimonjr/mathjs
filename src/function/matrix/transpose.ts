@@ -1,20 +1,7 @@
 import { clone } from '../../utils/object.ts'
 import { format } from '../../utils/string.ts'
 import { factory } from '../../utils/factory.ts'
-
-// Type definitions for better WASM integration and type safety
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-  referTo<U>(
-    signature: string,
-    fn: (ref: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-}
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 interface MatrixData {
   data?: any[] | any[][]
@@ -58,7 +45,7 @@ interface MatrixConstructor {
   (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
-interface Dependencies {
+interface TransposeDependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
 }
@@ -69,7 +56,7 @@ const dependencies = ['typed', 'matrix']
 export const createTranspose = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix }: Dependencies) => {
+  ({ typed, matrix }: TransposeDependencies) => {
     /**
      * Transpose a matrix. All values of the matrix are reflected over its
      * main diagonal. Only applicable to two dimensional matrices containing

@@ -1,32 +1,33 @@
 import { factory } from '../../utils/factory.ts'
 import { noBignumber, noMatrix } from '../../utils/noop.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/config.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
+// Type definitions for range
+interface MatrixType {
+  valueOf(): unknown[]
 }
 
 interface MatrixConstructor {
-  (data: any[]): any
+  (data: unknown[]): MatrixType
 }
 
-interface Config {
-  matrix: string
-  number: string
+interface BigNumberConstructor {
+  (value: number | string): unknown
 }
 
-interface Dependencies {
+interface RangeDependencies {
   typed: TypedFunction
-  config: Config
+  config: MathJsConfig
   matrix?: MatrixConstructor
-  bignumber?: any
-  smaller: TypedFunction<boolean>
-  smallerEq: TypedFunction<boolean>
-  larger: TypedFunction<boolean>
-  largerEq: TypedFunction<boolean>
+  bignumber?: BigNumberConstructor
+  smaller: (a: unknown, b: unknown) => boolean
+  smallerEq: (a: unknown, b: unknown) => boolean
+  larger: (a: unknown, b: unknown) => boolean
+  largerEq: (a: unknown, b: unknown) => boolean
   add: TypedFunction
-  isZero: TypedFunction<boolean>
-  isPositive: TypedFunction<boolean>
+  isZero: (x: unknown) => boolean
+  isPositive: (x: unknown) => boolean
 }
 
 const name = 'range'
@@ -60,7 +61,7 @@ export const createRange = /* #__PURE__ */ factory(
     add,
     isZero,
     isPositive
-  }: Dependencies) => {
+  }: RangeDependencies) => {
     /**
      * Create a matrix or array containing a range of values.
      * By default, the range end is excluded. This can be customized by providing

@@ -1,40 +1,33 @@
 import { clone } from '../../utils/object.ts'
 import { format } from '../../utils/string.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
+// Type definitions for trace
 interface DenseMatrix {
-  _data: any[] | any[][]
+  _data: unknown[] | unknown[][]
   _size: number[]
   _datatype?: string
 }
 
 interface SparseMatrix {
-  _values?: any[]
+  _values?: unknown[]
   _index?: number[]
   _ptr?: number[]
   _size: number[]
   _datatype?: string
 }
 
-type Matrix = DenseMatrix | SparseMatrix
+type MatrixType = DenseMatrix | SparseMatrix
 
 interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
+  (data: unknown[] | unknown[][], storage?: 'dense' | 'sparse'): MatrixType
 }
 
-interface AddFunction {
-  (a: any, b: any): any
-}
-
-interface Dependencies {
+interface TraceDependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
-  add: AddFunction
+  add: TypedFunction
 }
 
 const name = 'trace'
@@ -43,7 +36,7 @@ const dependencies = ['typed', 'matrix', 'add']
 export const createTrace = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, add }: Dependencies) => {
+  ({ typed, matrix, add }: TraceDependencies) => {
     /**
      * Calculate the trace of a matrix: the sum of the elements on the main
      * diagonal of a square matrix.

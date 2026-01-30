@@ -2,38 +2,35 @@ import { isMatrix } from '../../utils/is.ts'
 import { arraySize } from '../../utils/array.ts'
 import { isInteger } from '../../utils/number.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface BigNumber {
+// Type definitions for diag
+interface BigNumberType {
   isBigNumber: boolean
   toNumber(): number
 }
 
-interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
-}
-
-interface Matrix {
+interface MatrixType {
   _size: number[]
   storage(): 'dense' | 'sparse'
-  valueOf(): any[] | any[][]
+  valueOf(): unknown[] | unknown[][]
   size(): number[]
-  diagonal(k: number): Matrix
+  diagonal(k: number): MatrixType
+}
+
+interface MatrixConstructor {
+  (data: unknown[] | unknown[][], storage?: 'dense' | 'sparse'): MatrixType
 }
 
 interface DenseMatrixConstructor {
-  diagonal(size: number[], values: any[] | Matrix, k?: number): Matrix
+  diagonal(size: number[], values: unknown[] | MatrixType, k?: number): MatrixType
 }
 
 interface SparseMatrixConstructor {
-  diagonal(size: number[], values: any[] | Matrix, k?: number): Matrix
+  diagonal(size: number[], values: unknown[] | MatrixType, k?: number): MatrixType
 }
 
-interface Dependencies {
+interface DiagDependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
   DenseMatrix: DenseMatrixConstructor
@@ -46,7 +43,7 @@ const dependencies = ['typed', 'matrix', 'DenseMatrix', 'SparseMatrix']
 export const createDiag = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, DenseMatrix, SparseMatrix }: Dependencies) => {
+  ({ typed, matrix, DenseMatrix, SparseMatrix }: DiagDependencies) => {
     /**
      * Create a diagonal matrix or retrieve the diagonal of a matrix
      *
