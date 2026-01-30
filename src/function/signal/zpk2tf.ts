@@ -73,10 +73,10 @@ export const createZpk2tf = /* #__PURE__ */ factory(
       k: number
     ): TransferFunction {
       // Convert bignumbers to numbers if present
-      if (z.some((el: any) => el.type === 'BigNumber')) {
+      if (z.some((el) => (el as { type?: string }).type === 'BigNumber')) {
         z = z.map((el) => number(el))
       }
-      if (p.some((el: any) => el.type === 'BigNumber')) {
+      if (p.some((el) => (el as { type?: string }).type === 'BigNumber')) {
         p = p.map((el) => number(el))
       }
 
