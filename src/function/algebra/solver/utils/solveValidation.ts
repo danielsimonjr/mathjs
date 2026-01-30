@@ -7,7 +7,36 @@ import {
 import { arraySize } from '../../../../utils/array.ts'
 import { format } from '../../../../utils/string.ts'
 
-export function createSolveValidation({ DenseMatrix }: { DenseMatrix: any }) {
+// Type definitions
+interface DenseMatrixType {
+  type: 'DenseMatrix'
+  isDenseMatrix: true
+  _data: any[][]
+  _size: number[]
+  _datatype?: string
+  size(): number[]
+}
+
+interface SparseMatrixType {
+  type: 'SparseMatrix'
+  isSparseMatrix: true
+  _values?: any[]
+  _index?: number[]
+  _ptr?: number[]
+  _size: number[]
+  _datatype?: string
+  size(): number[]
+}
+
+interface DenseMatrixConstructor {
+  new (data: { data: any[][]; size: number[]; datatype?: string }): DenseMatrixType
+}
+
+interface SolveValidationDependencies {
+  DenseMatrix: DenseMatrixConstructor
+}
+
+export function createSolveValidation({ DenseMatrix }: SolveValidationDependencies) {
   /**
    * Validates matrix and column vector b for backward/forward substitution algorithms.
    *
@@ -17,7 +46,11 @@ export function createSolveValidation({ DenseMatrix }: { DenseMatrix: any }) {
    *
    * @return {DenseMatrix}        Dense column vector b
    */
-  return function solveValidation(m: any, b: any, copy?: boolean): any {
+  return function solveValidation(
+    m: DenseMatrixType | SparseMatrixType,
+    b: any[][] | DenseMatrixType | SparseMatrixType,
+    copy?: boolean
+  ): DenseMatrixType {
     const mSize = m.size()
 
     if (mSize.length !== 2) {
