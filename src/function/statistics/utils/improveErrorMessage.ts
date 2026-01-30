@@ -1,5 +1,10 @@
 import { typeOf } from '../../../utils/is.ts'
 
+// Error with additional data property
+interface TypedError extends Error {
+  data?: { actual: string }
+}
+
 /**
  * Improve error messages for statistics functions. Errors are typically
  * thrown in an internally used function like larger, causing the error
@@ -10,15 +15,15 @@ import { typeOf } from '../../../utils/is.ts'
  * @param {*} [value]
  * @return {Error}
  */
-export function improveErrorMessage(err: any, fnName: any, value: any) {
+export function improveErrorMessage(err: TypedError, fnName: string, value?: unknown): Error {
   // TODO: add information with the index (also needs transform in expression parser)
   let details
 
   if (String(err).includes('Unexpected type')) {
     details =
-      arguments.length > 2
+      value !== undefined
         ? ' (type: ' + typeOf(value) + ', value: ' + JSON.stringify(value) + ')'
-        : ' (type: ' + err.data.actual + ')'
+        : ' (type: ' + (err.data?.actual ?? 'unknown') + ')'
 
     return new TypeError(
       'Cannot calculate ' + fnName + ', unexpected type of argument' + details
@@ -27,7 +32,7 @@ export function improveErrorMessage(err: any, fnName: any, value: any) {
 
   if (String(err).includes('complex numbers')) {
     details =
-      arguments.length > 2
+      value !== undefined
         ? ' (type: ' + typeOf(value) + ', value: ' + JSON.stringify(value) + ')'
         : ''
 
