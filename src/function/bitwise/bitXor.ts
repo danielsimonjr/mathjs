@@ -5,6 +5,16 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { factory } from '../../utils/factory.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { bitXorNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for bitXor
+interface BitXorDependencies {
+  typed: TypedFunction
+  matrix: (data: unknown[]) => unknown
+  DenseMatrix: new (data: unknown) => unknown
+  concat: TypedFunction
+  SparseMatrix: new (data: unknown) => unknown
+}
 
 const name = 'bitXor'
 const dependencies = [
@@ -18,7 +28,7 @@ const dependencies = [
 export const createBitXor = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, DenseMatrix, concat, SparseMatrix }) => {
+  ({ typed, matrix, DenseMatrix, concat, SparseMatrix }: BitXorDependencies) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo07xSSf = createMatAlgo07xSSf({ typed, SparseMatrix })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })

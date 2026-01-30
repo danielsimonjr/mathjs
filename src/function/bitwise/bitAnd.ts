@@ -5,6 +5,15 @@ import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.ts'
 import { factory } from '../../utils/factory.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { bitAndNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for bitAnd
+interface BitAndDependencies {
+  typed: TypedFunction
+  matrix: (data: unknown[]) => unknown
+  equalScalar: TypedFunction
+  concat: TypedFunction
+}
 
 const name = 'bitAnd'
 const dependencies = ['typed', 'matrix', 'equalScalar', 'concat']
@@ -12,7 +21,7 @@ const dependencies = ['typed', 'matrix', 'equalScalar', 'concat']
 export const createBitAnd = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, concat }) => {
+  ({ typed, matrix, equalScalar, concat }: BitAndDependencies) => {
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo06xS0S0 = createMatAlgo06xS0S0({ typed, equalScalar })
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })

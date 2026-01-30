@@ -1,33 +1,50 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-import { TypedFunction, MatrixConstructor } from '../../types.ts'
+// Type definitions for useMatrixForArrayScalar
+interface BigNumberType {
+  // BigNumber placeholder
+}
+
+interface Matrix {
+  valueOf(): unknown[][]
+}
+
+interface MatrixConstructor {
+  (data: unknown[]): Matrix
+}
+
+interface UseMatrixDependencies {
+  typed: TypedFunction
+  matrix: MatrixConstructor
+}
 
 export const createUseMatrixForArrayScalar = /* #__PURE__ */ factory(
   'useMatrixForArrayScalar',
   ['typed', 'matrix'],
-  ({ typed, matrix }: { typed: TypedFunction; matrix: MatrixConstructor }) => ({
-    'Array, number': (typed as any).referTo(
+  ({ typed, matrix }: UseMatrixDependencies) => ({
+    'Array, number': typed.referTo(
       'DenseMatrix, number',
-      (selfDn: any) => (x: any, y: any) =>
-        selfDn((matrix as any)(x), y).valueOf()
+      (selfDn: TypedFunction) => (x: unknown[], y: number): unknown[] =>
+        selfDn(matrix(x), y).valueOf()
     ),
 
-    'Array, BigNumber': (typed as any).referTo(
+    'Array, BigNumber': typed.referTo(
       'DenseMatrix, BigNumber',
-      (selfDB: any) => (x: any, y: any) =>
-        selfDB((matrix as any)(x), y).valueOf()
+      (selfDB: TypedFunction) => (x: unknown[], y: BigNumberType): unknown[] =>
+        selfDB(matrix(x), y).valueOf()
     ),
 
-    'number, Array': (typed as any).referTo(
+    'number, Array': typed.referTo(
       'number, DenseMatrix',
-      (selfnD: any) => (x: any, y: any) =>
-        selfnD(x, (matrix as any)(y)).valueOf()
+      (selfnD: TypedFunction) => (x: number, y: unknown[]): unknown[] =>
+        selfnD(x, matrix(y)).valueOf()
     ),
 
-    'BigNumber, Array': (typed as any).referTo(
+    'BigNumber, Array': typed.referTo(
       'BigNumber, DenseMatrix',
-      (selfBD: any) => (x: any, y: any) =>
-        selfBD(x, (matrix as any)(y)).valueOf()
+      (selfBD: TypedFunction) => (x: BigNumberType, y: unknown[]): unknown[] =>
+        selfBD(x, matrix(y)).valueOf()
     )
   })
 )

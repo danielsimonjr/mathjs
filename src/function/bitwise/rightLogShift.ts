@@ -9,6 +9,23 @@ import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgori
 import { rightLogShiftNumber } from '../../plain/number/index.ts'
 import { createUseMatrixForArrayScalar } from './useMatrixForArrayScalar.ts'
 import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for rightLogShift
+interface Matrix {
+  size(): number[]
+  storage(): string
+  clone(): Matrix
+}
+
+interface RightLogShiftDependencies {
+  typed: TypedFunction
+  matrix: (data: unknown[]) => Matrix
+  equalScalar: TypedFunction
+  zeros: (size: number[], storage?: string) => Matrix
+  DenseMatrix: new (data: unknown) => Matrix
+  concat: TypedFunction
+}
 
 const name = 'rightLogShift'
 const dependencies = [
@@ -23,7 +40,7 @@ const dependencies = [
 export const createRightLogShift = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, zeros, DenseMatrix, concat }) => {
+  ({ typed, matrix, equalScalar, zeros, DenseMatrix, concat }: RightLogShiftDependencies) => {
     const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo08xS0Sid = createMatAlgo08xS0Sid({ typed, equalScalar })
@@ -72,7 +89,7 @@ export const createRightLogShift = /* #__PURE__ */ factory(
         // 'BigNumber, BigNumber': ..., // TODO: implement BigNumber support for rightLogShift
 
         'SparseMatrix, number | BigNumber': typed.referToSelf(
-          (self: any) => (x: any, y: number | BigNumber) => {
+          (self: TypedFunction) => (x: Matrix, y: number | BigNumber): Matrix => {
             // check scalar
             if (equalScalar(y, 0)) {
               return x.clone()
@@ -82,7 +99,7 @@ export const createRightLogShift = /* #__PURE__ */ factory(
         ),
 
         'DenseMatrix, number | BigNumber': typed.referToSelf(
-          (self: any) => (x: any, y: number | BigNumber) => {
+          (self: TypedFunction) => (x: Matrix, y: number | BigNumber): Matrix => {
             // check scalar
             if (equalScalar(y, 0)) {
               return x.clone()
@@ -92,7 +109,7 @@ export const createRightLogShift = /* #__PURE__ */ factory(
         ),
 
         'number | BigNumber, SparseMatrix': typed.referToSelf(
-          (self: any) => (x: number | BigNumber, y: any) => {
+          (self: TypedFunction) => (x: number | BigNumber, y: Matrix): Matrix => {
             // check scalar
             if (equalScalar(x, 0)) {
               return zeros(y.size(), y.storage())
@@ -102,7 +119,7 @@ export const createRightLogShift = /* #__PURE__ */ factory(
         ),
 
         'number | BigNumber, DenseMatrix': typed.referToSelf(
-          (self: any) => (x: number | BigNumber, y: any) => {
+          (self: TypedFunction) => (x: number | BigNumber, y: Matrix): Matrix => {
             // check scalar
             if (equalScalar(x, 0)) {
               return zeros(y.size(), y.storage())

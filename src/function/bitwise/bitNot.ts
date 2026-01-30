@@ -2,6 +2,16 @@ import { bitNotBigNumber } from '../../utils/bignumber/bitwise.ts'
 import { deepMap } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
 import { bitNotNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for bitNot
+interface Matrix {
+  valueOf(): unknown[][]
+}
+
+interface BitNotDependencies {
+  typed: TypedFunction
+}
 
 const name = 'bitNot'
 const dependencies = ['typed']
@@ -9,7 +19,7 @@ const dependencies = ['typed']
 export const createBitNot = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }) => {
+  ({ typed }: BitNotDependencies) => {
     /**
      * Bitwise NOT value, `~x`.
      * For matrices, the function is evaluated element wise.
@@ -37,7 +47,7 @@ export const createBitNot = /* #__PURE__ */ factory(
       BigNumber: bitNotBigNumber,
       bigint: (x: bigint): bigint => ~x,
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self)
+        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
       )
     })
   }

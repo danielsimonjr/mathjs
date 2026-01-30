@@ -5,6 +5,16 @@ import { createMatAlgo04xSidSid } from '../../type/matrix/utils/matAlgo04xSidSid
 import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { bitOrNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for bitOr
+interface BitOrDependencies {
+  typed: TypedFunction
+  matrix: (data: unknown[]) => unknown
+  equalScalar: TypedFunction
+  DenseMatrix: new (data: unknown) => unknown
+  concat: TypedFunction
+}
 
 const name = 'bitOr'
 const dependencies = ['typed', 'matrix', 'equalScalar', 'DenseMatrix', 'concat']
@@ -12,7 +22,7 @@ const dependencies = ['typed', 'matrix', 'equalScalar', 'DenseMatrix', 'concat']
 export const createBitOr = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, DenseMatrix, concat }) => {
+  ({ typed, matrix, equalScalar, DenseMatrix, concat }: BitOrDependencies) => {
     const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
     const matAlgo04xSidSid = createMatAlgo04xSidSid({ typed, equalScalar })
     const matAlgo10xSids = createMatAlgo10xSids({ typed, DenseMatrix })
