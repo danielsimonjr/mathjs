@@ -1,5 +1,23 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for invmod
+interface BigNumberConstructor {
+  (value: number): unknown
+}
+
+interface InvmodDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  BigNumber: BigNumberConstructor
+  xgcd: TypedFunction
+  equal: TypedFunction
+  smaller: TypedFunction
+  mod: TypedFunction
+  add: TypedFunction
+  isInteger: (x: unknown) => boolean
+}
 
 const name = 'invmod'
 const dependencies = [
@@ -27,7 +45,7 @@ export const createInvmod = /* #__PURE__ */ factory(
     mod,
     add,
     isInteger
-  }: any): TypedFunction => {
+  }: InvmodDependencies): TypedFunction => {
     /**
      * Calculate the (modular) multiplicative inverse of a modulo b. Solution to the equation `ax ≣ 1 (mod b)`
      * See https://en.wikipedia.org/wiki/Modular_multiplicative_inverse.
@@ -56,18 +74,18 @@ export const createInvmod = /* #__PURE__ */ factory(
       'BigNumber, BigNumber': invmod
     })
 
-    function invmod(a: any, b: any): any {
+    function invmod(a: unknown, b: unknown): unknown {
       if (!isInteger(a) || !isInteger(b))
         throw new Error('Parameters in function invmod must be integer numbers')
       a = mod(a, b)
       if (equal(b, 0)) throw new Error('Divisor must be non zero')
-      let res = xgcd(a, b)
-      res = res.valueOf()
-      const [gcd, invValue] = res
+      let res = xgcd(a, b) as { valueOf(): unknown[] }
+      const resVal = res.valueOf()
+      const [gcd, invValue] = resVal
       if (!equal(gcd, BigNumber(1))) return NaN
       let inv = mod(invValue, b)
       if (smaller(inv, BigNumber(0))) inv = add(inv, b)
       return inv
     }
   }
-) as any
+)

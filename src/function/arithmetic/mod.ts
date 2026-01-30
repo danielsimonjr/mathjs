@@ -6,44 +6,32 @@ import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.ts'
 import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-}
-
-interface BigNumber {
+// Type definitions for mod
+interface BigNumberType {
   isZero(): boolean
-  sub(value: BigNumber): BigNumber
-  mul(value: BigNumber): BigNumber
+  sub(value: BigNumberType): BigNumberType
+  mul(value: BigNumberType): BigNumberType
+  div(value: BigNumberType): BigNumberType
 }
 
-interface Fraction {
+interface FractionType {
   equals(value: number): boolean
-  sub(value: Fraction): Fraction
-  mul(value: Fraction): Fraction
-  div(value: Fraction): Fraction
+  sub(value: FractionType): FractionType
+  mul(value: FractionType): FractionType
+  div(value: FractionType): FractionType
 }
 
-interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): any
-}
-
-interface Config {
-  predictable?: boolean
-}
-
-interface Dependencies {
+interface ModDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
   round: TypedFunction
-  matrix: MatrixConstructor
+  matrix: TypedFunction
   equalScalar: TypedFunction
   zeros: TypedFunction
-  DenseMatrix: any
+  DenseMatrix: unknown
   concat: TypedFunction
 }
 
@@ -71,7 +59,7 @@ export const createMod = /* #__PURE__ */ factory(
     zeros,
     DenseMatrix,
     concat
-  }: Dependencies) => {
+  }: ModDependencies) => {
     const floor = createFloor({
       typed,
       config,
@@ -133,12 +121,12 @@ export const createMod = /* #__PURE__ */ factory(
         'number, number': _modNumber,
 
         'BigNumber, BigNumber': function (
-          x: BigNumber,
-          y: BigNumber
-        ): BigNumber {
-          return (y as any).isZero()
+          x: BigNumberType,
+          y: BigNumberType
+        ): BigNumberType {
+          return y.isZero()
             ? x
-            : (x as any).sub((y as any).mul(floor((x as any).div(y))))
+            : x.sub(y.mul(floor(x.div(y)) as BigNumberType))
         },
 
         'bigint, bigint': function (x: bigint, y: bigint): bigint {
@@ -154,8 +142,8 @@ export const createMod = /* #__PURE__ */ factory(
           return x % y
         },
 
-        'Fraction, Fraction': function (x: Fraction, y: Fraction): Fraction {
-          return y.equals(0) ? x : x.sub(y.mul(floor(x.div(y))))
+        'Fraction, Fraction': function (x: FractionType, y: FractionType): FractionType {
+          return y.equals(0) ? x : x.sub(y.mul(floor(x.div(y)) as FractionType))
         }
       },
       matrixAlgorithmSuite({
@@ -181,7 +169,7 @@ export const createMod = /* #__PURE__ */ factory(
 
       // We use mathjs floor to handle errors associated with
       // precision float approximation
-      return y === 0 ? x : x - y * (floor as any)(x / y)
+      return y === 0 ? x : x - y * (floor(x / y) as number)
     }
   }
 )
