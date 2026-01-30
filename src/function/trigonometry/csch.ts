@@ -4,13 +4,23 @@ import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import { cschNumber } from '../../plain/number/index.ts'
 
+// Type definitions for csch
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface CschDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
+
 const name = 'csch'
 const dependencies = ['typed', 'BigNumber']
 
 export const createCsch = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: TypedFunction; BigNumber: any }) => {
+  ({ typed, BigNumber }: CschDependencies) => {
     /**
      * Calculate the hyperbolic cosecant of a value,
      * defined as `csch(x) = 1 / sinh(x)`.
@@ -38,7 +48,7 @@ export const createCsch = /* #__PURE__ */ factory(
     return typed(name, {
       number: cschNumber,
       Complex: (x: Complex) => x.csch(),
-      BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).sinh())
+      BigNumber: (x: BigNumber): BigNumber => new BigNumber(1).div((x as unknown as { sinh(): BigNumber }).sinh())
     }) as TypedFunction
   }
 )

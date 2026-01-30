@@ -4,13 +4,23 @@ import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import { cothNumber } from '../../plain/number/index.ts'
 
+// Type definitions for coth
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface CothDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
+
 const name = 'coth'
 const dependencies = ['typed', 'BigNumber']
 
 export const createCoth = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: TypedFunction; BigNumber: any }) => {
+  ({ typed, BigNumber }: CothDependencies) => {
     /**
      * Calculate the hyperbolic cotangent of a value,
      * defined as `coth(x) = 1 / tanh(x)`.
@@ -38,7 +48,7 @@ export const createCoth = /* #__PURE__ */ factory(
     return typed(name, {
       number: cothNumber,
       Complex: (x: Complex) => x.coth(),
-      BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).tanh())
+      BigNumber: (x: BigNumber): BigNumber => new BigNumber(1).div((x as unknown as { tanh(): BigNumber }).tanh())
     }) as TypedFunction
   }
 )

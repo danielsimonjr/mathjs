@@ -4,13 +4,23 @@ import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import { acschNumber } from '../../plain/number/index.ts'
 
+// Type definitions for acsch
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface AcschDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
+
 const name = 'acsch'
 const dependencies = ['typed', 'BigNumber']
 
 export const createAcsch = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: TypedFunction; BigNumber: any }) => {
+  ({ typed, BigNumber }: AcschDependencies) => {
     /**
      * Calculate the inverse hyperbolic cosecant of a value,
      * defined as `acsch(x) = asinh(1/x) = ln(1/x + sqrt(1/x^2 + 1))`.

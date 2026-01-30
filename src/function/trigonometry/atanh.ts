@@ -1,9 +1,20 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
-import type { MathJsConfig } from '../../core/config.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import { atanhNumber } from '../../plain/number/index.ts'
+
+// Type definitions for atanh
+interface ComplexConstructor {
+  new (re: number, im: number): Complex
+}
+
+interface AtanhDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  Complex: ComplexConstructor
+}
 
 const name = 'atanh'
 const dependencies = ['typed', 'config', 'Complex']
@@ -15,11 +26,7 @@ export const createAtanh = /* #__PURE__ */ factory(
     typed,
     config,
     Complex
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    Complex: any
-  }) => {
+  }: AtanhDependencies) => {
     /**
      * Calculate the hyperbolic arctangent of a value,
      * defined as `atanh(x) = ln((1 + x)/(1 - x)) / 2`.
@@ -54,8 +61,8 @@ export const createAtanh = /* #__PURE__ */ factory(
         return x.atanh()
       },
 
-      BigNumber: function (x: BigNumber) {
-        return (x as any).atanh()
+      BigNumber: function (x: BigNumber): BigNumber {
+        return (x as unknown as { atanh(): BigNumber }).atanh()
       }
     }) as TypedFunction
   }

@@ -1,9 +1,25 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
-import type { MathJsConfig } from '../../core/config.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import { asecNumber } from '../../plain/number/index.ts'
+
+// Type definitions for asec
+interface ComplexConstructor {
+  new (re: number, im: number): Complex
+}
+
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface AsecDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  Complex: ComplexConstructor
+  BigNumber: BigNumberConstructor
+}
 
 const name = 'asec'
 const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
@@ -16,12 +32,7 @@ export const createAsec = /* #__PURE__ */ factory(
     config,
     Complex,
     BigNumber
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    Complex: any
-    BigNumber: any
-  }) => {
+  }: AsecDependencies) => {
     /**
      * Calculate the inverse secant of a value. Defined as `asec(x) = acos(1/x)`.
      *

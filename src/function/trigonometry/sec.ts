@@ -5,13 +5,23 @@ import type { Complex } from '../../type/complex/Complex.ts'
 import { secNumber } from '../../plain/number/index.ts'
 import { createTrigUnit } from './trigUnit.ts'
 
+// Type definitions for sec
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface SecDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
+
 const name = 'sec'
 const dependencies = ['typed', 'BigNumber']
 
 export const createSec = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: TypedFunction; BigNumber: any }) => {
+  ({ typed, BigNumber }: SecDependencies) => {
     const trigUnit = createTrigUnit({ typed })
 
     /**
@@ -41,7 +51,7 @@ export const createSec = /* #__PURE__ */ factory(
       {
         number: secNumber,
         Complex: (x: Complex) => x.sec(),
-        BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).cos())
+        BigNumber: (x: BigNumber): BigNumber => new BigNumber(1).div((x as unknown as { cos(): BigNumber }).cos())
       },
       trigUnit
     ) as TypedFunction

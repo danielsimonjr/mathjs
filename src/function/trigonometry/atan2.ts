@@ -5,31 +5,15 @@ import { createMatAlgo09xS0Sf } from '../../type/matrix/utils/matAlgo09xS0Sf.ts'
 import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-  referTo<U>(
-    signature: string,
-    fn: (ref: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-}
-
-interface BigNumberConstructor {
-  atan2(y: BigNumber, x: BigNumber): BigNumber
-}
-
-interface BigNumber {
+// Type definitions for atan2
+interface BigNumberType {
   // BigNumber instance
 }
 
-interface _DenseMatrix {
-  // DenseMatrix instance
+interface BigNumberConstructor {
+  atan2(y: BigNumberType, x: BigNumberType): BigNumberType
 }
 
 interface Matrix {
@@ -37,15 +21,15 @@ interface Matrix {
 }
 
 interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
+  (data: unknown[] | unknown[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
-interface Dependencies {
+interface Atan2Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
   equalScalar: TypedFunction
   BigNumber: BigNumberConstructor
-  DenseMatrix: any
+  DenseMatrix: new (data: unknown) => unknown
   concat: TypedFunction
 }
 
@@ -69,7 +53,7 @@ export const createAtan2 = /* #__PURE__ */ factory(
     BigNumber,
     DenseMatrix,
     concat
-  }: Dependencies) => {
+  }: Atan2Dependencies) => {
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo09xS0Sf = createMatAlgo09xS0Sf({ typed, equalScalar })
@@ -121,7 +105,7 @@ export const createAtan2 = /* #__PURE__ */ factory(
         // the atan only on base of the real part of the numbers and ignored
         // the imaginary.
 
-        'BigNumber, BigNumber': (y: BigNumber, x: BigNumber) =>
+        'BigNumber, BigNumber': (y: BigNumberType, x: BigNumberType): BigNumberType =>
           BigNumber.atan2(y, x)
       },
       matrixAlgorithmSuite({

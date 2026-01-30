@@ -1,9 +1,20 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
-import type { MathJsConfig } from '../../core/config.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import { acoshNumber } from '../../plain/number/index.ts'
+
+// Type definitions for acosh
+interface ComplexConstructor {
+  new (re: number, im: number): Complex
+}
+
+interface AcoshDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  Complex: ComplexConstructor
+}
 
 const name = 'acosh'
 const dependencies = ['typed', 'config', 'Complex']
@@ -15,11 +26,7 @@ export const createAcosh = /* #__PURE__ */ factory(
     typed,
     config,
     Complex
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    Complex: any
-  }) => {
+  }: AcoshDependencies) => {
     /**
      * Calculate the hyperbolic arccos of a value,
      * defined as `acosh(x) = ln(sqrt(x^2 - 1) + x)`.
@@ -56,8 +63,8 @@ export const createAcosh = /* #__PURE__ */ factory(
         return x.acosh()
       },
 
-      BigNumber: function (x: BigNumber) {
-        return (x as any).acosh()
+      BigNumber: function (x: BigNumber): BigNumber {
+        return (x as unknown as { acosh(): BigNumber }).acosh()
       }
     }) as TypedFunction
   }

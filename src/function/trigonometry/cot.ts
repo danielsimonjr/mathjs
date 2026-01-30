@@ -5,13 +5,23 @@ import type { Complex } from '../../type/complex/Complex.ts'
 import { cotNumber } from '../../plain/number/index.ts'
 import { createTrigUnit } from './trigUnit.ts'
 
+// Type definitions for cot
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface CotDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
+
 const name = 'cot'
 const dependencies = ['typed', 'BigNumber']
 
 export const createCot = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: TypedFunction; BigNumber: any }) => {
+  ({ typed, BigNumber }: CotDependencies) => {
     const trigUnit = createTrigUnit({ typed })
 
     /**
@@ -41,7 +51,7 @@ export const createCot = /* #__PURE__ */ factory(
       {
         number: cotNumber,
         Complex: (x: Complex) => x.cot(),
-        BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).tan())
+        BigNumber: (x: BigNumber): BigNumber => new BigNumber(1).div((x as unknown as { tan(): BigNumber }).tan())
       },
       trigUnit
     ) as TypedFunction

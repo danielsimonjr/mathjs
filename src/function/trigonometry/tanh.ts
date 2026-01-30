@@ -2,13 +2,22 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import { tanh as _tanh } from '../../utils/number.ts'
 
+// Type definitions for tanh
+interface TanhableType {
+  tanh(): TanhableType
+}
+
+interface TanhDependencies {
+  typed: TypedFunction
+}
+
 const name = 'tanh'
 const dependencies = ['typed']
 
 export const createTanh = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: TypedFunction }) => {
+  ({ typed }: TanhDependencies) => {
     /**
      * Calculate the hyperbolic tangent of a value,
      * defined as `tanh(x) = (exp(2 * x) - 1) / (exp(2 * x) + 1)`.
@@ -36,7 +45,7 @@ export const createTanh = /* #__PURE__ */ factory(
      */
     return typed('tanh', {
       number: _tanh,
-      'Complex | BigNumber': (x: any) => x.tanh()
+      'Complex | BigNumber': (x: TanhableType): TanhableType => x.tanh()
     }) as TypedFunction
   }
 )

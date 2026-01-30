@@ -2,13 +2,22 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import { sinhNumber } from '../../plain/number/index.ts'
 
+// Type definitions for sinh
+interface SinhableType {
+  sinh(): SinhableType
+}
+
+interface SinhDependencies {
+  typed: TypedFunction
+}
+
 const name = 'sinh'
 const dependencies = ['typed']
 
 export const createSinh = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: TypedFunction }) => {
+  ({ typed }: SinhDependencies) => {
     /**
      * Calculate the hyperbolic sine of a value,
      * defined as `sinh(x) = 1/2 * (exp(x) - exp(-x))`.
@@ -33,7 +42,7 @@ export const createSinh = /* #__PURE__ */ factory(
      */
     return typed(name, {
       number: sinhNumber,
-      'Complex | BigNumber': (x: any) => x.sinh()
+      'Complex | BigNumber': (x: SinhableType): SinhableType => x.sinh()
     }) as TypedFunction
   }
 )

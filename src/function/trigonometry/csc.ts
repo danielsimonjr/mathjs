@@ -5,13 +5,23 @@ import type { Complex } from '../../type/complex/Complex.ts'
 import { cscNumber } from '../../plain/number/index.ts'
 import { createTrigUnit } from './trigUnit.ts'
 
+// Type definitions for csc
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface CscDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
+
 const name = 'csc'
 const dependencies = ['typed', 'BigNumber']
 
 export const createCsc = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: TypedFunction; BigNumber: any }) => {
+  ({ typed, BigNumber }: CscDependencies) => {
     const trigUnit = createTrigUnit({ typed })
 
     /**
@@ -41,7 +51,7 @@ export const createCsc = /* #__PURE__ */ factory(
       {
         number: cscNumber,
         Complex: (x: Complex) => x.csc(),
-        BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).sin())
+        BigNumber: (x: BigNumber): BigNumber => new BigNumber(1).div((x as unknown as { sin(): BigNumber }).sin())
       },
       trigUnit
     ) as TypedFunction

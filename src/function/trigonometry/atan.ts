@@ -1,28 +1,16 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-  referTo<U>(
-    signature: string,
-    fn: (ref: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
+// Type definitions for atan
+interface BigNumberType {
+  atan(): BigNumberType
 }
 
-interface BigNumber {
-  atan(): BigNumber
+interface ComplexType {
+  atan(): ComplexType
 }
 
-interface Complex {
-  atan(): Complex
-}
-
-interface Dependencies {
+interface AtanDependencies {
   typed: TypedFunction
 }
 
@@ -32,7 +20,7 @@ const dependencies = ['typed']
 export const createAtan = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: Dependencies) => {
+  ({ typed }: AtanDependencies) => {
     /**
      * Calculate the inverse tangent of a value.
      *
@@ -61,11 +49,11 @@ export const createAtan = /* #__PURE__ */ factory(
         return Math.atan(x)
       },
 
-      Complex: function (x: Complex): Complex {
+      Complex: function (x: ComplexType): ComplexType {
         return x.atan()
       },
 
-      BigNumber: function (x: BigNumber): BigNumber {
+      BigNumber: function (x: BigNumberType): BigNumberType {
         return x.atan()
       }
     })

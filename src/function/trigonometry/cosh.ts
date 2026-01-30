@@ -2,13 +2,22 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import { cosh as coshNumber } from '../../utils/number.ts'
 
+// Type definitions for cosh
+interface CoshableType {
+  cosh(): CoshableType
+}
+
+interface CoshDependencies {
+  typed: TypedFunction
+}
+
 const name = 'cosh'
 const dependencies = ['typed']
 
 export const createCosh = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: TypedFunction }) => {
+  ({ typed }: CoshDependencies) => {
     /**
      * Calculate the hyperbolic cosine of a value,
      * defined as `cosh(x) = 1/2 * (exp(x) + exp(-x))`.
@@ -33,7 +42,7 @@ export const createCosh = /* #__PURE__ */ factory(
      */
     return typed(name, {
       number: coshNumber,
-      'Complex | BigNumber': (x: any) => x.cosh()
+      'Complex | BigNumber': (x: CoshableType): CoshableType => x.cosh()
     }) as TypedFunction
   }
 )

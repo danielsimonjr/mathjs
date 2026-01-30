@@ -1,29 +1,17 @@
 import { factory } from '../../utils/factory.ts'
 import { createTrigUnit } from './trigUnit.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-  referTo<U>(
-    signature: string,
-    fn: (ref: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
+// Type definitions for tan
+interface BigNumberType {
+  tan(): BigNumberType
 }
 
-interface BigNumber {
-  tan(): BigNumber
+interface ComplexType {
+  tan(): ComplexType
 }
 
-interface Complex {
-  tan(): Complex
-}
-
-interface Dependencies {
+interface TanDependencies {
   typed: TypedFunction
 }
 
@@ -33,7 +21,7 @@ const dependencies = ['typed']
 export const createTan = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: Dependencies) => {
+  ({ typed }: TanDependencies) => {
     const trigUnit = createTrigUnit({ typed })
 
     /**
@@ -64,7 +52,7 @@ export const createTan = /* #__PURE__ */ factory(
       name,
       {
         number: Math.tan,
-        'Complex | BigNumber': (x: Complex | BigNumber) => x.tan()
+        'Complex | BigNumber': (x: ComplexType | BigNumberType): ComplexType | BigNumberType => x.tan()
       },
       trigUnit
     )

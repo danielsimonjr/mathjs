@@ -4,13 +4,23 @@ import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import { acotNumber } from '../../plain/number/index.ts'
 
+// Type definitions for acot
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface AcotDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
+
 const name = 'acot'
 const dependencies = ['typed', 'BigNumber']
 
 export const createAcot = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: TypedFunction; BigNumber: any }) => {
+  ({ typed, BigNumber }: AcotDependencies) => {
     /**
      * Calculate the inverse cotangent of a value, defined as `acot(x) = atan(1/x)`.
      *

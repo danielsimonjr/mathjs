@@ -4,13 +4,23 @@ import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import { sechNumber } from '../../plain/number/index.ts'
 
+// Type definitions for sech
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface SechDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
+
 const name = 'sech'
 const dependencies = ['typed', 'BigNumber']
 
 export const createSech = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: TypedFunction; BigNumber: any }) => {
+  ({ typed, BigNumber }: SechDependencies) => {
     /**
      * Calculate the hyperbolic secant of a value,
      * defined as `sech(x) = 1 / cosh(x)`.
@@ -38,7 +48,7 @@ export const createSech = /* #__PURE__ */ factory(
     return typed(name, {
       number: sechNumber,
       Complex: (x: Complex) => x.sech(),
-      BigNumber: (x: BigNumber) => new BigNumber(1).div((x as any).cosh())
+      BigNumber: (x: BigNumber): BigNumber => new BigNumber(1).div((x as unknown as { cosh(): BigNumber }).cosh())
     }) as TypedFunction
   }
 )

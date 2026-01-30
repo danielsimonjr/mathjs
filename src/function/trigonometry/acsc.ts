@@ -1,9 +1,25 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
-import type { MathJsConfig } from '../../core/config.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import { acscNumber } from '../../plain/number/index.ts'
+
+// Type definitions for acsc
+interface ComplexConstructor {
+  new (re: number, im: number): Complex
+}
+
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface AcscDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  Complex: ComplexConstructor
+  BigNumber: BigNumberConstructor
+}
 
 const name = 'acsc'
 const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
@@ -16,12 +32,7 @@ export const createAcsc = /* #__PURE__ */ factory(
     config,
     Complex,
     BigNumber
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    Complex: any
-    BigNumber: any
-  }) => {
+  }: AcscDependencies) => {
     /**
      * Calculate the inverse cosecant of a value, defined as `acsc(x) = asin(1/x)`.
      *

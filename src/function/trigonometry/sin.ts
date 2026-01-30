@@ -1,29 +1,17 @@
 import { factory } from '../../utils/factory.ts'
 import { createTrigUnit } from './trigUnit.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-  referTo<U>(
-    signature: string,
-    fn: (ref: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
+// Type definitions for sin
+interface BigNumberType {
+  sin(): BigNumberType
 }
 
-interface BigNumber {
-  sin(): BigNumber
+interface ComplexType {
+  sin(): ComplexType
 }
 
-interface Complex {
-  sin(): Complex
-}
-
-interface Dependencies {
+interface SinDependencies {
   typed: TypedFunction
 }
 
@@ -33,7 +21,7 @@ const dependencies = ['typed']
 export const createSin = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: Dependencies) => {
+  ({ typed }: SinDependencies) => {
     const trigUnit = createTrigUnit({ typed })
 
     /**
@@ -67,7 +55,7 @@ export const createSin = /* #__PURE__ */ factory(
       name,
       {
         number: Math.sin,
-        'Complex | BigNumber': (x: Complex | BigNumber) => x.sin()
+        'Complex | BigNumber': (x: ComplexType | BigNumberType): ComplexType | BigNumberType => x.sin()
       },
       trigUnit
     )

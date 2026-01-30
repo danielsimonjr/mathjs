@@ -1,38 +1,23 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-  referTo<U>(
-    signature: string,
-    fn: (ref: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
+// Type definitions for acos
+interface BigNumberType {
+  acos(): BigNumberType
 }
 
-interface Config {
-  predictable: boolean
-}
-
-interface BigNumber {
-  acos(): BigNumber
-}
-
-interface Complex {
-  acos(): Complex
+interface ComplexType {
+  acos(): ComplexType
 }
 
 interface ComplexConstructor {
-  new (re: number, im: number): Complex
+  new (re: number, im: number): ComplexType
 }
 
-interface Dependencies {
+interface AcosDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
   Complex: ComplexConstructor
 }
 
@@ -42,7 +27,7 @@ const dependencies = ['typed', 'config', 'Complex']
 export const createAcos = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, Complex }: Dependencies) => {
+  ({ typed, config, Complex }: AcosDependencies) => {
     /**
      * Calculate the inverse cosine of a value.
      *
@@ -68,7 +53,7 @@ export const createAcos = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex} The arc cosine of x
      */
     return typed(name, {
-      number: function (x: number): number | Complex {
+      number: function (x: number): number | ComplexType {
         if ((x >= -1 && x <= 1) || config.predictable) {
           return Math.acos(x)
         } else {
@@ -76,11 +61,11 @@ export const createAcos = /* #__PURE__ */ factory(
         }
       },
 
-      Complex: function (x: Complex): Complex {
+      Complex: function (x: ComplexType): ComplexType {
         return x.acos()
       },
 
-      BigNumber: function (x: BigNumber): BigNumber {
+      BigNumber: function (x: BigNumberType): BigNumberType {
         return x.acos()
       }
     })

@@ -1,9 +1,25 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
-import type { MathJsConfig } from '../../core/config.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 import type { Complex } from '../../type/complex/Complex.ts'
 import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import { asechNumber } from '../../plain/number/index.ts'
+
+// Type definitions for asech
+interface ComplexConstructor {
+  new (re: number, im: number): Complex
+}
+
+interface BigNumberConstructor {
+  new (value: number): BigNumber
+}
+
+interface AsechDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  Complex: ComplexConstructor
+  BigNumber: BigNumberConstructor
+}
 
 const name = 'asech'
 const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
@@ -16,12 +32,7 @@ export const createAsech = /* #__PURE__ */ factory(
     config,
     Complex,
     BigNumber
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    Complex: any
-    BigNumber: any
-  }) => {
+  }: AsechDependencies) => {
     /**
      * Calculate the hyperbolic arcsecant of a value,
      * defined as `asech(x) = acosh(1/x) = ln(sqrt(1/x^2 - 1) + 1/x)`.

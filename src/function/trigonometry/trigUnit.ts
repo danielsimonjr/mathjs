@@ -1,12 +1,24 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction as TypedFn } from '../../types.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-import { TypedFunction } from '../../types.ts'
+// Type definitions for trigUnit
+interface UnitType {
+  hasBase(base: unknown): boolean
+  constructor: { BASE_UNITS: { ANGLE: unknown } }
+  valueType(): string
+  value: unknown
+}
+
+interface TrigUnitDependencies {
+  typed: TypedFunction
+}
 
 export const createTrigUnit = /* #__PURE__ */ factory(
   'trigUnit',
   ['typed'],
-  ({ typed }: { typed: TypedFunction }) => ({
-    Unit: typed.referToSelf((self: any) => (x) => {
+  ({ typed }: TrigUnitDependencies) => ({
+    Unit: typed.referToSelf((self: TypedFunction) => (x: UnitType): unknown => {
       if (!x.hasBase(x.constructor.BASE_UNITS.ANGLE)) {
         throw new TypeError('Unit in function cot is no angle')
       }

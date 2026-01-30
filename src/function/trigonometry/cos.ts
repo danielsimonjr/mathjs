@@ -1,29 +1,17 @@
 import { factory } from '../../utils/factory.ts'
 import { createTrigUnit } from './trigUnit.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-  referTo<U>(
-    signature: string,
-    fn: (ref: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
+// Type definitions for cos
+interface BigNumberType {
+  cos(): BigNumberType
 }
 
-interface BigNumber {
-  cos(): BigNumber
+interface ComplexType {
+  cos(): ComplexType
 }
 
-interface Complex {
-  cos(): Complex
-}
-
-interface Dependencies {
+interface CosDependencies {
   typed: TypedFunction
 }
 
@@ -33,7 +21,7 @@ const dependencies = ['typed']
 export const createCos = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: Dependencies) => {
+  ({ typed }: CosDependencies) => {
     const trigUnit = createTrigUnit({ typed })
 
     /**
@@ -67,7 +55,7 @@ export const createCos = /* #__PURE__ */ factory(
       name,
       {
         number: Math.cos,
-        'Complex | BigNumber': (x: Complex | BigNumber) => x.cos()
+        'Complex | BigNumber': (x: ComplexType | BigNumberType): ComplexType | BigNumberType => x.cos()
       },
       trigUnit
     )
