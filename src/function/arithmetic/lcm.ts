@@ -6,13 +6,34 @@ import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { lcmNumber } from '../../plain/number/index.ts'
 
+// Type definitions for lcm
+interface BigNumberType {
+  isInt(): boolean
+  isZero(): boolean
+  times(other: BigNumberType): BigNumberType
+  mod(other: BigNumberType): BigNumberType
+  div(other: BigNumberType): BigNumberType
+  abs(): BigNumberType
+}
+
+interface FractionType {
+  lcm(other: FractionType): FractionType
+}
+
+interface LcmDependencies {
+  typed: TypedFunction
+  matrix: TypedFunction
+  equalScalar: TypedFunction
+  concat: TypedFunction
+}
+
 const name = 'lcm'
 const dependencies = ['typed', 'matrix', 'equalScalar', 'concat']
 
 export const createLcm = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, concat }: any): TypedFunction => {
+  ({ typed, matrix, equalScalar, concat }: LcmDependencies): TypedFunction => {
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo06xS0S0 = createMatAlgo06xS0S0({ typed, equalScalar })
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
@@ -23,9 +44,9 @@ export const createLcm = /* #__PURE__ */ factory(
     })
 
     const lcmTypes = 'number | BigNumber | Fraction | Matrix | Array'
-    const lcmManySignature: any = {}
+    const lcmManySignature: Record<string, TypedFunction> = {}
     lcmManySignature[`${lcmTypes}, ${lcmTypes}, ...${lcmTypes}`] =
-      typed.referToSelf((self: any) => (a: any, b: any, args: any[]) => {
+      typed.referToSelf((self: TypedFunction) => (a: unknown, b: unknown, args: unknown[]) => {
         let res = self(a, b)
         for (let i = 0; i < args.length; i++) {
           res = self(res, args[i])
@@ -67,7 +88,7 @@ export const createLcm = /* #__PURE__ */ factory(
       {
         'number, number': lcmNumber,
         'BigNumber, BigNumber': _lcmBigNumber,
-        'Fraction, Fraction': (x: any, y: any) => x.lcm(y)
+        'Fraction, Fraction': (x: FractionType, y: FractionType): FractionType => x.lcm(y)
       },
       matrixAlgorithmSuite({
         SS: matAlgo06xS0S0,
@@ -84,7 +105,7 @@ export const createLcm = /* #__PURE__ */ factory(
      * @returns {BigNumber} Returns the least common multiple of a and b
      * @private
      */
-    function _lcmBigNumber(a: any, b: any): any {
+    function _lcmBigNumber(a: BigNumberType, b: BigNumberType): BigNumberType {
       if (!a.isInt() || !b.isInt()) {
         throw new Error('Parameters in function lcm must be integer numbers')
       }
@@ -107,4 +128,4 @@ export const createLcm = /* #__PURE__ */ factory(
       return prod.div(a).abs()
     }
   }
-) as any
+)

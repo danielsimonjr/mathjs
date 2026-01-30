@@ -1,12 +1,45 @@
 import { isInteger } from '../../utils/number.ts'
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 import { createMod } from './mod.ts'
 import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.ts'
 import { createMatAlgo04xSidSid } from '../../type/matrix/utils/matAlgo04xSidSid.ts'
 import { createMatAlgo10xSids } from '../../type/matrix/utils/matAlgo10xSids.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { ArgumentsError } from '../../error/ArgumentsError.ts'
+
+// Type definitions for gcd
+interface BigNumberType {
+  isInt(): boolean
+  isZero(): boolean
+  lt(other: BigNumberType): boolean
+  neg(): BigNumberType
+}
+
+interface BigNumberConstructor {
+  new (value: number): BigNumberType
+}
+
+interface FractionType {
+  gcd(other: FractionType): FractionType
+}
+
+interface MatrixType {
+  toArray(): unknown[]
+}
+
+interface GcdDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  round: TypedFunction
+  matrix: TypedFunction
+  equalScalar: TypedFunction
+  zeros: TypedFunction
+  BigNumber: BigNumberConstructor
+  DenseMatrix: unknown
+  concat: TypedFunction
+}
 
 const name = 'gcd'
 const dependencies = [
@@ -24,7 +57,7 @@ const dependencies = [
 const gcdTypes = 'number | BigNumber | Fraction | Matrix | Array'
 const gcdManyTypesSignature = `${gcdTypes}, ${gcdTypes}, ...${gcdTypes}`
 
-function is1d(array: any[]): boolean {
+function is1d(array: unknown[]): boolean {
   return !array.some((element) => Array.isArray(element))
 }
 
@@ -41,7 +74,7 @@ export const createGcd = /* #__PURE__ */ factory(
     BigNumber,
     DenseMatrix,
     concat
-  }: any): TypedFunction => {
+  }: GcdDependencies): TypedFunction => {
     const mod = createMod({
       typed,
       config,
@@ -91,7 +124,7 @@ export const createGcd = /* #__PURE__ */ factory(
       {
         'number, number': _gcdNumber,
         'BigNumber, BigNumber': _gcdBigNumber,
-        'Fraction, Fraction': (x: any, y: any) => x.gcd(y)
+        'Fraction, Fraction': (x: FractionType, y: FractionType): FractionType => x.gcd(y)
       },
       matrixAlgorithmSuite({
         SS: matAlgo04xSidSid,
@@ -100,7 +133,7 @@ export const createGcd = /* #__PURE__ */ factory(
       }),
       {
         [gcdManyTypesSignature]: typed.referToSelf(
-          (self: any) => (a: any, b: any, args: any[]) => {
+          (self: TypedFunction) => (a: unknown, b: unknown, args: unknown[]) => {
             let res = self(a, b)
             for (let i = 0; i < args.length; i++) {
               res = self(res, args[i])
@@ -108,17 +141,17 @@ export const createGcd = /* #__PURE__ */ factory(
             return res
           }
         ),
-        Array: typed.referToSelf((self: any) => (array: any[]) => {
+        Array: typed.referToSelf((self: TypedFunction) => (array: unknown[]) => {
           if (array.length === 1 && Array.isArray(array[0]) && is1d(array[0])) {
             return self(...array[0])
           }
           if (is1d(array)) {
             return self(...array)
           }
-          throw new (ArgumentsError as any)('gcd() supports only 1d matrices!')
+          throw new ArgumentsError('gcd() supports only 1d matrices!')
         }),
-        Matrix: typed.referToSelf((self: any) => (matrix: any) => {
-          return self(matrix.toArray())
+        Matrix: typed.referToSelf((self: TypedFunction) => (matrixArg: MatrixType) => {
+          return self(matrixArg.toArray())
         })
       }
     )
@@ -138,7 +171,7 @@ export const createGcd = /* #__PURE__ */ factory(
       // https://en.wikipedia.org/wiki/Euclidean_algorithm
       let r: number
       while (b !== 0) {
-        r = mod(a, b)
+        r = mod(a, b) as number
         a = b
         b = r
       }
@@ -152,7 +185,7 @@ export const createGcd = /* #__PURE__ */ factory(
      * @returns {BigNumber} Returns greatest common denominator of a and b
      * @private
      */
-    function _gcdBigNumber(a: any, b: any): any {
+    function _gcdBigNumber(a: BigNumberType, b: BigNumberType): BigNumberType {
       if (!a.isInt() || !b.isInt()) {
         throw new Error('Parameters in function gcd must be integer numbers')
       }
@@ -160,11 +193,11 @@ export const createGcd = /* #__PURE__ */ factory(
       // https://en.wikipedia.org/wiki/Euclidean_algorithm
       const zero = new BigNumber(0)
       while (!b.isZero()) {
-        const r = mod(a, b)
+        const r = mod(a, b) as BigNumberType
         a = b
         b = r
       }
       return a.lt(zero) ? a.neg() : a
     }
   }
-) as any
+)
