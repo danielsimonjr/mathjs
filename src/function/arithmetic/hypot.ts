@@ -3,6 +3,28 @@ import type { TypedFunction } from '../../core/function/typed.ts'
 import { flatten } from '../../utils/array.ts'
 import { isComplex } from '../../utils/is.ts'
 
+// Type definitions for dependency injection
+interface Matrix {
+  toArray(): unknown[]
+}
+
+interface BigNumberType {
+  // BigNumber operations for hypot calculation
+}
+
+type NumericValue = number | BigNumberType
+
+interface HypotDependencies {
+  typed: TypedFunction
+  abs: TypedFunction
+  addScalar: TypedFunction
+  divideScalar: TypedFunction
+  multiplyScalar: TypedFunction
+  sqrt: TypedFunction
+  smaller: TypedFunction
+  isPositive: TypedFunction
+}
+
 const name = 'hypot'
 const dependencies = [
   'typed',
@@ -27,7 +49,7 @@ export const createHypot = /* #__PURE__ */ factory(
     sqrt,
     smaller,
     isPositive
-  }: any): TypedFunction => {
+  }: HypotDependencies): TypedFunction => {
     /**
      * Calculate the hypotenuse of a list with values. The hypotenuse is defined as:
      *
@@ -61,7 +83,7 @@ export const createHypot = /* #__PURE__ */ factory(
 
       Array: _hypot,
 
-      Matrix: (M: any) => _hypot(flatten(M.toArray(), true))
+      Matrix: (M: Matrix): NumericValue => _hypot(flatten(M.toArray(), true) as NumericValue[])
     })
 
     /**
@@ -70,17 +92,17 @@ export const createHypot = /* #__PURE__ */ factory(
      * @return {number | BigNumber} Returns the result
      * @private
      */
-    function _hypot(args: any[]): any {
+    function _hypot(args: NumericValue[]): NumericValue {
       // code based on `hypot` from es6-shim:
       // https://github.com/paulmillr/es6-shim/blob/master/es6-shim.js#L1619-L1633
-      let result = 0
-      let largest = 0
+      let result: NumericValue = 0
+      let largest: NumericValue = 0
 
       for (let i = 0; i < args.length; i++) {
         if (isComplex(args[i])) {
           throw new TypeError('Unexpected type of argument to hypot')
         }
-        const value = abs(args[i])
+        const value: NumericValue = abs(args[i])
         if (smaller(largest, value)) {
           result = multiplyScalar(
             result,
@@ -107,4 +129,4 @@ export const createHypot = /* #__PURE__ */ factory(
       return multiplyScalar(largest, sqrt(result))
     }
   }
-) as any
+)

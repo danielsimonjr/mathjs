@@ -1,8 +1,8 @@
-import { DEFAULT_CONFIG } from '../core/config.ts'
+import { DEFAULT_CONFIG, ConfigOptions } from '../core/config.ts'
 import { MATRIX_OPTIONS, NUMBER_OPTIONS } from '../core/function/config.ts'
 
 // create a read-only version of config
-export const config = function (options: any) {
+export const config = function (options?: Partial<ConfigOptions>): Readonly<ConfigOptions> {
   if (options) {
     throw new Error(
       'The global config is readonly. \n' +
