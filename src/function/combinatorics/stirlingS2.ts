@@ -1,5 +1,29 @@
 import { factory } from '../../utils/factory.ts'
 import { isNumber } from '../../utils/is.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for combinatorics
+interface BigNumberType {
+  // BigNumber placeholder for type compatibility
+}
+
+type NumericValue = number | BigNumberType
+
+interface StirlingS2Dependencies {
+  typed: TypedFunction
+  addScalar: (x: NumericValue, y: NumericValue) => NumericValue
+  subtractScalar: (x: NumericValue, y: NumericValue) => NumericValue
+  multiplyScalar: (x: NumericValue, y: NumericValue) => NumericValue
+  divideScalar: (x: NumericValue, y: NumericValue) => NumericValue
+  pow: (x: NumericValue, y: NumericValue) => NumericValue
+  factorial: (x: NumericValue) => NumericValue
+  combinations: (n: NumericValue, k: NumericValue) => NumericValue
+  isNegative: (x: NumericValue) => boolean
+  isInteger: (x: NumericValue) => boolean
+  number: (x: NumericValue) => number
+  bignumber?: (x: NumericValue) => BigNumberType
+  larger: (x: NumericValue, y: NumericValue) => boolean
+}
 
 const name = 'stirlingS2'
 const dependencies = [
@@ -35,23 +59,9 @@ export const createStirlingS2 = /* #__PURE__ */ factory(
     number,
     bignumber,
     larger
-  }: {
-    typed: any
-    addScalar: any
-    subtractScalar: any
-    multiplyScalar: any
-    divideScalar: any
-    pow: any
-    factorial: any
-    combinations: any
-    isNegative: any
-    isInteger: any
-    number: any
-    bignumber?: any
-    larger: any
-  }) => {
-    const smallCache: any[][] = []
-    const bigCache: any[][] = []
+  }: StirlingS2Dependencies) => {
+    const smallCache: NumericValue[][] = []
+    const bigCache: NumericValue[][] = []
     /**
      * The Stirling numbers of the second kind, counts the number of ways to partition
      * a set of n labelled objects into k nonempty unlabelled subsets.
@@ -81,7 +91,7 @@ export const createStirlingS2 = /* #__PURE__ */ factory(
      * @return {Number | BigNumber}     S(n,k)
      */
     return typed(name, {
-      'number | BigNumber, number | BigNumber': function (n: any, k: any): any {
+      'number | BigNumber, number | BigNumber': function (n: NumericValue, k: NumericValue): NumericValue {
         if (!isInteger(n) || isNegative(n) || !isInteger(k) || isNegative(k)) {
           throw new TypeError(
             'Non-negative integer value expected in function stirlingS2'
@@ -94,7 +104,7 @@ export const createStirlingS2 = /* #__PURE__ */ factory(
 
         const big = !(isNumber(n) && isNumber(k))
         const cache = big ? bigCache : smallCache
-        const make = big ? bignumber : number
+        const make = big ? bignumber! : number
         const nn = number(n)
         const nk = number(k)
         /* See if we already have the value: */

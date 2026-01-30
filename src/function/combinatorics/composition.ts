@@ -1,4 +1,22 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for combinatorics
+interface BigNumberType {
+  // BigNumber placeholder for type compatibility
+}
+
+type NumericValue = number | BigNumberType
+
+interface CompositionDependencies {
+  typed: TypedFunction
+  addScalar: (x: NumericValue, y: NumericValue) => NumericValue
+  combinations: (n: NumericValue, k: NumericValue) => NumericValue
+  isPositive: (x: NumericValue) => boolean
+  isNegative: (x: NumericValue) => boolean
+  isInteger: (x: NumericValue) => boolean
+  larger: (x: NumericValue, y: NumericValue) => boolean
+}
 
 const name = 'composition'
 const dependencies = [
@@ -22,15 +40,7 @@ export const createComposition = /* #__PURE__ */ factory(
     isNegative: _isNegative,
     isInteger,
     larger
-  }: {
-    typed: any
-    addScalar: any
-    combinations: any
-    isPositive: any
-    isNegative: any
-    isInteger: any
-    larger: any
-  }) => {
+  }: CompositionDependencies) => {
     /**
      * The composition counts of n into k parts.
      *
@@ -54,7 +64,7 @@ export const createComposition = /* #__PURE__ */ factory(
      * @return {Number | BigNumber}     Returns the composition counts of n into k parts.
      */
     return typed(name, {
-      'number | BigNumber, number | BigNumber': function (n: any, k: any): any {
+      'number | BigNumber, number | BigNumber': function (n: NumericValue, k: NumericValue): NumericValue {
         if (
           !isInteger(n) ||
           !isPositive(n) ||
@@ -71,8 +81,8 @@ export const createComposition = /* #__PURE__ */ factory(
         }
 
         return combinations(
-          (addScalar as any)(n, -1),
-          (addScalar as any)(k, -1)
+          addScalar(n, -1),
+          addScalar(k, -1)
         )
       }
     })

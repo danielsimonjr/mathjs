@@ -1,4 +1,20 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for combinatorics
+interface BigNumberType {
+  // BigNumber placeholder for type compatibility
+}
+
+type NumericValue = number | BigNumberType
+
+interface BellNumbersDependencies {
+  typed: TypedFunction
+  addScalar: (x: NumericValue, y: NumericValue) => NumericValue
+  isNegative: (x: NumericValue) => boolean
+  isInteger: (x: NumericValue) => boolean
+  stirlingS2: (n: NumericValue, k: NumericValue) => NumericValue
+}
 
 const name = 'bellNumbers'
 const dependencies = [
@@ -18,13 +34,7 @@ export const createBellNumbers = /* #__PURE__ */ factory(
     isNegative,
     isInteger,
     stirlingS2
-  }: {
-    typed: any
-    addScalar: any
-    isNegative: any
-    isInteger: any
-    stirlingS2: any
-  }) => {
+  }: BellNumbersDependencies) => {
     /**
      * The Bell Numbers count the number of partitions of a set. A partition is a pairwise disjoint subset of S whose union is S.
      * bellNumbers only takes integer arguments.
@@ -47,7 +57,7 @@ export const createBellNumbers = /* #__PURE__ */ factory(
      * @return {Number | BigNumber}     B(n)
      */
     return typed(name, {
-      'number | BigNumber': function (n: any): any {
+      'number | BigNumber': function (n: NumericValue): NumericValue {
         if (!isInteger(n) || isNegative(n)) {
           throw new TypeError(
             'Non-negative integer value expected in function bellNumbers'
@@ -55,9 +65,9 @@ export const createBellNumbers = /* #__PURE__ */ factory(
         }
 
         // Sum (k=0, n) S(n,k).
-        let result: any = 0
-        for (let i = 0; i <= n; i++) {
-          result = (addScalar as any)(result, (stirlingS2 as any)(n, i))
+        let result: NumericValue = 0
+        for (let i = 0; i <= (n as number); i++) {
+          result = addScalar(result, stirlingS2(n, i))
         }
 
         return result
