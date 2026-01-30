@@ -1,6 +1,28 @@
 import { isConstantNode } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 import type { MathNode } from '../../utils/node.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for symbolicEqual
+interface ConstantNodeType extends MathNode {
+  value: unknown
+}
+
+interface OperatorNodeConstructor {
+  new (op: string, fn: string, args: MathNode[]): MathNode
+}
+
+interface SimplifyOptions {
+  context?: Record<string, unknown>
+  [key: string]: unknown
+}
+
+interface SymbolicEqualDependencies {
+  parse: (expr: string) => MathNode
+  simplify: (node: MathNode, rules: unknown[], options: SimplifyOptions) => MathNode
+  typed: TypedFunction
+  OperatorNode: OperatorNodeConstructor
+}
 
 const name = 'symbolicEqual'
 const dependencies = ['parse', 'simplify', 'typed', 'OperatorNode']
@@ -13,12 +35,7 @@ export const createSymbolicEqual = /* #__PURE__ */ factory(
     simplify,
     typed,
     OperatorNode
-  }: {
-    parse: any
-    simplify: any
-    typed: any
-    OperatorNode: any
-  }) => {
+  }: SymbolicEqualDependencies) => {
     /**
      * Attempts to determine if two expressions are symbolically equal, i.e.
      * one is the result of valid algebraic manipulations on the other.
@@ -60,11 +77,11 @@ export const createSymbolicEqual = /* #__PURE__ */ factory(
     function _symbolicEqual(
       e1: MathNode,
       e2: MathNode,
-      options: any = {}
+      options: SimplifyOptions = {}
     ): boolean {
       const diff = new OperatorNode('-', 'subtract', [e1, e2])
-      const simplified = simplify(diff, {}, options)
-      return isConstantNode(simplified) && !(simplified as any).value
+      const simplified = simplify(diff, [], options)
+      return isConstantNode(simplified) && !(simplified as ConstantNodeType).value
     }
 
     return typed(name, {
