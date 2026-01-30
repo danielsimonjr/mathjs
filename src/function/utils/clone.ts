@@ -1,5 +1,11 @@
 import { clone as objectClone } from '../../utils/object.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for clone
+interface CloneDependencies {
+  typed: TypedFunction
+}
 
 const name = 'clone'
 const dependencies = ['typed']
@@ -7,7 +13,7 @@ const dependencies = ['typed']
 export const createClone = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }) => {
+  ({ typed }: CloneDependencies) => {
     /**
      * Clone an object. Will make a deep copy of the data.
      *

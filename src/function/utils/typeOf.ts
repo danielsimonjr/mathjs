@@ -1,5 +1,11 @@
 import { factory } from '../../utils/factory.ts'
 import { typeOf as _typeOf } from '../../utils/is.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for typeOf
+interface TypeOfDependencies {
+  typed: TypedFunction
+}
 
 const name = 'typeOf'
 const dependencies = ['typed']
@@ -7,7 +13,7 @@ const dependencies = ['typed']
 export const createTypeOf = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }) => {
+  ({ typed }: TypeOfDependencies) => {
     /**
      * Determine the type of an entity.
      *
