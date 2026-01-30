@@ -5,6 +5,15 @@ import { createMatAlgo09xS0Sf } from '../../type/matrix/utils/matAlgo09xS0Sf.ts'
 import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 
+// Type definitions for dotMultiply
+interface DotMultiplyDependencies {
+  typed: TypedFunction
+  matrix: TypedFunction
+  equalScalar: TypedFunction
+  multiplyScalar: TypedFunction
+  concat: TypedFunction
+}
+
 const name = 'dotMultiply'
 const dependencies = [
   'typed',
@@ -23,7 +32,7 @@ export const createDotMultiply = /* #__PURE__ */ factory(
     equalScalar,
     multiplyScalar,
     concat
-  }: any): TypedFunction => {
+  }: DotMultiplyDependencies): TypedFunction => {
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo09xS0Sf = createMatAlgo09xS0Sf({ typed, equalScalar })
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
@@ -69,4 +78,4 @@ export const createDotMultiply = /* #__PURE__ */ factory(
       })
     )
   }
-) as any
+)

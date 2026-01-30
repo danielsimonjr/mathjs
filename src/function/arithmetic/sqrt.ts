@@ -1,34 +1,28 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface BigNumber {
+// Type definitions for sqrt
+interface BigNumberType {
   isNegative(): boolean
   toNumber(): number
-  sqrt(): BigNumber
+  sqrt(): BigNumberType
 }
 
-interface Complex {
-  sqrt(): Complex
+interface ComplexType {
+  sqrt(): ComplexType
 }
 
 interface ComplexConstructor {
-  new (re: number, im: number): Complex
+  new (re: number, im: number): ComplexType
 }
 
-interface Unit {
-  pow(value: number): Unit
+interface UnitType {
+  pow(value: number): UnitType
 }
 
-interface Config {
-  predictable?: boolean
-}
-
-interface Dependencies {
-  config: Config
+interface SqrtDependencies {
+  config: ConfigOptions
   typed: TypedFunction
   Complex: ComplexConstructor
 }
@@ -39,7 +33,7 @@ const dependencies = ['config', 'typed', 'Complex']
 export const createSqrt = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ config, typed, Complex }: Dependencies) => {
+  ({ config, typed, Complex }: SqrtDependencies) => {
     /**
      * Calculate the square root of a value.
      *
@@ -69,20 +63,20 @@ export const createSqrt = /* #__PURE__ */ factory(
     return typed('sqrt', {
       number: _sqrtNumber,
 
-      Complex: function (x: Complex): Complex {
+      Complex: function (x: ComplexType): ComplexType {
         return x.sqrt()
       },
 
-      BigNumber: function (x: BigNumber): BigNumber | number | Complex {
+      BigNumber: function (x: BigNumberType): BigNumberType | number | ComplexType {
         if (!x.isNegative() || config.predictable) {
           return x.sqrt()
         } else {
           // negative value -> downgrade to number to do complex value computation
-          return _sqrtNumber((x as any).toNumber())
+          return _sqrtNumber(x.toNumber())
         }
       },
 
-      Unit: function (x: Unit): Unit {
+      Unit: function (x: UnitType): UnitType {
         // Someday will work for complex units when they are implemented
         return x.pow(0.5)
       }
@@ -94,7 +88,7 @@ export const createSqrt = /* #__PURE__ */ factory(
      * @returns {number | Complex} Returns the square root of x
      * @private
      */
-    function _sqrtNumber(x: number): number | Complex {
+    function _sqrtNumber(x: number): number | ComplexType {
       if (isNaN(x)) {
         return NaN
       } else if (x >= 0 || config.predictable) {

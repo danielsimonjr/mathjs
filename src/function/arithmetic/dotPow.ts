@@ -6,6 +6,21 @@ import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 
+// Type definitions for dotPow
+interface PowFunction extends TypedFunction {
+  signatures: Record<string, TypedFunction>
+}
+
+interface DotPowDependencies {
+  typed: TypedFunction
+  equalScalar: TypedFunction
+  matrix: TypedFunction
+  pow: PowFunction
+  DenseMatrix: unknown
+  concat: TypedFunction
+  SparseMatrix: unknown
+}
+
 const name = 'dotPow'
 const dependencies = [
   'typed',
@@ -28,7 +43,7 @@ export const createDotPow = /* #__PURE__ */ factory(
     DenseMatrix,
     concat,
     SparseMatrix
-  }: any): TypedFunction => {
+  }: DotPowDependencies): TypedFunction => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo07xSSf = createMatAlgo07xSSf({ typed, SparseMatrix })
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
@@ -39,7 +54,7 @@ export const createDotPow = /* #__PURE__ */ factory(
       concat
     })
 
-    const powScalarSignatures: any = {}
+    const powScalarSignatures: Record<string, TypedFunction> = {}
     for (const signature in pow.signatures) {
       if (Object.prototype.hasOwnProperty.call(pow.signatures, signature)) {
         if (!signature.includes('Matrix') && !signature.includes('Array')) {
@@ -83,4 +98,4 @@ export const createDotPow = /* #__PURE__ */ factory(
       })
     )
   }
-) as any
+)

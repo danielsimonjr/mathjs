@@ -7,6 +7,17 @@ import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 
+// Type definitions for dotDivide
+interface DotDivideDependencies {
+  typed: TypedFunction
+  matrix: TypedFunction
+  equalScalar: TypedFunction
+  divideScalar: TypedFunction
+  DenseMatrix: unknown
+  concat: TypedFunction
+  SparseMatrix: unknown
+}
+
 const name = 'dotDivide'
 const dependencies = [
   'typed',
@@ -29,7 +40,7 @@ export const createDotDivide = /* #__PURE__ */ factory(
     DenseMatrix,
     concat,
     SparseMatrix
-  }: any): TypedFunction => {
+  }: DotDivideDependencies): TypedFunction => {
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo07xSSf = createMatAlgo07xSSf({ typed, SparseMatrix })
@@ -79,4 +90,4 @@ export const createDotDivide = /* #__PURE__ */ factory(
       })
     )
   }
-) as any
+)
