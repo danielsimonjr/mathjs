@@ -471,6 +471,7 @@ Check `.mcp.json` for the current configuration.
 
 ## Documentation References
 
+- **AssemblyScript Style Guide**: `docs/ASSEMBLYSCRIPT_STYLE_GUIDE.md` - Coding conventions for WASM modules
 - **Main README**: `README.md` - Getting started, usage examples
 - **TypeScript/WASM Guide**: `docs/architecture/README_TYPESCRIPT_WASM.md` - Complete refactoring overview
 - **Refactoring Plan**: `docs/refactoring/REFACTORING_PLAN.md` - Detailed conversion strategy
