@@ -1,5 +1,25 @@
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for complex arg operation
+interface BigNumberType {
+  constructor: {
+    atan2(y: number, x: BigNumberType): BigNumberType
+  }
+}
+
+interface ComplexType {
+  arg(): number
+}
+
+interface Matrix {
+  valueOf(): unknown[][]
+}
+
+interface ArgDependencies {
+  typed: TypedFunction
+}
 
 const name = 'arg'
 const dependencies = ['typed']
@@ -7,7 +27,7 @@ const dependencies = ['typed']
 export const createArg = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: ArgDependencies) => {
     /**
      * Compute the argument of a complex value.
      * For a complex number `a + bi`, the argument is computed as `atan2(b, a)`.
@@ -40,19 +60,19 @@ export const createArg = /* #__PURE__ */ factory(
         return Math.atan2(0, x)
       },
 
-      BigNumber: function (x: any): any {
+      BigNumber: function (x: BigNumberType): BigNumberType {
         return x.constructor.atan2(0, x)
       },
 
-      Complex: function (x: any): number {
+      Complex: function (x: ComplexType): number {
         return x.arg()
       },
 
       // TODO: implement BigNumber support for function arg
 
       'Array | Matrix': typed.referToSelf(
-        ((self: any) => (x: any) => deepMap(x, self)) as any
-      ) as any
+        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+      )
     })
   }
 )

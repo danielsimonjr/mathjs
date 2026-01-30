@@ -1,5 +1,27 @@
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for imaginary part operation
+interface BigNumberType {
+  mul(x: number): BigNumberType
+}
+
+interface FractionType {
+  mul(x: number): FractionType
+}
+
+interface ComplexType {
+  im: number
+}
+
+interface Matrix {
+  valueOf(): unknown[][]
+}
+
+interface ImDependencies {
+  typed: TypedFunction
+}
 
 const name = 'im'
 const dependencies = ['typed']
@@ -7,7 +29,7 @@ const dependencies = ['typed']
 export const createIm = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: ImDependencies) => {
     /**
      * Get the imaginary part of a complex number.
      * For a complex number `a + bi`, the function returns `b`.
@@ -37,11 +59,11 @@ export const createIm = /* #__PURE__ */ factory(
      */
     return typed(name, {
       number: (): number => 0,
-      'BigNumber | Fraction': (x: any) => x.mul(0),
-      Complex: (x: any): number => x.im,
+      'BigNumber | Fraction': (x: BigNumberType | FractionType): BigNumberType | FractionType => x.mul(0),
+      Complex: (x: ComplexType): number => x.im,
       'Array | Matrix': typed.referToSelf(
-        ((self: any) => (x: any) => deepMap(x, self)) as any
-      ) as any
+        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+      )
     })
   }
 )

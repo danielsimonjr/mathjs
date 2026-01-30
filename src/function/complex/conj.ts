@@ -1,5 +1,33 @@
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for complex conjugate operation
+interface BigNumberType {
+  // BigNumber placeholder
+}
+
+interface FractionType {
+  // Fraction placeholder
+}
+
+interface ComplexType {
+  conjugate(): ComplexType
+}
+
+interface UnitType {
+  constructor: new (value: unknown, format: string) => UnitType
+  toNumeric(): number | BigNumberType | ComplexType
+  formatUnits(): string
+}
+
+interface Matrix {
+  valueOf(): unknown[][]
+}
+
+interface ConjDependencies {
+  typed: TypedFunction
+}
 
 const name = 'conj'
 const dependencies = ['typed']
@@ -7,7 +35,7 @@ const dependencies = ['typed']
 export const createConj = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: ConjDependencies) => {
     /**
      * Compute the complex conjugate of a complex value.
      * If `x = a+bi`, the complex conjugate of `x` is `a - bi`.
@@ -34,15 +62,15 @@ export const createConj = /* #__PURE__ */ factory(
      *            The complex conjugate of x
      */
     return typed(name, {
-      'number | BigNumber | Fraction': (x: any) => x,
-      Complex: (x: any) => x.conjugate(),
+      'number | BigNumber | Fraction': (x: number | BigNumberType | FractionType): number | BigNumberType | FractionType => x,
+      Complex: (x: ComplexType): ComplexType => x.conjugate(),
       Unit: typed.referToSelf(
-        ((self: any) => (x: any) =>
-          new x.constructor(self(x.toNumeric()), x.formatUnits())) as any
-      ) as any,
+        (self: TypedFunction) => (x: UnitType): UnitType =>
+          new x.constructor(self(x.toNumeric()), x.formatUnits())
+      ),
       'Array | Matrix': typed.referToSelf(
-        ((self: any) => (x: any) => deepMap(x, self)) as any
-      ) as any
+        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+      )
     })
   }
 )

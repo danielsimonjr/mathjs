@@ -1,5 +1,27 @@
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for real part operation
+interface BigNumberType {
+  // BigNumber placeholder
+}
+
+interface FractionType {
+  // Fraction placeholder
+}
+
+interface ComplexType {
+  re: number
+}
+
+interface Matrix {
+  valueOf(): unknown[][]
+}
+
+interface ReDependencies {
+  typed: TypedFunction
+}
 
 const name = 're'
 const dependencies = ['typed']
@@ -7,7 +29,7 @@ const dependencies = ['typed']
 export const createRe = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: ReDependencies) => {
     /**
      * Get the real part of a complex number.
      * For a complex number `a + bi`, the function returns `a`.
@@ -36,11 +58,11 @@ export const createRe = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Array | Matrix} The real part of x
      */
     return typed(name, {
-      'number | BigNumber | Fraction': (x: any) => x,
-      Complex: (x: any): number => x.re,
+      'number | BigNumber | Fraction': (x: number | BigNumberType | FractionType): number | BigNumberType | FractionType => x,
+      Complex: (x: ComplexType): number => x.re,
       'Array | Matrix': typed.referToSelf(
-        ((self: any) => (x: any) => deepMap(x, self)) as any
-      ) as any
+        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+      )
     })
   }
 )
