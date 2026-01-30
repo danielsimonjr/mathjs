@@ -10,6 +10,44 @@ import type {
   OperatorNode,
   FunctionAssignmentNode
 } from '../../utils/node.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for derivative
+interface ConstantNodeConstructor {
+  new (value: unknown): ConstantNode
+}
+
+interface FunctionNodeConstructor {
+  new (name: string | SymbolNode, args: MathNode[]): FunctionNode
+}
+
+interface OperatorNodeConstructor {
+  new (op: string, fn: string, args: MathNode[]): OperatorNode
+}
+
+interface ParenthesisNodeConstructor {
+  new (content: MathNode): ParenthesisNode
+}
+
+interface SymbolNodeConstructor {
+  new (name: string): SymbolNode
+}
+
+interface DerivativeDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  parse: (expr: string) => MathNode
+  simplify: (node: MathNode) => MathNode
+  equal: (a: unknown, b: unknown) => boolean
+  isZero: (x: unknown) => boolean
+  numeric: (value: number, type: string) => unknown
+  ConstantNode: ConstantNodeConstructor
+  FunctionNode: FunctionNodeConstructor
+  OperatorNode: OperatorNodeConstructor
+  ParenthesisNode: ParenthesisNodeConstructor
+  SymbolNode: SymbolNodeConstructor
+}
 
 const name = 'derivative'
 const dependencies = [
@@ -43,20 +81,7 @@ export const createDerivative = /* #__PURE__ */ factory(
     OperatorNode,
     ParenthesisNode,
     SymbolNode
-  }: {
-    typed: any
-    config: any
-    parse: any
-    simplify: any
-    equal: any
-    isZero: any
-    numeric: any
-    ConstantNode: any
-    FunctionNode: any
-    OperatorNode: any
-    ParenthesisNode: any
-    SymbolNode: any
-  }) => {
+  }: DerivativeDependencies) => {
     /**
      * Takes the derivative of an expression expressed in parser Nodes.
      * The derivative will be taken over the supplied variable in the

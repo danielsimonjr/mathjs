@@ -7,6 +7,50 @@ import type {
   OperatorNode,
   ParenthesisNode
 } from '../../utils/node.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for rationalize
+interface ConstantNodeConstructor {
+  new (value: unknown): ConstantNode
+}
+
+interface OperatorNodeConstructor {
+  new (op: string, fn: string, args: MathNode[]): OperatorNode
+}
+
+interface SymbolNodeConstructor {
+  new (name: string): SymbolNode
+}
+
+interface RationalizeDependencies {
+  config: ConfigOptions
+  typed: TypedFunction
+  equal: TypedFunction
+  isZero: (x: unknown) => boolean
+  add: TypedFunction
+  subtract: TypedFunction
+  multiply: TypedFunction
+  divide: TypedFunction
+  pow: TypedFunction
+  parse: (expr: string) => MathNode
+  simplifyConstant: TypedFunction
+  simplifyCore: TypedFunction
+  simplify: TypedFunction
+  fraction?: TypedFunction
+  bignumber?: TypedFunction
+  mathWithTransform: Record<string, TypedFunction>
+  matrix: TypedFunction
+  AccessorNode: unknown
+  ArrayNode: unknown
+  ConstantNode: ConstantNodeConstructor
+  FunctionNode: unknown
+  IndexNode: unknown
+  ObjectNode: unknown
+  OperatorNode: OperatorNodeConstructor
+  SymbolNode: SymbolNodeConstructor
+  ParenthesisNode: unknown
+}
 
 const name = 'rationalize'
 const dependencies = [
@@ -68,34 +112,7 @@ export const createRationalize = /* #__PURE__ */ factory(
     OperatorNode,
     SymbolNode,
     ParenthesisNode: _ParenthesisNode
-  }: {
-    config: any
-    typed: any
-    equal: any
-    isZero: any
-    add: any
-    subtract: any
-    multiply: any
-    divide: any
-    pow: any
-    parse: any
-    simplifyConstant: any
-    simplifyCore: any
-    simplify: any
-    fraction: any
-    bignumber: any
-    mathWithTransform: any
-    matrix: any
-    AccessorNode: any
-    ArrayNode: any
-    ConstantNode: any
-    FunctionNode: any
-    IndexNode: any
-    ObjectNode: any
-    OperatorNode: any
-    SymbolNode: any
-    ParenthesisNode: any
-  }) => {
+  }: RationalizeDependencies) => {
     /**
      * Transform a rationalizable expression in a rational fraction.
      * If rational fraction is one variable polynomial then converts

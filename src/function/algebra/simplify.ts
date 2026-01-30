@@ -20,6 +20,63 @@ import type {
   IndexNode,
   ObjectNode
 } from '../../utils/node.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for simplify
+interface AccessorNodeConstructor {
+  new (object: MathNode, index: IndexNode): MathNode
+}
+
+interface ArrayNodeConstructor {
+  new (items: MathNode[]): MathNode
+}
+
+interface ConstantNodeConstructor {
+  new (value: unknown): MathNode
+}
+
+interface FunctionNodeConstructor {
+  new (name: string, args: MathNode[]): MathNode
+}
+
+interface IndexNodeConstructor {
+  new (dimensions: MathNode[]): MathNode
+}
+
+interface ObjectNodeConstructor {
+  new (properties: Record<string, MathNode>): MathNode
+}
+
+interface OperatorNodeConstructor {
+  new (op: string, fn: string, args: MathNode[]): MathNode
+}
+
+interface ParenthesisNodeConstructor {
+  new (content: MathNode): MathNode
+}
+
+interface SymbolNodeConstructor {
+  new (name: string): SymbolNode
+}
+
+interface SimplifyDependencies {
+  typed: TypedFunction
+  parse: (expr: string) => MathNode
+  equal: (a: unknown, b: unknown) => boolean
+  resolve: (node: MathNode, scope?: Map<string, unknown> | null) => MathNode
+  simplifyConstant: (node: MathNode, options?: SimplifyOptions) => MathNode
+  simplifyCore: (node: MathNode, options?: SimplifyOptions) => MathNode
+  AccessorNode: AccessorNodeConstructor
+  ArrayNode: ArrayNodeConstructor
+  ConstantNode: ConstantNodeConstructor
+  FunctionNode: FunctionNodeConstructor
+  IndexNode: IndexNodeConstructor
+  ObjectNode: ObjectNodeConstructor
+  OperatorNode: OperatorNodeConstructor
+  ParenthesisNode: ParenthesisNodeConstructor
+  SymbolNode: SymbolNodeConstructor
+  replacer: (key: string, value: unknown) => unknown
+}
 
 const name = 'simplify'
 const dependencies = [
@@ -48,17 +105,17 @@ type SimplifyRule =
       l?: string
       r?: string
       repeat?: boolean
-      assuming?: any
-      imposeContext?: any
-      evaluate?: any
-      expanded?: any
-      expandedNC1?: any
-      expandedNC2?: any
+      assuming?: Record<string, Record<string, boolean>>
+      imposeContext?: Record<string, Record<string, boolean>>
+      evaluate?: unknown
+      expanded?: unknown
+      expandedNC1?: unknown
+      expandedNC2?: unknown
     }
   | Function
 type SimplifyOptions = {
   consoleDebug?: boolean
-  context?: any
+  context?: Record<string, unknown>
   exactFractions?: boolean
   fractionsLimit?: number
 }
@@ -83,24 +140,7 @@ export const createSimplify = /* #__PURE__ */ factory(
     ParenthesisNode,
     SymbolNode,
     replacer
-  }: {
-    typed: any
-    parse: any
-    equal: any
-    resolve: any
-    simplifyConstant: any
-    simplifyCore: any
-    AccessorNode: any
-    ArrayNode: any
-    ConstantNode: any
-    FunctionNode: any
-    IndexNode: any
-    ObjectNode: any
-    OperatorNode: any
-    ParenthesisNode: any
-    SymbolNode: any
-    replacer: any
-  }) => {
+  }: SimplifyDependencies) => {
     const {
       hasProperty,
       isCommutative,
