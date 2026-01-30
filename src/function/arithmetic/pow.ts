@@ -2,55 +2,52 @@ import { factory } from '../../utils/factory.ts'
 import { isInteger } from '../../utils/number.ts'
 import { arraySize as size } from '../../utils/array.ts'
 import { powNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface BigNumber {
+// Type definitions for pow
+interface BigNumberType {
   isInteger(): boolean
   toNumber(): number
-  pow(value: BigNumber): BigNumber
+  gte(value: number): boolean
+  pow(value: BigNumberType): BigNumberType
 }
 
-interface Fraction {
+interface FractionType {
   valueOf(): number
-  pow(value: Fraction): Fraction | null
+  pow(value: FractionType): FractionType | null
   equals(value: number): boolean
+  d: bigint
+  n: bigint
 }
 
-interface Complex {
+interface ComplexType {
   re: number
   im: number
-  pow(re: number, im: number): Complex
+  pow(x: ComplexType | number, y?: number): ComplexType
 }
 
 interface ComplexConstructor {
-  new (re: number, im: number): Complex
+  new (re: number, im: number): ComplexType
 }
 
-interface Unit {
-  pow(value: number | BigNumber): Unit
+interface UnitType {
+  pow(value: number | BigNumberType): UnitType
 }
 
-interface MatrixConstructor {
-  (data: any[] | any[][]): any
+interface MatrixType {
+  valueOf(): unknown[][]
 }
 
-interface Config {
-  predictable?: boolean
-}
-
-interface Dependencies {
+interface PowDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
   identity: TypedFunction
   multiply: TypedFunction
-  matrix: MatrixConstructor
+  matrix: (data: unknown[][] | unknown[]) => MatrixType
   inv: TypedFunction
-  fraction: TypedFunction
-  number: TypedFunction
+  fraction: (value: number) => FractionType
+  number: (value: unknown) => number
   Complex: ComplexConstructor
 }
 
@@ -80,7 +77,7 @@ export const createPow = /* #__PURE__ */ factory(
     number,
     fraction,
     Complex
-  }: Dependencies) => {
+  }: PowDependencies) => {
     /**
      * Calculates the power of x to y, `x ^ y`.
      *
@@ -122,19 +119,19 @@ export const createPow = /* #__PURE__ */ factory(
     return typed(name, {
       'number, number': _pow,
 
-      'Complex, Complex': function (x: Complex, y: Complex): Complex {
-        return (x as any).pow(y)
+      'Complex, Complex': function (x: ComplexType, y: ComplexType): ComplexType {
+        return x.pow(y)
       },
 
       'BigNumber, BigNumber': function (
-        x: BigNumber,
-        y: BigNumber
-      ): BigNumber | Complex {
-        if ((y as any).isInteger() || (x as any).gte(0) || config.predictable) {
-          return (x as any).pow(y)
+        x: BigNumberType,
+        y: BigNumberType
+      ): BigNumberType | ComplexType {
+        if (y.isInteger() || x.gte(0) || config.predictable) {
+          return x.pow(y)
         } else {
-          return new Complex((x as any).toNumber(), 0).pow(
-            (y as any).toNumber(),
+          return new Complex(x.toNumber(), 0).pow(
+            y.toNumber(),
             0
           )
         }
@@ -143,10 +140,10 @@ export const createPow = /* #__PURE__ */ factory(
       'bigint, bigint': (x: bigint, y: bigint): bigint => x ** y,
 
       'Fraction, Fraction': function (
-        x: Fraction,
-        y: Fraction
-      ): Fraction | number | Complex {
-        const result = (x as any).pow(y)
+        x: FractionType,
+        y: FractionType
+      ): FractionType | number | ComplexType {
+        const result = x.pow(y)
 
         if (result != null) {
           return result
@@ -157,26 +154,26 @@ export const createPow = /* #__PURE__ */ factory(
             'Result of pow is non-rational and cannot be expressed as a fraction'
           )
         } else {
-          return _pow((x as any).valueOf(), (y as any).valueOf())
+          return _pow(x.valueOf(), y.valueOf())
         }
       },
 
       'Array, number': _powArray,
 
-      'Array, BigNumber': function (x: any[][], y: BigNumber): any[][] {
-        return _powArray(x, (y as any).toNumber())
+      'Array, BigNumber': function (x: unknown[][], y: BigNumberType): unknown[][] {
+        return _powArray(x, y.toNumber())
       },
 
       'Matrix, number': _powMatrix,
 
-      'Matrix, BigNumber': function (x: any, y: BigNumber): any {
-        return _powMatrix(x, (y as any).toNumber())
+      'Matrix, BigNumber': function (x: MatrixType, y: BigNumberType): MatrixType {
+        return _powMatrix(x, y.toNumber())
       },
 
       'Unit, number | BigNumber': function (
-        x: Unit,
-        y: number | BigNumber
-      ): Unit {
+        x: UnitType,
+        y: number | BigNumberType
+      ): UnitType {
         return x.pow(y)
       }
     })
@@ -188,7 +185,7 @@ export const createPow = /* #__PURE__ */ factory(
      * @return {number | Complex} res
      * @private
      */
-    function _pow(x: number, y: number): number | Complex {
+    function _pow(x: number, y: number): number | ComplexType {
       // Alternatively could define a 'realmode' config option or something, but
       // 'predictable' will work for now
       if (config.predictable && !isInteger(y) && x < 0) {
@@ -240,7 +237,7 @@ export const createPow = /* #__PURE__ */ factory(
      * @returns {Array}
      * @private
      */
-    function _powArray(x: any[][], y: number): any[][] {
+    function _powArray(x: unknown[][], y: number): unknown[][] {
       if (!isInteger(y)) {
         throw new TypeError(
           'For A^b, b must be an integer (value is ' + y + ')'
@@ -260,9 +257,10 @@ export const createPow = /* #__PURE__ */ factory(
       }
       if (y < 0) {
         try {
-          return _powArray(inv(x), -y)
-        } catch (error: any) {
+          return _powArray(inv(x) as unknown[][], -y)
+        } catch (error: unknown) {
           if (
+            error instanceof Error &&
             error.message === 'Cannot calculate inverse, determinant is zero'
           ) {
             throw new TypeError(
@@ -275,14 +273,14 @@ export const createPow = /* #__PURE__ */ factory(
         }
       }
 
-      let res = identity(s[0]).valueOf()
+      let res = (identity(s[0]) as { valueOf(): unknown[][] }).valueOf()
       let px = x
       while (y >= 1) {
         if ((y & 1) === 1) {
-          res = multiply(px, res)
+          res = multiply(px, res) as unknown[][]
         }
         y >>= 1
-        px = multiply(px, px)
+        px = multiply(px, px) as unknown[][]
       }
       return res
     }
@@ -294,7 +292,7 @@ export const createPow = /* #__PURE__ */ factory(
      * @returns {Matrix}
      * @private
      */
-    function _powMatrix(x: any, y: number): any {
+    function _powMatrix(x: MatrixType, y: number): MatrixType {
       return matrix(_powArray(x.valueOf(), y))
     }
   }
