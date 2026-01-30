@@ -1,6 +1,21 @@
 import { flatten, generalize, identify } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 import type { MathArray, Matrix } from '../../../types/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for setDifference
+interface SetDifferenceDependencies {
+  typed: TypedFunction
+  size: (arr: MathArray | Matrix) => number[]
+  subset: (arr: number[], index: Index) => number
+  compareNatural: (a: unknown, b: unknown) => number
+  Index: new (i: number) => Index
+  DenseMatrix: new (data: unknown[]) => Matrix
+}
+
+interface Index {
+  // Index placeholder
+}
 
 const name = 'setDifference'
 const dependencies = [
@@ -15,7 +30,7 @@ const dependencies = [
 export const createSetDifference = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, size, subset, compareNatural, Index, DenseMatrix }) => {
+  ({ typed, size, subset, compareNatural, Index, DenseMatrix }: SetDifferenceDependencies) => {
     /**
      * Create the difference of two (multi)sets: every element of set1, that is not the element of set2.
      * Multi-dimension arrays will be converted to single-dimension arrays before the operation.
@@ -41,14 +56,14 @@ export const createSetDifference = /* #__PURE__ */ factory(
       'Array | Matrix, Array | Matrix': function (
         a1: MathArray | Matrix,
         a2: MathArray | Matrix
-      ): any {
+      ): MathArray | Matrix {
         let result
         if (subset(size(a1), new Index(0)) === 0) {
           // empty-anything=empty
           result = []
         } else if (subset(size(a2), new Index(0)) === 0) {
           // anything-empty=anything
-          return flatten((a1 as any).toArray())
+          return flatten((a1 as Matrix).toArray())
         } else {
           const b1 = identify(
             flatten(Array.isArray(a1) ? a1 : a1.toArray()).sort(compareNatural)

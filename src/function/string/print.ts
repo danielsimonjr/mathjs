@@ -76,29 +76,32 @@ export const createPrint = /* #__PURE__ */ factory(
  * @returns {string} Interpolated string
  * @private
  */
+// Value type for print template values
+type PrintValue = unknown | { isMatrix?: boolean; toArray?: () => unknown[] }
+
 function _print(
   template: string,
-  values: Record<string, any> | any[],
-  options?: number | Record<string, any>
+  values: Record<string, PrintValue> | PrintValue[],
+  options?: number | Record<string, unknown>
 ): string {
   return template.replace(
     printTemplate,
     function (original: string, key: string): string {
       const keys = key.split('.')
-      let value: any = (values as any)[keys.shift()!]
-      if (value !== undefined && value.isMatrix) {
-        value = value.toArray()
+      let value: PrintValue = (values as Record<string, PrintValue>)[keys.shift()!]
+      if (value !== undefined && (value as { isMatrix?: boolean }).isMatrix) {
+        value = (value as { toArray: () => unknown[] }).toArray()
       }
       while (keys.length && value !== undefined) {
         const k = keys.shift()
-        value = k ? value[k] : value + '.'
+        value = k ? (value as Record<string, PrintValue>)[k] : value + '.'
       }
 
       if (value !== undefined) {
         if (!isString(value)) {
           return format(value, options)
         } else {
-          return value
+          return value as string
         }
       }
 

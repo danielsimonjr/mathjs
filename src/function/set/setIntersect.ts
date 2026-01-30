@@ -1,6 +1,21 @@
 import { flatten, generalize, identify } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 import type { MathArray, Matrix } from '../../../types/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for setIntersect
+interface SetIntersectDependencies {
+  typed: TypedFunction
+  size: (arr: MathArray | Matrix) => number[]
+  subset: (arr: number[], index: Index) => number
+  compareNatural: (a: unknown, b: unknown) => number
+  Index: new (i: number) => Index
+  DenseMatrix: new (data: unknown[]) => Matrix
+}
+
+interface Index {
+  // Index placeholder
+}
 
 const name = 'setIntersect'
 const dependencies = [
@@ -15,7 +30,7 @@ const dependencies = [
 export const createSetIntersect = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, size, subset, compareNatural, Index, DenseMatrix }) => {
+  ({ typed, size, subset, compareNatural, Index, DenseMatrix }: SetIntersectDependencies) => {
     /**
      * Create the intersection of two (multi)sets.
      * Multi-dimension arrays will be converted to single-dimension arrays before the operation.
@@ -41,7 +56,7 @@ export const createSetIntersect = /* #__PURE__ */ factory(
       'Array | Matrix, Array | Matrix': function (
         a1: MathArray | Matrix,
         a2: MathArray | Matrix
-      ): any {
+      ): MathArray | Matrix {
         let result
         if (
           subset(size(a1), new Index(0)) === 0 ||
