@@ -1,6 +1,11 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction as TypedFn, BigNumber, Complex } from '../../types.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-import { TypedFunction, BigNumber, Complex } from '../../types.ts'
+// Type definitions for isBounded
+interface Unit {
+  value: unknown
+}
 
 const name = 'isBounded'
 const dependencies = ['typed']
@@ -8,7 +13,7 @@ const dependencies = ['typed']
 export const createIsBounded = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: TypedFunction }): TypedFunction => {
+  ({ typed }: { typed: TypedFunction }): TypedFn => {
     /**
      * Test whether a value is bounded. For scalars, this test is equivalent
      * to the isFinite finiteness test. On the other hand, a Matrix or Array
@@ -43,10 +48,10 @@ export const createIsBounded = /* #__PURE__ */ factory(
       'BigNumber | Complex': (x: BigNumber | Complex) => x.isFinite(),
       'bigint | Fraction': () => true,
       'null | undefined': () => false,
-      Unit: typed.referToSelf((self: any) => (x: any) => self(x.value)),
-      'Array | Matrix': typed.referToSelf((self: any) => (A) => {
-        if (!Array.isArray(A)) A = A.valueOf()
-        return A.every((entry: any) => self(entry))
+      Unit: typed.referToSelf((self: TypedFunction) => (x: Unit): boolean => self(x.value)),
+      'Array | Matrix': typed.referToSelf((self: TypedFunction) => (A: unknown[] | { valueOf: () => unknown[] }): boolean => {
+        const arr = Array.isArray(A) ? A : A.valueOf()
+        return arr.every((entry: unknown) => self(entry))
       })
     })
   }

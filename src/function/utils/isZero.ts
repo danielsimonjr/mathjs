@@ -1,5 +1,17 @@
 import { deepMap } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for isZero
+interface UnitType {
+  valueType(): string
+  value: unknown
+}
+
+interface IsZeroDependencies {
+  typed: TypedFunction
+  equalScalar: (a: unknown, b: number) => boolean
+}
 
 const name = 'isZero'
 const dependencies = ['typed', 'equalScalar']
@@ -7,7 +19,7 @@ const dependencies = ['typed', 'equalScalar']
 export const createIsZero = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, equalScalar }) => {
+  ({ typed, equalScalar }: IsZeroDependencies) => {
     /**
      * Test whether a value is zero.
      * The function can check for zero for types `number`, `BigNumber`, `Fraction`,
@@ -42,17 +54,17 @@ export const createIsZero = /* #__PURE__ */ factory(
      *                    Throws an error in case of an unknown data type.
      */
     return typed(name, {
-      'number | BigNumber | Complex | Fraction': (x: any): boolean =>
+      'number | BigNumber | Complex | Fraction': (x: unknown): boolean =>
         equalScalar(x, 0),
 
       bigint: (x: bigint): boolean => x === 0n,
 
       Unit: typed.referToSelf(
-        (self: any) => (x: any) => typed.find(self, x.valueType())(x.value)
+        (self: TypedFunction) => (x: UnitType): boolean => typed.find(self, x.valueType())(x.value)
       ),
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self)
+        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self)
       )
     })
   }

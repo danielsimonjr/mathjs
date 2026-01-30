@@ -1,4 +1,11 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for hasNumericValue
+interface HasNumericValueDependencies {
+  typed: TypedFunction
+  isNumeric: (x: unknown) => boolean
+}
 
 const name = 'hasNumericValue'
 const dependencies = ['typed', 'isNumeric']
@@ -6,7 +13,7 @@ const dependencies = ['typed', 'isNumeric']
 export const createHasNumericValue = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, isNumeric }) => {
+  ({ typed, isNumeric }: HasNumericValueDependencies) => {
     /**
      * Test whether a value is an numeric value.
      *
@@ -44,7 +51,7 @@ export const createHasNumericValue = /* #__PURE__ */ factory(
       string: function (x: string): boolean {
         return x.trim().length > 0 && !isNaN(Number(x))
       },
-      any: function (x: any): boolean {
+      any: function (x: unknown): boolean {
         return isNumeric(x)
       }
     })

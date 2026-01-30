@@ -2,13 +2,23 @@ import { typeOf } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 import { noBignumber, noFraction } from '../../utils/noop.ts'
 
+// Type definitions for numeric
+type NumericValue = string | number | bigint | unknown
+type NumericOutput = number | bigint | unknown
+
+interface NumericDependencies {
+  number: (x: NumericValue) => number
+  bignumber?: (x: NumericValue) => unknown
+  fraction?: (x: NumericValue) => unknown
+}
+
 const name = 'numeric'
 const dependencies = ['number', '?bignumber', '?fraction']
 
 export const createNumeric = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ number, bignumber, fraction }) => {
+  ({ number, bignumber, fraction }: NumericDependencies) => {
     const validInputTypes: Record<string, boolean> = {
       string: true,
       number: true,
@@ -17,11 +27,11 @@ export const createNumeric = /* #__PURE__ */ factory(
     }
 
     // Load the conversion functions for each output type
-    const validOutputTypes: Record<string, (x: any) => any> = {
-      number: (x: any) => number(x),
-      BigNumber: bignumber ? (x: any) => bignumber(x) : noBignumber,
-      bigint: (x: any) => BigInt(x),
-      Fraction: fraction ? (x: any) => fraction(x) : noFraction
+    const validOutputTypes: Record<string, (x: NumericValue) => NumericOutput> = {
+      number: (x: NumericValue) => number(x),
+      BigNumber: bignumber ? (x: NumericValue) => bignumber(x) : noBignumber,
+      bigint: (x: NumericValue) => BigInt(x as string | number | bigint),
+      Fraction: fraction ? (x: NumericValue) => fraction(x) : noFraction
     }
 
     /**
@@ -55,10 +65,10 @@ export const createNumeric = /* #__PURE__ */ factory(
      *              Returns an instance of the numeric in the requested type
      */
     return function numeric(
-      value: any,
+      value: NumericValue,
       outputType: string = 'number',
-      check?: any
-    ): any {
+      check?: unknown
+    ): NumericOutput {
       if (check !== undefined) {
         throw new SyntaxError('numeric() takes one or two arguments')
       }

@@ -1,6 +1,24 @@
 import { deepMap } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
 import { isNaNNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for isNaN
+interface BigNumberType {
+  isNaN(): boolean
+}
+
+interface ComplexType {
+  isNaN(): boolean
+}
+
+interface UnitType {
+  value: number
+}
+
+interface IsNaNDependencies {
+  typed: TypedFunction
+}
 
 const name = 'isNaN'
 const dependencies = ['typed']
@@ -8,7 +26,7 @@ const dependencies = ['typed']
 export const createIsNaN = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }) => {
+  ({ typed }: IsNaNDependencies) => {
     /**
      * Test whether a value is NaN (not a number).
      * The function supports types `number`, `BigNumber`, `Fraction`, `Unit` and `Complex`.
@@ -41,7 +59,7 @@ export const createIsNaN = /* #__PURE__ */ factory(
     return typed(name, {
       number: isNaNNumber,
 
-      BigNumber: function (x: any): boolean {
+      BigNumber: function (x: BigNumberType): boolean {
         return x.isNaN()
       },
 
@@ -49,20 +67,20 @@ export const createIsNaN = /* #__PURE__ */ factory(
         return false
       },
 
-      Fraction: function (_x: any): boolean {
+      Fraction: function (_x: unknown): boolean {
         return false
       },
 
-      Complex: function (x: any): boolean {
+      Complex: function (x: ComplexType): boolean {
         return x.isNaN()
       },
 
-      Unit: function (x: any): boolean {
+      Unit: function (x: UnitType): boolean {
         return Number.isNaN(x.value)
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self)
+        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self)
       )
     })
   }

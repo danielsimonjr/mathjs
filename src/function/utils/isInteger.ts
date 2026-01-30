@@ -1,5 +1,21 @@
 import { deepMap } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for isInteger
+interface BigNumberType {
+  isFinite(): boolean
+  round(): BigNumberType
+}
+
+interface FractionType {
+  d: bigint
+}
+
+interface IsIntegerDependencies {
+  typed: TypedFunction
+  equal: (a: unknown, b: unknown) => boolean
+}
 
 const name = 'isInteger'
 const dependencies = ['typed', 'equal']
@@ -7,7 +23,7 @@ const dependencies = ['typed', 'equal']
 export const createIsInteger = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, equal }) => {
+  ({ typed, equal }: IsIntegerDependencies) => {
     /**
      * Test whether a value is an integer number.
      * The function supports `number`, `BigNumber`, and `Fraction`.
@@ -41,15 +57,15 @@ export const createIsInteger = /* #__PURE__ */ factory(
       number: (n: number): boolean =>
         Number.isFinite(n) ? equal(n, Math.round(n)) : false,
 
-      BigNumber: (b: any): boolean =>
+      BigNumber: (b: BigNumberType): boolean =>
         b.isFinite() ? equal(b.round(), b) : false,
 
       bigint: (_b: bigint): boolean => true,
 
-      Fraction: (r: any): boolean => r.d === 1n,
+      Fraction: (r: FractionType): boolean => r.d === 1n,
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self)
+        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self)
       )
     })
   }

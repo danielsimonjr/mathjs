@@ -1,6 +1,13 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction as TypedFn, Matrix } from '../../types.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-import { TypedFunction, Matrix } from '../../types.ts'
+// Type definitions for isFinite
+interface IsFiniteDependencies {
+  typed: TypedFunction
+  isBounded: (x: unknown) => boolean
+  map: (arr: unknown[] | Matrix, fn: (x: unknown) => boolean) => unknown[] | Matrix
+}
 
 const name = 'isFinite'
 const dependencies = ['typed', 'isBounded', 'map']
@@ -12,11 +19,7 @@ export const createIsFinite = /* #__PURE__ */ factory(
     typed,
     isBounded,
     map
-  }: {
-    typed: TypedFunction
-    isBounded: any
-    map: any
-  }): TypedFunction => {
+  }: IsFiniteDependencies): TypedFn => {
     /**
      * Test whether a value is finite.
      *
@@ -48,8 +51,8 @@ export const createIsFinite = /* #__PURE__ */ factory(
      * @return {boolean | Array | Matrix}
      */
     return typed(name, {
-      'Array | Matrix': (A: any[] | Matrix) => map(A, isBounded),
-      any: (x: any) => isBounded(x)
+      'Array | Matrix': (A: unknown[] | Matrix): unknown[] | Matrix => map(A, isBounded),
+      any: (x: unknown): boolean => isBounded(x)
     })
   }
 )

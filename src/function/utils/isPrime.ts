@@ -1,5 +1,28 @@
 import { deepMap } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for isPrime
+interface BigNumberType {
+  lte(n: number): boolean
+  gt(n: number): boolean
+  lt(n: number | string): boolean
+  mod(n: number): BigNumberType
+  eq(n: number): boolean
+  sub(n: number | BigNumberType): BigNumberType
+  div(n: number): BigNumberType
+  add(n: number): BigNumberType
+  mul(n: BigNumberType | number): BigNumberType
+  toNumber(): number
+  toFixed(n: number): string
+  constructor: {
+    clone(config: { precision: number }): new (value: BigNumberType | number) => BigNumberType
+  }
+}
+
+interface IsPrimeDependencies {
+  typed: TypedFunction
+}
 
 const name = 'isPrime'
 const dependencies = ['typed']
@@ -7,7 +30,7 @@ const dependencies = ['typed']
 export const createIsPrime = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }) => {
+  ({ typed }: IsPrimeDependencies) => {
     /**
      * Test whether a value is prime: has no divisors other than itself and one.
      * The function supports type `number`, `bignumber`.
@@ -67,11 +90,11 @@ export const createIsPrime = /* #__PURE__ */ factory(
         return true
       },
 
-      BigNumber: function (n: any): boolean {
+      BigNumber: function (n: BigNumberType): boolean {
         if (n.lte(3)) return n.gt(1)
         if (n.mod(2).eq(0) || n.mod(3).eq(0)) return false
         if (n.lt(Math.pow(2, 32))) {
-          const x = (n as any).toNumber()
+          const x = n.toNumber()
           for (let i = 5; i * i <= x; i += 6) {
             if (x % i === 0 || x % (i + 2) === 0) {
               return false
@@ -80,13 +103,13 @@ export const createIsPrime = /* #__PURE__ */ factory(
           return true
         }
 
-        function modPow(base: any, exponent: any, modulus: any): any {
+        function modPow(base: BigNumberType, exponent: BigNumberType, modulus: BigNumberType): BigNumberType | number {
           // exponent can be huge, use non-recursive variant
-          let accumulator = 1
+          let accumulator: BigNumberType | number = 1
           while (!exponent.eq(0)) {
             if (exponent.mod(2).eq(0)) {
               exponent = exponent.div(2)
-              base = base.mul(base).mod(modulus)
+              base = base.mul(base).mod(modulus) as unknown as BigNumberType
             } else {
               exponent = exponent.sub(1)
               accumulator = base.mul(accumulator).mod(modulus)
@@ -106,15 +129,15 @@ export const createIsPrime = /* #__PURE__ */ factory(
           d = d.div(2)
           r += 1
         }
-        let bases = null
+        let bases: number[] | null = null
         // https://en.wikipedia.org/wiki/Miller–Rabin_primality_test#Testing_against_small_sets_of_bases
         if (n.lt('3317044064679887385961981')) {
           bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41].filter(
-            (x) => x < n
+            (x) => x < n.toNumber()
           )
         } else {
           const max = Math.min(
-            (n as any).toNumber() - 2,
+            n.toNumber() - 2,
             Math.floor(2 * Math.pow(n.toFixed(0).length * Math.log(10), 2))
           )
           bases = []
@@ -125,11 +148,11 @@ export const createIsPrime = /* #__PURE__ */ factory(
         for (let i = 0; i < bases.length; i += 1) {
           const a = bases[i]
           const adn = modPow(n.sub(n).add(a), d, n)
-          if (!adn.eq(1)) {
+          if (!(adn as BigNumberType).eq(1)) {
             for (
-              let i = 0, x = adn;
+              let i = 0, x = adn as BigNumberType;
               !x.eq(n.sub(1));
-              i += 1, x = x.mul(x).mod(n)
+              i += 1, x = x.mul(x).mod(n) as unknown as BigNumberType
             ) {
               if (i === r - 1) {
                 return false
@@ -141,7 +164,7 @@ export const createIsPrime = /* #__PURE__ */ factory(
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self)
+        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self)
       )
     })
   }

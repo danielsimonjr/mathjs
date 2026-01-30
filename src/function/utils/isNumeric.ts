@@ -1,7 +1,7 @@
 import { deepMap } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
-
-import { TypedFunction } from '../../types.ts'
+import type { TypedFunction as TypedFn } from '../../types.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 const name = 'isNumeric'
 const dependencies = ['typed']
@@ -9,7 +9,7 @@ const dependencies = ['typed']
 export const createIsNumeric = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: TypedFunction }): TypedFunction => {
+  ({ typed }: { typed: TypedFunction }): TypedFn => {
     /**
      * Test whether a value is an numeric value.
      *
@@ -44,7 +44,7 @@ export const createIsNumeric = /* #__PURE__ */ factory(
       'number | BigNumber | bigint | Fraction | boolean': () => true,
       'Complex | Unit | string | null | undefined | Node': () => false,
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self)
+        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self)
       )
     })
   }
