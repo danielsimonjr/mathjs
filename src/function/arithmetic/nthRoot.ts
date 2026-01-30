@@ -7,6 +7,39 @@ import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { nthRootNumber } from '../../plain/number/index.ts'
 
+// Type definitions for nthRoot
+interface BigNumberType {
+  isNegative(): boolean
+  isZero(): boolean
+  isFinite(): boolean
+  isNeg(): boolean
+  neg(): BigNumberType
+  abs(): BigNumberType
+  pow(exp: BigNumberType): BigNumberType
+  mod(n: number): BigNumberType
+  equals(n: number): boolean
+  toPrecision(digits: number): string
+}
+
+interface BigNumberConstructor {
+  new (value: number | string | BigNumberType): BigNumberType
+  precision: number
+  clone(config: { precision: number }): BigNumberConstructor
+}
+
+interface MatrixType {
+  density(): number
+  valueOf(): unknown[]
+}
+
+interface NthRootDependencies {
+  typed: TypedFunction
+  matrix: (data: unknown) => MatrixType
+  equalScalar: TypedFunction
+  BigNumber: BigNumberConstructor
+  concat: TypedFunction
+}
+
 const name = 'nthRoot'
 const dependencies = ['typed', 'matrix', 'equalScalar', 'BigNumber', 'concat']
 
@@ -19,13 +52,7 @@ export const createNthRoot = /* #__PURE__ */ factory(
     equalScalar,
     BigNumber,
     concat
-  }: {
-    typed: TypedFunction
-    matrix: any
-    equalScalar: any
-    BigNumber: any
-    concat: any
-  }): any => {
+  }: NthRootDependencies): TypedFunction => {
     const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo06xS0S0 = createMatAlgo06xS0S0({ typed, equalScalar })
@@ -166,7 +193,7 @@ export const createNthRoot = /* #__PURE__ */ factory(
      * @param {BigNumber} root
      * @private
      */
-    function _bigNthRoot(a: any, root: any): any {
+    function _bigNthRoot(a: BigNumberType, root: BigNumberType): BigNumberType | number {
       const precision = BigNumber.precision
       const Big = BigNumber.clone({ precision: precision + 2 })
       const zero = new BigNumber(0)
@@ -204,7 +231,7 @@ export const createNthRoot = /* #__PURE__ */ factory(
 export const createNthRootNumber = /* #__PURE__ */ factory(
   name,
   ['typed'] as const,
-  ({ typed }: { typed: any }): any => {
+  ({ typed }: { typed: TypedFunction }): TypedFunction => {
     return typed(name, {
       number: nthRootNumber,
       'number, number': nthRootNumber

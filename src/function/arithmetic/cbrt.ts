@@ -1,6 +1,54 @@
 import { factory } from '../../utils/factory.ts'
 import { isBigNumber, isComplex, isFraction } from '../../utils/is.ts'
 import { cbrtNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/config.ts'
+
+// Type definitions for cbrt
+interface ComplexType {
+  arg(): number
+  abs(): number
+  mul(other: ComplexType): ComplexType
+  exp(): ComplexType
+}
+
+interface ComplexConstructor {
+  new (re: number, im: number): ComplexType
+}
+
+interface BigNumberType {
+  cbrt(): BigNumberType
+  div(n: number): BigNumberType
+}
+
+interface BigNumberConstructor {
+  new (value: number): BigNumberType
+}
+
+interface FractionConstructor {
+  new (num: number, den: number): unknown
+}
+
+interface UnitType {
+  value: unknown
+  clone(): UnitType
+  pow(exp: unknown): UnitType
+}
+
+interface MatrixType {
+  (data: ComplexType[]): unknown
+}
+
+interface CbrtDependencies {
+  config: MathJsConfig
+  typed: TypedFunction
+  isNegative: (x: unknown) => boolean
+  unaryMinus: TypedFunction
+  matrix: MatrixType
+  Complex: ComplexConstructor
+  BigNumber: BigNumberConstructor
+  Fraction: FractionConstructor
+}
 
 const name = 'cbrt'
 const dependencies = [
@@ -26,16 +74,7 @@ export const createCbrt = /* #__PURE__ */ factory(
     Complex,
     BigNumber,
     Fraction
-  }: {
-    config: any
-    typed: any
-    isNegative: any
-    unaryMinus: any
-    matrix: any
-    Complex: any
-    BigNumber: any
-    Fraction: any
-  }) => {
+  }: CbrtDependencies) => {
     /**
      * Calculate the cubic root of a value.
      *
@@ -86,7 +125,7 @@ export const createCbrt = /* #__PURE__ */ factory(
 
       'Complex, boolean': _cbrtComplex,
 
-      BigNumber: function (x: any) {
+      BigNumber: function (x: BigNumberType): BigNumberType {
         return x.cbrt()
       },
 
@@ -102,7 +141,7 @@ export const createCbrt = /* #__PURE__ */ factory(
      * @returns {Complex | Array.<Complex> | Matrix.<Complex>} Returns the cubic root(s) of x
      * @private
      */
-    function _cbrtComplex(x: any, allRoots?: boolean): any {
+    function _cbrtComplex(x: ComplexType, allRoots?: boolean): ComplexType | ComplexType[] | unknown {
       // https://www.wikiwand.com/en/Cube_root#/Complex_numbers
 
       const arg3 = x.arg() / 3
@@ -136,7 +175,7 @@ export const createCbrt = /* #__PURE__ */ factory(
      * @return {Unit} Returns the cubic root of x
      * @private
      */
-    function _cbrtUnit(x: any): any {
+    function _cbrtUnit(x: UnitType): UnitType {
       if (x.value && isComplex(x.value)) {
         let result = x.clone()
         result.value = 1.0
@@ -150,7 +189,7 @@ export const createCbrt = /* #__PURE__ */ factory(
         }
 
         // TODO: create a helper function for this
-        let third: any
+        let third: unknown
         if (isBigNumber(x.value)) {
           third = new BigNumber(1).div(3)
         } else if (isFraction(x.value)) {

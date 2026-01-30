@@ -6,6 +6,45 @@ import { nearlyEqual as bigNearlyEqual } from '../../utils/bignumber/nearlyEqual
 import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/config.ts'
+
+// Type definitions for floor
+interface BigNumberType {
+  floor(): BigNumberType
+  eq(other: BigNumberType): boolean
+  mul(other: BigNumberType): BigNumberType
+  div(other: BigNumberType): BigNumberType
+}
+
+interface ComplexType {
+  floor(n?: number): ComplexType
+}
+
+interface FractionType {
+  floor(n?: number): FractionType
+}
+
+interface MatrixType {
+  size(): number[]
+  storage(): string
+}
+
+interface FloorNumberDependencies {
+  typed: TypedFunction
+  config: MathJsConfig
+  round: TypedFunction
+}
+
+interface FloorDependencies {
+  typed: TypedFunction
+  config: MathJsConfig
+  round: TypedFunction
+  matrix: (data: unknown) => MatrixType
+  equalScalar: TypedFunction
+  zeros: (size: number[], storage?: string) => MatrixType
+  DenseMatrix: unknown
+}
 
 const name = 'floor'
 const dependencies = [
@@ -18,12 +57,12 @@ const dependencies = [
   'DenseMatrix'
 ]
 
-const bigTen = new (Decimal as any)(10)
+const bigTen = new (Decimal as unknown as { new (n: number): BigNumberType })(10)
 
 export const createFloorNumber = /* #__PURE__ */ factory(
   name,
   ['typed', 'config', 'round'] as const,
-  ({ typed, config, round }: { typed: any; config: any; round: any }) => {
+  ({ typed, config, round }: FloorNumberDependencies) => {
     function _floorNumber(x: number): number {
       // First, if the floor and the round are identical we can be
       // quite comfortable that is the best answer:
@@ -76,26 +115,18 @@ export const createFloor = /* #__PURE__ */ factory(
     equalScalar,
     zeros,
     DenseMatrix
-  }: {
-    typed: any
-    config: any
-    round: any
-    matrix: any
-    equalScalar: any
-    zeros: any
-    DenseMatrix: any
-  }) => {
+  }: FloorDependencies) => {
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
     const matAlgo14xDs = createMatAlgo14xDs({ typed })
 
     const floorNumber = createFloorNumber({ typed, config, round })
-    function _bigFloor(x: any): any {
+    function _bigFloor(x: BigNumberType): BigNumberType {
       // see _floorNumber above for rationale
-      const bne = (a: any, b: any) =>
+      const bne = (a: BigNumberType, b: BigNumberType) =>
         bigNearlyEqual(a, b, config.relTol, config.absTol)
       const f = x.floor()
-      const r = round(x)
+      const r = round(x) as BigNumberType
       if (f.eq(r)) return f
       if (bne(x, r) && !bne(x, f)) return r
       return f

@@ -2,6 +2,25 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { MathJsConfig } from '../../core/config.ts'
 
+// Type definitions for nthRoots
+interface ComplexType {
+  re: number
+  im: number
+  abs(): number
+  arg(): number
+}
+
+interface ComplexConstructor {
+  new (value: number | { r: number; phi: number }, imaginary?: number): ComplexType
+}
+
+interface NthRootsDependencies {
+  typed: TypedFunction
+  config: MathJsConfig
+  divideScalar: TypedFunction
+  Complex: ComplexConstructor
+}
+
 const name = 'nthRoots'
 const dependencies = ['config', 'typed', 'divideScalar', 'Complex']
 
@@ -13,12 +32,7 @@ export const createNthRoots = /* #__PURE__ */ factory(
     config: _config,
     divideScalar: _divideScalar,
     Complex
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    divideScalar: any
-    Complex: any
-  }): any => {
+  }: NthRootsDependencies): TypedFunction => {
     /**
      * Each function here returns a real multiple of i as a Complex value.
      * @param  {number} val

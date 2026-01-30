@@ -6,6 +6,42 @@ import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
 import { roundNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { MathJsConfig } from '../../core/config.ts'
+
+// Type definitions for round
+interface BigNumberType {
+  isInteger(): boolean
+  toNumber(): number
+  toDecimalPlaces(n: number): BigNumberType
+}
+
+interface BigNumberConstructor {
+  new (value: number | BigNumberType): BigNumberType
+}
+
+interface ComplexType {
+  round(n?: number): ComplexType
+}
+
+interface FractionType {
+  round(n?: number): FractionType
+}
+
+interface MatrixType {
+  size(): number[]
+  storage(): string
+}
+
+interface RoundDependencies {
+  typed: TypedFunction
+  config: MathJsConfig
+  matrix: (data: unknown) => MatrixType
+  equalScalar: TypedFunction
+  zeros: (size: number[], storage?: string) => MatrixType
+  BigNumber: BigNumberConstructor
+  DenseMatrix: unknown
+}
 
 const NO_INT = 'Number of decimals in function round must be an integer'
 
@@ -31,15 +67,7 @@ export const createRound = /* #__PURE__ */ factory(
     zeros,
     BigNumber,
     DenseMatrix
-  }: {
-    typed: any
-    config: any
-    matrix: any
-    equalScalar: any
-    zeros: any
-    BigNumber: any
-    DenseMatrix: any
-  }) => {
+  }: RoundDependencies) => {
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
     const matAlgo14xDs = createMatAlgo14xDs({ typed })

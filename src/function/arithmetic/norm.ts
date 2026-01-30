@@ -1,6 +1,41 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
+// Type definitions for norm
+interface ComplexType {
+  abs(): number
+}
+
+interface BigNumberType {
+  abs(): BigNumberType
+}
+
+interface MatrixType {
+  size(): number[]
+  forEach(callback: (value: unknown, index: number[], matrix: MatrixType) => void, skipZeros?: boolean): void
+  toArray(): unknown[]
+}
+
+interface EigsResult {
+  values: MatrixType
+}
+
+interface NormDependencies {
+  typed: TypedFunction
+  abs: TypedFunction
+  add: TypedFunction
+  pow: TypedFunction
+  conj: TypedFunction
+  sqrt: TypedFunction
+  multiply: TypedFunction
+  equalScalar: TypedFunction
+  larger: (a: unknown, b: unknown) => boolean
+  smaller: (a: unknown, b: unknown) => boolean
+  matrix: (data: unknown) => MatrixType
+  ctranspose: TypedFunction
+  eigs: (x: unknown) => EigsResult
+}
+
 const name = 'norm'
 const dependencies = [
   'typed',
@@ -35,7 +70,7 @@ export const createNorm = /* #__PURE__ */ factory(
     matrix,
     ctranspose,
     eigs
-  }: any): TypedFunction => {
+  }: NormDependencies): TypedFunction => {
     /**
      * Calculate the norm of a number, vector or matrix.
      *

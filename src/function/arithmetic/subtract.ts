@@ -1,4 +1,5 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 import { createMatAlgo01xDSid } from '../../type/matrix/utils/matAlgo01xDSid.ts'
 import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.ts'
 import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.ts'
@@ -6,60 +7,7 @@ import { createMatAlgo10xSids } from '../../type/matrix/utils/matAlgo10xSids.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 
-// Type definitions for better WASM integration and type safety
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-  referTo<U>(
-    signature: string,
-    fn: (ref: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-}
-
-interface MatrixData {
-  data?: any[] | any[][]
-  values?: any[]
-  index?: number[]
-  ptr?: number[]
-  size: number[]
-  datatype?: string
-}
-
-interface DenseMatrix {
-  _data: any[] | any[][]
-  _size: number[]
-  _datatype?: string
-  storage(): 'dense'
-  size(): number[]
-  getDataType(): string
-  createDenseMatrix(data: MatrixData): DenseMatrix
-  valueOf(): any[] | any[][]
-}
-
-interface SparseMatrix {
-  _values?: any[]
-  _index?: number[]
-  _ptr?: number[]
-  _size: number[]
-  _datatype?: string
-  _data?: any
-  storage(): 'sparse'
-  size(): number[]
-  getDataType(): string
-  createSparseMatrix(data: MatrixData): SparseMatrix
-  valueOf(): any[] | any[][]
-}
-
-type Matrix = DenseMatrix | SparseMatrix
-
-interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
-}
-
+// Type definitions for subtract
 interface NodeOperations {
   createBinaryNode: (
     op: string,
@@ -70,13 +18,13 @@ interface NodeOperations {
   hasNodeArg: (...args: unknown[]) => boolean
 }
 
-interface Dependencies {
+interface SubtractDependencies {
   typed: TypedFunction
-  matrix: MatrixConstructor
+  matrix: TypedFunction
   equalScalar: TypedFunction
   subtractScalar: TypedFunction
   unaryMinus: TypedFunction
-  DenseMatrix: any
+  DenseMatrix: unknown
   concat: TypedFunction
   nodeOperations: NodeOperations
 }
@@ -105,7 +53,7 @@ export const createSubtract = /* #__PURE__ */ factory(
     DenseMatrix,
     concat,
     nodeOperations
-  }: Dependencies) => {
+  }: SubtractDependencies) => {
     // TODO: split function subtract in two: subtract and subtractScalar
 
     const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
