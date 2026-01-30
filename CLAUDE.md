@@ -8,6 +8,7 @@ Math.js is an extensive math library for JavaScript and Node.js featuring:
 - Flexible expression parser with symbolic computation support
 - Large set of built-in functions and constants
 - Support for multiple data types: numbers, big numbers, complex numbers, fractions, units, matrices
+- 15 type classes: BigNumber, Complex, Fraction, Range, Matrix (Dense/Sparse/Immutable), Index, Unit, Parser, Help, Chain, FibonacciHeap, Spa
 - ES modules codebase requiring all files to have real `.js` extensions
 - Currently undergoing TypeScript + WASM + parallel computing refactoring
 - Uses forked packages: `@danielsimonjr/typed-function` and `@danielsimonjr/workerpool` for WASM acceleration
@@ -88,6 +89,28 @@ npm run format
 npm run validate:ascii
 ```
 
+## Codebase Statistics
+
+Quick reference numbers from codebase analysis:
+
+| Metric | Count |
+|--------|-------|
+| Factory functions | 396 |
+| Unique dependencies | 160 |
+| AST node types | 16 |
+| Type classes | 15 |
+| Matrix algorithms | 15 |
+| Expression transforms | 25 |
+| Distribution size | ~4.4 MB |
+
+**Most-used dependencies** (by usage count):
+- `typed` (280) - type dispatch system
+- `matrix` (93) - matrix operations
+- `config` (63) - configuration
+- `equalScalar` (48) - equality checks
+- `DenseMatrix` (44) - dense matrix class
+- `add` (39), `multiply` (34), `concat` (34) - core operations
+
 ## Architecture Overview
 
 ### Core Dependency Injection System
@@ -106,41 +129,54 @@ Math.js uses a **factory function + dependency injection** architecture:
 ```
 src/
 ├── core/                    # Core system (create, config, typed-function)
-├── type/                    # Data type implementations (Complex, BigNumber, Matrix, etc.)
-├── function/                # All mathematical functions organized by category
-│   ├── arithmetic/          # Basic arithmetic (add, multiply, etc.)
-│   ├── algebra/             # Algebraic functions (derivative, simplify, etc.)
-│   ├── matrix/              # Matrix operations
-│   ├── trigonometry/        # Trig functions
-│   ├── statistics/          # Statistical functions
-│   ├── probability/         # Probability functions
-│   ├── utils/               # Utility functions (isInteger, typeOf, etc.)
-│   └── [other categories]
-├── expression/              # Expression parser and evaluation
-│   ├── Parser.js            # Main expression parser
-│   ├── embeddedDocs/        # Documentation for parser functions
-│   ├── node/                # AST node types
-│   └── transform/           # Expression transformations
-├── parallel/                # Parallel computing (WorkerPool, ParallelMatrix)
-├── wasm/                    # WASM integration layer (WasmLoader, MatrixWasmBridge)
-├── factoriesAny.js          # All factory functions (full version)
-├── factoriesNumber.js       # Number-only factory functions (lightweight)
-└── defaultInstance.js       # Default math.js instance
+│   └── function/            # Core functions like import.ts
+├── entry/                   # Generated entry point files
+│   ├── dependenciesAny/     # Dependency declarations for full version
+│   ├── dependenciesNumber/  # Dependency declarations for number-only
+│   ├── pureFunctionsAny.generated.ts
+│   ├── pureFunctionsNumber.generated.ts
+│   ├── impureFunctionsAny.generated.ts
+│   └── impureFunctionsNumber.generated.ts
+├── wasm/                    # WASM modules (AssemblyScript)
+│   └── algebra/             # Algebra WASM (polynomial.ts)
+└── version.js               # Version string
 
-src/wasm/                    # AssemblyScript WASM modules (compiled to lib/wasm/)
-├── matrix/                  # Matrix operations for WASM
-├── algebra/                 # Linear algebra for WASM
-├── arithmetic/              # Arithmetic operations for WASM
-├── trigonometry/            # Trig functions for WASM
-├── signal/                  # Signal processing (FFT, etc.)
-└── index.ts                 # WASM entry point
+dist/                        # Built distribution files (main output)
+├── factoriesAny.js          # All 396 factory functions (~1.3 MB)
+├── factoriesNumber.js       # Number-only factories (~660 KB)
+├── index.js                 # Main entry point
+└── number.js                # Number-only entry point
+
+lib/cjs/                     # CommonJS build output
+├── function/                # All mathematical functions by category
+│   ├── algebra/             # derivative, simplify, solver, etc.
+│   ├── arithmetic/          # add, multiply, pow, sqrt, etc.
+│   ├── matrix/              # det, inv, transpose, eigs, etc.
+│   ├── trigonometry/        # sin, cos, tan, etc.
+│   ├── statistics/          # mean, std, variance, etc.
+│   ├── probability/         # combinations, permutations, etc.
+│   ├── bitwise/             # bitAnd, bitOr, leftShift, etc.
+│   ├── logical/             # and, or, not, xor
+│   ├── relational/          # equal, larger, smaller, etc.
+│   ├── set/                 # setUnion, setIntersect, etc.
+│   ├── signal/              # fft, ifft
+│   ├── special/             # erf, gamma, zeta
+│   ├── string/              # format, print
+│   ├── unit/                # unit operations
+│   └── utils/               # utility functions
+├── expression/              # Expression parser and evaluation
+├── type/                    # Data type implementations
+└── core/                    # Core system
 
 test/
-├── unit-tests/              # Unit tests (main test suite)
+├── unit-tests/              # Unit tests organized by category
+│   ├── function/            # Function tests (mirrors lib structure)
+│   ├── expression/          # Parser tests
+│   ├── type/                # Type tests
+│   └── wasm/                # WASM unit tests
 ├── wasm/                    # WASM-specific tests (vitest)
-│   └── unit-tests/          # Direct WASM and pre-compile tests
 ├── generated-code-tests/    # Tests for generated entry files
-├── node-tests/              # Node.js specific tests
+├── node-tests/              # Node.js integration tests
 ├── typescript-tests/        # TypeScript type definition tests
 ├── browser-test-config/     # Browser test configurations
 └── benchmark/               # Performance benchmarks
@@ -148,21 +184,17 @@ test/
 types/
 ├── index.d.ts               # TypeScript type definitions
 └── EXPLANATION.md           # Guide for maintaining type definitions
-
-tools/                       # Build and development tools
-├── entryGenerator.js        # Generates entry point files
-├── docgenerator.js          # Generates documentation
-├── migrate-to-ts.js         # TypeScript migration tool
-└── validateAsciiChars.js    # ASCII validation
 ```
 
-### TypeScript + WASM Refactoring (Complete)
+### TypeScript + WASM Refactoring (In Progress)
 
-The codebase has been fully converted to TypeScript with comprehensive WASM support:
+The codebase is being gradually converted to TypeScript with WASM support:
 
-- **Source Status**: 1331 TS / 674 JS (100% converted - all JS files have TS counterparts, JS kept for benchmarking)
-- **TypeScript Errors**: 0 (run `npx tsc --noEmit 2>&1 | grep -c "error TS"` to verify)
-- **WASM Modules**: 21 module directories with 318 test files
+- **Migration Tracking**: `ts-inventory.json` tracks 1,306 source files
+- **Current Status**: 68.5% converted (895 TypeScript, 411 JavaScript remaining)
+- **Fully Converted**: trigonometry, set, bitwise, logical, complex, geometry, signal, unit, parallel, wasm
+- **In Progress**: expression/embeddedDocs (50%), expression/node (50%), statistics (50%)
+- **TypeScript Errors**: Run `npx tsc --noEmit 2>&1 | grep -c "error TS"` to check current count
 - **Goal**: Type safety, 2-25x performance improvements, multi-core support
 - **Strategy**: Incremental conversion, 100% backward compatible
 - **See**: `docs/architecture/README_TYPESCRIPT_WASM.md`, `docs/refactoring/REFACTORING_PLAN.md`
@@ -172,19 +204,32 @@ The codebase has been fully converted to TypeScript with comprehensive WASM supp
 2. WASM acceleration (2-10x faster for large operations)
 3. Parallel/multicore execution (2-4x additional speedup)
 
+**Current WASM Modules** (`src/wasm/algebra/polynomial.ts`):
+- `polyEval` - Polynomial evaluation using Horner's method
+- `polyEvalWithDerivative` - Evaluate polynomial and derivative simultaneously
+- `quadraticRoots`, `cubicRoots`, `quarticRoots` - Analytical root finding
+- `polyRoots` - General polynomial root finding
+- `polyDerivative` - Compute derivative coefficients
+- `polyMultiply`, `polyDivide` - Polynomial arithmetic
+
 ### Build System
 
-**Gulp-based build** (`gulpfile.js`):
-- Compiles ES modules to CommonJS and ESM formats
-- Creates browser bundle via Webpack
-- Generates documentation from JSDoc comments
-- Creates entry point files with dependency graphs
+**Build tools**:
+- **tsup** (`tsup.config.ts`) - Bundles TypeScript/JavaScript to `dist/`
+- **Gulp** (`gulpfile.js`) - Compiles to CommonJS/ESM formats in `lib/`
+- **Webpack** - Creates browser bundle
+- **AssemblyScript** - Compiles WASM modules
 
-**Outputs** (in `lib/`):
+**Primary outputs** (in `dist/`):
+- `dist/factoriesAny.js` - All 396 factory functions (~1.3 MB)
+- `dist/factoriesNumber.js` - Number-only factories (~660 KB)
+- `dist/index.js` - Main entry point (~1.3 MB)
+- `dist/number.js` - Lightweight number-only version (~1.4 MB)
+
+**Secondary outputs** (in `lib/`):
 - `lib/esm/` - ES modules
 - `lib/cjs/` - CommonJS (with package.json type marker)
 - `lib/browser/math.js` - UMD browser bundle
-- `lib/typescript/` - Compiled TypeScript (when present)
 - `lib/wasm/` - WASM modules (when built)
 
 ## Implementing a New Function
@@ -252,6 +297,40 @@ Functions support multiple type signatures via `typed-function`:
 - Supports automatic type conversions
 - Can be extended with new types dynamically
 
+### Function Categories
+
+The 396 factory functions are organized into these categories:
+
+| Category | Count | Key Functions |
+|----------|-------|---------------|
+| Matrix | 54 | det, inv, transpose, eigs, qr, lup, svd, pinv, dot, cross |
+| Arithmetic | 45 | add, subtract, multiply, divide, pow, sqrt, abs, exp, log |
+| Expression | 32 | parse, evaluate, compile, simplify, derivative |
+| Trigonometry | 27 | sin, cos, tan, asin, acos, atan, sinh, cosh, tanh |
+| Statistics | 22 | mean, median, std, variance, sum, prod, min, max |
+| Relational | 19 | equal, unequal, larger, smaller, compare, deepEqual |
+| Algebra | 15 | simplify, derivative, rationalize, resolve, lsolve, lusolve |
+| Probability | 12 | combinations, permutations, factorial, random, pickRandom |
+| Bitwise | 8 | bitAnd, bitOr, bitXor, bitNot, leftShift, rightShift |
+| Logical | 6 | and, or, not, xor |
+
+### Matrix Algorithms
+
+Math.js includes 15 specialized matrix algorithms for sparse/dense operations:
+- `MatAlgo01xDSid` through `MatAlgo14xDs` - Various sparse/dense matrix operations
+- These are internal and automatically selected based on matrix types
+
+### Expression Parser Node Types
+
+The expression parser uses 16 AST node types:
+- `ConstantNode`, `SymbolNode`, `OperatorNode`, `FunctionNode`
+- `ArrayNode`, `ObjectNode`, `IndexNode`, `AccessorNode`
+- `AssignmentNode`, `FunctionAssignmentNode`, `BlockNode`
+- `ConditionalNode`, `RangeNode`, `RelationalNode`, `ParenthesisNode`
+- Base `Node` class
+
+Plus 25 expression transforms for special handling (e.g., `MapTransform`, `FilterTransform`, `RangeTransform`)
+
 ### ES Module Requirements
 
 - All import statements **must** include file extensions (`.js` or `.ts`)
@@ -269,6 +348,9 @@ Functions support multiple type signatures via `typed-function`:
 ### Test Organization
 
 - Test files mirror source structure: `src/function/arithmetic/add.js` → `test/unit-tests/function/arithmetic/add.test.js`
+- Both JS and TS test files run together (configured in `.mocharc.json` with `extension: ["js", "ts"]`)
+- **TS test isolation**: TS tests must use `math.create()` to create isolated instances to avoid polluting global state used by JS tests
+- Use unique suffixes (e.g., `'Ts' + Date.now()`) for custom unit names to prevent conflicts
 - Use descriptive test names
 - Test all type signatures
 - Test edge cases and error conditions
@@ -341,6 +423,21 @@ node -e "import('./lib/wasm/index.js').then(wasm => console.log(wasm))"
 
 ## Important Notes
 
+### Key Dependencies
+
+**Runtime dependencies**:
+- `@danielsimonjr/typed-function` (v5.0.0-alpha.1) - Forked for WASM support
+- `@danielsimonjr/workerpool` (v10.1.0) - Forked for parallel computing
+- `decimal.js` (v10.4.3) - Arbitrary precision decimals (BigNumber)
+- `complex.js` (v2.2.5) - Complex number support
+- `fraction.js` (v5.2.1) - Exact fraction arithmetic
+
+**Dev dependencies**:
+- `typescript` (5.9.3), `tsup` (8.5.1) - TypeScript compilation
+- `vitest` (4.0.15), `mocha` (11.7.5) - Testing
+- `assemblyscript` (0.28.9) - WASM compilation
+- `gulp` (5.0.1), `webpack` (5.102.1) - Build system
+
 ### Compatibility
 
 - Requires Node.js >= 18
@@ -360,6 +457,7 @@ node -e "import('./lib/wasm/index.js').then(wasm => console.log(wasm))"
 3. **TypeScript definitions**: Must be added in **multiple** places (see `types/EXPLANATION.md`)
 4. **Don't commit generated files**: Only commit changes in `src/`, not `lib/` or `dist/`
 5. **Pull requests**: For the upstream josdejong/mathjs, PRs go to `develop` branch. For this fork (danielsimonjr/mathjs), PRs go to `master`
+6. **Dual JS/TS tests**: When writing TS tests, always use isolated math instances to prevent state pollution between JS and TS test suites
 
 ## MCP Servers (Environment-Specific)
 
