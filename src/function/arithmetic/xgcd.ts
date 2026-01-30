@@ -1,6 +1,31 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 import { xgcdNumber } from '../../plain/number/index.ts'
+
+// Type definitions for xgcd
+interface BigNumberType {
+  isInt(): boolean
+  isZero(): boolean
+  lt(other: BigNumberType): boolean
+  neg(): BigNumberType
+  div(other: BigNumberType): BigNumberType
+  mod(other: BigNumberType): BigNumberType
+  floor(): BigNumberType
+  minus(other: BigNumberType): BigNumberType
+  times(other: BigNumberType): BigNumberType
+}
+
+interface BigNumberConstructor {
+  new (value: number): BigNumberType
+}
+
+interface XgcdDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  matrix: (arr: unknown[]) => unknown
+  BigNumber: BigNumberConstructor
+}
 
 const name = 'xgcd'
 const dependencies = ['typed', 'config', 'matrix', 'BigNumber']
@@ -8,7 +33,7 @@ const dependencies = ['typed', 'config', 'matrix', 'BigNumber']
 export const createXgcd = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, matrix, BigNumber }: any): TypedFunction => {
+  ({ typed, config, matrix, BigNumber }: XgcdDependencies): TypedFunction => {
     /**
      * Calculate the extended greatest common divisor for two values.
      * See https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm.
@@ -33,7 +58,7 @@ export const createXgcd = /* #__PURE__ */ factory(
      *                              where `div = gcd(a, b)` and `a*m + b*n = div`
      */
     return typed(name, {
-      'number, number': function (a: number, b: number): any {
+      'number, number': function (a: number, b: number): unknown {
         const res = xgcdNumber(a, b)
 
         return config.matrix === 'Array' ? res : matrix(res)
@@ -49,23 +74,23 @@ export const createXgcd = /* #__PURE__ */ factory(
      * @return {BigNumber[]} result
      * @private
      */
-    function _xgcdBigNumber(a: any, b: any): any {
+    function _xgcdBigNumber(a: BigNumberType, b: BigNumberType): unknown {
       // source: https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
       let // used to swap two variables
-        t: any
+        t: BigNumberType
 
       let // quotient
-        q: any
+        q: BigNumberType
 
       let // remainder
-        r: any
+        r: BigNumberType
 
       const zero = new BigNumber(0)
       const one = new BigNumber(1)
-      let x = zero
-      let lastx = one
-      let y = one
-      let lasty = zero
+      let x: BigNumberType = zero
+      let lastx: BigNumberType = one
+      let y: BigNumberType = one
+      let lasty: BigNumberType = zero
 
       if (!a.isInt() || !b.isInt()) {
         throw new Error('Parameters in function xgcd must be integer numbers')
@@ -87,7 +112,7 @@ export const createXgcd = /* #__PURE__ */ factory(
         b = r
       }
 
-      let res: any[]
+      let res: (BigNumberType | number)[]
       if (a.lt(zero)) {
         res = [a.neg(), lastx.neg(), lasty.neg()]
       } else {
@@ -96,4 +121,4 @@ export const createXgcd = /* #__PURE__ */ factory(
       return config.matrix === 'Array' ? res : matrix(res)
     }
   }
-) as any
+)
