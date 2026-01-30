@@ -1,5 +1,30 @@
 import { factory } from '../../utils/factory.ts'
 import type { MathNumericType } from '../../types.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for intersect
+interface Matrix {
+  valueOf(): MathNumericType[] | MathNumericType[][]
+}
+
+interface IntersectDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  abs: (x: MathNumericType) => MathNumericType
+  add: (a: MathNumericType | MathNumericType[], b: MathNumericType | MathNumericType[]) => MathNumericType | MathNumericType[]
+  addScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
+  matrix: (arr: MathNumericType[]) => Matrix
+  multiply: (a: MathNumericType | MathNumericType[], b: MathNumericType | MathNumericType[]) => MathNumericType | MathNumericType[]
+  multiplyScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
+  divideScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
+  subtract: (a: MathNumericType | MathNumericType[], b: MathNumericType | MathNumericType[]) => MathNumericType | MathNumericType[]
+  smaller: (a: MathNumericType, b: number) => boolean
+  equalScalar: (a: MathNumericType, b: MathNumericType) => boolean
+  flatten: (arr: MathNumericType[][]) => MathNumericType[]
+  isZero: (x: MathNumericType) => boolean
+  isNumeric: (x: unknown) => boolean
+}
 
 const name = 'intersect'
 const dependencies = [
@@ -39,23 +64,7 @@ export const createIntersect = /* #__PURE__ */ factory(
     flatten,
     isZero,
     isNumeric
-  }: {
-    typed: any
-    config: any
-    abs: (x: any) => any
-    add: (a: any, b: any) => any
-    addScalar: (a: any, b: any) => any
-    matrix: (arr: any) => any
-    multiply: (a: any, b: any) => any
-    multiplyScalar: (a: any, b: any) => any
-    divideScalar: (a: any, b: any) => any
-    subtract: (a: any, b: any) => any
-    smaller: (a: any, b: any) => boolean
-    equalScalar: (a: any, b: any) => boolean
-    flatten: (arr: any) => any
-    isZero: (x: any) => boolean
-    isNumeric: (x: any) => boolean
-  }) => {
+  }: IntersectDependencies) => {
     /**
      * Calculates the point of intersection of two lines in two or three dimensions
      * and of a line and a plane in three dimensions. The inputs are in the form of
@@ -88,24 +97,33 @@ export const createIntersect = /* #__PURE__ */ factory(
 
       'Array, Array, Array, Array': _AAAA,
 
-      'Matrix, Matrix, Matrix': function (x: any, y: any, plane: any): any {
-        const arr = _AAA(x.valueOf(), y.valueOf(), plane.valueOf())
+      'Matrix, Matrix, Matrix': function (x: Matrix, y: Matrix, plane: Matrix): Matrix | null {
+        const arr = _AAA(
+          x.valueOf() as MathNumericType[],
+          y.valueOf() as MathNumericType[],
+          plane.valueOf() as MathNumericType[]
+        )
         return arr === null ? null : matrix(arr)
       },
 
       'Matrix, Matrix, Matrix, Matrix': function (
-        w: any,
-        x: any,
-        y: any,
-        z: any
-      ): any {
+        w: Matrix,
+        x: Matrix,
+        y: Matrix,
+        z: Matrix
+      ): Matrix | null {
         // TODO: output matrix type should match input matrix type
-        const arr = _AAAA(w.valueOf(), x.valueOf(), y.valueOf(), z.valueOf())
+        const arr = _AAAA(
+          w.valueOf() as MathNumericType[],
+          x.valueOf() as MathNumericType[],
+          y.valueOf() as MathNumericType[],
+          z.valueOf() as MathNumericType[]
+        )
         return arr === null ? null : matrix(arr)
       }
     })
 
-    function _AAA(x: any[], y: any[], plane: any[]): MathNumericType[] | null {
+    function _AAA(x: MathNumericType[], y: MathNumericType[], plane: MathNumericType[]): MathNumericType[] | null {
       x = _coerceArr(x)
       y = _coerceArr(y)
       plane = _coerceArr(plane)
@@ -139,10 +157,10 @@ export const createIntersect = /* #__PURE__ */ factory(
     }
 
     function _AAAA(
-      w: any[],
-      x: any[],
-      y: any[],
-      z: any[]
+      w: MathNumericType[],
+      x: MathNumericType[],
+      y: MathNumericType[],
+      z: MathNumericType[]
     ): MathNumericType[] | null {
       w = _coerceArr(w)
       x = _coerceArr(x)
@@ -216,30 +234,30 @@ export const createIntersect = /* #__PURE__ */ factory(
     }
 
     /** Coerce row and column 2-dim arrays to 1-dim array */
-    function _coerceArr(arr: any[]): any[] {
+    function _coerceArr(arr: MathNumericType[] | MathNumericType[][]): MathNumericType[] {
       // row matrix
-      if (arr.length === 1) return arr[0]
+      if (arr.length === 1 && Array.isArray(arr[0])) return arr[0] as MathNumericType[]
 
       // column matrix
       if (arr.length > 1 && Array.isArray(arr[0])) {
-        if (arr.every((el) => Array.isArray(el) && el.length === 1))
-          return flatten(arr)
+        if ((arr as MathNumericType[][]).every((el) => Array.isArray(el) && el.length === 1))
+          return flatten(arr as MathNumericType[][])
       }
 
-      return arr
+      return arr as MathNumericType[]
     }
 
-    function _2d(x: any[]): boolean {
+    function _2d(x: MathNumericType[]): boolean {
       return x.length === 2 && isNumeric(x[0]) && isNumeric(x[1])
     }
 
-    function _3d(x: any[]): boolean {
+    function _3d(x: MathNumericType[]): boolean {
       return (
         x.length === 3 && isNumeric(x[0]) && isNumeric(x[1]) && isNumeric(x[2])
       )
     }
 
-    function _4d(x: any[]): boolean {
+    function _4d(x: MathNumericType[]): boolean {
       return (
         x.length === 4 &&
         isNumeric(x[0]) &&
@@ -250,11 +268,11 @@ export const createIntersect = /* #__PURE__ */ factory(
     }
 
     function _intersect2d(
-      p1a: any[],
-      p1b: any[],
-      p2a: any[],
-      p2b: any[]
-    ): any[] | null {
+      p1a: MathNumericType[],
+      p1b: MathNumericType[],
+      p2a: MathNumericType[],
+      p2b: MathNumericType[]
+    ): MathNumericType[] | null {
       const o1 = p1a
       const o2 = p2a
       const d1 = subtract(o1, p1b)

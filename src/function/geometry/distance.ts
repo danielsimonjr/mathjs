@@ -1,6 +1,19 @@
 import { isBigNumber } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 import type { MathNumericType } from '../../types.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for distance
+interface DistanceDependencies {
+  typed: TypedFunction
+  addScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
+  subtractScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
+  multiplyScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
+  divideScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
+  deepEqual: (a: unknown, b: unknown) => boolean
+  sqrt: (x: MathNumericType) => MathNumericType
+  abs: (x: MathNumericType) => MathNumericType
+}
 
 const name = 'distance'
 const dependencies = [
@@ -26,16 +39,7 @@ export const createDistance = /* #__PURE__ */ factory(
     deepEqual,
     sqrt,
     abs
-  }: {
-    typed: any
-    addScalar: (a: any, b: any) => any
-    subtractScalar: (a: any, b: any) => any
-    multiplyScalar: (a: any, b: any) => any
-    divideScalar: (a: any, b: any) => any
-    deepEqual: (a: any, b: any) => boolean
-    sqrt: (x: any) => any
-    abs: (x: any) => any
-  }) => {
+  }: DistanceDependencies) => {
     /**
      * Calculates:
      *    The eucledian distance between two points in N-dimensional spaces.
@@ -376,7 +380,7 @@ export const createDistance = /* #__PURE__ */ factory(
       }
     })
 
-    function _isNumber(a: any): boolean {
+    function _isNumber(a: unknown): boolean {
       // distance supports numbers and bignumbers
       return typeof a === 'number' || isBigNumber(a)
     }
@@ -385,7 +389,7 @@ export const createDistance = /* #__PURE__ */ factory(
       a: MathNumericType[] | Record<string, MathNumericType>
     ): boolean {
       // checks if the number of arguments are correct in count and are valid (should be numbers)
-      if ((a as any).constructor !== Array) {
+      if (!Array.isArray(a)) {
         a = _objectToArray(a as Record<string, MathNumericType>)
       }
       const arr = a as MathNumericType[]
@@ -396,7 +400,7 @@ export const createDistance = /* #__PURE__ */ factory(
       a: MathNumericType[] | Record<string, MathNumericType>
     ): boolean {
       // checks if the number of arguments are correct in count and are valid (should be numbers)
-      if ((a as any).constructor !== Array) {
+      if (!Array.isArray(a)) {
         a = _objectToArray(a as Record<string, MathNumericType>)
       }
       const arr = a as MathNumericType[]
@@ -416,7 +420,7 @@ export const createDistance = /* #__PURE__ */ factory(
     function _parametricLine(
       a: MathNumericType[] | Record<string, MathNumericType>
     ): boolean {
-      if ((a as any).constructor !== Array) {
+      if (!Array.isArray(a)) {
         a = _objectToArray(a as Record<string, MathNumericType>)
       }
       const arr = a as MathNumericType[]
@@ -499,7 +503,7 @@ export const createDistance = /* #__PURE__ */ factory(
       b: MathNumericType,
       c: MathNumericType
     ): MathNumericType {
-      let num: any = [
+      const numComponents: MathNumericType[] = [
         subtractScalar(
           multiplyScalar(subtractScalar(y0, y), c),
           multiplyScalar(subtractScalar(z0, z), b)
@@ -513,13 +517,13 @@ export const createDistance = /* #__PURE__ */ factory(
           multiplyScalar(subtractScalar(y0, y), a)
         )
       ]
-      num = sqrt(
+      const num = sqrt(
         addScalar(
           addScalar(
-            multiplyScalar(num[0], num[0]),
-            multiplyScalar(num[1], num[1])
+            multiplyScalar(numComponents[0], numComponents[0]),
+            multiplyScalar(numComponents[1], numComponents[1])
           ),
-          multiplyScalar(num[2], num[2])
+          multiplyScalar(numComponents[2], numComponents[2])
         )
       )
       const den = sqrt(
@@ -536,10 +540,9 @@ export const createDistance = /* #__PURE__ */ factory(
       y: MathNumericType[]
     ): MathNumericType {
       const vectorSize = x.length
-      let result: any = 0
-      let diff: any = 0
+      let result: MathNumericType = 0
       for (let i = 0; i < vectorSize; i++) {
-        diff = subtractScalar(x[i], y[i])
+        const diff = subtractScalar(x[i], y[i])
         result = addScalar(multiplyScalar(diff, diff), result)
       }
       return sqrt(result)
