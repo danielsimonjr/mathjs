@@ -4,6 +4,14 @@
 import { csMark } from './csMark.ts'
 import { csMarked } from './csMarked.ts'
 
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
 /**
  * Find nonzero pattern of Cholesky L(k,1:k-1) using etree and triu(A(:,k))
  *
@@ -16,7 +24,7 @@ import { csMarked } from './csMarked.ts'
  * @return {Number}                 The index for the nonzero pattern
  */
 export function csEreach(
-  a: any,
+  a: SparseMatrixData,
   k: number,
   parent: number[],
   w: number[]

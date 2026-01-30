@@ -5,6 +5,14 @@ import { csMarked } from './csMarked.ts'
 import { csMark } from './csMark.ts'
 import { csUnflip } from './csUnflip.ts'
 
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
 /**
  * Depth-first search computes the nonzero pattern xi of the directed graph G (Matrix) starting
  * at nodes in B (see csReach()).
@@ -21,7 +29,7 @@ import { csUnflip } from './csUnflip.ts'
  */
 export function csDfs(
   j: number,
-  g: any,
+  g: SparseMatrixData,
   top: number,
   xi: number[],
   pinv: number[] | null

@@ -3,6 +3,29 @@
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 import { csCumsum } from './csCumsum.ts'
 import { factory } from '../../../utils/factory.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
+interface SparseMatrixConstructor {
+  new (data: {
+    values: any[] | null
+    index: number[]
+    ptr: number[]
+    size: number[]
+  }): SparseMatrixData
+}
+
+interface CsSympermDependencies {
+  conj: TypedFunction
+  SparseMatrix: SparseMatrixConstructor
+}
 
 const name = 'csSymperm'
 const dependencies = ['conj', 'SparseMatrix'] as const
@@ -10,7 +33,7 @@ const dependencies = ['conj', 'SparseMatrix'] as const
 export const createCsSymperm = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({ conj, SparseMatrix }: { conj: any; SparseMatrix: any }) => {
+  ({ conj, SparseMatrix }: CsSympermDependencies) => {
     /**
      * Computes the symmetric permutation of matrix A accessing only
      * the upper triangular part of A.
@@ -24,10 +47,10 @@ export const createCsSymperm = /* #__PURE__ */ factory(
      * @return {Matrix}                 The C matrix, C = P * A * P'
      */
     return function csSymperm(
-      a: any,
+      a: SparseMatrixData,
       pinv: number[] | null,
       values: boolean
-    ): any {
+    ): SparseMatrixData {
       // A matrix arrays
       const avalues = a._values
       const aindex = a._index

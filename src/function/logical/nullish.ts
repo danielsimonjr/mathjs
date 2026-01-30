@@ -30,9 +30,9 @@ export const createNullish = /* #__PURE__ */ factory(
   }: {
     typed: TypedFunction
     matrix: MatrixConstructor
-    size: any
-    flatten: any
-    deepEqual: any
+    size: TypedFunction
+    flatten: TypedFunction
+    deepEqual: TypedFunction
   }): TypedFunction => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo14xDs = createMatAlgo14xDs({ typed })

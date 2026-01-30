@@ -3,6 +3,21 @@
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 import { csReach } from './csReach.ts'
 import { factory } from '../../../utils/factory.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
+interface CsSpSolveDependencies {
+  divideScalar: TypedFunction
+  multiply: TypedFunction
+  subtract: TypedFunction
+}
 
 const name = 'csSpsolve'
 const dependencies = ['divideScalar', 'multiply', 'subtract'] as const
@@ -10,15 +25,7 @@ const dependencies = ['divideScalar', 'multiply', 'subtract'] as const
 export const createCsSpsolve = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({
-    divideScalar,
-    multiply,
-    subtract
-  }: {
-    divideScalar: any
-    multiply: any
-    subtract: any
-  }) => {
+  ({ divideScalar, multiply, subtract }: CsSpSolveDependencies) => {
     /**
      * The function csSpsolve() computes the solution to G * x = bk, where bk is the
      * kth column of B. When lo is true, the function assumes G = L is lower triangular with the
@@ -37,8 +44,8 @@ export const createCsSpsolve = /* #__PURE__ */ factory(
      * @return {Number}                 The index for the nonzero pattern
      */
     return function csSpsolve(
-      g: any,
-      b: any,
+      g: SparseMatrixData,
+      b: SparseMatrixData,
       k: number,
       xi: number[],
       x: any[],

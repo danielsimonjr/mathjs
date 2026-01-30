@@ -2,6 +2,22 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+  _datatype?: string
+  createSparseMatrix(data: {
+    values: any[] | null
+    index: number[]
+    ptr: number[]
+    size: number[]
+    datatype?: string
+  }): SparseMatrixData
+}
+
 /**
  * Permutes a sparse matrix C = P * A * Q
  *
@@ -13,11 +29,11 @@
  * @return {Matrix}                 C = P * A * Q, null on error
  */
 export function csPermute(
-  a: any,
+  a: SparseMatrixData,
   pinv: number[] | null,
   q: number[] | null,
   values: boolean
-): any {
+): SparseMatrixData {
   // a arrays
   const avalues = a._values
   const aindex = a._index

@@ -4,6 +4,48 @@
 
 import { factory } from '../../../utils/factory.ts'
 import { createCsSpsolve } from './csSpsolve.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
+interface SparseMatrixConstructor {
+  new (data: {
+    values: any[]
+    index: number[]
+    ptr: number[]
+    size: number[]
+  }): SparseMatrixData
+}
+
+interface CsLuDependencies {
+  abs: TypedFunction
+  divideScalar: TypedFunction
+  multiply: TypedFunction
+  subtract: TypedFunction
+  larger: TypedFunction
+  largerEq: TypedFunction
+  SparseMatrix: SparseMatrixConstructor
+}
+
+// Symbolic analysis result from csSqr
+interface SymbolicAnalysis {
+  q?: number[]
+  lnz?: number
+  unz?: number
+}
+
+// LU factorization result
+interface LuResult {
+  L: SparseMatrixData
+  U: SparseMatrixData
+  pinv: number[]
+}
 
 const name = 'csLu'
 const dependencies = [
@@ -27,15 +69,7 @@ export const createCsLu = /* #__PURE__ */ factory(
     larger,
     largerEq,
     SparseMatrix
-  }: {
-    abs: any
-    divideScalar: any
-    multiply: any
-    subtract: any
-    larger: any
-    largerEq: any
-    SparseMatrix: any
-  }) => {
+  }: CsLuDependencies) => {
     const csSpsolve = createCsSpsolve({ divideScalar, multiply, subtract })
 
     /**
@@ -51,7 +85,11 @@ export const createCsLu = /* #__PURE__ */ factory(
      *
      * @return {Number}                 The numeric LU factorization of A or null
      */
-    return function csLu(m: any, s: any, tol: number): any {
+    return function csLu(
+      m: SparseMatrixData | null,
+      s: SymbolicAnalysis | null,
+      tol: number
+    ): LuResult | null {
       // validate input
       if (!m) {
         return null

@@ -4,6 +4,50 @@
 import { factory } from '../../../utils/factory.ts'
 import { csEreach } from './csEreach.ts'
 import { createCsSymperm } from './csSymperm.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
+interface SparseMatrixConstructor {
+  new (data: {
+    values: any[]
+    index: number[]
+    ptr: number[]
+    size: number[]
+  }): SparseMatrixData
+}
+
+interface CsCholDependencies {
+  divideScalar: TypedFunction
+  sqrt: TypedFunction
+  subtract: TypedFunction
+  multiply: TypedFunction
+  im: TypedFunction
+  re: TypedFunction
+  conj: TypedFunction
+  equal: TypedFunction
+  smallerEq: TypedFunction
+  SparseMatrix: SparseMatrixConstructor
+}
+
+// Symbolic analysis result from csSchol
+interface SymbolicAnalysis {
+  parent: number[]
+  cp: number[]
+  pinv?: number[]
+}
+
+// Cholesky factorization result
+interface CholResult {
+  L: SparseMatrixData
+  P?: SparseMatrixData
+}
 
 const name = 'csChol'
 const dependencies = [
@@ -33,7 +77,7 @@ export const createCsChol = /* #__PURE__ */ factory(
     equal,
     smallerEq,
     SparseMatrix
-  }) => {
+  }: CsCholDependencies) => {
     const csSymperm = createCsSymperm({ conj, SparseMatrix })
 
     /**
@@ -45,7 +89,10 @@ export const createCsChol = /* #__PURE__ */ factory(
      *
      * @return {Number}                 The numeric Cholesky factorization of A or null
      */
-    return function csChol(m: any, s: any): any {
+    return function csChol(
+      m: SparseMatrixData | null,
+      s: SymbolicAnalysis
+    ): CholResult | null {
       // validate input
       if (!m) {
         return null

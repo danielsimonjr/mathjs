@@ -2,6 +2,14 @@
 // SPDX-License-Identifier: LGPL-2.1+
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
 /**
  * Computes the elimination tree of Matrix A (using triu(A)) or the
  * elimination tree of A'A without forming A'A.
@@ -9,7 +17,10 @@
  * @param {Matrix}  a               The A Matrix
  * @param {boolean} ata             A value of true the function computes the etree of A'A
  */
-export function csEtree(a: any, ata: boolean): number[] | null {
+export function csEtree(
+  a: SparseMatrixData | null,
+  ata: boolean
+): number[] | null {
   // check inputs
   if (!a) {
     return null

@@ -7,6 +7,33 @@ import { csEtree } from './csEtree.ts'
 import { createCsAmd } from './csAmd.ts'
 import { createCsCounts } from './csCounts.ts'
 import { factory } from '../../../utils/factory.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
+interface CsSqrDependencies {
+  add: TypedFunction
+  multiply: TypedFunction
+  transpose: TypedFunction
+}
+
+// Symbolic analysis result
+interface SymbolicAnalysis {
+  q: number[] | null
+  parent?: number[]
+  cp?: number[]
+  pinv?: number[]
+  leftmost?: number[]
+  lnz?: number
+  unz?: number
+  m2?: number
+}
 
 const name = 'csSqr'
 const dependencies = ['add', 'multiply', 'transpose'] as const
@@ -14,15 +41,7 @@ const dependencies = ['add', 'multiply', 'transpose'] as const
 export const createCsSqr = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({
-    add,
-    multiply,
-    transpose
-  }: {
-    add: any
-    multiply: any
-    transpose: any
-  }) => {
+  ({ add, multiply, transpose }: CsSqrDependencies) => {
     const csAmd = createCsAmd({ add, multiply, transpose })
     const csCounts = createCsCounts({ transpose })
 
@@ -36,7 +55,11 @@ export const createCsSqr = /* #__PURE__ */ factory(
      *
      * @return {Object}                 The Symbolic ordering and analysis for matrix A
      */
-    return function csSqr(order: number, a: any, qr: boolean): any {
+    return function csSqr(
+      order: number,
+      a: SparseMatrixData,
+      qr: boolean
+    ): SymbolicAnalysis | null {
       // a arrays
       const aptr = a._ptr
       const asize = a._size
@@ -81,7 +104,7 @@ export const createCsSqr = /* #__PURE__ */ factory(
     /**
      * Compute nnz(V) = s.lnz, s.pinv, s.leftmost, s.m2 from A and s.parent
      */
-    function _vcount(a: any, s: any): boolean {
+    function _vcount(a: SparseMatrixData, s: SymbolicAnalysis): boolean {
       // a arrays
       const aptr = a._ptr
       const aindex = a._index

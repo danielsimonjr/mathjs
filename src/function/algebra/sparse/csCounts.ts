@@ -3,6 +3,19 @@
 // https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source
 import { factory } from '../../../utils/factory.ts'
 import { csLeaf } from './csLeaf.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
+interface CsCountsDependencies {
+  transpose: TypedFunction
+}
 
 const name = 'csCounts'
 const dependencies = ['transpose'] as const
@@ -10,7 +23,7 @@ const dependencies = ['transpose'] as const
 export const createCsCounts = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({ transpose }: { transpose: any }) => {
+  ({ transpose }: CsCountsDependencies) => {
     /**
      * Computes the column counts using the upper triangular part of A.
      * It transposes A internally, none of the input parameters are modified.
@@ -21,10 +34,10 @@ export const createCsCounts = /* #__PURE__ */ factory(
      *
      * @return                     An array of size n of the column counts or null on error
      */
-    return function (
-      a: any,
-      parent: number[],
-      post: number[],
+    return function csCounts(
+      a: SparseMatrixData | null,
+      parent: number[] | null,
+      post: number[] | null,
       ata: boolean
     ): number[] | null {
       // check inputs

@@ -5,6 +5,21 @@ import { factory } from '../../../utils/factory.ts'
 import { csFkeep } from './csFkeep.ts'
 import { csFlip } from './csFlip.ts'
 import { csTdfs } from './csTdfs.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
+interface CsAmdDependencies {
+  add: TypedFunction
+  multiply: TypedFunction
+  transpose: TypedFunction
+}
 
 const name = 'csAmd'
 const dependencies = ['add', 'multiply', 'transpose'] as const
@@ -12,15 +27,7 @@ const dependencies = ['add', 'multiply', 'transpose'] as const
 export const createCsAmd = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({
-    add,
-    multiply,
-    transpose
-  }: {
-    add: any
-    multiply: any
-    transpose: any
-  }) => {
+  ({ add, multiply, transpose }: CsAmdDependencies) => {
     /**
      * Approximate minimum degree ordering. The minimum degree algorithm is a widely used
      * heuristic for finding a permutation P so that P*A*P' has fewer nonzeros in its factorization
@@ -30,7 +37,10 @@ export const createCsAmd = /* #__PURE__ */ factory(
      * @param {Number} order    0: Natural, 1: Cholesky, 2: LU, 3: QR
      * @param {Matrix} m        Sparse Matrix
      */
-    return function csAmd(order: number, a: any): number[] | null {
+    return function csAmd(
+      order: number,
+      a: SparseMatrixData | null
+    ): number[] | null {
       // check input parameters
       if (!a || order <= 0 || order > 3) {
         return null
@@ -485,11 +495,11 @@ export const createCsAmd = /* #__PURE__ */ factory(
      */
     function _createTargetMatrix(
       order: number,
-      a: any,
+      a: SparseMatrixData,
       m: number,
       n: number,
       dense: number
-    ): any {
+    ): SparseMatrixData {
       // compute A'
       const at = transpose(a)
 

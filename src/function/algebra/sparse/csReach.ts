@@ -6,6 +6,14 @@ import { csMarked } from './csMarked.ts'
 import { csMark } from './csMark.ts'
 import { csDfs } from './csDfs.ts'
 
+// Sparse matrix internal structure
+interface SparseMatrixData {
+  _size: number[]
+  _values?: any[]
+  _index: number[]
+  _ptr: number[]
+}
+
 /**
  * The csReach function computes X = Reach(B), where B is the nonzero pattern of the n-by-1
  * sparse column of vector b. The function returns the set of nodes reachable from any node in B. The
@@ -21,8 +29,8 @@ import { csDfs } from './csDfs.ts'
  * @return {Number}                 The index for the nonzero pattern
  */
 export function csReach(
-  g: any,
-  b: any,
+  g: SparseMatrixData,
+  b: SparseMatrixData,
   k: number,
   xi: number[],
   pinv: number[] | null
