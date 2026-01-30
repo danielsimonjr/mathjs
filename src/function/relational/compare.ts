@@ -6,46 +6,48 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { createCompareUnits } from './compareUnits.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  signatures: Record<string, Function>
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
+// Type definitions for compare
+interface BigNumberType {
+  cmp(n: BigNumberType): number
 }
 
-interface Config {
-  relTol: number
-  absTol: number
+interface BigNumberConstructor {
+  new (value: number | string | BigNumberType): BigNumberType
 }
 
-interface BigNumber {
-  cmp(n: BigNumber): number
-  constructor(n: number | string): BigNumber
+interface FractionType {
+  compare(n: FractionType): number
 }
 
-interface Fraction {
-  compare(n: Fraction): number
-  constructor(n: number | string): Fraction
+interface FractionConstructor {
+  new (value: number | string | FractionType): FractionType
 }
 
-interface Dependencies {
-  typed: TypedFunction
-  config: Config
-  matrix: any
-  equalScalar: TypedFunction
-  BigNumber: any
-  Fraction: any
-  DenseMatrix: any
-  concat: TypedFunction
+interface MatrixFactory {
+  (...args: unknown[]): unknown
+}
+
+interface DenseMatrixConstructor {
+  new (...args: unknown[]): unknown
 }
 
 interface CompareDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
+  matrix: MatrixFactory
+  equalScalar: TypedFunction
+  BigNumber: BigNumberConstructor
+  Fraction: FractionConstructor
+  DenseMatrix: DenseMatrixConstructor
+  concat: TypedFunction
+}
+
+interface CompareNumberDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
 }
 
 const name = 'compare'
@@ -72,7 +74,7 @@ export const createCompare = /* #__PURE__ */ factory(
     Fraction,
     DenseMatrix,
     concat
-  }: Dependencies) => {
+  }: CompareDependencies) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo05xSfSf = createMatAlgo05xSfSf({ typed, equalScalar })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
@@ -128,7 +130,7 @@ export const createCompare = /* #__PURE__ */ factory(
           return x === y ? 0 : x > y ? 1 : -1
         },
 
-        'BigNumber, BigNumber': function (x: any, y: any): any {
+        'BigNumber, BigNumber': function (x: BigNumberType, y: BigNumberType): BigNumberType {
           return bigNearlyEqual(x, y, config.relTol, config.absTol)
             ? new BigNumber(0)
             : new BigNumber(x.cmp(y))
@@ -138,7 +140,7 @@ export const createCompare = /* #__PURE__ */ factory(
           return x === y ? 0n : x > y ? 1n : -1n
         },
 
-        'Fraction, Fraction': function (x: any, y: any): any {
+        'Fraction, Fraction': function (x: FractionType, y: FractionType): FractionType {
           return new Fraction(x.compare(y))
         },
 
@@ -161,7 +163,7 @@ export const createCompare = /* #__PURE__ */ factory(
 export const createCompareNumber = /* #__PURE__ */ factory(
   name,
   ['typed', 'config'],
-  ({ typed, config }: CompareDependencies) => {
+  ({ typed, config }: CompareNumberDependencies) => {
     return typed(name, {
       'number, number': function (x: number, y: number): number {
         return nearlyEqual(x, y, config.relTol, config.absTol)

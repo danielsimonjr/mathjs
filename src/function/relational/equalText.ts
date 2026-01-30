@@ -1,11 +1,8 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+// Type definitions for equalText
+interface EqualTextDependencies {
   typed: TypedFunction
   compareText: TypedFunction
   isZero: TypedFunction
@@ -17,7 +14,7 @@ const dependencies = ['typed', 'compareText', 'isZero']
 export const createEqualText = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, compareText, isZero }: Dependencies) => {
+  ({ typed, compareText, isZero }: EqualTextDependencies) => {
     /**
      * Check equality of two strings. Comparison is case sensitive.
      *
@@ -45,7 +42,7 @@ export const createEqualText = /* #__PURE__ */ factory(
      * @return {number | Array | DenseMatrix} Returns true if the values are equal, and false if not.
      */
     return typed(name, {
-      'any, any': function (x: any, y: any): boolean {
+      'any, any': function (x: unknown, y: unknown): boolean {
         return isZero(compareText(x, y))
       }
     })

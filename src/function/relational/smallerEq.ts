@@ -6,29 +6,42 @@ import { createMatAlgo07xSSf } from '../../type/matrix/utils/matAlgo07xSSf.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { createCompareUnits } from './compareUnits.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
+// Type definitions for smallerEq
+interface BigNumberType {
+  lte(n: BigNumberType): boolean
 }
 
-interface Config {
-  relTol: number
-  absTol: number
+interface FractionType {
+  compare(n: FractionType): number
 }
 
-interface Dependencies {
+interface MatrixFactory {
+  (...args: unknown[]): unknown
+}
+
+interface DenseMatrixConstructor {
+  new (...args: unknown[]): unknown
+}
+
+interface SparseMatrixConstructor {
+  new (...args: unknown[]): unknown
+}
+
+interface SmallerEqDependencies {
   typed: TypedFunction
-  config: Config
-  matrix: any
-  DenseMatrix: any
+  config: ConfigOptions
+  matrix: MatrixFactory
+  DenseMatrix: DenseMatrixConstructor
   concat: TypedFunction
-  SparseMatrix: any
+  SparseMatrix: SparseMatrixConstructor
 }
 
 interface SmallerEqNumberDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
 }
 
 const name = 'smallerEq'
@@ -51,7 +64,7 @@ export const createSmallerEq = /* #__PURE__ */ factory(
     DenseMatrix,
     concat,
     SparseMatrix
-  }: Dependencies) => {
+  }: SmallerEqDependencies) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo07xSSf = createMatAlgo07xSSf({ typed, SparseMatrix })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
@@ -95,13 +108,13 @@ export const createSmallerEq = /* #__PURE__ */ factory(
       {
         'boolean, boolean': (x: boolean, y: boolean): boolean => x <= y,
 
-        'BigNumber, BigNumber': function (x: any, y: any): boolean {
+        'BigNumber, BigNumber': function (x: BigNumberType, y: BigNumberType): boolean {
           return x.lte(y) || bigNearlyEqual(x, y, config.relTol, config.absTol)
         },
 
         'bigint, bigint': (x: bigint, y: bigint): boolean => x <= y,
 
-        'Fraction, Fraction': (x: any, y: any): boolean => x.compare(y) !== 1,
+        'Fraction, Fraction': (x: FractionType, y: FractionType): boolean => x.compare(y) !== 1,
 
         'Complex, Complex': function (): never {
           throw new TypeError(

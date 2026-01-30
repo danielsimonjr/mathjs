@@ -3,20 +3,30 @@ import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.ts'
 import { createMatAlgo07xSSf } from '../../type/matrix/utils/matAlgo07xSSf.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
+// Type definitions for unequal
+interface MatrixFactory {
+  (...args: unknown[]): unknown
 }
 
-interface Dependencies {
+interface DenseMatrixConstructor {
+  new (...args: unknown[]): unknown
+}
+
+interface SparseMatrixConstructor {
+  new (...args: unknown[]): unknown
+}
+
+interface UnequalDependencies {
   typed: TypedFunction
-  config: any
+  config: ConfigOptions
   equalScalar: TypedFunction
-  matrix: any
-  DenseMatrix: any
+  matrix: MatrixFactory
+  DenseMatrix: DenseMatrixConstructor
   concat: TypedFunction
-  SparseMatrix: any
+  SparseMatrix: SparseMatrixConstructor
 }
 
 interface UnequalNumberDependencies {
@@ -46,7 +56,7 @@ export const createUnequal = /* #__PURE__ */ factory(
     DenseMatrix,
     concat,
     SparseMatrix
-  }: Dependencies) => {
+  }: UnequalDependencies) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo07xSSf = createMatAlgo07xSSf({ typed, SparseMatrix })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
@@ -110,7 +120,7 @@ export const createUnequal = /* #__PURE__ */ factory(
       })
     )
 
-    function _unequal(x: any, y: any): boolean {
+    function _unequal(x: unknown, y: unknown): boolean {
       return !equalScalar(x, y)
     }
   }
@@ -121,7 +131,7 @@ export const createUnequalNumber = factory(
   ['typed', 'equalScalar'],
   ({ typed, equalScalar }: UnequalNumberDependencies) => {
     return typed(name, {
-      'any, any': function (x: any, y: any): boolean {
+      'any, any': function (x: unknown, y: unknown): boolean {
         // strict equality for null and undefined?
         if (x === null) {
           return y !== null

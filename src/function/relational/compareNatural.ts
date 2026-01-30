@@ -2,13 +2,9 @@
 import naturalSort from 'javascript-natural-sort'
 import { isDenseMatrix, isSparseMatrix, typeOf } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  signatures: Record<string, Function>
-}
-
+// Type definitions for compareNatural
 interface Complex {
   re: number
   im: number
@@ -16,21 +12,12 @@ interface Complex {
 
 interface Unit {
   equalBase(other: Unit): boolean
-  value: any
+  value: unknown
   valueType(): string
-  formatUnits(): any[]
+  formatUnits(): unknown[]
 }
 
-interface _SparseMatrix {
-  toJSON(): { values: any[] }
-  toArray(): any[]
-}
-
-interface _DenseMatrix {
-  toJSON(): { data: any[] }
-}
-
-interface Dependencies {
+interface CompareNaturalDependencies {
   typed: TypedFunction
   compare: TypedFunction
 }
@@ -41,7 +28,7 @@ const dependencies = ['typed', 'compare']
 export const createCompareNatural = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, compare }: Dependencies) => {
+  ({ typed, compare }: CompareNaturalDependencies) => {
     const compareBooleans = compare.signatures['boolean,boolean']
 
     /**
@@ -114,7 +101,7 @@ export const createCompareNatural = /* #__PURE__ */ factory(
      */
     return typed(name, { 'any, any': _compareNatural }) // just to check # args
 
-    function _compareNatural(x: any, y: any): number {
+    function _compareNatural(x: unknown, y: unknown): number {
       const typeX = typeOf(x)
       const typeY = typeOf(y)
       let c
@@ -194,31 +181,31 @@ export const createCompareNatural = /* #__PURE__ */ factory(
      * @returns {number} Returns the comparison result: -1, 0, or 1
      */
     function compareMatricesAndArrays(
-      compareNatural: (x: any, y: any) => number,
-      x: any,
-      y: any
+      compareNatural: (x: unknown, y: unknown) => number,
+      x: unknown,
+      y: unknown
     ): number {
       if (isSparseMatrix(x) && isSparseMatrix(y)) {
         return compareArrays(
           compareNatural,
-          (x as any).toJSON().values,
-          (y as any).toJSON().values
+          (x as unknown as { toJSON(): { values: unknown[] } }).toJSON().values,
+          (y as unknown as { toJSON(): { values: unknown[] } }).toJSON().values
         )
       }
       if (isSparseMatrix(x)) {
         // note: convert to array is expensive
-        return compareMatricesAndArrays(compareNatural, (x as any).toArray(), y)
+        return compareMatricesAndArrays(compareNatural, (x as unknown as { toArray(): unknown[] }).toArray(), y)
       }
       if (isSparseMatrix(y)) {
         // note: convert to array is expensive
-        return compareMatricesAndArrays(compareNatural, x, (y as any).toArray())
+        return compareMatricesAndArrays(compareNatural, x, (y as unknown as { toArray(): unknown[] }).toArray())
       }
 
       // convert DenseArray into Array
       if (isDenseMatrix(x)) {
         return compareMatricesAndArrays(
           compareNatural,
-          (x as any).toJSON().data,
+          (x as unknown as { toJSON(): { data: unknown[] } }).toJSON().data,
           y
         )
       }
@@ -226,7 +213,7 @@ export const createCompareNatural = /* #__PURE__ */ factory(
         return compareMatricesAndArrays(
           compareNatural,
           x,
-          (y as any).toJSON().data
+          (y as unknown as { toJSON(): { data: unknown[] } }).toJSON().data
         )
       }
 
@@ -253,9 +240,9 @@ export const createCompareNatural = /* #__PURE__ */ factory(
      * @returns {number} Returns the comparison result: -1, 0, or 1
      */
     function compareArrays(
-      compareNatural: (x: any, y: any) => number,
-      x: any[],
-      y: any[]
+      compareNatural: (x: unknown, y: unknown) => number,
+      x: unknown[],
+      y: unknown[]
     ): number {
       // compare each value
       for (let i = 0, ii = Math.min(x.length, y.length); i < ii; i++) {
@@ -288,9 +275,9 @@ export const createCompareNatural = /* #__PURE__ */ factory(
      * @returns {number} Returns the comparison result: -1, 0, or 1
      */
     function compareObjects(
-      compareNatural: (x: any, y: any) => number,
-      x: Record<string, any>,
-      y: Record<string, any>
+      compareNatural: (x: unknown, y: unknown) => number,
+      x: Record<string, unknown>,
+      y: Record<string, unknown>
     ): number {
       const keysX = Object.keys(x)
       const keysY = Object.keys(y)

@@ -1,11 +1,8 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+// Type definitions for deepEqual
+interface DeepEqualDependencies {
   typed: TypedFunction
   equal: TypedFunction
 }
@@ -16,7 +13,7 @@ const dependencies = ['typed', 'equal']
 export const createDeepEqual = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, equal }: Dependencies) => {
+  ({ typed, equal }: DeepEqualDependencies) => {
     /**
      * Test element wise whether two matrices are equal.
      * The function accepts both matrices and scalar values.
@@ -47,7 +44,7 @@ export const createDeepEqual = /* #__PURE__ */ factory(
      *            Returns true when the input matrices have the same size and each of their elements is equal.
      */
     return typed(name, {
-      'any, any': function (x: any, y: any): boolean {
+      'any, any': function (x: { valueOf(): unknown }, y: { valueOf(): unknown }): boolean {
         return _deepEqual(x.valueOf(), y.valueOf())
       }
     })
@@ -58,7 +55,7 @@ export const createDeepEqual = /* #__PURE__ */ factory(
      * @param {Array | *} y
      * @return {boolean} Returns true if both arrays are deep equal
      */
-    function _deepEqual(x: any, y: any): boolean {
+    function _deepEqual(x: unknown, y: unknown): boolean {
       if (Array.isArray(x)) {
         if (Array.isArray(y)) {
           const len = x.length

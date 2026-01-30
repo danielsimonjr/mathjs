@@ -3,19 +3,28 @@ import { createMatAlgo03xDSf } from '../../type/matrix/utils/matAlgo03xDSf.ts'
 import { createMatAlgo07xSSf } from '../../type/matrix/utils/matAlgo07xSSf.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
+// Type definitions for equal
+interface MatrixFactory {
+  (...args: unknown[]): unknown
 }
 
-interface Dependencies {
+interface DenseMatrixConstructor {
+  new (...args: unknown[]): unknown
+}
+
+interface SparseMatrixConstructor {
+  new (...args: unknown[]): unknown
+}
+
+interface EqualDependencies {
   typed: TypedFunction
-  matrix: any
+  matrix: MatrixFactory
   equalScalar: TypedFunction
-  DenseMatrix: any
+  DenseMatrix: DenseMatrixConstructor
   concat?: TypedFunction
-  SparseMatrix: any
+  SparseMatrix: SparseMatrixConstructor
 }
 
 interface EqualNumberDependencies {
@@ -42,7 +51,7 @@ export const createEqual = /* #__PURE__ */ factory(
     DenseMatrix,
     concat: _concat,
     SparseMatrix
-  }: Dependencies) => {
+  }: EqualDependencies) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo07xSSf = createMatAlgo07xSSf({ typed, SparseMatrix })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
@@ -110,7 +119,7 @@ export const createEqualNumber = factory(
   ['typed', 'equalScalar'],
   ({ typed, equalScalar }: EqualNumberDependencies) => {
     return typed(name, {
-      'any, any': function (x: any, y: any): boolean {
+      'any, any': function (x: unknown, y: unknown): boolean {
         // strict equality for null and undefined?
         if (x === null) {
           return y === null
