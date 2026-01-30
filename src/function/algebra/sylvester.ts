@@ -1,4 +1,35 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for sylvester
+interface MatrixType {
+  size(): number[]
+  toArray(): unknown[][]
+  subset(index: unknown): MatrixType
+}
+
+interface SchurResult {
+  T: MatrixType
+  U: MatrixType
+}
+
+interface SylvesterDependencies {
+  typed: TypedFunction
+  schur: (A: MatrixType) => SchurResult
+  matrixFromColumns: (...cols: MatrixType[]) => MatrixType
+  matrix: (arr: unknown[][]) => MatrixType
+  multiply: TypedFunction
+  range: (start: number, end: number) => unknown
+  concat: TypedFunction
+  transpose: (A: MatrixType) => MatrixType
+  index: TypedFunction
+  subset: TypedFunction
+  add: TypedFunction
+  subtract: TypedFunction
+  identity: (n: number) => MatrixType
+  lusolve: TypedFunction
+  abs: TypedFunction
+}
 
 const name = 'sylvester'
 const dependencies = [
@@ -37,26 +68,8 @@ export const createSylvester = /* #__PURE__ */ factory(
     subtract,
     identity,
     lusolve,
-    abs,
-    config: _config
-  }: {
-    typed: any
-    schur: any
-    matrixFromColumns: any
-    matrix: any
-    multiply: any
-    range: any
-    concat: any
-    transpose: any
-    index: any
-    subset: any
-    add: any
-    subtract: any
-    identity: any
-    lusolve: any
-    abs: any
-    config: any
-  }) => {
+    abs
+  }: SylvesterDependencies) => {
     /**
      *
      * Solves the real-valued Sylvester equation AX+XB=C for X, where A, B and C are
@@ -88,44 +101,44 @@ export const createSylvester = /* #__PURE__ */ factory(
      */
     return typed(name, {
       'Matrix, Matrix, Matrix': _sylvester,
-      'Array, Matrix, Matrix': function (A: any, B: any, C: any) {
+      'Array, Matrix, Matrix': function (A: unknown[][], B: MatrixType, C: MatrixType): MatrixType {
         return _sylvester(matrix(A), B, C)
       },
-      'Array, Array, Matrix': function (A: any, B: any, C: any) {
+      'Array, Array, Matrix': function (A: unknown[][], B: unknown[][], C: MatrixType): MatrixType {
         return _sylvester(matrix(A), matrix(B), C)
       },
-      'Array, Matrix, Array': function (A: any, B: any, C: any) {
+      'Array, Matrix, Array': function (A: unknown[][], B: MatrixType, C: unknown[][]): MatrixType {
         return _sylvester(matrix(A), B, matrix(C))
       },
-      'Matrix, Array, Matrix': function (A: any, B: any, C: any) {
+      'Matrix, Array, Matrix': function (A: MatrixType, B: unknown[][], C: MatrixType): MatrixType {
         return _sylvester(A, matrix(B), C)
       },
-      'Matrix, Array, Array': function (A: any, B: any, C: any) {
+      'Matrix, Array, Array': function (A: MatrixType, B: unknown[][], C: unknown[][]): MatrixType {
         return _sylvester(A, matrix(B), matrix(C))
       },
-      'Matrix, Matrix, Array': function (A: any, B: any, C: any) {
+      'Matrix, Matrix, Array': function (A: MatrixType, B: MatrixType, C: unknown[][]): MatrixType {
         return _sylvester(A, B, matrix(C))
       },
-      'Array, Array, Array': function (A: any, B: any, C: any) {
+      'Array, Array, Array': function (A: unknown[][], B: unknown[][], C: unknown[][]): unknown[][] {
         return _sylvester(matrix(A), matrix(B), matrix(C)).toArray()
       }
     })
-    function _sylvester(A: any, B: any, C: any): any {
+    function _sylvester(A: MatrixType, B: MatrixType, C: MatrixType): MatrixType {
       const n = B.size()[0]
       const m = A.size()[0]
 
       const sA = schur(A)
       const F = sA.T
       const U = sA.U
-      const sB = schur(multiply(-1, B))
+      const sB = schur(multiply(-1, B) as MatrixType)
       const G = sB.T
       const V = sB.U
       const D = multiply(multiply(transpose(U), C), V)
       const all = range(0, m)
-      const y: any[] = []
+      const y: MatrixType[] = []
 
-      const hc = (a: any, b: any) => concat(a, b, 1)
-      const vc = (a: any, b: any) => concat(a, b, 0)
+      const hc = (a: unknown, b: unknown) => concat(a, b, 1)
+      const vc = (a: unknown, b: unknown) => concat(a, b, 0)
 
       for (let k = 0; k < n; k++) {
         if (k < n - 1 && abs(subset(G, index(k + 1, k))) > 1e-5) {
@@ -159,7 +172,7 @@ export const createSylvester = /* #__PURE__ */ factory(
             multiply(-1, subset(G, index(k + 1, k + 1)))
           )
           const LHS = vc(hc(add(F, gkk), gmk), hc(gkm, add(F, gmm)))
-          const yAux = lusolve(LHS, RHS)
+          const yAux = lusolve(LHS, RHS) as MatrixType
           y[k] = yAux.subset(index(range(0, m), [0]))
           y[k + 1] = yAux.subset(index(range(m, 2 * m), [0]))
           k++
@@ -171,12 +184,12 @@ export const createSylvester = /* #__PURE__ */ factory(
           const gkk = subset(G, index(k, k))
           const LHS = subtract(F, multiply(gkk, identity(m)))
 
-          y[k] = lusolve(LHS, RHS)
+          y[k] = lusolve(LHS, RHS) as MatrixType
         }
       }
-      const Y = matrix(matrixFromColumns(...y))
+      const Y = matrix(matrixFromColumns(...y) as unknown as unknown[][])
       const X = multiply(U, multiply(Y, transpose(V)))
-      return X
+      return X as MatrixType
     }
   }
 )

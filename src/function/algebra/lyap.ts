@@ -1,4 +1,18 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for lyap
+interface MatrixType {
+  toArray(): unknown[][]
+}
+
+interface LyapDependencies {
+  typed: TypedFunction
+  matrix: (arr: unknown[][]) => MatrixType
+  sylvester: TypedFunction
+  multiply: TypedFunction
+  transpose: TypedFunction
+}
 
 const name = 'lyap'
 const dependencies = ['typed', 'matrix', 'sylvester', 'multiply', 'transpose']
@@ -12,13 +26,7 @@ export const createLyap = /* #__PURE__ */ factory(
     sylvester,
     multiply,
     transpose
-  }: {
-    typed: any
-    matrix: any
-    sylvester: any
-    multiply: any
-    transpose: any
-  }) => {
+  }: LyapDependencies) => {
     /**
      *
      * Solves the Continuous-time Lyapunov equation AP+PA'+Q=0 for P, where
@@ -46,20 +54,20 @@ export const createLyap = /* #__PURE__ */ factory(
      * @return {Matrix | Array} Matrix P solution to the Continuous-time Lyapunov equation AP+PA'=Q
      */
     return typed(name, {
-      'Matrix, Matrix': function (A: any, Q: any) {
+      'Matrix, Matrix': function (A: MatrixType, Q: MatrixType): MatrixType {
         return sylvester(A, transpose(A), multiply(-1, Q))
       },
-      'Array, Matrix': function (A: any, Q: any) {
+      'Array, Matrix': function (A: unknown[][], Q: MatrixType): MatrixType {
         return sylvester(matrix(A), transpose(matrix(A)), multiply(-1, Q))
       },
-      'Matrix, Array': function (A: any, Q: any) {
-        return sylvester(A, transpose(matrix(A)), matrix(multiply(-1, Q)))
+      'Matrix, Array': function (A: MatrixType, Q: unknown[][]): MatrixType {
+        return sylvester(A, transpose(matrix(A)), matrix(multiply(-1, Q) as unknown[][]))
       },
-      'Array, Array': function (A: any, Q: any) {
+      'Array, Array': function (A: unknown[][], Q: unknown[][]): unknown[][] {
         return sylvester(
           matrix(A),
           transpose(matrix(A)),
-          matrix(multiply(-1, Q))
+          matrix(multiply(-1, Q) as unknown[][])
         ).toArray()
       }
     })

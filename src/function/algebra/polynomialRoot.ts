@@ -1,4 +1,26 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for polynomialRoot
+interface MatrixType {
+  toArray(): unknown[]
+}
+
+interface PolynomialRootDependencies {
+  typed: TypedFunction
+  isZero: (x: unknown) => boolean
+  equalScalar: (a: unknown, b: unknown) => boolean
+  add: TypedFunction
+  subtract: TypedFunction
+  multiply: TypedFunction
+  divide: TypedFunction
+  sqrt: TypedFunction
+  unaryMinus: TypedFunction
+  cbrt: (x: unknown, allRoots?: boolean) => MatrixType
+  typeOf: (x: unknown) => string
+  im: (x: unknown) => number
+  re: (x: unknown) => number
+}
 
 const name = 'polynomialRoot'
 const dependencies = [
@@ -34,21 +56,7 @@ export const createPolynomialRoot = /* #__PURE__ */ factory(
     typeOf,
     im,
     re
-  }: {
-    typed: any
-    isZero: any
-    equalScalar: any
-    add: any
-    subtract: any
-    multiply: any
-    divide: any
-    sqrt: any
-    unaryMinus: any
-    cbrt: any
-    typeOf: any
-    im: any
-    re: any
-  }) => {
+  }: PolynomialRootDependencies) => {
     /**
      * Finds the numerical values of the distinct roots of a polynomial with real or complex coefficients.
      * Currently operates only on linear, quadratic, and cubic polynomials using the standard
@@ -86,10 +94,10 @@ export const createPolynomialRoot = /* #__PURE__ */ factory(
 
     return typed(name, {
       'number|Complex, ...number|Complex': (
-        constant: any,
-        restCoeffs: any[]
-      ) => {
-        const coeffs = [constant, ...restCoeffs]
+        constant: unknown,
+        restCoeffs: unknown[]
+      ): unknown[] => {
+        const coeffs: unknown[] = [constant, ...restCoeffs]
         while (coeffs.length > 0 && isZero(coeffs[coeffs.length - 1])) {
           coeffs.pop()
         }
@@ -152,7 +160,7 @@ export const createPolynomialRoot = /* #__PURE__ */ factory(
               ]
             }
             // OK, we have three distinct roots
-            let Ccubed: any
+            let Ccubed: unknown
             if (equalScalar(D0_1, D0_2)) {
               Ccubed = Delta1
             } else {
@@ -172,8 +180,8 @@ export const createPolynomialRoot = /* #__PURE__ */ factory(
             const allRoots = true
             const rawRoots = cbrt(Ccubed, allRoots)
               .toArray()
-              .map((C: any) => divide(add(b, C, divide(Delta0, C)), denom))
-            return rawRoots.map((r: any) => {
+              .map((C: unknown) => divide(add(b, C, divide(Delta0, C)), denom))
+            return rawRoots.map((r: unknown) => {
               if (
                 typeOf(r) === 'Complex' &&
                 equalScalar(re(r), re(r) + im(r))

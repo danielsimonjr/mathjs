@@ -1,5 +1,12 @@
 import { factory } from '../../utils/factory.ts'
 import type { MathNode } from '../../utils/node.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for leafCount
+interface LeafCountDependencies {
+  parse: (expr: string) => MathNode
+  typed: TypedFunction
+}
 
 const name = 'leafCount'
 const dependencies = ['parse', 'typed']
@@ -7,7 +14,7 @@ const dependencies = ['parse', 'typed']
 export const createLeafCount = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ parse: _parse, typed }: { parse: any; typed: any }) => {
+  ({ parse: _parse, typed }: LeafCountDependencies) => {
     // This does the real work, but we don't have to recurse through
     // a typed call if we separate it out
     function countLeaves(node: MathNode): number {
