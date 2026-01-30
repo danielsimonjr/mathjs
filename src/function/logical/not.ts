@@ -1,16 +1,9 @@
 import { deepMap } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
 import { notNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  find(signatures: any, signature: string): TypedFunction
-}
-
+// Type definitions for logical not operation
 interface Complex {
   re: number
   im: number
@@ -22,11 +15,15 @@ interface BigNumber {
 }
 
 interface Unit {
-  value: any
+  value: number | BigNumber | Complex | null
   valueType(): string
 }
 
-interface Dependencies {
+interface Matrix {
+  valueOf(): unknown[][]
+}
+
+interface NotDependencies {
   typed: TypedFunction
 }
 
@@ -36,7 +33,7 @@ const dependencies = ['typed']
 export const createNot = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: Dependencies) => {
+  ({ typed }: NotDependencies) => {
     /**
      * Logical `not`. Flips boolean value of a given parameter.
      * For matrices, the function is evaluated element wise.
@@ -77,17 +74,17 @@ export const createNot = /* #__PURE__ */ factory(
 
       bigint: (x: bigint): boolean => !x,
 
-      Unit: (typed as any).referToSelf(
-        (self: any) =>
-          (x: Unit): any =>
+      Unit: typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: Unit): boolean =>
             typed.find(self, x.valueType())(x.value)
       ),
 
       'Array | Matrix': typed.referToSelf(
-        ((self: any) =>
-          (x: any): any =>
-            deepMap(x, self)) as any
-      ) as any
+        (self: TypedFunction) =>
+          (x: unknown[] | Matrix): unknown[] | Matrix =>
+            deepMap(x, self)
+      )
     })
   }
 )

@@ -4,15 +4,9 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { factory } from '../../utils/factory.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { xorNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-}
-
+// Type definitions for logical xor operation
 interface Complex {
   re: number
   im: number
@@ -24,15 +18,20 @@ interface BigNumber {
 }
 
 interface Unit {
-  value: any
+  value: number | BigNumber | Complex | null
 }
 
-interface Dependencies {
+interface Matrix {
+  size(): number[]
+  storage(): string
+}
+
+interface XorDependencies {
   typed: TypedFunction
-  matrix: any
-  DenseMatrix: any
-  concat: any
-  SparseMatrix: any
+  matrix: (data: unknown[]) => Matrix
+  DenseMatrix: new (data: unknown) => Matrix
+  concat: TypedFunction
+  SparseMatrix: new (data: unknown) => Matrix
 }
 
 const name = 'xor'
@@ -47,7 +46,7 @@ const dependencies = [
 export const createXor = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, DenseMatrix, concat, SparseMatrix }: Dependencies) => {
+  ({ typed, matrix, DenseMatrix, concat, SparseMatrix }: XorDependencies) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo07xSSf = createMatAlgo07xSSf({ typed, SparseMatrix })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
@@ -100,9 +99,9 @@ export const createXor = /* #__PURE__ */ factory(
           return (!x.isZero() && !x.isNaN()) !== (!y.isZero() && !y.isNaN())
         },
 
-        'Unit, Unit': (typed as any).referToSelf(
-          (self: any) =>
-            (x: Unit, y: Unit): any =>
+        'Unit, Unit': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: Unit, y: Unit): boolean =>
               self(x.value || 0, y.value || 0)
         )
       },

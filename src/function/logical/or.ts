@@ -4,15 +4,9 @@ import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.ts'
 import { factory } from '../../utils/factory.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { orNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-}
-
+// Type definitions for logical or operation
 interface Complex {
   re: number
   im: number
@@ -24,15 +18,20 @@ interface BigNumber {
 }
 
 interface Unit {
-  value: any
+  value: number | BigNumber | Complex | null
 }
 
-interface Dependencies {
+interface Matrix {
+  size(): number[]
+  storage(): string
+}
+
+interface OrDependencies {
   typed: TypedFunction
-  matrix: any
-  equalScalar: any
-  DenseMatrix: any
-  concat: any
+  matrix: (data: unknown[]) => Matrix
+  equalScalar: TypedFunction
+  DenseMatrix: new (data: unknown) => Matrix
+  concat: TypedFunction
 }
 
 const name = 'or'
@@ -41,7 +40,7 @@ const dependencies = ['typed', 'matrix', 'equalScalar', 'DenseMatrix', 'concat']
 export const createOr = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, DenseMatrix, concat }: Dependencies) => {
+  ({ typed, matrix, equalScalar, DenseMatrix, concat }: OrDependencies) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo05xSfSf = createMatAlgo05xSfSf({ typed, equalScalar })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })
@@ -94,9 +93,9 @@ export const createOr = /* #__PURE__ */ factory(
 
         'bigint, bigint': orNumber,
 
-        'Unit, Unit': (typed as any).referToSelf(
-          (self: any) =>
-            (x: Unit, y: Unit): any =>
+        'Unit, Unit': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: Unit, y: Unit): boolean =>
               self(x.value || 0, y.value || 0)
         )
       },

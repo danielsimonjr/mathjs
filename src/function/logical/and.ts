@@ -5,16 +5,9 @@ import { createMatAlgo06xS0S0 } from '../../type/matrix/utils/matAlgo06xS0S0.ts'
 import { factory } from '../../utils/factory.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { andNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-  find(signatures: any, signature: string): TypedFunction
-}
-
+// Type definitions for logical and operation
 interface Complex {
   re: number
   im: number
@@ -26,22 +19,25 @@ interface BigNumber {
 }
 
 interface Unit {
-  value: any
+  value: number | BigNumber | Complex | null
   valueType?(): string
 }
 
 interface Matrix {
   size(): number[]
   storage(): string
+  valueOf(): unknown[][]
 }
 
-interface Dependencies {
+type ScalarValue = number | BigNumber | bigint | Complex | Unit
+
+interface AndDependencies {
   typed: TypedFunction
-  matrix: any
-  equalScalar: any
-  zeros: any
-  not: any
-  concat: any
+  matrix: (data: unknown[]) => Matrix
+  equalScalar: TypedFunction
+  zeros: (size: number[], storage?: string) => Matrix
+  not: TypedFunction
+  concat: TypedFunction
 }
 
 const name = 'and'
@@ -57,7 +53,7 @@ const dependencies = [
 export const createAnd = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, zeros, not, concat }: Dependencies) => {
+  ({ typed, matrix, equalScalar, zeros, not, concat }: AndDependencies) => {
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo06xS0S0 = createMatAlgo06xS0S0({ typed, equalScalar })
     const matAlgo11xS0s = createMatAlgo11xS0s({ typed, equalScalar })
@@ -111,71 +107,71 @@ export const createAnd = /* #__PURE__ */ factory(
 
         'bigint, bigint': andNumber,
 
-        'Unit, Unit': (typed as any).referToSelf(
-          (self: any) =>
-            (x: Unit, y: Unit): any =>
+        'Unit, Unit': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: Unit, y: Unit): boolean =>
               self(x.value || 0, y.value || 0)
         ),
 
-        'SparseMatrix, any': (typed as any).referToSelf(
-          (self: any) =>
-            (x: Matrix, y: any): any => {
+        'SparseMatrix, any': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: Matrix, y: ScalarValue): Matrix => {
               // check scalar
               if (not(y)) {
                 // return zero matrix
                 return zeros(x.size(), x.storage())
               }
-              return matAlgo11xS0s(x as any, y, self, false)
+              return matAlgo11xS0s(x, y, self, false)
             }
         ),
 
-        'DenseMatrix, any': (typed as any).referToSelf(
-          (self: any) =>
-            (x: Matrix, y: any): any => {
+        'DenseMatrix, any': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: Matrix, y: ScalarValue): Matrix => {
               // check scalar
               if (not(y)) {
                 // return zero matrix
                 return zeros(x.size(), x.storage())
               }
-              return matAlgo14xDs(x as any, y, self, false)
+              return matAlgo14xDs(x, y, self, false)
             }
         ),
 
-        'any, SparseMatrix': (typed as any).referToSelf(
-          (self: any) =>
-            (x: any, y: Matrix): any => {
+        'any, SparseMatrix': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: ScalarValue, y: Matrix): Matrix => {
               // check scalar
               if (not(x)) {
                 // return zero matrix
-                return zeros(x.size(), x.storage())
+                return zeros(y.size(), y.storage())
               }
-              return matAlgo11xS0s(y as any, x, self, true)
+              return matAlgo11xS0s(y, x, self, true)
             }
         ),
 
-        'any, DenseMatrix': (typed as any).referToSelf(
-          (self: any) =>
-            (x: any, y: Matrix): any => {
+        'any, DenseMatrix': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: ScalarValue, y: Matrix): Matrix => {
               // check scalar
               if (not(x)) {
                 // return zero matrix
-                return zeros(x.size(), x.storage())
+                return zeros(y.size(), y.storage())
               }
-              return matAlgo14xDs(y as any, x, self, true)
+              return matAlgo14xDs(y, x, self, true)
             }
         ),
 
-        'Array, any': (typed as any).referToSelf(
-          (self: any) =>
-            (x: any[], y: any): any => {
+        'Array, any': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: unknown[], y: ScalarValue): unknown[] => {
               // use matrix implementation
               return self(matrix(x), y).valueOf()
             }
         ),
 
-        'any, Array': (typed as any).referToSelf(
-          (self: any) =>
-            (x: any, y: any[]): any => {
+        'any, Array': typed.referToSelf(
+          (self: TypedFunction) =>
+            (x: ScalarValue, y: unknown[]): unknown[] => {
               // use matrix implementation
               return self(x, matrix(y)).valueOf()
             }
