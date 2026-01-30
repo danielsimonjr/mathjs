@@ -1,5 +1,10 @@
 import { factory } from '../utils/factory.ts'
 import { deepMap } from '../utils/collection.ts'
+import type { TypedFunction } from '../core/function/typed.ts'
+
+interface NumberDependencies {
+  typed: TypedFunction
+}
 
 const name = 'number'
 const dependencies = ['typed']
@@ -54,7 +59,7 @@ function makeNumberFromNonDecimalParts(parts: NonDecimalNumberParts): number {
 export const createNumber = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: NumberDependencies) => {
     /**
      * Create a number or convert a string, boolean, or unit to a number.
      * When value is a matrix, all elements will be converted to number.

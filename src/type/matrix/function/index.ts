@@ -1,5 +1,15 @@
 import { isBigNumber, isMatrix, isArray } from '../../../utils/is.ts'
 import { factory } from '../../../utils/factory.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+interface IndexConstructor {
+  new (...ranges: any[]): any
+}
+
+interface IndexDependencies {
+  typed: TypedFunction
+  Index: IndexConstructor
+}
 
 const name = 'index'
 const dependencies = ['typed', 'Index']
@@ -7,7 +17,7 @@ const dependencies = ['typed', 'Index']
 export const createIndex = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, Index }: { typed: any; Index: any }) => {
+  ({ typed, Index }: IndexDependencies) => {
     /**
      * Create an index. An Index can store ranges having start, step, and end
      * for multiple dimensions.

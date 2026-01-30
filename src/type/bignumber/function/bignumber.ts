@@ -1,6 +1,17 @@
 import { factory } from '../../../utils/factory.ts'
 import { deepMap } from '../../../utils/collection.ts'
 import type { Decimal } from 'decimal.js'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+interface BigNumberConstructor {
+  new (value: string | number): Decimal
+  (value: string | number): Decimal
+}
+
+interface BignumberDependencies {
+  typed: TypedFunction
+  BigNumber: BigNumberConstructor
+}
 
 const name = 'bignumber'
 const dependencies = ['typed', 'BigNumber']
@@ -8,7 +19,7 @@ const dependencies = ['typed', 'BigNumber']
 export const createBignumber = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, BigNumber }: { typed: any; BigNumber: any }) => {
+  ({ typed, BigNumber }: BignumberDependencies) => {
     /**
      * Create a BigNumber, which can store numbers with arbitrary precision.
      * When a matrix is provided, all elements will be converted to BigNumber.

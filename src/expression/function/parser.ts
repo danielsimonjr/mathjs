@@ -1,4 +1,14 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface ParserConstructor {
+  new (): any
+}
+
+interface ParserDependencies {
+  typed: TypedFunction
+  Parser: ParserConstructor
+}
 
 const name = 'parser'
 const dependencies = ['typed', 'Parser']
@@ -6,7 +16,7 @@ const dependencies = ['typed', 'Parser']
 export const createParser = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, Parser }: { typed: any; Parser: any }) => {
+  ({ typed, Parser }: ParserDependencies) => {
     /**
      * Create a `math.Parser` object that keeps a context of variables and their values, allowing the evaluation of expressions in that context.
      *

@@ -1,6 +1,11 @@
 import { factory } from '../utils/factory.ts'
 import { deepMap } from '../utils/collection.ts'
 import { format } from '../utils/number.ts'
+import type { TypedFunction } from '../core/function/typed.ts'
+
+interface StringDependencies {
+  typed: TypedFunction
+}
 
 const name = 'string'
 const dependencies = ['typed']
@@ -8,7 +13,7 @@ const dependencies = ['typed']
 export const createString = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: StringDependencies) => {
     /**
      * Create a string or convert any object into a string.
      * Elements of Arrays and Matrices are processed element wise.

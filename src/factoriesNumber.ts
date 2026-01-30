@@ -73,6 +73,7 @@ import {
 
 import { factory } from './utils/factory.ts'
 import { noIndex, noMatrix, noSubset } from './utils/noop.ts'
+import type { TypedFunction } from './core/function/typed.ts'
 
 // ----------------------------------------------------------------------------
 // classes and functions
@@ -508,10 +509,10 @@ export { createReplacer } from './json/replacer.ts'
 
 // helper functions to create a factory function for a function which only needs typed-function
 function createNumberFactory(name: any, fn: any) {
-  return factory(name, ['typed'], ({ typed }: { typed: any }) => typed(fn))
+  return factory(name, ['typed'], ({ typed }: { typed: TypedFunction }) => typed(fn))
 }
 function createNumberOptionalSecondArgFactory(name: any, fn: any) {
-  return factory(name, ['typed'], ({ typed }: { typed: any }) =>
+  return factory(name, ['typed'], ({ typed }: { typed: TypedFunction }) =>
     typed({ number: fn, 'number,number': fn })
   )
 }

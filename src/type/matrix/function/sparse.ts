@@ -1,4 +1,14 @@
 import { factory } from '../../../utils/factory.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+interface SparseMatrixConstructor {
+  new (data: any[], datatype?: string): any
+}
+
+interface SparseDependencies {
+  typed: TypedFunction
+  SparseMatrix: SparseMatrixConstructor
+}
 
 const name = 'sparse'
 const dependencies = ['typed', 'SparseMatrix']
@@ -6,7 +16,7 @@ const dependencies = ['typed', 'SparseMatrix']
 export const createSparse = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, SparseMatrix }: { typed: any; SparseMatrix: any }) => {
+  ({ typed, SparseMatrix }: SparseDependencies) => {
     /**
      * Create a Sparse Matrix. The function creates a new `math.Matrix` object from
      * an `Array`. A Matrix has utility functions to manipulate the data in the

@@ -7,6 +7,7 @@ import { toSymbol } from '../../utils/latex.ts'
 import { getPrecedence } from '../operators.ts'
 import { factory } from '../../utils/factory.ts'
 import type { MathNode } from './Node.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
 const name = 'FunctionAssignmentNode'
 const dependencies = ['typed', 'Node']
@@ -16,10 +17,15 @@ interface ParamWithType {
   type: string
 }
 
+interface FunctionAssignmentNodeDependencies {
+  typed: TypedFunction
+  Node: new (...args: any[]) => MathNode
+}
+
 export const createFunctionAssignmentNode = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, Node }: { typed: any; Node: new (...args: any[]) => MathNode }) => {
+  ({ typed, Node }: FunctionAssignmentNodeDependencies) => {
     /**
      * Is parenthesis needed?
      * @param {Node} node

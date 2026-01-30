@@ -1,5 +1,11 @@
 import { factory } from '../../../utils/factory.ts'
 import { deepMap } from '../../../utils/collection.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+interface ComplexDependencies {
+  typed: TypedFunction
+  Complex: any
+}
 
 const name = 'complex'
 const dependencies = ['typed', 'Complex'] as const
@@ -7,7 +13,7 @@ const dependencies = ['typed', 'Complex'] as const
 export const createComplex = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({ typed, Complex }: { typed: any; Complex: any }) => {
+  ({ typed, Complex }: ComplexDependencies) => {
     /**
      * Create a complex value or convert a value to a complex value.
      *

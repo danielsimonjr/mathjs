@@ -1,6 +1,11 @@
 import { factory } from '../utils/factory.ts'
 import { deepMap } from '../utils/collection.ts'
 import type { Decimal } from 'decimal.js'
+import type { TypedFunction } from '../core/function/typed.ts'
+
+interface BooleanDependencies {
+  typed: TypedFunction
+}
 
 const name = 'boolean'
 const dependencies = ['typed']
@@ -8,7 +13,7 @@ const dependencies = ['typed']
 export const createBoolean = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: BooleanDependencies) => {
     /**
      * Create a boolean or convert a string or number to a boolean.
      * In case of a number, `true` is returned for non-zero numbers, and `false` in
