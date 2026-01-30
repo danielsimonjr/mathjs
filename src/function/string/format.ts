@@ -1,5 +1,11 @@
 import { format as formatString } from '../../utils/string.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for format function
+interface FormatDependencies {
+  typed: TypedFunction
+}
 
 const name = 'format'
 const dependencies = ['typed']
@@ -7,7 +13,7 @@ const dependencies = ['typed']
 export const createFormat = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: FormatDependencies) => {
     /**
      * Format a value of any type into a string.
      *

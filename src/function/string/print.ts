@@ -2,6 +2,12 @@ import { format } from '../../utils/string.ts'
 import { isString } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 import { printTemplate } from '../../utils/print.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for print function
+interface PrintDependencies {
+  typed: TypedFunction
+}
 
 const name = 'print'
 const dependencies = ['typed']
@@ -9,7 +15,7 @@ const dependencies = ['typed']
 export const createPrint = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: PrintDependencies) => {
     /**
      * Interpolate values into a string template.
      *

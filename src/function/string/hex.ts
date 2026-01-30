@@ -1,18 +1,21 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
+// Type definitions for hex formatting
+interface BigNumberType {
+  // BigNumber placeholder
 }
+
+type NumericValue = number | bigint | BigNumberType
 
 interface FormatOptions {
   notation: string
   wordSize?: number | bigint
 }
 
-interface Dependencies {
+interface HexDependencies {
   typed: TypedFunction
-  format: (value: any, options: FormatOptions) => string
+  format: (value: NumericValue, options: FormatOptions) => string
 }
 
 const name = 'hex'
@@ -41,7 +44,7 @@ const dependencies = ['typed', 'format']
 export const createHex = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, format }: Dependencies): TypedFunction => {
+  ({ typed, format }: HexDependencies): TypedFunction => {
     return typed(name, {
       'number | BigNumber': function (n: number | bigint): string {
         return format(n, { notation: 'hex' })
