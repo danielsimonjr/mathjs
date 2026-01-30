@@ -1,4 +1,48 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for zeta function
+interface BigNumberType {
+  // BigNumber placeholder
+}
+
+interface ComplexType {
+  re: number
+  im: number
+}
+
+interface ComplexConstructor {
+  new (re: number, im?: number): ComplexType
+  (re: number, im?: number): ComplexType
+}
+
+interface BigNumberConstructor {
+  new (value: number | string): BigNumberType
+  (value: number | string): BigNumberType
+}
+
+type NumericValue = number | BigNumberType | ComplexType
+
+interface ZetaDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  multiply: TypedFunction
+  pow: TypedFunction
+  divide: TypedFunction
+  factorial: TypedFunction
+  equal: TypedFunction
+  smallerEq: TypedFunction
+  isBounded: TypedFunction
+  isNegative: TypedFunction
+  gamma: TypedFunction
+  sin: TypedFunction
+  subtract: TypedFunction
+  add: TypedFunction
+  Complex?: ComplexConstructor
+  BigNumber?: BigNumberConstructor
+  pi: number | BigNumberType
+}
 
 const name = 'zeta'
 const dependencies = [
@@ -42,7 +86,7 @@ export const createZeta = /* #__PURE__ */ factory(
     Complex,
     BigNumber,
     pi
-  }) => {
+  }: ZetaDependencies) => {
     /**
      * Compute the Riemann Zeta function of a value using an infinite series for
      * all of the complex plane using Riemann's Functional equation.
@@ -77,10 +121,10 @@ export const createZeta = /* #__PURE__ */ factory(
           (value: number) => value,
           () => 20
         ),
-      BigNumber: (s: any): any =>
+      BigNumber: (s: BigNumberType): BigNumberType =>
         zetaNumeric(
           s,
-          (value: number) => new BigNumber(value),
+          (value: number) => new BigNumber!(value),
           () => {
             // relTol is for example 1e-12. Extract the positive exponent 12 from that
             return Math.abs(Math.log10(config.relTol))
@@ -95,7 +139,7 @@ export const createZeta = /* #__PURE__ */ factory(
      * @param {(value: number | BigNumber | Complex) => number} determineDigits
      * @returns {number | BigNumber}
      */
-    function zetaNumeric<T extends number | any>(
+    function zetaNumeric<T extends number | BigNumberType>(
       s: T,
       createValue: (value: number) => T,
       determineDigits: (value: T) => number
@@ -110,32 +154,32 @@ export const createZeta = /* #__PURE__ */ factory(
         return isNegative(s) ? createValue(NaN) : createValue(1)
       }
 
-      return zeta(s, createValue, determineDigits, (s: T) => s as any)
+      return zeta(s, createValue, determineDigits, (s: T) => s as number)
     }
 
     /**
      * @param {Complex} s
      * @returns {Complex}
      */
-    function zetaComplex(s: any): any {
+    function zetaComplex(s: ComplexType): ComplexType {
       if (s.re === 0 && s.im === 0) {
-        return new Complex(-0.5)
+        return new Complex!(-0.5)
       }
       if (s.re === 1) {
-        return new Complex(NaN, NaN)
+        return new Complex!(NaN, NaN)
       }
       if (s.re === Infinity && s.im === 0) {
-        return new Complex(1)
+        return new Complex!(1)
       }
       if (s.im === Infinity || s.re === -Infinity) {
-        return new Complex(NaN, NaN)
+        return new Complex!(NaN, NaN)
       }
 
       return zeta(
         s,
         (value: number) => value,
-        (s: any) => Math.round(1.3 * 15 + 0.9 * Math.abs(s.im)),
-        (s: any) => s.re
+        (s: ComplexType) => Math.round(1.3 * 15 + 0.9 * Math.abs(s.im)),
+        (s: ComplexType) => s.re
       )
     }
 
@@ -146,23 +190,23 @@ export const createZeta = /* #__PURE__ */ factory(
      * @param {(value: number | BigNumber | Complex) => number} getRe
      * @returns {*|number}
      */
-    function zeta<T>(
+    function zeta<T extends NumericValue>(
       s: T,
-      createValue: (value: number) => any,
+      createValue: (value: number) => NumericValue,
       determineDigits: (value: T) => number,
       getRe: (value: T) => number
-    ): any {
+    ): NumericValue {
       const n = determineDigits(s)
       if (getRe(s) > -(n - 1) / 2) {
         return f(s, createValue(n), createValue)
       } else {
         // Function Equation for reflection to x < 1
-        let c = multiply(pow(2, s), pow(createValue(pi), subtract(s, 1)))
-        c = multiply(c, sin(multiply(divide(createValue(pi), 2), s)))
+        let c = multiply(pow(2, s), pow(createValue(pi as number), subtract(s, 1)))
+        c = multiply(c, sin(multiply(divide(createValue(pi as number), 2), s)))
         c = multiply(c, gamma(subtract(1, s)))
         return multiply(
           c,
-          zeta(subtract(1, s), createValue, determineDigits, getRe)
+          zeta(subtract(1, s) as T, createValue, determineDigits, getRe)
         )
       }
     }
@@ -173,7 +217,7 @@ export const createZeta = /* #__PURE__ */ factory(
      * @param {number | BigNumber} n   a positive integer
      * @return {number}    the portion of the sum
      **/
-    function d(k: any, n: any): any {
+    function d(k: NumericValue, n: NumericValue): NumericValue {
       let S = k
       for (let j = k; smallerEq(j, n); j = add(j, 1)) {
         const factor = divide(
@@ -193,14 +237,14 @@ export const createZeta = /* #__PURE__ */ factory(
      * @param {(number) => number | BigNumber | Complex} createValue
      * @return {number}    Riemann Zeta of s
      **/
-    function f(s: any, n: any, createValue: (value: number) => any): any {
+    function f(s: NumericValue, n: NumericValue, createValue: (value: number) => NumericValue): NumericValue {
       const c = divide(
         1,
         multiply(d(createValue(0), n), subtract(1, pow(2, subtract(1, s))))
       )
       let S = createValue(0)
       for (let k = createValue(1); smallerEq(k, n); k = add(k, 1)) {
-        S = add(S, divide(multiply((-1) ** (k - 1), d(k, n)), pow(k, s)))
+        S = add(S, divide(multiply((-1) ** ((k as number) - 1), d(k, n)), pow(k, s)))
       }
       return multiply(c, S)
     }

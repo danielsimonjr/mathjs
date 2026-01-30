@@ -3,6 +3,16 @@
 import { deepMap } from '../../utils/collection.ts'
 import { sign } from '../../utils/number.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for erf
+interface Matrix {
+  valueOf(): unknown[][]
+}
+
+interface ErfDependencies {
+  typed: TypedFunction
+}
 
 const name = 'erf'
 const dependencies = ['typed']
@@ -10,7 +20,7 @@ const dependencies = ['typed']
 export const createErf = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }) => {
+  ({ typed }: ErfDependencies) => {
     /**
      * Compute the erf function of a value using a rational Chebyshev
      * approximations for different intervals of x.
@@ -55,7 +65,7 @@ export const createErf = /* #__PURE__ */ factory(
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (n: any) => deepMap(n, self)
+        (self: TypedFunction) => (n: unknown[] | Matrix): unknown[] | Matrix => deepMap(n, self)
       )
 
       // TODO: For complex numbers, use the approximation for the Faddeeva function
