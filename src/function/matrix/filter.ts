@@ -1,6 +1,11 @@
 import { optimizeCallback } from '../../utils/optimizeCallback.ts'
 import { filter, filterRegExp } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface FilterDependencies {
+  typed: TypedFunction
+}
 
 const name = 'filter'
 const dependencies = ['typed']
@@ -8,7 +13,7 @@ const dependencies = ['typed']
 export const createFilter = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: FilterDependencies) => {
     /**
      * Filter the items in an array or one dimensional matrix.
      *

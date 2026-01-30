@@ -1,4 +1,11 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface CountDependencies {
+  typed: TypedFunction
+  size: TypedFunction
+  prod: TypedFunction
+}
 
 const name = 'count'
 const dependencies = ['typed', 'size', 'prod']
@@ -6,7 +13,7 @@ const dependencies = ['typed', 'size', 'prod']
 export const createCount = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, size, prod }: { typed: any; size: any; prod: any }) => {
+  ({ typed, size, prod }: CountDependencies) => {
     /**
      * Count the number of elements of a matrix, array or string.
      *

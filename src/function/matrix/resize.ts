@@ -6,6 +6,21 @@ import { format } from '../../utils/string.ts'
 import { clone } from '../../utils/object.ts'
 import { resize as arrayResize } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import type { MathJsConfig } from '../../core/config.ts'
+
+interface MatrixType {
+  valueOf(): any[]
+  resize(size: number[], defaultValue?: any, copy?: boolean): MatrixType
+}
+
+interface MatrixConstructor {
+  (data: any[]): MatrixType
+}
+
+interface ResizeDependencies {
+  config: MathJsConfig
+  matrix: MatrixConstructor
+}
 
 const name = 'resize'
 const dependencies = ['config', 'matrix']
@@ -13,7 +28,7 @@ const dependencies = ['config', 'matrix']
 export const createResize = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ config, matrix }: { config: any; matrix: any }) => {
+  ({ config, matrix }: ResizeDependencies) => {
     /**
      * Resize a matrix
      *

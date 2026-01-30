@@ -1,5 +1,17 @@
 import { flatten as flattenArray } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions
+interface DenseMatrix {
+  create(data: any[], datatype?: string): DenseMatrix
+  datatype(): string
+  valueOf(): any[]
+}
+
+interface FlattenDependencies {
+  typed: TypedFunction
+}
 
 const name = 'flatten'
 const dependencies = ['typed']
@@ -7,7 +19,7 @@ const dependencies = ['typed']
 export const createFlatten = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: FlattenDependencies) => {
     /**
      * Flatten a multidimensional matrix into a single dimensional matrix.
      * A new matrix is returned, the original matrix is left untouched.

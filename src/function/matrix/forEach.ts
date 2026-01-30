@@ -1,6 +1,11 @@
 import { optimizeCallback } from '../../utils/optimizeCallback.ts'
 import { factory } from '../../utils/factory.ts'
 import { deepForEach } from '../../utils/array.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface ForEachDependencies {
+  typed: TypedFunction
+}
 
 const name = 'forEach'
 const dependencies = ['typed']
@@ -8,7 +13,7 @@ const dependencies = ['typed']
 export const createForEach = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: ForEachDependencies) => {
     /**
      * Iterate over all elements of a matrix/array, and executes the given callback function.
      *

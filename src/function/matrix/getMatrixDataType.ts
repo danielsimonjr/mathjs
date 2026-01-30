@@ -1,6 +1,11 @@
 import { factory } from '../../utils/factory.ts'
 import { getArrayDataType } from '../../utils/array.ts'
 import { typeOf } from '../../utils/is.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface GetMatrixDataTypeDependencies {
+  typed: TypedFunction
+}
 
 const name = 'getMatrixDataType'
 const dependencies = ['typed']
@@ -8,7 +13,7 @@ const dependencies = ['typed']
 export const createGetMatrixDataType = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: GetMatrixDataTypeDependencies) => {
     /**
      * Find the data type of all elements in a matrix or array,
      * for example 'number' if all items are a number and 'Complex' if all values

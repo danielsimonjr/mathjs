@@ -1,4 +1,11 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface CtransposeDependencies {
+  typed: TypedFunction
+  transpose: TypedFunction
+  conj: TypedFunction
+}
 
 const name = 'ctranspose'
 const dependencies = ['typed', 'transpose', 'conj']
@@ -6,7 +13,7 @@ const dependencies = ['typed', 'transpose', 'conj']
 export const createCtranspose = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, transpose, conj }: { typed: any; transpose: any; conj: any }) => {
+  ({ typed, transpose, conj }: CtransposeDependencies) => {
     /**
      * Transpose and complex conjugate a matrix. All values of the matrix are
      * reflected over its main diagonal and then the complex conjugate is

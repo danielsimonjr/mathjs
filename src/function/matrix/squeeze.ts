@@ -1,6 +1,11 @@
 import { clone } from '../../utils/object.ts'
 import { squeeze as arraySqueeze } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface SqueezeDependencies {
+  typed: TypedFunction
+}
 
 const name = 'squeeze'
 const dependencies = ['typed']
@@ -8,7 +13,7 @@ const dependencies = ['typed']
 export const createSqueeze = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: SqueezeDependencies) => {
     /**
      * Squeeze a matrix, remove inner and outer singleton dimensions from a matrix.
      *

@@ -1,5 +1,11 @@
 import { reshape as arrayReshape } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface ReshapeDependencies {
+  typed: TypedFunction
+  isInteger: (x: unknown) => boolean
+}
 
 const name = 'reshape'
 const dependencies = ['typed', 'isInteger', 'matrix']
@@ -7,7 +13,7 @@ const dependencies = ['typed', 'isInteger', 'matrix']
 export const createReshape = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, isInteger }: { typed: any; isInteger: any }) => {
+  ({ typed, isInteger }: ReshapeDependencies) => {
     /**
      * Reshape a multi dimensional array to fit the specified dimensions
      *
