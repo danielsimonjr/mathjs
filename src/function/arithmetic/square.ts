@@ -1,5 +1,23 @@
 import { factory } from '../../utils/factory.ts'
 import { squareNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for square
+interface HasMulMethod {
+  mul(other: unknown): unknown
+}
+
+interface HasTimesMethod {
+  times(other: unknown): unknown
+}
+
+interface HasPowMethod {
+  pow(n: number): unknown
+}
+
+interface SquareDependencies {
+  typed: TypedFunction
+}
 
 const name = 'square'
 const dependencies = ['typed']
@@ -7,7 +25,7 @@ const dependencies = ['typed']
 export const createSquare = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: SquareDependencies) => {
     /**
      * Compute the square of a value, `x * x`.
      * To avoid confusion with multiplying a square matrix by itself,
@@ -39,11 +57,11 @@ export const createSquare = /* #__PURE__ */ factory(
     return typed(name, {
       number: squareNumber,
 
-      Complex: function (x: any) {
+      Complex: function (x: HasMulMethod): unknown {
         return x.mul(x)
       },
 
-      BigNumber: function (x: any) {
+      BigNumber: function (x: HasTimesMethod): unknown {
         return x.times(x)
       },
 
@@ -51,11 +69,11 @@ export const createSquare = /* #__PURE__ */ factory(
         return x * x
       },
 
-      Fraction: function (x: any) {
+      Fraction: function (x: HasMulMethod): unknown {
         return x.mul(x)
       },
 
-      Unit: function (x: any) {
+      Unit: function (x: HasPowMethod): unknown {
         return x.pow(2)
       }
     })

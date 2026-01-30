@@ -2,13 +2,32 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import { expm1Number } from '../../plain/number/index.ts'
 
+// Type definitions for expm1
+interface ComplexType {
+  re: number
+  im: number
+}
+
+interface ComplexConstructor {
+  new (re: number, im: number): ComplexType
+}
+
+interface BigNumberType {
+  exp(): { minus(n: number): BigNumberType }
+}
+
+interface Expm1Dependencies {
+  typed: TypedFunction
+  Complex: ComplexConstructor
+}
+
 const name = 'expm1'
 const dependencies = ['typed', 'Complex']
 
 export const createExpm1 = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, Complex }: { typed: TypedFunction; Complex: any }): any => {
+  ({ typed, Complex }: Expm1Dependencies) => {
     /**
      * Calculate the value of subtracting 1 from the exponential value.
      * This function is more accurate than `math.exp(x)-1` when `x` is near 0
@@ -45,12 +64,12 @@ export const createExpm1 = /* #__PURE__ */ factory(
     return typed(name, {
       number: expm1Number,
 
-      Complex: function (x: any): any {
+      Complex: function (x: ComplexType): ComplexType {
         const r = Math.exp(x.re)
         return new Complex(r * Math.cos(x.im) - 1, r * Math.sin(x.im))
       },
 
-      BigNumber: function (x: any): any {
+      BigNumber: function (x: BigNumberType): BigNumberType {
         return x.exp().minus(1)
       }
     })

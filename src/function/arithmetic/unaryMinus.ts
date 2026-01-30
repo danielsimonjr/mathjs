@@ -1,6 +1,25 @@
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
 import { unaryMinusNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for unaryMinus
+interface HasNegMethod {
+  neg(): unknown
+}
+
+interface UnitType {
+  clone(): UnitType
+  valueType(): string
+  value: unknown
+}
+
+interface UnaryMinusDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  bignumber?: (value: number) => unknown
+}
 
 const name = 'unaryMinus'
 const dependencies = ['typed', 'config', '?bignumber']
@@ -12,11 +31,7 @@ export const createUnaryMinus = /* #__PURE__ */ factory(
     typed,
     config,
     bignumber
-  }: {
-    typed: any
-    config: any
-    bignumber?: any
-  }) => {
+  }: UnaryMinusDependencies) => {
     /**
      * Inverse the sign of a value, apply a unary minus operation.
      *
@@ -43,17 +58,17 @@ export const createUnaryMinus = /* #__PURE__ */ factory(
     return typed(name, {
       number: unaryMinusNumber,
 
-      'Complex | BigNumber | Fraction': (x: any) => x.neg(),
+      'Complex | BigNumber | Fraction': (x: HasNegMethod): unknown => x.neg(),
 
       bigint: (x: bigint): bigint => -x,
 
-      Unit: typed.referToSelf((self: any) => (x: any) => {
+      Unit: typed.referToSelf((self: TypedFunction) => (x: UnitType): UnitType => {
         const res = x.clone()
         res.value = typed.find(self, res.valueType())(x.value)
         return res
       }),
 
-      boolean: function (x: boolean): number | any {
+      boolean: function (x: boolean): number | bigint | unknown {
         // Convert boolean to number: true→1, false→0
         const numValue = x ? 1 : 0
         const negValue = -numValue
@@ -85,7 +100,7 @@ export const createUnaryMinus = /* #__PURE__ */ factory(
 
       // deep map collection, skip zeros since unaryMinus(0) = 0
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self, true)
+        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self, true)
       )
 
       // TODO: add support for string

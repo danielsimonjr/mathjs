@@ -1,5 +1,23 @@
 import { factory } from '../../utils/factory.ts'
 import { cubeNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for cube
+interface HasMulMethod {
+  mul(other: unknown): HasMulMethod
+}
+
+interface HasTimesMethod {
+  times(other: unknown): HasTimesMethod
+}
+
+interface HasPowMethod {
+  pow(n: number): unknown
+}
+
+interface CubeDependencies {
+  typed: TypedFunction
+}
 
 const name = 'cube'
 const dependencies = ['typed']
@@ -7,7 +25,7 @@ const dependencies = ['typed']
 export const createCube = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: CubeDependencies) => {
     /**
      * Compute the cube of a value, `x * x * x`.
      * To avoid confusion with `pow(M,3)`, this function does not apply to matrices.
@@ -36,11 +54,11 @@ export const createCube = /* #__PURE__ */ factory(
     return typed(name, {
       number: cubeNumber,
 
-      Complex: function (x: any) {
+      Complex: function (x: HasMulMethod): unknown {
         return x.mul(x).mul(x) // Is faster than pow(x, 3)
       },
 
-      BigNumber: function (x: any) {
+      BigNumber: function (x: HasTimesMethod): unknown {
         return x.times(x).times(x)
       },
 
@@ -48,11 +66,11 @@ export const createCube = /* #__PURE__ */ factory(
         return x * x * x
       },
 
-      Fraction: function (x: any) {
+      Fraction: function (x: HasPowMethod): unknown {
         return x.pow(3) // Is faster than mul()mul()mul()
       },
 
-      Unit: function (x: any) {
+      Unit: function (x: HasPowMethod): unknown {
         return x.pow(3)
       }
     })

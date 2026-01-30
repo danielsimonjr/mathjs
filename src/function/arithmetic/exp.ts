@@ -1,5 +1,15 @@
 import { factory } from '../../utils/factory.ts'
 import { expNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for exp
+interface HasExpMethod {
+  exp(): unknown
+}
+
+interface ExpDependencies {
+  typed: TypedFunction
+}
 
 const name = 'exp'
 const dependencies = ['typed']
@@ -7,7 +17,7 @@ const dependencies = ['typed']
 export const createExp = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: any): any => {
+  ({ typed }: ExpDependencies) => {
     /**
      * Calculate the exponential of a value.
      * For matrices, if you want the matrix exponential of square matrix, use
@@ -41,11 +51,11 @@ export const createExp = /* #__PURE__ */ factory(
     return typed(name, {
       number: expNumber,
 
-      Complex: function (x: any): any {
+      Complex: function (x: HasExpMethod): unknown {
         return x.exp()
       },
 
-      BigNumber: function (x: any): any {
+      BigNumber: function (x: HasExpMethod): unknown {
         return x.exp()
       }
     })

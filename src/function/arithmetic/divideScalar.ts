@@ -1,4 +1,23 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for divideScalar
+interface HasDivMethod {
+  div(other: unknown): unknown
+}
+
+interface HasDivideMethod {
+  divide(other: unknown): unknown
+}
+
+interface HasDivideIntoMethod {
+  divideInto(other: unknown): unknown
+}
+
+interface DivideScalarDependencies {
+  typed: TypedFunction
+  numeric: (value: unknown, type: string) => unknown
+}
 
 const name = 'divideScalar'
 const dependencies = ['typed', 'numeric']
@@ -6,7 +25,7 @@ const dependencies = ['typed', 'numeric']
 export const createDivideScalar = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, numeric: _numeric }: { typed: any; numeric: any }) => {
+  ({ typed, numeric: _numeric }: DivideScalarDependencies) => {
     /**
      * Divide two scalar values, `x / y`.
      * This function is meant for internal use: it is used by the public functions
@@ -24,11 +43,11 @@ export const createDivideScalar = /* #__PURE__ */ factory(
         return x / y
       },
 
-      'Complex, Complex': function (x: any, y: any): any {
+      'Complex, Complex': function (x: HasDivMethod, y: HasDivMethod): unknown {
         return x.div(y)
       },
 
-      'BigNumber, BigNumber': function (x: any, y: any): any {
+      'BigNumber, BigNumber': function (x: HasDivMethod, y: HasDivMethod): unknown {
         return x.div(y)
       },
 
@@ -36,16 +55,16 @@ export const createDivideScalar = /* #__PURE__ */ factory(
         return x / y
       },
 
-      'Fraction, Fraction': function (x: any, y: any): any {
+      'Fraction, Fraction': function (x: HasDivMethod, y: HasDivMethod): unknown {
         return x.div(y)
       },
 
       'Unit, number | Complex | Fraction | BigNumber | Unit': (
-        x: any,
-        y: any
-      ): any => x.divide(y),
+        x: HasDivideMethod,
+        y: unknown
+      ): unknown => x.divide(y),
 
-      'number | Fraction | Complex | BigNumber, Unit': (x: any, y: any): any =>
+      'number | Fraction | Complex | BigNumber, Unit': (x: unknown, y: HasDivideIntoMethod): unknown =>
         y.divideInto(x)
     })
   }

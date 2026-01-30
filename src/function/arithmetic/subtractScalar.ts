@@ -1,5 +1,27 @@
 import { factory } from '../../utils/factory.ts'
 import { subtractNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for subtractScalar
+interface HasSubMethod {
+  sub(other: unknown): unknown
+}
+
+interface HasMinusMethod {
+  minus(other: unknown): unknown
+}
+
+interface UnitType {
+  value: unknown
+  equalBase(other: UnitType): boolean
+  clone(): UnitType
+  valueType(): string
+  fixPrefix: boolean
+}
+
+interface SubtractScalarDependencies {
+  typed: TypedFunction
+}
 
 const name = 'subtractScalar'
 const dependencies = ['typed']
@@ -7,7 +29,7 @@ const dependencies = ['typed']
 export const createSubtractScalar = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: SubtractScalarDependencies) => {
     /**
      * Subtract two scalar values, `x - y`.
      * This function is meant for internal use: it is used by the public function
@@ -23,11 +45,11 @@ export const createSubtractScalar = /* #__PURE__ */ factory(
     return typed(name, {
       'number, number': subtractNumber,
 
-      'Complex, Complex': function (x: any, y: any): any {
+      'Complex, Complex': function (x: HasSubMethod, y: HasSubMethod): unknown {
         return x.sub(y)
       },
 
-      'BigNumber, BigNumber': function (x: any, y: any): any {
+      'BigNumber, BigNumber': function (x: HasMinusMethod, y: HasMinusMethod): unknown {
         return x.minus(y)
       },
 
@@ -35,11 +57,11 @@ export const createSubtractScalar = /* #__PURE__ */ factory(
         return x - y
       },
 
-      'Fraction, Fraction': function (x: any, y: any): any {
+      'Fraction, Fraction': function (x: HasSubMethod, y: HasSubMethod): unknown {
         return x.sub(y)
       },
 
-      'Unit, Unit': typed.referToSelf((self: any) => (x: any, y: any): any => {
+      'Unit, Unit': typed.referToSelf((self: TypedFunction) => (x: UnitType, y: UnitType): UnitType => {
         if (x.value === null || x.value === undefined) {
           throw new Error('Parameter x contains a unit with undefined value')
         }

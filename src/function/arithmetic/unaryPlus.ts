@@ -2,6 +2,19 @@ import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
 import { unaryPlusNumber } from '../../plain/number/index.ts'
 import { safeNumberType } from '../../utils/number.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for unaryPlus
+interface HasCloneMethod {
+  clone(): unknown
+}
+
+interface UnaryPlusDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  numeric: (value: number | string, type: string) => unknown
+}
 
 const name = 'unaryPlus'
 const dependencies = ['typed', 'config', 'numeric']
@@ -9,7 +22,7 @@ const dependencies = ['typed', 'config', 'numeric']
 export const createUnaryPlus = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, numeric }: { typed: any; config: any; numeric: any }) => {
+  ({ typed, config, numeric }: UnaryPlusDependencies) => {
     /**
      * Unary plus operation.
      * Boolean values and strings will be converted to a number, numeric values will be returned as is.
@@ -37,11 +50,11 @@ export const createUnaryPlus = /* #__PURE__ */ factory(
     return typed(name, {
       number: unaryPlusNumber,
 
-      Complex: function (x: any) {
+      Complex: function <T>(x: T): T {
         return x // complex numbers are immutable
       },
 
-      BigNumber: function (x: any) {
+      BigNumber: function <T>(x: T): T {
         return x // bignumbers are immutable
       },
 
@@ -49,24 +62,24 @@ export const createUnaryPlus = /* #__PURE__ */ factory(
         return x
       },
 
-      Fraction: function (x: any) {
+      Fraction: function <T>(x: T): T {
         return x // fractions are immutable
       },
 
-      Unit: function (x: any) {
+      Unit: function (x: HasCloneMethod): unknown {
         return x.clone()
       },
 
       // deep map collection, skip zeros since unaryPlus(0) = 0
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self, true)
+        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self, true)
       ),
 
-      boolean: function (x: boolean): number {
+      boolean: function (x: boolean): unknown {
         return numeric(x ? 1 : 0, config.number)
       },
 
-      string: function (x: string): number {
+      string: function (x: string): unknown {
         return numeric(x, safeNumberType(x, config))
       }
     })

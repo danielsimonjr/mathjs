@@ -1,5 +1,23 @@
 import { factory } from '../../utils/factory.ts'
 import { multiplyNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for multiplyScalar
+interface HasMulMethod {
+  mul(other: unknown): unknown
+}
+
+interface HasTimesMethod {
+  times(other: unknown): unknown
+}
+
+interface HasMultiplyMethod {
+  multiply(other: unknown): unknown
+}
+
+interface MultiplyScalarDependencies {
+  typed: TypedFunction
+}
 
 const name = 'multiplyScalar'
 const dependencies = ['typed']
@@ -7,7 +25,7 @@ const dependencies = ['typed']
 export const createMultiplyScalar = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: MultiplyScalarDependencies) => {
     /**
      * Multiply two scalar values, `x * y`.
      * This function is meant for internal use: it is used by the public function
@@ -23,11 +41,11 @@ export const createMultiplyScalar = /* #__PURE__ */ factory(
     return typed('multiplyScalar', {
       'number, number': multiplyNumber,
 
-      'Complex, Complex': function (x: any, y: any): any {
+      'Complex, Complex': function (x: HasMulMethod, y: HasMulMethod): unknown {
         return x.mul(y)
       },
 
-      'BigNumber, BigNumber': function (x: any, y: any): any {
+      'BigNumber, BigNumber': function (x: HasTimesMethod, y: HasTimesMethod): unknown {
         return x.times(y)
       },
 
@@ -35,14 +53,14 @@ export const createMultiplyScalar = /* #__PURE__ */ factory(
         return x * y
       },
 
-      'Fraction, Fraction': function (x: any, y: any): any {
+      'Fraction, Fraction': function (x: HasMulMethod, y: HasMulMethod): unknown {
         return x.mul(y)
       },
 
-      'number | Fraction | Complex, Unit': (x: any, y: any): any =>
+      'number | Fraction | Complex, Unit': (x: unknown, y: HasMultiplyMethod): unknown =>
         y.multiply(x),
 
-      'Unit, number | Fraction | Complex | Unit': (x: any, y: any): any =>
+      'Unit, number | Fraction | Complex | Unit': (x: HasMultiplyMethod, y: unknown): unknown =>
         x.multiply(y)
     })
   }

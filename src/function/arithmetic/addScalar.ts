@@ -1,5 +1,27 @@
 import { factory } from '../../utils/factory.ts'
 import { addNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for addScalar
+interface HasAddMethod {
+  add(other: unknown): unknown
+}
+
+interface HasPlusMethod {
+  plus(other: unknown): unknown
+}
+
+interface UnitType {
+  value: unknown
+  equalBase(other: UnitType): boolean
+  clone(): UnitType
+  valueType(): string
+  fixPrefix: boolean
+}
+
+interface AddScalarDependencies {
+  typed: TypedFunction
+}
 
 const name = 'addScalar'
 const dependencies = ['typed']
@@ -7,7 +29,7 @@ const dependencies = ['typed']
 export const createAddScalar = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: AddScalarDependencies) => {
     /**
      * Add two scalar values, `x + y`.
      * This function is meant for internal use: it is used by the public function
@@ -23,11 +45,11 @@ export const createAddScalar = /* #__PURE__ */ factory(
     return typed(name, {
       'number, number': addNumber,
 
-      'Complex, Complex': function (x: any, y: any): any {
+      'Complex, Complex': function (x: HasAddMethod, y: HasAddMethod): unknown {
         return x.add(y)
       },
 
-      'BigNumber, BigNumber': function (x: any, y: any): any {
+      'BigNumber, BigNumber': function (x: HasPlusMethod, y: HasPlusMethod): unknown {
         return x.plus(y)
       },
 
@@ -35,11 +57,11 @@ export const createAddScalar = /* #__PURE__ */ factory(
         return x + y
       },
 
-      'Fraction, Fraction': function (x: any, y: any): any {
+      'Fraction, Fraction': function (x: HasAddMethod, y: HasAddMethod): unknown {
         return x.add(y)
       },
 
-      'Unit, Unit': typed.referToSelf((self: any) => (x: any, y: any): any => {
+      'Unit, Unit': typed.referToSelf((self: TypedFunction) => (x: UnitType, y: UnitType): UnitType => {
         if (x.value === null || x.value === undefined) {
           throw new Error('Parameter x contains a unit with undefined value')
         }

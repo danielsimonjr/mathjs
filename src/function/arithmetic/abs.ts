@@ -1,20 +1,14 @@
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
 import { absNumber } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  referToSelf<U>(
-    fn: (self: TypedFunction<U>) => TypedFunction<U>
-  ): TypedFunction<U>
-}
-
+// Type definitions for abs
 interface HasAbsMethod {
-  abs(): any
+  abs(): unknown
 }
 
-interface Dependencies {
+interface AbsDependencies {
   typed: TypedFunction
 }
 
@@ -24,7 +18,7 @@ const dependencies = ['typed']
 export const createAbs = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: Dependencies) => {
+  ({ typed }: AbsDependencies) => {
     /**
      * Calculate the absolute value of a number. For matrices, the function is
      * evaluated element wise.
@@ -52,17 +46,17 @@ export const createAbs = /* #__PURE__ */ factory(
     return typed(name, {
       number: absNumber,
 
-      'Complex | BigNumber | Fraction | Unit': (x: HasAbsMethod): any =>
+      'Complex | BigNumber | Fraction | Unit': (x: HasAbsMethod): unknown =>
         x.abs(),
 
       bigint: (x: bigint): bigint => (x < 0n ? -x : x),
 
       // deep map collection, skip zeros since abs(0) = 0
       'Array | Matrix': typed.referToSelf(
-        ((self: any) =>
-          (x: any): any =>
-            deepMap(x, self, true)) as any
-      ) as any
+        (self: TypedFunction) =>
+          (x: unknown): unknown =>
+            deepMap(x, self, true)
+      )
     })
   }
 )
