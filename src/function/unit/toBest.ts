@@ -1,6 +1,10 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-import { TypedFunction, Unit } from '../../types.ts'
+// Type definitions for unit toBest
+interface Unit {
+  toBest(unitList?: string[] | (string | Unit)[], options?: object): Unit
+}
 
 const name = 'toBest'
 const dependencies = ['typed']
@@ -42,7 +46,7 @@ export const createToBest = /* #__PURE__ */ factory(
      * @return {Unit}                           Value converted to the best matching unit
      */
     return typed(name, {
-      Unit: (x: Unit) => x.toBest(),
+      Unit: (x: Unit): Unit => x.toBest(),
       'Unit, string': (x: Unit, unitList: string): Unit =>
         x.toBest(unitList.split(',')),
       'Unit, string, Object': (
@@ -50,12 +54,12 @@ export const createToBest = /* #__PURE__ */ factory(
         unitList: string,
         options: object
       ): Unit => x.toBest(unitList.split(','), options),
-      'Unit, Array': (x: Unit, unitList: any[]): any[] => x.toBest(unitList),
+      'Unit, Array': (x: Unit, unitList: (string | Unit)[]): Unit => x.toBest(unitList),
       'Unit, Array, Object': (
         x: Unit,
-        unitList: any[],
+        unitList: (string | Unit)[],
         options: object
-      ): any[] => x.toBest(unitList, options)
+      ): Unit => x.toBest(unitList, options)
     })
   }
 )

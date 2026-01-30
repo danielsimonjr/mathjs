@@ -1,5 +1,22 @@
 import { factory } from '../../utils/factory.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for unit conversion
+interface UnitType {
+  to(unit: UnitType | string): UnitType
+}
+
+interface Matrix {
+  size(): number[]
+  storage(): string
+}
+
+interface ToDependencies {
+  typed: TypedFunction
+  matrix: (data: unknown[]) => Matrix
+  concat: TypedFunction
+}
 
 const name = 'to'
 const dependencies = ['typed', 'matrix', 'concat']
@@ -7,7 +24,7 @@ const dependencies = ['typed', 'matrix', 'concat']
 export const createTo = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, concat }: any) => {
+  ({ typed, matrix, concat }: ToDependencies) => {
     const matrixAlgorithmSuite = createMatrixAlgorithmSuite({
       typed,
       matrix,
@@ -40,8 +57,8 @@ export const createTo = /* #__PURE__ */ factory(
      */
     return typed(
       name,
-      { 'Unit, Unit | string': (x: any, unit: any) => x.to(unit) },
-      matrixAlgorithmSuite({ Ds: true as any })
+      { 'Unit, Unit | string': (x: UnitType, unit: UnitType | string): UnitType => x.to(unit) },
+      matrixAlgorithmSuite({ Ds: true as unknown as boolean })
     )
   }
 )
