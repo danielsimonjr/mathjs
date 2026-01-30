@@ -1,4 +1,22 @@
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for kldivergence
+interface MatrixType {
+  size(): number[]
+}
+
+interface KldivergenceDependencies {
+  typed: TypedFunction
+  matrix: (arr: unknown[]) => MatrixType
+  divide: TypedFunction
+  sum: TypedFunction
+  multiply: TypedFunction
+  map: TypedFunction
+  dotDivide: TypedFunction
+  log: TypedFunction
+  isNumeric: (value: unknown) => boolean
+}
 
 const name = 'kldivergence'
 const dependencies = [
@@ -26,17 +44,7 @@ export const createKldivergence = /* #__PURE__ */ factory(
     dotDivide,
     log,
     isNumeric
-  }: {
-    typed: any
-    matrix: any
-    divide: any
-    sum: any
-    multiply: any
-    map: any
-    dotDivide: any
-    log: any
-    isNumeric: any
-  }) => {
+  }: KldivergenceDependencies) => {
     /**
      * Calculate the Kullback-Leibler (KL) divergence  between two distributions
      *
@@ -54,24 +62,24 @@ export const createKldivergence = /* #__PURE__ */ factory(
      * @return {number}              Returns distance between q and p
      */
     return typed(name, {
-      'Array, Array': function (q: any, p: any): number {
+      'Array, Array': function (q: unknown[], p: unknown[]): number {
         return _kldiv(matrix(q), matrix(p))
       },
 
-      'Matrix, Array': function (q: any, p: any): number {
+      'Matrix, Array': function (q: MatrixType, p: unknown[]): number {
         return _kldiv(q, matrix(p))
       },
 
-      'Array, Matrix': function (q: any, p: any): number {
+      'Array, Matrix': function (q: unknown[], p: MatrixType): number {
         return _kldiv(matrix(q), p)
       },
 
-      'Matrix, Matrix': function (q: any, p: any): number {
+      'Matrix, Matrix': function (q: MatrixType, p: MatrixType): number {
         return _kldiv(q, p)
       }
     })
 
-    function _kldiv(q: any, p: any): number {
+    function _kldiv(q: MatrixType, p: MatrixType): number {
       const plength = p.size().length
       const qlength = q.size().length
       if (plength > 1) {
@@ -96,19 +104,19 @@ export const createKldivergence = /* #__PURE__ */ factory(
       if (sump === 0) {
         throw new Error('Sum of elements in second object must be non zero')
       }
-      const qnorm = (divide as any)(q, (sum as any)(q))
-      const pnorm = (divide as any)(p, (sum as any)(p))
+      const qnorm = divide(q, sum(q))
+      const pnorm = divide(p, sum(p))
 
-      const result = (sum as any)(
-        (multiply as any)(
+      const result = sum(
+        multiply(
           qnorm,
-          (map as any)((dotDivide as any)(qnorm, pnorm), (x: any) =>
-            (log as any)(x)
+          map(dotDivide(qnorm, pnorm), (x: unknown) =>
+            log(x)
           )
         )
       )
       if (isNumeric(result)) {
-        return result
+        return result as number
       } else {
         return Number.NaN
       }

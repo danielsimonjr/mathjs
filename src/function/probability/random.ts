@@ -2,6 +2,20 @@ import { factory } from '../../utils/factory.ts'
 import { isMatrix } from '../../utils/is.ts'
 import { createRng } from './util/seededRNG.ts'
 import { randomMatrix } from './util/randomMatrix.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for random
+interface MatrixType {
+  create(data: unknown[], datatype?: string): MatrixType
+  valueOf(): unknown[]
+}
+
+interface RandomDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  on?: (event: string, callback: (curr: ConfigOptions, prev: ConfigOptions) => void) => void
+}
 
 const name = 'random'
 const dependencies = ['typed', 'config', '?on']
@@ -9,12 +23,12 @@ const dependencies = ['typed', 'config', '?on']
 export const createRandom = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, on }: { typed: any; config: any; on: any }) => {
+  ({ typed, config, on }: RandomDependencies) => {
     // seeded pseudo random number generator
     let rng = createRng(config.randomSeed)
 
     if (on) {
-      on('config', function (curr: any, prev: any) {
+      on('config', function (curr: ConfigOptions, prev: ConfigOptions) {
         if (curr.randomSeed !== prev.randomSeed) {
           rng = createRng(curr.randomSeed)
         }
@@ -55,16 +69,16 @@ export const createRandom = /* #__PURE__ */ factory(
       '': () => _random(0, 1),
       number: (max: number) => _random(0, max),
       'number, number': (min: number, max: number) => _random(min, max),
-      'Array | Matrix': (size: any) => _randomMatrix(size, 0, 1),
-      'Array | Matrix, number': (size: any, max: number) =>
+      'Array | Matrix': (size: unknown[] | MatrixType) => _randomMatrix(size, 0, 1),
+      'Array | Matrix, number': (size: unknown[] | MatrixType, max: number) =>
         _randomMatrix(size, 0, max),
-      'Array | Matrix, number, number': (size: any, min: number, max: number) =>
+      'Array | Matrix, number, number': (size: unknown[] | MatrixType, min: number, max: number) =>
         _randomMatrix(size, min, max)
     })
 
-    function _randomMatrix(size: any, min: number, max: number): any {
-      const res = randomMatrix(size.valueOf(), () => _random(min, max))
-      return isMatrix(size) ? (size as any).create(res, 'number') : res
+    function _randomMatrix(size: unknown[] | MatrixType, min: number, max: number): unknown[] | MatrixType {
+      const res = randomMatrix((size as { valueOf(): number[] }).valueOf(), () => _random(min, max))
+      return isMatrix(size) ? (size as MatrixType).create(res, 'number') : res
     }
 
     function _random(min: number, max: number): number {
@@ -78,12 +92,12 @@ export const createRandom = /* #__PURE__ */ factory(
 export const createRandomNumber = /* #__PURE__ */ factory(
   name,
   ['typed', 'config', '?on'],
-  ({ typed, config, on, matrix: _matrix }: any) => {
+  ({ typed, config, on }: RandomDependencies) => {
     // seeded pseudo random number generator1
     let rng = createRng(config.randomSeed)
 
     if (on) {
-      on('config', function (curr: any, prev: any) {
+      on('config', function (curr: ConfigOptions, prev: ConfigOptions) {
         if (curr.randomSeed !== prev.randomSeed) {
           rng = createRng(curr.randomSeed)
         }
