@@ -5,6 +5,27 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { MathJsConfig } from '../../core/config.ts'
 
+// Type definitions for log10
+interface ComplexType {
+  log(): { div(n: number): ComplexType }
+}
+
+interface ComplexConstructor {
+  new (re: number, im: number): ComplexType
+}
+
+interface BigNumberType {
+  isNegative(): boolean
+  log(): BigNumberType
+  toNumber(): number
+}
+
+interface Log10Dependencies {
+  typed: TypedFunction
+  config: MathJsConfig
+  Complex: ComplexConstructor
+}
+
 const name = 'log10'
 const dependencies = ['typed', 'config', 'Complex']
 const log16 = log10Number(16)
@@ -16,11 +37,7 @@ export const createLog10 = /* #__PURE__ */ factory(
     typed,
     config,
     Complex
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    Complex: any
-  }): any => {
+  }: Log10Dependencies) => {
     /**
      * Calculate the 10-base logarithm of a value. This is the same as calculating `log(x, 10)`.
      *
@@ -47,15 +64,15 @@ export const createLog10 = /* #__PURE__ */ factory(
      *            Returns the 10-base logarithm of `x`
      */
 
-    function complexLog(c: any): any {
+    function complexLog(c: ComplexType): ComplexType {
       return c.log().div(Math.LN10)
     }
 
-    function complexLogNumber(x: any): any {
+    function complexLogNumber(x: number): ComplexType {
       return complexLog(new Complex(x, 0))
     }
     return typed(name, {
-      number: function (x: any): any {
+      number: function (x: number): number | ComplexType {
         if (x >= 0 || config.predictable) {
           return log10Number(x)
         } else {
@@ -68,18 +85,18 @@ export const createLog10 = /* #__PURE__ */ factory(
 
       Complex: complexLog,
 
-      BigNumber: function (x: any): any {
+      BigNumber: function (x: BigNumberType): BigNumberType | ComplexType {
         if (!x.isNegative() || config.predictable) {
           return x.log()
         } else {
           // downgrade to number, return Complex valued result
-          return complexLogNumber((x as any).toNumber())
+          return complexLogNumber(x.toNumber())
         }
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) =>
-          (x: any): any =>
+        (self: TypedFunction) =>
+          (x: unknown): unknown =>
             deepMap(x, self)
       )
     })

@@ -4,6 +4,31 @@ import type { MathJsConfig } from '../../core/config.ts'
 import { deepMap } from '../../utils/collection.ts'
 import { log1p as _log1p } from '../../utils/number.ts'
 
+// Type definitions for log1p
+interface ComplexType {
+  re: number
+  im: number
+}
+
+interface ComplexConstructor {
+  new (re: number, im: number): ComplexType
+}
+
+interface BigNumberType {
+  plus(n: number): BigNumberType
+  isNegative(): boolean
+  ln(): BigNumberType
+  toNumber(): number
+}
+
+interface Log1pDependencies {
+  typed: TypedFunction
+  config: MathJsConfig
+  divideScalar: TypedFunction
+  log: TypedFunction
+  Complex: ComplexConstructor
+}
+
 const name = 'log1p'
 const dependencies = ['typed', 'config', 'divideScalar', 'log', 'Complex']
 
@@ -16,13 +41,7 @@ export const createLog1p = /* #__PURE__ */ factory(
     divideScalar,
     log,
     Complex
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    divideScalar: any
-    log: any
-    Complex: any
-  }): any => {
+  }: Log1pDependencies) => {
     /**
      * Calculate the logarithm of a `value+1`.
      *
@@ -55,7 +74,7 @@ export const createLog1p = /* #__PURE__ */ factory(
      *            Returns the logarithm of `x+1`
      */
     return typed(name, {
-      number: function (x: any): any {
+      number: function (x: number): number | ComplexType {
         if (x >= -1 || config.predictable) {
           return _log1p(x)
         } else {
@@ -66,23 +85,23 @@ export const createLog1p = /* #__PURE__ */ factory(
 
       Complex: _log1pComplex,
 
-      BigNumber: function (x: any): any {
+      BigNumber: function (x: BigNumberType): BigNumberType | ComplexType {
         const y = x.plus(1)
         if (!y.isNegative() || config.predictable) {
           return y.ln()
         } else {
           // downgrade to number, return Complex valued result
-          return _log1pComplex(new Complex((x as any).toNumber(), 0))
+          return _log1pComplex(new Complex(x.toNumber(), 0))
         }
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) =>
-          (x: any): any =>
+        (self: TypedFunction) =>
+          (x: unknown): unknown =>
             deepMap(x, self)
       ),
 
-      'any, any': typed.referToSelf((self: any) => (x: any, base: any): any => {
+      'any, any': typed.referToSelf((self: TypedFunction) => (x: unknown, base: unknown): unknown => {
         // calculate logarithm for a specified base, log1p(x, base)
         return divideScalar(self(x), log(base))
       })
@@ -94,7 +113,7 @@ export const createLog1p = /* #__PURE__ */ factory(
      * @returns {Complex}
      * @private
      */
-    function _log1pComplex(x: any): any {
+    function _log1pComplex(x: ComplexType): ComplexType {
       const xRe1p = x.re + 1
       return new Complex(
         Math.log(Math.sqrt(xRe1p * xRe1p + x.im * x.im)),

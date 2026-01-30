@@ -4,6 +4,33 @@ import type { MathJsConfig } from '../../core/config.ts'
 import { promoteLogarithm } from '../../utils/bigint.ts'
 import { logNumber } from '../../plain/number/index.ts'
 
+// Type definitions for log
+interface ComplexType {
+  log(): ComplexType
+}
+
+interface ComplexConstructor {
+  new (re: number, im: number): ComplexType
+}
+
+interface BigNumberType {
+  isNegative(): boolean
+  ln(): BigNumberType
+  toNumber(): number
+}
+
+interface FractionType {
+  log(base: FractionType): FractionType | null
+}
+
+interface LogDependencies {
+  typed: TypedFunction
+  typeOf: (x: unknown) => string
+  config: MathJsConfig
+  divideScalar: TypedFunction
+  Complex: ComplexConstructor
+}
+
 const name = 'log'
 const dependencies = ['config', 'typed', 'typeOf', 'divideScalar', 'Complex']
 const nlg16 = Math.log(16)
@@ -17,13 +44,7 @@ export const createLog = /* #__PURE__ */ factory(
     config,
     divideScalar,
     Complex
-  }: {
-    typed: TypedFunction
-    typeOf: any
-    config: MathJsConfig
-    divideScalar: any
-    Complex: any
-  }): any => {
+  }: LogDependencies) => {
     /**
      * Calculate the logarithm of a value.
      *
@@ -59,16 +80,16 @@ export const createLog = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Fraction | Complex}
      *            Returns the logarithm of `x`
      */
-    function complexLog(c: any): any {
+    function complexLog(c: ComplexType): ComplexType {
       return c.log()
     }
 
-    function complexLogNumber(x: any): any {
+    function complexLogNumber(x: number): ComplexType {
       return complexLog(new Complex(x, 0))
     }
 
     return typed(name, {
-      number: function (x: any): any {
+      number: function (x: number): number | ComplexType {
         if (x >= 0 || config.predictable) {
           return logNumber(x)
         } else {
@@ -81,20 +102,20 @@ export const createLog = /* #__PURE__ */ factory(
 
       Complex: complexLog,
 
-      BigNumber: function (x: any): any {
+      BigNumber: function (x: BigNumberType): BigNumberType | ComplexType {
         if (!x.isNegative() || config.predictable) {
           return x.ln()
         } else {
           // downgrade to number, return Complex valued result
-          return complexLogNumber((x as any).toNumber())
+          return complexLogNumber(x.toNumber())
         }
       },
 
-      'any, any': typed.referToSelf((self: any) => (x: any, base: any): any => {
+      'any, any': typed.referToSelf((self: TypedFunction) => (x: unknown, base: unknown): unknown => {
         // calculate logarithm for a specified base, log(x, base)
 
         if (typeOf(x) === 'Fraction' && typeOf(base) === 'Fraction') {
-          const result = x.log(base)
+          const result = (x as FractionType).log(base as FractionType)
 
           if (result !== null) {
             return result

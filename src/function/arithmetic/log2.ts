@@ -5,6 +5,28 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { MathJsConfig } from '../../core/config.ts'
 
+// Type definitions for log2
+interface ComplexType {
+  re: number
+  im: number
+}
+
+interface ComplexConstructor {
+  new (re: number, im: number): ComplexType
+}
+
+interface BigNumberType {
+  isNegative(): boolean
+  log(base: number): BigNumberType
+  toNumber(): number
+}
+
+interface Log2Dependencies {
+  typed: TypedFunction
+  config: MathJsConfig
+  Complex: ComplexConstructor
+}
+
 const name = 'log2'
 const dependencies = ['typed', 'config', 'Complex']
 
@@ -15,11 +37,7 @@ export const createLog2 = /* #__PURE__ */ factory(
     typed,
     config,
     Complex
-  }: {
-    typed: TypedFunction
-    config: MathJsConfig
-    Complex: any
-  }): any => {
+  }: Log2Dependencies) => {
     /**
      * Calculate the 2-base of a value. This is the same as calculating `log(x, 2)`.
      *
@@ -45,12 +63,12 @@ export const createLog2 = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex | Array | Matrix}
      *            Returns the 2-base logarithm of `x`
      */
-    function complexLog2Number(x: any): any {
+    function complexLog2Number(x: number): ComplexType {
       return _log2Complex(new Complex(x, 0))
     }
 
     return typed(name, {
-      number: function (x: any): any {
+      number: function (x: number): number | ComplexType {
         if (x >= 0 || config.predictable) {
           return log2Number(x)
         } else {
@@ -63,18 +81,18 @@ export const createLog2 = /* #__PURE__ */ factory(
 
       Complex: _log2Complex,
 
-      BigNumber: function (x: any): any {
+      BigNumber: function (x: BigNumberType): BigNumberType | ComplexType {
         if (!x.isNegative() || config.predictable) {
           return x.log(2)
         } else {
           // downgrade to number, return Complex valued result
-          return complexLog2Number((x as any).toNumber())
+          return complexLog2Number(x.toNumber())
         }
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) =>
-          (x: any): any =>
+        (self: TypedFunction) =>
+          (x: unknown): unknown =>
             deepMap(x, self)
       )
     })
@@ -85,7 +103,7 @@ export const createLog2 = /* #__PURE__ */ factory(
      * @returns {Complex}
      * @private
      */
-    function _log2Complex(x: any): any {
+    function _log2Complex(x: ComplexType): ComplexType {
       const newX = Math.sqrt(x.re * x.re + x.im * x.im)
       return new Complex(
         Math.log2 ? Math.log2(newX) : Math.log(newX) / Math.LN2,
