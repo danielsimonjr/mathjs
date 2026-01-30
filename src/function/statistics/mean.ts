@@ -6,20 +6,15 @@ import {
 import { arraySize } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-}
-
-interface Matrix {
+// Type definitions for mean
+interface MatrixType {
   size(): number[]
-  valueOf(): any[] | any[][]
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Dependencies {
+interface MeanDependencies {
   typed: TypedFunction
   add: TypedFunction
   divide: TypedFunction
@@ -31,7 +26,7 @@ const dependencies = ['typed', 'add', 'divide']
 export const createMean = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, add, divide }: Dependencies) => {
+  ({ typed, add, divide }: MeanDependencies) => {
     /**
      * Compute the mean value of matrix or a list with values.
      * In case of a multidimensional array, the mean of the flattened array
@@ -67,7 +62,7 @@ export const createMean = /* #__PURE__ */ factory(
       'Array | Matrix, number | BigNumber': _nmeanDim,
 
       // mean(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         if (containsCollections(args)) {
           throw new TypeError('Scalar values expected in function mean')
         }
@@ -84,11 +79,12 @@ export const createMean = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Array | Matrix} mean
      * @private
      */
-    function _nmeanDim(array: any[] | Matrix, dim: number | any): any {
+    function _nmeanDim(array: unknown[] | MatrixType, dim: number | { valueOf(): number }): unknown {
       try {
-        const sum = reduce(array as any, dim, add)
-        const s = Array.isArray(array) ? arraySize(array) : array.size()
-        return divide(sum, s[dim])
+        const sum = reduce(array, dim, add)
+        const s = Array.isArray(array) ? arraySize(array) : (array as MatrixType).size()
+        const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
+        return divide(sum, s[dimValue])
       } catch (err) {
         throw improveErrorMessage(err, 'mean', undefined)
       }
@@ -100,11 +96,11 @@ export const createMean = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex} mean
      * @private
      */
-    function _mean(array: any[] | Matrix): any {
-      let sum: any
+    function _mean(array: unknown[] | MatrixType): unknown {
+      let sum: unknown
       let num = 0
 
-      deepForEach(array as any, function (value: any) {
+      deepForEach(array, function (value: unknown) {
         try {
           sum = sum === undefined ? value : add(sum, value)
           num++

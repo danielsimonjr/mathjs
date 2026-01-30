@@ -2,19 +2,14 @@ import { containsCollections } from '../../utils/collection.ts'
 import { flatten } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for median
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
-}
-
-interface Dependencies {
+interface MedianDependencies {
   typed: TypedFunction
   add: TypedFunction
   divide: TypedFunction
@@ -28,18 +23,18 @@ const dependencies = ['typed', 'add', 'divide', 'compare', 'partitionSelect']
 export const createMedian = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, add, divide, compare, partitionSelect }: Dependencies) => {
+  ({ typed, add, divide, compare, partitionSelect }: MedianDependencies) => {
     /**
      * Recursively calculate the median of an n-dimensional array
      * @param {Array | Matrix} array - Input array or matrix
      * @return {number | BigNumber | Complex | Unit} median
      * @private
      */
-    function _median(array: any[] | Matrix): any {
+    function _median(array: unknown[] | MatrixType): unknown {
       try {
-        array = flatten(array.valueOf())
+        const flat = flatten((array as MatrixType).valueOf()) as unknown[]
 
-        const num = array.length
+        const num = flat.length
         if (num === 0) {
           throw new Error('Cannot calculate median of an empty array')
         }
@@ -47,20 +42,20 @@ export const createMedian = /* #__PURE__ */ factory(
         if (num % 2 === 0) {
           // even: return the average of the two middle values
           const mid = num / 2 - 1
-          const right = partitionSelect(array, mid + 1)
+          const right = partitionSelect(flat, mid + 1)
 
           // array now partitioned at mid + 1, take max of left part
-          let left = array[mid]
+          let left = flat[mid]
           for (let i = 0; i < mid; ++i) {
-            if (compare(array[i], left) > 0) {
-              left = array[i]
+            if (compare(flat[i], left) > 0) {
+              left = flat[i]
             }
           }
 
           return middle2(left, right)
         } else {
           // odd: return the middle value
-          const m = partitionSelect(array, (num - 1) / 2)
+          const m = partitionSelect(flat, (num - 1) / 2)
 
           return middle(m)
         }
@@ -71,7 +66,7 @@ export const createMedian = /* #__PURE__ */ factory(
 
     // helper function to type check the middle value of the array
     const middle = typed({
-      'number | BigNumber | Complex | Unit': function (value: any): any {
+      'number | BigNumber | Complex | Unit': function (value: unknown): unknown {
         return value
       }
     })
@@ -79,7 +74,7 @@ export const createMedian = /* #__PURE__ */ factory(
     // helper function to type check the two middle value of the array
     const middle2 = typed({
       'number | BigNumber | Complex | Unit, number | BigNumber | Complex | Unit':
-        function (left: any, right: any): any {
+        function (left: unknown, right: unknown): unknown {
           return divide(add(left, right), 2)
         }
     })
@@ -116,16 +111,16 @@ export const createMedian = /* #__PURE__ */ factory(
 
       // median([a, b, c, d, ...], dim)
       'Array | Matrix, number | BigNumber': function (
-        _array: any[] | Matrix,
-        _dim: number | any
-      ): any {
+        _array: unknown[] | MatrixType,
+        _dim: number | { valueOf(): number }
+      ): unknown {
         // TODO: implement median(A, dim)
         throw new Error('median(A, dim) is not yet supported')
         // return reduce(arguments[0], arguments[1], ...)
       },
 
       // median(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         if (containsCollections(args)) {
           throw new TypeError('Scalar values expected in function median')
         }

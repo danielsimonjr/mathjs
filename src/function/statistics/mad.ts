@@ -2,19 +2,14 @@ import { flatten } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
 import { wasmLoader } from '../../wasm/WasmLoader.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for mad
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
-}
-
-interface Dependencies {
+interface MadDependencies {
   typed: TypedFunction
   abs: TypedFunction
   map: TypedFunction
@@ -28,7 +23,7 @@ const WASM_MAD_THRESHOLD = 500
 /**
  * Check if an array contains only plain numbers
  */
-function isPlainNumberArray(arr: any[]): boolean {
+function isPlainNumberArray(arr: unknown[]): arr is number[] {
   for (let i = 0; i < arr.length; i++) {
     if (typeof arr[i] !== 'number') {
       return false
@@ -43,7 +38,7 @@ const dependencies = ['typed', 'abs', 'map', 'median', 'subtract']
 export const createMad = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, abs, map, median, subtract }: Dependencies) => {
+  ({ typed, abs, map, median, subtract }: MadDependencies) => {
     /**
      * Compute the median absolute deviation of a matrix or a list with values.
      * The median absolute deviation is defined as the median of the absolute
@@ -73,7 +68,7 @@ export const createMad = /* #__PURE__ */ factory(
       'Array | Matrix': _mad,
 
       // mad(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         return _mad(args)
       }
     })
@@ -84,10 +79,10 @@ export const createMad = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex | Unit} The median absolute deviation
      * @private
      */
-    function _mad(array: any[] | Matrix): any {
-      array = flatten(array.valueOf())
+    function _mad(array: unknown[] | MatrixType): unknown {
+      const flat = flatten((array as MatrixType).valueOf()) as unknown[]
 
-      if (array.length === 0) {
+      if (flat.length === 0) {
         throw new Error(
           'Cannot calculate median absolute deviation (mad) of an empty array'
         )
@@ -97,14 +92,14 @@ export const createMad = /* #__PURE__ */ factory(
       const wasm = wasmLoader.getModule()
       if (
         wasm &&
-        array.length >= WASM_MAD_THRESHOLD &&
-        isPlainNumberArray(array)
+        flat.length >= WASM_MAD_THRESHOLD &&
+        isPlainNumberArray(flat)
       ) {
         try {
-          const aAlloc = wasmLoader.allocateFloat64Array(array)
+          const aAlloc = wasmLoader.allocateFloat64Array(flat)
 
           try {
-            const result = wasm.statsMad(aAlloc.ptr, array.length)
+            const result = wasm.statsMad(aAlloc.ptr, flat.length)
             return result
           } finally {
             wasmLoader.free(aAlloc.ptr)
@@ -115,9 +110,9 @@ export const createMad = /* #__PURE__ */ factory(
       }
 
       try {
-        const med = median(array)
+        const med = median(flat)
         return median(
-          map(array, function (value: any): any {
+          map(flat, function (value: unknown): unknown {
             return abs(subtract(value, med))
           })
         )

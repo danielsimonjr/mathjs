@@ -6,25 +6,17 @@ import {
 import { factory } from '../../utils/factory.ts'
 import { safeNumberType } from '../../utils/number.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for min
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
-}
-
-interface Config {
-  [key: string]: any
-}
-
-interface Dependencies {
+interface MinDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
   numeric: TypedFunction
   smaller: TypedFunction
   isNaN: TypedFunction
@@ -36,7 +28,7 @@ const dependencies = ['typed', 'config', 'numeric', 'smaller', 'isNaN']
 export const createMin = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, numeric, smaller, isNaN: mathIsNaN }: Dependencies) => {
+  ({ typed, config, numeric, smaller, isNaN: mathIsNaN }: MinDependencies) => {
     /**
      * Compute the minimum value of a matrix or a  list of values.
      * In case of a multidimensional array, the minimum of the flattened array
@@ -74,14 +66,15 @@ export const createMin = /* #__PURE__ */ factory(
 
       // min([a, b, c, d, ...], dim)
       'Array | Matrix, number | BigNumber': function (
-        array: any[] | Matrix,
-        dim: number | any
-      ): any {
-        return reduce(array as any, dim.valueOf(), _smallest)
+        array: unknown[] | MatrixType,
+        dim: number | { valueOf(): number }
+      ): unknown {
+        const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
+        return reduce(array, dimValue, _smallest)
       },
 
       // min(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         if (containsCollections(args)) {
           throw new TypeError('Scalar values expected in function min')
         }
@@ -92,12 +85,12 @@ export const createMin = /* #__PURE__ */ factory(
 
     /**
      * Return the smallest of two values
-     * @param {any} x - First value
-     * @param {any} y - Second value
-     * @returns {any} Returns x when x is smallest, or y when y is smallest
+     * @param {unknown} x - First value
+     * @param {unknown} y - Second value
+     * @returns {unknown} Returns x when x is smallest, or y when y is smallest
      * @private
      */
-    function _smallest(x: any, y: any): any {
+    function _smallest(x: unknown, y: unknown): unknown {
       try {
         return smaller(x, y) ? x : y
       } catch (err) {
@@ -111,10 +104,10 @@ export const createMin = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex | Unit} min
      * @private
      */
-    function _min(array: any[] | Matrix): any {
-      let min: any
+    function _min(array: unknown[] | MatrixType): unknown {
+      let min: unknown
 
-      deepForEach(array as any, function (value: any) {
+      deepForEach(array, function (value: unknown) {
         try {
           if (mathIsNaN(value)) {
             min = value
@@ -132,7 +125,7 @@ export const createMin = /* #__PURE__ */ factory(
 
       // make sure returning numeric value: parse a string into a numeric value
       if (typeof min === 'string') {
-        min = numeric(min, safeNumberType(min, config as any))
+        min = numeric(min, safeNumberType(min, config))
       }
 
       return min

@@ -2,20 +2,15 @@ import { deepForEach } from '../../utils/collection.ts'
 import { isBigNumber } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-}
-
-interface Matrix {
-  valueOf(): any[] | any[][]
+// Type definitions for variance
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
   length?: number
 }
 
-interface Dependencies {
+interface VarianceDependencies {
   typed: TypedFunction
   add: TypedFunction
   subtract: TypedFunction
@@ -51,7 +46,7 @@ export const createVariance = /* #__PURE__ */ factory(
     divide,
     mapSlices,
     isNaN: mathIsNaN
-  }: Dependencies) => {
+  }: VarianceDependencies) => {
     /**
      * Compute the variance of a matrix or a  list with values.
      * In case of a multidimensional array or matrix, the variance over all
@@ -107,7 +102,7 @@ export const createVariance = /* #__PURE__ */ factory(
      */
     return typed(name, {
       // variance([a, b, c, d, ...])
-      'Array | Matrix': function (array: any[] | Matrix): any {
+      'Array | Matrix': function (array: unknown[] | MatrixType): unknown {
         return _var(array, DEFAULT_NORMALIZATION)
       },
 
@@ -116,9 +111,9 @@ export const createVariance = /* #__PURE__ */ factory(
 
       // variance([a, b, c, c, ...], dim)
       'Array | Matrix, number | BigNumber': function (
-        array: any[] | Matrix,
-        dim: number | any
-      ): any {
+        array: unknown[] | MatrixType,
+        dim: number | { valueOf(): number }
+      ): unknown {
         return _varDim(array, dim, DEFAULT_NORMALIZATION)
       },
 
@@ -126,7 +121,7 @@ export const createVariance = /* #__PURE__ */ factory(
       'Array | Matrix, number | BigNumber, string': _varDim,
 
       // variance(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         return _var(args, DEFAULT_NORMALIZATION)
       }
     })
@@ -143,20 +138,20 @@ export const createVariance = /* #__PURE__ */ factory(
      * @private
      */
     function _var(
-      array: any[] | Matrix,
+      array: unknown[] | MatrixType,
       normalization: NormalizationType
-    ): any {
-      let sum: any
+    ): unknown {
+      let sum: unknown
       let num = 0
 
-      if (array.length === 0) {
+      if ((array as unknown[]).length === 0) {
         throw new SyntaxError(
           'Function variance requires one or more parameters (0 provided)'
         )
       }
 
       // calculate the mean and number of elements
-      deepForEach(array as any, function (value: any) {
+      deepForEach(array, function (value: unknown) {
         try {
           sum = sum === undefined ? value : add(sum, value)
           num++
@@ -171,7 +166,7 @@ export const createVariance = /* #__PURE__ */ factory(
 
       // calculate the variance
       sum = undefined
-      deepForEach(array as any, function (value: any) {
+      deepForEach(array, function (value: unknown) {
         const diff = subtract(value, mean)
         sum =
           sum === undefined
@@ -191,7 +186,7 @@ export const createVariance = /* #__PURE__ */ factory(
           return divide(sum, num + 1)
 
         case 'unbiased': {
-          const zero = isBigNumber(sum) ? (sum as any).mul(0) : 0
+          const zero = isBigNumber(sum) ? (sum as unknown as { mul(n: number): unknown }).mul(0) : 0
           return num === 1 ? zero : divide(sum, num - 1)
         }
 
@@ -214,17 +209,17 @@ export const createVariance = /* #__PURE__ */ factory(
      * @private
      */
     function _varDim(
-      array: any[] | Matrix,
-      dim: number | any,
+      array: unknown[] | MatrixType,
+      dim: number | { valueOf(): number },
       normalization: NormalizationType
-    ): any {
+    ): unknown {
       try {
-        if (array.length === 0) {
+        if ((array as unknown[]).length === 0) {
           throw new SyntaxError(
             'Function variance requires one or more parameters (0 provided)'
           )
         }
-        return mapSlices(array, dim, (x: any) => _var(x, normalization))
+        return mapSlices(array, dim, (x: unknown) => _var(x as unknown[] | MatrixType, normalization))
       } catch (err) {
         throw improveErrorMessage(err, 'variance', undefined)
       }

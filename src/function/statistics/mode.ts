@@ -1,21 +1,16 @@
 import { flatten } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for mode
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
-}
-
-interface Dependencies {
+interface ModeDependencies {
   typed: TypedFunction
   isNaN: TypedFunction
-  isNumeric: TypedFunction
+  isNumeric: (value: unknown) => boolean
 }
 
 const name = 'mode'
@@ -24,7 +19,7 @@ const dependencies = ['typed', 'isNaN', 'isNumeric']
 export const createMode = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, isNaN: mathIsNaN, isNumeric }: Dependencies) => {
+  ({ typed, isNaN: mathIsNaN, isNumeric }: ModeDependencies) => {
     /**
      * Computes the mode of a set of numbers or a list with values(numbers or characters).
      * If there are multiple modes, it returns a list of those values.
@@ -53,7 +48,7 @@ export const createMode = /* #__PURE__ */ factory(
     return typed(name, {
       'Array | Matrix': _mode,
 
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown[] {
         return _mode(args)
       }
     })
@@ -64,18 +59,18 @@ export const createMode = /* #__PURE__ */ factory(
      * @return {Array} mode
      * @private
      */
-    function _mode(values: any[] | Matrix): any[] {
-      values = flatten(values.valueOf())
-      const num = values.length
+    function _mode(values: unknown[] | MatrixType): unknown[] {
+      const flat = flatten((values as MatrixType).valueOf()) as unknown[]
+      const num = flat.length
       if (num === 0) {
         throw new Error('Cannot calculate mode of an empty array')
       }
 
       const count: Record<string, number> = {}
-      let mode: any[] = []
+      let mode: unknown[] = []
       let max = 0
-      for (let i = 0; i < values.length; i++) {
-        const value = values[i]
+      for (let i = 0; i < flat.length; i++) {
+        const value = flat[i]
 
         if (isNumeric(value) && mathIsNaN(value)) {
           throw new Error(
@@ -83,16 +78,16 @@ export const createMode = /* #__PURE__ */ factory(
           )
         }
 
-        if (!(value in count)) {
-          count[value] = 0
+        if (!(String(value) in count)) {
+          count[String(value)] = 0
         }
 
-        count[value]++
+        count[String(value)]++
 
-        if (count[value] === max) {
+        if (count[String(value)] === max) {
           mode.push(value)
-        } else if (count[value] > max) {
-          max = count[value]
+        } else if (count[String(value)] > max) {
+          max = count[String(value)]
           mode = [value]
         }
       }

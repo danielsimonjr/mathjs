@@ -6,25 +6,17 @@ import {
 import { factory } from '../../utils/factory.ts'
 import { safeNumberType } from '../../utils/number.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for max
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
-}
-
-interface Config {
-  [key: string]: any
-}
-
-interface Dependencies {
+interface MaxDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
   numeric: TypedFunction
   larger: TypedFunction
   isNaN: TypedFunction
@@ -36,7 +28,7 @@ const dependencies = ['typed', 'config', 'numeric', 'larger', 'isNaN']
 export const createMax = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, numeric, larger, isNaN: mathIsNaN }: Dependencies) => {
+  ({ typed, config, numeric, larger, isNaN: mathIsNaN }: MaxDependencies) => {
     /**
      * Compute the maximum value of a matrix or a  list with values.
      * In case of a multidimensional array, the maximum of the flattened array
@@ -74,14 +66,15 @@ export const createMax = /* #__PURE__ */ factory(
 
       // max([a, b, c, d, ...], dim)
       'Array | Matrix, number | BigNumber': function (
-        array: any[] | Matrix,
-        dim: number | any
-      ): any {
-        return reduce(array as any, dim.valueOf(), _largest)
+        array: unknown[] | MatrixType,
+        dim: number | { valueOf(): number }
+      ): unknown {
+        const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
+        return reduce(array, dimValue, _largest)
       },
 
       // max(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         if (containsCollections(args)) {
           throw new TypeError('Scalar values expected in function max')
         }
@@ -92,12 +85,12 @@ export const createMax = /* #__PURE__ */ factory(
 
     /**
      * Return the largest of two values
-     * @param {any} x - First value
-     * @param {any} y - Second value
-     * @returns {any} Returns x when x is largest, or y when y is largest
+     * @param {unknown} x - First value
+     * @param {unknown} y - Second value
+     * @returns {unknown} Returns x when x is largest, or y when y is largest
      * @private
      */
-    function _largest(x: any, y: any): any {
+    function _largest(x: unknown, y: unknown): unknown {
       try {
         return larger(x, y) ? x : y
       } catch (err) {
@@ -111,10 +104,10 @@ export const createMax = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex | Unit} max
      * @private
      */
-    function _max(array: any[] | Matrix): any {
-      let res: any
+    function _max(array: unknown[] | MatrixType): unknown {
+      let res: unknown
 
-      deepForEach(array as any, function (value: any) {
+      deepForEach(array, function (value: unknown) {
         try {
           if (mathIsNaN(value)) {
             res = value
@@ -132,7 +125,7 @@ export const createMax = /* #__PURE__ */ factory(
 
       // make sure returning numeric value: parse a string into a numeric value
       if (typeof res === 'string') {
-        res = numeric(res, safeNumberType(res, config as any))
+        res = numeric(res, safeNumberType(res, config))
       }
 
       return res

@@ -1,21 +1,24 @@
 import { isNumber, isBigNumber } from '../../utils/is.ts'
 import { flatten } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for quantileSeq
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
+interface BigNumberType {
+  times(n: number): BigNumberType
+  floor(): BigNumberType
+  toNumber(): number
+  minus(n: number | BigNumberType): BigNumberType
+  valueOf(): number
 }
 
-interface Dependencies {
+interface QuantileSeqDependencies {
   typed: TypedFunction
-  bignumber?: TypedFunction
+  bignumber?: (value: unknown) => BigNumberType
   add: TypedFunction
   subtract: TypedFunction
   divide: TypedFunction
@@ -63,7 +66,7 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
     smallerEq,
     larger,
     mapSlices
-  }: Dependencies) => {
+  }: QuantileSeqDependencies) => {
     /**
      * Compute the prob order quantile of a matrix or a list with values.
      * The sequence is sorted and the middle value is returned.
@@ -100,59 +103,59 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
      */
     return typed(name, {
       'Array | Matrix, number | BigNumber': (
-        data: any[] | Matrix,
-        p: number | any
-      ): any => _quantileSeqProbNumber(data, p, false),
+        data: unknown[] | MatrixType,
+        p: number | BigNumberType
+      ): unknown => _quantileSeqProbNumber(data, p, false),
       'Array | Matrix, number | BigNumber, number': (
-        data: any[] | Matrix,
-        prob: number | any,
+        data: unknown[] | MatrixType,
+        prob: number | BigNumberType,
         dim: number
-      ): any => _quantileSeqDim(data, prob, false, dim, _quantileSeqProbNumber),
+      ): unknown => _quantileSeqDim(data, prob, false, dim, _quantileSeqProbNumber),
       'Array | Matrix, number | BigNumber, boolean': _quantileSeqProbNumber,
       'Array | Matrix, number | BigNumber, boolean, number': (
-        data: any[] | Matrix,
-        prob: number | any,
+        data: unknown[] | MatrixType,
+        prob: number | BigNumberType,
         sorted: boolean,
         dim: number
-      ): any =>
+      ): unknown =>
         _quantileSeqDim(data, prob, sorted, dim, _quantileSeqProbNumber),
       'Array | Matrix, Array | Matrix': (
-        data: any[] | Matrix,
-        p: any[] | Matrix
-      ): any => _quantileSeqProbCollection(data, p, false),
+        data: unknown[] | MatrixType,
+        p: unknown[] | MatrixType
+      ): unknown => _quantileSeqProbCollection(data, p, false),
       'Array | Matrix, Array | Matrix, number': (
-        data: any[] | Matrix,
-        prob: any[] | Matrix,
+        data: unknown[] | MatrixType,
+        prob: unknown[] | MatrixType,
         dim: number
-      ): any =>
+      ): unknown =>
         _quantileSeqDim(data, prob, false, dim, _quantileSeqProbCollection),
       'Array | Matrix, Array | Matrix, boolean': _quantileSeqProbCollection,
       'Array | Matrix, Array | Matrix, boolean, number': (
-        data: any[] | Matrix,
-        prob: any[] | Matrix,
+        data: unknown[] | MatrixType,
+        prob: unknown[] | MatrixType,
         sorted: boolean,
         dim: number
-      ): any =>
+      ): unknown =>
         _quantileSeqDim(data, prob, sorted, dim, _quantileSeqProbCollection)
     })
 
     function _quantileSeqDim(
-      data: any[] | Matrix,
-      prob: any,
+      data: unknown[] | MatrixType,
+      prob: unknown,
       sorted: boolean,
       dim: number,
-      fn: Function
-    ): any {
-      return mapSlices(data, dim, (x: any) => fn(x, prob, sorted))
+      fn: (data: unknown[] | MatrixType, prob: unknown, sorted: boolean) => unknown
+    ): unknown {
+      return mapSlices(data, dim, (x: unknown) => fn(x as unknown[] | MatrixType, prob, sorted))
     }
 
     function _quantileSeqProbNumber(
-      data: any[] | Matrix,
-      probOrN: number | any,
+      data: unknown[] | MatrixType,
+      probOrN: number | BigNumberType,
       sorted: boolean
-    ): any {
-      let probArr: any[]
-      const dataArr = (data as any).valueOf() as any[]
+    ): unknown {
+      let probArr: unknown[]
+      const dataArr = (data as MatrixType).valueOf() as unknown[]
       if (smaller(probOrN, 0)) {
         throw new Error('N/prob must be non-negative')
       }
@@ -160,7 +163,7 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
         // quantileSeq([a, b, c, d, ...], prob[,sorted])
         return isNumber(probOrN)
           ? _quantileSeq(dataArr, probOrN, sorted)
-          : bignumber!(_quantileSeq(dataArr, probOrN, sorted) as any)
+          : bignumber!(_quantileSeq(dataArr, probOrN, sorted))
       }
       if (larger(probOrN, 1)) {
         // quantileSeq([a, b, c, d, ...], N[,sorted])
@@ -184,7 +187,7 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
           probArr.push(_quantileSeq(dataArr, prob, sorted))
         }
 
-        return isNumber(probOrN) ? probArr : bignumber!(probArr as any)
+        return isNumber(probOrN) ? probArr : bignumber!(probArr)
       }
     }
 
@@ -199,16 +202,16 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
      */
 
     function _quantileSeqProbCollection(
-      data: any[] | Matrix,
-      probOrN: any[] | Matrix,
+      data: unknown[] | MatrixType,
+      probOrN: unknown[] | MatrixType,
       sorted: boolean
-    ): any {
-      const dataArr = (data as any).valueOf() as any[]
+    ): unknown {
+      const dataArr = (data as MatrixType).valueOf() as unknown[]
       // quantileSeq([a, b, c, d, ...], [prob1, prob2, ...][,sorted])
-      const probOrNArr = (probOrN as any).valueOf() as any[]
-      const probArr: any[] = []
+      const probOrNArr = (probOrN as MatrixType).valueOf() as unknown[]
+      const probArr: unknown[] = []
       for (let i = 0; i < probOrNArr.length; ++i) {
-        probArr.push(_quantileSeq(dataArr, probOrNArr[i], sorted))
+        probArr.push(_quantileSeq(dataArr, probOrNArr[i] as number | BigNumberType, sorted))
       }
       return probArr
     }
@@ -223,29 +226,29 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
      * @private
      */
     function _quantileSeq(
-      array: any[],
-      prob: number | any,
+      array: unknown[],
+      prob: number | BigNumberType,
       sorted: boolean
-    ): any {
-      const flat = flatten(array)
+    ): unknown {
+      const flat = flatten(array) as unknown[]
       const len = flat.length
       if (len === 0) {
         throw new Error('Cannot calculate quantile of an empty sequence')
       }
 
-      const index = isNumber(prob) ? prob * (len - 1) : prob.times(len - 1)
+      const index = isNumber(prob) ? prob * (len - 1) : (prob as BigNumberType).times(len - 1)
       const integerPart = isNumber(prob)
-        ? Math.floor(index)
-        : index.floor().toNumber()
-      const fracPart = isNumber(prob) ? index % 1 : index.minus(integerPart)
+        ? Math.floor(index as number)
+        : (index as BigNumberType).floor().toNumber()
+      const fracPart = isNumber(prob) ? (index as number) % 1 : (index as BigNumberType).minus(integerPart)
 
       if (isInteger(index)) {
         return sorted
-          ? flat[index]
-          : partitionSelect(flat, isNumber(prob) ? index : index.valueOf())
+          ? flat[index as number]
+          : partitionSelect(flat, isNumber(prob) ? index : (index as BigNumberType).valueOf())
       }
-      let left: any
-      let right: any
+      let left: unknown
+      let right: unknown
       if (sorted) {
         left = flat[integerPart]
         right = flat[integerPart + 1]

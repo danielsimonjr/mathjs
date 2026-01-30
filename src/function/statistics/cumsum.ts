@@ -4,21 +4,16 @@ import { _switch } from '../../utils/switch.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
 import { arraySize } from '../../utils/array.ts'
 import { IndexError } from '../../error/IndexError.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-}
-
-interface Matrix {
-  create(data: any, datatype?: string): Matrix
-  valueOf(): any[] | any[][]
+// Type definitions for cumsum
+interface MatrixType {
+  create(data: unknown, datatype?: string): MatrixType
+  valueOf(): unknown[] | unknown[][]
   datatype(): string | undefined
 }
 
-interface Dependencies {
+interface CumsumDependencies {
   typed: TypedFunction
   add: TypedFunction
   unaryPlus: TypedFunction
@@ -30,7 +25,7 @@ const dependencies = ['typed', 'add', 'unaryPlus']
 export const createCumSum = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, add, unaryPlus }: Dependencies) => {
+  ({ typed, add, unaryPlus }: CumsumDependencies) => {
     /**
      * Compute the cumulative sum of a matrix or a list with values.
      * In case of a (multi dimensional) array or matrix, the cumulative sums
@@ -60,24 +55,24 @@ export const createCumSum = /* #__PURE__ */ factory(
     return typed(name, {
       // sum([a, b, c, d, ...])
       Array: _cumsum,
-      Matrix: function (matrix: Matrix): Matrix {
-        return matrix.create(_cumsum(matrix.valueOf(), matrix.datatype()))
+      Matrix: function (matrix: MatrixType): MatrixType {
+        return matrix.create(_cumsum(matrix.valueOf() as unknown[], matrix.datatype()), matrix.datatype())
       },
 
       // sum([a, b, c, d, ...], dim)
       'Array, number | BigNumber': _ncumSumDim,
       'Matrix, number | BigNumber': function (
-        matrix: Matrix,
-        dim: number | any
-      ): Matrix {
+        matrix: MatrixType,
+        dim: number | { valueOf(): number }
+      ): MatrixType {
         return matrix.create(
-          _ncumSumDim(matrix.valueOf(), dim),
+          _ncumSumDim(matrix.valueOf() as unknown[], dim),
           matrix.datatype()
         )
       },
 
       // cumsum(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         if (containsCollections(args)) {
           throw new TypeError(
             'All values expected to be scalar in function cumsum'
@@ -95,7 +90,7 @@ export const createCumSum = /* #__PURE__ */ factory(
      * @return {Array} cumsum
      * @private
      */
-    function _cumsum(array: any[], _datatype?: string): any[] {
+    function _cumsum(array: unknown[], _datatype?: string): unknown[] {
       try {
         return _cumsummap(array)
       } catch (err) {
@@ -109,7 +104,7 @@ export const createCumSum = /* #__PURE__ */ factory(
      * @return {Array} cumulative sums
      * @private
      */
-    function _cumsummap(array: any[]): any[] {
+    function _cumsummap(array: unknown[]): unknown[] {
       if (array.length === 0) {
         return []
       }
@@ -131,15 +126,16 @@ export const createCumSum = /* #__PURE__ */ factory(
      * @return {Array} cumulative sums
      * @private
      */
-    function _ncumSumDim(array: any[], dim: number | any): any[] {
+    function _ncumSumDim(array: unknown[], dim: number | { valueOf(): number }): unknown[] {
       const size = arraySize(array)
-      if (dim < 0 || dim >= size.length) {
+      const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
+      if (dimValue < 0 || dimValue >= size.length) {
         // TODO: would be more clear when throwing a DimensionError here
-        throw new IndexError(dim, 0, size.length) as any
+        throw new IndexError(dimValue, 0, size.length)
       }
 
       try {
-        return _cumsumDimensional(array, dim)
+        return _cumsumDimensional(array, dimValue)
       } catch (err) {
         throw improveErrorMessage(err, name, undefined)
       }
@@ -153,27 +149,27 @@ export const createCumSum = /* #__PURE__ */ factory(
      * @return {Array} cumulative sums
      * @private
      */
-    function _cumsumDimensional(mat: any[], dim: number): any[] {
+    function _cumsumDimensional(mat: unknown[], dim: number): unknown[] {
       let i: number
-      let ret: any[]
-      let tran: any[]
+      let ret: unknown[]
+      let tran: unknown[]
 
       if (dim <= 0) {
-        const initialValue = mat[0][0]
+        const initialValue = (mat[0] as unknown[])[0]
         if (!Array.isArray(initialValue)) {
           return _cumsummap(mat)
         } else {
           tran = _switch(mat)
           ret = []
           for (i = 0; i < tran.length; i++) {
-            ret[i] = _cumsumDimensional(tran[i], dim - 1)
+            ret[i] = _cumsumDimensional(tran[i] as unknown[], dim - 1)
           }
           return ret
         }
       } else {
         ret = []
         for (i = 0; i < mat.length; i++) {
-          ret[i] = _cumsumDimensional(mat[i], dim - 1)
+          ret[i] = _cumsumDimensional(mat[i] as unknown[], dim - 1)
         }
         return ret
       }

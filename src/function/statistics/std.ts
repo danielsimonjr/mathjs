@@ -1,19 +1,13 @@
 import { factory } from '../../utils/factory.ts'
 import { isCollection } from '../../utils/is.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  apply(thisArg: any, args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for std
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
-}
-
-interface Dependencies {
+interface StdDependencies {
   typed: TypedFunction
   map: TypedFunction
   sqrt: TypedFunction
@@ -28,7 +22,7 @@ const dependencies = ['typed', 'map', 'sqrt', 'variance']
 export const createStd = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, map, sqrt, variance }: Dependencies) => {
+  ({ typed, map, sqrt, variance }: StdDependencies) => {
     /**
      * Compute the standard deviation of a matrix or a  list with values.
      * The standard deviations is defined as the square root of the variance:
@@ -95,29 +89,29 @@ export const createStd = /* #__PURE__ */ factory(
       'Array | Matrix, number | BigNumber, string': _std,
 
       // std(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         return _std(args)
       }
     })
 
     function _std(
-      array: any[] | Matrix,
-      _normalization?: NormalizationType | number | any
-    ): any {
-      if ((array as any).length === 0) {
+      array: unknown[] | MatrixType,
+      _normalization?: NormalizationType | number | { valueOf(): number }
+    ): unknown {
+      if ((array as unknown[]).length === 0) {
         throw new SyntaxError(
           'Function std requires one or more parameters (0 provided)'
         )
       }
 
       try {
-        const v = variance.apply(null, arguments as any)
+        const v = variance.apply(null, arguments as unknown as unknown[])
         if (isCollection(v)) {
           return map(v, sqrt)
         } else {
           return sqrt(v)
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (err instanceof TypeError && err.message.includes(' variance')) {
           throw new TypeError(err.message.replace(' variance', ' std'))
         } else {

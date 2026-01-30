@@ -1,28 +1,20 @@
 import { deepForEach } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for prod
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
-}
-
-interface Config {
-  number?: string
-}
-
-interface Dependencies {
+interface ProdDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
   multiplyScalar: TypedFunction
   numeric: TypedFunction
-  parseNumberWithConfig: TypedFunction
+  parseNumberWithConfig: (value: string) => unknown
 }
 
 const name = 'prod'
@@ -43,7 +35,7 @@ export const createProd = /* #__PURE__ */ factory(
     multiplyScalar,
     numeric: _numeric,
     parseNumberWithConfig
-  }: Dependencies) => {
+  }: ProdDependencies) => {
     /**
      * Compute the product of a matrix or a list with values.
      * In case of a multidimensional array or matrix, the sum of all
@@ -71,7 +63,7 @@ export const createProd = /* #__PURE__ */ factory(
      */
     return typed(name, {
       // prod(string) - single string input
-      string: function (x: string): any {
+      string: function (x: string): unknown {
         return parseNumberWithConfig(x)
       },
 
@@ -80,16 +72,16 @@ export const createProd = /* #__PURE__ */ factory(
 
       // prod([a, b, c, d, ...], dim)
       'Array | Matrix, number | BigNumber': function (
-        _array: any[] | Matrix,
-        _dim: number | any
-      ): any {
+        _array: unknown[] | MatrixType,
+        _dim: number | { valueOf(): number }
+      ): unknown {
         // TODO: implement prod(A, dim)
         throw new Error('prod(A, dim) is not yet supported')
         // return reduce(arguments[0], arguments[1], math.prod)
       },
 
       // prod(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         return _prod(args)
       }
     })
@@ -100,10 +92,10 @@ export const createProd = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex | Unit} prod
      * @private
      */
-    function _prod(array: any[] | Matrix): any {
-      let prod: any
+    function _prod(array: unknown[] | MatrixType): unknown {
+      let prod: unknown
 
-      deepForEach(array as any, function (value: any) {
+      deepForEach(array, function (value: unknown) {
         try {
           // Pre-convert string inputs BEFORE multiplication
           const converted =

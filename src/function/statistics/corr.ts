@@ -1,7 +1,11 @@
 import { factory } from '../../utils/factory.ts'
 import { wasmLoader } from '../../wasm/WasmLoader.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-import { TypedFunction, Matrix } from '../../types.ts'
+// Type definitions for corr
+interface MatrixType {
+  toArray(): unknown[]
+}
 
 // Minimum array length for WASM to be beneficial
 const WASM_CORR_THRESHOLD = 200
@@ -9,7 +13,7 @@ const WASM_CORR_THRESHOLD = 200
 /**
  * Check if an array contains only plain numbers
  */
-function isPlainNumberArray(arr: any[]): boolean {
+function isPlainNumberArray(arr: unknown[]): arr is number[] {
   for (let i = 0; i < arr.length; i++) {
     if (typeof arr[i] !== 'number') {
       return false
@@ -32,6 +36,18 @@ const dependencies = [
   'divide'
 ]
 
+interface CorrDependencies {
+  typed: TypedFunction
+  matrix: (arr: unknown[]) => MatrixType
+  sqrt: TypedFunction
+  sum: TypedFunction
+  add: TypedFunction
+  subtract: TypedFunction
+  multiply: TypedFunction
+  pow: TypedFunction
+  divide: TypedFunction
+}
+
 export const createCorr = /* #__PURE__ */ factory(
   name,
   dependencies,
@@ -45,17 +61,7 @@ export const createCorr = /* #__PURE__ */ factory(
     multiply,
     pow,
     divide
-  }: {
-    typed: TypedFunction
-    matrix: any
-    sqrt: any
-    sum: any
-    add: any
-    subtract: any
-    multiply: any
-    pow: any
-    divide: any
-  }): TypedFunction => {
+  }: CorrDependencies) => {
     /**
      * Compute the correlation coefficient of a two list with values, For matrices, the matrix correlation coefficient is calculated.
      *
@@ -78,10 +84,10 @@ export const createCorr = /* #__PURE__ */ factory(
      * @return {*} The correlation coefficient
      */
     return typed(name, {
-      'Array, Array': function (A: any[], B: any[]): any[] {
+      'Array, Array': function (A: unknown[], B: unknown[]): unknown {
         return _corr(A, B)
       },
-      'Matrix, Matrix': function (A: Matrix, B: Matrix): Matrix {
+      'Matrix, Matrix': function (A: MatrixType, B: MatrixType): unknown {
         const res = _corr(A.toArray(), B.toArray())
         return Array.isArray(res) ? matrix(res) : res
       }
@@ -93,8 +99,8 @@ export const createCorr = /* #__PURE__ */ factory(
      * @return {*} correlation coefficient
      * @private
      */
-    function _corr(A: any, B: any) {
-      const correlations = []
+    function _corr(A: unknown[], B: unknown[]): unknown {
+      const correlations: unknown[] = []
       if (Array.isArray(A[0]) && Array.isArray(B[0])) {
         if (A.length !== B.length) {
           throw new SyntaxError(
@@ -102,12 +108,12 @@ export const createCorr = /* #__PURE__ */ factory(
           )
         }
         for (let i = 0; i < A.length; i++) {
-          if (A[i].length !== B[i].length) {
+          if ((A[i] as unknown[]).length !== (B[i] as unknown[]).length) {
             throw new SyntaxError(
               'Dimension mismatch. Array A and B must have the same number of elements.'
             )
           }
-          correlations.push(correlation(A[i], B[i]))
+          correlations.push(correlation(A[i] as unknown[], B[i] as unknown[]))
         }
         return correlations
       } else {
@@ -119,7 +125,7 @@ export const createCorr = /* #__PURE__ */ factory(
         return correlation(A, B)
       }
     }
-    function correlation(A: any, B: any) {
+    function correlation(A: unknown[], B: unknown[]): unknown {
       const n = A.length
 
       // Try WASM for large arrays with plain numbers
@@ -150,11 +156,11 @@ export const createCorr = /* #__PURE__ */ factory(
       const sumX = sum(A)
       const sumY = sum(B)
       const sumXY = A.reduce(
-        (acc: any, x: any, index: any) => add(acc, multiply(x, B[index])),
+        (acc: unknown, x: unknown, index: number) => add(acc, multiply(x, B[index])),
         0
       )
-      const sumXSquare = sum(A.map((x: any) => pow(x, 2)))
-      const sumYSquare = sum(B.map((y: any) => pow(y, 2)))
+      const sumXSquare = sum(A.map((x: unknown) => pow(x, 2)))
+      const sumYSquare = sum(B.map((y: unknown) => pow(y, 2)))
       const numerator = subtract(multiply(n, sumXY), multiply(sumX, sumY))
       const denominator = sqrt(
         multiply(

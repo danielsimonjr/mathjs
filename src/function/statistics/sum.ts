@@ -5,28 +5,20 @@ import {
 } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions for statistical operations
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
+// Type definitions for sum
+interface MatrixType {
+  valueOf(): unknown[] | unknown[][]
 }
 
-interface Matrix {
-  valueOf(): any[] | any[][]
-}
-
-interface Config {
-  number?: string
-}
-
-interface Dependencies {
+interface SumDependencies {
   typed: TypedFunction
-  config: Config
+  config: ConfigOptions
   add: TypedFunction
   numeric: TypedFunction
-  parseNumberWithConfig: TypedFunction
+  parseNumberWithConfig: (value: string) => unknown
 }
 
 const name = 'sum'
@@ -41,7 +33,7 @@ const dependencies = [
 export const createSum = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, add, numeric, parseNumberWithConfig }: Dependencies) => {
+  ({ typed, config, add, numeric, parseNumberWithConfig }: SumDependencies) => {
     /**
      * Compute the sum of a matrix or a list with values.
      * In case of a multidimensional array or matrix, the sum of all
@@ -68,7 +60,7 @@ export const createSum = /* #__PURE__ */ factory(
      */
     return typed(name, {
       // sum(string) - single string input
-      string: function (x: string): any {
+      string: function (x: string): unknown {
         return parseNumberWithConfig(x)
       },
 
@@ -79,7 +71,7 @@ export const createSum = /* #__PURE__ */ factory(
       'Array | Matrix, number | BigNumber': _nsumDim,
 
       // sum(a, b, c, d, ...)
-      '...': function (args: any[]): any {
+      '...': function (args: unknown[]): unknown {
         if (containsCollections(args)) {
           throw new TypeError('Scalar values expected in function sum')
         }
@@ -94,10 +86,10 @@ export const createSum = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex | Unit} sum
      * @private
      */
-    function _sum(array: any[] | Matrix): any {
-      let sum: any
+    function _sum(array: unknown[] | MatrixType): unknown {
+      let sum: unknown
 
-      deepForEach(array as any, function (value: any) {
+      deepForEach(array, function (value: unknown) {
         try {
           // Pre-convert string inputs BEFORE addition
           const converted =
@@ -124,9 +116,9 @@ export const createSum = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex | Unit | Array | Matrix} sum
      * @private
      */
-    function _nsumDim(array: any[] | Matrix, dim: number | any): any {
+    function _nsumDim(array: unknown[] | MatrixType, dim: number | { valueOf(): number }): unknown {
       try {
-        const sum = reduce(array as any, dim, add)
+        const sum = reduce(array, dim, add)
         return sum
       } catch (err) {
         throw improveErrorMessage(err, 'sum', undefined)
