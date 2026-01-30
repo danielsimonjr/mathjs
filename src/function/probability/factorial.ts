@@ -2,13 +2,24 @@ import { deepMap } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
+// Type definitions for factorial
+interface BigNumberType {
+  plus(n: number): BigNumberType
+  isNegative(): boolean
+}
+
+interface FactorialDependencies {
+  typed: TypedFunction
+  gamma: TypedFunction
+}
+
 const name = 'factorial'
 const dependencies = ['typed', 'gamma']
 
 export const createFactorial = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, gamma }: { typed: any; gamma: any }) => {
+  ({ typed, gamma }: FactorialDependencies) => {
     /**
      * Compute the factorial of a value
      *
@@ -37,10 +48,10 @@ export const createFactorial = /* #__PURE__ */ factory(
           throw new Error('Value must be non-negative')
         }
 
-        return (gamma as any)(n + 1)
+        return gamma(n + 1)
       },
 
-      BigNumber: function (n: any): any {
+      BigNumber: function (n: BigNumberType): unknown {
         if (n.isNegative()) {
           throw new Error('Value must be non-negative')
         }
@@ -49,8 +60,8 @@ export const createFactorial = /* #__PURE__ */ factory(
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction): any =>
-          (n: any): any =>
+        (self: TypedFunction): ((n: unknown) => unknown) =>
+          (n: unknown): unknown =>
             deepMap(n, self)
       )
     })

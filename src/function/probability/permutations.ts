@@ -1,6 +1,25 @@
 import { isInteger } from '../../utils/number.ts'
 import { product } from '../../utils/product.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for permutations
+interface BigNumberType {
+  mul(n: number): BigNumberType
+  add(n: number): BigNumberType
+  minus(n: BigNumberType | number): BigNumberType
+  plus(n: BigNumberType | number): BigNumberType
+  times(n: BigNumberType): BigNumberType
+  gt(n: BigNumberType): boolean
+  lte(n: BigNumberType): boolean
+  gte(n: BigNumberType | number): boolean
+  isInteger(): boolean
+}
+
+interface PermutationsDependencies {
+  typed: TypedFunction
+  factorial: TypedFunction
+}
 
 const name = 'permutations'
 const dependencies = ['typed', 'factorial']
@@ -8,7 +27,7 @@ const dependencies = ['typed', 'factorial']
 export const createPermutations = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, factorial }: { typed: any; factorial: any }) => {
+  ({ typed, factorial }: PermutationsDependencies) => {
     /**
      * Compute the number of ways of obtaining an ordered subset of `k` elements
      * from a set of `n` elements.
@@ -56,8 +75,9 @@ export const createPermutations = /* #__PURE__ */ factory(
         return product(n - k + 1, n)
       },
 
-      'BigNumber, BigNumber': function (n: any, k: any): any {
-        let result: any, i: any
+      'BigNumber, BigNumber': function (n: BigNumberType, k: BigNumberType): BigNumberType {
+        let result: BigNumberType
+        let i: BigNumberType
 
         if (!isPositiveInteger(n) || !isPositiveInteger(k)) {
           throw new TypeError(
@@ -89,6 +109,6 @@ export const createPermutations = /* #__PURE__ */ factory(
  * @param {BigNumber} n
  * @returns {boolean} isPositiveInteger
  */
-function isPositiveInteger(n: any): boolean {
+function isPositiveInteger(n: BigNumberType): boolean {
   return n.isInteger() && n.gte(0)
 }

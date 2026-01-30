@@ -1,5 +1,51 @@
 import { factory } from '../../utils/factory.ts'
 import { gammaG, gammaNumber, gammaP } from '../../plain/number/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+import type { ConfigOptions } from '../../core/config.ts'
+
+// Type definitions for gamma
+interface ComplexType {
+  re: number
+  im: number
+  add(n: number | ComplexType): ComplexType
+  sub(n: number): ComplexType
+  div(n: ComplexType): ComplexType
+  mul(n: number | ComplexType): ComplexType
+  neg(): ComplexType
+  exp(): ComplexType
+  sin(): ComplexType
+  pow(n: ComplexType): ComplexType
+}
+
+interface ComplexConstructor {
+  new (re: number, im?: number): ComplexType
+}
+
+interface BigNumberType {
+  isInteger(): boolean
+  isNegative(): boolean
+  isZero(): boolean
+  isFinite(): boolean
+  minus(n: number | BigNumberType): BigNumberType
+  times(n: BigNumberType): BigNumberType
+  toNumber(): number
+  toPrecision(n: number): string
+}
+
+interface BigNumberConstructor {
+  new (value: number | string | BigNumberType): BigNumberType
+  precision: number
+  clone(config: { precision: number }): BigNumberConstructor
+}
+
+interface GammaDependencies {
+  typed: TypedFunction
+  config: ConfigOptions
+  multiplyScalar: TypedFunction
+  pow: TypedFunction
+  BigNumber: BigNumberConstructor
+  Complex: ComplexConstructor
+}
 
 const name = 'gamma'
 const dependencies = [
@@ -21,14 +67,7 @@ export const createGamma = /* #__PURE__ */ factory(
     pow: _pow,
     BigNumber,
     Complex
-  }: {
-    typed: any
-    config: any
-    multiplyScalar: any
-    pow: any
-    BigNumber: any
-    Complex: any
-  }) => {
+  }: GammaDependencies) => {
     /**
      * Compute the gamma function of a value using Lanczos approximation for
      * small values, and an extended Stirling approximation for large values.
@@ -54,7 +93,7 @@ export const createGamma = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex}    The gamma of `n`
      */
 
-    function gammaComplex(n: any): any {
+    function gammaComplex(n: ComplexType): number | ComplexType {
       if (n.im === 0) {
         return gammaNumber(n.re)
       }
@@ -70,27 +109,28 @@ export const createGamma = /* #__PURE__ */ factory(
         const t = new Complex(1 - n.re, -n.im)
         const r = new Complex(Math.PI * n.re, Math.PI * n.im)
 
-        return new Complex(Math.PI).div(r.sin()).div(gammaComplex(t))
+        const gammaT = gammaComplex(t)
+        return new Complex(Math.PI).div(r.sin()).div(gammaT as ComplexType)
       }
 
       // Lanczos approximation
       // z -= 1
-      n = new Complex(n.re - 1, n.im)
+      let z = new Complex(n.re - 1, n.im)
 
       // x = gammaPval[0]
-      let x = new Complex(gammaP[0], 0)
+      let x: ComplexType = new Complex(gammaP[0], 0)
       // for (i, gammaPval) in enumerate(gammaP):
       for (let i = 1; i < gammaP.length; ++i) {
         // x += gammaPval / (z + i)
         const gammaPval = new Complex(gammaP[i], 0)
-        x = x.add(gammaPval.div(n.add(i)))
+        x = x.add(gammaPval.div(z.add(i)))
       }
       // t = z + gammaG + 0.5
-      const t = new Complex(n.re + gammaG + 0.5, n.im)
+      const t = new Complex(z.re + gammaG + 0.5, z.im)
 
       // y = sqrt(2 * pi) * t ** (z + 0.5) * exp(-t) * x
       const twoPiSqrt = Math.sqrt(2 * Math.PI)
-      const tpow = t.pow(n.add(0.5))
+      const tpow = t.pow(z.add(0.5))
       const expt = t.neg().exp()
 
       // y = [x] * [sqrt(2 * pi)] * [t ** (z + 0.5)] * [exp(-t)]
@@ -100,7 +140,7 @@ export const createGamma = /* #__PURE__ */ factory(
     return typed(name, {
       number: gammaNumber,
       Complex: gammaComplex,
-      BigNumber: function (n: any): any {
+      BigNumber: function (n: BigNumberType): BigNumberType {
         if (n.isInteger()) {
           return n.isNegative() || n.isZero()
             ? new BigNumber(Infinity)
@@ -120,26 +160,27 @@ export const createGamma = /* #__PURE__ */ factory(
      * @param {BigNumber} n
      * @returns {BigNumber} Returns the factorial of n
      */
-    function bigFactorial(n: any): any {
-      if (n < 8) {
-        return new BigNumber([1, 1, 2, 6, 24, 120, 720, 5040][n])
+    function bigFactorial(n: BigNumberType): BigNumberType {
+      const nNum = n.toNumber()
+      if (nNum < 8) {
+        return new BigNumber([1, 1, 2, 6, 24, 120, 720, 5040][nNum])
       }
 
-      const precision = config.precision + (Math.log((n as any).toNumber()) | 0)
+      const precision = config.precision + (Math.log(nNum) | 0)
       const Big = BigNumber.clone({ precision })
 
-      if (n % 2 === 1) {
-        return n.times(bigFactorial(new BigNumber(n - 1)))
+      if (nNum % 2 === 1) {
+        return n.times(bigFactorial(n.minus(1)))
       }
 
-      let p = n
-      let prod = new Big(n)
-      let sum = (n as any).toNumber()
+      let p = nNum
+      let prod = new Big(nNum)
+      let sum = nNum
 
       while (p > 2) {
         p -= 2
         sum += p
-        prod = prod.times(sum)
+        prod = prod.times(new BigNumber(sum))
       }
 
       return new BigNumber(prod.toPrecision(BigNumber.precision))

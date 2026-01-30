@@ -8,8 +8,31 @@
 import { lgammaNumber, lnSqrt2PI } from '../../plain/number/index.ts'
 import { factory } from '../../utils/factory.ts'
 import { copysign } from '../../utils/number.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
 
-import { TypedFunction } from '../../types.ts'
+// Type definitions for lgamma
+interface ComplexType {
+  re: number
+  im: number
+  isNaN(): boolean
+  mul(n: number | ComplexType): ComplexType
+  div(n: ComplexType): ComplexType
+  add(n: number | ComplexType): ComplexType
+  sub(n: ComplexType): ComplexType
+  neg(): ComplexType
+  sin(): ComplexType
+  log(): ComplexType
+  conjugate(): ComplexType
+}
+
+interface ComplexConstructor {
+  new (re: number, im?: number): ComplexType
+}
+
+interface LgammaDependencies {
+  Complex: ComplexConstructor
+  typed: TypedFunction
+}
 
 const name = 'lgamma'
 const dependencies = ['Complex', 'typed']
@@ -20,10 +43,7 @@ export const createLgamma = /* #__PURE__ */ factory(
   ({
     Complex,
     typed
-  }: {
-    Complex: any
-    typed: TypedFunction
-  }): TypedFunction => {
+  }: LgammaDependencies): TypedFunction => {
     // Stirling series is non-convergent, we need to use the recurrence `lgamma(z) = lgamma(z+1) - log z` to get
     // sufficient accuracy.
     //
@@ -81,7 +101,7 @@ export const createLgamma = /* #__PURE__ */ factory(
       }
     })
 
-    function lgammaComplex(n: any): any {
+    function lgammaComplex(n: ComplexType): ComplexType {
       const TWOPI = 6.2831853071795864769252842 // 2*pi
       const LOGPI = 1.1447298858494001741434262 // log(pi)
 
@@ -97,7 +117,7 @@ export const createLgamma = /* #__PURE__ */ factory(
         // Reflection formula. see Proposition 3.1 in [1]
         const tmp = copysign(TWOPI, n.im) * Math.floor(0.5 * n.re + 0.25)
         const a = n.mul(Math.PI).sin().log()
-        const b: any = lgammaComplex(new Complex(1 - n.re, -n.im))
+        const b: ComplexType = lgammaComplex(new Complex(1 - n.re, -n.im))
         return new Complex(LOGPI, tmp).sub(a).sub(b)
       } else if (n.im >= 0) {
         return lgammaRecurrence(n)
@@ -106,7 +126,7 @@ export const createLgamma = /* #__PURE__ */ factory(
       }
     }
 
-    function lgammaStirling(z: any) {
+    function lgammaStirling(z: ComplexType): ComplexType {
       // formula ref in [2]
       // computation ref:
       // https://github.com/scipy/scipy/blob/v1.8.0/scipy/special/_loggamma.pxd#L101
@@ -140,7 +160,7 @@ export const createLgamma = /* #__PURE__ */ factory(
       return leftPart.add(rightPart)
     }
 
-    function lgammaRecurrence(z: any) {
+    function lgammaRecurrence(z: ComplexType): ComplexType {
       // computation ref:
       // https://github.com/scipy/scipy/blob/v1.8.0/scipy/special/_loggamma.pxd#L78
 

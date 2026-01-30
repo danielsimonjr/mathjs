@@ -1,6 +1,28 @@
 import { factory } from '../../utils/factory.ts'
 import { isInteger } from '../../utils/number.ts'
 import { product } from '../../utils/product.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for combinationsWithRep
+interface BigNumberType {
+  constructor: BigNumberConstructor
+  minus(n: BigNumberType | number): BigNumberType
+  plus(n: BigNumberType | number): BigNumberType
+  times(n: BigNumberType | number): BigNumberType
+  dividedBy(n: BigNumberType | number): BigNumberType
+  lt(n: BigNumberType | number): boolean
+  lte(n: BigNumberType | number): boolean
+  gte(n: BigNumberType | number): boolean
+  isInteger(): boolean
+}
+
+interface BigNumberConstructor {
+  new (value: number): BigNumberType
+}
+
+interface CombinationsWithRepDependencies {
+  typed: TypedFunction
+}
 
 const name = 'combinationsWithRep'
 const dependencies = ['typed']
@@ -8,7 +30,7 @@ const dependencies = ['typed']
 export const createCombinationsWithRep = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: CombinationsWithRepDependencies) => {
     /**
      * Compute the number of ways of picking `k` unordered outcomes from `n`
      * possibilities, allowing individual outcomes to be repeated more than once.
@@ -56,9 +78,10 @@ export const createCombinationsWithRep = /* #__PURE__ */ factory(
         return prodrange / product(1, n - 1)
       },
 
-      'BigNumber, BigNumber': function (n: any, k: any): any {
+      'BigNumber, BigNumber': function (n: BigNumberType, k: BigNumberType): BigNumberType {
         const BigNumber = n.constructor
-        let result: any, i: any
+        let result: BigNumberType
+        let i: BigNumberType
         const one = new BigNumber(1)
         const nMinusOne = n.minus(one)
 
@@ -95,6 +118,6 @@ export const createCombinationsWithRep = /* #__PURE__ */ factory(
  * @param {BigNumber} n
  * @returns {boolean} isPositiveInteger
  */
-function isPositiveInteger(n: any): boolean {
+function isPositiveInteger(n: BigNumberType): boolean {
   return n.isInteger() && n.gte(0)
 }

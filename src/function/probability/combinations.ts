@@ -1,5 +1,28 @@
 import { factory } from '../../utils/factory.ts'
 import { combinationsNumber } from '../../plain/number/combinations.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for combinations
+interface BigNumberType {
+  constructor: BigNumberConstructor
+  minus(n: BigNumberType | number): BigNumberType
+  plus(n: BigNumberType | number): BigNumberType
+  times(n: BigNumberType | number): BigNumberType
+  dividedBy(n: BigNumberType | number): BigNumberType
+  gt(n: BigNumberType | number): boolean
+  lt(n: BigNumberType | number): boolean
+  lte(n: BigNumberType | number): boolean
+  gte(n: BigNumberType | number): boolean
+  isInteger(): boolean
+}
+
+interface BigNumberConstructor {
+  new (value: number): BigNumberType
+}
+
+interface CombinationsDependencies {
+  typed: TypedFunction
+}
 
 const name = 'combinations'
 const dependencies = ['typed']
@@ -7,7 +30,7 @@ const dependencies = ['typed']
 export const createCombinations = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: any }) => {
+  ({ typed }: CombinationsDependencies) => {
     /**
      * Compute the number of ways of picking `k` unordered outcomes from `n`
      * possibilities.
@@ -34,9 +57,10 @@ export const createCombinations = /* #__PURE__ */ factory(
     return typed(name, {
       'number, number': combinationsNumber,
 
-      'BigNumber, BigNumber': function (n: any, k: any): any {
+      'BigNumber, BigNumber': function (n: BigNumberType, k: BigNumberType): BigNumberType {
         const BigNumber = n.constructor
-        let result: any, i: any
+        let result: BigNumberType
+        let i: BigNumberType
         const nMinusk = n.minus(k)
         const one = new BigNumber(1)
 
@@ -73,6 +97,6 @@ export const createCombinations = /* #__PURE__ */ factory(
  * @param {BigNumber} n
  * @returns {boolean} isPositiveInteger
  */
-function isPositiveInteger(n: any): boolean {
+function isPositiveInteger(n: BigNumberType): boolean {
   return n.isInteger() && n.gte(0)
 }

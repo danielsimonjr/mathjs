@@ -1,5 +1,17 @@
 import { deepForEach } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for multinomial
+interface MultinomialDependencies {
+  typed: TypedFunction
+  add: TypedFunction
+  divide: TypedFunction
+  multiply: TypedFunction
+  factorial: TypedFunction
+  isInteger: TypedFunction
+  isPositive: TypedFunction
+}
 
 const name = 'multinomial'
 const dependencies = [
@@ -23,15 +35,7 @@ export const createMultinomial = /* #__PURE__ */ factory(
     factorial,
     isInteger,
     isPositive
-  }: {
-    typed: any
-    add: any
-    divide: any
-    multiply: any
-    factorial: any
-    isInteger: any
-    isPositive: any
-  }) => {
+  }: MultinomialDependencies) => {
     /**
      * Multinomial Coefficients compute the number of ways of picking a1, a2, ..., ai unordered outcomes from `n` possibilities.
      *
@@ -54,21 +58,21 @@ export const createMultinomial = /* #__PURE__ */ factory(
      * @return {Number | BigNumber}         Multinomial coefficient.
      */
     return typed(name, {
-      'Array | Matrix': function (a: any): any {
-        let sum: any = 0
-        let denom: any = 1
+      'Array | Matrix': function (a: unknown): unknown {
+        let sum: unknown = 0
+        let denom: unknown = 1
 
-        deepForEach(a, function (ai: any) {
+        deepForEach(a, function (ai: unknown) {
           if (!isInteger(ai) || !isPositive(ai)) {
             throw new TypeError(
               'Positive integer value expected in function multinomial'
             )
           }
-          sum = (add as any)(sum, ai)
-          denom = (multiply as any)(denom, (factorial as any)(ai))
+          sum = add(sum, ai)
+          denom = multiply(denom, factorial(ai))
         })
 
-        return (divide as any)((factorial as any)(sum), denom)
+        return divide(factorial(sum), denom)
       }
     })
   }
