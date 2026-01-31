@@ -8,15 +8,25 @@ import {
 import { clone } from '../../utils/object.ts'
 import { isInteger } from '../../utils/number.ts'
 import { factory } from '../../utils/factory.ts'
+import type { IndexJSON, RangeInterface, MatrixValue } from './types.ts'
 
 const name = 'Index'
 const dependencies = ['ImmutableDenseMatrix', 'getMatrixDataType']
 
 /**
- * Type representing a single dimension in an Index
- * Can be a number, string (for object properties), Range, or ImmutableDenseMatrix
+ * Type representing a single dimension in an Index.
+ * Can be a number, string (for object properties), Range, or ImmutableDenseMatrix.
+ * Note: Uses 'any' for Range to accommodate both RangeInterface and Range class.
  */
-export type IndexDimension = number | string | any // Range or ImmutableDenseMatrix
+export type IndexDimension = number | string | ImmutableDenseMatrix | { size(): number[]; min(): number | undefined; max(): number | undefined; toArray(): number[]; toString(): string }
+
+// Forward declaration for Index class (used in callback type)
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface IndexClass {
+  _dimensions: IndexDimension[]
+  _sourceSize: (number | null)[]
+  _isScalar: boolean
+}
 
 /**
  * Callback function for Index forEach operations
@@ -24,37 +34,21 @@ export type IndexDimension = number | string | any // Range or ImmutableDenseMat
 export type IndexForEachCallback = (
   dimension: IndexDimension,
   index: number,
-  indexObject: any
+  indexObject: IndexClass
 ) => void
 
-/**
- * JSON representation of an Index
- */
-export interface IndexJSON {
-  mathjs: 'Index'
-  dimensions: IndexDimension[]
-}
+// Re-export types for backward compatibility
+export type { IndexJSON }
 
 /**
  * Interface for ImmutableDenseMatrix (used internally)
  */
 interface ImmutableDenseMatrix {
-  _data: any[]
+  _data: MatrixValue[]
   _size: number[]
-  valueOf(): any
+  valueOf(): MatrixValue[]
   size(): number[]
-  toArray(): any[]
-}
-
-/**
- * Type guard for Range objects
- */
-interface Range {
-  size(): number[]
-  min(): number | undefined
-  max(): number | undefined
-  toArray(): number[]
-  toString(): string
+  toArray(): MatrixValue[]
 }
 
 export const createIndexClass = /* #__PURE__ */ factory(
@@ -149,7 +143,8 @@ export const createIndexClass = /* #__PURE__ */ factory(
           const argType = typeof arg
           let sourceSize: number | null = null
           if (isRange(arg)) {
-            this._dimensions.push(arg)
+            // Cast to IndexDimension since isRange confirms it has the required properties
+            this._dimensions.push(arg as unknown as IndexDimension)
             this._isScalar = false
           } else if (argIsArray || argIsMatrix) {
             // create matrix
@@ -225,7 +220,7 @@ export const createIndexClass = /* #__PURE__ */ factory(
           size[i] =
             isString(d) || isNumber(d)
               ? 1
-              : (d as Range | ImmutableDenseMatrix).size()[0]
+              : (d as RangeInterface | ImmutableDenseMatrix).size()[0]
         }
 
         return size
@@ -244,7 +239,7 @@ export const createIndexClass = /* #__PURE__ */ factory(
           values[i] =
             isString(range) || isNumber(range)
               ? (range as number | string)
-              : (range as Range).max()
+              : (range as RangeInterface).max()
         }
 
         return values
@@ -263,7 +258,7 @@ export const createIndexClass = /* #__PURE__ */ factory(
           values[i] =
             isString(range) || isNumber(range)
               ? (range as number | string)
-              : (range as Range).min()
+              : (range as RangeInterface).min()
         }
 
         return values
@@ -338,7 +333,7 @@ export const createIndexClass = /* #__PURE__ */ factory(
           array.push(
             isString(dimension) || isNumber(dimension)
               ? dimension
-              : (dimension as Range | ImmutableDenseMatrix).toArray()
+              : (dimension as RangeInterface | ImmutableDenseMatrix).toArray()
           )
         }
         return array

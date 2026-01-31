@@ -1,47 +1,52 @@
 import { factory } from '../../../utils/factory.ts'
 import { DimensionError } from '../../../error/DimensionError.ts'
+import type {
+  DataType,
+  MatrixValue,
+  MatrixArray,
+  MatrixCallback,
+  TypedFunction,
+  DenseMatrixConstructorData
+} from '../types.ts'
 
-// Type definitions
-type DataType = string | undefined
-type MatrixValue = any
-type MatrixData = any[][]
-
+/**
+ * DenseMatrix interface for algorithm operations.
+ */
 interface DenseMatrix {
-  _data: MatrixData
+  _data: MatrixArray
   _size: number[]
   _datatype?: DataType
   getDataType(): DataType
-  createDenseMatrix(config: {
-    data: MatrixData
-    size: number[]
-    datatype?: DataType
-  }): DenseMatrix
+  createDenseMatrix(config: DenseMatrixConstructorData): DenseMatrix
 }
 
+/**
+ * SparseMatrix interface for algorithm operations.
+ */
 interface SparseMatrix {
   _values?: MatrixValue[]
   _index: number[]
   _ptr: number[]
   _size: number[]
-  _data?: any
+  _data?: MatrixArray
   _datatype?: DataType
   getDataType(): DataType
 }
 
-interface _TypedFunction {
-  find(fn: Function, signature: string[]): Function
-  convert(value: any, datatype: string): any
-}
-
-type MatrixCallback = (a: any, b: any) => any
-
 const name = 'matAlgo01xDSid'
 const dependencies = ['typed']
+
+/**
+ * Dependencies for matAlgo01xDSid factory
+ */
+interface MatAlgo01xDSidDependencies {
+  typed: TypedFunction
+}
 
 export const createMatAlgo01xDSid = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: any) => {
+  ({ typed }: MatAlgo01xDSidDependencies) => {
     /**
      * Iterates over SparseMatrix nonzero items and invokes the callback function f(Dij, Sij).
      * Callback function invoked NNZ times (number of nonzero items in SparseMatrix).
@@ -68,7 +73,7 @@ export const createMatAlgo01xDSid = /* #__PURE__ */ factory(
       inverse: boolean
     ): DenseMatrix {
       // dense matrix arrays
-      const adata: MatrixData = denseMatrix._data
+      const adata: MatrixArray = denseMatrix._data
       const asize: number[] = denseMatrix._size
       const adt: DataType = denseMatrix._datatype || denseMatrix.getDataType()
 
@@ -114,16 +119,16 @@ export const createMatAlgo01xDSid = /* #__PURE__ */ factory(
         typeof adt === 'string' && adt !== 'mixed' && adt === bdt
           ? adt
           : undefined
-      // callback function
+      // callback function - typed.find returns specialized implementation
       const cf: MatrixCallback = dt
-        ? (typed.find(callback, [dt, dt]) as any as any)
+        ? (typed.find(callback, [dt, dt]) as MatrixCallback) || callback
         : callback
 
       // vars
       let i: number, j: number
 
       // result (DenseMatrix)
-      const cdata: MatrixData = []
+      const cdata: MatrixArray = []
       // initialize c
       for (i = 0; i < rows; i++) {
         cdata[i] = []

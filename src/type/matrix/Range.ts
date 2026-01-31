@@ -1,51 +1,20 @@
 import { isBigInt, isBigNumber } from '../../utils/is.ts'
 import { format, sign, nearlyEqual } from '../../utils/number.ts'
 import { factory } from '../../utils/factory.ts'
-
-// BigNumber type (avoid circular dependency)
-interface BigNumber {
-  toNumber(): number
-}
+import type {
+  BigNumberLike,
+  RangeForEachCallback,
+  RangeMapCallback,
+  RangeFormatOptions,
+  RangeJSON,
+  RangeInterface
+} from './types.ts'
 
 const name = 'Range'
 const dependencies: string[] = []
 
-/**
- * Callback function for Range forEach operations
- */
-export type RangeForEachCallback = (
-  value: number,
-  index: number[],
-  range: any
-) => void
-
-/**
- * Callback function for Range map operations
- */
-export type RangeMapCallback<T> = (
-  value: number,
-  index: number[],
-  range: any
-) => T
-
-/**
- * Formatting options for Range display
- */
-export interface RangeFormatOptions {
-  precision?: number
-  notation?: 'fixed' | 'exponential' | 'engineering' | 'auto'
-  [key: string]: any
-}
-
-/**
- * JSON representation of a Range
- */
-export interface RangeJSON {
-  mathjs: 'Range'
-  start: number
-  end: number
-  step: number
-}
+// Re-export types for backward compatibility
+export type { RangeForEachCallback, RangeMapCallback, RangeFormatOptions, RangeJSON }
 
 export const createRangeClass = /* #__PURE__ */ factory(
   name,
@@ -116,9 +85,9 @@ export const createRangeClass = /* #__PURE__ */ factory(
       step: number
 
       constructor(
-        start?: number | bigint | BigNumber | null,
-        end?: number | bigint | BigNumber | null,
-        step?: number | bigint | BigNumber | null
+        start?: number | bigint | BigNumberLike | null,
+        end?: number | bigint | BigNumberLike | null,
+        step?: number | bigint | BigNumberLike | null
       ) {
         if (!(this instanceof Range)) {
           throw new SyntaxError(
@@ -136,7 +105,7 @@ export const createRangeClass = /* #__PURE__ */ factory(
 
         if (hasStart) {
           if (isBigNumber(start)) {
-            startValue = (start as BigNumber).toNumber()
+            startValue = (start as BigNumberLike).toNumber()
           } else if (typeof start !== 'number' && !isBigInt(start)) {
             throw new TypeError('Parameter start must be a number or bigint')
           } else {
@@ -145,7 +114,7 @@ export const createRangeClass = /* #__PURE__ */ factory(
         }
         if (hasEnd) {
           if (isBigNumber(end)) {
-            endValue = (end as BigNumber).toNumber()
+            endValue = (end as BigNumberLike).toNumber()
           } else if (typeof end !== 'number' && !isBigInt(end)) {
             throw new TypeError('Parameter end must be a number or bigint')
           } else {
@@ -154,7 +123,7 @@ export const createRangeClass = /* #__PURE__ */ factory(
         }
         if (hasStep) {
           if (isBigNumber(step)) {
-            stepValue = (step as BigNumber).toNumber()
+            stepValue = (step as BigNumberLike).toNumber()
           } else if (typeof step !== 'number' && !isBigInt(step)) {
             throw new TypeError('Parameter step must be a number or bigint')
           } else {
@@ -218,9 +187,9 @@ export const createRangeClass = /* #__PURE__ */ factory(
        * Retrieve the size of the range.
        * Returns an array containing one number, the number of elements in the range.
        * @memberof Range
-       * @returns {number[]} size
+       * @returns {[number]} size
        */
-      size(): number[] {
+      size(): [number] {
         let len = 0
         const start = this.start
         const step = this.step
@@ -296,13 +265,13 @@ export const createRangeClass = /* #__PURE__ */ factory(
 
         if (step > 0) {
           while (x < end) {
-            callback(x, [i], this)
+            callback(x, [i] as [number], this)
             x += step
             i++
           }
         } else if (step < 0) {
           while (x > end) {
-            callback(x, [i], this)
+            callback(x, [i] as [number], this)
             x += step
             i++
           }

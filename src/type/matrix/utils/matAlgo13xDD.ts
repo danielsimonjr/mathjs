@@ -1,54 +1,57 @@
 import { factory } from '../../../utils/factory.ts'
 import { DimensionError } from '../../../error/DimensionError.ts'
+import type {
+  DataType,
+  DenseMatrixData,
+  MatrixCallback,
+  TypedFunction,
+  DenseMatrixConstructorData,
+  MatrixValue
+} from '../types.ts'
 
-// Type definitions
-type DataType = string | undefined
-type MatrixData = any
-
-interface _TypedFunction {
-  find(fn: Function, signature: string[]): Function
-}
-
-interface DenseMatrixData {
-  data: MatrixData
-  size: number[]
-  datatype?: DataType
-}
-
+/**
+ * Interface for DenseMatrix in algorithm context.
+ * Uses types from shared types.ts.
+ */
 interface DenseMatrix {
-  _data: MatrixData
+  _data: DenseMatrixData
   _size: number[]
   _datatype?: DataType
-  createDenseMatrix(data: DenseMatrixData): DenseMatrix
+  createDenseMatrix(data: DenseMatrixConstructorData): DenseMatrix
 }
-
-type CallbackFunction = (a: any, b: any) => any
 
 const name = 'matAlgo13xDD'
 const dependencies = ['typed']
 
+/**
+ * Dependencies for matAlgo13xDD factory
+ */
+interface MatAlgo13xDDDependencies {
+  typed: TypedFunction
+}
+
 export const createMatAlgo13xDD = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: any) => {
+  ({ typed }: MatAlgo13xDDDependencies) => {
     /**
      * Iterates over DenseMatrix items and invokes the callback function f(Aij..z, Bij..z).
      * Callback function invoked MxN times.
      *
      * C(i,j,...z) = f(Aij..z, Bij..z)
      *
-     * @param {Matrix}   a                 The DenseMatrix instance (A)
-     * @param {Matrix}   b                 The DenseMatrix instance (B)
-     * @param {Function} callback          The f(Aij..z,Bij..z) operation to invoke
+     * @param {DenseMatrix}   a                 The DenseMatrix instance (A)
+     * @param {DenseMatrix}   b                 The DenseMatrix instance (B)
+     * @param {MatrixCallback} callback          The f(Aij..z,Bij..z) operation to invoke
      *
-     * @return {Matrix}                    DenseMatrix (C)
+     * @return {DenseMatrix}                    DenseMatrix (C)
      *
      * https://github.com/josdejong/mathjs/pull/346#issuecomment-97658658
      */
     return function matAlgo13xDD(
       a: DenseMatrix,
       b: DenseMatrix,
-      callback: CallbackFunction
+      callback: MatrixCallback
     ): DenseMatrix {
       // a arrays
       const adata = a._data
@@ -85,18 +88,18 @@ export const createMatAlgo13xDD = /* #__PURE__ */ factory(
       // datatype
       let dt: DataType
       // callback signature to use
-      let cf: CallbackFunction = callback
+      let cf: MatrixCallback = callback
 
       // process data types
       if (typeof adt === 'string' && adt === bdt) {
         // datatype
         dt = adt
-        // callback
-        cf = typed.find(callback, [dt, dt]) as any as any as CallbackFunction
+        // callback - typed.find returns the specialized function for the given types
+        cf = (typed.find(callback, [dt, dt]) as MatrixCallback) || callback
       }
 
       // populate cdata, iterate through dimensions
-      const cdata: MatrixData =
+      const cdata: DenseMatrixData =
         csize.length > 0 ? _iterate(cf, 0, csize, csize[0], adata, bdata) : []
 
       // c matrix
@@ -107,29 +110,39 @@ export const createMatAlgo13xDD = /* #__PURE__ */ factory(
       })
     }
 
-    // recursive function
+    /**
+     * Recursive function to iterate through matrix dimensions.
+     *
+     * @param f - The callback function to apply to matrix elements
+     * @param level - Current recursion depth
+     * @param s - Size array (dimensions)
+     * @param n - Size at current level
+     * @param av - Data from matrix A at current level
+     * @param bv - Data from matrix B at current level
+     * @returns Resulting array at this level
+     */
     function _iterate(
-      f: CallbackFunction,
+      f: MatrixCallback,
       level: number,
       s: number[],
       n: number,
-      av: any,
-      bv: any
-    ): any[] {
+      av: DenseMatrixData,
+      bv: DenseMatrixData
+    ): MatrixValue[] {
       // initialize array for this level
-      const cv: any[] = []
+      const cv: MatrixValue[] = []
       // check we reach the last level
       if (level === s.length - 1) {
         // loop arrays in last level
         for (let i = 0; i < n; i++) {
           // invoke callback and store value
-          cv[i] = f(av[i], bv[i])
+          cv[i] = f((av as MatrixValue[])[i], (bv as MatrixValue[])[i])
         }
       } else {
         // iterate current level
         for (let j = 0; j < n; j++) {
           // iterate next level
-          cv[j] = _iterate(f, level + 1, s, s[level + 1], av[j], bv[j])
+          cv[j] = _iterate(f, level + 1, s, s[level + 1], (av as DenseMatrixData[])[j], (bv as DenseMatrixData[])[j])
         }
       }
       return cv

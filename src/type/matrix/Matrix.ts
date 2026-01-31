@@ -1,55 +1,42 @@
 import { factory } from '../../utils/factory.ts'
+import type {
+  MatrixFormatOptions,
+  ForEachCallback,
+  MapCallback,
+  IndexInterface,
+  NestedArray,
+  DataType,
+  MatrixValue
+} from './types.ts'
 
 const name = 'Matrix'
 const dependencies: string[] = []
 
-/**
- * Formatting options for matrix display
- */
-export interface MatrixFormatOptions {
-  precision?: number
-  notation?: 'fixed' | 'exponential' | 'engineering' | 'auto'
-  [key: string]: any
-}
+// Re-export types for backward compatibility
+export type { MatrixFormatOptions }
 
 /**
  * Callback function for matrix forEach operations
+ * @deprecated Use ForEachCallback from './types.ts' instead
  */
-export type MatrixForEachCallback<T> = (
-  value: T,
-  index: number[],
-  matrix: any
-) => void
+export type MatrixForEachCallback<T> = ForEachCallback<T>
 
 /**
  * Callback function for matrix map operations
+ * @deprecated Use MapCallback from './types.ts' instead
  */
-export type MatrixMapCallback<T, U> = (
-  value: T,
-  index: number[],
-  matrix: any
-) => U
+export type MatrixMapCallback<T, U> = MapCallback<T, U>
 
 /**
- * Index type for matrix subsetting - can be an Index object or array
+ * Index type for matrix subsetting
+ * @deprecated Use IndexInterface from './types.ts' instead
  */
-export interface Index {
-  dimension(dim: number): any
-  isScalar(): boolean
-  size(): number[]
-  min(): any[]
-  max(): any[]
-  valueOf(): any
-  clone(): Index
-  toArray(): any[]
-  isObjectProperty(): boolean
-  getObjectProperty(): string | null
-}
+export type Index = IndexInterface
 
 /**
  * Matrix data can be a nested array structure
  */
-export type MatrixData = any[] | any[][] | any[][][] | any[][][][]
+export type MatrixData = NestedArray<MatrixValue>
 
 export const createMatrixClass = /* #__PURE__ */ factory(
   name,
@@ -78,7 +65,7 @@ export const createMatrixClass = /* #__PURE__ */ factory(
      *
      * @template T The type of elements stored in the matrix
      */
-    class Matrix<T = any> {
+    class Matrix<T = MatrixValue> {
       /**
        * Type identifier
        */
@@ -116,9 +103,9 @@ export const createMatrixClass = /* #__PURE__ */ factory(
        * Usage:
        *     const format = matrix.datatype()    // retrieve matrix datatype
        *
-       * @return {string} The datatype.
+       * @return {string | undefined} The datatype.
        */
-      datatype(): string {
+      datatype(): DataType {
         // must be implemented by each of the Matrix implementations
         throw new Error('Cannot invoke datatype on a Matrix interface')
       }
@@ -139,15 +126,15 @@ export const createMatrixClass = /* #__PURE__ */ factory(
        *     const subset = matrix.subset(index)               // retrieve subset
        *     const value = matrix.subset(index, replacement)   // replace subset
        *
-       * @param {Index} index
+       * @param {IndexInterface} index
        * @param {Array | Matrix | *} [replacement]
        * @param {*} [defaultValue=0] Default value, filled in on new entries when
        *                             the matrix is resized. If not provided,
        *                             new matrix elements will be filled with zeros.
        */
       subset(
-        _index: Index,
-        _replacement?: MatrixData | Matrix<T> | T,
+        _index: IndexInterface,
+        _replacement?: NestedArray<T> | Matrix<T> | T,
         _defaultValue?: T
       ): Matrix<T> | T {
         // must be implemented by each of the Matrix implementations
@@ -291,9 +278,7 @@ export const createMatrixClass = /* #__PURE__ */ factory(
        *                                               options.
        * @returns {string} str
        */
-      format(
-        _options?: MatrixFormatOptions | number | ((value: T) => string)
-      ): string {
+      format(_options?: MatrixFormatOptions | number | ((value: T) => string)): string {
         // must be implemented by each of the Matrix implementations
         throw new Error('Cannot invoke format on a Matrix interface')
       }

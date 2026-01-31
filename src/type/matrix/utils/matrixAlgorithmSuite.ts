@@ -3,47 +3,43 @@ import { extend } from '../../../utils/object.ts'
 import { createMatAlgo13xDD } from './matAlgo13xDD.ts'
 import { createMatAlgo14xDs } from './matAlgo14xDs.ts'
 import { broadcast } from './broadcast.ts'
+import type {
+  TypedFunction,
+  MatrixAlgorithmSuiteOptions,
+  MatrixSignatures,
+  MatrixInterface,
+  DenseMatrixData
+} from '../types.ts'
 
-// Type definitions
-interface Matrix {
-  _data?: any
+/**
+ * Interface for matrix used in algorithm suite.
+ */
+interface Matrix extends MatrixInterface {
+  _data?: DenseMatrixData
   _size?: number[]
   _datatype?: string
 }
 
-interface TypedFunction {
-  find(fn: Function, signature: string[]): Function
-  referToSelf<T>(fn: (self: T) => any): any
-  signatures?: Record<string, Function>
-}
-
-interface MatrixConstructor {
-  (data: any): Matrix
-}
-
-type AlgorithmFunction = (...args: any[]) => Matrix
-type ElementwiseOperation = (a: any, b: any) => any
-
-interface MatrixAlgorithmSuiteOptions {
-  elop?: ElementwiseOperation & { signatures?: Record<string, Function> }
-  SS?: AlgorithmFunction
-  DS?: AlgorithmFunction
-  SD?: AlgorithmFunction
-  Ss?: AlgorithmFunction
-  sS?: AlgorithmFunction | false // false means not implemented
-  Ds?: AlgorithmFunction
-  scalar?: string
-}
-
-type MatrixSignatures = Record<string, Function>
+/**
+ * Matrix constructor function type.
+ */
+type MatrixConstructor = (data: DenseMatrixData) => Matrix
 
 const name = 'matrixAlgorithmSuite'
 const dependencies = ['typed', 'matrix']
 
+/**
+ * Dependencies for matrixAlgorithmSuite factory.
+ */
+interface MatrixAlgorithmSuiteDependencies {
+  typed: TypedFunction
+  matrix: MatrixConstructor
+}
+
 export const createMatrixAlgorithmSuite = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix }: { typed: TypedFunction; matrix: MatrixConstructor }) => {
+  ({ typed, matrix }: MatrixAlgorithmSuiteDependencies) => {
     const matAlgo13xDD = createMatAlgo13xDD({ typed })
     const matAlgo14xDs = createMatAlgo14xDs({ typed })
 

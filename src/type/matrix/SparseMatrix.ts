@@ -21,31 +21,39 @@ import {
 import { factory } from '../../utils/factory.ts'
 import { DimensionError } from '../../error/DimensionError.ts'
 import { optimizeCallback } from '../../utils/optimizeCallback.ts'
+import type {
+  DataType,
+  MatrixValue,
+  MatrixArray,
+  TypedFunction,
+  EqualScalarFunction,
+  SparseMatrixConstructorData,
+  SparseMatrixJSON,
+  MatrixFormatOptions,
+  BigNumberLike
+} from './types.ts'
 
-// Type definitions
-type DataType = string | undefined
-type MatrixValue = any
-type MatrixArray = any[][]
+/**
+ * Size type for sparse matrices (always 2D)
+ */
 type Size = [number, number]
 
-interface SparseMatrixData {
-  values?: MatrixValue[]
-  index: number[]
-  ptr: number[]
-  size: Size
-  datatype?: DataType
-}
-
+/**
+ * Index interface for SparseMatrix operations
+ */
 interface Index {
   isIndex: boolean
   min(): number[]
   max(): number[]
   size(): number[]
   isScalar(): boolean
-  dimension(dim: number): any
-  forEach?(callback: (value: any, index: any) => void): void
+  dimension(dim: number): number | { forEach(callback: (value: number, index: [number]) => void): void }
+  forEach?(callback: (value: number, index: [number]) => void): void
 }
 
+/**
+ * Internal matrix interface for SparseMatrix operations
+ */
 interface Matrix {
   type: string
   _values?: MatrixValue[]
@@ -59,30 +67,22 @@ interface Matrix {
   get?(index: number[]): MatrixValue
 }
 
-interface TypedFunction {
-  find(fn: Function, signature: string[]): Function | null
-  convert(value: any, datatype: string): any
-}
-
-interface EqualScalarFunction {
-  (a: any, b: any): boolean
-}
-
 const name = 'SparseMatrix'
 const dependencies = ['typed', 'equalScalar', 'Matrix']
+
+/**
+ * Dependencies for SparseMatrix factory
+ */
+interface SparseMatrixDependencies {
+  typed: TypedFunction
+  equalScalar: EqualScalarFunction
+  Matrix: new (...args: unknown[]) => Matrix
+}
 
 export const createSparseMatrixClass = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    equalScalar,
-    Matrix: _Matrix
-  }: {
-    typed: TypedFunction
-    equalScalar: EqualScalarFunction
-    Matrix: any
-  }) => {
+  ({ typed, equalScalar, Matrix: _Matrix }: SparseMatrixDependencies) => {
     /**
      * Sparse Matrix implementation. This type implements
      * a [Compressed Column Storage](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS))
@@ -99,7 +99,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       _datatype?: DataType
 
       constructor(
-        data?: MatrixArray | Matrix | SparseMatrixData,
+        data?: MatrixArray | Matrix | SparseMatrixConstructorData,
         datatype?: DataType
       ) {
         super()
@@ -109,19 +109,19 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
 
         if (data && isMatrix(data)) {
           // create from matrix
-          _createFromMatrix(this, data as any, datatype)
+          _createFromMatrix(this, data as Matrix, datatype)
         } else if (
           data &&
           typeof data === 'object' &&
           'index' in data &&
           'ptr' in data &&
           'size' in data &&
-          isArray((data as SparseMatrixData).index) &&
-          isArray((data as SparseMatrixData).ptr) &&
-          isArray((data as SparseMatrixData).size)
+          isArray((data as SparseMatrixConstructorData).index) &&
+          isArray((data as SparseMatrixConstructorData).ptr) &&
+          isArray((data as SparseMatrixConstructorData).size)
         ) {
           // initialize fields
-          const sparseData = data as SparseMatrixData
+          const sparseData = data as SparseMatrixConstructorData
           this._values = sparseData.values
           this._index = sparseData.index
           this._ptr = sparseData.ptr
@@ -152,7 +152,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
        * Create a new SparseMatrix
        */
       createSparseMatrix(
-        data?: MatrixArray | Matrix | SparseMatrixData,
+        data?: MatrixArray | Matrix | SparseMatrixConstructorData,
         datatype?: DataType
       ): SparseMatrix {
         return new SparseMatrix(data, datatype)
@@ -201,10 +201,10 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
        * Create a new SparseMatrix
        * @memberof SparseMatrix
        * @param {Array} data
-       * @param {string} [datatype]
+       * @param {DataType} [datatype]
        */
       create(
-        data?: MatrixArray | Matrix | SparseMatrixData,
+        data?: MatrixArray | Matrix | SparseMatrixConstructorData,
         datatype?: DataType
       ): SparseMatrix {
         return new SparseMatrix(data, datatype)
@@ -733,13 +733,13 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       /**
        * Get a string representation of the matrix, with optional formatting options.
        * @memberof SparseMatrix
-       * @param {Object | number | Function} [options]  Formatting options. See
+       * @param {MatrixFormatOptions | number | Function} [options]  Formatting options. See
        *                                                lib/utils/number:format for a
        *                                                description of the available
        *                                                options.
        * @returns {string} str
        */
-      format(options?: any): string {
+      format(options?: MatrixFormatOptions | number | ((value: MatrixValue) => string)): string {
         // rows and columns
         const rows = this._size[0]
         const columns = this._size[1]
@@ -788,9 +788,9 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
       /**
        * Get a JSON representation of the matrix
        * @memberof SparseMatrix
-       * @returns {Object}
+       * @returns {SparseMatrixJSON}
        */
-      toJSON(): SparseMatrixData & { mathjs: string } {
+      toJSON(): SparseMatrixJSON {
         return {
           mathjs: 'SparseMatrix',
           values: this._values,
@@ -805,11 +805,11 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
        * Get the kth Matrix diagonal.
        *
        * @memberof SparseMatrix
-       * @param {number | BigNumber} [k=0]     The kth diagonal where the vector will retrieved.
+       * @param {number | BigNumberLike} [k=0]     The kth diagonal where the vector will retrieved.
        *
        * @returns {SparseMatrix}               The matrix vector with the diagonal values.
        */
-      diagonal(k?: number | any): SparseMatrix {
+      diagonal(k?: number | BigNumberLike): SparseMatrix {
         // validate k if any
         if (k) {
           // convert BigNumber to a number
@@ -880,7 +880,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
        *                       where mathjs is optional
        * @returns {SparseMatrix}
        */
-      static fromJSON(json: SparseMatrixData): SparseMatrix {
+      static fromJSON(json: SparseMatrixConstructorData): SparseMatrix {
         return new SparseMatrix(json)
       }
 
@@ -890,16 +890,16 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
        * @memberof SparseMatrix
        * @param {Array} size                       The matrix size.
        * @param {number | Array | Matrix } value   The values for the diagonal.
-       * @param {number | BigNumber} [k=0]         The kth diagonal where the vector will be filled in.
-       * @param {number} [defaultValue]            The default value for non-diagonal
-       * @param {string} [datatype]                The Matrix datatype, values must be of this datatype.
+       * @param {number | BigNumberLike} [k=0]         The kth diagonal where the vector will be filled in.
+       * @param {MatrixValue} [defaultValue]            The default value for non-diagonal
+       * @param {DataType} [datatype]                The Matrix datatype, values must be of this datatype.
        *
        * @returns {SparseMatrix}
        */
       static diagonal(
         size: number[],
         value: MatrixValue | MatrixValue[] | Matrix,
-        k?: number | any,
+        k?: number | BigNumberLike,
         defaultValue?: MatrixValue,
         datatype?: DataType
       ): SparseMatrix {
@@ -1345,7 +1345,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
         w[i] = true
       }
       if (Number.isInteger(rows)) rowsCallback(rows as number, [0])
-      else rows.forEach(rowsCallback)
+      else (rows as { forEach(callback: (i: number, r: [number]) => void): void }).forEach(rowsCallback)
 
       // result matrix arrays
       const values: any[] | undefined = mvalues ? [] : undefined
@@ -1372,7 +1372,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
         }
       }
       if (Number.isInteger(columns)) columnsCallback(columns as number)
-      else columns.forEach(columnsCallback)
+      else (columns as { forEach(callback: (j: number) => void): void }).forEach(columnsCallback)
       // update ptr
       ptr.push(index.length)
 

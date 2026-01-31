@@ -1633,7 +1633,7 @@ var createRangeClass = /* @__PURE__ */ factory(
        * Retrieve the size of the range.
        * Returns an array containing one number, the number of elements in the range.
        * @memberof Range
-       * @returns {number[]} size
+       * @returns {[number]} size
        */
       size() {
         let len = 0;
@@ -1846,7 +1846,7 @@ var createMatrixClass = /* @__PURE__ */ factory(
        * Usage:
        *     const format = matrix.datatype()    // retrieve matrix datatype
        *
-       * @return {string} The datatype.
+       * @return {string | undefined} The datatype.
        */
       datatype() {
         throw new Error("Cannot invoke datatype on a Matrix interface");
@@ -1866,7 +1866,7 @@ var createMatrixClass = /* @__PURE__ */ factory(
        *     const subset = matrix.subset(index)               // retrieve subset
        *     const value = matrix.subset(index, replacement)   // replace subset
        *
-       * @param {Index} index
+       * @param {IndexInterface} index
        * @param {Array | Matrix | *} [replacement]
        * @param {*} [defaultValue=0] Default value, filled in on new entries when
        *                             the matrix is resized. If not provided,
@@ -2570,7 +2570,7 @@ function _unsqueeze(array, dims, dim) {
 }
 function flatten(array, isRectangular = false) {
   if (!Array.isArray(array)) {
-    return [array];
+    return array;
   }
   if (typeof isRectangular !== "boolean") {
     throw new TypeError("Boolean expected for second argument of flatten");
@@ -3068,7 +3068,7 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
        *     const format = matrix.datatype()   // retrieve matrix datatype
        *
        * @memberof DenseMatrix
-       * @return {string}           The datatype.
+       * @return {DataType}           The datatype.
        */
       datatype() {
         return this._datatype;
@@ -3077,7 +3077,7 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
        * Create a new DenseMatrix
        * @memberof DenseMatrix
        * @param {Array} data
-       * @param {string} [datatype]
+       * @param {DataType} [datatype]
        */
       create(data, datatype) {
         return new DenseMatrix(data, datatype);
@@ -3112,7 +3112,7 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
        * Get a single element from the matrix.
        * @memberof DenseMatrix
        * @param {number[]} index   Zero-based index
-       * @return {*} value
+       * @return {MatrixValue} value
        */
       get(index) {
         return get(this._data, index);
@@ -3121,8 +3121,8 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
        * Replace a single element in the matrix.
        * @memberof DenseMatrix
        * @param {number[]} index   Zero-based index
-       * @param {*} value
-       * @param {*} [defaultValue]        Default value, filled in on new entries when
+       * @param {MatrixValue} value
+       * @param {MatrixValue} [defaultValue]        Default value, filled in on new entries when
        *                                  the matrix is resized. If not provided,
        *                                  new matrix elements will be left undefined.
        * @return {DenseMatrix} self
@@ -3155,13 +3155,13 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
        * `copy=true`, otherwise return the matrix itself (resize in place).
        *
        * @memberof DenseMatrix
-       * @param {number[] || Matrix} size The new size the matrix should have.
-       * @param {*} [defaultValue=0]      Default value, filled in on new entries.
+       * @param {number[] | Matrix} size The new size the matrix should have.
+       * @param {MatrixValue} [defaultValue=0]      Default value, filled in on new entries.
        *                                  If not provided, the matrix elements will
        *                                  be filled with zeros.
        * @param {boolean} [copy]          Return a resized copy of the matrix
        *
-       * @return {Matrix}                 The resized matrix
+       * @return {DenseMatrix | MatrixValue}                 The resized matrix or scalar
        */
       resize(size, defaultValue, copy) {
         if (!isCollection(size)) {
@@ -3409,7 +3409,7 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
       /**
        * Create an Array with a copy of the data of the DenseMatrix
        * @memberof DenseMatrix
-       * @returns {Array} array
+       * @returns {DenseMatrixData} array
        */
       toArray() {
         return clone(this._data);
@@ -3417,7 +3417,7 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
       /**
        * Get the primitive value of the DenseMatrix: a multidimensional array
        * @memberof DenseMatrix
-       * @returns {Array} array
+       * @returns {DenseMatrixData} array
        */
       valueOf() {
         return this._data;
@@ -3425,7 +3425,7 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
       /**
        * Get a string representation of the matrix, with optional formatting options.
        * @memberof DenseMatrix
-       * @param {Object | number | Function} [options]  Formatting options. See
+       * @param {MatrixFormatOptions | number | Function} [options]  Formatting options. See
        *                                                lib/utils/number:format for a
        *                                                description of the available
        *                                                options.
@@ -3445,7 +3445,7 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
       /**
        * Get a JSON representation of the matrix
        * @memberof DenseMatrix
-       * @returns {Object}
+       * @returns {DenseMatrixJSON}
        */
       toJSON() {
         return {
@@ -3459,9 +3459,9 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
        * Get the kth Matrix diagonal.
        *
        * @memberof DenseMatrix
-       * @param {number | BigNumber} [k=0]     The kth diagonal where the vector will retrieved.
+       * @param {number | BigNumberLike} [k=0]     The kth diagonal where the vector will retrieved.
        *
-       * @returns {Matrix}                     The matrix with the diagonal values.
+       * @returns {DenseMatrix}                     The matrix with the diagonal values.
        */
       diagonal(k) {
         if (k) {
@@ -3516,9 +3516,8 @@ var createDenseMatrixClass = /* @__PURE__ */ factory(
        * @memberof DenseMatrix
        * @param {Array} size                     The matrix size.
        * @param {number | Matrix | Array } value The values for the diagonal.
-       * @param {number | BigNumber} [k=0]       The kth diagonal where the vector will be filled in.
-       * @param {number} [defaultValue]          The default value for non-diagonal
-       * @param {string} [datatype]              The datatype for the diagonal
+       * @param {number | BigNumberLike} [k=0]       The kth diagonal where the vector will be filled in.
+       * @param {MatrixValue} [defaultValue]          The default value for non-diagonal
        *
        * @returns {DenseMatrix}
        */
@@ -4691,11 +4690,7 @@ var dependencies21 = ["typed", "equalScalar", "Matrix"];
 var createSparseMatrixClass = /* @__PURE__ */ factory(
   name20,
   dependencies21,
-  ({
-    typed: typed2,
-    equalScalar,
-    Matrix: _Matrix
-  }) => {
+  ({ typed: typed2, equalScalar, Matrix: _Matrix }) => {
     const _SparseMatrix = class _SparseMatrix extends _Matrix {
       constructor(data, datatype) {
         super();
@@ -4771,7 +4766,7 @@ var createSparseMatrixClass = /* @__PURE__ */ factory(
        * Create a new SparseMatrix
        * @memberof SparseMatrix
        * @param {Array} data
-       * @param {string} [datatype]
+       * @param {DataType} [datatype]
        */
       create(data, datatype) {
         return new _SparseMatrix(data, datatype);
@@ -5134,7 +5129,7 @@ var createSparseMatrixClass = /* @__PURE__ */ factory(
       /**
        * Get a string representation of the matrix, with optional formatting options.
        * @memberof SparseMatrix
-       * @param {Object | number | Function} [options]  Formatting options. See
+       * @param {MatrixFormatOptions | number | Function} [options]  Formatting options. See
        *                                                lib/utils/number:format for a
        *                                                description of the available
        *                                                options.
@@ -5166,7 +5161,7 @@ var createSparseMatrixClass = /* @__PURE__ */ factory(
       /**
        * Get a JSON representation of the matrix
        * @memberof SparseMatrix
-       * @returns {Object}
+       * @returns {SparseMatrixJSON}
        */
       toJSON() {
         return {
@@ -5182,7 +5177,7 @@ var createSparseMatrixClass = /* @__PURE__ */ factory(
        * Get the kth Matrix diagonal.
        *
        * @memberof SparseMatrix
-       * @param {number | BigNumber} [k=0]     The kth diagonal where the vector will retrieved.
+       * @param {number | BigNumberLike} [k=0]     The kth diagonal where the vector will retrieved.
        *
        * @returns {SparseMatrix}               The matrix vector with the diagonal values.
        */
@@ -5243,9 +5238,9 @@ var createSparseMatrixClass = /* @__PURE__ */ factory(
        * @memberof SparseMatrix
        * @param {Array} size                       The matrix size.
        * @param {number | Array | Matrix } value   The values for the diagonal.
-       * @param {number | BigNumber} [k=0]         The kth diagonal where the vector will be filled in.
-       * @param {number} [defaultValue]            The default value for non-diagonal
-       * @param {string} [datatype]                The Matrix datatype, values must be of this datatype.
+       * @param {number | BigNumberLike} [k=0]         The kth diagonal where the vector will be filled in.
+       * @param {MatrixValue} [defaultValue]            The default value for non-diagonal
+       * @param {DataType} [datatype]                The Matrix datatype, values must be of this datatype.
        *
        * @returns {SparseMatrix}
        */
@@ -6913,7 +6908,7 @@ var createMatAlgo14xDs = /* @__PURE__ */ factory(
       if (typeof adt === "string") {
         dt = adt;
         b = typed2.convert(b, dt);
-        cf = typed2.find(callback, [dt, dt]);
+        cf = typed2.find(callback, [dt, dt]) || callback;
       }
       const cdata = asize.length > 0 ? _iterate(cf, 0, asize, asize[0], adata, b, inverse) : [];
       return a.createDenseMatrix({
@@ -7696,7 +7691,7 @@ var createMatAlgo13xDD = /* @__PURE__ */ factory(
       let cf = callback;
       if (typeof adt === "string" && adt === bdt) {
         dt = adt;
-        cf = typed2.find(callback, [dt, dt]);
+        cf = typed2.find(callback, [dt, dt]) || callback;
       }
       const cdata = csize.length > 0 ? _iterate(cf, 0, csize, csize[0], adata, bdata) : [];
       return a.createDenseMatrix({
@@ -8018,7 +8013,7 @@ var createMatAlgo01xDSid = /* @__PURE__ */ factory(
       const rows = asize[0];
       const columns = asize[1];
       const dt = typeof adt === "string" && adt !== "mixed" && adt === bdt ? adt : void 0;
-      const cf = dt ? typed2.find(callback, [dt, dt]) : callback;
+      const cf = dt ? typed2.find(callback, [dt, dt]) || callback : callback;
       let i, j;
       const cdata = [];
       for (i = 0; i < rows; i++) {
@@ -16946,8 +16941,8 @@ var createImmutableDenseMatrixClass = /* @__PURE__ */ factory(
        *     const value = matrix.subset(index, replacement)   // replace subset
        *
        * @param {Index} index
-       * @param {Array | ImmutableDenseMatrix | *} [replacement]
-       * @param {*} [defaultValue=0] Default value, filled in on new entries when
+       * @param {Array | ImmutableDenseMatrix | MatrixValue} [replacement]
+       * @param {MatrixValue} [defaultValue=0] Default value, filled in on new entries when
        *                             the matrix is resized. If not provided,
        *                             new matrix elements will be filled with zeros.
        */
@@ -16977,8 +16972,8 @@ var createImmutableDenseMatrixClass = /* @__PURE__ */ factory(
       /**
        * Replace a single element in the matrix.
        * @param {Number[]} index Zero-based index
-       * @param {*} value
-       * @param {*} [defaultValue] Default value, filled in on new entries when
+       * @param {MatrixValue} value
+       * @param {MatrixValue} [defaultValue] Default value, filled in on new entries when
        *                           the matrix is resized. If not provided,
        *                           new matrix elements will be left undefined.
        * @return {ImmutableDenseMatrix} self
@@ -16991,12 +16986,12 @@ var createImmutableDenseMatrixClass = /* @__PURE__ */ factory(
        * `copy=true`, otherwise return the matrix itself (resize in place).
        *
        * @param {Number[]} size The new size the matrix should have.
-       * @param {*} [defaultValue=0] Default value, filled in on new entries.
+       * @param {MatrixValue} [defaultValue=0] Default value, filled in on new entries.
        *                             If not provided, the matrix elements will
        *                             be filled with zeros.
        * @param {boolean} [copy] Return a resized copy of the matrix
        *
-       * @return {Matrix} The resized matrix
+       * @return {ImmutableDenseMatrix} The resized matrix
        */
       resize(_size, _defaultValue, _copy) {
         throw new Error("Cannot invoke resize on an Immutable Matrix instance");
@@ -17057,7 +17052,7 @@ var createImmutableDenseMatrixClass = /* @__PURE__ */ factory(
       }
       /**
        * Calculate the minimum value in the set
-       * @return {Number | undefined} min
+       * @return {MatrixValue | undefined} min
        */
       min() {
         if (this._min === null) {
@@ -17070,11 +17065,11 @@ var createImmutableDenseMatrixClass = /* @__PURE__ */ factory(
           });
           this._min = m !== null ? m : void 0;
         }
-        return this._min;
+        return this._min ?? void 0;
       }
       /**
        * Calculate the maximum value in the set
-       * @return {Number | undefined} max
+       * @return {MatrixValue | undefined} max
        */
       max() {
         if (this._max === null) {
@@ -17087,7 +17082,7 @@ var createImmutableDenseMatrixClass = /* @__PURE__ */ factory(
           });
           this._max = m !== null ? m : void 0;
         }
-        return this._max;
+        return this._max ?? void 0;
       }
     }
     Object.setPrototypeOf(ImmutableDenseMatrix.prototype, DenseMatrix.prototype);
@@ -17375,10 +17370,7 @@ var dependencies166 = ["smaller", "larger"];
 var createFibonacciHeapClass = /* @__PURE__ */ factory(
   name165,
   dependencies166,
-  ({
-    smaller,
-    larger
-  }) => {
+  ({ smaller, larger }) => {
     const oneOverLogPhi = 1 / Math.log((1 + Math.sqrt(5)) / 2);
     class FibonacciHeap {
       constructor() {
@@ -17613,11 +17605,7 @@ var dependencies167 = ["addScalar", "equalScalar", "FibonacciHeap"];
 var createSpaClass = /* @__PURE__ */ factory(
   name166,
   dependencies167,
-  ({
-    addScalar,
-    equalScalar,
-    FibonacciHeap
-  }) => {
+  ({ addScalar, equalScalar, FibonacciHeap }) => {
     class Spa {
       constructor() {
         this.type = "Spa";

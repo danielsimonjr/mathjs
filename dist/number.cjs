@@ -25107,7 +25107,7 @@ var createRangeClass2 = /* @__PURE__ */ factory2(
        * Retrieve the size of the range.
        * Returns an array containing one number, the number of elements in the range.
        * @memberof Range
-       * @returns {number[]} size
+       * @returns {[number]} size
        */
       size() {
         let len = 0;
@@ -33278,7 +33278,7 @@ function _reshape2(array, sizes) {
 }
 function flatten2(array, isRectangular = false) {
   if (!Array.isArray(array)) {
-    return [array];
+    return array;
   }
   if (typeof isRectangular !== "boolean") {
     throw new TypeError("Boolean expected for second argument of flatten");

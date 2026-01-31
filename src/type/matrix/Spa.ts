@@ -1,43 +1,39 @@
 import { factory } from '../../utils/factory.ts'
+import type {
+  FibonacciHeapNode,
+  FibonacciHeapInterface,
+  MatrixValue,
+  EqualScalarFunction
+} from './types.ts'
 
 const name = 'Spa'
 const dependencies = ['addScalar', 'equalScalar', 'FibonacciHeap']
 
-// Type definitions for Spa
-interface FibonacciHeapNode {
-  key: number
-  value: any
-  degree: number
-  left?: FibonacciHeapNode
-  right?: FibonacciHeapNode
-  parent?: FibonacciHeapNode
-  child?: FibonacciHeapNode
-  mark?: boolean
-}
+/**
+ * Value type for Spa elements.
+ * Uses MatrixValue to represent any numeric type (number, BigNumber, Complex, etc.)
+ */
+type SpaValue = MatrixValue
 
-interface FibonacciHeapInterface {
-  insert(key: number, value: any): FibonacciHeapNode
-  extractMinimum(): FibonacciHeapNode | null
-  remove(node: FibonacciHeapNode): void
-  size(): number
-  clear(): void
-  isEmpty(): boolean
-}
+/**
+ * Add scalar function type
+ * INTENTIONAL ANY: typed-function resolves the actual types at runtime.
+ */
+type AddScalarFunction = (a: MatrixValue, b: MatrixValue) => MatrixValue
 
-type SpaValue = number | any // BigNumber | Complex
+/**
+ * Dependencies for Spa factory
+ */
+interface SpaDependencies {
+  addScalar: AddScalarFunction
+  equalScalar: EqualScalarFunction
+  FibonacciHeap: new () => FibonacciHeapInterface<SpaValue>
+}
 
 export const createSpaClass = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    addScalar,
-    equalScalar,
-    FibonacciHeap
-  }: {
-    addScalar: (a: any, b: any) => any
-    equalScalar: (a: any, b: any) => boolean
-    FibonacciHeap: new () => FibonacciHeapInterface
-  }) => {
+  ({ addScalar, equalScalar, FibonacciHeap }: SpaDependencies) => {
     /**
      * An ordered Sparse Accumulator is a representation for a sparse vector that includes a dense array
      * of the vector elements and an ordered list of non-zero elements.
@@ -46,8 +42,8 @@ export const createSpaClass = /* #__PURE__ */ factory(
     class Spa {
       type: string = 'Spa'
       isSpa: boolean = true
-      _values: (FibonacciHeapNode | undefined)[]
-      _heap: FibonacciHeapInterface
+      _values: (FibonacciHeapNode<SpaValue> | undefined)[]
+      _heap: FibonacciHeapInterface<SpaValue>
 
       constructor() {
         // allocate vector, TODO use typed arrays
@@ -105,7 +101,7 @@ export const createSpaClass = /* #__PURE__ */ factory(
         const heap = this._heap
         const values = this._values
         // nodes
-        const nodes: FibonacciHeapNode[] = []
+        const nodes: FibonacciHeapNode<SpaValue>[] = []
         // node with minimum key, save it
         let node = heap.extractMinimum()
         if (node) {

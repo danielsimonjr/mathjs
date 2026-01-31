@@ -1,30 +1,30 @@
 import { factory } from '../../utils/factory.ts'
+import type { FibonacciHeapNode, MatrixValue } from './types.ts'
 
 const name = 'FibonacciHeap'
 const dependencies = ['smaller', 'larger']
 
-// Type definitions for FibonacciHeap nodes
-export interface FibonacciHeapNode<T = any> {
-  key: number
-  value: T
-  degree: number
-  left?: FibonacciHeapNode<T>
-  right?: FibonacciHeapNode<T>
-  parent?: FibonacciHeapNode<T>
-  child?: FibonacciHeapNode<T>
-  mark?: boolean
+// Re-export FibonacciHeapNode for backward compatibility
+export type { FibonacciHeapNode }
+
+/**
+ * Comparison function type for heap operations.
+ * INTENTIONAL ANY: typed-function resolves actual types at runtime.
+ */
+type CompareFunction = (a: MatrixValue, b: MatrixValue) => boolean
+
+/**
+ * Dependencies for FibonacciHeap factory
+ */
+interface FibonacciHeapDependencies {
+  smaller: CompareFunction
+  larger: CompareFunction
 }
 
 export const createFibonacciHeapClass = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    smaller,
-    larger
-  }: {
-    smaller: (a: any, b: any) => boolean
-    larger: (a: any, b: any) => boolean
-  }) => {
+  ({ smaller, larger }: FibonacciHeapDependencies) => {
     const oneOverLogPhi = 1.0 / Math.log((1.0 + Math.sqrt(5.0)) / 2.0)
 
     /**
@@ -32,7 +32,7 @@ export const createFibonacciHeapClass = /* #__PURE__ */ factory(
      * @class FibonacciHeap
      * @constructor FibonacciHeap
      */
-    class FibonacciHeap<T = any> {
+    class FibonacciHeap<T = MatrixValue> {
       type: string = 'FibonacciHeap'
       isFibonacciHeap: boolean = true
       _minimum: FibonacciHeapNode<T> | null
