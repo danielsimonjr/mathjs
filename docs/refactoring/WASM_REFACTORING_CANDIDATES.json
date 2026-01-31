@@ -47,7 +47,10 @@
       "name": "Matrix Decompositions",
       "duration": "1 week",
       "files": ["lup.ts", "qr.ts", "schur.ts"],
-      "total_speedup": "50-200x"
+      "total_speedup": "50-200x",
+      "status": "completed",
+      "completed_date": "2026-01-30",
+      "notes": "All three files have WASM fast paths for dense plain number matrices >= 4x4"
     },
     {
       "phase": 5,
@@ -367,8 +370,8 @@
         "Pivoting strategies optimization",
         "Support for dense and sparse"
       ],
-      "status": "pending",
-      "notes": "Foundation for many solvers"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls luDecomposition for dense plain number matrices >= 4x4, extracts L and U from combined result"
     },
     {
       "file": "src/function/algebra/decomposition/qr.ts",
@@ -383,8 +386,24 @@
         "Support complex matrices",
         "Rank-deficient detection"
       ],
-      "status": "pending",
-      "notes": "Critical for least squares problems"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls qrDecomposition for dense plain number matrices >= 4x4"
+    },
+    {
+      "file": "src/function/algebra/decomposition/schur.ts",
+      "category": "Decomposition",
+      "priority": 3,
+      "complexity": "Medium-High",
+      "effort": "High",
+      "speedup_estimate": "50-100x",
+      "refactoring_needed": [
+        "WASM QR iteration algorithm",
+        "Deflation strategies",
+        "Shift strategies (single/double)",
+        "Hessenberg form computation"
+      ],
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls schur WASM function for dense plain number matrices >= 4x4, uses Francis double-shift QR algorithm"
     },
     {
       "file": "src/function/matrix/fft.ts",
@@ -415,22 +434,6 @@
       ],
       "status": "pending",
       "notes": "Mirror of fft refactoring"
-    },
-    {
-      "file": "src/function/algebra/decomposition/schur.ts",
-      "category": "Decomposition",
-      "priority": 3,
-      "complexity": "Medium-High",
-      "effort": "High",
-      "speedup_estimate": "50-100x",
-      "refactoring_needed": [
-        "WASM QR iteration algorithm",
-        "Deflation strategies",
-        "Shift strategies (single/double)",
-        "Hessenberg form computation"
-      ],
-      "status": "pending",
-      "notes": "Eigenvalue algorithm, complex to optimize"
     },
     {
       "file": "src/function/matrix/eigs.ts",

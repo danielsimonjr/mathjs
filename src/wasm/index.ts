@@ -36,6 +36,16 @@ export {
   choleskyDecompositionSIMD
 } from './algebra/decomposition'
 
+// Schur decomposition
+export {
+  schur,
+  getSchurQ,
+  getSchurT,
+  schurEigenvalues,
+  schurResidual,
+  schurOrthogonalityError
+} from './algebra/schur'
+
 // Signal processing
 export {
   fft,

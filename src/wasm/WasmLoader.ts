@@ -68,6 +68,15 @@ export interface WasmModule {
     rPtr: number
   ) => void
   choleskyDecomposition: (aPtr: number, n: number, lPtr: number) => number
+  schur: (
+    aPtr: number,
+    n: number,
+    maxIter: number,
+    tol: number,
+    qPtr: number,
+    tPtr: number,
+    workPtr: number
+  ) => number // returns 1 if successful, 0 if failed
   luSolve: (
     luPtr: number,
     n: number,

@@ -1,4 +1,40 @@
 import { factory } from '../../../utils/factory.ts'
+import { wasmLoader } from '../../../wasm/WasmLoader.ts'
+
+// Minimum matrix size (m*n elements) for WASM to be beneficial
+const WASM_QR_THRESHOLD = 16 // 4x4 matrix
+
+/**
+ * Check if a 2D array contains only plain numbers
+ */
+function isPlainNumberMatrix(matrix: any[][]): boolean {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i]
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== 'number') {
+        return false
+      }
+    }
+  }
+  return true
+}
+
+/**
+ * Flatten a 2D array to a Float64Array in row-major order
+ */
+function flattenToFloat64(
+  matrix: number[][],
+  rows: number,
+  cols: number
+): Float64Array {
+  const result = new Float64Array(rows * cols)
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j]
+    }
+  }
+  return result
+}
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]
@@ -197,6 +233,61 @@ export const createQr = /* #__PURE__ */ factory(
       const rows = m._size[0] // m
       const cols = m._size[1] // n
 
+      // WASM fast path for plain number matrices
+      const wasm = wasmLoader.getModule()
+      if (
+        wasm &&
+        rows * cols >= WASM_QR_THRESHOLD &&
+        isPlainNumberMatrix(m._data as any[][])
+      ) {
+        try {
+          const flat = flattenToFloat64(m._data as number[][], rows, cols)
+          const aAlloc = wasmLoader.allocateFloat64Array(flat)
+          // Q is m x m orthogonal matrix
+          const qAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows * rows)
+
+          try {
+            wasm.qrDecomposition(aAlloc.ptr, rows, cols, qAlloc.ptr)
+
+            // Extract R from the modified A matrix
+            const Rdata: number[][] = []
+            for (let i = 0; i < rows; i++) {
+              Rdata[i] = []
+              for (let j = 0; j < cols; j++) {
+                Rdata[i][j] = aAlloc.array[i * cols + j]
+              }
+            }
+
+            // Extract Q from qPtr (m x m matrix, stored row-major)
+            const Qdata: number[][] = []
+            for (let i = 0; i < rows; i++) {
+              Qdata[i] = []
+              for (let j = 0; j < rows; j++) {
+                Qdata[i][j] = qAlloc.array[i * rows + j]
+              }
+            }
+
+            // Create Q and R matrices
+            const Q = matrix(Qdata) as DenseMatrix
+            const R = matrix(Rdata) as DenseMatrix
+
+            return {
+              Q,
+              R,
+              toString: function () {
+                return 'Q: ' + this.Q.toString() + '\nR: ' + this.R.toString()
+              }
+            }
+          } finally {
+            wasmLoader.free(aAlloc.ptr)
+            wasmLoader.free(qAlloc.ptr)
+          }
+        } catch (e) {
+          // Fall back to JS implementation on WASM error
+        }
+      }
+
+      // JavaScript fallback
       const Q = identity([rows], 'dense')
       const Qdata = Q._data as any[][]
 

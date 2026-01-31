@@ -1,5 +1,41 @@
 import { clone } from '../../../utils/object.ts'
 import { factory } from '../../../utils/factory.ts'
+import { wasmLoader } from '../../../wasm/WasmLoader.ts'
+
+// Minimum matrix size (n*n elements) for WASM to be beneficial
+const WASM_LUP_THRESHOLD = 16 // 4x4 matrix
+
+/**
+ * Check if a 2D array contains only plain numbers
+ */
+function isPlainNumberMatrix(matrix: any[][]): boolean {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i]
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== 'number') {
+        return false
+      }
+    }
+  }
+  return true
+}
+
+/**
+ * Flatten a 2D array to a Float64Array in row-major order
+ */
+function flattenToFloat64(
+  matrix: number[][],
+  rows: number,
+  cols: number
+): Float64Array {
+  const result = new Float64Array(rows * cols)
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j]
+    }
+  }
+  return result
+}
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]
@@ -208,6 +244,99 @@ export const createLup = /* #__PURE__ */ factory(
       const columns = m._size[1]
       // minimum rows and columns
       let n = Math.min(rows, columns)
+
+      // WASM fast path for square plain number matrices
+      const wasm = wasmLoader.getModule()
+      if (
+        wasm &&
+        rows === columns &&
+        rows * rows >= WASM_LUP_THRESHOLD &&
+        isPlainNumberMatrix(m._data)
+      ) {
+        try {
+          const flat = flattenToFloat64(m._data, rows, columns)
+          const aAlloc = wasmLoader.allocateFloat64Array(flat)
+          // Permutation vector needs Int32Array (4 bytes per element)
+          const permAlloc = wasmLoader.allocateInt32ArrayEmpty(rows)
+
+          try {
+            const result = wasm.luDecomposition(aAlloc.ptr, rows, permAlloc.ptr)
+            if (result !== 0) {
+              throw new Error('Matrix is singular and cannot be decomposed')
+            }
+
+            // Extract L and U from the combined LU matrix
+            // L is below diagonal with 1s on diagonal
+            // U is on and above diagonal
+            const ldata: number[][] = []
+            const udata: number[][] = []
+
+            for (let i = 0; i < rows; i++) {
+              ldata[i] = []
+              udata[i] = []
+              for (let j = 0; j < columns; j++) {
+                const val = aAlloc.array[i * columns + j]
+                if (i > j) {
+                  // Below diagonal: L values
+                  ldata[i][j] = val
+                  udata[i][j] = 0
+                } else if (i === j) {
+                  // Diagonal: L has 1, U has the value
+                  ldata[i][j] = 1
+                  udata[i][j] = val
+                } else {
+                  // Above diagonal: U values
+                  ldata[i][j] = 0
+                  udata[i][j] = val
+                }
+              }
+            }
+
+            // Extract permutation vector
+            const p: number[] = []
+            for (let i = 0; i < rows; i++) {
+              p[i] = permAlloc.array[i]
+            }
+
+            // Create L and U matrices
+            const l = new DenseMatrix({
+              data: ldata,
+              size: [rows, n]
+            })
+            const u = new DenseMatrix({
+              data: udata,
+              size: [n, columns]
+            })
+
+            return {
+              L: l,
+              U: u,
+              p: p,
+              toString: function () {
+                return (
+                  'L: ' +
+                  this.L.toString() +
+                  '\nU: ' +
+                  this.U.toString() +
+                  '\nP: ' +
+                  this.p
+                )
+              }
+            }
+          } finally {
+            wasmLoader.free(aAlloc.ptr)
+            wasmLoader.free(permAlloc.ptr)
+          }
+        } catch (e) {
+          // If it's a singularity error, rethrow it
+          if (e instanceof Error && e.message.includes('singular')) {
+            throw e
+          }
+          // Otherwise fall back to JS implementation on WASM error
+        }
+      }
+
+      // JavaScript fallback
       // matrix array, clone original data
       const data = clone(m._data)
       // l matrix arrays

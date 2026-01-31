@@ -1,4 +1,40 @@
 import { factory } from '../../../utils/factory.ts'
+import { wasmLoader } from '../../../wasm/WasmLoader.ts'
+
+// Minimum matrix size (n*n elements) for WASM to be beneficial
+const WASM_SCHUR_THRESHOLD = 16 // 4x4 matrix
+
+/**
+ * Check if a 2D array contains only plain numbers
+ */
+function isPlainNumberMatrix(matrix: any[][]): boolean {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i]
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== 'number') {
+        return false
+      }
+    }
+  }
+  return true
+}
+
+/**
+ * Flatten a 2D array to a Float64Array in row-major order
+ */
+function flattenToFloat64(
+  matrix: number[][],
+  rows: number,
+  cols: number
+): Float64Array {
+  const result = new Float64Array(rows * cols)
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j]
+    }
+  }
+  return result
+}
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]
@@ -109,6 +145,78 @@ export const createSchur = /* #__PURE__ */ factory(
 
     function _schur(X: Matrix): SchurResult {
       const n = X.size()[0]
+
+      // WASM fast path for square plain number matrices
+      const wasm = wasmLoader.getModule()
+      const data = X._data as any[][]
+      if (
+        wasm &&
+        X.storage() === 'dense' &&
+        n * n >= WASM_SCHUR_THRESHOLD &&
+        data &&
+        isPlainNumberMatrix(data)
+      ) {
+        try {
+          const flat = flattenToFloat64(data, n, n)
+          const aAlloc = wasmLoader.allocateFloat64Array(flat)
+          const qAlloc = wasmLoader.allocateFloat64ArrayEmpty(n * n)
+          const tAlloc = wasmLoader.allocateFloat64ArrayEmpty(n * n)
+          const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(n * n)
+
+          try {
+            const result = wasm.schur(
+              aAlloc.ptr,
+              n,
+              100, // maxIter
+              1e-4, // tol
+              qAlloc.ptr,
+              tAlloc.ptr,
+              workAlloc.ptr
+            )
+
+            if (result !== 0) {
+              // Extract U (Q) from qPtr
+              const Udata: number[][] = []
+              for (let i = 0; i < n; i++) {
+                Udata[i] = []
+                for (let j = 0; j < n; j++) {
+                  Udata[i][j] = qAlloc.array[i * n + j]
+                }
+              }
+
+              // Extract T from tPtr
+              const Tdata: number[][] = []
+              for (let i = 0; i < n; i++) {
+                Tdata[i] = []
+                for (let j = 0; j < n; j++) {
+                  Tdata[i][j] = tAlloc.array[i * n + j]
+                }
+              }
+
+              const U = matrix(Udata)
+              const T = matrix(Tdata)
+
+              return {
+                U,
+                T,
+                toString: function () {
+                  return 'U: ' + this.U.toString() + '\nT: ' + this.T.toString()
+                }
+              }
+            }
+            // Fall through to JS implementation if WASM failed
+          } finally {
+            wasmLoader.free(aAlloc.ptr)
+            wasmLoader.free(qAlloc.ptr)
+            wasmLoader.free(tAlloc.ptr)
+            wasmLoader.free(workAlloc.ptr)
+          }
+        } catch (e) {
+          // Fall back to JS implementation on WASM error
+        }
+      }
+
+      // JavaScript fallback
       let A: Matrix = X
       let U: Matrix = identity(n)
       let k = 0
