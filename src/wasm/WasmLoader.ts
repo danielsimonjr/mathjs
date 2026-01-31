@@ -64,8 +64,7 @@ export interface WasmModule {
     aPtr: number,
     m: number,
     n: number,
-    qPtr: number,
-    rPtr: number
+    qPtr: number
   ) => void
   choleskyDecomposition: (aPtr: number, n: number, lPtr: number) => number
   schur: (
