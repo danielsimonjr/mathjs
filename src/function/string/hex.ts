@@ -44,7 +44,7 @@ const dependencies = ['typed', 'format']
 export const createHex = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, format }: HexDependencies): TypedFunction => {
+  ({ typed, format }: HexDependencies) => {
     return typed(name, {
       'number | BigNumber': function (n: number | bigint): string {
         return format(n, { notation: 'hex' })

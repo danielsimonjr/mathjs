@@ -48,7 +48,7 @@ export const createFactorial = /* #__PURE__ */ factory(
           throw new Error('Value must be non-negative')
         }
 
-        return gamma(n + 1)
+        return gamma(n + 1) as number
       },
 
       BigNumber: function (n: BigNumberType): unknown {
@@ -62,7 +62,7 @@ export const createFactorial = /* #__PURE__ */ factory(
       'Array | Matrix': typed.referToSelf(
         (self: TypedFunction): ((n: unknown) => unknown) =>
           (n: unknown): unknown =>
-            deepMap(n, self)
+            deepMap(n as unknown[], self)
       )
     })
   }

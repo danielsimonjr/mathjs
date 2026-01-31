@@ -3,24 +3,53 @@ import { factory } from '../../utils/factory.ts'
 const name = 'ResultSet'
 const dependencies: string[] = []
 
+/**
+ * JSON representation of a ResultSet
+ */
+export interface ResultSetJSON {
+  mathjs: 'ResultSet'
+  entries: unknown[]
+}
+
+/**
+ * ResultSet instance interface
+ */
+export interface ResultSetInstance {
+  type: 'ResultSet'
+  isResultSet: true
+  entries: unknown[]
+  valueOf(): unknown[]
+  toString(): string
+  toJSON(): ResultSetJSON
+}
+
+/**
+ * ResultSet constructor interface
+ */
+export interface ResultSetConstructor {
+  new (entries?: unknown[]): ResultSetInstance
+  fromJSON(json: ResultSetJSON): ResultSetInstance
+  prototype: ResultSetInstance
+}
+
 export const createResultSet = /* #__PURE__ */ factory(
   name,
   dependencies,
-  () => {
+  (): ResultSetConstructor => {
     /**
      * A ResultSet contains a list or results
      * @class ResultSet
      * @param {Array} entries
      * @constructor ResultSet
      */
-    function ResultSet(this: any, entries: any) {
+    function ResultSet(this: ResultSetInstance, entries?: unknown[]): void {
       if (!(this instanceof ResultSet)) {
         throw new SyntaxError(
           'Constructor must be called with the new operator'
         )
       }
 
-      ;(this as any).entries = entries || []
+      this.entries = entries || []
     }
 
     /**
@@ -34,7 +63,7 @@ export const createResultSet = /* #__PURE__ */ factory(
      * @memberof ResultSet
      * @returns {Array} entries
      */
-    ResultSet.prototype.valueOf = function () {
+    ResultSet.prototype.valueOf = function (this: ResultSetInstance): unknown[] {
       return this.entries
     }
 
@@ -43,7 +72,7 @@ export const createResultSet = /* #__PURE__ */ factory(
      * @memberof ResultSet
      * @returns {string} string
      */
-    ResultSet.prototype.toString = function () {
+    ResultSet.prototype.toString = function (this: ResultSetInstance): string {
       return '[' + this.entries.map(String).join(', ') + ']'
     }
 
@@ -53,7 +82,7 @@ export const createResultSet = /* #__PURE__ */ factory(
      * @returns {Object} Returns a JSON object structured as:
      *                   `{"mathjs": "ResultSet", "entries": [...]}`
      */
-    ResultSet.prototype.toJSON = function () {
+    ResultSet.prototype.toJSON = function (this: ResultSetInstance): ResultSetJSON {
       return {
         mathjs: 'ResultSet',
         entries: this.entries
@@ -67,11 +96,11 @@ export const createResultSet = /* #__PURE__ */ factory(
      *                       `{"mathjs": "ResultSet", "entries": [...]}`
      * @return {ResultSet}
      */
-    ResultSet.fromJSON = function (json: any) {
-      return new (ResultSet as any)(json.entries)
+    ;(ResultSet as unknown as ResultSetConstructor).fromJSON = function (json: ResultSetJSON): ResultSetInstance {
+      return new (ResultSet as unknown as ResultSetConstructor)(json.entries)
     }
 
-    return ResultSet
+    return ResultSet as unknown as ResultSetConstructor
   },
   { isClass: true }
 )

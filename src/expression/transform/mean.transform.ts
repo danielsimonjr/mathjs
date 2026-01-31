@@ -2,12 +2,9 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createMean } from '../../function/statistics/mean.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
+import type { TypedFunction, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface MeanDependencies {
   typed: TypedFunction
   add: TypedFunction
   divide: TypedFunction
@@ -19,7 +16,7 @@ const dependencies = ['typed', 'add', 'divide']
 export const createMeanTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, add, divide }: Dependencies) => {
+  ({ typed, add, divide }: MeanDependencies) => {
     const mean = createMean({ typed, add, divide })
 
     /**
@@ -30,7 +27,7 @@ export const createMeanTransform = /* #__PURE__ */ factory(
      * from one-based to zero based
      */
     return typed('mean', {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         args = lastDimToZeroBase(args)
 
         try {

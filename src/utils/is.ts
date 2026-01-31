@@ -14,12 +14,22 @@
 
 import { ObjectWrappingMap } from './map.ts'
 
+// Generic interface for objects with a constructor prototype pattern
+interface ConstructorWithPrototype<T extends string> {
+  prototype: { [K in T]: boolean }
+}
+
+// Base interface for math.js value types that use duck typing
+interface MathJsValue<T extends string> {
+  constructor: ConstructorWithPrototype<T>
+}
+
 // Type interfaces for math.js types
 export interface BigNumber {
   isBigNumber: boolean
   constructor: {
     prototype: { isBigNumber: boolean }
-    isDecimal?: (x: any) => boolean
+    isDecimal?: (x: unknown) => boolean
   }
 }
 
@@ -64,16 +74,24 @@ export interface Range {
   }
 }
 
+export interface IndexDimension {
+  _data?: unknown[]
+  _size: number[]
+  isRange?: boolean
+  start?: number
+  end?: number
+}
+
 export interface Index {
-  _dimensions: any[]
+  _dimensions: (IndexDimension | string)[]
   _sourceSize?: (number | null)[]
   constructor: {
     prototype: { isIndex: boolean }
   }
 }
 
-export interface ResultSet {
-  entries: any[]
+export interface ResultSet<T = unknown> {
+  entries: T[]
   constructor: {
     prototype: { isResultSet: boolean }
   }
@@ -162,9 +180,9 @@ export interface SymbolNode extends Node {
 }
 
 // Map types
-export interface PartitionedMap {
-  a: Map<any, any>
-  b: Map<any, any>
+export interface PartitionedMap<K = unknown, V = unknown> {
+  a: Map<K, V>
+  b: Map<K, V>
 }
 
 // Type guard functions
@@ -176,17 +194,23 @@ export function isBigNumber(x: unknown): x is BigNumber {
   if (
     !x ||
     typeof x !== 'object' ||
-    typeof (x as any).constructor !== 'function'
+    typeof (x as { constructor?: unknown }).constructor !== 'function'
   ) {
     return false
   }
 
-  const obj = x as any
+  const obj = x as {
+    isBigNumber?: boolean
+    constructor: {
+      prototype?: { isBigNumber?: boolean }
+      isDecimal?: (v: unknown) => boolean
+    }
+  }
 
   if (
     obj.isBigNumber === true &&
     typeof obj.constructor.prototype === 'object' &&
-    obj.constructor.prototype.isBigNumber === true
+    obj.constructor.prototype?.isBigNumber === true
   ) {
     return true
   }
@@ -224,7 +248,9 @@ export function isFraction(x: unknown): x is Fraction {
 }
 
 export function isUnit(x: unknown): x is Unit {
-  return (x && (x as any).constructor.prototype.isUnit === true) || false
+  if (!x || typeof x !== 'object') return false
+  const obj = x as { constructor?: { prototype?: { isUnit?: boolean } } }
+  return obj.constructor?.prototype?.isUnit === true
 }
 
 export function isString(x: unknown): x is string {
@@ -234,7 +260,9 @@ export function isString(x: unknown): x is string {
 export const isArray = Array.isArray
 
 export function isMatrix(x: unknown): x is Matrix {
-  return (x && (x as any).constructor.prototype.isMatrix === true) || false
+  if (!x || typeof x !== 'object') return false
+  const obj = x as { constructor?: { prototype?: { isMatrix?: boolean } } }
+  return obj.constructor?.prototype?.isMatrix === true
 }
 
 /**
@@ -247,29 +275,33 @@ export function isCollection(x: unknown): x is any[] | Matrix {
 }
 
 export function isDenseMatrix(x: unknown): x is DenseMatrix {
-  return (
-    (x &&
-      (x as any).isDenseMatrix &&
-      (x as any).constructor.prototype.isMatrix === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isDenseMatrix?: boolean
+    constructor?: { prototype?: { isMatrix?: boolean } }
+  }
+  return obj.isDenseMatrix === true && obj.constructor?.prototype?.isMatrix === true
 }
 
 export function isSparseMatrix(x: unknown): x is SparseMatrix {
-  return (
-    (x &&
-      (x as any).isSparseMatrix &&
-      (x as any).constructor.prototype.isMatrix === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isSparseMatrix?: boolean
+    constructor?: { prototype?: { isMatrix?: boolean } }
+  }
+  return obj.isSparseMatrix === true && obj.constructor?.prototype?.isMatrix === true
 }
 
 export function isRange(x: unknown): x is Range {
-  return (x && (x as any).constructor.prototype.isRange === true) || false
+  if (!x || typeof x !== 'object') return false
+  const obj = x as { constructor?: { prototype?: { isRange?: boolean } } }
+  return obj.constructor?.prototype?.isRange === true
 }
 
 export function isIndex(x: unknown): x is Index {
-  return (x && (x as any).constructor.prototype.isIndex === true) || false
+  if (!x || typeof x !== 'object') return false
+  const obj = x as { constructor?: { prototype?: { isIndex?: boolean } } }
+  return obj.constructor?.prototype?.isIndex === true
 }
 
 export function isBoolean(x: unknown): x is boolean {
@@ -277,11 +309,15 @@ export function isBoolean(x: unknown): x is boolean {
 }
 
 export function isResultSet(x: unknown): x is ResultSet {
-  return (x && (x as any).constructor.prototype.isResultSet === true) || false
+  if (!x || typeof x !== 'object') return false
+  const obj = x as { constructor?: { prototype?: { isResultSet?: boolean } } }
+  return obj.constructor?.prototype?.isResultSet === true
 }
 
 export function isHelp(x: unknown): x is Help {
-  return (x && (x as any).constructor.prototype.isHelp === true) || false
+  if (!x || typeof x !== 'object') return false
+  const obj = x as { constructor?: { prototype?: { isHelp?: boolean } } }
+  return obj.constructor?.prototype?.isHelp === true
 }
 
 export function isFunction(x: unknown): x is Function {
@@ -296,11 +332,11 @@ export function isRegExp(x: unknown): x is RegExp {
   return x instanceof RegExp
 }
 
-export function isObject(x: unknown): x is Record<string, any> {
+export function isObject(x: unknown): x is Record<string, unknown> {
   return !!(
     x &&
     typeof x === 'object' &&
-    (x as any).constructor === Object &&
+    (x as { constructor?: unknown }).constructor === Object &&
     !isComplex(x) &&
     !isFraction(x)
   )
@@ -314,30 +350,42 @@ export function isObject(x: unknown): x is Record<string, any> {
  * @param {Map | object} object
  * @returns
  */
-export function isMap(object: unknown): object is Map<any, any> {
+export function isMap(object: unknown): object is Map<unknown, unknown> {
   // We can use the fast instanceof, or a slower duck typing check.
   // The duck typing method needs to cover enough methods to not be confused with DenseMatrix.
   if (!object) {
     return false
   }
+  if (object instanceof Map || object instanceof ObjectWrappingMap) {
+    return true
+  }
+  // Duck typing check for Map-like objects
+  const mapLike = object as {
+    set?: unknown
+    get?: unknown
+    keys?: unknown
+    has?: unknown
+  }
   return (
-    object instanceof Map ||
-    object instanceof ObjectWrappingMap ||
-    (typeof (object as any).set === 'function' &&
-      typeof (object as any).get === 'function' &&
-      typeof (object as any).keys === 'function' &&
-      typeof (object as any).has === 'function')
+    typeof mapLike.set === 'function' &&
+    typeof mapLike.get === 'function' &&
+    typeof mapLike.keys === 'function' &&
+    typeof mapLike.has === 'function'
   )
 }
 
 export function isPartitionedMap(object: unknown): object is PartitionedMap {
-  return isMap(object) && isMap((object as any).a) && isMap((object as any).b)
+  if (!isMap(object)) return false
+  const partitioned = object as { a?: unknown; b?: unknown }
+  return isMap(partitioned.a) && isMap(partitioned.b)
 }
 
 export function isObjectWrappingMap(
   object: unknown
 ): object is ObjectWrappingMap {
-  return isMap(object) && isObject((object as any).wrappedObject)
+  if (!isMap(object)) return false
+  const wrapper = object as { wrappedObject?: unknown }
+  return isObject(wrapper.wrappedObject)
 }
 
 export function isNull(x: unknown): x is null {
@@ -349,57 +397,57 @@ export function isUndefined(x: unknown): x is undefined {
 }
 
 export function isAccessorNode(x: unknown): x is AccessorNode {
-  return (
-    (x &&
-      (x as any).isAccessorNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isAccessorNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isAccessorNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isArrayNode(x: unknown): x is ArrayNode {
-  return (
-    (x &&
-      (x as any).isArrayNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isArrayNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isArrayNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isAssignmentNode(x: unknown): x is AssignmentNode {
-  return (
-    (x &&
-      (x as any).isAssignmentNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isAssignmentNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isAssignmentNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isBlockNode(x: unknown): x is BlockNode {
-  return (
-    (x &&
-      (x as any).isBlockNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isBlockNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isBlockNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isConditionalNode(x: unknown): x is ConditionalNode {
-  return (
-    (x &&
-      (x as any).isConditionalNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isConditionalNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isConditionalNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isConstantNode(x: unknown): x is ConstantNode {
-  return (
-    (x &&
-      (x as any).isConstantNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isConstantNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isConstantNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 /* Very specialized: returns true for those nodes which in the numerator of
@@ -425,97 +473,99 @@ export function rule2Node(node: Node): boolean {
 export function isFunctionAssignmentNode(
   x: unknown
 ): x is FunctionAssignmentNode {
-  return (
-    (x &&
-      (x as any).isFunctionAssignmentNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isFunctionAssignmentNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isFunctionAssignmentNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isFunctionNode(x: unknown): x is FunctionNode {
-  return (
-    (x &&
-      (x as any).isFunctionNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isFunctionNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isFunctionNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isIndexNode(x: unknown): x is IndexNode {
-  return (
-    (x &&
-      (x as any).isIndexNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isIndexNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isIndexNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isNode(x: unknown): x is Node {
-  return (
-    (x &&
-      (x as any).isNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isObjectNode(x: unknown): x is ObjectNode {
-  return (
-    (x &&
-      (x as any).isObjectNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isObjectNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isObjectNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isOperatorNode(x: unknown): x is OperatorNode {
-  return (
-    (x &&
-      (x as any).isOperatorNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isOperatorNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isOperatorNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isParenthesisNode(x: unknown): x is ParenthesisNode {
-  return (
-    (x &&
-      (x as any).isParenthesisNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isParenthesisNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isParenthesisNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isRangeNode(x: unknown): x is RangeNode {
-  return (
-    (x &&
-      (x as any).isRangeNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isRangeNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isRangeNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isRelationalNode(x: unknown): x is RelationalNode {
-  return (
-    (x &&
-      (x as any).isRelationalNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isRelationalNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isRelationalNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isSymbolNode(x: unknown): x is SymbolNode {
-  return (
-    (x &&
-      (x as any).isSymbolNode === true &&
-      (x as any).constructor.prototype.isNode === true) ||
-    false
-  )
+  if (!x || typeof x !== 'object') return false
+  const obj = x as {
+    isSymbolNode?: boolean
+    constructor?: { prototype?: { isNode?: boolean } }
+  }
+  return obj.isSymbolNode === true && obj.constructor?.prototype?.isNode === true
 }
 
 export function isChain(x: unknown): x is Chain {
-  return (x && (x as any).constructor.prototype.isChain === true) || false
+  if (!x || typeof x !== 'object') return false
+  const obj = x as { constructor?: { prototype?: { isChain?: boolean } } }
+  return obj.constructor?.prototype?.isChain === true
 }
 
 export function typeOf(x: unknown): string {
@@ -524,8 +574,8 @@ export function typeOf(x: unknown): string {
   if (t === 'object') {
     if (x === null) return 'null'
     if (isBigNumber(x)) return 'BigNumber' // Special: weird mashup with Decimal
-    if ((x as any).constructor && (x as any).constructor.name)
-      return (x as any).constructor.name
+    const obj = x as { constructor?: { name?: string } }
+    if (obj.constructor && obj.constructor.name) return obj.constructor.name
 
     return 'Object' // just in case
   }

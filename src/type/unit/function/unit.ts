@@ -1,5 +1,31 @@
 import { factory } from '../../../utils/factory.ts'
 import { deepMap } from '../../../utils/collection.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+import type { MathCollection } from '../../../types.ts'
+
+/**
+ * Unit class interface
+ */
+interface UnitClass {
+  new (value: number | null, unit?: string): UnitInstance
+  parse(str: string, options?: { allowNoUnits?: boolean }): UnitInstance
+  isValuelessUnit(str: string): boolean
+}
+
+/**
+ * Unit instance interface
+ */
+interface UnitInstance {
+  clone(): UnitInstance
+}
+
+/**
+ * Dependencies for createUnitFunction
+ */
+interface UnitFunctionDependencies {
+  typed: TypedFunction
+  Unit: UnitClass
+}
 
 const name = 'unit'
 const dependencies = ['typed', 'Unit'] as const
@@ -8,7 +34,7 @@ const dependencies = ['typed', 'Unit'] as const
 export const createUnitFunction = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({ typed, Unit }: any) => {
+  ({ typed, Unit }: UnitFunctionDependencies) => {
     /**
      * Create a unit. Depending on the passed arguments, the function
      * will create and return a new math.Unit object.
@@ -37,11 +63,11 @@ export const createUnitFunction = /* #__PURE__ */ factory(
      */
 
     return typed(name, {
-      Unit: function (x: any) {
+      Unit: function (x: UnitInstance): UnitInstance {
         return x.clone()
       },
 
-      string: function (x: string) {
+      string: function (x: string): UnitInstance {
         if (Unit.isValuelessUnit(x)) {
           return new Unit(null, x) // a pure unit
         }
@@ -50,19 +76,19 @@ export const createUnitFunction = /* #__PURE__ */ factory(
       },
 
       'number | BigNumber | Fraction | Complex, string | Unit': function (
-        value: any,
-        unit: any
-      ) {
-        return new Unit(value, unit)
+        value: number,
+        unit: string | UnitInstance
+      ): UnitInstance {
+        return new Unit(value, unit as string)
       },
 
-      'number | BigNumber | Fraction': function (value: any) {
+      'number | BigNumber | Fraction': function (value: number): UnitInstance {
         // dimensionless
         return new Unit(value)
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: any) => (x: any) => deepMap(x, self)
+        (self: TypedFunction) => (x: MathCollection): MathCollection => deepMap(x as unknown[], self as (item: unknown) => unknown) as unknown as MathCollection
       )
     })
   }

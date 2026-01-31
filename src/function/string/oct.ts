@@ -46,7 +46,7 @@ const dependencies = ['typed', 'format']
 export const createOct = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, format }: OctDependencies): TypedFunction => {
+  ({ typed, format }: OctDependencies) => {
     return typed(name, {
       'number | BigNumber': function (n: number | bigint): string {
         return format(n, { notation: 'oct' })

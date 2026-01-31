@@ -27,7 +27,20 @@ function isFlatNumberArray(arr: unknown[]): arr is number[] {
 
 // Type definitions for min
 interface MatrixType {
+  forEach(
+    callback: (value: unknown) => void,
+    skipZeros: boolean,
+    recurse: boolean
+  ): void
+  map(
+    callback: (value: unknown) => unknown,
+    skipZeros: boolean,
+    recurse: boolean
+  ): MatrixType
+  size(): number[]
   valueOf(): unknown[] | unknown[][]
+  create(data: unknown[], datatype?: string): MatrixType
+  datatype(): string | undefined
 }
 
 interface MinDependencies {

@@ -1,30 +1,22 @@
 import { createBitOr } from '../../function/bitwise/bitOr.ts'
 import { factory } from '../../utils/factory.ts'
 import { isCollection } from '../../utils/is.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  ExpressionNode,
+  EvaluationScope,
+  MathJsLike,
+  DenseMatrixConstructor,
+  RawArgsTransformFunction
+} from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Node {
-  compile(): CompiledExpression
-}
-
-interface CompiledExpression {
-  evaluate(scope: any): any
-}
-
-interface TransformFunction {
-  (args: Node[], math: any, scope: any): any
-  rawArgs?: boolean
-}
-
-interface Dependencies {
+interface BitOrDependencies {
   typed: TypedFunction
-  matrix: (...args: any[]) => any
-  equalScalar: (...args: any[]) => any
-  DenseMatrix: any
-  concat: (...args: any[]) => any
+  matrix: MathFunction
+  equalScalar: MathFunction<boolean>
+  DenseMatrix: DenseMatrixConstructor
+  concat: MathFunction
 }
 
 const name = 'bitOr'
@@ -33,7 +25,7 @@ const dependencies = ['typed', 'matrix', 'equalScalar', 'DenseMatrix', 'concat']
 export const createBitOrTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, DenseMatrix, concat }: Dependencies) => {
+  ({ typed, matrix, equalScalar, DenseMatrix, concat }: BitOrDependencies) => {
     const bitOr = createBitOr({
       typed,
       matrix,
@@ -42,10 +34,14 @@ export const createBitOrTransform = /* #__PURE__ */ factory(
       concat
     })
 
-    function bitOrTransform(args: Node[], math: any, scope: any): any {
+    function bitOrTransform(
+      args: ExpressionNode[],
+      math: MathJsLike,
+      scope: EvaluationScope | Map<string, unknown>
+    ): unknown {
       const condition1 = args[0].compile().evaluate(scope)
       if (!isCollection(condition1)) {
-        if (isNaN(condition1)) {
+        if (isNaN(condition1 as number)) {
           return NaN
         }
         if (condition1 === -1) {
@@ -59,9 +55,9 @@ export const createBitOrTransform = /* #__PURE__ */ factory(
       return bitOr(condition1, condition2)
     }
 
-    bitOrTransform.rawArgs = true
+    bitOrTransform.rawArgs = true as const
 
-    return bitOrTransform as TransformFunction
+    return bitOrTransform as RawArgsTransformFunction
   },
   { isTransformFunction: true }
 )

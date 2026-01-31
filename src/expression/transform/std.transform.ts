@@ -2,12 +2,9 @@ import { factory } from '../../utils/factory.ts'
 import { createStd } from '../../function/statistics/std.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
+import type { TypedFunction, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface StdDependencies {
   typed: TypedFunction
   map: TypedFunction
   sqrt: TypedFunction
@@ -27,11 +24,11 @@ const dependencies = ['typed', 'map', 'sqrt', 'variance']
 export const createStdTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, map, sqrt, variance }: Dependencies) => {
+  ({ typed, map, sqrt, variance }: StdDependencies) => {
     const std = createStd({ typed, map, sqrt, variance })
 
     return typed('std', {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         args = lastDimToZeroBase(args)
 
         try {

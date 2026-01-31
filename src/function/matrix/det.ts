@@ -5,9 +5,19 @@ import { factory } from '../../utils/factory.ts'
 import { wasmLoader } from '../../wasm/WasmLoader.ts'
 
 // Type definitions
-type NestedArray<T = any> = T | NestedArray<T>[]
-type MatrixData = NestedArray<any>
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
 
+/** Scalar types supported by det */
+type Scalar = number | BigNumber | Complex
+
+/** Nested array of scalar values */
+type NestedArray<T = Scalar> = T | NestedArray<T>[]
+
+/** Matrix data can be nested arrays of scalars */
+type MatrixData = NestedArray<Scalar>
+
+/** Matrix interface */
 interface Matrix {
   type: string
   storage(): string
@@ -21,23 +31,26 @@ interface Matrix {
   _datatype?: string
 }
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
+/** Typed function interface for math.js functions */
+interface TypedFunction<R = Scalar> {
+  (...args: unknown[]): R
+  find(func: TypedFunction, signature: string[]): TypedFunction<R>
 }
 
+/** Matrix constructor function */
 interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
+  (data: Scalar[] | Scalar[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
+/** Dependencies for det factory */
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
-  subtractScalar: TypedFunction
-  multiply: TypedFunction
-  divideScalar: TypedFunction
+  subtractScalar: TypedFunction<Scalar>
+  multiply: TypedFunction<Scalar>
+  divideScalar: TypedFunction<Scalar>
   isZero: TypedFunction<boolean>
-  unaryMinus: TypedFunction
+  unaryMinus: TypedFunction<Scalar>
 }
 
 // Minimum matrix size (n*n elements) for WASM to be beneficial
@@ -124,11 +137,11 @@ export const createDet = /* #__PURE__ */ factory(
      * @return {number} The determinant of `x`
      */
     return typed(name, {
-      any: function (x: any): any {
-        return clone(x)
+      any: function (x: Scalar): Scalar {
+        return clone(x) as Scalar
       },
 
-      'Array | Matrix': function det(x: any[] | Matrix): any {
+      'Array | Matrix': function det(x: Scalar[] | Matrix): Scalar {
         let size: number[]
         let matrixValue: Matrix
 
@@ -146,12 +159,12 @@ export const createDet = /* #__PURE__ */ factory(
         switch (size.length) {
           case 0:
             // scalar
-            return clone(x)
+            return clone(x) as Scalar
 
           case 1:
             // vector
             if (size[0] === 1) {
-              return clone(matrixValue.valueOf()[0])
+              return clone((matrixValue.valueOf() as Scalar[])[0]) as Scalar
             }
             if (size[0] === 0) {
               return 1 // det of an empty matrix is per definition 1
@@ -166,7 +179,7 @@ export const createDet = /* #__PURE__ */ factory(
             const rows = size[0]
             const cols = size[1]
             if (rows === cols) {
-              return _det(matrixValue.clone().valueOf() as any[][], rows, cols)
+              return _det(matrixValue.clone().valueOf() as Scalar[][], rows, cols)
             }
             if (cols === 0) {
               return 1 // det of an empty matrix is per definition 1
@@ -191,13 +204,13 @@ export const createDet = /* #__PURE__ */ factory(
 
     /**
      * Calculate the determinant of a matrix
-     * @param {Array[][]} matrix  A square, two dimensional matrix
-     * @param {number} rows     Number of rows of the matrix (zero-based)
-     * @param {number} cols     Number of columns of the matrix (zero-based)
-     * @returns {number} det
+     * @param matrix  A square, two dimensional matrix
+     * @param rows    Number of rows of the matrix
+     * @param _cols   Number of columns of the matrix (unused, must equal rows)
+     * @returns det   The determinant
      * @private
      */
-    function _det(matrix: any[][], rows: number, _cols: number): any {
+    function _det(matrix: Scalar[][], rows: number, _cols: number): Scalar {
       // Try WASM for large matrices with plain numbers
       const wasm = wasmLoader.getModule()
       if (
@@ -224,7 +237,7 @@ export const createDet = /* #__PURE__ */ factory(
 
       if (rows === 1) {
         // this is a 1 x 1 matrix
-        return clone(matrix[0][0])
+        return clone(matrix[0][0]) as Scalar
       } else if (rows === 2) {
         // this is a 2 x 2 matrix
         // the determinant of [a11,a12;a21,a22] is det = a11*a22-a21*a12

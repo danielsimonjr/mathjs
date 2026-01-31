@@ -91,17 +91,23 @@ npm run validate:ascii
 
 ## Codebase Statistics
 
-Quick reference numbers from codebase analysis:
+Quick reference numbers from codebase analysis (updated 2026-01-30):
 
 | Metric | Count |
 |--------|-------|
+| Total source files | 2,014 |
+| TypeScript files | 1,340 (66.5%) |
+| JavaScript files | 674 (33.5%) |
+| WASM/AssemblyScript files | 65 |
+| Total lines of code | 194,602 |
+| TypeScript lines | 133,362 (68.5%) |
+| WASM lines | 35,249 |
+| Generated .ts files | 585 |
 | Factory functions | 396 |
-| Unique dependencies | 160 |
 | AST node types | 16 |
 | Type classes | 15 |
 | Matrix algorithms | 15 |
 | Expression transforms | 25 |
-| Distribution size | ~4.4 MB |
 
 **Most-used dependencies** (by usage count):
 - `typed` (280) - type dispatch system
@@ -190,13 +196,15 @@ types/
 
 The codebase is being gradually converted to TypeScript with WASM support:
 
-- **Migration Tracking**: `ts-inventory.json` tracks 1,306 source files
-- **Current Status**: 68.5% converted (895 TypeScript, 411 JavaScript remaining)
-- **Fully Converted**: trigonometry, set, bitwise, logical, complex, geometry, signal, unit, parallel, wasm
-- **In Progress**: expression/embeddedDocs (50%), expression/node (50%), statistics (50%)
+- **Migration Tracking**: `ts-inventory.json` tracks 2,014 source files
+- **Current Status**: 66.5% files converted (1,340 TypeScript, 674 JavaScript), 68.5% by lines (133,362 TS / 194,602 total)
+- **Fully Converted**: parallel, wasm, entry/dependencies*, type/local, expression/Help, expression/Parser, expression/parse
+- **In Progress (50%)**: All function categories, expression/embeddedDocs, expression/node, expression/transform, type/matrix, utils
+- **WASM/AssemblyScript**: 65 modules totaling 35,249 lines of code
+- **Generated Files**: 585 TypeScript files auto-generated (entry points, dependencies)
 - **TypeScript Errors**: Run `npx tsc --noEmit 2>&1 | grep -c "error TS"` to check current count
 - **Goal**: Type safety, 2-25x performance improvements, multi-core support
-- **Strategy**: Incremental conversion, 100% backward compatible
+- **Strategy**: Incremental conversion with dual .ts/.js files, 100% backward compatible
 - **See**: `docs/architecture/README_TYPESCRIPT_WASM.md`, `docs/refactoring/REFACTORING_PLAN.md`
 
 **Three-tier performance system**:
@@ -204,13 +212,16 @@ The codebase is being gradually converted to TypeScript with WASM support:
 2. WASM acceleration (2-10x faster for large operations)
 3. Parallel/multicore execution (2-4x additional speedup)
 
-**Current WASM Modules** (`src/wasm/algebra/polynomial.ts`):
-- `polyEval` - Polynomial evaluation using Horner's method
-- `polyEvalWithDerivative` - Evaluate polynomial and derivative simultaneously
-- `quadraticRoots`, `cubicRoots`, `quarticRoots` - Analytical root finding
-- `polyRoots` - General polynomial root finding
-- `polyDerivative` - Compute derivative coefficients
-- `polyMultiply`, `polyDivide` - Polynomial arithmetic
+**WASM Module Categories** (65 files in `src/wasm/`):
+- `algebra/` - Decomposition, equations, polynomial, Schur, solvers, sparse operations
+- `matrix/` - Basic ops, multiply, eigs, linalg, sparse, rotation, expm, sqrtm
+- `arithmetic/` - Basic, advanced, logarithmic operations
+- `signal/` - FFT, signal processing
+- `numeric/` - Calculus, interpolation, ODE, rootfinding, rational
+- `statistics/` - Basic stats, selection algorithms
+- `trigonometry/` - Basic trig functions
+- `special/` - Special mathematical functions
+- `geometry/`, `combinatorics/`, `probability/`, `bitwise/`, `logical/`, `relational/`, `set/`, `string/`, `unit/`
 
 ### Build System
 

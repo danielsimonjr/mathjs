@@ -61,8 +61,8 @@ export const createCompareText = /* #__PURE__ */ factory(
       name,
       _compareText,
       matrixAlgorithmSuite({
-        elop: _compareText,
-        Ds: true as unknown as boolean
+        elop: _compareText as unknown as Parameters<typeof matrixAlgorithmSuite>[0]['elop'],
+        Ds: _compareText as unknown as Parameters<typeof matrixAlgorithmSuite>[0]['Ds']
       })
     )
   }

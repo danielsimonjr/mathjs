@@ -1,16 +1,18 @@
 import { IndexError } from '../../../error/IndexError.ts'
+import type { IndexError as IndexErrorType } from '../types.ts'
 
 /**
  * Transform zero-based indices to one-based indices in errors
- * @param {Error} err
- * @returns {Error | IndexError} Returns the transformed error
+ * @param err - The error to transform
+ * @returns The transformed error (IndexError with adjusted indices) or original error
  */
-export function errorTransform(err: any) {
-  if (err && err.isIndexError) {
+export function errorTransform(err: Error | IndexErrorType): Error | IndexError {
+  if (err && (err as IndexErrorType).isIndexError) {
+    const indexErr = err as IndexErrorType
     return new IndexError(
-      err.index + 1,
-      err.min + 1,
-      err.max !== undefined ? err.max + 1 : undefined
+      indexErr.index + 1,
+      indexErr.min + 1,
+      indexErr.max !== undefined ? indexErr.max + 1 : undefined
     )
   }
 

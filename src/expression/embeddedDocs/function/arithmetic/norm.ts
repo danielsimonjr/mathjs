@@ -13,5 +13,6 @@ export const normDocs = {
     'norm([[1, 2], [3, 4]], 1)',
     'norm([[1, 2], [3, 4]], "inf")',
     'norm([[1, 2], [3, 4]], "fro")'
-  ]
+  ],
+  seealso: ['abs', 'hypot']
 }

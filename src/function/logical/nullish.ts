@@ -15,6 +15,31 @@ import {
   Unit
 } from '../../types.ts'
 
+// Type definitions for nullish operation
+interface DenseMatrix extends Matrix {
+  type: 'DenseMatrix'
+  valueOf(): unknown[][]
+}
+
+interface NullishDependencies {
+  typed: TypedFunction
+  matrix: MatrixConstructor
+  size: TypedFunction
+  flatten: TypedFunction
+  deepEqual: TypedFunction
+}
+
+type NullishScalarType =
+  | number
+  | bigint
+  | Complex
+  | BigNumber
+  | Fraction
+  | Unit
+  | string
+  | boolean
+  | SparseMatrix
+
 const name = 'nullish'
 const dependencies = ['typed', 'matrix', 'size', 'flatten', 'deepEqual']
 
@@ -27,13 +52,7 @@ export const createNullish = /* #__PURE__ */ factory(
     size,
     flatten: _flatten,
     deepEqual
-  }: {
-    typed: TypedFunction
-    matrix: MatrixConstructor
-    size: TypedFunction
-    flatten: TypedFunction
-    deepEqual: TypedFunction
-  }): TypedFunction => {
+  }: NullishDependencies): TypedFunction => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo14xDs = createMatAlgo14xDs({ typed })
     const matAlgo13xDD = createMatAlgo13xDD({ typed })
@@ -70,27 +89,23 @@ export const createNullish = /* #__PURE__ */ factory(
      * @return {*} Returns y when x is null or undefined, otherwise returns x
      */
 
+    // Helper function to create matrix from array
+    const toMatrix = (arr: unknown[]): DenseMatrix => {
+      return (matrix as unknown as (data: unknown[]) => DenseMatrix)(arr)
+    }
+
     return typed(name, {
       // Scalar and SparseMatrix-first short-circuit handlers
       'number|bigint|Complex|BigNumber|Fraction|Unit|string|boolean|SparseMatrix, any':
-        (
-          x:
-            | number
-            | bigint
-            | Complex
-            | BigNumber
-            | Fraction
-            | Unit
-            | string
-            | boolean
-            | SparseMatrix,
-          _y: any
-        ) => x,
-      'null, any': (_x: null, y: any) => y,
-      'undefined, any': (_x: undefined, y: any) => y,
+        (x: NullishScalarType, _y: unknown): NullishScalarType => x,
+      'null, any': (_x: null, y: unknown): unknown => y,
+      'undefined, any': (_x: undefined, y: unknown): unknown => y,
 
       // SparseMatrix-first with collection RHS: enforce exact shape match
-      'SparseMatrix, Array | Matrix': (x: SparseMatrix, y: any[] | Matrix) => {
+      'SparseMatrix, Array | Matrix': (
+        x: SparseMatrix,
+        y: unknown[] | Matrix
+      ): SparseMatrix => {
         const sx = size(x)
         const sy = size(y)
         if (deepEqual(sx, sy)) return x
@@ -99,35 +114,46 @@ export const createNullish = /* #__PURE__ */ factory(
 
       // DenseMatrix-first handlers (no broadcasting between collections)
       'DenseMatrix, DenseMatrix': typed.referToSelf(
-        (self: any) => (x: any, y: any) => matAlgo13xDD(x, y, self)
+        (self: TypedFunction) =>
+          (x: DenseMatrix, y: DenseMatrix): DenseMatrix =>
+            matAlgo13xDD(x, y, self)
       ),
       'DenseMatrix, SparseMatrix': typed.referToSelf(
-        (self: any) => (x: any, y: any) => matAlgo03xDSf(x, y, self, false)
+        (self: TypedFunction) =>
+          (x: DenseMatrix, y: SparseMatrix): DenseMatrix =>
+            matAlgo03xDSf(x, y, self, false)
       ),
       'DenseMatrix, Array': typed.referToSelf(
-        (self: any) => (x: any, y: any) =>
-          matAlgo13xDD(x, (matrix as any)(y), self)
+        (self: TypedFunction) =>
+          (x: DenseMatrix, y: unknown[]): DenseMatrix =>
+            matAlgo13xDD(x, toMatrix(y), self)
       ),
       'DenseMatrix, any': typed.referToSelf(
-        (self: any) => (x: any, y: any) => matAlgo14xDs(x, y, self, false)
+        (self: TypedFunction) =>
+          (x: DenseMatrix, y: unknown): DenseMatrix =>
+            matAlgo14xDs(x, y, self, false)
       ),
 
       // Array-first handlers (bridge via matrix() where needed)
       'Array, Array': typed.referToSelf(
-        (self: any) => (x: any, y: any) =>
-          matAlgo13xDD((matrix as any)(x), (matrix as any)(y), self).valueOf()
+        (self: TypedFunction) =>
+          (x: unknown[], y: unknown[]): unknown[][] =>
+            matAlgo13xDD(toMatrix(x), toMatrix(y), self).valueOf()
       ),
       'Array, DenseMatrix': typed.referToSelf(
-        (self: any) => (x: any, y: any) =>
-          matAlgo13xDD((matrix as any)(x), y, self)
+        (self: TypedFunction) =>
+          (x: unknown[], y: DenseMatrix): DenseMatrix =>
+            matAlgo13xDD(toMatrix(x), y, self)
       ),
       'Array, SparseMatrix': typed.referToSelf(
-        (self: any) => (x: any, y: any) =>
-          matAlgo03xDSf((matrix as any)(x), y, self, false)
+        (self: TypedFunction) =>
+          (x: unknown[], y: SparseMatrix): DenseMatrix =>
+            matAlgo03xDSf(toMatrix(x), y, self, false)
       ),
       'Array, any': typed.referToSelf(
-        (self: any) => (x: any, y: any) =>
-          matAlgo14xDs((matrix as any)(x), y, self, false).valueOf()
+        (self: TypedFunction) =>
+          (x: unknown[], y: unknown): unknown[][] =>
+            matAlgo14xDs(toMatrix(x), y, self, false).valueOf()
       )
     })
   }

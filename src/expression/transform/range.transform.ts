@@ -1,23 +1,20 @@
 import { factory } from '../../utils/factory.ts'
 import { createRange } from '../../function/matrix/range.ts'
+import type { TypedFunction, MathFunction, MathJsConfig, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface RangeDependencies {
   typed: TypedFunction
-  config: any
-  matrix?: (...args: any[]) => any
-  bignumber?: (...args: any[]) => any
+  config: MathJsConfig
+  matrix?: MathFunction
+  bignumber?: MathFunction
   equal: TypedFunction
   smaller: TypedFunction
   smallerEq: TypedFunction
   larger: TypedFunction
   largerEq: TypedFunction
   add: TypedFunction
-  isZero: (x: any) => boolean
-  isPositive: (x: any) => boolean
+  isZero: (x: unknown) => boolean
+  isPositive: (x: unknown) => boolean
 }
 
 const name = 'range'
@@ -52,7 +49,7 @@ export const createRangeTransform = /* #__PURE__ */ factory(
     add,
     isZero,
     isPositive
-  }: Dependencies) => {
+  }: RangeDependencies) => {
     const range = createRange({
       typed,
       config,
@@ -75,7 +72,7 @@ export const createRangeTransform = /* #__PURE__ */ factory(
      * This transform creates a range which includes the end value
      */
     return typed('range', {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         const lastIndex = args.length - 1
         const last = args[lastIndex]
         if (typeof last !== 'boolean') {

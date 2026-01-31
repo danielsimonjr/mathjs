@@ -5,6 +5,21 @@ import type {
   Matrix,
   MathNumericType
 } from '../../../types/index.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Type definitions for setCartesian
+interface Index {
+  // Index placeholder
+}
+
+interface SetCartesianDependencies {
+  typed: TypedFunction
+  size: (arr: MathArray | Matrix) => number[]
+  subset: (arr: number[], index: Index) => number
+  compareNatural: (a: unknown, b: unknown) => number
+  Index: new (i: number) => Index
+  DenseMatrix: new (data: unknown[]) => Matrix
+}
 
 const name = 'setCartesian'
 const dependencies = [
@@ -19,7 +34,14 @@ const dependencies = [
 export const createSetCartesian = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, size, subset, compareNatural, Index, DenseMatrix }) => {
+  ({
+    typed,
+    size,
+    subset,
+    compareNatural,
+    Index,
+    DenseMatrix
+  }: SetCartesianDependencies) => {
     /**
      * Create the cartesian product of two (multi)sets.
      * Multi-dimension arrays will be converted to single-dimension arrays

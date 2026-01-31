@@ -1,8 +1,12 @@
 import { clone } from '../../../utils/object.ts'
 import { wasmLoader } from '../../../wasm/WasmLoader.ts'
+import type { BigNumber } from 'bignumber.js'
 
 // Minimum matrix size (n*n elements) for WASM to be beneficial
 const WASM_EIGS_THRESHOLD = 16 // 4x4 matrix
+
+/** Scalar types for real symmetric eigenvalue computation */
+type Scalar = number | BigNumber
 
 /**
  * Flatten a 2D array to a Float64Array in row-major order
@@ -22,34 +26,37 @@ function flattenToFloat64(
 }
 
 // Type definitions
+/** Result for a single eigenvector with its corresponding eigenvalue */
 interface EigenvectorResult {
-  value: any
-  vector: any[]
+  value: Scalar
+  vector: Scalar[]
 }
 
+/** Result of real symmetric eigenvalue computation */
 interface EigenResult {
-  values: any[]
+  values: Scalar[]
   eigenvectors?: EigenvectorResult[]
 }
 
+/** Configuration object */
 interface Config {
-  relTol: number | any
+  relTol: number | BigNumber
 }
 
+/** Dependencies for createRealSymmetric */
 interface Dependencies {
   config: Config
-  addScalar: Function
-  subtract: Function
-  abs: Function
-  atan: Function
-  cos: Function
-  sin: Function
-  multiplyScalar: Function
-  inv: Function
-  bignumber: Function
-  complex: Function
-  multiply: Function
-  add: Function
+  addScalar: (a: Scalar, b: Scalar) => Scalar
+  subtract: (a: Scalar, b: Scalar) => Scalar
+  abs: (x: Scalar) => number | BigNumber
+  atan: (x: Scalar) => Scalar
+  cos: (x: Scalar) => Scalar
+  sin: (x: Scalar) => Scalar
+  multiplyScalar: (a: Scalar, b: Scalar) => Scalar
+  inv: (x: Scalar) => Scalar
+  bignumber: (x: number | string) => BigNumber
+  multiply: (...args: Scalar[]) => Scalar
+  add: (...args: Scalar[]) => Scalar
 }
 
 export function createRealSymmetric({
@@ -67,16 +74,17 @@ export function createRealSymmetric({
   add
 }: Dependencies) {
   /**
-   * @param {number[][] | any[][]} arr
-   * @param {number} N
-   * @param {number | any} prec
-   * @param {'number' | 'BigNumber'} type
-   * @param {boolean} computeVectors
+   * Compute eigenvalues and optionally eigenvectors of a real symmetric matrix
+   * @param arr the matrix
+   * @param N size of the matrix
+   * @param prec precision threshold
+   * @param type data type ('number' or 'BigNumber')
+   * @param computeVectors whether to compute eigenvectors
    */
   function main(
-    arr: any[][],
+    arr: Scalar[][],
     N: number,
-    prec: number | any = config.relTol,
+    prec: number | BigNumber = config.relTol,
     type: 'number' | 'BigNumber',
     computeVectors: boolean
   ): EigenResult {
@@ -207,25 +215,25 @@ export function createRealSymmetric({
 
   // diagonalization implementation for bigNumber
   function diagBig(
-    x: any[][],
-    precision: any,
+    x: BigNumber[][],
+    precision: BigNumber,
     computeVectors: boolean
   ): EigenResult {
     const N = x.length
-    const e0 = abs(precision / N)
-    let psi: any
-    let Sij: any[][] | undefined
+    const e0 = abs(multiplyScalar(precision, bignumber(1 / N)))
+    let psi: BigNumber
+    let Sij: BigNumber[][] | undefined
     if (computeVectors) {
       Sij = new Array(N)
       // Sij is Identity Matrix
       for (let i = 0; i < N; i++) {
-        Sij[i] = Array(N).fill(0)
-        Sij[i][i] = 1.0
+        Sij[i] = Array(N).fill(bignumber(0))
+        Sij[i][i] = bignumber(1)
       }
     }
     // initial error
     let Vab = getAijBig(x)
-    while (abs(Vab[1]) >= abs(e0)) {
+    while ((abs(Vab[1]) as number) >= (abs(e0) as number)) {
       const i = Vab[0][0]
       const j = Vab[0][1]
       psi = getThetaBig(x[i][i], x[j][j], x[i][j])
@@ -233,12 +241,11 @@ export function createRealSymmetric({
       if (computeVectors) Sij = Sij1Big(Sij!, psi, i, j)
       Vab = getAijBig(x)
     }
-    const Ei = Array(N).fill(0) // eigenvalues
+    const Ei: BigNumber[] = Array(N).fill(bignumber(0)) // eigenvalues
     for (let i = 0; i < N; i++) {
       Ei[i] = x[i][i]
     }
-    // return [clone(Ei), clone(Sij)]
-    return sorting(clone(Ei), Sij, computeVectors)
+    return sorting(clone(Ei) as Scalar[], Sij as Scalar[][] | undefined, computeVectors)
   }
 
   // get angle
@@ -251,17 +258,17 @@ export function createRealSymmetric({
     }
   }
 
-  // get angle
-  function getThetaBig(aii: any, ajj: any, aij: any): any {
-    const denom = subtract(ajj, aii)
-    if (abs(denom) <= config.relTol) {
-      return bignumber(-1).acos().div(4)
+  // get angle for BigNumber
+  function getThetaBig(aii: BigNumber, ajj: BigNumber, aij: BigNumber): BigNumber {
+    const denom = subtract(ajj, aii) as BigNumber
+    if ((abs(denom) as number) <= (config.relTol as number)) {
+      return bignumber(-1).acos().div(4) as unknown as BigNumber
     } else {
-      return multiplyScalar(0.5, atan(multiply(2.0, aij, inv(denom))))
+      return multiplyScalar(0.5 as unknown as BigNumber, atan(multiply(bignumber(2.0), aij, inv(denom)))) as BigNumber
     }
   }
 
-  // update eigvec
+  // update eigenvectors
   function Sij1(
     Sij: number[][],
     theta: number,
@@ -271,8 +278,8 @@ export function createRealSymmetric({
     const N = Sij.length
     const c = Math.cos(theta)
     const s = Math.sin(theta)
-    const Ski = Array(N).fill(0)
-    const Skj = Array(N).fill(0)
+    const Ski: number[] = Array(N).fill(0)
+    const Skj: number[] = Array(N).fill(0)
     for (let k = 0; k < N; k++) {
       Ski[k] = c * Sij[k][i] - s * Sij[k][j]
       Skj[k] = s * Sij[k][i] + c * Sij[k][j]
@@ -284,22 +291,22 @@ export function createRealSymmetric({
     return Sij
   }
 
-  // update eigvec for overlap
-  function Sij1Big(Sij: any[][], theta: any, i: number, j: number): any[][] {
+  // update eigenvectors for BigNumber
+  function Sij1Big(Sij: BigNumber[][], theta: BigNumber, i: number, j: number): BigNumber[][] {
     const N = Sij.length
-    const c = cos(theta)
-    const s = sin(theta)
-    const Ski = Array(N).fill(bignumber(0))
-    const Skj = Array(N).fill(bignumber(0))
+    const c = cos(theta) as BigNumber
+    const s = sin(theta) as BigNumber
+    const Ski: BigNumber[] = Array(N).fill(bignumber(0))
+    const Skj: BigNumber[] = Array(N).fill(bignumber(0))
     for (let k = 0; k < N; k++) {
       Ski[k] = subtract(
         multiplyScalar(c, Sij[k][i]),
         multiplyScalar(s, Sij[k][j])
-      )
+      ) as BigNumber
       Skj[k] = addScalar(
         multiplyScalar(s, Sij[k][i]),
         multiplyScalar(c, Sij[k][j])
-      )
+      ) as BigNumber
     }
     for (let k = 0; k < N; k++) {
       Sij[k][i] = Ski[k]
@@ -308,37 +315,37 @@ export function createRealSymmetric({
     return Sij
   }
 
-  // update matrix
-  function x1Big(Hij: any[][], theta: any, i: number, j: number): any[][] {
+  // update matrix for BigNumber
+  function x1Big(Hij: BigNumber[][], theta: BigNumber, i: number, j: number): BigNumber[][] {
     const N = Hij.length
-    const c = bignumber(cos(theta))
-    const s = bignumber(sin(theta))
-    const c2 = multiplyScalar(c, c)
-    const s2 = multiplyScalar(s, s)
-    const Aki = Array(N).fill(bignumber(0))
-    const Akj = Array(N).fill(bignumber(0))
+    const c = bignumber((cos(theta) as BigNumber).toString())
+    const s = bignumber((sin(theta) as BigNumber).toString())
+    const c2 = multiplyScalar(c, c) as BigNumber
+    const s2 = multiplyScalar(s, s) as BigNumber
+    const Aki: BigNumber[] = Array(N).fill(bignumber(0))
+    const Akj: BigNumber[] = Array(N).fill(bignumber(0))
     // 2cs Hij
-    const csHij = multiply(bignumber(2), c, s, Hij[i][j])
+    const csHij = multiply(bignumber(2), c, s, Hij[i][j]) as BigNumber
     //  Aii
     const Aii = addScalar(
       subtract(multiplyScalar(c2, Hij[i][i]), csHij),
       multiplyScalar(s2, Hij[j][j])
-    )
+    ) as BigNumber
     const Ajj = add(
       multiplyScalar(s2, Hij[i][i]),
       csHij,
       multiplyScalar(c2, Hij[j][j])
-    )
+    ) as BigNumber
     // 0  to i
     for (let k = 0; k < N; k++) {
       Aki[k] = subtract(
         multiplyScalar(c, Hij[i][k]),
         multiplyScalar(s, Hij[j][k])
-      )
+      ) as BigNumber
       Akj[k] = addScalar(
         multiplyScalar(s, Hij[i][k]),
         multiplyScalar(c, Hij[j][k])
-      )
+      ) as BigNumber
     }
     // Modify Hij
     Hij[i][i] = Aii
@@ -412,15 +419,15 @@ export function createRealSymmetric({
     return [maxIJ, maxMij]
   }
 
-  // get max off-diagonal value from Upper Diagonal
-  function getAijBig(Mij: any[][]): [[number, number], any] {
+  // get max off-diagonal value from Upper Diagonal (BigNumber version)
+  function getAijBig(Mij: BigNumber[][]): [[number, number], BigNumber] {
     const N = Mij.length
-    let maxMij: any = 0
+    let maxMij: BigNumber = bignumber(0)
     let maxIJ: [number, number] = [0, 1]
     for (let i = 0; i < N; i++) {
       for (let j = i + 1; j < N; j++) {
-        if (abs(maxMij) < abs(Mij[i][j])) {
-          maxMij = abs(Mij[i][j])
+        if ((abs(maxMij) as number) < (abs(Mij[i][j]) as number)) {
+          maxMij = abs(Mij[i][j]) as BigNumber
           maxIJ = [i, j]
         }
       }
@@ -428,15 +435,15 @@ export function createRealSymmetric({
     return [maxIJ, maxMij]
   }
 
-  // sort results
+  // sort results by absolute value
   function sorting(
-    E: any[],
-    S: any[][] | undefined,
+    E: Scalar[],
+    S: Scalar[][] | undefined,
     computeVectors: boolean
   ): EigenResult {
     const N = E.length
-    const values = Array(N)
-    let vecs: any[][] | undefined
+    const values: Scalar[] = Array(N)
+    let vecs: Scalar[][] | undefined
     if (computeVectors) {
       vecs = Array(N)
       for (let k = 0; k < N; k++) {
@@ -447,7 +454,7 @@ export function createRealSymmetric({
       let minID = 0
       let minE = E[0]
       for (let j = 0; j < E.length; j++) {
-        if (abs(E[j]) < abs(minE)) {
+        if ((abs(E[j]) as number) < (abs(minE) as number)) {
           minID = j
           minE = E[minID]
         }

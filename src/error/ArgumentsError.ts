@@ -36,8 +36,8 @@ export class ArgumentsError extends Error {
     this.name = 'ArgumentsError'
 
     // Maintains proper stack trace for where error was thrown (V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ArgumentsError)
+    if ((Error as any).captureStackTrace) {
+      ;(Error as any).captureStackTrace(this, ArgumentsError)
     }
   }
 }

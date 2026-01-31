@@ -45,7 +45,7 @@ const dependencies = ['typed', 'format']
 export const createBin = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, format }: BinDependencies): TypedFunction => {
+  ({ typed, format }: BinDependencies) => {
     return typed(name, {
       'number | BigNumber': function (n: number | bigint): string {
         return format(n, { notation: 'bin' })

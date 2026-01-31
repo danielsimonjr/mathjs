@@ -5,7 +5,8 @@ import {
   isArray,
   isString,
   Index,
-  Matrix
+  Matrix,
+  IndexDimension
 } from './is.ts'
 import { format } from './string.ts'
 import { DimensionError } from '../error/DimensionError.ts'
@@ -29,12 +30,13 @@ export interface IdentifiedValue<T> {
  * @param {Array} x
  * @return {number[]} size
  */
-export function arraySize(x: any): number[] {
+export function arraySize<T>(x: NestedArray<T>): number[] {
   const s: number[] = []
 
-  while (Array.isArray(x)) {
-    s.push(x.length)
-    x = x[0]
+  let current: NestedArray<T> = x
+  while (Array.isArray(current)) {
+    s.push(current.length)
+    current = current[0]
   }
 
   return s
@@ -49,7 +51,7 @@ export function arraySize(x: any): number[] {
  * @throws DimensionError
  * @private
  */
-function _validate(array: any[], size: number[], dim: number): void {
+function _validate<T>(array: T[], size: number[], dim: number): void {
   let i: number
   const len = array.length
 
@@ -84,7 +86,7 @@ function _validate(array: any[], size: number[], dim: number): void {
  * @param {number[]} size  Array with the size of each dimension
  * @throws DimensionError
  */
-export function validate(array: any, size: number[]): void {
+export function validate<T>(array: NestedArray<T>, size: number[]): void {
   const isScalar = size.length === 0
   if (isScalar) {
     // scalar
@@ -93,7 +95,7 @@ export function validate(array: any, size: number[]): void {
     }
   } else {
     // array
-    _validate(array, size, 0)
+    _validate(array as T[], size, 0)
   }
 }
 
@@ -145,18 +147,21 @@ export function validateIndex(
  */
 export function isEmptyIndex(index: Index): boolean {
   for (let i = 0; i < index._dimensions.length; ++i) {
-    const dimension = index._dimensions[i]
-    if (dimension._data && isArray(dimension._data)) {
-      if (dimension._size[0] === 0) {
-        return true
-      }
-    } else if (dimension.isRange) {
-      if (dimension.start === dimension.end) {
-        return true
-      }
-    } else if (isString(dimension)) {
+    const dimension: IndexDimension | string = index._dimensions[i]
+    if (isString(dimension)) {
       if (dimension.length === 0) {
         return true
+      }
+    } else {
+      const dim = dimension as IndexDimension
+      if (dim._data && isArray(dim._data)) {
+        if (dim._size[0] === 0) {
+          return true
+        }
+      } else if (dim.isRange) {
+        if (dim.start === dim.end) {
+          return true
+        }
       }
     }
   }
@@ -199,14 +204,14 @@ export function resize<T = any>(
   })
 
   // convert number to an array
-  let arr: any = array
+  let arr: NestedArray<T> = array
   if (isNumber(array) || isBigNumber(array)) {
-    arr = [array]
+    arr = [array as unknown as T]
   }
 
   // recursively resize the array
-  const _defaultValue = defaultValue !== undefined ? defaultValue : 0
-  _resize(arr, size, 0, _defaultValue)
+  const _defaultValue = defaultValue !== undefined ? defaultValue : (0 as unknown as T)
+  _resize(arr as NestedArray<T>[], size, 0, _defaultValue)
 
   return arr
 }
@@ -220,14 +225,14 @@ export function resize<T = any>(
  *                              undefined by default.
  * @private
  */
-function _resize(
-  array: any[],
+function _resize<T>(
+  array: NestedArray<T>[],
   size: number[],
   dim: number,
-  defaultValue: any
+  defaultValue: T
 ): void {
   let i: number
-  let elem: any
+  let elem: NestedArray<T>[]
   const oldLen = array.length
   const newLen = size[dim]
   const minLen = Math.min(oldLen, newLen)
@@ -242,19 +247,19 @@ function _resize(
     // resize existing child arrays
     for (i = 0; i < minLen; i++) {
       // resize child array
-      elem = array[i]
-      if (!Array.isArray(elem)) {
-        elem = [elem] // add a dimension
-        array[i] = elem
+      let current = array[i]
+      if (!Array.isArray(current)) {
+        current = [current] as NestedArray<T>[] // add a dimension
+        array[i] = current as NestedArray<T>
       }
-      _resize(elem, size, dimNext, defaultValue)
+      _resize(current as NestedArray<T>[], size, dimNext, defaultValue)
     }
 
     // create new child arrays
     for (i = minLen; i < newLen; i++) {
       // get child array
       elem = []
-      array[i] = elem
+      array[i] = elem as NestedArray<T>
 
       // resize new child array
       _resize(elem, size, dimNext, defaultValue)
@@ -264,9 +269,11 @@ function _resize(
 
     // remove dimensions of existing values
     for (i = 0; i < minLen; i++) {
-      while (Array.isArray(array[i])) {
-        array[i] = array[i][0]
+      let value = array[i]
+      while (Array.isArray(value)) {
+        value = value[0]
       }
+      array[i] = value
     }
 
     // fill new elements with the default value
@@ -375,8 +382,8 @@ function product(array: number[]): number {
 
 function _reshape<T>(array: T[], sizes: number[]): NestedArray<T> {
   // testing if there are enough elements for the requested shape
-  let tmpArray: any = array
-  let tmpArray2: any
+  let tmpArray: NestedArray<T>[] = array
+  let tmpArray2: NestedArray<T>[][]
 
   // for each dimension starting by the last one and ignoring the first one
   for (let sizeIndex = sizes.length - 1; sizeIndex > 0; sizeIndex--) {
@@ -392,7 +399,7 @@ function _reshape<T>(array: T[], sizes: number[]): NestedArray<T> {
     tmpArray = tmpArray2
   }
 
-  return tmpArray
+  return tmpArray as NestedArray<T>
 }
 
 /**
@@ -407,7 +414,7 @@ export function squeeze<T>(
 ): T | NestedArray<T> {
   const s = size || arraySize(array)
 
-  let arr: any = array
+  let arr: NestedArray<T> = array
 
   // squeeze outer dimensions
   while (Array.isArray(arr) && arr.length === 1) {
@@ -438,22 +445,21 @@ export function squeeze<T>(
  * @returns {Array | *} Returns the squeezed array
  * @private
  */
-function _squeeze(array: any, dims: number, dim: number): any {
-  let i: number
-  let ii: number
-
+function _squeeze<T>(array: NestedArray<T>, dims: number, dim: number): NestedArray<T> {
   if (dim < dims) {
     const next = dim + 1
-    for (i = 0, ii = array.length; i < ii; i++) {
-      array[i] = _squeeze(array[i], dims, next)
+    const arr = array as NestedArray<T>[]
+    for (let i = 0, ii = arr.length; i < ii; i++) {
+      arr[i] = _squeeze(arr[i], dims, next)
     }
+    return arr
   } else {
-    while (Array.isArray(array)) {
-      array = array[0]
+    let result: NestedArray<T> = array
+    while (Array.isArray(result)) {
+      result = result[0]
     }
+    return result
   }
-
-  return array
 }
 
 /**
@@ -476,7 +482,7 @@ export function unsqueeze<T>(
 ): NestedArray<T> {
   const s = size || arraySize(array)
 
-  let arr: any = array
+  let arr: NestedArray<T> = array
 
   // unsqueeze outer dimensions
   if (outer) {
@@ -503,22 +509,21 @@ export function unsqueeze<T>(
  * @returns {Array | *} Returns the unsqueezed array
  * @private
  */
-function _unsqueeze(array: any, dims: number, dim: number): any {
-  let i: number
-  let ii: number
-
+function _unsqueeze<T>(array: NestedArray<T>, dims: number, dim: number): NestedArray<T> {
   if (Array.isArray(array)) {
     const next = dim + 1
-    for (i = 0, ii = array.length; i < ii; i++) {
-      array[i] = _unsqueeze(array[i], dims, next)
+    const arr = array as NestedArray<T>[]
+    for (let i = 0, ii = arr.length; i < ii; i++) {
+      arr[i] = _unsqueeze(arr[i], dims, next)
     }
+    return arr
   } else {
+    let result: NestedArray<T> = array
     for (let d = dim; d < dims; d++) {
-      array = [array]
+      result = [result]
     }
+    return result
   }
-
-  return array
 }
 
 /**
@@ -534,7 +539,7 @@ export function flatten<T>(
 ): T[] {
   if (!Array.isArray(array)) {
     // if not an array, return as is
-    return array as any
+    return array as unknown as T[]
   }
   if (typeof isRectangular !== 'boolean') {
     throw new TypeError('Boolean expected for second argument of flatten')
@@ -549,25 +554,25 @@ export function flatten<T>(
 
   return flat
 
-  function _flatten(arr: any): void {
+  function _flatten(arr: NestedArray<T>[]): void {
     for (let i = 0; i < arr.length; i++) {
       const item = arr[i]
       if (Array.isArray(item)) {
         _flatten(item)
       } else {
-        flat.push(item)
+        flat.push(item as T)
       }
     }
   }
 
-  function _flattenRectangular(arr: any): void {
+  function _flattenRectangular(arr: NestedArray<T>[]): void {
     if (Array.isArray(arr[0])) {
       for (let i = 0; i < arr.length; i++) {
-        _flattenRectangular(arr[i])
+        _flattenRectangular(arr[i] as NestedArray<T>[])
       }
     } else {
       for (let i = 0; i < arr.length; i++) {
-        flat.push(arr[i])
+        flat.push(arr[i] as T)
       }
     }
   }
@@ -650,7 +655,7 @@ export function identify<T>(a: T[]): IdentifiedValue<T>[] {
   }
 
   if (a.length === 0) {
-    return a as any
+    return []
   }
 
   const b: IdentifiedValue<T>[] = []
@@ -678,7 +683,7 @@ export function generalize<T>(a: IdentifiedValue<T>[]): T[] {
   }
 
   if (a.length === 0) {
-    return a as any
+    return []
   }
 
   const b: T[] = []
@@ -762,21 +767,26 @@ export function initial<T>(array: T[]): T[] {
  * @return {Array} c            The concatenated matrix
  * @private
  */
-function concatRecursive(
-  a: any[],
-  b: any[],
+function concatRecursive<T>(
+  a: NestedArray<T>[],
+  b: NestedArray<T>[],
   concatDim: number,
   dim: number
-): any[] {
+): NestedArray<T>[] {
   if (dim < concatDim) {
     // recurse into next dimension
     if (a.length !== b.length) {
       throw new DimensionError(a.length, b.length)
     }
 
-    const c: any[] = []
+    const c: NestedArray<T>[] = []
     for (let i = 0; i < a.length; i++) {
-      c[i] = concatRecursive(a[i], b[i], concatDim, dim + 1)
+      c[i] = concatRecursive(
+        a[i] as NestedArray<T>[],
+        b[i] as NestedArray<T>[],
+        concatDim,
+        dim + 1
+      )
     }
     return c
   } else {
@@ -791,15 +801,18 @@ function concatRecursive(
  * @param {number} concatDim The dimension on which to concatenate (zero-based)
  * @returns {Array}
  */
-export function concat(...args: any[]): any[] {
-  const arrays = Array.prototype.slice.call(args, 0, -1)
-  const concatDim = Array.prototype.slice.call(args, -1)[0]
+export function concat<T>(...args: [...NestedArray<T>[], number]): NestedArray<T>[] {
+  const arrays = Array.prototype.slice.call(args, 0, -1) as NestedArray<T>[][]
+  const concatDim = Array.prototype.slice.call(args, -1)[0] as number
 
   if (arrays.length === 1) {
     return arrays[0]
   }
   if (arrays.length > 1) {
-    return arrays.slice(1).reduce(function (A: any, B: any) {
+    return arrays.slice(1).reduce(function (
+      A: NestedArray<T>[],
+      B: NestedArray<T>[]
+    ) {
       return concatRecursive(A, B, concatDim, 0)
     }, arrays[0])
   } else {
@@ -870,7 +883,7 @@ export function broadcastTo<T>(
   const N = broadcastedSize.length
   const paddedSize = [...Array(N - Asize.length).fill(1), ...Asize]
 
-  let A: any = clone(array as any)
+  let A: NestedArray<T> = clone(array as T[]) as NestedArray<T>
   // reshape A if needed to make it ready for concat
   if (Asize.length < N) {
     A = reshape(A, paddedSize)
@@ -901,7 +914,7 @@ export function broadcastArrays<T>(
     )
   }
   if (arrays.length === 1) {
-    return arrays[0] as any
+    return arrays[0] as unknown as NestedArray<T>[]
   }
   const sizes = arrays.map(function (array) {
     return arraySize(array)
@@ -952,7 +965,7 @@ export function get<T>(array: NestedArray<T>, index: number[]): T {
   for (let x = 0; x < index.length; x++) {
     validateIndex(index[x], size[x])
   }
-  return index.reduce((acc: any, curr) => acc[curr], array)
+  return index.reduce((acc: NestedArray<T>, curr) => (acc as NestedArray<T>[])[curr], array) as T
 }
 
 /**
@@ -973,8 +986,8 @@ export function deepMap<T, U>(
     | ((value: T) => U),
   skipIndex: boolean = false
 ): NestedArray<U> {
-  if ((array as any).length === 0) {
-    return [] as any
+  if (Array.isArray(array) && array.length === 0) {
+    return []
   }
 
   if (skipIndex) {
@@ -984,30 +997,34 @@ export function deepMap<T, U>(
 
   return recursiveMapWithIndex(array, 0) as NestedArray<U>
 
-  function recursiveMapWithIndex(value: any, depth: number): any {
+  function recursiveMapWithIndex(value: NestedArray<T>, depth: number): NestedArray<U> {
     if (Array.isArray(value)) {
       const N = value.length
-      const result = Array(N)
+      const result: NestedArray<U>[] = Array(N)
       for (let i = 0; i < N; i++) {
         index[depth] = i
         result[i] = recursiveMapWithIndex(value[i], depth + 1)
       }
       return result
     } else {
-      return (callback as any)(value, index.slice(0, depth), array)
+      return (callback as (value: T, index: number[], array: NestedArray<T>) => U)(
+        value as T,
+        index.slice(0, depth),
+        array
+      )
     }
   }
 
-  function recursiveMap(value: any): any {
+  function recursiveMap(value: NestedArray<T>): NestedArray<U> {
     if (Array.isArray(value)) {
       const N = value.length
-      const result = Array(N)
+      const result: NestedArray<U>[] = Array(N)
       for (let i = 0; i < N; i++) {
         result[i] = recursiveMap(value[i])
       }
       return result
     } else {
-      return (callback as any)(value)
+      return (callback as (value: T) => U)(value as T)
     }
   }
 }
@@ -1029,7 +1046,7 @@ export function deepForEach<T>(
     | ((value: T) => void),
   skipIndex: boolean = false
 ): void {
-  if ((array as any).length === 0) {
+  if (Array.isArray(array) && array.length === 0) {
     return
   }
 
@@ -1040,7 +1057,7 @@ export function deepForEach<T>(
   const index: number[] = []
   recursiveForEachWithIndex(array, 0)
 
-  function recursiveForEachWithIndex(value: any, depth: number): void {
+  function recursiveForEachWithIndex(value: NestedArray<T>, depth: number): void {
     if (Array.isArray(value)) {
       const N = value.length
       for (let i = 0; i < N; i++) {
@@ -1048,18 +1065,22 @@ export function deepForEach<T>(
         recursiveForEachWithIndex(value[i], depth + 1)
       }
     } else {
-      ;(callback as any)(value, index.slice(0, depth), array)
+      ;(callback as (value: T, index: number[], array: NestedArray<T>) => void)(
+        value as T,
+        index.slice(0, depth),
+        array
+      )
     }
   }
 
-  function recursiveForEach(value: any): void {
+  function recursiveForEach(value: NestedArray<T>): void {
     if (Array.isArray(value)) {
       const N = value.length
       for (let i = 0; i < N; i++) {
         recursiveForEach(value[i])
       }
     } else {
-      ;(callback as any)(value)
+      ;(callback as (value: T) => void)(value as T)
     }
   }
 }

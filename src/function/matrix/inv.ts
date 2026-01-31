@@ -8,9 +8,19 @@ import { wasmLoader } from '../../wasm/WasmLoader.ts'
 const WASM_INV_THRESHOLD = 16 // 4x4 matrix
 
 // Type definitions
-type NestedArray<T = any> = T | NestedArray<T>[]
-type MatrixData = NestedArray<any>
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
 
+/** Scalar types supported by inv */
+type Scalar = number | BigNumber | Complex
+
+/** Nested array of scalar values */
+type NestedArray<T = Scalar> = T | NestedArray<T>[]
+
+/** Matrix data can be nested arrays of scalars */
+type MatrixData = NestedArray<Scalar>
+
+/** Matrix interface */
 interface Matrix {
   type: string
   storage(): string
@@ -24,29 +34,33 @@ interface Matrix {
   _datatype?: string
 }
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
+/** Typed function interface for math.js functions */
+interface TypedFunction<R = Scalar> {
+  (...args: unknown[]): R
+  find(func: TypedFunction, signature: string[]): TypedFunction<R>
 }
 
+/** Matrix constructor function */
 interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
+  (data: Scalar[] | Scalar[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
+/** Identity matrix function */
 interface IdentityFunction {
   (size: number | number[]): Matrix
 }
 
+/** Dependencies for inv factory */
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
-  divideScalar: TypedFunction
-  addScalar: TypedFunction
-  multiply: TypedFunction
-  unaryMinus: TypedFunction
-  det: TypedFunction
+  divideScalar: TypedFunction<Scalar>
+  addScalar: TypedFunction<Scalar>
+  multiply: TypedFunction<Scalar>
+  unaryMinus: TypedFunction<Scalar>
+  det: TypedFunction<Scalar>
   identity: IdentityFunction
-  abs: TypedFunction
+  abs: TypedFunction<number | BigNumber>
 }
 
 /**
@@ -129,17 +143,17 @@ export const createInv = /* #__PURE__ */ factory(
      * @return {number | Complex | Array | Matrix} The inverse of `x`.
      */
     return typed(name, {
-      'Array | Matrix': function (x: any[] | Matrix): any[] | Matrix {
-        const size = isMatrix(x) ? (x as Matrix).size() : arraySize(x as any[])
+      'Array | Matrix': function (x: Scalar[] | Matrix): Scalar[] | Matrix {
+        const size = isMatrix(x) ? (x as Matrix).size() : arraySize(x as Scalar[])
         switch (size.length) {
           case 1:
             // vector
             if (size[0] === 1) {
               if (isMatrix(x)) {
                 const matX = x as Matrix
-                return matrix([divideScalar(1, matX.valueOf()[0])])
+                return matrix([divideScalar(1, (matX.valueOf() as Scalar[])[0])])
               } else {
-                return [divideScalar(1, (x as any[])[0])]
+                return [divideScalar(1, (x as Scalar[])[0])]
               }
             } else {
               throw new RangeError(
@@ -156,12 +170,12 @@ export const createInv = /* #__PURE__ */ factory(
                 const matX = x as Matrix
                 const storage = matX.storage() as 'dense' | 'sparse'
                 return matrix(
-                  _inv(matX.valueOf() as any[][], rows, cols),
+                  _inv(matX.valueOf() as Scalar[][], rows, cols),
                   storage
                 )
               } else {
                 // return an Array
-                return _inv(x as any[][], rows, cols)
+                return _inv(x as Scalar[][], rows, cols)
               }
             } else {
               throw new RangeError(
@@ -181,7 +195,7 @@ export const createInv = /* #__PURE__ */ factory(
         }
       },
 
-      any: function (x: any): any {
+      any: function (x: Scalar): Scalar {
         // scalar
         return divideScalar(1, x) // FIXME: create a BigNumber one when configured for bignumbers
       }
@@ -189,14 +203,14 @@ export const createInv = /* #__PURE__ */ factory(
 
     /**
      * Calculate the inverse of a square matrix
-     * @param {any[][]} mat     A square matrix
-     * @param {number} rows     Number of rows
-     * @param {number} cols     Number of columns, must equal rows
-     * @return {any[][]} inv    Inverse matrix
+     * @param mat     A square matrix
+     * @param rows    Number of rows
+     * @param cols    Number of columns, must equal rows
+     * @return inv    Inverse matrix
      * @private
      */
-    function _inv(mat: any[][], rows: number, cols: number): any[][] {
-      let r: number, s: number, f: any, value: any, temp: any[]
+    function _inv(mat: Scalar[][], rows: number, cols: number): Scalar[][] {
+      let r: number, s: number, f: Scalar, value: Scalar, temp: Scalar[]
 
       // Try WASM for large matrices with plain numbers
       const wasm = wasmLoader.getModule()
@@ -273,7 +287,7 @@ export const createInv = /* #__PURE__ */ factory(
 
         // create an identity matrix which in the end will contain the
         // matrix inverse
-        const B = identity(rows).valueOf() as any[][]
+        const B = identity(rows).valueOf() as Scalar[][]
 
         // loop over all columns, and perform row reductions
         for (let c = 0; c < cols; c++) {

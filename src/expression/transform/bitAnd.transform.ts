@@ -1,31 +1,22 @@
 import { createBitAnd } from '../../function/bitwise/bitAnd.ts'
 import { factory } from '../../utils/factory.ts'
 import { isCollection } from '../../utils/is.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  ExpressionNode,
+  EvaluationScope,
+  MathJsLike,
+  RawArgsTransformFunction
+} from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Node {
-  compile(): CompiledExpression
-}
-
-interface CompiledExpression {
-  evaluate(scope: any): any
-}
-
-interface TransformFunction {
-  (args: Node[], math: any, scope: any): any
-  rawArgs?: boolean
-}
-
-interface Dependencies {
+interface BitAndDependencies {
   typed: TypedFunction
-  matrix: (...args: any[]) => any
-  equalScalar: (...args: any[]) => any
-  zeros: (...args: any[]) => any
-  not: (...args: any[]) => any
-  concat: (...args: any[]) => any
+  matrix: MathFunction
+  equalScalar: MathFunction<boolean>
+  zeros: MathFunction
+  not: MathFunction<boolean>
+  concat: MathFunction
 }
 
 const name = 'bitAnd'
@@ -42,7 +33,7 @@ const dependencies = [
 export const createBitAndTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, zeros, not, concat }: Dependencies) => {
+  ({ typed, matrix, equalScalar, zeros, not, concat }: BitAndDependencies) => {
     const bitAnd = createBitAnd({
       typed,
       matrix,
@@ -52,10 +43,14 @@ export const createBitAndTransform = /* #__PURE__ */ factory(
       concat
     })
 
-    function bitAndTransform(args: Node[], math: any, scope: any): any {
+    function bitAndTransform(
+      args: ExpressionNode[],
+      math: MathJsLike,
+      scope: EvaluationScope | Map<string, unknown>
+    ): unknown {
       const condition1 = args[0].compile().evaluate(scope)
       if (!isCollection(condition1)) {
-        if (isNaN(condition1)) {
+        if (isNaN(condition1 as number)) {
           return NaN
         }
         if (condition1 === 0 || condition1 === false) {
@@ -66,9 +61,9 @@ export const createBitAndTransform = /* #__PURE__ */ factory(
       return bitAnd(condition1, condition2)
     }
 
-    bitAndTransform.rawArgs = true
+    bitAndTransform.rawArgs = true as const
 
-    return bitAndTransform as TransformFunction
+    return bitAndTransform as RawArgsTransformFunction
   },
   { isTransformFunction: true }
 )

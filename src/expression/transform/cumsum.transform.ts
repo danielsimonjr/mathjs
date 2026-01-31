@@ -2,15 +2,12 @@ import { isBigNumber, isCollection, isNumber } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createCumSum } from '../../function/statistics/cumsum.ts'
+import type { TypedFunction, MathFunction, BigNumberLike, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface CumSumDependencies {
   typed: TypedFunction
-  add: (...args: any[]) => any
-  unaryPlus: (...args: any[]) => any
+  add: MathFunction
+  unaryPlus: MathFunction
 }
 
 /**
@@ -26,18 +23,18 @@ const dependencies = ['typed', 'add', 'unaryPlus']
 export const createCumSumTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, add, unaryPlus }: Dependencies) => {
+  ({ typed, add, unaryPlus }: CumSumDependencies) => {
     const cumsum = createCumSum({ typed, add, unaryPlus })
 
     return typed(name, {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         // change last argument dim from one-based to zero-based
         if (args.length === 2 && isCollection(args[0])) {
           const dim = args[1]
           if (isNumber(dim)) {
             args[1] = dim - 1
           } else if (isBigNumber(dim)) {
-            args[1] = (dim as any).minus(1)
+            args[1] = (dim as BigNumberLike).minus(1)
           }
         }
 

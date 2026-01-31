@@ -29,7 +29,7 @@ export const createCompareNatural = /* #__PURE__ */ factory(
   name,
   dependencies,
   ({ typed, compare }: CompareNaturalDependencies) => {
-    const compareBooleans = compare.signatures['boolean,boolean']
+    const compareBooleans = compare.signatures['boolean,boolean'] as (x: boolean, y: boolean) => number
 
     /**
      * Compare two values of any type in a deterministic, natural way.
@@ -114,7 +114,7 @@ export const createCompareNatural = /* #__PURE__ */ factory(
         c = compare(x, y)
         if (c.toString() !== '0') {
           // c can be number, BigNumber, or Fraction
-          return c > 0 ? 1 : -1 // return a number
+          return (c as number) > 0 ? 1 : -1 // return a number
         } else {
           return naturalSort(typeX, typeY)
         }
@@ -137,28 +137,30 @@ export const createCompareNatural = /* #__PURE__ */ factory(
       }
 
       if (typeX === 'Complex') {
-        return compareComplexNumbers(x, y)
+        return compareComplexNumbers(x as Complex, y as Complex)
       }
 
       if (typeX === 'Unit') {
-        if (x.equalBase(y)) {
-          return _compareNatural(x.value, y.value)
+        const unitX = x as Unit
+        const unitY = y as Unit
+        if (unitX.equalBase(unitY)) {
+          return _compareNatural(unitX.value, unitY.value)
         }
 
         // compare by units
-        return compareArrays(_compareNatural, x.formatUnits(), y.formatUnits())
+        return compareArrays(_compareNatural, unitX.formatUnits(), unitY.formatUnits())
       }
 
       if (typeX === 'boolean') {
-        return compareBooleans(x, y)
+        return compareBooleans(x as boolean, y as boolean)
       }
 
       if (typeX === 'string') {
-        return naturalSort(x, y)
+        return naturalSort(x as string, y as string)
       }
 
       if (typeX === 'Object') {
-        return compareObjects(_compareNatural, x, y)
+        return compareObjects(_compareNatural, x as Record<string, unknown>, y as Record<string, unknown>)
       }
 
       if (typeX === 'null') {

@@ -1,15 +1,12 @@
 import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createSubset } from '../../function/matrix/subset.ts'
+import type { TypedFunction, MathFunction, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface SubsetDependencies {
   typed: TypedFunction
-  matrix: (...args: any[]) => any
-  zeros: (...args: any[]) => any
+  matrix: MathFunction
+  zeros: MathFunction
   add: TypedFunction
 }
 
@@ -19,7 +16,7 @@ const dependencies = ['typed', 'matrix', 'zeros', 'add']
 export const createSubsetTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, zeros, add }: Dependencies) => {
+  ({ typed, matrix, zeros, add }: SubsetDependencies) => {
     const subset = createSubset({ typed, matrix, zeros, add })
 
     /**
@@ -29,7 +26,7 @@ export const createSubsetTransform = /* #__PURE__ */ factory(
      * This transform creates a range which includes the end value
      */
     return typed('subset', {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         try {
           return subset.apply(null, args)
         } catch (err) {

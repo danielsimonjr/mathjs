@@ -2,17 +2,14 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createMax } from '../../function/statistics/max.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
+import type { TypedFunction, MathFunction, MathJsConfig, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface MaxDependencies {
   typed: TypedFunction
-  config: any
-  numeric: TypedFunction
-  larger: TypedFunction
-  isNaN: (x: any) => boolean
+  config: MathJsConfig
+  numeric: MathFunction
+  larger: MathFunction<boolean>
+  isNaN: (x: unknown) => boolean
 }
 
 const name = 'max'
@@ -21,7 +18,7 @@ const dependencies = ['typed', 'config', 'numeric', 'larger', 'isNaN']
 export const createMaxTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, numeric, larger, isNaN: mathIsNaN }: Dependencies) => {
+  ({ typed, config, numeric, larger, isNaN: mathIsNaN }: MaxDependencies) => {
     const max = createMax({ typed, config, numeric, larger, isNaN: mathIsNaN })
 
     /**
@@ -32,7 +29,7 @@ export const createMaxTransform = /* #__PURE__ */ factory(
      * from one-based to zero based
      */
     return typed('max', {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         args = lastDimToZeroBase(args)
 
         try {

@@ -112,12 +112,46 @@ type SimplifyRule =
       expandedNC1?: unknown
       expandedNC2?: unknown
     }
-  | Function
+  | ((node: MathNode, options?: SimplifyOptions) => MathNode)
+
 type SimplifyOptions = {
   consoleDebug?: boolean
-  context?: Record<string, unknown>
+  context?: SimplifyContext
   exactFractions?: boolean
   fractionsLimit?: number
+}
+
+type SimplifyContext = Record<string, Record<string, boolean>>
+
+// Canonical rule after parsing
+interface CanonicalRule {
+  l: MathNode
+  r: MathNode
+  repeat?: boolean
+  assuming?: Record<string, Record<string, boolean>>
+  imposeContext?: Record<string, Record<string, boolean>>
+  evaluate?: MathNode
+  expanded?: {
+    l: MathNode
+    r: MathNode
+  }
+  expandedNC1?: {
+    l: MathNode
+    r: MathNode
+  }
+  expandedNC2?: {
+    l: MathNode
+    r: MathNode
+  }
+}
+
+type ParsedRule =
+  | CanonicalRule
+  | ((node: MathNode, options?: SimplifyOptions) => MathNode)
+
+// Match result with placeholders
+interface MatchResult {
+  placeholders: Record<string, MathNode>
 }
 
 export const createSimplify = /* #__PURE__ */ factory(
@@ -542,8 +576,11 @@ export const createSimplify = /* #__PURE__ */ factory(
      * Takes any rule object as allowed by the specification in simplify
      * and puts it in a standard form used by applyRule
      */
-    function _canonicalizeRule(ruleObject: any, context: any): any {
-      const newRule: any = {}
+    function _canonicalizeRule(
+      ruleObject: Exclude<SimplifyRule, string | Function>,
+      context: SimplifyContext | undefined
+    ): CanonicalRule {
+      const newRule: Partial<CanonicalRule> = {}
       if (ruleObject.s) {
         const lr = ruleObject.s.split('->')
         if (lr.length === 2) {
@@ -556,49 +593,57 @@ export const createSimplify = /* #__PURE__ */ factory(
         newRule.l = ruleObject.l
         newRule.r = ruleObject.r
       }
-      newRule.l = removeParens(parse(newRule.l))
-      newRule.r = removeParens(parse(newRule.r))
-      for (const prop of ['imposeContext', 'repeat', 'assuming']) {
-        if (prop in ruleObject) {
-          newRule[prop] = ruleObject[prop]
-        }
+      newRule.l = removeParens(parse(newRule.l as unknown as string))
+      newRule.r = removeParens(parse(newRule.r as unknown as string))
+      if ('imposeContext' in ruleObject && ruleObject.imposeContext) {
+        newRule.imposeContext = ruleObject.imposeContext
+      }
+      if ('repeat' in ruleObject && ruleObject.repeat !== undefined) {
+        newRule.repeat = ruleObject.repeat
+      }
+      if ('assuming' in ruleObject && ruleObject.assuming) {
+        newRule.assuming = ruleObject.assuming
       }
       if (ruleObject.evaluate) {
-        newRule.evaluate = parse(ruleObject.evaluate)
+        newRule.evaluate = parse(ruleObject.evaluate as string)
       }
 
-      if (isAssociative(newRule.l, context)) {
-        const nonCommutative = !isCommutative(newRule.l, context)
+      if (isAssociative(newRule.l!, context)) {
+        const nonCommutative = !isCommutative(newRule.l!, context)
         let leftExpandsym: SymbolNode
         // Gen. the LHS placeholder used in this NC-context specific expansion rules
         if (nonCommutative) leftExpandsym = _getExpandPlaceholderSymbol()
 
-        const makeNode = createMakeNodeFunction(newRule.l)
+        const makeNode = createMakeNodeFunction(newRule.l!)
         const expandsym = _getExpandPlaceholderSymbol()
-        newRule.expanded = {}
-        newRule.expanded.l = makeNode([newRule.l, expandsym])
+        const expandedL = makeNode([newRule.l!, expandsym])
         // Push the expandsym into the deepest possible branch.
         // This helps to match the newRule against nodes returned from getSplits() later on.
-        flatten(newRule.expanded.l, context)
-        unflattenr(newRule.expanded.l, context)
-        newRule.expanded.r = makeNode([newRule.r, expandsym])
+        flatten(expandedL as OperatorNode, context)
+        unflattenr(expandedL as OperatorNode, context)
+        newRule.expanded = {
+          l: expandedL,
+          r: makeNode([newRule.r!, expandsym])
+        }
 
         // In and for a non-commutative context, attempting with yet additional expansion rules makes
         // way for more matches cases of multi-arg expressions; such that associative rules (such as
         // 'n*n -> n^2') can be applied to exprs. such as 'a * b * b' and 'a * b * b * a'.
         if (nonCommutative) {
           // 'Non-commutative' 1: LHS (placeholder) only
-          newRule.expandedNC1 = {}
-          newRule.expandedNC1.l = makeNode([leftExpandsym!, newRule.l])
-          newRule.expandedNC1.r = makeNode([leftExpandsym!, newRule.r])
+          newRule.expandedNC1 = {
+            l: makeNode([leftExpandsym!, newRule.l!]),
+            r: makeNode([leftExpandsym!, newRule.r!])
+          }
           // 'Non-commutative' 2: farmost LHS and RHS placeholders
-          newRule.expandedNC2 = {}
-          newRule.expandedNC2.l = makeNode([leftExpandsym!, newRule.expanded.l])
-          newRule.expandedNC2.r = makeNode([leftExpandsym!, newRule.expanded.r])
+          newRule.expandedNC2 = {
+            l: makeNode([leftExpandsym!, newRule.expanded.l]),
+            r: makeNode([leftExpandsym!, newRule.expanded.r])
+          }
         }
       }
 
-      return newRule
+      return newRule as CanonicalRule
     }
 
     /**
@@ -617,22 +662,31 @@ export const createSimplify = /* #__PURE__ */ factory(
      * Short hand notation:
      * 'n1 * c1 -> c1 * n1'
      */
-    function _buildRules(rules: SimplifyRule[], context: any): any[] {
+    function _buildRules(
+      rules: SimplifyRule[],
+      context: SimplifyContext | undefined
+    ): ParsedRule[] {
       // Array of rules to be used to simplify expressions
-      const ruleSet: any[] = []
+      const ruleSet: ParsedRule[] = []
       for (let i = 0; i < rules.length; i++) {
-        let rule: any = rules[i]
-        let newRule: any
+        let rule: SimplifyRule = rules[i]
+        let newRule: ParsedRule
         const ruleType = typeof rule
         switch (ruleType) {
           case 'string':
-            rule = { s: rule }
+            rule = { s: rule as string }
           /* falls through */
           case 'object':
-            newRule = _canonicalizeRule(rule, context)
+            newRule = _canonicalizeRule(
+              rule as Exclude<SimplifyRule, string | Function>,
+              context
+            )
             break
           case 'function':
-            newRule = rule
+            newRule = rule as (
+              node: MathNode,
+              options?: SimplifyOptions
+            ) => MathNode
             break
           default:
             throw TypeError('Unsupported type of rule: ' + ruleType)
@@ -700,8 +754,8 @@ export const createSimplify = /* #__PURE__ */ factory(
 
     function mapRule(
       nodes: MathNode[] | undefined,
-      rule: any,
-      context: any
+      rule: CanonicalRule,
+      context: SimplifyContext | undefined
     ): MathNode[] | undefined {
       let resNodes = nodes
       if (nodes) {
@@ -726,7 +780,11 @@ export const createSimplify = /* #__PURE__ */ factory(
      * @param  {Object} context -- information about assumed properties of operators
      * @return {ConstantNode | SymbolNode | ParenthesisNode | FunctionNode | OperatorNode} The simplified form of `expr`, or the original node if no simplification was possible.
      */
-    function applyRule(node: MathNode, rule: any, context: any): MathNode {
+    function applyRule(
+      node: MathNode,
+      rule: CanonicalRule,
+      context: SimplifyContext | undefined
+    ): MathNode {
       //    console.log('Entering applyRule("', rule.l.toString({parenthesis:'all'}), '->', rule.r.toString({parenthesis:'all'}), '",', node.toString({parenthesis:'all'}),')')
 
       // check that the assumptions for this rule are satisfied by the current
@@ -879,7 +937,10 @@ export const createSimplify = /* #__PURE__ */ factory(
      *        +(node3,  +(node1, node2))]
      *
      */
-    function getSplits(node: any, context: any): MathNode[] {
+    function getSplits(
+      node: OperatorNode,
+      context: SimplifyContext | undefined
+    ): MathNode[] {
       const res: MathNode[] = []
       let right: MathNode
       let rightArgs: MathNode[]
@@ -909,8 +970,11 @@ export const createSimplify = /* #__PURE__ */ factory(
     /**
      * Returns the set union of two match-placeholders or null if there is a conflict.
      */
-    function mergeMatch(match1: any, match2: any): any {
-      const res: any = { placeholders: {} }
+    function mergeMatch(
+      match1: MatchResult,
+      match2: MatchResult
+    ): MatchResult | null {
+      const res: MatchResult = { placeholders: {} }
 
       // Some matches may not have placeholders; this is OK
       if (!match1.placeholders && !match2.placeholders) {
@@ -949,14 +1013,17 @@ export const createSimplify = /* #__PURE__ */ factory(
      * Combine two lists of matches by applying mergeMatch to the cartesian product of two lists of matches.
      * Each list represents matches found in one child of a node.
      */
-    function combineChildMatches(list1: any[], list2: any[]): any[] {
-      const res: any[] = []
+    function combineChildMatches(
+      list1: MatchResult[],
+      list2: MatchResult[]
+    ): MatchResult[] {
+      const res: MatchResult[] = []
 
       if (list1.length === 0 || list2.length === 0) {
         return res
       }
 
-      let merged: any
+      let merged: MatchResult | null
       for (let i1 = 0; i1 < list1.length; i1++) {
         for (let i2 = 0; i2 < list2.length; i2++) {
           merged = mergeMatch(list1[i1], list2[i2])
@@ -973,13 +1040,13 @@ export const createSimplify = /* #__PURE__ */ factory(
      * Each list represents matches found in one child of a node.
      * Returns a list of unique matches.
      */
-    function mergeChildMatches(childMatches: any[]): any[] {
+    function mergeChildMatches(childMatches: MatchResult[][]): MatchResult[] {
       if (childMatches.length === 0) {
-        return childMatches
+        return []
       }
 
       const sets = childMatches.reduce(combineChildMatches)
-      const uniqueSets: any[] = []
+      const uniqueSets: MatchResult[] = []
       const unique: Record<string, boolean> = {}
       for (let i = 0; i < sets.length; i++) {
         const s = JSON.stringify(sets[i], replacer)
@@ -1005,15 +1072,15 @@ export const createSimplify = /* #__PURE__ */ factory(
     function _ruleMatch(
       rule: MathNode,
       node: MathNode,
-      context: any,
+      context: SimplifyContext | undefined,
       isSplit?: boolean
-    ): any[] {
+    ): MatchResult[] {
       //    console.log('Entering _ruleMatch(' + JSON.stringify(rule) + ', ' + JSON.stringify(node) + ')')
       //    console.log('rule = ' + rule)
       //    console.log('node = ' + node)
 
       //    console.log('Entering _ruleMatch(', rule.toString({parenthesis:'all'}), ', ', node.toString({parenthesis:'all'}), ', ', context, ')')
-      let res: any[] = [{ placeholders: {} }]
+      let res: MatchResult[] = [{ placeholders: {} }]
 
       if (
         (rule instanceof OperatorNode && node instanceof OperatorNode) ||
@@ -1043,7 +1110,7 @@ export const createSimplify = /* #__PURE__ */ factory(
         ) {
           // Expect non-associative operators to match exactly,
           // except in any order if operator is commutative
-          let childMatches: any[] = []
+          let childMatches: MatchResult[][] = []
           for (let i = 0; i < (rule as any).args.length; i++) {
             const childMatch = _ruleMatch(
               (rule as any).args[i],
@@ -1101,8 +1168,8 @@ export const createSimplify = /* #__PURE__ */ factory(
           // node is flattened, rule is not
           // Associative operators/functions can be split in different ways so we check if the rule
           // matches for each of them and return their union.
-          const splits = getSplits(node, context)
-          let splitMatches: any[] = []
+          const splits = getSplits(node as OperatorNode, context)
+          let splitMatches: MatchResult[] = []
           for (let i = 0; i < splits.length; i++) {
             const matchSet = _ruleMatch(rule, splits[i], context, true) // recursing at the same tree depth here
             splitMatches = splitMatches.concat(matchSet)

@@ -1,18 +1,37 @@
-import FractionJs, { Fraction as FractionClass } from 'fraction.js'
+import FractionJs, { Fraction as FractionClass, NumeratorDenominator } from 'fraction.js'
 import { factory } from '../../utils/factory.ts'
 
-// Extended Fraction type with mathjs additions
-export interface Fraction extends FractionClass {
-  type: string
-  isFraction: boolean
-  toJSON(): { mathjs: string; n: string; d: string }
+/**
+ * JSON representation of a Fraction
+ */
+export interface FractionJSON {
+  mathjs: 'Fraction'
+  n: string
+  d: string
 }
 
+/**
+ * Extended Fraction type with mathjs additions
+ */
+export interface Fraction extends FractionClass {
+  type: 'Fraction'
+  isFraction: true
+  toJSON(): FractionJSON
+}
+
+/**
+ * Valid input types for Fraction constructor
+ */
+export type FractionValue = number | string | bigint | NumeratorDenominator | FractionJSON
+
+/**
+ * Fraction constructor interface with static methods
+ */
 export interface FractionConstructor {
-  new (a?: any, b?: number): Fraction
-  (a?: any, b?: number): Fraction
+  new (value?: FractionValue, denominator?: number | bigint): Fraction
+  (value?: FractionValue, denominator?: number | bigint): Fraction
   prototype: Fraction
-  fromJSON: (json: { mathjs: string; n: string; d: string }) => Fraction
+  fromJSON: (json: FractionJSON) => Fraction
 }
 
 // Cast to allow prototype access and static method additions
@@ -38,11 +57,7 @@ export const createFractionClass = /* #__PURE__ */ factory(
      * @returns {Object} Returns a JSON object structured as:
      *                   `{"mathjs": "Fraction", "n": "3", "d": "8"}`
      */
-    Fraction.prototype.toJSON = function (this: any): {
-      mathjs: string
-      n: string
-      d: string
-    } {
+    Fraction.prototype.toJSON = function (this: Fraction): FractionJSON {
       // Convert sign to BigInt to avoid "Cannot mix BigInt and other types" error
       // when n is a BigInt (as in local Fraction implementation)
       const signedNumerator =
@@ -58,13 +73,9 @@ export const createFractionClass = /* #__PURE__ */ factory(
      * Instantiate a Fraction from a JSON object
      * @param {Object} json  a JSON object structured as:
      *                       `{"mathjs": "Fraction", "n": "3", "d": "8"}`
-     * @return {BigNumber}
+     * @return {Fraction}
      */
-    Fraction.fromJSON = function (json: {
-      mathjs: string
-      n: string
-      d: string
-    }): any {
+    Fraction.fromJSON = function (json: FractionJSON): Fraction {
       return new Fraction(json)
     }
 

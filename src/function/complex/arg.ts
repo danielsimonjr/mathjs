@@ -13,10 +13,6 @@ interface ComplexType {
   arg(): number
 }
 
-interface Matrix {
-  valueOf(): unknown[][]
-}
-
 interface ArgDependencies {
   typed: TypedFunction
 }
@@ -71,7 +67,7 @@ export const createArg = /* #__PURE__ */ factory(
       // TODO: implement BigNumber support for function arg
 
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+        (self: (value: any) => any) => (x: any) => deepMap(x, self)
       )
     })
   }

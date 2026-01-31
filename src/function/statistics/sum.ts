@@ -26,7 +26,20 @@ function isFlatNumberArray(arr: unknown[]): arr is number[] {
 
 // Type definitions for sum
 interface MatrixType {
+  forEach(
+    callback: (value: unknown) => void,
+    skipZeros: boolean,
+    recurse: boolean
+  ): void
+  map(
+    callback: (value: unknown) => unknown,
+    skipZeros: boolean,
+    recurse: boolean
+  ): MatrixType
+  size(): number[]
   valueOf(): unknown[] | unknown[][]
+  create(data: unknown[], datatype?: string): MatrixType
+  datatype(): string | undefined
 }
 
 interface SumDependencies {
@@ -154,7 +167,8 @@ export const createSum = /* #__PURE__ */ factory(
      */
     function _nsumDim(array: unknown[] | MatrixType, dim: number | { valueOf(): number }): unknown {
       try {
-        const sum = reduce(array, dim, add)
+        const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
+        const sum = reduce(array, dimValue, add)
         return sum
       } catch (err) {
         throw improveErrorMessage(err, 'sum', undefined)

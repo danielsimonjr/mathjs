@@ -83,9 +83,9 @@ export const createRandomInt = /* #__PURE__ */ factory(
         _randomIntMatrix(size, min, max)
     })
 
-    function _randomIntMatrix(size: number[] | MatrixType, min: number, max: number): number[] | MatrixType {
+    function _randomIntMatrix(size: number[] | MatrixType, min: number, max: number): unknown[] | MatrixType {
       const res = randomMatrix((size as { valueOf(): number[] }).valueOf(), () => _randomInt(min, max))
-      return isMatrix(size) ? (size as MatrixType).create(res, 'number') : res
+      return isMatrix(size) ? (size as MatrixType).create(res as unknown[], 'number') : res
     }
 
     function _randomInt(min: number, max: number): number {

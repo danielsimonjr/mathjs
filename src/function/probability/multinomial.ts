@@ -58,11 +58,11 @@ export const createMultinomial = /* #__PURE__ */ factory(
      * @return {Number | BigNumber}         Multinomial coefficient.
      */
     return typed(name, {
-      'Array | Matrix': function (a: unknown): unknown {
+      'Array | Matrix': function (a: unknown[] | object): unknown {
         let sum: unknown = 0
         let denom: unknown = 1
 
-        deepForEach(a, function (ai: unknown) {
+        deepForEach(a as unknown[], function (ai: unknown) {
           if (!isInteger(ai) || !isPositive(ai)) {
             throw new TypeError(
               'Positive integer value expected in function multinomial'

@@ -15,10 +15,6 @@ interface ComplexType {
   re: number
 }
 
-interface Matrix {
-  valueOf(): unknown[][]
-}
-
 interface ReDependencies {
   typed: TypedFunction
 }
@@ -61,7 +57,7 @@ export const createRe = /* #__PURE__ */ factory(
       'number | BigNumber | Fraction': (x: number | BigNumberType | FractionType): number | BigNumberType | FractionType => x,
       Complex: (x: ComplexType): number => x.re,
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+        (self: (value: any) => any) => (x: any) => deepMap(x, self)
       )
     })
   }

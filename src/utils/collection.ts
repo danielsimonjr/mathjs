@@ -8,25 +8,25 @@ import {
 import { _switch } from './switch.ts'
 
 // Type definitions for Matrix interface
-interface Matrix {
+interface Matrix<T = unknown> {
   forEach(
-    callback: (value: any) => void,
+    callback: (value: T) => void,
     skipZeros: boolean,
     recurse: boolean
   ): void
-  map(
-    callback: (value: any) => any,
+  map<U>(
+    callback: (value: T) => U,
     skipZeros: boolean,
     recurse: boolean
-  ): Matrix
+  ): Matrix<U>
   size(): number[]
-  valueOf(): any[]
-  create(data: any[], datatype?: string): Matrix
+  valueOf(): T[]
+  create(data: T[], datatype?: string): Matrix<T>
   datatype(): string | undefined
 }
 
-interface SparseMatrix {
-  _values: any[]
+interface SparseMatrix<T = unknown> {
+  _values: T[]
   _index: number[]
   _ptr: number[]
 }
@@ -37,7 +37,7 @@ interface SparseMatrix {
  * @returns Returns true when the array contains one or multiple
  *          collections (Arrays or Matrices). Returns false otherwise.
  */
-export function containsCollections(array: any[]): boolean {
+export function containsCollections(array: unknown[]): boolean {
   for (let i = 0; i < array.length; i++) {
     if (isCollection(array[i])) {
       return true
@@ -52,14 +52,14 @@ export function containsCollections(array: any[]): boolean {
  * @param array - Array or Matrix to iterate over
  * @param callback - The callback method is invoked with one parameter: the current element in the array
  */
-export function deepForEach(
-  array: any[] | Matrix,
-  callback: (value: any) => void
+export function deepForEach<T>(
+  array: T[] | Matrix<T>,
+  callback: (value: T) => void
 ): void {
   if (isMatrix(array)) {
-    ;(array as Matrix).forEach((x) => callback(x), false, true)
+    ;(array as Matrix<T>).forEach((x) => callback(x), false, true)
   } else {
-    arrayDeepForEach(array as any[], callback, true)
+    arrayDeepForEach(array as T[], callback, true)
   }
 }
 
@@ -75,23 +75,23 @@ export function deepForEach(
  *
  * @return Mapped result
  */
-export function deepMap(
-  array: any[] | Matrix,
-  callback: (value: any) => any,
+export function deepMap<T, U>(
+  array: T[] | Matrix<T>,
+  callback: (value: T) => U,
   skipZeros?: boolean
-): any[] | Matrix {
+): U[] | Matrix<U> {
   if (!skipZeros) {
     if (isMatrix(array)) {
-      return (array as Matrix).map((x) => callback(x), false, true)
+      return (array as Matrix<T>).map((x) => callback(x), false, true)
     } else {
-      return arrayDeepMap(array as any[], callback, true)
+      return arrayDeepMap(array as T[], callback, true) as U[]
     }
   }
-  const skipZerosCallback = (x: any): any => (x === 0 ? x : callback(x))
+  const skipZerosCallback = (x: T): T | U => (x === 0 ? x : callback(x))
   if (isMatrix(array)) {
-    return (array as Matrix).map((x) => skipZerosCallback(x), false, true)
+    return (array as Matrix<T>).map((x) => skipZerosCallback(x), false, true) as Matrix<U>
   } else {
-    return arrayDeepMap(array as any[], skipZerosCallback, true)
+    return arrayDeepMap(array as T[], skipZerosCallback, true) as U[]
   }
 }
 
@@ -104,24 +104,25 @@ export function deepMap(
  * @param callback - Callback function
  * @return Reduced result
  */
-export function reduce(
-  mat: any[] | Matrix,
+export function reduce<T, U>(
+  mat: T[] | Matrix<T>,
   dim: number,
-  callback: (acc: any, val: any) => any
-): any[] | Matrix {
-  const size = Array.isArray(mat) ? arraySize(mat) : (mat as Matrix).size()
+  callback: (acc: U | T, val: T) => U
+): U[] | Matrix<U> {
+  const size = Array.isArray(mat) ? arraySize(mat) : (mat as Matrix<T>).size()
   if (dim < 0 || dim >= size.length) {
     // TODO: would be more clear when throwing a DimensionError here
-    throw new IndexError(dim, 0, size.length) as any
+    throw new IndexError(dim, 0, size.length)
   }
 
   if (isMatrix(mat)) {
-    return (mat as Matrix).create(
-      _reduce((mat as Matrix).valueOf(), dim, callback),
-      (mat as Matrix).datatype()
-    )
+    const reduced = _reduce((mat as Matrix<T>).valueOf(), dim, callback)
+    return (mat as Matrix<T>).create(
+      reduced as unknown as T[],
+      (mat as Matrix<T>).datatype()
+    ) as unknown as Matrix<U>
   } else {
-    return _reduce(mat as any[], dim, callback)
+    return _reduce(mat as T[], dim, callback) as U[]
   }
 }
 
@@ -133,15 +134,15 @@ export function reduce(
  * @returns Reduced result
  * @private
  */
-function _reduce(
-  mat: any[],
+function _reduce<T, U>(
+  mat: T[],
   dim: number,
-  callback: (acc: any, val: any) => any
-): any {
+  callback: (acc: U | T, val: T) => U
+): U | U[] {
   let i: number
-  let ret: any[]
-  let val: any
-  let tran: any[]
+  let ret: U[]
+  let val: U | T
+  let tran: T[][]
 
   if (dim <= 0) {
     if (!Array.isArray(mat[0])) {
@@ -149,19 +150,19 @@ function _reduce(
       for (i = 1; i < mat.length; i++) {
         val = callback(val, mat[i])
       }
-      return val
+      return val as U
     } else {
-      tran = _switch(mat)
+      tran = _switch(mat as unknown as T[][])
       ret = []
       for (i = 0; i < tran.length; i++) {
-        ret[i] = _reduce(tran[i], dim - 1, callback)
+        ret[i] = _reduce(tran[i], dim - 1, callback) as U
       }
       return ret
     }
   } else {
     ret = []
     for (i = 0; i < mat.length; i++) {
-      ret[i] = _reduce(mat[i], dim - 1, callback)
+      ret[i] = _reduce(mat[i] as unknown as T[], dim - 1, callback) as U
     }
     return ret
   }
@@ -181,18 +182,18 @@ function _reduce(
  * @param update - Whether to update existing values
  * @param value - Value to use in binary function
  */
-export function scatter(
-  a: SparseMatrix,
+export function scatter<T>(
+  a: SparseMatrix<T>,
   j: number,
   w: number[],
-  x: any[] | null,
+  x: T[] | null,
   u: number[],
   mark: number,
   cindex: number[],
-  f?: (a: any, b: any) => any,
+  f?: (a: T, b: T) => T,
   inverse?: boolean,
   update?: boolean,
-  value?: any
+  value?: T
 ): void {
   // a arrays
   const avalues = a._values

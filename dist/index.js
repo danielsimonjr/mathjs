@@ -626,7 +626,7 @@ function isBigNumber(x) {
     return false;
   }
   const obj = x;
-  if (obj.isBigNumber === true && typeof obj.constructor.prototype === "object" && obj.constructor.prototype.isBigNumber === true) {
+  if (obj.isBigNumber === true && typeof obj.constructor.prototype === "object" && obj.constructor.prototype?.isBigNumber === true) {
     return true;
   }
   if (typeof obj.constructor.isDecimal === "function" && obj.constructor.isDecimal(obj) === true) {
@@ -644,38 +644,54 @@ function isFraction(x) {
   return x && typeof x === "object" && Object.getPrototypeOf(x).isFraction === true || false;
 }
 function isUnit(x) {
-  return x && x.constructor.prototype.isUnit === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.constructor?.prototype?.isUnit === true;
 }
 function isString(x) {
   return typeof x === "string";
 }
 var isArray = Array.isArray;
 function isMatrix(x) {
-  return x && x.constructor.prototype.isMatrix === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.constructor?.prototype?.isMatrix === true;
 }
 function isCollection(x) {
   return Array.isArray(x) || isMatrix(x);
 }
 function isDenseMatrix(x) {
-  return x && x.isDenseMatrix && x.constructor.prototype.isMatrix === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isDenseMatrix === true && obj.constructor?.prototype?.isMatrix === true;
 }
 function isSparseMatrix(x) {
-  return x && x.isSparseMatrix && x.constructor.prototype.isMatrix === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isSparseMatrix === true && obj.constructor?.prototype?.isMatrix === true;
 }
 function isRange(x) {
-  return x && x.constructor.prototype.isRange === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.constructor?.prototype?.isRange === true;
 }
 function isIndex(x) {
-  return x && x.constructor.prototype.isIndex === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.constructor?.prototype?.isIndex === true;
 }
 function isBoolean(x) {
   return typeof x === "boolean";
 }
 function isResultSet(x) {
-  return x && x.constructor.prototype.isResultSet === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.constructor?.prototype?.isResultSet === true;
 }
 function isHelp(x) {
-  return x && x.constructor.prototype.isHelp === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.constructor?.prototype?.isHelp === true;
 }
 function isFunction(x) {
   return typeof x === "function";
@@ -693,13 +709,21 @@ function isMap(object) {
   if (!object) {
     return false;
   }
-  return object instanceof Map || object instanceof ObjectWrappingMap || typeof object.set === "function" && typeof object.get === "function" && typeof object.keys === "function" && typeof object.has === "function";
+  if (object instanceof Map || object instanceof ObjectWrappingMap) {
+    return true;
+  }
+  const mapLike = object;
+  return typeof mapLike.set === "function" && typeof mapLike.get === "function" && typeof mapLike.keys === "function" && typeof mapLike.has === "function";
 }
 function isPartitionedMap(object) {
-  return isMap(object) && isMap(object.a) && isMap(object.b);
+  if (!isMap(object)) return false;
+  const partitioned = object;
+  return isMap(partitioned.a) && isMap(partitioned.b);
 }
 function isObjectWrappingMap(object) {
-  return isMap(object) && isObject(object.wrappedObject);
+  if (!isMap(object)) return false;
+  const wrapper = object;
+  return isObject(wrapper.wrappedObject);
 }
 function isNull(x) {
   return x === null;
@@ -708,66 +732,100 @@ function isUndefined(x) {
   return x === void 0;
 }
 function isAccessorNode(x) {
-  return x && x.isAccessorNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isAccessorNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isArrayNode(x) {
-  return x && x.isArrayNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isArrayNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isAssignmentNode(x) {
-  return x && x.isAssignmentNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isAssignmentNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isBlockNode(x) {
-  return x && x.isBlockNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isBlockNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isConditionalNode(x) {
-  return x && x.isConditionalNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isConditionalNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isConstantNode(x) {
-  return x && x.isConstantNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isConstantNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function rule2Node(node) {
   return isConstantNode(node) || isOperatorNode(node) && node.args.length === 1 && isConstantNode(node.args[0]) && "-+~".includes(node.op);
 }
 function isFunctionAssignmentNode(x) {
-  return x && x.isFunctionAssignmentNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isFunctionAssignmentNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isFunctionNode(x) {
-  return x && x.isFunctionNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isFunctionNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isIndexNode(x) {
-  return x && x.isIndexNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isIndexNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isNode(x) {
-  return x && x.isNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isObjectNode(x) {
-  return x && x.isObjectNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isObjectNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isOperatorNode(x) {
-  return x && x.isOperatorNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isOperatorNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isParenthesisNode(x) {
-  return x && x.isParenthesisNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isParenthesisNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isRangeNode(x) {
-  return x && x.isRangeNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isRangeNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isRelationalNode(x) {
-  return x && x.isRelationalNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isRelationalNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isSymbolNode(x) {
-  return x && x.isSymbolNode === true && x.constructor.prototype.isNode === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.isSymbolNode === true && obj.constructor?.prototype?.isNode === true;
 }
 function isChain(x) {
-  return x && x.constructor.prototype.isChain === true || false;
+  if (!x || typeof x !== "object") return false;
+  const obj = x;
+  return obj.constructor?.prototype?.isChain === true;
 }
 function typeOf(x) {
   const t = typeof x;
   if (t === "object") {
     if (x === null) return "null";
     if (isBigNumber(x)) return "BigNumber";
-    if (x.constructor && x.constructor.name)
-      return x.constructor.name;
+    const obj = x;
+    if (obj.constructor && obj.constructor.name) return obj.constructor.name;
     return "Object";
   }
   return t;
@@ -779,8 +837,9 @@ function clone(x) {
   if (type === "number" || type === "bigint" || type === "string" || type === "boolean" || x === null || x === void 0) {
     return x;
   }
-  if (typeof x.clone === "function") {
-    return x.clone();
+  const cloneable = x;
+  if (typeof cloneable.clone === "function") {
+    return cloneable.clone();
   }
   if (Array.isArray(x)) {
     return x.map((value) => clone(value));
@@ -818,28 +877,27 @@ function deepExtend(a, b) {
   }
   for (const prop in b) {
     if (hasOwnProperty(b, prop) && !(prop in Object.prototype) && !(prop in Function.prototype)) {
-      if (b[prop] && b[prop].constructor === Object) {
-        if (a[prop] === void 0) {
+      const bValue = b[prop];
+      const aValue = a[prop];
+      if (bValue && bValue.constructor === Object) {
+        if (aValue === void 0) {
           a[prop] = {};
         }
-        if (a[prop] && a[prop].constructor === Object) {
-          deepExtend(a[prop], b[prop]);
+        if (aValue && aValue.constructor === Object) {
+          deepExtend(aValue, bValue);
         } else {
-          a[prop] = b[prop];
+          a[prop] = bValue;
         }
-      } else if (Array.isArray(b[prop])) {
+      } else if (Array.isArray(bValue)) {
         throw new TypeError("Arrays are not supported by deepExtend");
       } else {
-        a[prop] = b[prop];
+        a[prop] = bValue;
       }
     }
   }
   return a;
 }
 function deepStrictEqual(a, b) {
-  let prop;
-  let i;
-  let len;
   if (Array.isArray(a)) {
     if (!Array.isArray(b)) {
       return false;
@@ -847,7 +905,7 @@ function deepStrictEqual(a, b) {
     if (a.length !== b.length) {
       return false;
     }
-    for (i = 0, len = a.length; i < len; i++) {
+    for (let i = 0, len = a.length; i < len; i++) {
       if (!deepStrictEqual(a[i], b[i])) {
         return false;
       }
@@ -859,13 +917,15 @@ function deepStrictEqual(a, b) {
     if (Array.isArray(b) || !(b instanceof Object)) {
       return false;
     }
-    for (prop in a) {
-      if (!(prop in b) || !deepStrictEqual(a[prop], b[prop])) {
+    const objA = a;
+    const objB = b;
+    for (const prop in objA) {
+      if (!(prop in objB) || !deepStrictEqual(objA[prop], objB[prop])) {
         return false;
       }
     }
-    for (prop in b) {
-      if (!(prop in a)) {
+    for (const prop in objB) {
+      if (!(prop in objA)) {
         return false;
       }
     }
@@ -911,10 +971,12 @@ function lazy(object, prop, valueResolver) {
   });
 }
 function hasOwnProperty(object, property) {
-  return object && Object.hasOwnProperty.call(object, property);
+  return !!object && Object.hasOwnProperty.call(object, property);
 }
 function isLegacyFactory(object) {
-  return object && typeof object.factory === "function";
+  if (!object || typeof object !== "object") return false;
+  const obj = object;
+  return typeof obj.factory === "function";
 }
 function pickShallow(object, properties2) {
   const copy = {};
@@ -1448,7 +1510,8 @@ var createTyped = /* @__PURE__ */ factory(
           if (!Complex2) {
             throwNoComplex(x);
           }
-          return new Complex2(x.toNumber(), 0);
+          const bigNum = x;
+          return new Complex2(bigNum.toNumber(), 0);
         }
       },
       {
@@ -1499,7 +1562,8 @@ var createTyped = /* @__PURE__ */ factory(
           if (!Complex2) {
             throwNoComplex(x);
           }
-          return new Complex2(x.valueOf(), 0);
+          const frac = x;
+          return new Complex2(frac.valueOf(), 0);
         }
       },
       {
@@ -1644,14 +1708,15 @@ var createTyped = /* @__PURE__ */ factory(
         from: "Matrix",
         to: "Array",
         convert: function(matrix) {
-          return matrix.valueOf();
+          const mat = matrix;
+          return mat.valueOf();
         }
       }
     ]);
     _typed.onMismatch = (name323, args, signatures) => {
       const usualError = _typed.createError(name323, args, signatures);
       if (["wrongType", "mismatch"].includes(usualError.data.category) && args.length === 1 && isCollection(args[0]) && // check if the function can be unary:
-      signatures.some((sig) => !sig.params.includes(","))) {
+      Object.keys(signatures).some((sig) => !sig.includes(","))) {
         const err = new TypeError(
           `Function '${name323}' doesn't apply to matrices. To call it elementwise on a matrix 'M', try 'map(M, ${name323})'.`
         );
@@ -1726,15 +1791,13 @@ var dependencies3 = ["?on", "config"];
 var createBigNumberClass = /* @__PURE__ */ factory(
   name2,
   dependencies3,
-  ({
-    on,
-    config
-  }) => {
+  ({ on, config }) => {
     const BigNumber = Decimal.clone({
       precision: config.precision,
       modulo: EUCLID
     });
-    BigNumber.prototype = Object.create(BigNumber.prototype);
+    const prototype = BigNumber.prototype;
+    BigNumber.prototype = Object.create(prototype);
     BigNumber.prototype.type = "BigNumber";
     BigNumber.prototype.isBigNumber = true;
     BigNumber.prototype.toJSON = function() {
@@ -1787,7 +1850,7 @@ var createComplexClass = /* @__PURE__ */ factory(
       let re = this.re;
       const strRe = format(this.re, options);
       const strIm = format(this.im, options);
-      const precision = isNumber(options) ? options : options ? options.precision : null;
+      const precision = isNumber(options) ? options : options && typeof options === "object" ? options.precision ?? null : null;
       if (precision !== null) {
         const epsilon = Math.pow(10, -precision);
         if (Math.abs(re / im) < epsilon) {
@@ -2683,9 +2746,10 @@ var IndexError = class _IndexError extends RangeError {
 // src/utils/array.ts
 function arraySize(x) {
   const s = [];
-  while (Array.isArray(x)) {
-    s.push(x.length);
-    x = x[0];
+  let current = x;
+  while (Array.isArray(current)) {
+    s.push(current.length);
+    current = current[0];
   }
   return s;
 }
@@ -2744,17 +2808,20 @@ function validateIndex(index, length) {
 function isEmptyIndex(index) {
   for (let i = 0; i < index._dimensions.length; ++i) {
     const dimension = index._dimensions[i];
-    if (dimension._data && isArray(dimension._data)) {
-      if (dimension._size[0] === 0) {
-        return true;
-      }
-    } else if (dimension.isRange) {
-      if (dimension.start === dimension.end) {
-        return true;
-      }
-    } else if (isString(dimension)) {
+    if (isString(dimension)) {
       if (dimension.length === 0) {
         return true;
+      }
+    } else {
+      const dim = dimension;
+      if (dim._data && isArray(dim._data)) {
+        if (dim._size[0] === 0) {
+          return true;
+        }
+      } else if (dim.isRange) {
+        if (dim.start === dim.end) {
+          return true;
+        }
       }
     }
   }
@@ -2792,12 +2859,12 @@ function _resize(array, size, dim, defaultValue) {
   if (dim < size.length - 1) {
     const dimNext = dim + 1;
     for (i = 0; i < minLen; i++) {
-      elem = array[i];
-      if (!Array.isArray(elem)) {
-        elem = [elem];
-        array[i] = elem;
+      let current = array[i];
+      if (!Array.isArray(current)) {
+        current = [current];
+        array[i] = current;
       }
-      _resize(elem, size, dimNext, defaultValue);
+      _resize(current, size, dimNext, defaultValue);
     }
     for (i = minLen; i < newLen; i++) {
       elem = [];
@@ -2806,9 +2873,11 @@ function _resize(array, size, dim, defaultValue) {
     }
   } else {
     for (i = 0; i < minLen; i++) {
-      while (Array.isArray(array[i])) {
-        array[i] = array[i][0];
+      let value = array[i];
+      while (Array.isArray(value)) {
+        value = value[0];
       }
+      array[i] = value;
     }
     for (i = minLen; i < newLen; i++) {
       array[i] = defaultValue;
@@ -2895,19 +2964,20 @@ function squeeze(array, size) {
   return arr;
 }
 function _squeeze(array, dims, dim) {
-  let i;
-  let ii;
   if (dim < dims) {
     const next = dim + 1;
-    for (i = 0, ii = array.length; i < ii; i++) {
-      array[i] = _squeeze(array[i], dims, next);
+    const arr = array;
+    for (let i = 0, ii = arr.length; i < ii; i++) {
+      arr[i] = _squeeze(arr[i], dims, next);
     }
+    return arr;
   } else {
-    while (Array.isArray(array)) {
-      array = array[0];
+    let result = array;
+    while (Array.isArray(result)) {
+      result = result[0];
     }
+    return result;
   }
-  return array;
 }
 function unsqueeze(array, dims, outer, size) {
   const s = size || arraySize(array);
@@ -2925,23 +2995,24 @@ function unsqueeze(array, dims, outer, size) {
   return arr;
 }
 function _unsqueeze(array, dims, dim) {
-  let i;
-  let ii;
   if (Array.isArray(array)) {
     const next = dim + 1;
-    for (i = 0, ii = array.length; i < ii; i++) {
-      array[i] = _unsqueeze(array[i], dims, next);
+    const arr = array;
+    for (let i = 0, ii = arr.length; i < ii; i++) {
+      arr[i] = _unsqueeze(arr[i], dims, next);
     }
+    return arr;
   } else {
+    let result = array;
     for (let d = dim; d < dims; d++) {
-      array = [array];
+      result = [result];
     }
+    return result;
   }
-  return array;
 }
 function flatten(array, isRectangular = false) {
   if (!Array.isArray(array)) {
-    return array;
+    return [array];
   }
   if (typeof isRectangular !== "boolean") {
     throw new TypeError("Boolean expected for second argument of flatten");
@@ -3004,7 +3075,7 @@ function identify(a) {
     throw new TypeError("Array input expected");
   }
   if (a.length === 0) {
-    return a;
+    return [];
   }
   const b = [];
   let count = 0;
@@ -3024,7 +3095,7 @@ function generalize(a) {
     throw new TypeError("Array input expected");
   }
   if (a.length === 0) {
-    return a;
+    return [];
   }
   const b = [];
   for (let i = 0; i < a.length; i++) {
@@ -3060,7 +3131,12 @@ function concatRecursive(a, b, concatDim, dim) {
     }
     const c = [];
     for (let i = 0; i < a.length; i++) {
-      c[i] = concatRecursive(a[i], b[i], concatDim, dim + 1);
+      c[i] = concatRecursive(
+        a[i],
+        b[i],
+        concatDim,
+        dim + 1
+      );
     }
     return c;
   } else {
@@ -3151,7 +3227,7 @@ function get(array, index) {
   return index.reduce((acc, curr) => acc[curr], array);
 }
 function deepMap(array, callback, skipIndex = false) {
-  if (array.length === 0) {
+  if (Array.isArray(array) && array.length === 0) {
     return [];
   }
   if (skipIndex) {
@@ -3169,7 +3245,11 @@ function deepMap(array, callback, skipIndex = false) {
       }
       return result;
     } else {
-      return callback(value, index.slice(0, depth), array);
+      return callback(
+        value,
+        index.slice(0, depth),
+        array
+      );
     }
   }
   function recursiveMap(value) {
@@ -3186,7 +3266,7 @@ function deepMap(array, callback, skipIndex = false) {
   }
 }
 function deepForEach(array, callback, skipIndex = false) {
-  if (array.length === 0) {
+  if (Array.isArray(array) && array.length === 0) {
     return;
   }
   if (skipIndex) {
@@ -3203,7 +3283,11 @@ function deepForEach(array, callback, skipIndex = false) {
         recursiveForEachWithIndex(value[i], depth + 1);
       }
     } else {
-      callback(value, index.slice(0, depth), array);
+      callback(
+        value,
+        index.slice(0, depth),
+        array
+      );
     }
   }
   function recursiveForEach(value) {
@@ -3221,7 +3305,8 @@ function clone2(array) {
   return Object.assign([], array);
 }
 function optimizeCallback(callback, array, name323, isUnary) {
-  if (typedFunction.isTypedFunction(callback)) {
+  const typedAny = typedFunction;
+  if (typedAny.isTypedFunction(callback)) {
     let numberOfArguments;
     if (isUnary) {
       numberOfArguments = 1;
@@ -3237,7 +3322,8 @@ function optimizeCallback(callback, array, name323, isUnary) {
         callback,
         firstValue,
         firstIndex,
-        array
+        array,
+        typedAny
       );
     }
     let fastCallback;
@@ -3300,11 +3386,11 @@ function _findIfCallbackIsUnary(callback) {
   if (paramsStr && /\.\.\./.test(paramsStr[0])) return false;
   return true;
 }
-function _findNumberOfArgumentsTyped(callback, value, index, array) {
+function _findNumberOfArgumentsTyped(callback, value, index, array, typedAny) {
   const testArgs = [value, index, array];
   for (let i = 3; i > 0; i--) {
     const args = testArgs.slice(0, i);
-    if (typedFunction.resolve(callback, args) !== null) {
+    if (typedAny.resolve(callback, args) !== null) {
       return i;
     }
   }
@@ -3318,7 +3404,8 @@ function _tryFunctionWithArgs(func, args, mappingFnName, callbackName) {
   }
 }
 function _createCallbackError(err, args, mappingFnName, callbackName) {
-  if (err instanceof TypeError && err.data?.category === "wrongType") {
+  const errWithData = err;
+  if (err instanceof TypeError && errWithData.data?.category === "wrongType") {
     const argsDesc = [];
     argsDesc.push(`value: ${typeOf(args[0])}`);
     if (args.length >= 2) {
@@ -4220,8 +4307,9 @@ function reduce(mat, dim, callback) {
     throw new IndexError(dim, 0, size.length);
   }
   if (isMatrix(mat)) {
+    const reduced = _reduce(mat.valueOf(), dim, callback);
     return mat.create(
-      _reduce(mat.valueOf(), dim, callback),
+      reduced,
       mat.datatype()
     );
   } else {
@@ -4927,8 +5015,8 @@ var createIsBounded = /* @__PURE__ */ factory(
       "null | undefined": () => false,
       Unit: typed2.referToSelf((self) => (x) => self(x.value)),
       "Array | Matrix": typed2.referToSelf((self) => (A) => {
-        if (!Array.isArray(A)) A = A.valueOf();
-        return A.every((entry) => self(entry));
+        const arr = Array.isArray(A) ? A : A.valueOf();
+        return arr.every((entry) => self(entry));
       })
     });
   }
@@ -4976,10 +5064,13 @@ var createCompareUnits = /* @__PURE__ */ factory(
   ["typed"],
   ({ typed: typed2 }) => ({
     "Unit, Unit": typed2.referToSelf((self) => (x, y) => {
-      if (!x.equalBase(y)) {
+      const unitX = x;
+      const unitY = y;
+      if (!unitX.equalBase(unitY)) {
         throw new Error("Cannot compare units with different base");
       }
-      return typed2.find(self, [x.valueType(), y.valueType()])(x.value, y.value);
+      const fn = typed2.find(self, [unitX.valueType(), unitY.valueType()]);
+      return fn ? fn(unitX.value, unitY.value) : void 0;
     })
   })
 );
@@ -5929,10 +6020,6 @@ var createSparseMatrixClass = /* @__PURE__ */ factory(
         }
         matrix.set(index.min(), submatrix, defaultValue);
       } else {
-        let _forEachIndex = function(idx, callback) {
-          if (isNumber(idx)) callback(idx, [0]);
-          else idx.forEach(callback);
-        };
         if (iSize.length !== 1 && iSize.length !== 2) {
           throw new DimensionError(iSize.length, matrix._size.length, "<");
         }
@@ -5951,6 +6038,10 @@ var createSparseMatrixClass = /* @__PURE__ */ factory(
         if (!deepStrictEqual(iSize, sSize)) {
           throw new DimensionError(iSize, sSize, ">");
         }
+        const _forEachIndex = (idx, callback) => {
+          if (isNumber(idx)) callback(idx, [0]);
+          else idx.forEach(callback);
+        };
         if (iSize.length === 1) {
           const range = index.dimension(0);
           _forEachIndex(range, (dataIndex, subIndex) => {
@@ -6789,7 +6880,11 @@ var dependencies34 = ["typed", "config", "?bignumber"];
 var createUnaryMinus = /* @__PURE__ */ factory(
   name33,
   dependencies34,
-  ({ typed: typed2, config, bignumber }) => {
+  ({
+    typed: typed2,
+    config,
+    bignumber
+  }) => {
     return typed2(name33, {
       number: unaryMinusNumber,
       "Complex | BigNumber | Fraction": (x) => x.neg(),
@@ -6880,7 +6975,7 @@ var createAbs = /* @__PURE__ */ factory(
       bigint: (x) => x < 0n ? -x : x,
       // deep map collection, skip zeros since abs(0) = 0
       "Array | Matrix": typed2.referToSelf(
-        ((self) => (x) => deepMap2(x, self, true))
+        (self) => (x) => deepMap2(x, self, true)
       )
     });
   }
@@ -8669,8 +8764,8 @@ var createGcd = /* @__PURE__ */ factory(
           }
           throw new ArgumentsError("gcd() supports only 1d matrices!");
         }),
-        Matrix: typed2.referToSelf((self) => (matrix2) => {
-          return self(matrix2.toArray());
+        Matrix: typed2.referToSelf((self) => (matrixArg) => {
+          return self(matrixArg.toArray());
         })
       }
     );
@@ -9684,16 +9779,13 @@ var createSign = /* @__PURE__ */ factory(
       },
       // deep map collection, skip zeros since sign(0) = 0
       "Array | Matrix": typed2.referToSelf(
-        ((self) => (x) => deepMap2(x, self, true))
+        (self) => (x) => deepMap2(x, self, true)
       ),
       Unit: typed2.referToSelf((self) => (x) => {
         if (!x._isDerived() && x.units[0].unit.offset !== 0) {
           throw new TypeError("sign is ambiguous for units with offset");
         }
-        return typed2.find(
-          self,
-          x.valueType()
-        )(x.value);
+        return typed2.find(self, x.valueType())(x.value);
       })
     });
   }
@@ -9920,8 +10012,8 @@ var createInvmod = /* @__PURE__ */ factory(
       a = mod(a, b);
       if (equal(b, 0)) throw new Error("Divisor must be non zero");
       let res = xgcd(a, b);
-      res = res.valueOf();
-      const [gcd, invValue] = res;
+      const resVal = res.valueOf();
+      const [gcd, invValue] = resVal;
       if (!equal(gcd, BigNumber(1))) return NaN;
       let inv = mod(invValue, b);
       if (smaller(inv, BigNumber(0))) inv = add(inv, b);
@@ -10052,54 +10144,10 @@ var createDotMultiply = /* @__PURE__ */ factory(
   }
 );
 
-// src/utils/is.js
-function isNode2(x) {
-  return x && x.isNode === true && x.constructor.prototype.isNode === true || false;
-}
-
-// src/utils/object.js
-function pickShallow2(object, properties2) {
-  const copy = {};
-  for (let i = 0; i < properties2.length; i++) {
-    const key = properties2[i];
-    const value = object[key];
-    if (value !== void 0) {
-      copy[key] = value;
-    }
-  }
-  return copy;
-}
-
-// src/utils/factory.js
-function factory2(name323, dependencies324, create2, meta) {
-  function assertAndCreate(scope) {
-    const deps = pickShallow2(scope, dependencies324.map(stripOptionalNotation2));
-    assertDependencies2(name323, dependencies324, scope);
-    return create2(deps);
-  }
-  assertAndCreate.isFactory = true;
-  assertAndCreate.fn = name323;
-  assertAndCreate.dependencies = dependencies324.slice().sort();
-  return assertAndCreate;
-}
-function assertDependencies2(name323, dependencies324, scope) {
-  const allDefined = dependencies324.filter((dependency) => !isOptionalDependency2(dependency)).every((dependency) => scope[dependency] !== void 0);
-  if (!allDefined) {
-    const missingDependencies = dependencies324.filter((dependency) => scope[dependency] === void 0);
-    throw new Error(`Cannot create function "${name323}", some dependencies are missing: ${missingDependencies.map((d) => `"${d}"`).join(", ")}.`);
-  }
-}
-function isOptionalDependency2(dependency) {
-  return dependency && dependency[0] === "?";
-}
-function stripOptionalNotation2(dependency) {
-  return dependency && dependency[0] === "?" ? dependency.slice(1) : dependency;
-}
-
 // src/function/arithmetic/utils/nodeOperations.ts
 var name74 = "nodeOperations";
 var dependencies75 = ["ConstantNode", "OperatorNode"];
-var createNodeOperations = /* @__PURE__ */ factory2(
+var createNodeOperations = /* @__PURE__ */ factory(
   name74,
   dependencies75,
   ({ ConstantNode, OperatorNode }) => {
@@ -10115,7 +10163,7 @@ var createNodeOperations = /* @__PURE__ */ factory2(
       return OPERATOR_MAP[fn] || fn;
     }
     function wrapInNode(value) {
-      if (isNode2(value)) {
+      if (isNode(value)) {
         return value;
       }
       return new ConstantNode(value);
@@ -10136,7 +10184,7 @@ var createNodeOperations = /* @__PURE__ */ factory2(
       return result;
     }
     function hasNodeArg(...args) {
-      return args.some((arg) => isNode2(arg));
+      return args.some((arg) => isNode(arg));
     }
     return {
       wrapInNode,
@@ -10634,7 +10682,7 @@ var createArg = /* @__PURE__ */ factory(
       },
       // TODO: implement BigNumber support for function arg
       "Array | Matrix": typed2.referToSelf(
-        ((self) => (x) => deepMap2(x, self))
+        (self) => (x) => deepMap2(x, self)
       )
     });
   }
@@ -10651,10 +10699,10 @@ var createConj = /* @__PURE__ */ factory(
       "number | BigNumber | Fraction": (x) => x,
       Complex: (x) => x.conjugate(),
       Unit: typed2.referToSelf(
-        ((self) => (x) => new x.constructor(self(x.toNumeric()), x.formatUnits()))
+        (self) => (x) => new x.constructor(self(x.toNumeric()), x.formatUnits())
       ),
       "Array | Matrix": typed2.referToSelf(
-        ((self) => (x) => deepMap2(x, self))
+        (self) => (x) => deepMap2(x, self)
       )
     });
   }
@@ -10672,7 +10720,7 @@ var createIm = /* @__PURE__ */ factory(
       "BigNumber | Fraction": (x) => x.mul(0),
       Complex: (x) => x.im,
       "Array | Matrix": typed2.referToSelf(
-        ((self) => (x) => deepMap2(x, self))
+        (self) => (x) => deepMap2(x, self)
       )
     });
   }
@@ -10689,7 +10737,7 @@ var createRe = /* @__PURE__ */ factory(
       "number | BigNumber | Fraction": (x) => x,
       Complex: (x) => x.re,
       "Array | Matrix": typed2.referToSelf(
-        ((self) => (x) => deepMap2(x, self))
+        (self) => (x) => deepMap2(x, self)
       )
     });
   }
@@ -10716,7 +10764,7 @@ var createNot = /* @__PURE__ */ factory(
         (self) => (x) => typed2.find(self, x.valueType())(x.value)
       ),
       "Array | Matrix": typed2.referToSelf(
-        ((self) => (x) => deepMap2(x, self))
+        (self) => (x) => deepMap2(x, self)
       )
     });
   }
@@ -10738,6 +10786,9 @@ var createNullish = /* @__PURE__ */ factory(
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed: typed2 });
     const matAlgo14xDs = createMatAlgo14xDs({ typed: typed2 });
     const matAlgo13xDD = createMatAlgo13xDD({ typed: typed2 });
+    const toMatrix = (arr) => {
+      return matrix(arr);
+    };
     return typed2(name85, {
       // Scalar and SparseMatrix-first short-circuit handlers
       "number|bigint|Complex|BigNumber|Fraction|Unit|string|boolean|SparseMatrix, any": (x, _y) => x,
@@ -10758,23 +10809,23 @@ var createNullish = /* @__PURE__ */ factory(
         (self) => (x, y) => matAlgo03xDSf(x, y, self, false)
       ),
       "DenseMatrix, Array": typed2.referToSelf(
-        (self) => (x, y) => matAlgo13xDD(x, matrix(y), self)
+        (self) => (x, y) => matAlgo13xDD(x, toMatrix(y), self)
       ),
       "DenseMatrix, any": typed2.referToSelf(
         (self) => (x, y) => matAlgo14xDs(x, y, self, false)
       ),
       // Array-first handlers (bridge via matrix() where needed)
       "Array, Array": typed2.referToSelf(
-        (self) => (x, y) => matAlgo13xDD(matrix(x), matrix(y), self).valueOf()
+        (self) => (x, y) => matAlgo13xDD(toMatrix(x), toMatrix(y), self).valueOf()
       ),
       "Array, DenseMatrix": typed2.referToSelf(
-        (self) => (x, y) => matAlgo13xDD(matrix(x), y, self)
+        (self) => (x, y) => matAlgo13xDD(toMatrix(x), y, self)
       ),
       "Array, SparseMatrix": typed2.referToSelf(
-        (self) => (x, y) => matAlgo03xDSf(matrix(x), y, self, false)
+        (self) => (x, y) => matAlgo03xDSf(toMatrix(x), y, self, false)
       ),
       "Array, any": typed2.referToSelf(
-        (self) => (x, y) => matAlgo14xDs(matrix(x), y, self, false).valueOf()
+        (self) => (x, y) => matAlgo14xDs(toMatrix(x), y, self, false).valueOf()
       )
     });
   }
@@ -11317,7 +11368,437 @@ var createIdentity = /* @__PURE__ */ factory(
   }
 );
 
+// src/wasm/WasmLoader.ts
+var _WasmLoader = class _WasmLoader {
+  // 1MB max per pool entry
+  constructor() {
+    this.wasmModule = null;
+    this.compiledModule = null;
+    this.loading = null;
+    this.lastMetrics = null;
+    // Memory pool for reusable allocations
+    this.float64Pool = [];
+    this.int32Pool = [];
+    this.maxPoolSize = 32;
+    this.poolSizeThreshold = 1024 * 1024;
+    this.isNode = typeof process !== "undefined" && process.versions?.node !== void 0;
+  }
+  static getInstance() {
+    if (!_WasmLoader.instance) {
+      _WasmLoader.instance = new _WasmLoader();
+    }
+    return _WasmLoader.instance;
+  }
+  /**
+   * Load the WASM module
+   */
+  async load(wasmPath) {
+    if (this.wasmModule) {
+      return this.wasmModule;
+    }
+    if (this.loading) {
+      return this.loading;
+    }
+    this.loading = this.loadModule(wasmPath);
+    this.wasmModule = await this.loading;
+    return this.wasmModule;
+  }
+  /**
+   * Precompile the WASM module without instantiation
+   * Useful for build-time or startup optimization
+   */
+  async precompile(wasmPath) {
+    if (this.compiledModule) return;
+    const path = wasmPath || this.getDefaultWasmPath();
+    const startTime = performance.now();
+    if (this.isNode) {
+      const fs = await import('fs');
+      const { promisify } = await import('util');
+      const readFile = promisify(fs.readFile);
+      const buffer = await readFile(path);
+      this.compiledModule = await WebAssembly.compile(buffer);
+    } else {
+      const response = await fetch(path);
+      if (typeof WebAssembly.compileStreaming === "function") {
+        this.compiledModule = await WebAssembly.compileStreaming(fetch(path));
+      } else {
+        const buffer = await response.arrayBuffer();
+        this.compiledModule = await WebAssembly.compile(buffer);
+      }
+    }
+    this.lastMetrics = {
+      fileReadMs: 0,
+      compileMs: performance.now() - startTime,
+      instantiateMs: 0,
+      totalMs: performance.now() - startTime,
+      fromCache: false
+    };
+  }
+  async loadModule(wasmPath) {
+    const path = wasmPath || this.getDefaultWasmPath();
+    const totalStart = performance.now();
+    if (this.compiledModule) {
+      const instStart = performance.now();
+      const instance = await WebAssembly.instantiate(
+        this.compiledModule,
+        this.getImports()
+      );
+      this.lastMetrics = {
+        fileReadMs: 0,
+        compileMs: 0,
+        instantiateMs: performance.now() - instStart,
+        totalMs: performance.now() - totalStart,
+        fromCache: true
+      };
+      return instance.exports;
+    }
+    if (this.isNode) {
+      return this.loadNodeWasm(path, totalStart);
+    } else {
+      return this.loadBrowserWasm(path, totalStart);
+    }
+  }
+  getDefaultWasmPath() {
+    if (this.isNode) {
+      return "./lib/wasm/index.wasm";
+    } else {
+      return new URL("../../lib/wasm/index.wasm", import.meta.url).href;
+    }
+  }
+  async loadNodeWasm(path, totalStart) {
+    const fs = await import('fs');
+    const { promisify } = await import('util');
+    const readFile = promisify(fs.readFile);
+    const readStart = performance.now();
+    const buffer = await readFile(path);
+    const readEnd = performance.now();
+    const compileStart = performance.now();
+    this.compiledModule = await WebAssembly.compile(buffer);
+    const compileEnd = performance.now();
+    const instStart = performance.now();
+    const instance = await WebAssembly.instantiate(
+      this.compiledModule,
+      this.getImports()
+    );
+    const instEnd = performance.now();
+    this.lastMetrics = {
+      fileReadMs: readEnd - readStart,
+      compileMs: compileEnd - compileStart,
+      instantiateMs: instEnd - instStart,
+      totalMs: performance.now() - totalStart,
+      fromCache: false
+    };
+    return instance.exports;
+  }
+  async loadBrowserWasm(path, totalStart) {
+    if (typeof WebAssembly.instantiateStreaming === "function") {
+      const instStart2 = performance.now();
+      const result = await WebAssembly.instantiateStreaming(
+        fetch(path),
+        this.getImports()
+      );
+      this.compiledModule = result.module;
+      this.lastMetrics = {
+        fileReadMs: 0,
+        // Combined with compile in streaming
+        compileMs: 0,
+        // Combined in streaming
+        instantiateMs: performance.now() - instStart2,
+        totalMs: performance.now() - totalStart,
+        fromCache: false
+      };
+      return result.instance.exports;
+    }
+    const readStart = performance.now();
+    const response = await fetch(path);
+    const buffer = await response.arrayBuffer();
+    const readEnd = performance.now();
+    const compileStart = performance.now();
+    this.compiledModule = await WebAssembly.compile(buffer);
+    const compileEnd = performance.now();
+    const instStart = performance.now();
+    const instance = await WebAssembly.instantiate(
+      this.compiledModule,
+      this.getImports()
+    );
+    const instEnd = performance.now();
+    this.lastMetrics = {
+      fileReadMs: readEnd - readStart,
+      compileMs: compileEnd - compileStart,
+      instantiateMs: instEnd - instStart,
+      totalMs: performance.now() - totalStart,
+      fromCache: false
+    };
+    return instance.exports;
+  }
+  getImports() {
+    return {
+      env: {
+        abort: (msg, file, line, column) => {
+          console.error("WASM abort", { msg, file, line, column });
+          throw new Error("WASM abort");
+        },
+        seed: () => Date.now()
+      },
+      Math,
+      Date
+    };
+  }
+  /**
+   * Get the loaded WASM module
+   */
+  getModule() {
+    return this.wasmModule;
+  }
+  /**
+   * Get the compiled WASM module (for caching/serialization)
+   */
+  getCompiledModule() {
+    return this.compiledModule;
+  }
+  /**
+   * Check if WASM is loaded
+   */
+  isLoaded() {
+    return this.wasmModule !== null;
+  }
+  /**
+   * Check if WASM is precompiled
+   */
+  isPrecompiled() {
+    return this.compiledModule !== null;
+  }
+  /**
+   * Get loading performance metrics
+   */
+  getLoadingMetrics() {
+    return this.lastMetrics;
+  }
+  /**
+   * Allocate Float64Array in WASM memory
+   * Uses memory pooling for frequently reused sizes
+   */
+  allocateFloat64Array(data) {
+    const module = this.wasmModule;
+    if (!module) throw new Error("WASM module not loaded");
+    const length = data.length;
+    const byteLength = length * 8;
+    let ptr;
+    if (byteLength <= this.poolSizeThreshold) {
+      const poolEntry = this.getFromPool(this.float64Pool, byteLength);
+      if (poolEntry) {
+        ptr = poolEntry.ptr;
+        poolEntry.inUse = true;
+      } else {
+        ptr = module.__new(byteLength, 2);
+      }
+    } else {
+      ptr = module.__new(byteLength, 2);
+    }
+    const array = new Float64Array(module.memory.buffer, ptr, length);
+    array.set(data);
+    return { ptr, array };
+  }
+  /**
+   * Allocate Float64Array without copying data (for output buffers)
+   */
+  allocateFloat64ArrayEmpty(length) {
+    const module = this.wasmModule;
+    if (!module) throw new Error("WASM module not loaded");
+    const byteLength = length * 8;
+    let ptr;
+    if (byteLength <= this.poolSizeThreshold) {
+      const poolEntry = this.getFromPool(this.float64Pool, byteLength);
+      if (poolEntry) {
+        ptr = poolEntry.ptr;
+        poolEntry.inUse = true;
+      } else {
+        ptr = module.__new(byteLength, 2);
+      }
+    } else {
+      ptr = module.__new(byteLength, 2);
+    }
+    const array = new Float64Array(module.memory.buffer, ptr, length);
+    return { ptr, array };
+  }
+  /**
+   * Allocate Int32Array in WASM memory
+   * Uses memory pooling for frequently reused sizes
+   */
+  allocateInt32Array(data) {
+    const module = this.wasmModule;
+    if (!module) throw new Error("WASM module not loaded");
+    const length = data.length;
+    const byteLength = length * 4;
+    let ptr;
+    if (byteLength <= this.poolSizeThreshold) {
+      const poolEntry = this.getFromPool(this.int32Pool, byteLength);
+      if (poolEntry) {
+        ptr = poolEntry.ptr;
+        poolEntry.inUse = true;
+      } else {
+        ptr = module.__new(byteLength, 1);
+      }
+    } else {
+      ptr = module.__new(byteLength, 1);
+    }
+    const array = new Int32Array(module.memory.buffer, ptr, length);
+    array.set(data);
+    return { ptr, array };
+  }
+  /**
+   * Allocate Int32Array without copying data (for output buffers)
+   */
+  allocateInt32ArrayEmpty(length) {
+    const module = this.wasmModule;
+    if (!module) throw new Error("WASM module not loaded");
+    const byteLength = length * 4;
+    let ptr;
+    if (byteLength <= this.poolSizeThreshold) {
+      const poolEntry = this.getFromPool(this.int32Pool, byteLength);
+      if (poolEntry) {
+        ptr = poolEntry.ptr;
+        poolEntry.inUse = true;
+      } else {
+        ptr = module.__new(byteLength, 1);
+      }
+    } else {
+      ptr = module.__new(byteLength, 1);
+    }
+    const array = new Int32Array(module.memory.buffer, ptr, length);
+    return { ptr, array };
+  }
+  /**
+   * Get a suitable entry from the memory pool
+   */
+  getFromPool(pool, requestedSize) {
+    let bestFit = null;
+    let bestFitWaste = Infinity;
+    for (const entry of pool) {
+      if (!entry.inUse && entry.size >= requestedSize) {
+        const waste = entry.size - requestedSize;
+        if (waste < bestFitWaste && entry.size <= requestedSize * 2) {
+          bestFit = entry;
+          bestFitWaste = waste;
+        }
+      }
+    }
+    return bestFit;
+  }
+  /**
+   * Return allocation to pool for reuse
+   */
+  release(ptr, isFloat64 = true) {
+    const pool = isFloat64 ? this.float64Pool : this.int32Pool;
+    const entry = pool.find((e2) => e2.ptr === ptr);
+    if (entry) {
+      entry.inUse = false;
+      return;
+    }
+    this.free(ptr);
+  }
+  /**
+   * Free allocated memory (immediate, bypasses pool)
+   */
+  free(ptr) {
+    const module = this.wasmModule;
+    if (!module) return;
+    this.float64Pool = this.float64Pool.filter((e2) => e2.ptr !== ptr);
+    this.int32Pool = this.int32Pool.filter((e2) => e2.ptr !== ptr);
+    module.__unpin(ptr);
+  }
+  /**
+   * Clear the memory pool
+   */
+  clearPool() {
+    const module = this.wasmModule;
+    if (!module) return;
+    for (const entry of this.float64Pool) {
+      module.__unpin(entry.ptr);
+    }
+    for (const entry of this.int32Pool) {
+      module.__unpin(entry.ptr);
+    }
+    this.float64Pool = [];
+    this.int32Pool = [];
+  }
+  /**
+   * Get pool statistics
+   */
+  getPoolStats() {
+    const f64InUse = this.float64Pool.filter((e2) => e2.inUse).length;
+    const f64Bytes = this.float64Pool.reduce((sum, e2) => sum + e2.size, 0);
+    const i32InUse = this.int32Pool.filter((e2) => e2.inUse).length;
+    const i32Bytes = this.int32Pool.reduce((sum, e2) => sum + e2.size, 0);
+    return {
+      float64: {
+        total: this.float64Pool.length,
+        inUse: f64InUse,
+        totalBytes: f64Bytes
+      },
+      int32: {
+        total: this.int32Pool.length,
+        inUse: i32InUse,
+        totalBytes: i32Bytes
+      }
+    };
+  }
+  /**
+   * Run garbage collection
+   */
+  collect() {
+    const module = this.wasmModule;
+    if (!module) return;
+    module.__collect();
+  }
+  /**
+   * Reset the loader (for testing)
+   */
+  reset() {
+    this.clearPool();
+    this.wasmModule = null;
+    this.compiledModule = null;
+    this.loading = null;
+    this.lastMetrics = null;
+  }
+};
+_WasmLoader.instance = null;
+var WasmLoader = _WasmLoader;
+var wasmLoader = WasmLoader.getInstance();
+
 // src/function/matrix/kron.ts
+var WASM_KRON_THRESHOLD = 64;
+function isPlainNumber2D(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    const row = arr[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function flatten2D(arr, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = arr[i][j];
+    }
+  }
+  return result;
+}
+function unflatten2D(flat, rows, cols) {
+  const result = [];
+  for (let i = 0; i < rows; i++) {
+    const row = [];
+    for (let j = 0; j < cols; j++) {
+      row.push(flat[i * cols + j]);
+    }
+    result.push(row);
+  }
+  return result;
+}
 var name98 = "kron";
 var dependencies99 = ["typed", "matrix", "multiplyScalar"];
 var createKron = /* @__PURE__ */ factory(
@@ -11348,6 +11829,39 @@ var createKron = /* @__PURE__ */ factory(
         while (bdim++ < d) b = [b];
       }
       if (d === 1) return _kron1d(a, b);
+      if (d === 2) {
+        const aSize = arraySize(a);
+        const bSize = arraySize(b);
+        const aRows = aSize[0];
+        const aCols = aSize[1];
+        const bRows = bSize[0];
+        const bCols = bSize[1];
+        const totalElements = aRows * aCols * bRows * bCols;
+        const wasm = wasmLoader.getModule();
+        if (wasm && totalElements >= WASM_KRON_THRESHOLD && isPlainNumber2D(a) && isPlainNumber2D(b)) {
+          try {
+            const aFlat = flatten2D(a, aRows, aCols);
+            const bFlat = flatten2D(b, bRows, bCols);
+            const aAlloc = wasmLoader.allocateFloat64Array(aFlat);
+            const bAlloc = wasmLoader.allocateFloat64Array(bFlat);
+            const resultRows = aRows * bRows;
+            const resultCols = aCols * bCols;
+            const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(
+              resultRows * resultCols
+            );
+            try {
+              wasm.laKron(aAlloc.ptr, aRows, aCols, bAlloc.ptr, bRows, bCols);
+              const resultFlat = new Float64Array(resultAlloc.array);
+              return unflatten2D(resultFlat, resultRows, resultCols);
+            } finally {
+              wasmLoader.free(aAlloc.ptr);
+              wasmLoader.free(bAlloc.ptr);
+              wasmLoader.free(resultAlloc.ptr);
+            }
+          } catch {
+          }
+        }
+      }
       return a.flatMap(
         (aSlice) => b.map((bSlice) => _kron(aSlice, bSlice, d - 1))
       );
@@ -12425,6 +12939,27 @@ function _setObjectProperty(object, index, replacement) {
 }
 
 // src/function/matrix/transpose.ts
+var WASM_TRANSPOSE_THRESHOLD = 100;
+function isPlainNumberMatrix(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function flattenToFloat64(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
 var name111 = "transpose";
 var dependencies112 = ["typed", "matrix"];
 var createTranspose = /* @__PURE__ */ factory(
@@ -12472,6 +13007,34 @@ var createTranspose = /* @__PURE__ */ factory(
     }
     function _denseTranspose(m, rows, columns) {
       const data = m._data;
+      const wasm = wasmLoader.getModule();
+      if (wasm && rows * columns >= WASM_TRANSPOSE_THRESHOLD && isPlainNumberMatrix(data)) {
+        try {
+          const flat = flattenToFloat64(data, rows, columns);
+          const input = wasmLoader.allocateFloat64Array(flat);
+          const output = wasmLoader.allocateFloat64ArrayEmpty(rows * columns);
+          try {
+            wasm.transpose(input.ptr, rows, columns, output.ptr);
+            const transposed2 = [];
+            for (let j = 0; j < columns; j++) {
+              const row = [];
+              for (let i = 0; i < rows; i++) {
+                row[i] = output.array[j * rows + i];
+              }
+              transposed2[j] = row;
+            }
+            return m.createDenseMatrix({
+              data: transposed2,
+              size: [columns, rows],
+              datatype: m._datatype
+            });
+          } finally {
+            wasmLoader.free(input.ptr);
+            wasmLoader.free(output.ptr);
+          }
+        } catch {
+        }
+      }
       const transposed = [];
       let transposedRow;
       for (let j = 0; j < columns; j++) {
@@ -12618,6 +13181,34 @@ var createZeros = /* @__PURE__ */ factory(
 );
 
 // src/function/matrix/fft.ts
+var WASM_FFT_THRESHOLD = 64;
+function isPowerOf2(n) {
+  return n > 0 && (n & n - 1) === 0;
+}
+function complexToInterleaved(arr, complex) {
+  const n = arr.length;
+  const result = new Float64Array(n * 2);
+  for (let i = 0; i < n; i++) {
+    const val = arr[i];
+    if (typeof val === "number") {
+      result[i * 2] = val;
+      result[i * 2 + 1] = 0;
+    } else if (val && typeof val.re === "number" && typeof val.im === "number") {
+      result[i * 2] = val.re;
+      result[i * 2 + 1] = val.im;
+    } else {
+      return null;
+    }
+  }
+  return result;
+}
+function interleavedToComplex(data, n, complex) {
+  const result = [];
+  for (let i = 0; i < n; i++) {
+    result.push(complex(data[i * 2], data[i * 2 + 1]));
+  }
+  return result;
+}
 var name114 = "fft";
 var dependencies115 = [
   "typed",
@@ -12632,7 +13223,8 @@ var dependencies115 = [
   "conj",
   "pow",
   "ceil",
-  "log2"
+  "log2",
+  "complex"
 ];
 var createFft = /* @__PURE__ */ factory(
   name114,
@@ -12650,7 +13242,8 @@ var createFft = /* @__PURE__ */ factory(
     conj,
     pow,
     ceil,
-    log2: log23
+    log2: log23,
+    complex
   }) => {
     return typed2(name114, {
       Array: _ndFft,
@@ -12728,6 +13321,22 @@ var createFft = /* @__PURE__ */ factory(
     function _fft(arr, len) {
       const length = len ?? arr.length;
       if (length === 1) return [arr[0]];
+      const wasm = wasmLoader.getModule();
+      if (wasm && length >= WASM_FFT_THRESHOLD && isPowerOf2(length) && len === void 0) {
+        const interleaved = complexToInterleaved(arr);
+        if (interleaved) {
+          try {
+            const dataAlloc = wasmLoader.allocateFloat64Array(interleaved);
+            try {
+              wasm.fft(dataAlloc.ptr, length, 0);
+              return interleavedToComplex(dataAlloc.array, length, complex);
+            } finally {
+              wasmLoader.free(dataAlloc.ptr);
+            }
+          } catch (e2) {
+          }
+        }
+      }
       if (length % 2 === 0) {
         const ret = [
           ..._fft(
@@ -12759,12 +13368,40 @@ var createFft = /* @__PURE__ */ factory(
 );
 
 // src/function/matrix/ifft.ts
+var WASM_IFFT_THRESHOLD = 64;
+function isPowerOf22(n) {
+  return n > 0 && (n & n - 1) === 0;
+}
+function complexToInterleaved2(arr, complex) {
+  const n = arr.length;
+  const result = new Float64Array(n * 2);
+  for (let i = 0; i < n; i++) {
+    const val = arr[i];
+    if (typeof val === "number") {
+      result[i * 2] = val;
+      result[i * 2 + 1] = 0;
+    } else if (val && typeof val.re === "number" && typeof val.im === "number") {
+      result[i * 2] = val.re;
+      result[i * 2 + 1] = val.im;
+    } else {
+      return null;
+    }
+  }
+  return result;
+}
+function interleavedToComplex2(data, n, complex) {
+  const result = [];
+  for (let i = 0; i < n; i++) {
+    result.push(complex(data[i * 2], data[i * 2 + 1]));
+  }
+  return result;
+}
 var name115 = "ifft";
-var dependencies116 = ["typed", "fft", "dotDivide", "conj"];
+var dependencies116 = ["typed", "fft", "dotDivide", "conj", "complex"];
 var createIfft = /* @__PURE__ */ factory(
   name115,
   dependencies116,
-  ({ typed: typed2, fft, dotDivide, conj }) => {
+  ({ typed: typed2, fft, dotDivide, conj, complex }) => {
     return typed2(name115, {
       "Array | Matrix": function(arr) {
         const size = isMatrix(arr) ? arr.size() : arraySize(arr);
@@ -12772,6 +13409,34 @@ var createIfft = /* @__PURE__ */ factory(
           (acc, curr) => acc * curr,
           1
         );
+        if (size.length === 1) {
+          const length = size[0];
+          const wasm = wasmLoader.getModule();
+          if (wasm && length >= WASM_IFFT_THRESHOLD && isPowerOf22(length)) {
+            const arrData = isMatrix(arr) ? arr.valueOf() : arr;
+            const interleaved = complexToInterleaved2(arrData);
+            if (interleaved) {
+              try {
+                const dataAlloc = wasmLoader.allocateFloat64Array(interleaved);
+                try {
+                  wasm.fft(dataAlloc.ptr, length, 1);
+                  const result = interleavedToComplex2(
+                    dataAlloc.array,
+                    length,
+                    complex
+                  );
+                  if (isMatrix(arr)) {
+                    return arr.create(result);
+                  }
+                  return result;
+                } finally {
+                  wasmLoader.free(dataAlloc.ptr);
+                }
+              } catch (e2) {
+              }
+            }
+          }
+        }
         return dotDivide(conj(fft(conj(arr))), totalSize);
       }
     });
@@ -13291,29 +13956,29 @@ var createMode = /* @__PURE__ */ factory(
       }
     });
     function _mode(values) {
-      values = flatten(values.valueOf());
-      const num = values.length;
+      const flat = flatten(values.valueOf());
+      const num = flat.length;
       if (num === 0) {
         throw new Error("Cannot calculate mode of an empty array");
       }
       const count = {};
       let mode = [];
       let max = 0;
-      for (let i = 0; i < values.length; i++) {
-        const value = values[i];
+      for (let i = 0; i < flat.length; i++) {
+        const value = flat[i];
         if (isNumeric(value) && mathIsNaN(value)) {
           throw new Error(
             "Cannot calculate mode of an array containing NaN values"
           );
         }
-        if (!(value in count)) {
-          count[value] = 0;
+        if (!(String(value) in count)) {
+          count[String(value)] = 0;
         }
-        count[value]++;
-        if (count[value] === max) {
+        count[String(value)]++;
+        if (count[String(value)] === max) {
           mode.push(value);
-        } else if (count[value] > max) {
-          max = count[value];
+        } else if (count[String(value)] > max) {
+          max = count[String(value)];
           mode = [value];
         }
       }
@@ -13326,13 +13991,13 @@ var createMode = /* @__PURE__ */ factory(
 function improveErrorMessage(err, fnName, value) {
   let details;
   if (String(err).includes("Unexpected type")) {
-    details = arguments.length > 2 ? " (type: " + typeOf(value) + ", value: " + JSON.stringify(value) + ")" : " (type: " + err.data.actual + ")";
+    details = value !== void 0 ? " (type: " + typeOf(value) + ", value: " + JSON.stringify(value) + ")" : " (type: " + (err.data?.actual ?? "unknown") + ")";
     return new TypeError(
       "Cannot calculate " + fnName + ", unexpected type of argument" + details
     );
   }
   if (String(err).includes("complex numbers")) {
-    details = arguments.length > 2 ? " (type: " + typeOf(value) + ", value: " + JSON.stringify(value) + ")" : "";
+    details = value !== void 0 ? " (type: " + typeOf(value) + ", value: " + JSON.stringify(value) + ")" : "";
     return new TypeError(
       "Cannot calculate " + fnName + ", no ordering relation is defined for complex numbers" + details
     );
@@ -13341,15 +14006,36 @@ function improveErrorMessage(err, fnName, value) {
 }
 
 // src/function/statistics/prod.ts
+var WASM_PROD_THRESHOLD = 100;
+function isFlatNumberArray(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name120 = "prod";
-var dependencies121 = ["typed", "config", "multiplyScalar", "numeric", "parseNumberWithConfig"];
+var dependencies121 = [
+  "typed",
+  "config",
+  "multiplyScalar",
+  "numeric",
+  "parseNumberWithConfig"
+];
 var createProd = /* @__PURE__ */ factory(
   name120,
   dependencies121,
-  ({ typed: typed2, config, multiplyScalar, numeric, parseNumberWithConfig }) => {
+  ({
+    typed: typed2,
+    config: _config,
+    multiplyScalar,
+    numeric: _numeric,
+    parseNumberWithConfig
+  }) => {
     return typed2(name120, {
       // prod(string) - single string input
-      "string": function(x) {
+      string: function(x) {
         return parseNumberWithConfig(x);
       },
       // prod([a, b, c, d, ...])
@@ -13364,6 +14050,22 @@ var createProd = /* @__PURE__ */ factory(
       }
     });
     function _prod(array) {
+      if (Array.isArray(array) && array.length >= WASM_PROD_THRESHOLD) {
+        if (isFlatNumberArray(array)) {
+          const wasm = wasmLoader.getModule();
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array);
+              try {
+                return wasm.statsProd(alloc.ptr, array.length);
+              } finally {
+                wasmLoader.free(alloc.ptr);
+              }
+            } catch {
+            }
+          }
+        }
+      }
       let prod;
       deepForEach2(array, function(value) {
         try {
@@ -13506,7 +14208,7 @@ var createTo = /* @__PURE__ */ factory(
     return typed2(
       name126,
       { "Unit, Unit | string": (x, unit) => x.to(unit) },
-      matrixAlgorithmSuite({ Ds: true })
+      matrixAlgorithmSuite({})
     );
   }
 );
@@ -13602,7 +14304,7 @@ var createIsPrime = /* @__PURE__ */ factory(
         let bases = null;
         if (n.lt("3317044064679887385961981")) {
           bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41].filter(
-            (x) => x < n
+            (x) => x < n.toNumber()
           );
         } else {
           const max = Math.min(
@@ -13680,7 +14382,7 @@ var createNumeric = /* @__PURE__ */ factory(
 // src/utils/parseNumber.ts
 var name130 = "parseNumberWithConfig";
 var dependencies131 = ["config", "?bignumber"];
-var createParseNumberWithConfig = /* @__PURE__ */ factory2(
+var createParseNumberWithConfig = /* @__PURE__ */ factory(
   name130,
   dependencies131,
   ({ config, bignumber }) => {
@@ -13701,30 +14403,32 @@ var createParseNumberWithConfig = /* @__PURE__ */ factory2(
           return bignumber(str);
         case "bigint":
           if (str.includes(".") || str.includes("e") || str.includes("E")) {
-            const num2 = Number(str);
-            if (isNaN(num2)) {
+            const num = Number(str);
+            if (isNaN(num)) {
               throw new SyntaxError(`String "${str}" is not a valid number`);
             }
-            return num2;
+            return num;
           }
           try {
             return BigInt(str);
-          } catch (e2) {
+          } catch {
             throw new SyntaxError(`String "${str}" is not a valid number`);
           }
-        case "Fraction":
+        case "Fraction": {
           const fracNum = Number(str);
           if (isNaN(fracNum)) {
             throw new SyntaxError(`String "${str}" is not a valid number`);
           }
           return fracNum;
+        }
         case "number":
-        default:
+        default: {
           const num = Number(str);
           if (isNaN(num)) {
             throw new SyntaxError(`String "${str}" is not a valid number`);
           }
           return num;
+        }
       }
     }
     return parseNumberWithConfig;
@@ -13874,7 +14578,7 @@ var createPow = /* @__PURE__ */ factory(
         try {
           return _powArray(inv(x), -y);
         } catch (error) {
-          if (error.message === "Cannot calculate inverse, determinant is zero") {
+          if (error instanceof Error && error.message === "Cannot calculate inverse, determinant is zero") {
             throw new TypeError(
               "For A^b, when A is not invertible, b must be a positive integer (value is " + y + ")"
             );
@@ -14450,6 +15154,42 @@ function createSolveValidation({ DenseMatrix }) {
 }
 
 // src/function/algebra/solver/lsolve.ts
+var WASM_LSOLVE_THRESHOLD = 16;
+function isPlainNumberMatrix2(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function isPlainNumberVector(vec) {
+  for (let i = 0; i < vec.length; i++) {
+    if (typeof vec[i][0] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
+function flattenToFloat642(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
+function vectorToFloat64(vec) {
+  const result = new Float64Array(vec.length);
+  for (let i = 0; i < vec.length; i++) {
+    result[i] = vec[i][0];
+  }
+  return result;
+}
 var name139 = "lsolve";
 var dependencies140 = [
   "typed",
@@ -14493,8 +15233,47 @@ var createLsolve = /* @__PURE__ */ factory(
       const bdata = bVector._data;
       const rows = m._size[0];
       const columns = m._size[1];
-      const x = [];
       const mdata = m._data;
+      const wasm = wasmLoader.getModule();
+      if (wasm && rows === columns && rows * rows >= WASM_LSOLVE_THRESHOLD && isPlainNumberMatrix2(mdata) && isPlainNumberVector(bdata)) {
+        try {
+          const lFlat = flattenToFloat642(mdata, rows, columns);
+          const bFlat = vectorToFloat64(bdata);
+          const lAlloc = wasmLoader.allocateFloat64Array(lFlat);
+          const bAlloc = wasmLoader.allocateFloat64Array(bFlat);
+          const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows);
+          try {
+            const success = wasm.laLsolve(
+              lAlloc.ptr,
+              bAlloc.ptr,
+              rows,
+              resultAlloc.ptr
+            );
+            if (success === 0) {
+              throw new Error(
+                "Linear system cannot be solved since matrix is singular"
+              );
+            }
+            const x2 = [];
+            for (let i = 0; i < rows; i++) {
+              x2[i] = [resultAlloc.array[i]];
+            }
+            return new DenseMatrix({
+              data: x2,
+              size: [rows, 1]
+            });
+          } finally {
+            wasmLoader.free(lAlloc.ptr);
+            wasmLoader.free(bAlloc.ptr);
+            wasmLoader.free(resultAlloc.ptr);
+          }
+        } catch (e2) {
+          if (e2 instanceof Error && e2.message.includes("singular")) {
+            throw e2;
+          }
+        }
+      }
+      const x = [];
       for (let j = 0; j < columns; j++) {
         const bj = bdata[j][0] || 0;
         let xj;
@@ -14573,6 +15352,42 @@ var createLsolve = /* @__PURE__ */ factory(
 );
 
 // src/function/algebra/solver/usolve.ts
+var WASM_USOLVE_THRESHOLD = 16;
+function isPlainNumberMatrix3(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function isPlainNumberVector2(vec) {
+  for (let i = 0; i < vec.length; i++) {
+    if (typeof vec[i][0] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
+function flattenToFloat643(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
+function vectorToFloat642(vec) {
+  const result = new Float64Array(vec.length);
+  for (let i = 0; i < vec.length; i++) {
+    result[i] = vec[i][0];
+  }
+  return result;
+}
 var name140 = "usolve";
 var dependencies141 = [
   "typed",
@@ -14616,8 +15431,47 @@ var createUsolve = /* @__PURE__ */ factory(
       const bdata = bVector._data;
       const rows = m._size[0];
       const columns = m._size[1];
-      const x = [];
       const mdata = m._data;
+      const wasm = wasmLoader.getModule();
+      if (wasm && rows === columns && rows * rows >= WASM_USOLVE_THRESHOLD && isPlainNumberMatrix3(mdata) && isPlainNumberVector2(bdata)) {
+        try {
+          const uFlat = flattenToFloat643(mdata, rows, columns);
+          const bFlat = vectorToFloat642(bdata);
+          const uAlloc = wasmLoader.allocateFloat64Array(uFlat);
+          const bAlloc = wasmLoader.allocateFloat64Array(bFlat);
+          const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows);
+          try {
+            const success = wasm.laUsolve(
+              uAlloc.ptr,
+              bAlloc.ptr,
+              rows,
+              resultAlloc.ptr
+            );
+            if (success === 0) {
+              throw new Error(
+                "Linear system cannot be solved since matrix is singular"
+              );
+            }
+            const x2 = [];
+            for (let i = 0; i < rows; i++) {
+              x2[i] = [resultAlloc.array[i]];
+            }
+            return new DenseMatrix({
+              data: x2,
+              size: [rows, 1]
+            });
+          } finally {
+            wasmLoader.free(uAlloc.ptr);
+            wasmLoader.free(bAlloc.ptr);
+            wasmLoader.free(resultAlloc.ptr);
+          }
+        } catch (e2) {
+          if (e2 instanceof Error && e2.message.includes("singular")) {
+            throw e2;
+          }
+        }
+      }
+      const x = [];
       for (let j = columns - 1; j >= 0; j--) {
         const bj = bdata[j][0] || 0;
         let xj;
@@ -14718,7 +15572,9 @@ var createLsolveAll = /* @__PURE__ */ factory(
     equalScalar,
     DenseMatrix
   }) => {
-    const solveValidation = createSolveValidation({ DenseMatrix });
+    const solveValidation = createSolveValidation({
+      DenseMatrix
+    });
     return typed2(name141, {
       "SparseMatrix, Array | Matrix": function(m, b) {
         return _sparseForwardSubstitution(m, b);
@@ -14734,7 +15590,9 @@ var createLsolveAll = /* @__PURE__ */ factory(
     });
     function _denseForwardSubstitution(m, b_) {
       const B = [
-        solveValidation(m, b_, true)._data.map((e2) => e2[0])
+        solveValidation(m, b_, true)._data.map(
+          (e2) => e2[0]
+        )
       ];
       const M = m._data;
       const rows = m._size[0];
@@ -14767,12 +15625,17 @@ var createLsolveAll = /* @__PURE__ */ factory(
         }
       }
       return B.map(
-        (x) => new DenseMatrix({ data: x.map((e2) => [e2]), size: [rows, 1] })
+        (x) => new DenseMatrix({
+          data: x.map((e2) => [e2]),
+          size: [rows, 1]
+        })
       );
     }
     function _sparseForwardSubstitution(m, b_) {
       const B = [
-        solveValidation(m, b_, true)._data.map((e2) => e2[0])
+        solveValidation(m, b_, true)._data.map(
+          (e2) => e2[0]
+        )
       ];
       const rows = m._size[0];
       const columns = m._size[1];
@@ -14799,7 +15662,7 @@ var createLsolveAll = /* @__PURE__ */ factory(
           }
           if (!equalScalar(Mii, 0)) {
             b[i] = divideScalar(b[i], Mii);
-            for (let j = 0, lastIndex2 = iIndices.length; j < lastIndex2; j++) {
+            for (let j = 0, lastIdx = iIndices.length; j < lastIdx; j++) {
               const J = iIndices[j];
               b[J] = subtractScalar(b[J], multiplyScalar(b[i], iValues[j]));
             }
@@ -14814,7 +15677,7 @@ var createLsolveAll = /* @__PURE__ */ factory(
           } else if (k === 0) {
             const bNew = [...b];
             bNew[i] = 1;
-            for (let j = 0, lastIndex2 = iIndices.length; j < lastIndex2; j++) {
+            for (let j = 0, lastIdx = iIndices.length; j < lastIdx; j++) {
               const J = iIndices[j];
               bNew[J] = subtractScalar(bNew[J], iValues[j]);
             }
@@ -14823,7 +15686,10 @@ var createLsolveAll = /* @__PURE__ */ factory(
         }
       }
       return B.map(
-        (x) => new DenseMatrix({ data: x.map((e2) => [e2]), size: [rows, 1] })
+        (x) => new DenseMatrix({
+          data: x.map((e2) => [e2]),
+          size: [rows, 1]
+        })
       );
     }
   }
@@ -14852,7 +15718,9 @@ var createUsolveAll = /* @__PURE__ */ factory(
     equalScalar,
     DenseMatrix
   }) => {
-    const solveValidation = createSolveValidation({ DenseMatrix });
+    const solveValidation = createSolveValidation({
+      DenseMatrix
+    });
     return typed2(name142, {
       "SparseMatrix, Array | Matrix": function(m, b) {
         return _sparseBackwardSubstitution(m, b);
@@ -14868,7 +15736,9 @@ var createUsolveAll = /* @__PURE__ */ factory(
     });
     function _denseBackwardSubstitution(m, b_) {
       const B = [
-        solveValidation(m, b_, true)._data.map((e2) => e2[0])
+        solveValidation(m, b_, true)._data.map(
+          (e2) => e2[0]
+        )
       ];
       const M = m._data;
       const rows = m._size[0];
@@ -14901,12 +15771,17 @@ var createUsolveAll = /* @__PURE__ */ factory(
         }
       }
       return B.map(
-        (x) => new DenseMatrix({ data: x.map((e2) => [e2]), size: [rows, 1] })
+        (x) => new DenseMatrix({
+          data: x.map((e2) => [e2]),
+          size: [rows, 1]
+        })
       );
     }
     function _sparseBackwardSubstitution(m, b_) {
       const B = [
-        solveValidation(m, b_, true)._data.map((e2) => e2[0])
+        solveValidation(m, b_, true)._data.map(
+          (e2) => e2[0]
+        )
       ];
       const rows = m._size[0];
       const columns = m._size[1];
@@ -14933,7 +15808,7 @@ var createUsolveAll = /* @__PURE__ */ factory(
           }
           if (!equalScalar(Mii, 0)) {
             b[i] = divideScalar(b[i], Mii);
-            for (let j = 0, lastIndex2 = iIndices.length; j < lastIndex2; j++) {
+            for (let j = 0, lastIdx = iIndices.length; j < lastIdx; j++) {
               const J = iIndices[j];
               b[J] = subtractScalar(b[J], multiplyScalar(b[i], iValues[j]));
             }
@@ -14948,7 +15823,7 @@ var createUsolveAll = /* @__PURE__ */ factory(
           } else if (k === 0) {
             const bNew = [...b];
             bNew[i] = 1;
-            for (let j = 0, lastIndex2 = iIndices.length; j < lastIndex2; j++) {
+            for (let j = 0, lastIdx = iIndices.length; j < lastIdx; j++) {
               const J = iIndices[j];
               bNew[J] = subtractScalar(bNew[J], iValues[j]);
             }
@@ -14957,7 +15832,10 @@ var createUsolveAll = /* @__PURE__ */ factory(
         }
       }
       return B.map(
-        (x) => new DenseMatrix({ data: x.map((e2) => [e2]), size: [rows, 1] })
+        (x) => new DenseMatrix({
+          data: x.map((e2) => [e2]),
+          size: [rows, 1]
+        })
       );
     }
   }
@@ -15365,7 +16243,7 @@ var createAnd = /* @__PURE__ */ factory(
         "any, SparseMatrix": typed2.referToSelf(
           (self) => (x, y) => {
             if (not(x)) {
-              return zeros2(x.size(), x.storage());
+              return zeros2(y.size(), y.storage());
             }
             return matAlgo11xS0s(y, x, self, true);
           }
@@ -15373,7 +16251,7 @@ var createAnd = /* @__PURE__ */ factory(
         "any, DenseMatrix": typed2.referToSelf(
           (self) => (x, y) => {
             if (not(x)) {
-              return zeros2(x.size(), x.storage());
+              return zeros2(y.size(), y.storage());
             }
             return matAlgo14xDs(y, x, self, true);
           }
@@ -15509,10 +16387,12 @@ var createCompareNatural = /* @__PURE__ */ factory(
         return compareComplexNumbers(x, y);
       }
       if (typeX === "Unit") {
-        if (x.equalBase(y)) {
-          return _compareNatural(x.value, y.value);
+        const unitX = x;
+        const unitY = y;
+        if (unitX.equalBase(unitY)) {
+          return _compareNatural(unitX.value, unitY.value);
         }
-        return compareArrays(_compareNatural, x.formatUnits(), y.formatUnits());
+        return compareArrays(_compareNatural, unitX.formatUnits(), unitY.formatUnits());
       }
       if (typeX === "boolean") {
         return compareBooleans(x, y);
@@ -15635,7 +16515,7 @@ var createCompareText = /* @__PURE__ */ factory(
       compareText,
       matrixAlgorithmSuite({
         elop: compareText,
-        Ds: true
+        Ds: compareText
       })
     );
   }
@@ -16114,6 +16994,15 @@ var createUnequalNumber = factory(
 );
 
 // src/function/matrix/partitionSelect.ts
+var WASM_PARTITION_SELECT_THRESHOLD = 100;
+function isFlatNumberArray2(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name159 = "partitionSelect";
 var dependencies160 = ["typed", "isNumeric", "isNaN", "compare"];
 var createPartitionSelect = /* @__PURE__ */ factory(
@@ -16159,6 +17048,34 @@ var createPartitionSelect = /* @__PURE__ */ factory(
       for (let i = 0; i < arr.length; i++) {
         if (isNumeric(arr[i]) && mathIsNaN(arr[i])) {
           return arr[i];
+        }
+      }
+      const wasm = wasmLoader.getModule();
+      if (wasm && arr.length >= WASM_PARTITION_SELECT_THRESHOLD && isFlatNumberArray2(arr)) {
+        const isAsc = compare2 === asc;
+        const isDesc = compare2 === desc;
+        if (isAsc || isDesc) {
+          try {
+            const effectiveK = isDesc ? arr.length - 1 - k : k;
+            const data = wasmLoader.allocateFloat64Array(arr);
+            const work = wasmLoader.allocateFloat64ArrayEmpty(arr.length);
+            try {
+              const result = wasm.partitionSelect(
+                data.ptr,
+                arr.length,
+                effectiveK,
+                work.ptr
+              );
+              for (let i = 0; i < arr.length; i++) {
+                arr[i] = work.array[i];
+              }
+              return result;
+            } finally {
+              wasmLoader.free(data.ptr);
+              wasmLoader.free(work.ptr);
+            }
+          } catch {
+          }
         }
       }
       let from = 0;
@@ -16256,6 +17173,15 @@ var createSort = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/max.ts
+var WASM_MAX_THRESHOLD = 100;
+function isFlatNumberArray3(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name161 = "max";
 var dependencies162 = ["typed", "config", "numeric", "larger", "isNaN"];
 var createMax = /* @__PURE__ */ factory(
@@ -16267,7 +17193,8 @@ var createMax = /* @__PURE__ */ factory(
       "Array | Matrix": _max,
       // max([a, b, c, d, ...], dim)
       "Array | Matrix, number | BigNumber": function(array, dim) {
-        return reduce(array, dim.valueOf(), _largest);
+        const dimValue = typeof dim === "number" ? dim : dim.valueOf();
+        return reduce(array, dimValue, _largest);
       },
       // max(a, b, c, d, ...)
       "...": function(args) {
@@ -16285,6 +17212,22 @@ var createMax = /* @__PURE__ */ factory(
       }
     }
     function _max(array) {
+      if (Array.isArray(array) && array.length >= WASM_MAX_THRESHOLD) {
+        if (isFlatNumberArray3(array)) {
+          const wasm = wasmLoader.getModule();
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array);
+              try {
+                return wasm.statsMax(alloc.ptr, array.length);
+              } finally {
+                wasmLoader.free(alloc.ptr);
+              }
+            } catch {
+            }
+          }
+        }
+      }
       let res;
       deepForEach2(array, function(value) {
         try {
@@ -16309,6 +17252,15 @@ var createMax = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/min.ts
+var WASM_MIN_THRESHOLD = 100;
+function isFlatNumberArray4(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name162 = "min";
 var dependencies163 = ["typed", "config", "numeric", "smaller", "isNaN"];
 var createMin = /* @__PURE__ */ factory(
@@ -16320,7 +17272,8 @@ var createMin = /* @__PURE__ */ factory(
       "Array | Matrix": _min,
       // min([a, b, c, d, ...], dim)
       "Array | Matrix, number | BigNumber": function(array, dim) {
-        return reduce(array, dim.valueOf(), _smallest);
+        const dimValue = typeof dim === "number" ? dim : dim.valueOf();
+        return reduce(array, dimValue, _smallest);
       },
       // min(a, b, c, d, ...)
       "...": function(args) {
@@ -16338,6 +17291,22 @@ var createMin = /* @__PURE__ */ factory(
       }
     }
     function _min(array) {
+      if (Array.isArray(array) && array.length >= WASM_MIN_THRESHOLD) {
+        if (isFlatNumberArray4(array)) {
+          const wasm = wasmLoader.getModule();
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array);
+              try {
+                return wasm.statsMin(alloc.ptr, array.length);
+              } finally {
+                wasmLoader.free(alloc.ptr);
+              }
+            } catch {
+            }
+          }
+        }
+      }
       let min;
       deepForEach2(array, function(value) {
         try {
@@ -17850,7 +18819,9 @@ var createUnitClass = /* @__PURE__ */ factory(
           }
         }
       }
-      const simplifiedUnits = units.filter((u) => Math.abs(u.power) >= 1e-12);
+      const simplifiedUnits = units.filter(
+        (u) => Math.abs(u.power) >= 1e-12
+      );
       unit.units = simplifiedUnits;
       return unit;
     }
@@ -20605,7 +21576,8 @@ var createTrigUnit = /* @__PURE__ */ factory(
   "trigUnit",
   ["typed"],
   ({ typed: typed2 }) => ({
-    Unit: typed2.referToSelf((self) => (x) => {
+    Unit: typed2.referToSelf((self) => (...args) => {
+      const x = args[0];
       if (!x.hasBase(x.constructor.BASE_UNITS.ANGLE)) {
         throw new TypeError("Unit in function cot is no angle");
       }
@@ -20831,7 +21803,14 @@ var dependencies197 = [
 var createSetCartesian = /* @__PURE__ */ factory(
   name196,
   dependencies197,
-  ({ typed: typed2, size, subset, compareNatural, Index: Index2, DenseMatrix }) => {
+  ({
+    typed: typed2,
+    size,
+    subset,
+    compareNatural,
+    Index: Index2,
+    DenseMatrix
+  }) => {
     return typed2(name196, {
       "Array | Matrix, Array | Matrix": function(a1, a2) {
         let result = [];
@@ -21152,7 +22131,14 @@ var dependencies205 = [
 var createSetSymDifference = /* @__PURE__ */ factory(
   name204,
   dependencies205,
-  ({ typed: typed2, size, concat: concat2, subset, setDifference, Index: Index2 }) => {
+  ({
+    typed: typed2,
+    size,
+    concat: concat2,
+    subset,
+    setDifference,
+    Index: Index2
+  }) => {
     return typed2(name204, {
       "Array | Matrix, Array | Matrix": function(a1, a2) {
         if (subset(size(a1), new Index2(0)) === 0) {
@@ -21182,7 +22168,15 @@ var dependencies206 = [
 var createSetUnion = /* @__PURE__ */ factory(
   name205,
   dependencies206,
-  ({ typed: typed2, size, concat: concat2, subset, setIntersect, setSymDifference, Index: Index2 }) => {
+  ({
+    typed: typed2,
+    size,
+    concat: concat2,
+    subset,
+    setIntersect,
+    setSymDifference,
+    Index: Index2
+  }) => {
     return typed2(name205, {
       "Array | Matrix, Array | Matrix": function(a1, a2) {
         if (subset(size(a1), new Index2(0)) === 0) {
@@ -21449,7 +22443,8 @@ var createNorm = /* @__PURE__ */ factory(
     function _matrixNormOne(x) {
       const c = [];
       let maxc = 0;
-      x.forEach(function(value, [, j]) {
+      x.forEach(function(value, index) {
+        const j = index[1];
         const cj = add(c[j] || 0, abs(value));
         if (larger(cj, maxc)) {
           maxc = cj;
@@ -21509,6 +22504,7 @@ var createNorm = /* @__PURE__ */ factory(
           throw new RangeError("Invalid matrix dimensions");
         }
       }
+      throw new Error("Unsupported matrix dimensions");
     }
   }
 );
@@ -22088,10 +23084,11 @@ var createNode = /* @__PURE__ */ factory(
 // src/expression/transform/utils/errorTransform.ts
 function errorTransform(err) {
   if (err && err.isIndexError) {
+    const indexErr = err;
     return new IndexError(
-      err.index + 1,
-      err.min + 1,
-      err.max !== void 0 ? err.max + 1 : void 0
+      indexErr.index + 1,
+      indexErr.min + 1,
+      indexErr.max !== void 0 ? indexErr.max + 1 : void 0
     );
   }
   return err;
@@ -22874,11 +23871,7 @@ var dependencies216 = [
 var createAssignmentNode = /* @__PURE__ */ factory(
   name215,
   dependencies216,
-  ({
-    subset,
-    matrix,
-    Node
-  }) => {
+  ({ subset, matrix, Node }) => {
     const access = accessFactory({ subset });
     const assign = assignFactory({ subset, matrix });
     function needParenthesis(node, parenthesis, implicit) {
@@ -22962,27 +23955,27 @@ var createAssignmentNode = /* @__PURE__ */ factory(
        * Compile a node into a JavaScript function.
        * This basically pre-calculates as much as possible and only leaves open
        * calculations which depend on a dynamic scope with variables.
-       * @param {Object} math     Math.js namespace with functions and constants.
-       * @param {Object} argNames An object with argument names as key and `true`
-       *                          as value. Used in the SymbolNode to optimize
-       *                          for arguments from user assigned functions
-       *                          (see FunctionAssignmentNode) or special symbols
-       *                          like `end` (see IndexNode).
-       * @return {function} Returns a function which can be called like:
-       *                        evalNode(scope: Object, args: Object, context: *)
+       * @param math - Math.js namespace with functions and constants.
+       * @param argNames - An object with argument names as key and `true`
+       *                   as value. Used in the SymbolNode to optimize
+       *                   for arguments from user assigned functions
+       *                   (see FunctionAssignmentNode) or special symbols
+       *                   like `end` (see IndexNode).
+       * @returns A function which can be called like:
+       *          evalNode(scope: Scope, args: Record<string, unknown>, context: unknown)
        */
       _compile(math, argNames) {
         const evalObject = this.object._compile(math, argNames);
         const evalIndex = this.index ? this.index._compile(math, argNames) : null;
         const evalValue = this.value._compile(math, argNames);
-        const name323 = this.object.name;
+        const symbolName = this.object.name;
         if (!this.index) {
           if (!isSymbolNode(this.object)) {
             throw new TypeError("SymbolNode expected as object");
           }
           return function evalAssignmentNode(scope, args, context) {
             const value = evalValue(scope, args, context);
-            scope.set(name323, value);
+            scope.set(symbolName, value);
             return value;
           };
         } else if (this.index.isObjectProperty()) {
@@ -22998,19 +23991,20 @@ var createAssignmentNode = /* @__PURE__ */ factory(
             const childObject = evalObject(scope, args, context);
             const value = evalValue(scope, args, context);
             const index = evalIndex(scope, args, childObject);
-            scope.set(name323, assign(childObject, index, value));
+            scope.set(symbolName, assign(childObject, index, value));
             return value;
           };
         } else {
-          const evalParentObject = this.object.object._compile(
-            math,
-            argNames
-          );
-          if (this.object.index.isObjectProperty()) {
-            const parentProp = this.object.index.getObjectProperty();
+          const accessorObject = this.object;
+          const evalParentObject = accessorObject.object._compile(math, argNames);
+          if (accessorObject.index.isObjectProperty()) {
+            const parentProp = accessorObject.index.getObjectProperty();
             return function evalAssignmentNode(scope, args, context) {
               const parent = evalParentObject(scope, args, context);
-              const childObject = getSafeProperty(parent, parentProp);
+              const childObject = getSafeProperty(
+                parent,
+                parentProp
+              );
               const index = evalIndex(scope, args, childObject);
               const value = evalValue(scope, args, context);
               setSafeProperty(
@@ -23021,10 +24015,7 @@ var createAssignmentNode = /* @__PURE__ */ factory(
               return value;
             };
           } else {
-            const evalParentIndex = this.object.index._compile(
-              math,
-              argNames
-            );
+            const evalParentIndex = accessorObject.index._compile(math, argNames);
             return function evalAssignmentNode(scope, args, context) {
               const parent = evalParentObject(scope, args, context);
               const parentIndex = evalParentIndex(scope, args, parent);
@@ -23071,8 +24062,8 @@ var createAssignmentNode = /* @__PURE__ */ factory(
       }
       /**
        * Get string representation
-       * @param {Object} options
-       * @return {string}
+       * @param options - Formatting options
+       * @returns The string representation
        */
       _toString(options) {
         const object = this.object.toString(options);
@@ -23089,7 +24080,7 @@ var createAssignmentNode = /* @__PURE__ */ factory(
       }
       /**
        * Get a JSON representation of the node
-       * @returns {Object}
+       * @returns The JSON representation
        */
       toJSON() {
         return {
@@ -23101,19 +24092,18 @@ var createAssignmentNode = /* @__PURE__ */ factory(
       }
       /**
        * Instantiate an AssignmentNode from its JSON representation
-       * @param {Object} json
-       *     An object structured like
+       * @param json - An object structured like
        *     `{"mathjs": "AssignmentNode", object: ..., index: ..., value: ...}`,
        *     where mathjs is optional
-       * @returns {AssignmentNode}
+       * @returns The AssignmentNode instance
        */
       static fromJSON(json) {
         return new AssignmentNode(json.object, json.index, json.value);
       }
       /**
        * Get HTML representation
-       * @param {Object} options
-       * @return {string}
+       * @param options - Formatting options
+       * @returns The HTML representation
        */
       _toHTML(options) {
         const object = this.object.toHTML(options);
@@ -23130,8 +24120,8 @@ var createAssignmentNode = /* @__PURE__ */ factory(
       }
       /**
        * Get LaTeX representation
-       * @param {Object} options
-       * @return {string}
+       * @param options - Formatting options
+       * @returns The LaTeX representation
        */
       _toTex(options) {
         const object = this.object.toTex(options);
@@ -26146,11 +27136,7 @@ var dependencies228 = ["math", "Node", "SymbolNode"];
 var createFunctionNode = /* @__PURE__ */ factory(
   name227,
   dependencies228,
-  ({
-    math,
-    Node,
-    SymbolNode
-  }) => {
+  ({ math, Node, SymbolNode }) => {
     const strin = (entity) => format3(entity, { truncate: 78 });
     function expandTemplate(template, node, options) {
       let latex = "";
@@ -26165,7 +27151,8 @@ var createFunctionNode = /* @__PURE__ */ factory(
           inputPos++;
         } else {
           inputPos += match[0].length;
-          const property = node[match[1]];
+          const propertyName = match[1];
+          const property = node[propertyName];
           if (!property) {
             throw new ReferenceError(
               "Template: Property " + match[1] + " does not exist."
@@ -26200,8 +27187,10 @@ var createFunctionNode = /* @__PURE__ */ factory(
                 );
             }
           } else {
-            if (isNode(property[match[2]] && property[match[2]])) {
-              latex += property[match[2]].toTex(options);
+            const arrayProperty = property;
+            const indexedNode = arrayProperty[parseInt(match[2], 10)];
+            if (isNode(indexedNode)) {
+              latex += indexedNode.toTex(options);
             } else {
               throw new TypeError(
                 "Template: " + match[1] + "[" + match[2] + "] is not a Node."
@@ -26256,36 +27245,36 @@ var createFunctionNode = /* @__PURE__ */ factory(
        * Compile a node into a JavaScript function.
        * This basically pre-calculates as much as possible and only leaves open
        * calculations which depend on a dynamic scope with variables.
-       * @param {Object} math     Math.js namespace with functions and constants.
-       * @param {Object} argNames An object with argument names as key and `true`
-       *                          as value. Used in the SymbolNode to optimize
-       *                          for arguments from user assigned functions
-       *                          (see FunctionAssignmentNode) or special symbols
-       *                          like `end` (see IndexNode).
-       * @return {function} Returns a function which can be called like:
-       *                        evalNode(scope: Object, args: Object, context: *)
+       * @param math - Math.js namespace with functions and constants.
+       * @param argNames - An object with argument names as key and `true`
+       *                   as value. Used in the SymbolNode to optimize
+       *                   for arguments from user assigned functions
+       *                   (see FunctionAssignmentNode) or special symbols
+       *                   like `end` (see IndexNode).
+       * @returns A function which can be called like:
+       *          evalNode(scope: Scope, args: Record<string, unknown>, context: unknown)
        */
       _compile(math2, argNames) {
         const evalArgs = this.args.map((arg) => arg._compile(math2, argNames));
         const fromOptionalChaining = this.optional || isAccessorNode(this.fn) && this.fn.optionalChaining;
         if (isSymbolNode(this.fn)) {
-          const name323 = this.fn.name;
-          if (!argNames[name323]) {
-            const fn = name323 in math2 ? getSafeProperty(math2, name323) : void 0;
+          const fnName = this.fn.name;
+          if (!argNames[fnName]) {
+            const fn = fnName in math2 ? getSafeProperty(math2, fnName) : void 0;
             const isRaw = typeof fn === "function" && fn.rawArgs === true;
             const resolveFn = (scope) => {
               let value;
-              if (scope.has(name323)) {
-                value = scope.get(name323);
-              } else if (name323 in math2) {
-                value = getSafeProperty(math2, name323);
+              if (scope.has(fnName)) {
+                value = scope.get(fnName);
+              } else if (fnName in math2) {
+                value = getSafeProperty(math2, fnName);
               } else if (fromOptionalChaining) value = void 0;
-              else return _FunctionNode.onUndefinedFunction(name323);
+              else return _FunctionNode.onUndefinedFunction(fnName);
               if (typeof value === "function" || fromOptionalChaining && value === void 0) {
                 return value;
               }
               throw new TypeError(
-                `'${name323}' is not a function; its value is:
+                `'${fnName}' is not a function; its value is:
   ${strin(value)}`
               );
             };
@@ -26293,14 +27282,15 @@ var createFunctionNode = /* @__PURE__ */ factory(
               const rawArgs = this.args;
               return function evalFunctionNode(scope, args, context) {
                 const fn2 = resolveFn(scope);
-                if (fn2.rawArgs === true) {
+                if (fn2 && fn2.rawArgs === true) {
                   return fn2(rawArgs, math2, createSubScope(scope, args));
-                } else {
+                } else if (fn2) {
                   const values = evalArgs.map(
                     (evalArg) => evalArg(scope, args, context)
                   );
                   return fn2(...values);
                 }
+                return void 0;
               };
             } else {
               switch (evalArgs.length) {
@@ -26346,11 +27336,11 @@ var createFunctionNode = /* @__PURE__ */ factory(
           } else {
             const rawArgs = this.args;
             return function evalFunctionNode(scope, args, context) {
-              const fn = getSafeProperty(args, name323);
+              const fn = getSafeProperty(args, fnName);
               if (fromOptionalChaining && fn === void 0) return void 0;
               if (typeof fn !== "function") {
                 throw new TypeError(
-                  `Argument '${name323}' was not a function; received: ${strin(fn)}`
+                  `Argument '${fnName}' was not a function; received: ${strin(fn)}`
                 );
               }
               if (fn.rawArgs) {
@@ -26364,8 +27354,9 @@ var createFunctionNode = /* @__PURE__ */ factory(
             };
           }
         } else if (isAccessorNode(this.fn) && isIndexNode(this.fn.index) && this.fn.index.isObjectProperty()) {
-          const evalObject = this.fn.object._compile(math2, argNames);
-          const prop = this.fn.index.getObjectProperty();
+          const accessorFn = this.fn;
+          const evalObject = accessorFn.object._compile(math2, argNames);
+          const prop = accessorFn.index.getObjectProperty();
           const rawArgs = this.args;
           return function evalFunctionNode(scope, args, context) {
             const object = evalObject(scope, args, context);
@@ -26447,15 +27438,16 @@ var createFunctionNode = /* @__PURE__ */ factory(
        * otherwise it falls back to calling Node's toString
        * function.
        *
-       * @param {Object} options
-       * @return {string} str
+       * @param options - Formatting options
+       * @returns The string representation
        * @override
        */
       toString(options) {
         let customString;
-        const name323 = this.fn.toString(options);
-        if (options && typeof options.handler === "object" && hasOwnProperty(options.handler, name323)) {
-          customString = options.handler[name323](this, options);
+        const fnName = this.fn.toString(options);
+        if (options && typeof options.handler === "object" && hasOwnProperty(options.handler, fnName)) {
+          const handler = options.handler;
+          customString = handler[fnName](this, options);
         }
         if (typeof customString !== "undefined") {
           return customString;
@@ -26464,8 +27456,8 @@ var createFunctionNode = /* @__PURE__ */ factory(
       }
       /**
        * Get string representation
-       * @param {Object} options
-       * @return {string} str
+       * @param options - Formatting options
+       * @returns The string representation
        */
       _toString(options) {
         const args = this.args.map(function(arg) {
@@ -26487,14 +27479,14 @@ var createFunctionNode = /* @__PURE__ */ factory(
       }
       /**
        * Get HTML representation
-       * @param {Object} options
-       * @return {string} str
+       * @param options - Formatting options
+       * @returns The HTML representation
        */
       _toHTML(options) {
         const args = this.args.map(function(arg) {
           return arg.toHTML(options);
         });
-        return '<span class="math-function">' + escape(this.fn) + '</span><span class="math-paranthesis math-round-parenthesis">(</span>' + args.join('<span class="math-separator">,</span>') + '<span class="math-paranthesis math-round-parenthesis">)</span>';
+        return '<span class="math-function">' + escape(this.fn.toString()) + '</span><span class="math-paranthesis math-round-parenthesis">(</span>' + args.join('<span class="math-separator">,</span>') + '<span class="math-paranthesis math-round-parenthesis">)</span>';
       }
       /**
        * Get LaTeX representation. (wrapper function)
@@ -26504,13 +27496,14 @@ var createFunctionNode = /* @__PURE__ */ factory(
        * otherwise it falls back to calling Node's toTex
        * function.
        *
-       * @param {Object} options
-       * @return {string}
+       * @param options - Formatting options
+       * @returns The LaTeX representation
        */
       toTex(options) {
         let customTex;
         if (options && typeof options.handler === "object" && hasOwnProperty(options.handler, this.name)) {
-          customTex = options.handler[this.name](this, options);
+          const handler = options.handler;
+          customTex = handler[this.name](this, options);
         }
         if (typeof customTex !== "undefined") {
           return customTex;
@@ -26519,19 +27512,21 @@ var createFunctionNode = /* @__PURE__ */ factory(
       }
       /**
        * Get LaTeX representation
-       * @param {Object} options
-       * @return {string} str
+       * @param options - Formatting options
+       * @returns The LaTeX representation
        */
       _toTex(options) {
         const args = this.args.map(function(arg) {
           return arg.toTex(options);
         });
         let latexConverter;
-        if (latexFunctions[this.name]) {
-          latexConverter = latexFunctions[this.name];
+        const latexFunctionsMap = latexFunctions;
+        if (latexFunctionsMap[this.name]) {
+          latexConverter = latexFunctionsMap[this.name];
         }
-        if (math[this.name] && (typeof math[this.name].toTex === "function" || typeof math[this.name].toTex === "object" || typeof math[this.name].toTex === "string")) {
-          latexConverter = math[this.name].toTex;
+        const mathFn = math[this.name];
+        if (mathFn && (typeof mathFn.toTex === "function" || typeof mathFn.toTex === "object" || typeof mathFn.toTex === "string")) {
+          latexConverter = mathFn.toTex;
         }
         let customToTex;
         switch (typeof latexConverter) {
@@ -26541,19 +27536,18 @@ var createFunctionNode = /* @__PURE__ */ factory(
           case "string":
             customToTex = expandTemplate(latexConverter, this, options);
             break;
-          case "object":
-            switch (typeof latexConverter[args.length]) {
+          case "object": {
+            const converterMap = latexConverter;
+            const converter = converterMap[args.length];
+            switch (typeof converter) {
               case "function":
-                customToTex = latexConverter[args.length](this, options);
+                customToTex = converter(this, options);
                 break;
               case "string":
-                customToTex = expandTemplate(
-                  latexConverter[args.length],
-                  this,
-                  options
-                );
+                customToTex = expandTemplate(converter, this, options);
                 break;
             }
+          }
         }
         if (typeof customToTex !== "undefined") {
           return customToTex;
@@ -27766,7 +28760,13 @@ var createParse = /* @__PURE__ */ factory(
       error.char = c;
       return error;
     }
-    typed2.addConversion({ from: "string", to: "Node", convert: parse });
+    try {
+      typed2.addConversion({ from: "string", to: "Node", convert: parse });
+    } catch (e2) {
+      if (!e2.message?.includes("already a conversion")) {
+        throw e2;
+      }
+    }
     return parse;
   }
 );
@@ -27937,6 +28937,27 @@ var createParser = /* @__PURE__ */ factory(
 );
 
 // src/function/algebra/decomposition/lup.ts
+var WASM_LUP_THRESHOLD = 16;
+function isPlainNumberMatrix4(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function flattenToFloat644(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
 var name233 = "lup";
 var dependencies234 = [
   "typed",
@@ -27992,6 +29013,66 @@ var createLup = /* @__PURE__ */ factory(
       const rows = m._size[0];
       const columns = m._size[1];
       let n = Math.min(rows, columns);
+      const wasm = wasmLoader.getModule();
+      if (wasm && rows === columns && rows * rows >= WASM_LUP_THRESHOLD && isPlainNumberMatrix4(m._data)) {
+        try {
+          const flat = flattenToFloat644(m._data, rows, columns);
+          const aAlloc = wasmLoader.allocateFloat64Array(flat);
+          const permAlloc = wasmLoader.allocateInt32ArrayEmpty(rows);
+          try {
+            const result = wasm.luDecomposition(aAlloc.ptr, rows, permAlloc.ptr);
+            if (result !== 0) {
+              throw new Error("Matrix is singular and cannot be decomposed");
+            }
+            const ldata2 = [];
+            const udata2 = [];
+            for (let i2 = 0; i2 < rows; i2++) {
+              ldata2[i2] = [];
+              udata2[i2] = [];
+              for (let j2 = 0; j2 < columns; j2++) {
+                const val = aAlloc.array[i2 * columns + j2];
+                if (i2 > j2) {
+                  ldata2[i2][j2] = val;
+                  udata2[i2][j2] = 0;
+                } else if (i2 === j2) {
+                  ldata2[i2][j2] = 1;
+                  udata2[i2][j2] = val;
+                } else {
+                  ldata2[i2][j2] = 0;
+                  udata2[i2][j2] = val;
+                }
+              }
+            }
+            const p2 = [];
+            for (let i2 = 0; i2 < rows; i2++) {
+              p2[i2] = permAlloc.array[i2];
+            }
+            const l2 = new DenseMatrix({
+              data: ldata2,
+              size: [rows, n]
+            });
+            const u2 = new DenseMatrix({
+              data: udata2,
+              size: [n, columns]
+            });
+            return {
+              L: l2,
+              U: u2,
+              p: p2,
+              toString: function() {
+                return "L: " + this.L.toString() + "\nU: " + this.U.toString() + "\nP: " + this.p;
+              }
+            };
+          } finally {
+            wasmLoader.free(aAlloc.ptr);
+            wasmLoader.free(permAlloc.ptr);
+          }
+        } catch (e2) {
+          if (e2 instanceof Error && e2.message.includes("singular")) {
+            throw e2;
+          }
+        }
+      }
       const data = clone(m._data);
       const ldata = [];
       const lsize = [rows, n];
@@ -28207,6 +29288,27 @@ var createLup = /* @__PURE__ */ factory(
 );
 
 // src/function/algebra/decomposition/qr.ts
+var WASM_QR_THRESHOLD = 16;
+function isPlainNumberMatrix5(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function flattenToFloat645(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
 var name234 = "qr";
 var dependencies235 = [
   "typed",
@@ -28266,6 +29368,44 @@ var createQr = /* @__PURE__ */ factory(
     function _denseQRimpl(m) {
       const rows = m._size[0];
       const cols = m._size[1];
+      const wasm = wasmLoader.getModule();
+      if (wasm && rows * cols >= WASM_QR_THRESHOLD && isPlainNumberMatrix5(m._data)) {
+        try {
+          const flat = flattenToFloat645(m._data, rows, cols);
+          const aAlloc = wasmLoader.allocateFloat64Array(flat);
+          const qAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows * rows);
+          try {
+            wasm.qrDecomposition(aAlloc.ptr, rows, cols, qAlloc.ptr);
+            const Rdata2 = [];
+            for (let i2 = 0; i2 < rows; i2++) {
+              Rdata2[i2] = [];
+              for (let j2 = 0; j2 < cols; j2++) {
+                Rdata2[i2][j2] = aAlloc.array[i2 * cols + j2];
+              }
+            }
+            const Qdata2 = [];
+            for (let i2 = 0; i2 < rows; i2++) {
+              Qdata2[i2] = [];
+              for (let j2 = 0; j2 < rows; j2++) {
+                Qdata2[i2][j2] = qAlloc.array[i2 * rows + j2];
+              }
+            }
+            const Q3 = matrix(Qdata2);
+            const R2 = matrix(Rdata2);
+            return {
+              Q: Q3,
+              R: R2,
+              toString: function() {
+                return "Q: " + this.Q.toString() + "\nR: " + this.R.toString();
+              }
+            };
+          } finally {
+            wasmLoader.free(aAlloc.ptr);
+            wasmLoader.free(qAlloc.ptr);
+          }
+        } catch (e2) {
+        }
+      }
       const Q2 = identity([rows], "dense");
       const Qdata = Q2._data;
       const R = m.clone();
@@ -28510,11 +29650,7 @@ var dependencies236 = ["add", "multiply", "transpose"];
 var createCsAmd = /* @__PURE__ */ factory(
   name235,
   dependencies236,
-  ({
-    add,
-    multiply,
-    transpose
-  }) => {
+  ({ add, multiply, transpose }) => {
     return function csAmd(order, a) {
       if (!a || order <= 0 || order > 3) {
         return null;
@@ -28909,7 +30045,7 @@ var createCsCounts = /* @__PURE__ */ factory(
   name236,
   dependencies237,
   ({ transpose }) => {
-    return function(a, parent, post, ata) {
+    return function csCounts(a, parent, post, ata) {
       if (!a || !parent || !post) {
         return null;
       }
@@ -28991,11 +30127,7 @@ var dependencies238 = ["add", "multiply", "transpose"];
 var createCsSqr = /* @__PURE__ */ factory(
   name237,
   dependencies238,
-  ({
-    add,
-    multiply,
-    transpose
-  }) => {
+  ({ add, multiply, transpose }) => {
     const csAmd = createCsAmd({ add, multiply, transpose });
     const csCounts = createCsCounts({ transpose });
     return function csSqr(order, a, qr) {
@@ -29176,11 +30308,7 @@ var dependencies239 = ["divideScalar", "multiply", "subtract"];
 var createCsSpsolve = /* @__PURE__ */ factory(
   name238,
   dependencies239,
-  ({
-    divideScalar,
-    multiply,
-    subtract
-  }) => {
+  ({ divideScalar, multiply, subtract }) => {
     return function csSpsolve(g, b, k, xi, x, pinv, lo) {
       const gvalues = g._values;
       const gindex = g._index;
@@ -29426,6 +30554,42 @@ function csIpvec(p, b) {
 }
 
 // src/function/algebra/solver/lusolve.ts
+var WASM_LUSOLVE_THRESHOLD = 16;
+function isPlainNumberMatrix6(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function isPlainNumberVector3(vec) {
+  for (let i = 0; i < vec.length; i++) {
+    if (typeof vec[i][0] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
+function flattenToFloat646(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
+function vectorToFloat643(vec) {
+  const result = new Float64Array(vec.length);
+  for (let i = 0; i < vec.length; i++) {
+    result[i] = vec[i][0];
+  }
+  return result;
+}
 var name241 = "lusolve";
 var dependencies242 = [
   "typed",
@@ -29445,12 +30609,106 @@ var createLusolve = /* @__PURE__ */ factory(
     });
     return typed2(name241, {
       "Array, Array | Matrix": function(a, b) {
+        const rows = a.length;
+        const columns = a[0]?.length || 0;
+        const wasm = wasmLoader.getModule();
+        if (wasm && rows === columns && rows * rows >= WASM_LUSOLVE_THRESHOLD && isPlainNumberMatrix6(a)) {
+          const aMatrix2 = matrix(a);
+          const bMatrix = solveValidation(aMatrix2, b, true);
+          const bdata = bMatrix._data;
+          if (isPlainNumberVector3(bdata) && bdata.length === rows) {
+            try {
+              const aFlat = flattenToFloat646(a, rows, columns);
+              const bFlat = vectorToFloat643(bdata);
+              const aAlloc = wasmLoader.allocateFloat64Array(aFlat);
+              const bAlloc = wasmLoader.allocateFloat64Array(bFlat);
+              const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows);
+              const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows * rows);
+              try {
+                const success = wasm.laSolve(
+                  aAlloc.ptr,
+                  bAlloc.ptr,
+                  rows,
+                  resultAlloc.ptr,
+                  workAlloc.ptr
+                );
+                if (success === 0) {
+                  throw new Error(
+                    "Linear system cannot be solved since matrix is singular"
+                  );
+                }
+                const x2 = [];
+                for (let i = 0; i < rows; i++) {
+                  x2[i] = [resultAlloc.array[i]];
+                }
+                return x2;
+              } finally {
+                wasmLoader.free(aAlloc.ptr);
+                wasmLoader.free(bAlloc.ptr);
+                wasmLoader.free(resultAlloc.ptr);
+                wasmLoader.free(workAlloc.ptr);
+              }
+            } catch (e2) {
+              if (e2 instanceof Error && e2.message.includes("singular")) {
+                throw e2;
+              }
+            }
+          }
+        }
         const aMatrix = matrix(a);
         const d = lup(aMatrix);
         const x = _lusolve(d.L, d.U, d.p, null, b);
         return x.valueOf();
       },
       "DenseMatrix, Array | Matrix": function(a, b) {
+        const rows = a._size[0];
+        const columns = a._size[1];
+        const wasm = wasmLoader.getModule();
+        if (wasm && rows === columns && rows * rows >= WASM_LUSOLVE_THRESHOLD && isPlainNumberMatrix6(a._data)) {
+          const bMatrix = solveValidation(a, b, true);
+          const bdata = bMatrix._data;
+          if (isPlainNumberVector3(bdata) && bdata.length === rows) {
+            try {
+              const aFlat = flattenToFloat646(a._data, rows, columns);
+              const bFlat = vectorToFloat643(bdata);
+              const aAlloc = wasmLoader.allocateFloat64Array(aFlat);
+              const bAlloc = wasmLoader.allocateFloat64Array(bFlat);
+              const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows);
+              const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows * rows);
+              try {
+                const success = wasm.laSolve(
+                  aAlloc.ptr,
+                  bAlloc.ptr,
+                  rows,
+                  resultAlloc.ptr,
+                  workAlloc.ptr
+                );
+                if (success === 0) {
+                  throw new Error(
+                    "Linear system cannot be solved since matrix is singular"
+                  );
+                }
+                const x = [];
+                for (let i = 0; i < rows; i++) {
+                  x[i] = [resultAlloc.array[i]];
+                }
+                return new DenseMatrix({
+                  data: x,
+                  size: [rows, 1]
+                });
+              } finally {
+                wasmLoader.free(aAlloc.ptr);
+                wasmLoader.free(bAlloc.ptr);
+                wasmLoader.free(resultAlloc.ptr);
+                wasmLoader.free(workAlloc.ptr);
+              }
+            } catch (e2) {
+              if (e2 instanceof Error && e2.message.includes("singular")) {
+                throw e2;
+              }
+            }
+          }
+        }
         const d = lup(a);
         return _lusolve(d.L, d.U, d.p, null, b);
       },
@@ -29781,12 +31039,14 @@ var createChainClass = /* @__PURE__ */ factory(
         }
         if (typed2.isTypedFunction(fn)) {
           const sigObject = typed2.resolve(fn, args);
-          if (sigObject.params.length === 1) {
+          if (sigObject && sigObject.params.length === 1) {
             throw new Error(
               "chain function " + fn.name + " cannot match rest parameter between chain value and additional arguments."
             );
           }
-          return new Chain(sigObject.implementation.apply(fn, args));
+          if (sigObject) {
+            return new Chain(sigObject.implementation.apply(fn, args));
+          }
         }
         return new Chain(fn.apply(fn, args));
       };
@@ -30929,7 +32189,8 @@ var normDocs = {
     "norm([[1, 2], [3, 4]], 1)",
     'norm([[1, 2], [3, 4]], "inf")',
     'norm([[1, 2], [3, 4]], "fro")'
-  ]
+  ],
+  seealso: ["abs", "hypot"]
 };
 
 // src/expression/embeddedDocs/function/arithmetic/nthRoot.ts
@@ -34042,6 +35303,27 @@ var createChain = /* @__PURE__ */ factory(
 );
 
 // src/function/matrix/det.ts
+var WASM_DET_THRESHOLD = 16;
+function isPlainNumberMatrix7(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function flattenToFloat647(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
 var name247 = "det";
 var dependencies248 = [
   "typed",
@@ -34116,6 +35398,22 @@ var createDet = /* @__PURE__ */ factory(
       }
     });
     function _det(matrix2, rows, _cols) {
+      const wasm = wasmLoader.getModule();
+      if (wasm && rows * rows >= WASM_DET_THRESHOLD && isPlainNumberMatrix7(matrix2)) {
+        try {
+          const flat = flattenToFloat647(matrix2, rows, rows);
+          const a = wasmLoader.allocateFloat64Array(flat);
+          const work = wasmLoader.allocateFloat64ArrayEmpty(rows * rows);
+          try {
+            const result = wasm.laDet(a.ptr, rows, work.ptr);
+            return result;
+          } finally {
+            wasmLoader.free(a.ptr);
+            wasmLoader.free(work.ptr);
+          }
+        } catch {
+        }
+      }
       if (rows === 1) {
         return clone(matrix2[0][0]);
       } else if (rows === 2) {
@@ -34167,6 +35465,27 @@ var createDet = /* @__PURE__ */ factory(
 );
 
 // src/function/matrix/inv.ts
+var WASM_INV_THRESHOLD = 16;
+function isPlainNumberMatrix8(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function flattenToFloat648(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
 var name248 = "inv";
 var dependencies249 = [
   "typed",
@@ -34242,6 +35561,38 @@ var createInv = /* @__PURE__ */ factory(
     });
     function _inv(mat, rows, cols) {
       let r, s, f, value, temp;
+      const wasm = wasmLoader.getModule();
+      if (wasm && rows >= 3 && rows * rows >= WASM_INV_THRESHOLD && isPlainNumberMatrix8(mat)) {
+        try {
+          const flat = flattenToFloat648(mat, rows, rows);
+          const input = wasmLoader.allocateFloat64Array(flat);
+          const result = wasmLoader.allocateFloat64ArrayEmpty(rows * rows);
+          const work = wasmLoader.allocateFloat64ArrayEmpty(rows * 2 * rows);
+          try {
+            const success = wasm.laInv(input.ptr, rows, result.ptr, work.ptr);
+            if (success === 0) {
+              throw Error("Cannot calculate inverse, determinant is zero");
+            }
+            const invMatrix = [];
+            for (let i = 0; i < rows; i++) {
+              const row = [];
+              for (let j = 0; j < rows; j++) {
+                row[j] = result.array[i * rows + j];
+              }
+              invMatrix[i] = row;
+            }
+            return invMatrix;
+          } finally {
+            wasmLoader.free(input.ptr);
+            wasmLoader.free(result.ptr);
+            wasmLoader.free(work.ptr);
+          }
+        } catch (e2) {
+          if (e2 instanceof Error && e2.message.includes("determinant is zero")) {
+            throw e2;
+          }
+        }
+      }
       if (rows === 1) {
         value = mat[0][0];
         if (value === 0) {
@@ -34441,9 +35792,9 @@ var createPinv = /* @__PURE__ */ factory(
     function _rankFact(mat, rows, cols) {
       const rref = _rref(mat, rows, cols);
       const C = mat.map(
-        (_, _i) => _.filter((_2, j) => j < rows && !_isZero(dot(rref[j], rref[j])))
+        (row) => row.filter((_, j) => j < rows && !_isZero(dot(rref[j], rref[j])))
       );
-      const F = rref.filter((_, _i) => !_isZero(dot(rref[_i], rref[_i])));
+      const F = rref.filter((_, i) => !_isZero(dot(rref[i], rref[i])));
       return { C, F };
     }
     function _isZero(x) {
@@ -34459,6 +35810,16 @@ var createPinv = /* @__PURE__ */ factory(
 );
 
 // src/function/matrix/eigs/complexEigs.ts
+var WASM_EIGS_THRESHOLD = 16;
+function flattenToFloat649(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
 function createComplexEigs({
   addScalar,
   subtract,
@@ -34484,6 +35845,54 @@ function createComplexEigs({
   dot
 }) {
   function complexEigs(arr, N, prec, type, findVectors = true) {
+    if (!findVectors && type === "number" && N * N >= WASM_EIGS_THRESHOLD) {
+      const wasm = wasmLoader.getModule();
+      if (wasm) {
+        try {
+          const flat = flattenToFloat649(arr, N, N);
+          const matrixAlloc = wasmLoader.allocateFloat64Array(flat);
+          const eigenvaluesRealAlloc = wasmLoader.allocateFloat64ArrayEmpty(N);
+          const eigenvaluesImagAlloc = wasmLoader.allocateFloat64ArrayEmpty(N);
+          const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(N * N);
+          try {
+            const iterations = wasm.qrAlgorithm(
+              matrixAlloc.ptr,
+              N,
+              eigenvaluesRealAlloc.ptr,
+              eigenvaluesImagAlloc.ptr,
+              workAlloc.ptr,
+              1e3,
+              // maxIterations
+              typeof prec === "number" ? prec : 1e-12
+            );
+            if (iterations >= 0) {
+              const values2 = [];
+              for (let i = 0; i < N; i++) {
+                const re = eigenvaluesRealAlloc.array[i];
+                const im = eigenvaluesImagAlloc.array[i];
+                if (Math.abs(im) < 1e-14) {
+                  values2.push(re);
+                } else {
+                  values2.push(complex(re, im));
+                }
+              }
+              values2.sort((a, b) => {
+                const absA = typeof a === "number" ? Math.abs(a) : Math.sqrt(a.re ** 2 + a.im ** 2);
+                const absB = typeof b === "number" ? Math.abs(b) : Math.sqrt(b.re ** 2 + b.im ** 2);
+                return absA - absB;
+              });
+              return { values: values2 };
+            }
+          } finally {
+            wasmLoader.free(matrixAlloc.ptr);
+            wasmLoader.free(eigenvaluesRealAlloc.ptr);
+            wasmLoader.free(eigenvaluesImagAlloc.ptr);
+            wasmLoader.free(workAlloc.ptr);
+          }
+        } catch (e2) {
+        }
+      }
+    }
     const R = balance(arr, N, prec, type, findVectors);
     reduceToHessenberg(arr, N, prec, type, findVectors, R);
     const { values, C } = iterateUntilTriangular(
@@ -34698,7 +36107,7 @@ function createComplexEigs({
     }
     lambdas.sort((a, b) => +subtract(abs(a), abs(b)));
     if (lastConvergenceBefore > 100) {
-      const err = Error(
+      const err = new Error(
         "The eigenvalues failed to converge. Only found these eigenvalues: " + lambdas.join(", ")
       );
       err.values = lambdas;
@@ -34860,7 +36269,7 @@ function createComplexEigs({
   function randomOrthogonalVector(N, orthog, type) {
     const big = type === "BigNumber";
     const cplx = type === "Complex";
-    let v = Array(N).fill(0).map((_) => 2 * Math.random() - 1);
+    let v = Array(N).fill(0).map(() => 2 * Math.random() - 1);
     if (big) {
       v = v.map((n) => bignumber(n));
     }
@@ -34891,6 +36300,16 @@ function createComplexEigs({
 }
 
 // src/function/matrix/eigs/realSymmetric.ts
+var WASM_EIGS_THRESHOLD2 = 16;
+function flattenToFloat6410(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
 function createRealSymmetric({
   config,
   addScalar,
@@ -34916,6 +36335,62 @@ function createRealSymmetric({
   }
   function diag(x, precision, computeVectors) {
     const N = x.length;
+    const wasm = wasmLoader.getModule();
+    if (wasm && N * N >= WASM_EIGS_THRESHOLD2) {
+      try {
+        const flat = flattenToFloat6410(x, N, N);
+        const matrixAlloc = wasmLoader.allocateFloat64Array(flat);
+        const eigenvaluesAlloc = wasmLoader.allocateFloat64ArrayEmpty(N);
+        const eigenvectorsAlloc = computeVectors ? wasmLoader.allocateFloat64ArrayEmpty(N * N) : { ptr: 0, array: new Float64Array(0) };
+        const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(N * N);
+        try {
+          const iterations = wasm.eigsSymmetric(
+            matrixAlloc.ptr,
+            N,
+            eigenvaluesAlloc.ptr,
+            eigenvectorsAlloc.ptr,
+            workAlloc.ptr,
+            1e3,
+            // maxIterations
+            precision
+          );
+          if (iterations >= 0) {
+            const values = Array(N);
+            for (let i = 0; i < N; i++) {
+              values[i] = eigenvaluesAlloc.array[i];
+            }
+            if (!computeVectors) {
+              const sortedValues = values.map((v, i) => ({ v, i })).sort((a, b) => Math.abs(a.v) - Math.abs(b.v)).map((x2) => x2.v);
+              return { values: sortedValues };
+            }
+            const eigenvectors = [];
+            const sortedIndices = values.map((v, i) => ({ v, i })).sort((a, b) => Math.abs(a.v) - Math.abs(b.v)).map((x2) => x2.i);
+            for (const origIdx of sortedIndices) {
+              const vector = Array(N);
+              for (let i = 0; i < N; i++) {
+                vector[i] = eigenvectorsAlloc.array[i * N + origIdx];
+              }
+              eigenvectors.push({
+                value: values[origIdx],
+                vector
+              });
+            }
+            return {
+              values: sortedIndices.map((i) => values[i]),
+              eigenvectors
+            };
+          }
+        } finally {
+          wasmLoader.free(matrixAlloc.ptr);
+          wasmLoader.free(eigenvaluesAlloc.ptr);
+          if (computeVectors) {
+            wasmLoader.free(eigenvectorsAlloc.ptr);
+          }
+          wasmLoader.free(workAlloc.ptr);
+        }
+      } catch (e2) {
+      }
+    }
     const e0 = Math.abs(precision / N);
     let psi;
     let Sij;
@@ -34943,14 +36418,14 @@ function createRealSymmetric({
   }
   function diagBig(x, precision, computeVectors) {
     const N = x.length;
-    const e0 = abs(precision / N);
+    const e0 = abs(multiplyScalar(precision, bignumber(1 / N)));
     let psi;
     let Sij;
     if (computeVectors) {
       Sij = new Array(N);
       for (let i = 0; i < N; i++) {
-        Sij[i] = Array(N).fill(0);
-        Sij[i][i] = 1;
+        Sij[i] = Array(N).fill(bignumber(0));
+        Sij[i][i] = bignumber(1);
       }
     }
     let Vab = getAijBig(x);
@@ -34962,7 +36437,7 @@ function createRealSymmetric({
       if (computeVectors) Sij = Sij1Big(Sij, psi, i, j);
       Vab = getAijBig(x);
     }
-    const Ei = Array(N).fill(0);
+    const Ei = Array(N).fill(bignumber(0));
     for (let i = 0; i < N; i++) {
       Ei[i] = x[i][i];
     }
@@ -34981,7 +36456,7 @@ function createRealSymmetric({
     if (abs(denom) <= config.relTol) {
       return bignumber(-1).acos().div(4);
     } else {
-      return multiplyScalar(0.5, atan(multiply(2, aij, inv(denom))));
+      return multiplyScalar(0.5, atan(multiply(bignumber(2), aij, inv(denom))));
     }
   }
   function Sij1(Sij, theta, i, j) {
@@ -35024,8 +36499,8 @@ function createRealSymmetric({
   }
   function x1Big(Hij, theta, i, j) {
     const N = Hij.length;
-    const c = bignumber(cos(theta));
-    const s = bignumber(sin(theta));
+    const c = bignumber(cos(theta).toString());
+    const s = bignumber(sin(theta).toString());
     const c2 = multiplyScalar(c, c);
     const s2 = multiplyScalar(s, s);
     const Aki = Array(N).fill(bignumber(0));
@@ -35108,7 +36583,7 @@ function createRealSymmetric({
   }
   function getAijBig(Mij) {
     const N = Mij.length;
-    let maxMij = 0;
+    let maxMij = bignumber(0);
     let maxIJ = [0, 1];
     for (let i = 0; i < N; i++) {
       for (let j = i + 1; j < N; j++) {
@@ -35632,8 +37107,7 @@ var createSylvester = /* @__PURE__ */ factory(
     subtract,
     identity,
     lusolve,
-    abs,
-    config: _config
+    abs
   }) => {
     return typed2(name253, {
       "Matrix, Matrix, Matrix": _sylvester,
@@ -35727,6 +37201,27 @@ var createSylvester = /* @__PURE__ */ factory(
 );
 
 // src/function/algebra/decomposition/schur.ts
+var WASM_SCHUR_THRESHOLD = 16;
+function isPlainNumberMatrix9(matrix) {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== "number") {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function flattenToFloat6411(matrix, rows, cols) {
+  const result = new Float64Array(rows * cols);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j];
+    }
+  }
+  return result;
+}
 var name254 = "schur";
 var dependencies255 = [
   "typed",
@@ -35755,6 +37250,61 @@ var createSchur = /* @__PURE__ */ factory(
     });
     function _schur(X) {
       const n = X.size()[0];
+      const wasm = wasmLoader.getModule();
+      const data = X._data;
+      if (wasm && X.storage() === "dense" && n * n >= WASM_SCHUR_THRESHOLD && data && isPlainNumberMatrix9(data)) {
+        try {
+          const flat = flattenToFloat6411(data, n, n);
+          const aAlloc = wasmLoader.allocateFloat64Array(flat);
+          const qAlloc = wasmLoader.allocateFloat64ArrayEmpty(n * n);
+          const tAlloc = wasmLoader.allocateFloat64ArrayEmpty(n * n);
+          const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(n * n);
+          try {
+            const result = wasm.schur(
+              aAlloc.ptr,
+              n,
+              100,
+              // maxIter
+              1e-4,
+              // tol
+              qAlloc.ptr,
+              tAlloc.ptr,
+              workAlloc.ptr
+            );
+            if (result !== 0) {
+              const Udata = [];
+              for (let i = 0; i < n; i++) {
+                Udata[i] = [];
+                for (let j = 0; j < n; j++) {
+                  Udata[i][j] = qAlloc.array[i * n + j];
+                }
+              }
+              const Tdata = [];
+              for (let i = 0; i < n; i++) {
+                Tdata[i] = [];
+                for (let j = 0; j < n; j++) {
+                  Tdata[i][j] = tAlloc.array[i * n + j];
+                }
+              }
+              const U2 = matrix(Udata);
+              const T = matrix(Tdata);
+              return {
+                U: U2,
+                T,
+                toString: function() {
+                  return "U: " + this.U.toString() + "\nT: " + this.T.toString();
+                }
+              };
+            }
+          } finally {
+            wasmLoader.free(aAlloc.ptr);
+            wasmLoader.free(qAlloc.ptr);
+            wasmLoader.free(tAlloc.ptr);
+            wasmLoader.free(workAlloc.ptr);
+          }
+        } catch (e2) {
+        }
+      }
       let A = X;
       let U = identity(n);
       let k = 0;
@@ -36154,14 +37704,14 @@ var createDistance = /* @__PURE__ */ factory(
       return typeof a === "number" || isBigNumber(a);
     }
     function _2d(a) {
-      if (a.constructor !== Array) {
+      if (!Array.isArray(a)) {
         a = _objectToArray(a);
       }
       const arr = a;
       return _isNumber(arr[0]) && _isNumber(arr[1]);
     }
     function _3d(a) {
-      if (a.constructor !== Array) {
+      if (!Array.isArray(a)) {
         a = _objectToArray(a);
       }
       const arr = a;
@@ -36174,7 +37724,7 @@ var createDistance = /* @__PURE__ */ factory(
       return a.every(_isNumber);
     }
     function _parametricLine(a) {
-      if (a.constructor !== Array) {
+      if (!Array.isArray(a)) {
         a = _objectToArray(a);
       }
       const arr = a;
@@ -36214,7 +37764,7 @@ var createDistance = /* @__PURE__ */ factory(
       return divideScalar(num, den);
     }
     function _distancePointLine3D(x, y, z, x0, y0, z0, a, b, c) {
-      let num = [
+      const numComponents = [
         subtractScalar(
           multiplyScalar(subtractScalar(y0, y), c),
           multiplyScalar(subtractScalar(z0, z), b)
@@ -36228,13 +37778,13 @@ var createDistance = /* @__PURE__ */ factory(
           multiplyScalar(subtractScalar(y0, y), a)
         )
       ];
-      num = sqrt(
+      const num = sqrt(
         addScalar(
           addScalar(
-            multiplyScalar(num[0], num[0]),
-            multiplyScalar(num[1], num[1])
+            multiplyScalar(numComponents[0], numComponents[0]),
+            multiplyScalar(numComponents[1], numComponents[1])
           ),
-          multiplyScalar(num[2], num[2])
+          multiplyScalar(numComponents[2], numComponents[2])
         )
       );
       const den = sqrt(
@@ -36248,9 +37798,8 @@ var createDistance = /* @__PURE__ */ factory(
     function _euclideanDistance(x, y) {
       const vectorSize = x.length;
       let result = 0;
-      let diff = 0;
       for (let i = 0; i < vectorSize; i++) {
-        diff = subtractScalar(x[i], y[i]);
+        const diff = subtractScalar(x[i], y[i]);
         result = addScalar(multiplyScalar(diff, diff), result);
       }
       return sqrt(result);
@@ -36319,11 +37868,20 @@ var createIntersect = /* @__PURE__ */ factory(
       "Array, Array, Array": _AAA,
       "Array, Array, Array, Array": _AAAA,
       "Matrix, Matrix, Matrix": function(x, y, plane) {
-        const arr = _AAA(x.valueOf(), y.valueOf(), plane.valueOf());
+        const arr = _AAA(
+          x.valueOf(),
+          y.valueOf(),
+          plane.valueOf()
+        );
         return arr === null ? null : matrix(arr);
       },
       "Matrix, Matrix, Matrix, Matrix": function(w, x, y, z) {
-        const arr = _AAAA(w.valueOf(), x.valueOf(), y.valueOf(), z.valueOf());
+        const arr = _AAAA(
+          w.valueOf(),
+          x.valueOf(),
+          y.valueOf(),
+          z.valueOf()
+        );
         return arr === null ? null : matrix(arr);
       }
     });
@@ -36426,7 +37984,7 @@ var createIntersect = /* @__PURE__ */ factory(
       }
     }
     function _coerceArr(arr) {
-      if (arr.length === 1) return arr[0];
+      if (arr.length === 1 && Array.isArray(arr[0])) return arr[0];
       if (arr.length > 1 && Array.isArray(arr[0])) {
         if (arr.every((el) => Array.isArray(el) && el.length === 1))
           return flatten2(arr);
@@ -36590,15 +38148,30 @@ var createIntersect = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/sum.ts
+var WASM_SUM_THRESHOLD = 100;
+function isFlatNumberArray5(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name259 = "sum";
-var dependencies260 = ["typed", "config", "add", "numeric", "parseNumberWithConfig"];
+var dependencies260 = [
+  "typed",
+  "config",
+  "add",
+  "numeric",
+  "parseNumberWithConfig"
+];
 var createSum = /* @__PURE__ */ factory(
   name259,
   dependencies260,
   ({ typed: typed2, config, add, numeric, parseNumberWithConfig }) => {
     return typed2(name259, {
       // sum(string) - single string input
-      "string": function(x) {
+      string: function(x) {
         return parseNumberWithConfig(x);
       },
       // sum([a, b, c, d, ...])
@@ -36614,6 +38187,22 @@ var createSum = /* @__PURE__ */ factory(
       }
     });
     function _sum(array) {
+      if (Array.isArray(array) && array.length >= WASM_SUM_THRESHOLD) {
+        if (isFlatNumberArray5(array)) {
+          const wasm = wasmLoader.getModule();
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array);
+              try {
+                return wasm.statsSum(alloc.ptr, array.length);
+              } finally {
+                wasmLoader.free(alloc.ptr);
+              }
+            } catch {
+            }
+          }
+        }
+      }
       let sum;
       deepForEach2(array, function(value) {
         try {
@@ -36630,7 +38219,8 @@ var createSum = /* @__PURE__ */ factory(
     }
     function _nsumDim(array, dim) {
       try {
-        const sum = reduce(array, dim, add);
+        const dimValue = typeof dim === "number" ? dim : dim.valueOf();
+        const sum = reduce(array, dimValue, add);
         return sum;
       } catch (err) {
         throw improveErrorMessage(err, "sum", void 0);
@@ -36640,6 +38230,15 @@ var createSum = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/cumsum.ts
+var WASM_CUMSUM_THRESHOLD = 100;
+function isFlatNumberArray6(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name260 = "cumsum";
 var dependencies261 = ["typed", "add", "unaryPlus"];
 var createCumSum = /* @__PURE__ */ factory(
@@ -36650,7 +38249,7 @@ var createCumSum = /* @__PURE__ */ factory(
       // sum([a, b, c, d, ...])
       Array: _cumsum,
       Matrix: function(matrix) {
-        return matrix.create(_cumsum(matrix.valueOf(), matrix.datatype()));
+        return matrix.create(_cumsum(matrix.valueOf(), matrix.datatype()), matrix.datatype());
       },
       // sum([a, b, c, d, ...], dim)
       "Array, number | BigNumber": _ncumSumDim,
@@ -36681,6 +38280,25 @@ var createCumSum = /* @__PURE__ */ factory(
       if (array.length === 0) {
         return [];
       }
+      if (array.length >= WASM_CUMSUM_THRESHOLD && isFlatNumberArray6(array)) {
+        const wasm = wasmLoader.getModule();
+        if (wasm) {
+          try {
+            const alloc = wasmLoader.allocateFloat64Array(array);
+            try {
+              wasm.statsCumsum(alloc.ptr, array.length);
+              const result = new Array(array.length);
+              for (let i = 0; i < array.length; i++) {
+                result[i] = alloc.array[i];
+              }
+              return result;
+            } finally {
+              wasmLoader.free(alloc.ptr);
+            }
+          } catch {
+          }
+        }
+      }
       const sums = [unaryPlus(array[0])];
       for (let i = 1; i < array.length; ++i) {
         sums.push(add(sums[i - 1], array[i]));
@@ -36689,11 +38307,12 @@ var createCumSum = /* @__PURE__ */ factory(
     }
     function _ncumSumDim(array, dim) {
       const size = arraySize(array);
-      if (dim < 0 || dim >= size.length) {
-        throw new IndexError(dim, 0, size.length);
+      const dimValue = typeof dim === "number" ? dim : dim.valueOf();
+      if (dimValue < 0 || dimValue >= size.length) {
+        throw new IndexError(dimValue, 0, size.length);
       }
       try {
-        return _cumsumDimensional(array, dim);
+        return _cumsumDimensional(array, dimValue);
       } catch (err) {
         throw improveErrorMessage(err, name260, void 0);
       }
@@ -36726,6 +38345,15 @@ var createCumSum = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/mean.ts
+var WASM_MEAN_THRESHOLD = 100;
+function isFlatNumberArray7(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name261 = "mean";
 var dependencies262 = ["typed", "add", "divide"];
 var createMean = /* @__PURE__ */ factory(
@@ -36747,14 +38375,31 @@ var createMean = /* @__PURE__ */ factory(
     });
     function _nmeanDim(array, dim) {
       try {
-        const sum = reduce(array, dim, add);
+        const dimValue = typeof dim === "number" ? dim : dim.valueOf();
+        const sum = reduce(array, dimValue, add);
         const s = Array.isArray(array) ? arraySize(array) : array.size();
-        return divide(sum, s[dim]);
+        return divide(sum, s[dimValue]);
       } catch (err) {
         throw improveErrorMessage(err, "mean", void 0);
       }
     }
     function _mean(array) {
+      if (Array.isArray(array) && array.length >= WASM_MEAN_THRESHOLD) {
+        if (isFlatNumberArray7(array)) {
+          const wasm = wasmLoader.getModule();
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array);
+              try {
+                return wasm.statsMean(alloc.ptr, array.length);
+              } finally {
+                wasmLoader.free(alloc.ptr);
+              }
+            } catch {
+            }
+          }
+        }
+      }
       let sum;
       let num = 0;
       deepForEach2(array, function(value) {
@@ -36782,23 +38427,23 @@ var createMedian = /* @__PURE__ */ factory(
   ({ typed: typed2, add, divide, compare, partitionSelect }) => {
     function _median(array) {
       try {
-        array = flatten(array.valueOf());
-        const num = array.length;
+        const flat = flatten(array.valueOf());
+        const num = flat.length;
         if (num === 0) {
           throw new Error("Cannot calculate median of an empty array");
         }
         if (num % 2 === 0) {
           const mid = num / 2 - 1;
-          const right = partitionSelect(array, mid + 1);
-          let left = array[mid];
+          const right = partitionSelect(flat, mid + 1);
+          let left = flat[mid];
           for (let i = 0; i < mid; ++i) {
-            if (compare(array[i], left) > 0) {
-              left = array[i];
+            if (compare(flat[i], left) > 0) {
+              left = flat[i];
             }
           }
           return middle2(left, right);
         } else {
-          const m = partitionSelect(array, (num - 1) / 2);
+          const m = partitionSelect(flat, (num - 1) / 2);
           return middle(m);
         }
       } catch (err) {
@@ -36834,6 +38479,15 @@ var createMedian = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/mad.ts
+var WASM_MAD_THRESHOLD = 500;
+function isPlainNumberArray(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name263 = "mad";
 var dependencies264 = ["typed", "abs", "map", "median", "subtract"];
 var createMad = /* @__PURE__ */ factory(
@@ -36849,16 +38503,29 @@ var createMad = /* @__PURE__ */ factory(
       }
     });
     function _mad(array) {
-      array = flatten(array.valueOf());
-      if (array.length === 0) {
+      const flat = flatten(array.valueOf());
+      if (flat.length === 0) {
         throw new Error(
           "Cannot calculate median absolute deviation (mad) of an empty array"
         );
       }
+      const wasm = wasmLoader.getModule();
+      if (wasm && flat.length >= WASM_MAD_THRESHOLD && isPlainNumberArray(flat)) {
+        try {
+          const aAlloc = wasmLoader.allocateFloat64Array(flat);
+          try {
+            const result = wasm.statsMad(aAlloc.ptr, flat.length);
+            return result;
+          } finally {
+            wasmLoader.free(aAlloc.ptr);
+          }
+        } catch {
+        }
+      }
       try {
-        const med = median(array);
+        const med = median(flat);
         return median(
-          map2(array, function(value) {
+          map2(flat, function(value) {
             return abs(subtract(value, med));
           })
         );
@@ -36874,6 +38541,15 @@ var createMad = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/variance.ts
+var WASM_VARIANCE_THRESHOLD = 100;
+function isFlatNumberArray8(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var DEFAULT_NORMALIZATION = "unbiased";
 var name264 = "variance";
 var dependencies265 = [
@@ -36916,13 +38592,30 @@ var createVariance = /* @__PURE__ */ factory(
       }
     });
     function _var(array, normalization) {
-      let sum;
-      let num = 0;
       if (array.length === 0) {
         throw new SyntaxError(
           "Function variance requires one or more parameters (0 provided)"
         );
       }
+      if (Array.isArray(array) && array.length >= WASM_VARIANCE_THRESHOLD && (normalization === "unbiased" || normalization === "uncorrected")) {
+        if (isFlatNumberArray8(array)) {
+          const wasm = wasmLoader.getModule();
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array);
+              try {
+                const ddof = normalization === "unbiased" ? 1 : 0;
+                return wasm.statsVariance(alloc.ptr, array.length, ddof);
+              } finally {
+                wasmLoader.free(alloc.ptr);
+              }
+            } catch {
+            }
+          }
+        }
+      }
+      let sum;
+      let num = 0;
       deepForEach2(array, function(value) {
         try {
           sum = sum === void 0 ? value : add(sum, value);
@@ -37092,6 +38785,15 @@ var createQuantileSeq = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/std.ts
+var WASM_STD_THRESHOLD = 100;
+function isFlatNumberArray9(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name266 = "std";
 var dependencies267 = ["typed", "map", "sqrt", "variance"];
 var createStd = /* @__PURE__ */ factory(
@@ -37112,11 +38814,30 @@ var createStd = /* @__PURE__ */ factory(
         return _std(args);
       }
     });
-    function _std(array, _normalization) {
+    function _std(array, normalizationOrDim) {
       if (array.length === 0) {
         throw new SyntaxError(
           "Function std requires one or more parameters (0 provided)"
         );
+      }
+      const normalization = typeof normalizationOrDim === "string" ? normalizationOrDim : "unbiased";
+      const isDimension = typeof normalizationOrDim === "number" || normalizationOrDim !== void 0 && typeof normalizationOrDim === "object";
+      if (!isDimension && Array.isArray(array) && array.length >= WASM_STD_THRESHOLD && (normalization === "unbiased" || normalization === "uncorrected")) {
+        if (isFlatNumberArray9(array)) {
+          const wasm = wasmLoader.getModule();
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array);
+              try {
+                const ddof = normalization === "unbiased" ? 1 : 0;
+                return wasm.statsStd(alloc.ptr, array.length, ddof);
+              } finally {
+                wasmLoader.free(alloc.ptr);
+              }
+            } catch {
+            }
+          }
+        }
       }
       try {
         const v = variance.apply(null, arguments);
@@ -37137,6 +38858,15 @@ var createStd = /* @__PURE__ */ factory(
 );
 
 // src/function/statistics/corr.ts
+var WASM_CORR_THRESHOLD = 200;
+function isPlainNumberArray2(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
 var name267 = "corr";
 var dependencies268 = [
   "typed",
@@ -37201,6 +38931,21 @@ var createCorr = /* @__PURE__ */ factory(
     }
     function correlation(A, B) {
       const n = A.length;
+      const wasm = wasmLoader.getModule();
+      if (wasm && n >= WASM_CORR_THRESHOLD && isPlainNumberArray2(A) && isPlainNumberArray2(B)) {
+        try {
+          const aAlloc = wasmLoader.allocateFloat64Array(A);
+          const bAlloc = wasmLoader.allocateFloat64Array(B);
+          try {
+            const result = wasm.statsCorrelation(aAlloc.ptr, bAlloc.ptr, n);
+            return result;
+          } finally {
+            wasmLoader.free(aAlloc.ptr);
+            wasmLoader.free(bAlloc.ptr);
+          }
+        } catch {
+        }
+      }
       const sumX = sum(A);
       const sumY = sum(B);
       const sumXY = A.reduce(
@@ -37237,6 +38982,7 @@ var createBernoulli = /* @__PURE__ */ factory(
   ({
     typed: typed2,
     config,
+    isInteger: _isInteger,
     number,
     BigNumber,
     Fraction: Fraction2
@@ -37302,15 +39048,22 @@ function _bernoulli(index, promote, A, plus, times, divide) {
     const lim = Math.floor((i + 1) / 2);
     let a = zero;
     for (let m = 1; m < lim; ++m) {
-      a = plus(a, times(A[m][0], A[i - m][0]));
+      const entry_m = A[m];
+      const entry_i_m = A[i - m];
+      a = plus(a, times(entry_m[0], entry_i_m[0]));
     }
     a = times(a, two);
-    if (i % 2 === 0) a = plus(a, times(A[lim][0], A[lim][0]));
+    if (i % 2 === 0) {
+      const entry_lim = A[lim];
+      a = plus(a, times(entry_lim[0], entry_lim[0]));
+    }
     a = divide(a, promote(-(2 * i + 1)));
-    const prefactor = divide(times(A[i - 1][1], promote(-i * (2 * i - 1))), two);
+    const entry_i_1 = A[i - 1];
+    const prefactor = divide(times(entry_i_1[1], promote(-i * (2 * i - 1))), two);
     A.push([a, prefactor, times(prefactor, a)]);
   }
-  return A[half][2];
+  const entry_half = A[half];
+  return entry_half[2];
 }
 
 // src/function/probability/combinations.ts
@@ -37324,7 +39077,8 @@ var createCombinations = /* @__PURE__ */ factory(
       "number, number": combinationsNumber,
       "BigNumber, BigNumber": function(n, k) {
         const BigNumber = n.constructor;
-        let result, i;
+        let result;
+        let i;
         const nMinusk = n.minus(k);
         const one = new BigNumber(1);
         if (!isPositiveInteger(n) || !isPositiveInteger(k)) {
@@ -37386,7 +39140,8 @@ var createCombinationsWithRep = /* @__PURE__ */ factory(
       },
       "BigNumber, BigNumber": function(n, k) {
         const BigNumber = n.constructor;
-        let result, i;
+        let result;
+        let i;
         const one = new BigNumber(1);
         const nMinusOne = n.minus(one);
         if (!isPositiveInteger2(n) || !isPositiveInteger2(k)) {
@@ -37446,17 +39201,18 @@ var createGamma = /* @__PURE__ */ factory(
       if (n.re < 0.5) {
         const t2 = new Complex2(1 - n.re, -n.im);
         const r = new Complex2(Math.PI * n.re, Math.PI * n.im);
-        return new Complex2(Math.PI).div(r.sin()).div(gammaComplex(t2));
+        const gammaT = gammaComplex(t2);
+        return new Complex2(Math.PI).div(r.sin()).div(gammaT);
       }
-      n = new Complex2(n.re - 1, n.im);
+      let z = new Complex2(n.re - 1, n.im);
       let x = new Complex2(gammaP[0], 0);
       for (let i = 1; i < gammaP.length; ++i) {
         const gammaPval = new Complex2(gammaP[i], 0);
-        x = x.add(gammaPval.div(n.add(i)));
+        x = x.add(gammaPval.div(z.add(i)));
       }
-      const t = new Complex2(n.re + gammaG + 0.5, n.im);
+      const t = new Complex2(z.re + gammaG + 0.5, z.im);
       const twoPiSqrt = Math.sqrt(2 * Math.PI);
-      const tpow = t.pow(n.add(0.5));
+      const tpow = t.pow(z.add(0.5));
       const expt = t.neg().exp();
       return x.mul(twoPiSqrt).mul(tpow).mul(expt);
     }
@@ -37474,21 +39230,22 @@ var createGamma = /* @__PURE__ */ factory(
       }
     });
     function bigFactorial(n) {
-      if (n < 8) {
-        return new BigNumber([1, 1, 2, 6, 24, 120, 720, 5040][n]);
+      const nNum = n.toNumber();
+      if (nNum < 8) {
+        return new BigNumber([1, 1, 2, 6, 24, 120, 720, 5040][nNum]);
       }
-      const precision = config.precision + (Math.log(n.toNumber()) | 0);
+      const precision = config.precision + (Math.log(nNum) | 0);
       const Big = BigNumber.clone({ precision });
-      if (n % 2 === 1) {
-        return n.times(bigFactorial(new BigNumber(n - 1)));
+      if (nNum % 2 === 1) {
+        return n.times(bigFactorial(n.minus(1)));
       }
-      let p = n;
-      let prod = new Big(n);
-      let sum = n.toNumber();
+      let p = nNum;
+      let prod = new Big(nNum);
+      let sum = nNum;
       while (p > 2) {
         p -= 2;
         sum += p;
-        prod = prod.times(sum);
+        prod = prod.times(new BigNumber(sum));
       }
       return new BigNumber(prod.toPrecision(BigNumber.precision));
     }
@@ -37758,7 +39515,8 @@ var createPermutations = /* @__PURE__ */ factory(
         return product2(n - k + 1, n);
       },
       "BigNumber, BigNumber": function(n, k) {
-        let result, i;
+        let result;
+        let i;
         if (!isPositiveInteger3(n) || !isPositiveInteger3(k)) {
           throw new TypeError(
             "Positive integer value expected in function permutations"
@@ -37837,38 +39595,39 @@ var createPickRandom = /* @__PURE__ */ factory(
         number = 1;
       }
       const createMatrix2 = isMatrix(possibles) ? possibles.create : isMatrix(weights) ? weights.create : null;
-      possibles = possibles.valueOf();
+      let possiblesArr = possibles.valueOf();
+      let weightsArr;
       if (weights) {
-        weights = weights.valueOf();
+        weightsArr = weights.valueOf();
       }
       if (elementWise === true) {
-        possibles = flatten(possibles);
-        weights = flatten(weights);
+        possiblesArr = flatten(possiblesArr);
+        weightsArr = weightsArr ? flatten(weightsArr) : void 0;
       }
       let totalWeights = 0;
-      if (typeof weights !== "undefined") {
-        if (weights.length !== possibles.length) {
+      if (typeof weightsArr !== "undefined") {
+        if (weightsArr.length !== possiblesArr.length) {
           throw new Error("Weights must have the same length as possibles");
         }
-        for (let i = 0, len = weights.length; i < len; i++) {
-          if (!isNumber(weights[i]) || weights[i] < 0) {
+        for (let i = 0, len = weightsArr.length; i < len; i++) {
+          if (!isNumber(weightsArr[i]) || weightsArr[i] < 0) {
             throw new Error("Weights must be an array of positive numbers");
           }
-          totalWeights += weights[i];
+          totalWeights += weightsArr[i];
         }
       }
-      const length = possibles.length;
+      const length = possiblesArr.length;
       const result = [];
       let pick;
       while (result.length < number) {
-        if (typeof weights === "undefined") {
-          pick = possibles[Math.floor(rng() * length)];
+        if (typeof weightsArr === "undefined") {
+          pick = possiblesArr[Math.floor(rng() * length)];
         } else {
           let randKey = rng() * totalWeights;
-          for (let i = 0, len = possibles.length; i < len; i++) {
-            randKey -= weights[i];
+          for (let i = 0, len = possiblesArr.length; i < len; i++) {
+            randKey -= weightsArr[i];
             if (randKey < 0) {
-              pick = possibles[i];
+              pick = possiblesArr[i];
               break;
             }
           }
@@ -38466,7 +40225,13 @@ var createSimplify = /* @__PURE__ */ factory(
       realContext,
       positiveContext
     } = createUtil({ FunctionNode, OperatorNode, SymbolNode });
-    typed2.addConversion({ from: "Object", to: "Map", convert: createMap });
+    try {
+      typed2.addConversion({ from: "Object", to: "Map", convert: createMap });
+    } catch (e2) {
+      if (!e2.message?.includes("already a conversion")) {
+        throw e2;
+      }
+    }
     const simplify = typed2("simplify", {
       Node: _simplify,
       "Node, Map": (expr, scope) => _simplify(expr, false, scope),
@@ -38735,10 +40500,14 @@ var createSimplify = /* @__PURE__ */ factory(
       }
       newRule.l = removeParens(parse(newRule.l));
       newRule.r = removeParens(parse(newRule.r));
-      for (const prop of ["imposeContext", "repeat", "assuming"]) {
-        if (prop in ruleObject) {
-          newRule[prop] = ruleObject[prop];
-        }
+      if ("imposeContext" in ruleObject && ruleObject.imposeContext) {
+        newRule.imposeContext = ruleObject.imposeContext;
+      }
+      if ("repeat" in ruleObject && ruleObject.repeat !== void 0) {
+        newRule.repeat = ruleObject.repeat;
+      }
+      if ("assuming" in ruleObject && ruleObject.assuming) {
+        newRule.assuming = ruleObject.assuming;
       }
       if (ruleObject.evaluate) {
         newRule.evaluate = parse(ruleObject.evaluate);
@@ -38749,18 +40518,22 @@ var createSimplify = /* @__PURE__ */ factory(
         if (nonCommutative) leftExpandsym = _getExpandPlaceholderSymbol();
         const makeNode = createMakeNodeFunction(newRule.l);
         const expandsym = _getExpandPlaceholderSymbol();
-        newRule.expanded = {};
-        newRule.expanded.l = makeNode([newRule.l, expandsym]);
-        flatten2(newRule.expanded.l, context);
-        unflattenr(newRule.expanded.l, context);
-        newRule.expanded.r = makeNode([newRule.r, expandsym]);
+        const expandedL = makeNode([newRule.l, expandsym]);
+        flatten2(expandedL, context);
+        unflattenr(expandedL, context);
+        newRule.expanded = {
+          l: expandedL,
+          r: makeNode([newRule.r, expandsym])
+        };
         if (nonCommutative) {
-          newRule.expandedNC1 = {};
-          newRule.expandedNC1.l = makeNode([leftExpandsym, newRule.l]);
-          newRule.expandedNC1.r = makeNode([leftExpandsym, newRule.r]);
-          newRule.expandedNC2 = {};
-          newRule.expandedNC2.l = makeNode([leftExpandsym, newRule.expanded.l]);
-          newRule.expandedNC2.r = makeNode([leftExpandsym, newRule.expanded.r]);
+          newRule.expandedNC1 = {
+            l: makeNode([leftExpandsym, newRule.l]),
+            r: makeNode([leftExpandsym, newRule.r])
+          };
+          newRule.expandedNC2 = {
+            l: makeNode([leftExpandsym, newRule.expanded.l]),
+            r: makeNode([leftExpandsym, newRule.expanded.r])
+          };
         }
       }
       return newRule;
@@ -38776,7 +40549,10 @@ var createSimplify = /* @__PURE__ */ factory(
             rule = { s: rule };
           /* falls through */
           case "object":
-            newRule = _canonicalizeRule(rule, context);
+            newRule = _canonicalizeRule(
+              rule,
+              context
+            );
             break;
           case "function":
             newRule = rule;
@@ -39021,7 +40797,7 @@ var createSimplify = /* @__PURE__ */ factory(
     }
     function mergeChildMatches(childMatches) {
       if (childMatches.length === 0) {
-        return childMatches;
+        return [];
       }
       const sets = childMatches.reduce(combineChildMatches);
       const uniqueSets = [];
@@ -39933,16 +41709,17 @@ var createResolve = /* @__PURE__ */ factory(
         return node;
       }
       if (isSymbolNode(node)) {
-        if (within.has(node.name)) {
+        const symbolNode = node;
+        if (within.has(symbolNode.name)) {
           const variables = Array.from(within).join(", ");
           throw new ReferenceError(
             `recursive loop of variable definitions among {${variables}}`
           );
         }
-        const value = scope.get(node.name);
+        const value = scope.get(symbolNode.name);
         if (isNode(value)) {
           const nextWithin = new Set(within);
-          nextWithin.add(node.name);
+          nextWithin.add(symbolNode.name);
           return _resolve(value, scope, nextWithin);
         } else if (typeof value === "number") {
           return parse(String(value));
@@ -39952,24 +41729,27 @@ var createResolve = /* @__PURE__ */ factory(
           return node;
         }
       } else if (isOperatorNode(node)) {
-        const args = node.args.map(function(arg) {
+        const opNode = node;
+        const args = opNode.args.map(function(arg) {
           return _resolve(arg, scope, within);
         });
         return new OperatorNode(
-          node.op,
-          node.fn,
+          opNode.op,
+          opNode.fn,
           args,
-          node.implicit
+          opNode.implicit
         );
       } else if (isParenthesisNode(node)) {
+        const parenNode = node;
         return new ParenthesisNode(
-          _resolve(node.content, scope, within)
+          _resolve(parenNode.content, scope, within)
         );
       } else if (isFunctionNode(node)) {
-        const args = node.args.map(function(arg) {
+        const funcNode = node;
+        const args = funcNode.args.map(function(arg) {
           return _resolve(arg, scope, within);
         });
-        return new FunctionNode(node.name, args);
+        return new FunctionNode(funcNode.name, args);
       }
       return node.map((child) => _resolve(child, scope, within));
     }
@@ -40015,7 +41795,7 @@ var createSymbolicEqual = /* @__PURE__ */ factory(
   }) => {
     function _symbolicEqual(e1, e2, options = {}) {
       const diff = new OperatorNode("-", "subtract", [e1, e2]);
-      const simplified = simplify(diff, {}, options);
+      const simplified = simplify(diff, [], options);
       return isConstantNode(simplified) && !simplified.value;
     }
     return typed2(name290, {
@@ -41699,11 +43479,7 @@ function unitFactory(name323, valueStr, unitStr) {
   return factory(
     name323,
     dependencies324,
-    ({
-      config,
-      Unit,
-      BigNumber
-    }) => {
+    ({ config, Unit, BigNumber }) => {
       const value = config.number === "BigNumber" ? new BigNumber(valueStr) : parseFloat(valueStr);
       const unit = new Unit(value, unitStr);
       unit.fixPrefix = true;
@@ -41777,9 +43553,14 @@ var createColumnTransform = /* @__PURE__ */ factory(
 
 // src/expression/transform/utils/compileInlineExpression.ts
 function compileInlineExpression(expression, math, scope) {
-  const symbol = expression.filter(function(node) {
-    return isSymbolNode(node) && !(node.name in math) && !scope.has(node.name);
-  })[0];
+  const filterFn = expression.filter;
+  if (!filterFn) {
+    throw new Error("Expression does not support filter");
+  }
+  const symbols = filterFn.call(expression, function(node) {
+    return isSymbolNode(node) && node.name !== void 0 && !(node.name in math) && !scope.has(node.name);
+  });
+  const symbol = symbols[0];
   if (!symbol) {
     throw new Error(
       'No undefined variable found in inline expression "' + expression + '"'
@@ -41802,8 +43583,9 @@ var createTransformCallback = /* @__PURE__ */ factory(
   name299,
   dependencies300,
   ({ typed: typed2 }) => {
+    const typedChecker = typed2;
     return function(callback, numberOfArrays) {
-      if (typed2.isTypedFunction(callback)) {
+      if (typedChecker.isTypedFunction(callback)) {
         return _transformTypedCallbackFunction(callback, numberOfArrays);
       } else {
         return _transformCallbackFunction(
@@ -41818,7 +43600,7 @@ var createTransformCallback = /* @__PURE__ */ factory(
         Object.entries(typedFunction3.signatures).map(
           ([signature, callbackFunction]) => {
             const numberOfCallbackInputs = signature.split(",").length;
-            if (typed2.isTypedFunction(callbackFunction)) {
+            if (typedChecker.isTypedFunction(callbackFunction)) {
               return [
                 signature,
                 _transformTypedCallbackFunction(
@@ -41963,8 +43745,9 @@ var createIndexTransform = /* @__PURE__ */ factory(
       for (let i = 0, ii = args.length; i < ii; i++) {
         let arg = args[i];
         if (isRange(arg)) {
-          arg.start--;
-          arg.end -= arg.step > 0 ? 0 : 2;
+          const range = arg;
+          range.start--;
+          range.end -= range.step > 0 ? 0 : 2;
         } else if (arg && arg.isSet === true) {
           arg = arg.map(function(v) {
             return v - 1;
@@ -41975,8 +43758,10 @@ var createIndexTransform = /* @__PURE__ */ factory(
               return v - 1;
             });
           }
-        } else if (isNumber(arg) || isBigInt(arg)) {
-          arg--;
+        } else if (isNumber(arg)) {
+          arg = arg - 1;
+        } else if (isBigInt(arg)) {
+          arg = arg - BigInt(1);
         } else if (isBigNumber(arg)) {
           arg = arg.toNumber() - 1;
         } else if (typeof arg === "string") ; else {
@@ -42490,8 +44275,9 @@ var createPrintTransform = /* @__PURE__ */ factory(
       return template.replace(printTemplate, (x) => {
         const parts = x.slice(1).split(".");
         const result = parts.map(function(part) {
-          if (!isNaN(part) && part.length > 0) {
-            return parseInt(part) - 1;
+          const num = Number(part);
+          if (!isNaN(num) && part.length > 0) {
+            return num - 1;
           } else {
             return part;
           }
@@ -42760,26 +44546,25 @@ function importFactory(typed2, load, math, importedFactories) {
     if (num !== 1 && num !== 2) {
       throw new ArgumentsError("import", num, 1, 2);
     }
-    if (!options) {
-      options = {};
-    }
+    const opts = options || {};
     function flattenImports(flatValues2, value, name323) {
       if (Array.isArray(value)) {
         value.forEach((item) => flattenImports(flatValues2, item, void 0));
       } else if (isObject(value) || isModule(value)) {
-        for (const name324 in value) {
-          if (hasOwnProperty(value, name324)) {
-            flattenImports(flatValues2, value[name324], name324);
+        const objValue = value;
+        for (const propName in objValue) {
+          if (hasOwnProperty(objValue, propName)) {
+            flattenImports(flatValues2, objValue[propName], propName);
           }
         }
       } else if (isFactory(value) || name323 !== void 0) {
         const flatName = isFactory(value) ? isTransformFunctionFactory(value) ? value.fn + ".transform" : value.fn : name323;
-        if (hasOwnProperty(flatValues2, flatName) && flatValues2[flatName] !== value && !options.silent) {
+        if (hasOwnProperty(flatValues2, flatName) && flatValues2[flatName] !== value && !opts.silent) {
           throw new Error('Cannot import "' + flatName + '" twice');
         }
         flatValues2[flatName] = value;
       } else {
-        if (!options.silent) {
+        if (!opts.silent) {
           throw new TypeError("Factory, Object, or Array expected");
         }
       }
@@ -42790,11 +44575,11 @@ function importFactory(typed2, load, math, importedFactories) {
       if (hasOwnProperty(flatValues, name323)) {
         const value = flatValues[name323];
         if (isFactory(value)) {
-          _importFactory(value, options);
+          _importFactory(value, opts);
         } else if (isSupportedType(value)) {
-          _import(name323, value, options);
+          _import(name323, value, opts);
         } else {
-          if (!options.silent) {
+          if (!opts.silent) {
             throw new TypeError("Factory, Object, or Array expected");
           }
         }
@@ -42802,36 +44587,40 @@ function importFactory(typed2, load, math, importedFactories) {
     }
   }
   function _import(name323, value, options) {
-    if (options.wrap && typeof value === "function") {
-      value = _wrap(value);
+    let importValue = value;
+    if (options.wrap && typeof importValue === "function") {
+      importValue = _wrap(importValue);
     }
-    if (hasTypedFunctionSignature(value)) {
-      value = typed2(name323, {
-        [value.signature]: value
+    if (hasTypedFunctionSignature(importValue)) {
+      const fnWithSig = importValue;
+      importValue = typed2(name323, {
+        [fnWithSig.signature]: fnWithSig
       });
     }
-    if (typed2.isTypedFunction(math[name323]) && typed2.isTypedFunction(value)) {
+    const existingValue = math[name323];
+    if (typed2.isTypedFunction(existingValue) && typed2.isTypedFunction(importValue)) {
+      const typedImportValue = importValue;
       if (options.override) {
-        value = typed2(name323, value.signatures);
+        importValue = typed2(name323, typedImportValue.signatures);
       } else {
-        value = typed2(math[name323], value);
+        importValue = typed2(existingValue, typedImportValue);
       }
-      math[name323] = value;
+      math[name323] = importValue;
       delete importedFactories[name323];
-      _importTransform(name323, value);
+      _importTransform(name323, importValue);
       math.emit("import", name323, function resolver() {
-        return value;
+        return importValue;
       });
       return;
     }
     const isDefined = math[name323] !== void 0;
     const isValuelessUnit = math.Unit?.isValuelessUnit(name323);
     if (!isDefined && !isValuelessUnit || options.override) {
-      math[name323] = value;
+      math[name323] = importValue;
       delete importedFactories[name323];
-      _importTransform(name323, value);
+      _importTransform(name323, importValue);
       math.emit("import", name323, function resolver() {
-        return value;
+        return importValue;
       });
       return;
     }
@@ -42840,10 +44629,11 @@ function importFactory(typed2, load, math, importedFactories) {
     }
   }
   function _importTransform(name323, value) {
-    if (value && typeof value.transform === "function") {
-      math.expression.transform[name323] = value.transform;
+    const valueWithTransform = value;
+    if (valueWithTransform && typeof valueWithTransform.transform === "function") {
+      math.expression.transform[name323] = valueWithTransform.transform;
       if (allowedInExpressions(name323)) {
-        math.expression.mathWithTransform[name323] = value.transform;
+        math.expression.mathWithTransform[name323] = valueWithTransform.transform;
       }
     } else {
       delete math.expression.transform[name323];
@@ -42861,11 +44651,11 @@ function importFactory(typed2, load, math, importedFactories) {
     }
   }
   function _wrap(fn) {
-    const wrapper = function wrapper2() {
+    const wrapper = function wrapper2(...fnArgs) {
       const args = [];
-      for (let i = 0, len = arguments.length; i < len; i++) {
-        const arg = arguments[i];
-        args[i] = arg && arg.valueOf();
+      for (let i = 0, len = fnArgs.length; i < len; i++) {
+        const arg = fnArgs[i];
+        args[i] = arg && arg.valueOf ? arg.valueOf() : arg;
       }
       return fn.apply(math, args);
     };
@@ -42874,18 +44664,20 @@ function importFactory(typed2, load, math, importedFactories) {
     }
     return wrapper;
   }
-  function _importFactory(factory3, options, name323 = factory3.fn) {
+  function _importFactory(factory2, options, name323 = factory2.fn) {
     if (name323.includes(".")) {
       throw new Error(
         "Factory name should not contain a nested path. Name: " + JSON.stringify(name323)
       );
     }
-    const namespace = isTransformFunctionFactory(factory3) ? math.expression.transform : math;
+    const namespace = isTransformFunctionFactory(
+      factory2
+    ) ? math.expression.transform : math;
     const existingTransform = name323 in math.expression.transform;
     const existing = hasOwnProperty(namespace, name323) ? namespace[name323] : void 0;
     const resolver = function() {
       const dependencies324 = {};
-      factory3.dependencies.map(stripOptionalNotation).forEach((dependency) => {
+      factory2.dependencies.map(stripOptionalNotation).forEach((dependency) => {
         if (dependency.includes(".")) {
           throw new Error(
             "Factory dependency should not contain a nested path. Name: " + JSON.stringify(dependency)
@@ -42901,8 +44693,9 @@ function importFactory(typed2, load, math, importedFactories) {
           dependencies324[dependency] = math[dependency];
         }
       });
-      const instance = /* @__PURE__ */ factory3(dependencies324);
-      if (instance && typeof instance.transform === "function") {
+      const instance = /* @__PURE__ */ factory2(dependencies324);
+      const instanceWithTransform = instance;
+      if (instanceWithTransform && typeof instanceWithTransform.transform === "function") {
         throw new Error(
           'Transforms cannot be attached to factory functions. Please create a separate function for it with export const path = "expression.transform"'
         );
@@ -42919,10 +44712,11 @@ function importFactory(typed2, load, math, importedFactories) {
         throw new Error('Cannot import "' + name323 + '": already exists');
       }
     };
-    const former = factory3.meta?.formerly ?? "";
-    const needsTransform = isTransformFunctionFactory(factory3) || factoryAllowedInExpressions(factory3);
+    const meta = factory2.meta;
+    const former = meta?.formerly ?? "";
+    const needsTransform = isTransformFunctionFactory(factory2) || factoryAllowedInExpressions(factory2);
     const withTransform = math.expression.mathWithTransform;
-    if (!factory3.meta || factory3.meta.lazy !== false) {
+    if (!meta || meta.lazy !== false) {
       lazy(namespace, name323, resolver);
       if (former) lazy(namespace, former, resolver);
       if (existing && existingTransform) {
@@ -42947,14 +44741,14 @@ function importFactory(typed2, load, math, importedFactories) {
         }
       }
     }
-    importedFactories[name323] = factory3;
+    importedFactories[name323] = factory2;
     math.emit("import", name323, resolver);
   }
   function isSupportedType(object) {
     return typeof object === "function" || typeof object === "number" || typeof object === "string" || typeof object === "boolean" || object === null || isUnit(object) || isComplex(object) || isBigNumber(object) || isFraction(object) || isMatrix(object) || Array.isArray(object);
   }
   function isModule(object) {
-    return typeof object === "object" && object[Symbol.toStringTag] === "Module";
+    return typeof object === "object" && object !== null && object[Symbol.toStringTag] === "Module";
   }
   function hasTypedFunctionSignature(fn) {
     return typeof fn === "function" && typeof fn.signature === "string";
@@ -42962,12 +44756,14 @@ function importFactory(typed2, load, math, importedFactories) {
   function allowedInExpressions(name323) {
     return !hasOwnProperty(unsafe, name323);
   }
-  function factoryAllowedInExpressions(factory3) {
-    return !factory3.fn.includes(".") && // FIXME: make checking on path redundant, check on meta data instead
-    !hasOwnProperty(unsafe, factory3.fn) && (!factory3.meta || !factory3.meta.isClass);
+  function factoryAllowedInExpressions(factory2) {
+    const meta = factory2.meta;
+    return !factory2.fn.includes(".") && // FIXME: make checking on path redundant, check on meta data instead
+    !hasOwnProperty(unsafe, factory2.fn) && (!meta || !meta.isClass);
   }
-  function isTransformFunctionFactory(factory3) {
-    return factory3 !== void 0 && factory3.meta !== void 0 && factory3.meta.isTransformFunction === true || false;
+  function isTransformFunctionFactory(factory2) {
+    const meta = factory2.meta;
+    return meta?.isTransformFunction === true;
   }
   const unsafe = {
     expression: true,
@@ -43048,28 +44844,28 @@ function create(factories, config) {
   };
   const legacyFactories = [];
   const legacyInstances = [];
-  function load(factory3) {
-    if (isFactory(factory3)) {
-      return factory3(math);
+  function load(factory2) {
+    if (isFactory(factory2)) {
+      return factory2(math);
     }
-    const firstProperty = factory3[Object.keys(factory3)[0]];
+    const firstProperty = factory2[Object.keys(factory2)[0]];
     if (isFactory(firstProperty)) {
       return firstProperty(math);
     }
-    if (!isLegacyFactory(factory3)) {
+    if (!isLegacyFactory(factory2)) {
       console.warn(
         "Factory object with properties `type`, `name`, and `factory` expected",
-        factory3
+        factory2
       );
       throw new Error(
         "Factory object with properties `type`, `name`, and `factory` expected"
       );
     }
-    const index = legacyFactories.indexOf(factory3);
+    const index = legacyFactories.indexOf(factory2);
     let instance;
     if (index === -1) {
-      if (factory3.math === true) {
-        instance = factory3.factory(
+      if (factory2.math === true) {
+        instance = factory2.factory(
           math.type,
           configInternal,
           load,
@@ -43077,9 +44873,9 @@ function create(factories, config) {
           math
         );
       } else {
-        instance = factory3.factory(math.type, configInternal, load, math.typed);
+        instance = factory2.factory(math.type, configInternal, load, math.typed);
       }
-      legacyFactories.push(factory3);
+      legacyFactories.push(factory2);
       legacyInstances.push(instance);
     } else {
       instance = legacyInstances[index];
@@ -43099,9 +44895,9 @@ function create(factories, config) {
   );
   math.import = internalImport;
   math.on("config", () => {
-    Object.values(importedFactories).forEach((factory3) => {
-      if (factory3 && factory3.meta && factory3.meta.recreateOnConfigChange) {
-        internalImport(factory3, { override: true });
+    Object.values(importedFactories).forEach((factory2) => {
+      if (factory2 && factory2.meta && factory2.meta.recreateOnConfigChange) {
+        internalImport(factory2, { override: true });
       }
     });
   });

@@ -1,4 +1,49 @@
 import { factory } from '../../../utils/factory.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+/**
+ * Unit definition options
+ */
+interface UnitDefinitionOptions {
+  prefixes?: string
+  aliases?: string[]
+  offset?: number
+}
+
+/**
+ * Unit definition object
+ */
+interface UnitDefinition {
+  definition?: string
+  aliases?: string[]
+  prefixes?: string | object
+  offset?: number
+}
+
+/**
+ * Unit instance interface
+ */
+interface UnitInstance {
+  [key: string]: unknown
+}
+
+/**
+ * Unit class interface with createUnit static method
+ */
+interface UnitClass {
+  createUnit(
+    obj: Record<string, string | UnitInstance | UnitDefinition>,
+    options: UnitDefinitionOptions
+  ): UnitInstance
+}
+
+/**
+ * Dependencies for createCreateUnit
+ */
+interface CreateUnitDependencies {
+  typed: TypedFunction
+  Unit: UnitClass
+}
 
 const name = 'createUnit'
 const dependencies = ['typed', 'Unit'] as const
@@ -6,7 +51,7 @@ const dependencies = ['typed', 'Unit'] as const
 export const createCreateUnit = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({ typed, Unit }: any) => {
+  ({ typed, Unit }: CreateUnitDependencies) => {
     /**
      * Create a user-defined unit and register it with the Unit type.
      *
@@ -52,38 +97,38 @@ export const createCreateUnit = /* #__PURE__ */ factory(
     return typed(name, {
       // General function signature. First parameter is an object where each property is the definition of a new unit. The object keys are the unit names and the values are the definitions. The values can be objects, strings, or Units. If a property is an empty object or an empty string, a new base unit is created. The second parameter is the options.
       'Object, Object': function (
-        obj: Record<string, any>,
-        options: Record<string, any>
-      ) {
+        obj: Record<string, string | UnitInstance | UnitDefinition>,
+        options: UnitDefinitionOptions
+      ): UnitInstance {
         return Unit.createUnit(obj, options)
       },
 
       // Same as above but without the options.
-      Object: function (obj: Record<string, any>) {
+      Object: function (obj: Record<string, string | UnitInstance | UnitDefinition>): UnitInstance {
         return Unit.createUnit(obj, {})
       },
 
       // Shortcut method for creating one unit.
       'string, Unit | string | Object, Object': function (
         name: string,
-        def: any,
-        options: Record<string, any>
-      ) {
-        const obj: Record<string, any> = {}
+        def: string | UnitInstance | UnitDefinition,
+        options: UnitDefinitionOptions
+      ): UnitInstance {
+        const obj: Record<string, string | UnitInstance | UnitDefinition> = {}
         obj[name] = def
         return Unit.createUnit(obj, options)
       },
 
       // Same as above but without the options.
-      'string, Unit | string | Object': function (name: string, def: any) {
-        const obj: Record<string, any> = {}
+      'string, Unit | string | Object': function (name: string, def: string | UnitInstance | UnitDefinition): UnitInstance {
+        const obj: Record<string, string | UnitInstance | UnitDefinition> = {}
         obj[name] = def
         return Unit.createUnit(obj, {})
       },
 
       // Without a definition, creates a base unit.
-      string: function (name: string) {
-        const obj: Record<string, any> = {}
+      string: function (name: string): UnitInstance {
+        const obj: Record<string, UnitDefinition> = {}
         obj[name] = {}
         return Unit.createUnit(obj, {})
       }

@@ -15,10 +15,6 @@ interface ComplexType {
   im: number
 }
 
-interface Matrix {
-  valueOf(): unknown[][]
-}
-
 interface ImDependencies {
   typed: TypedFunction
 }
@@ -62,7 +58,7 @@ export const createIm = /* #__PURE__ */ factory(
       'BigNumber | Fraction': (x: BigNumberType | FractionType): BigNumberType | FractionType => x.mul(0),
       Complex: (x: ComplexType): number => x.im,
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+        (self: (value: any) => any) => (x: any) => deepMap(x, self)
       )
     })
   }

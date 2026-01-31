@@ -19,7 +19,7 @@ export const createEqualScalar = /* #__PURE__ */ factory(
   }: {
     typed: TypedFunction
     config: ConfigOptions
-  }): TypedFunction => {
+  }) => {
     const compareUnits = createCompareUnits({ typed })
 
     /**
@@ -71,7 +71,7 @@ export const createEqualScalarNumber = factory(
   }: {
     typed: TypedFunction
     config: ConfigOptions
-  }): TypedFunction => {
+  }) => {
     return typed(name, {
       'number, number': function (x: number, y: number): boolean {
         return nearlyEqual(x, y, config.relTol, config.absTol)

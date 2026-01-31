@@ -12,7 +12,7 @@ const dependencies = ['typed']
 export const createToBest = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: { typed: TypedFunction }): TypedFunction => {
+  ({ typed }: { typed: TypedFunction }) => {
     /**
      * Converts a unit to the most appropriate display unit.
      * When no preferred units are provided, the function automatically find the best prefix.

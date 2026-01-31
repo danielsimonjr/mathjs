@@ -9,7 +9,7 @@ import { factory } from '../../utils/factory.ts'
 import { accessFactory } from './utils/access.ts'
 import { assignFactory } from './utils/assign.ts'
 import { getPrecedence } from '../operators.ts'
-import type { MathNode } from './Node.ts'
+import type { MathNode, Scope, CompileFunction, StringOptions } from './Node.ts'
 
 const name = 'AssignmentNode'
 const dependencies = [
@@ -18,18 +18,67 @@ const dependencies = [
   'Node'
 ]
 
+/**
+ * Interface for SymbolNode with name property
+ */
+interface SymbolNodeLike extends MathNode {
+  name: string
+}
+
+/**
+ * Interface for AccessorNode with object and index properties
+ */
+interface AccessorNodeLike extends MathNode {
+  object: MathNode
+  index: IndexNodeLike
+}
+
+/**
+ * Interface for IndexNode with dimension indexing methods
+ */
+interface IndexNodeLike extends MathNode {
+  isObjectProperty: () => boolean
+  getObjectProperty: () => string
+  _compile: (
+    math: MathNamespace,
+    argNames: Record<string, boolean>
+  ) => CompileFunction
+}
+
+/**
+ * The math namespace interface
+ */
+interface MathNamespace {
+  [key: string]: unknown
+}
+
+/**
+ * Subset function type for getting/setting subsets of matrices
+ */
+type SubsetFunction = (
+  value: unknown,
+  index: unknown,
+  replacement?: unknown
+) => unknown
+
+/**
+ * Matrix function type for creating matrices
+ */
+type MatrixFunction = (data: unknown) => unknown
+
+/**
+ * Dependencies for AssignmentNode
+ */
+interface AssignmentNodeDependencies {
+  subset: SubsetFunction
+  matrix?: MatrixFunction
+  Node: new () => MathNode
+}
+
 export const createAssignmentNode = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    subset,
-    matrix,
-    Node
-  }: {
-    subset: any
-    matrix: any
-    Node: new (...args: any[]) => MathNode
-  }) => {
+  ({ subset, matrix, Node }: AssignmentNodeDependencies) => {
     const access = accessFactory({ subset })
     const assign = assignFactory({ subset, matrix })
 
@@ -64,7 +113,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
 
     class AssignmentNode extends Node {
       object: MathNode
-      index: any // IndexNode | null
+      index: IndexNodeLike | null
       value: MathNode
 
       /**
@@ -98,17 +147,21 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
        * @param {Node} value
        *     The value to be assigned
        */
-      constructor(object: MathNode, index: any, value?: MathNode) {
+      constructor(
+        object: MathNode,
+        index: IndexNodeLike | MathNode | null,
+        value?: MathNode
+      ) {
         super()
         this.object = object
-        this.index = value ? index : null
-        this.value = value || index
+        this.index = value ? (index as IndexNodeLike | null) : null
+        this.value = value || (index as MathNode)
 
         // validate input
         if (!isSymbolNode(object) && !isAccessorNode(object)) {
           throw new TypeError('SymbolNode or AccessorNode expected as "object"')
         }
-        if (isSymbolNode(object) && (object as any).name === 'end') {
+        if (isSymbolNode(object) && (object as SymbolNodeLike).name === 'end') {
           throw new Error('Cannot assign to symbol "end"')
         }
         if (this.index && !isIndexNode(this.index)) {
@@ -127,7 +180,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
             ? this.index.getObjectProperty()
             : ''
         } else {
-          return (this.object as any).name || ''
+          return (this.object as SymbolNodeLike).name || ''
         }
       }
 
@@ -142,25 +195,23 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
        * Compile a node into a JavaScript function.
        * This basically pre-calculates as much as possible and only leaves open
        * calculations which depend on a dynamic scope with variables.
-       * @param {Object} math     Math.js namespace with functions and constants.
-       * @param {Object} argNames An object with argument names as key and `true`
-       *                          as value. Used in the SymbolNode to optimize
-       *                          for arguments from user assigned functions
-       *                          (see FunctionAssignmentNode) or special symbols
-       *                          like `end` (see IndexNode).
-       * @return {function} Returns a function which can be called like:
-       *                        evalNode(scope: Object, args: Object, context: *)
+       * @param math - Math.js namespace with functions and constants.
+       * @param argNames - An object with argument names as key and `true`
+       *                   as value. Used in the SymbolNode to optimize
+       *                   for arguments from user assigned functions
+       *                   (see FunctionAssignmentNode) or special symbols
+       *                   like `end` (see IndexNode).
+       * @returns A function which can be called like:
+       *          evalNode(scope: Scope, args: Record<string, unknown>, context: unknown)
        */
       _compile(
-        math: any,
+        math: MathNamespace,
         argNames: Record<string, boolean>
-      ): (scope: any, args: any, context: any) => any {
+      ): CompileFunction {
         const evalObject = this.object._compile(math, argNames)
-        const evalIndex = this.index
-          ? this.index._compile(math, argNames)
-          : null
+        const evalIndex = this.index ? this.index._compile(math, argNames) : null
         const evalValue = this.value._compile(math, argNames)
-        const name = (this.object as any).name
+        const symbolName = (this.object as SymbolNodeLike).name
 
         if (!this.index) {
           // apply a variable to the scope, for example `a=2`
@@ -169,12 +220,12 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
           }
 
           return function evalAssignmentNode(
-            scope: any,
-            args: any,
-            context: any
-          ) {
+            scope: Scope,
+            args: Record<string, unknown>,
+            context: unknown
+          ): unknown {
             const value = evalValue(scope, args, context)
-            scope.set(name, value)
+            scope.set(symbolName, value)
             return value
           }
         } else if (this.index.isObjectProperty()) {
@@ -182,27 +233,27 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
           const prop = this.index.getObjectProperty()
 
           return function evalAssignmentNode(
-            scope: any,
-            args: any,
-            context: any
-          ) {
+            scope: Scope,
+            args: Record<string, unknown>,
+            context: unknown
+          ): unknown {
             const object = evalObject(scope, args, context)
             const value = evalValue(scope, args, context)
-            setSafeProperty(object, prop, value)
+            setSafeProperty(object as Record<string, unknown>, prop, value)
             return value
           }
         } else if (isSymbolNode(this.object)) {
           // update a matrix subset, for example `a[2]=3`
           return function evalAssignmentNode(
-            scope: any,
-            args: any,
-            context: any
-          ) {
+            scope: Scope,
+            args: Record<string, unknown>,
+            context: unknown
+          ): unknown {
             const childObject = evalObject(scope, args, context)
             const value = evalValue(scope, args, context)
             // Important:  we pass childObject instead of context:
-            const index = evalIndex(scope, args, childObject)
-            scope.set(name, assign(childObject, index, value))
+            const index = (evalIndex as CompileFunction)(scope, args, childObject)
+            scope.set(symbolName, assign(childObject, index, value))
             return value
           }
         } else {
@@ -212,27 +263,28 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
           // we will not use the compile function of the AccessorNode, but
           // compile it ourselves here as we need the parent object of the
           // AccessorNode:
-          // wee need to apply the updated object to parent object
-          const evalParentObject = (this.object as any).object._compile(
-            math,
-            argNames
-          )
+          // we need to apply the updated object to parent object
+          const accessorObject = this.object as AccessorNodeLike
+          const evalParentObject = accessorObject.object._compile(math, argNames)
 
-          if ((this.object as any).index.isObjectProperty()) {
-            const parentProp = (this.object as any).index.getObjectProperty()
+          if (accessorObject.index.isObjectProperty()) {
+            const parentProp = accessorObject.index.getObjectProperty()
 
             return function evalAssignmentNode(
-              scope: any,
-              args: any,
-              context: any
-            ) {
+              scope: Scope,
+              args: Record<string, unknown>,
+              context: unknown
+            ): unknown {
               const parent = evalParentObject(scope, args, context)
-              const childObject = getSafeProperty(parent, parentProp)
+              const childObject = getSafeProperty(
+                parent as Record<string, unknown>,
+                parentProp
+              )
               // Important: we pass childObject instead of context:
-              const index = evalIndex(scope, args, childObject)
+              const index = (evalIndex as CompileFunction)(scope, args, childObject)
               const value = evalValue(scope, args, context)
               setSafeProperty(
-                parent,
+                parent as Record<string, unknown>,
                 parentProp,
                 assign(childObject, index, value)
               )
@@ -241,22 +293,19 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
           } else {
             // if some parameters use the 'end' parameter, we need to calculate
             // the size
-            const evalParentIndex = (this.object as any).index._compile(
-              math,
-              argNames
-            )
+            const evalParentIndex = accessorObject.index._compile(math, argNames)
 
             return function evalAssignmentNode(
-              scope: any,
-              args: any,
-              context: any
-            ) {
+              scope: Scope,
+              args: Record<string, unknown>,
+              context: unknown
+            ): unknown {
               const parent = evalParentObject(scope, args, context)
               // Important: we pass parent instead of context:
               const parentIndex = evalParentIndex(scope, args, parent)
               const childObject = access(parent, parentIndex)
               // Important:  we pass childObject instead of context
-              const index = evalIndex(scope, args, childObject)
+              const index = (evalIndex as CompileFunction)(scope, args, childObject)
               const value = evalValue(scope, args, context)
 
               assign(parent, parentIndex, assign(childObject, index, value))
@@ -311,10 +360,10 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
 
       /**
        * Get string representation
-       * @param {Object} options
-       * @return {string}
+       * @param options - Formatting options
+       * @returns The string representation
        */
-      _toString(options?: any): string {
+      _toString(options?: StringOptions): string {
         const object = this.object.toString(options)
         const index = this.index ? this.index.toString(options) : ''
         let value = this.value.toString(options)
@@ -333,12 +382,12 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
 
       /**
        * Get a JSON representation of the node
-       * @returns {Object}
+       * @returns The JSON representation
        */
       toJSON(): {
         mathjs: string
         object: MathNode
-        index: any
+        index: IndexNodeLike | null
         value: MathNode
       } {
         return {
@@ -351,15 +400,14 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
 
       /**
        * Instantiate an AssignmentNode from its JSON representation
-       * @param {Object} json
-       *     An object structured like
+       * @param json - An object structured like
        *     `{"mathjs": "AssignmentNode", object: ..., index: ..., value: ...}`,
        *     where mathjs is optional
-       * @returns {AssignmentNode}
+       * @returns The AssignmentNode instance
        */
       static fromJSON(json: {
         object: MathNode
-        index: any
+        index: IndexNodeLike | null
         value: MathNode
       }): AssignmentNode {
         return new AssignmentNode(json.object, json.index, json.value)
@@ -367,10 +415,10 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
 
       /**
        * Get HTML representation
-       * @param {Object} options
-       * @return {string}
+       * @param options - Formatting options
+       * @returns The HTML representation
        */
-      _toHTML(options?: any): string {
+      _toHTML(options?: StringOptions): string {
         const object = this.object.toHTML(options)
         const index = this.index ? this.index.toHTML(options) : ''
         let value = this.value.toHTML(options)
@@ -398,10 +446,10 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
 
       /**
        * Get LaTeX representation
-       * @param {Object} options
-       * @return {string}
+       * @param options - Formatting options
+       * @returns The LaTeX representation
        */
-      _toTex(options?: any): string {
+      _toTex(options?: StringOptions): string {
         const object = this.object.toTex(options)
         const index = this.index ? this.index.toTex(options) : ''
         let value = this.value.toTex(options)

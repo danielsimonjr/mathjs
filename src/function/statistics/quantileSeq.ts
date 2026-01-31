@@ -21,14 +21,14 @@ interface QuantileSeqDependencies {
   bignumber?: (value: unknown) => BigNumberType
   add: TypedFunction
   subtract: TypedFunction
-  divide: TypedFunction
+  divide: (a: unknown, b: unknown) => number | BigNumberType
   multiply: TypedFunction
   partitionSelect: TypedFunction
-  compare: TypedFunction
+  compare: (a: unknown, b: unknown) => number
   isInteger: TypedFunction
-  smaller: TypedFunction
-  smallerEq: TypedFunction
-  larger: TypedFunction
+  smaller: (a: unknown, b: unknown) => boolean
+  smallerEq: (a: unknown, b: unknown) => boolean
+  larger: (a: unknown, b: unknown) => boolean
   mapSlices: TypedFunction
 }
 
@@ -139,12 +139,12 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
         _quantileSeqDim(data, prob, sorted, dim, _quantileSeqProbCollection)
     })
 
-    function _quantileSeqDim(
+    function _quantileSeqDim<T>(
       data: unknown[] | MatrixType,
-      prob: unknown,
+      prob: T,
       sorted: boolean,
       dim: number,
-      fn: (data: unknown[] | MatrixType, prob: unknown, sorted: boolean) => unknown
+      fn: (data: unknown[] | MatrixType, prob: T, sorted: boolean) => unknown
     ): unknown {
       return mapSlices(data, dim, (x: unknown) => fn(x as unknown[] | MatrixType, prob, sorted))
     }

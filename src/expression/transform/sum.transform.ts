@@ -2,16 +2,13 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createSum } from '../../function/statistics/sum.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
+import type { TypedFunction, MathFunction, MathJsConfig, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface SumDependencies {
   typed: TypedFunction
-  config: any
-  add: (...args: any[]) => any
-  numeric: (...args: any[]) => any
+  config: MathJsConfig
+  add: MathFunction
+  numeric: MathFunction
 }
 
 /**
@@ -27,11 +24,11 @@ const dependencies = ['typed', 'config', 'add', 'numeric']
 export const createSumTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, add, numeric }: Dependencies) => {
+  ({ typed, config, add, numeric }: SumDependencies) => {
     const sum = createSum({ typed, config, add, numeric })
 
     return typed(name, {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         args = lastDimToZeroBase(args)
 
         try {

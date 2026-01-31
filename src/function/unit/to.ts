@@ -58,7 +58,7 @@ export const createTo = /* #__PURE__ */ factory(
     return typed(
       name,
       { 'Unit, Unit | string': (x: UnitType, unit: UnitType | string): UnitType => x.to(unit) },
-      matrixAlgorithmSuite({ Ds: true as unknown as boolean })
+      matrixAlgorithmSuite({})
     )
   }
 )

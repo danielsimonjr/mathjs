@@ -134,7 +134,7 @@ export const createEqualNumber = factory(
           return x === undefined
         }
 
-        return equalScalar(x, y)
+        return equalScalar(x, y) as boolean
       }
     })
   }

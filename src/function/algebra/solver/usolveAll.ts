@@ -1,6 +1,71 @@
 import { factory } from '../../../utils/factory.ts'
 import { createSolveValidation } from './utils/solveValidation.ts'
 
+// Type definitions
+type ScalarValue = number | bigint | { re: number; im: number } | unknown
+
+interface TypedFunction {
+  <T>(name: string, signatures: Record<string, (...args: unknown[]) => T>): T
+}
+
+interface MatrixConstructor {
+  (data: ScalarValue[] | ScalarValue[][]): DenseMatrix | SparseMatrix
+}
+
+interface DenseMatrix {
+  type: 'DenseMatrix'
+  isDenseMatrix: true
+  _data: ScalarValue[][]
+  _size: number[]
+  _datatype?: string
+  valueOf(): ScalarValue[][]
+}
+
+interface SparseMatrix {
+  type: 'SparseMatrix'
+  isSparseMatrix: true
+  _values?: ScalarValue[]
+  _index: number[]
+  _ptr: number[]
+  _size: number[]
+  _datatype?: string
+  valueOf(): ScalarValue[][]
+}
+
+interface DenseMatrixConstructor {
+  new (data: {
+    data: ScalarValue[][]
+    size: number[]
+    datatype?: string
+  }): DenseMatrix
+}
+
+interface ScalarFunction {
+  (a: ScalarValue, b: ScalarValue): ScalarValue
+}
+
+interface EqualScalarFunction {
+  (a: ScalarValue, b: ScalarValue): boolean
+}
+
+interface SolveValidationFunction {
+  (
+    matrix: DenseMatrix | SparseMatrix,
+    b: ScalarValue[][] | DenseMatrix | SparseMatrix,
+    copy: boolean
+  ): DenseMatrix
+}
+
+interface Dependencies {
+  typed: TypedFunction
+  matrix: MatrixConstructor
+  divideScalar: ScalarFunction
+  multiplyScalar: ScalarFunction
+  subtractScalar: ScalarFunction
+  equalScalar: EqualScalarFunction
+  DenseMatrix: DenseMatrixConstructor
+}
+
 const name = 'usolveAll'
 const dependencies = [
   'typed',
@@ -23,16 +88,10 @@ export const createUsolveAll = /* #__PURE__ */ factory(
     subtractScalar,
     equalScalar,
     DenseMatrix
-  }: {
-    typed: any
-    matrix: any
-    divideScalar: any
-    multiplyScalar: any
-    subtractScalar: any
-    equalScalar: any
-    DenseMatrix: any
-  }) => {
-    const solveValidation = createSolveValidation({ DenseMatrix })
+  }: Dependencies) => {
+    const solveValidation = createSolveValidation({
+      DenseMatrix
+    }) as SolveValidationFunction
 
     /**
      * Finds all solutions of a linear equation system by backward substitution. Matrix must be an upper triangular matrix.
@@ -59,28 +118,42 @@ export const createUsolveAll = /* #__PURE__ */ factory(
      * @return {DenseMatrix[] | Array[]}  An array of affine-independent column vectors (x) that solve the linear system
      */
     return typed(name, {
-      'SparseMatrix, Array | Matrix': function (m: any, b: any) {
+      'SparseMatrix, Array | Matrix': function (
+        m: SparseMatrix,
+        b: ScalarValue[][] | DenseMatrix | SparseMatrix
+      ): DenseMatrix[] {
         return _sparseBackwardSubstitution(m, b)
       },
 
-      'DenseMatrix, Array | Matrix': function (m: any, b: any) {
+      'DenseMatrix, Array | Matrix': function (
+        m: DenseMatrix,
+        b: ScalarValue[][] | DenseMatrix | SparseMatrix
+      ): DenseMatrix[] {
         return _denseBackwardSubstitution(m, b)
       },
 
-      'Array, Array | Matrix': function (a: any, b: any) {
-        const m = matrix(a)
+      'Array, Array | Matrix': function (
+        a: ScalarValue[][],
+        b: ScalarValue[][] | DenseMatrix | SparseMatrix
+      ): ScalarValue[][][] {
+        const m = matrix(a) as DenseMatrix
         const R = _denseBackwardSubstitution(m, b)
-        return R.map((r: any) => r.valueOf())
+        return R.map((r: DenseMatrix) => r.valueOf())
       }
     })
 
-    function _denseBackwardSubstitution(m: any, b_: any): any[] {
+    function _denseBackwardSubstitution(
+      m: DenseMatrix,
+      b_: ScalarValue[][] | DenseMatrix | SparseMatrix
+    ): DenseMatrix[] {
       // the algorithm is derived from
       // https://www.overleaf.com/read/csvgqdxggyjv
 
       // array of right-hand sides
-      const B: any[] = [
-        solveValidation(m, b_, true)._data.map((e: any) => e[0])
+      const B: ScalarValue[][] = [
+        solveValidation(m, b_, true)._data.map(
+          (e: ScalarValue[]) => e[0]
+        ) as ScalarValue[]
       ]
 
       const M = m._data
@@ -132,15 +205,23 @@ export const createUsolveAll = /* #__PURE__ */ factory(
       }
 
       return B.map(
-        (x) =>
-          new DenseMatrix({ data: x.map((e: any) => [e]), size: [rows, 1] })
+        (x: ScalarValue[]) =>
+          new DenseMatrix({
+            data: x.map((e: ScalarValue) => [e]),
+            size: [rows, 1]
+          })
       )
     }
 
-    function _sparseBackwardSubstitution(m: any, b_: any): any[] {
+    function _sparseBackwardSubstitution(
+      m: SparseMatrix,
+      b_: ScalarValue[][] | DenseMatrix | SparseMatrix
+    ): DenseMatrix[] {
       // array of right-hand sides
-      const B: any[] = [
-        solveValidation(m, b_, true)._data.map((e: any) => e[0])
+      const B: ScalarValue[][] = [
+        solveValidation(m, b_, true)._data.map(
+          (e: ScalarValue[]) => e[0]
+        ) as ScalarValue[]
       ]
 
       const rows = m._size[0]
@@ -159,7 +240,7 @@ export const createUsolveAll = /* #__PURE__ */ factory(
           const b = B[k]
 
           // values & indices (column i)
-          const iValues: any[] = []
+          const iValues: ScalarValue[] = []
           const iIndices: number[] = []
 
           // first & last indeces in column
@@ -167,15 +248,15 @@ export const createUsolveAll = /* #__PURE__ */ factory(
           const lastIndex = ptr[i + 1]
 
           // find the value at [i, i]
-          let Mii = 0
+          let Mii: ScalarValue = 0
           for (let j = lastIndex - 1; j >= firstIndex; j--) {
             const J = index[j]
             // check row
             if (J === i) {
-              Mii = values[j]
+              Mii = values![j]
             } else if (J < i) {
               // store upper triangular
-              iValues.push(values[j])
+              iValues.push(values![j])
               iIndices.push(J)
             }
           }
@@ -186,7 +267,7 @@ export const createUsolveAll = /* #__PURE__ */ factory(
             b[i] = divideScalar(b[i], Mii)
 
             // loop upper triangular
-            for (let j = 0, lastIndex = iIndices.length; j < lastIndex; j++) {
+            for (let j = 0, lastIdx = iIndices.length; j < lastIdx; j++) {
               const J = iIndices[j]
               b[J] = subtractScalar(b[J], multiplyScalar(b[i], iValues[j]))
             }
@@ -209,7 +290,7 @@ export const createUsolveAll = /* #__PURE__ */ factory(
             bNew[i] = 1
 
             // loop upper triangular
-            for (let j = 0, lastIndex = iIndices.length; j < lastIndex; j++) {
+            for (let j = 0, lastIdx = iIndices.length; j < lastIdx; j++) {
               const J = iIndices[j]
               bNew[J] = subtractScalar(bNew[J], iValues[j])
             }
@@ -220,8 +301,11 @@ export const createUsolveAll = /* #__PURE__ */ factory(
       }
 
       return B.map(
-        (x) =>
-          new DenseMatrix({ data: x.map((e: any) => [e]), size: [rows, 1] })
+        (x: ScalarValue[]) =>
+          new DenseMatrix({
+            data: x.map((e: ScalarValue) => [e]),
+            size: [rows, 1]
+          })
       )
     }
   }

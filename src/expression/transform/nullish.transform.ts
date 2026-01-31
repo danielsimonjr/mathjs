@@ -1,30 +1,21 @@
 import { createNullish } from '../../function/logical/nullish.ts'
 import { factory } from '../../utils/factory.ts'
 import { isCollection } from '../../utils/is.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  ExpressionNode,
+  EvaluationScope,
+  MathJsLike,
+  RawArgsTransformFunction
+} from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Node {
-  compile(): CompiledExpression
-}
-
-interface CompiledExpression {
-  evaluate(scope: any): any
-}
-
-interface TransformFunction {
-  (args: Node[], math: any, scope: any): any
-  rawArgs?: boolean
-}
-
-interface Dependencies {
+interface NullishDependencies {
   typed: TypedFunction
-  matrix: (...args: any[]) => any
-  size: (...args: any[]) => any
-  flatten: (...args: any[]) => any
-  deepEqual: (...args: any[]) => any
+  matrix: MathFunction
+  size: MathFunction<number[]>
+  flatten: MathFunction
+  deepEqual: MathFunction<boolean>
 }
 
 const name = 'nullish'
@@ -33,10 +24,14 @@ const dependencies = ['typed', 'matrix', 'size', 'flatten', 'deepEqual']
 export const createNullishTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, size, flatten, deepEqual }: Dependencies) => {
+  ({ typed, matrix, size, flatten, deepEqual }: NullishDependencies) => {
     const nullish = createNullish({ typed, matrix, size, flatten, deepEqual })
 
-    function nullishTransform(args: Node[], math: any, scope: any): any {
+    function nullishTransform(
+      args: ExpressionNode[],
+      math: MathJsLike,
+      scope: EvaluationScope | Map<string, unknown>
+    ): unknown {
       const left = args[0].compile().evaluate(scope)
 
       // If left is not a collection and not nullish, short-circuit and return it
@@ -49,9 +44,9 @@ export const createNullishTransform = /* #__PURE__ */ factory(
       return nullish(left, right)
     }
 
-    nullishTransform.rawArgs = true
+    nullishTransform.rawArgs = true as const
 
-    return nullishTransform as TransformFunction
+    return nullishTransform as RawArgsTransformFunction
   },
   { isTransformFunction: true }
 )

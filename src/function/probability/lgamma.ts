@@ -16,9 +16,9 @@ interface ComplexType {
   im: number
   isNaN(): boolean
   mul(n: number | ComplexType): ComplexType
-  div(n: ComplexType): ComplexType
+  div(n: number | ComplexType): ComplexType
   add(n: number | ComplexType): ComplexType
-  sub(n: ComplexType): ComplexType
+  sub(n: number | ComplexType): ComplexType
   neg(): ComplexType
   sin(): ComplexType
   log(): ComplexType
@@ -43,7 +43,7 @@ export const createLgamma = /* #__PURE__ */ factory(
   ({
     Complex,
     typed
-  }: LgammaDependencies): TypedFunction => {
+  }: LgammaDependencies) => {
     // Stirling series is non-convergent, we need to use the recurrence `lgamma(z) = lgamma(z+1) - log z` to get
     // sufficient accuracy.
     //

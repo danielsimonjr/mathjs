@@ -78,7 +78,7 @@ export const createRandom = /* #__PURE__ */ factory(
 
     function _randomMatrix(size: unknown[] | MatrixType, min: number, max: number): unknown[] | MatrixType {
       const res = randomMatrix((size as { valueOf(): number[] }).valueOf(), () => _random(min, max))
-      return isMatrix(size) ? (size as MatrixType).create(res, 'number') : res
+      return isMatrix(size) ? (size as MatrixType).create(res as unknown[], 'number') : res
     }
 
     function _random(min: number, max: number): number {

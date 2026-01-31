@@ -1,4 +1,4 @@
-import { factory } from './factory.js'
+import { factory } from './factory.ts'
 
 const name = 'parseNumberWithConfig'
 const dependencies = ['config', '?bignumber']

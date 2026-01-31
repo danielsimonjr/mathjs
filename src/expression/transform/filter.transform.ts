@@ -3,25 +3,16 @@ import { factory } from '../../utils/factory.ts'
 import { isFunctionAssignmentNode, isSymbolNode } from '../../utils/is.ts'
 import { compileInlineExpression } from './utils/compileInlineExpression.ts'
 import { createTransformCallback } from './utils/transformCallback.ts'
+import type {
+  TypedFunction,
+  ExpressionNode,
+  EvaluationScope,
+  MathJsLike,
+  CallbackFunction,
+  RawArgsTransformFunction
+} from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Node {
-  compile(): CompiledExpression
-}
-
-interface CompiledExpression {
-  evaluate(scope: any): any
-}
-
-interface TransformFunction {
-  (args: Node[], math: any, scope: any): any
-  rawArgs?: boolean
-}
-
-interface Dependencies {
+interface FilterDependencies {
   typed: TypedFunction
 }
 
@@ -31,7 +22,7 @@ const dependencies = ['typed']
 export const createFilterTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: Dependencies) => {
+  ({ typed }: FilterDependencies) => {
     /**
      * Attach a transform function to math.filter
      * Adds a property transform containing the transform function.
@@ -39,45 +30,52 @@ export const createFilterTransform = /* #__PURE__ */ factory(
      * This transform adds support for equations as test function for math.filter,
      * so you can do something like 'filter([3, -2, 5], x > 0)'.
      */
-    function filterTransform(args: Node[], math: any, scope: any): any {
+    function filterTransform(
+      args: ExpressionNode[],
+      math: MathJsLike,
+      scope: EvaluationScope | Map<string, unknown>
+    ): unknown {
       const filter = createFilter({ typed })
       const transformCallback = createTransformCallback({ typed })
 
       if (args.length === 0) {
         return filter()
       }
-      let x = args[0]
+      let x: unknown = args[0]
 
       if (args.length === 1) {
         return filter(x)
       }
 
       const N = args.length - 1
-      let callback: any = args[N]
+      let callback: CallbackFunction | ExpressionNode = args[N]
 
       if (x) {
-        x = _compileAndEvaluate(x, scope)
+        x = _compileAndEvaluate(x as ExpressionNode, scope)
       }
 
       if (callback) {
         if (isSymbolNode(callback) || isFunctionAssignmentNode(callback)) {
           // a function pointer, like filter([3, -2, 5], myTestFunction)
-          callback = _compileAndEvaluate(callback as unknown as Node, scope)
+          callback = _compileAndEvaluate(callback as ExpressionNode, scope) as CallbackFunction
         } else {
           // an expression like filter([3, -2, 5], x > 0)
-          callback = compileInlineExpression(callback, math, scope)
+          callback = compileInlineExpression(callback as ExpressionNode, math, scope)
         }
       }
 
-      return filter(x, transformCallback(callback, N))
+      return filter(x, transformCallback(callback as CallbackFunction, N))
     }
-    filterTransform.rawArgs = true
+    filterTransform.rawArgs = true as const
 
-    function _compileAndEvaluate(arg: Node, scope: any): any {
+    function _compileAndEvaluate(
+      arg: ExpressionNode,
+      scope: EvaluationScope | Map<string, unknown>
+    ): unknown {
       return arg.compile().evaluate(scope)
     }
 
-    return filterTransform as TransformFunction
+    return filterTransform as RawArgsTransformFunction
   },
   { isTransformFunction: true }
 )

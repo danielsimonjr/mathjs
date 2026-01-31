@@ -13,7 +13,7 @@ interface MedianDependencies {
   typed: TypedFunction
   add: TypedFunction
   divide: TypedFunction
-  compare: TypedFunction
+  compare: (a: unknown, b: unknown) => number
   partitionSelect: TypedFunction
 }
 
@@ -69,7 +69,7 @@ export const createMedian = /* #__PURE__ */ factory(
       'number | BigNumber | Complex | Unit': function (value: unknown): unknown {
         return value
       }
-    })
+    }) as (value: unknown) => unknown
 
     // helper function to type check the two middle value of the array
     const middle2 = typed({
@@ -77,7 +77,7 @@ export const createMedian = /* #__PURE__ */ factory(
         function (left: unknown, right: unknown): unknown {
           return divide(add(left, right), 2)
         }
-    })
+    }) as (left: unknown, right: unknown) => unknown
 
     /**
      * Compute the median of a matrix or a list with values. The values are

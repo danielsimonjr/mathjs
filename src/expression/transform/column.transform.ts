@@ -2,16 +2,13 @@ import { errorTransform } from './utils/errorTransform.ts'
 import { factory } from '../../utils/factory.ts'
 import { createColumn } from '../../function/matrix/column.ts'
 import { isNumber } from '../../utils/is.ts'
+import type { TypedFunction, MathFunction, IndexConstructor, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface ColumnDependencies {
   typed: TypedFunction
-  Index: any
-  matrix: (...args: any[]) => any
-  range: (...args: any[]) => any
+  Index: IndexConstructor
+  matrix: MathFunction
+  range: MathFunction
 }
 
 const name = 'column'
@@ -27,12 +24,12 @@ const dependencies = ['typed', 'Index', 'matrix', 'range']
 export const createColumnTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, Index, matrix, range }: Dependencies) => {
+  ({ typed, Index, matrix, range }: ColumnDependencies) => {
     const column = createColumn({ typed, Index, matrix, range })
 
     // @see: comment of column itself
     return typed('column', {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         // change last argument from zero-based to one-based
         const lastIndex = args.length - 1
         const last = args[lastIndex]

@@ -7,9 +7,15 @@ import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
-import type { MathJsConfig } from '../../core/config.ts'
+import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions for floor
+// Type definitions for dependency injection
+interface Matrix {
+  size(): number[]
+  storage(): string
+  valueOf(): unknown[] | unknown[][]
+}
+
 interface BigNumberType {
   floor(): BigNumberType
   eq(other: BigNumberType): boolean
@@ -25,25 +31,22 @@ interface FractionType {
   floor(n?: number): FractionType
 }
 
-interface MatrixType {
-  size(): number[]
-  storage(): string
+interface UnitType {
+  toNumeric(unit: UnitType): number | BigNumberType
+  multiply(value: number | BigNumberType): UnitType
 }
 
 interface FloorNumberDependencies {
   typed: TypedFunction
-  config: MathJsConfig
+  config: ConfigOptions
   round: TypedFunction
 }
 
-interface FloorDependencies {
-  typed: TypedFunction
-  config: MathJsConfig
-  round: TypedFunction
-  matrix: (data: unknown) => MatrixType
+interface FloorDependencies extends FloorNumberDependencies {
+  matrix: (data: unknown[]) => Matrix
   equalScalar: TypedFunction
-  zeros: (size: number[], storage?: string) => MatrixType
-  DenseMatrix: unknown
+  zeros: (size: number[], storage?: string) => Matrix
+  DenseMatrix: new (data: unknown) => Matrix
 }
 
 const name = 'floor'
@@ -57,7 +60,7 @@ const dependencies = [
   'DenseMatrix'
 ]
 
-const bigTen = new (Decimal as unknown as { new (n: number): BigNumberType })(10)
+const bigTen = new Decimal(10)
 
 export const createFloorNumber = /* #__PURE__ */ factory(
   name,
@@ -123,7 +126,7 @@ export const createFloor = /* #__PURE__ */ factory(
     const floorNumber = createFloorNumber({ typed, config, round })
     function _bigFloor(x: BigNumberType): BigNumberType {
       // see _floorNumber above for rationale
-      const bne = (a: BigNumberType, b: BigNumberType) =>
+      const bne = (a: BigNumberType, b: BigNumberType): boolean =>
         bigNearlyEqual(a, b, config.relTol, config.absTol)
       const f = x.floor()
       const r = round(x) as BigNumberType
@@ -184,107 +187,107 @@ export const createFloor = /* #__PURE__ */ factory(
       number: floorNumber.signatures.number,
       'number,number': floorNumber.signatures['number,number'],
 
-      Complex: function (x: any): any {
+      Complex: function (x: ComplexType): ComplexType {
         return x.floor()
       },
 
-      'Complex, number': function (x: any, n: number): any {
+      'Complex, number': function (x: ComplexType, n: number): ComplexType {
         return x.floor(n)
       },
 
-      'Complex, BigNumber': function (x: any, n: any): any {
-        return x.floor((n as any).toNumber())
+      'Complex, BigNumber': function (x: ComplexType, n: BigNumberType): ComplexType {
+        return x.floor((n as unknown as { toNumber(): number }).toNumber())
       },
 
       BigNumber: _bigFloor,
 
-      'BigNumber, BigNumber': function (x: any, n: any): any {
-        const shift = bigTen.pow(n)
-        return _bigFloor(x.mul(shift)).div(shift)
+      'BigNumber, BigNumber': function (x: BigNumberType, n: BigNumberType): BigNumberType {
+        const shift = bigTen.pow(n as unknown as Decimal)
+        return _bigFloor(x.mul(shift as unknown as BigNumberType)).div(shift as unknown as BigNumberType)
       },
 
       bigint: (b: bigint): bigint => b,
       'bigint, number': (b: bigint, _dummy: number): bigint => b,
-      'bigint, BigNumber': (b: bigint, _dummy: any): bigint => b,
+      'bigint, BigNumber': (b: bigint, _dummy: BigNumberType): bigint => b,
 
-      Fraction: function (x: any): any {
+      Fraction: function (x: FractionType): FractionType {
         return x.floor()
       },
 
-      'Fraction, number': function (x: any, n: number): any {
+      'Fraction, number': function (x: FractionType, n: number): FractionType {
         return x.floor(n)
       },
 
-      'Fraction, BigNumber': function (x: any, n: any): any {
-        return x.floor((n as any).toNumber())
+      'Fraction, BigNumber': function (x: FractionType, n: BigNumberType): FractionType {
+        return x.floor((n as unknown as { toNumber(): number }).toNumber())
       },
 
       'Unit, number, Unit': typed.referToSelf(
-        (self: any) =>
-          function (x: any, n: number, unit: any): any {
+        (self: TypedFunction) =>
+          function (x: UnitType, n: number, unit: UnitType): UnitType {
             const valueless = x.toNumeric(unit)
             return unit.multiply(self(valueless, n))
           }
       ),
 
       'Unit, BigNumber, Unit': typed.referToSelf(
-        (self: any) =>
-          (x: any, n: any, unit: any): any =>
-            self(x, (n as any).toNumber(), unit)
+        (self: TypedFunction) =>
+          (x: UnitType, n: BigNumberType, unit: UnitType): UnitType =>
+            self(x, (n as unknown as { toNumber(): number }).toNumber(), unit)
       ),
 
       'Array | Matrix, number | BigNumber, Unit': typed.referToSelf(
-        (self: any) =>
-          (x: any, n: any, unit: any): any => {
+        (self: TypedFunction) =>
+          (x: unknown[] | Matrix, n: number | BigNumberType, unit: UnitType): unknown[] | Matrix => {
             // deep map collection, skip zeros since floor(0) = 0
             return deepMap(x, (value) => self(value, n, unit), true)
           }
       ),
 
       'Array | Matrix | Unit, Unit': typed.referToSelf(
-        (self: any) =>
-          (x: any, unit: any): any =>
+        (self: TypedFunction) =>
+          (x: unknown[] | Matrix | UnitType, unit: UnitType): unknown[] | Matrix | UnitType =>
             self(x, 0, unit)
       ),
 
-      'Array | Matrix': typed.referToSelf((self: any) => (x: any): any => {
+      'Array | Matrix': typed.referToSelf((self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => {
         // deep map collection, skip zeros since floor(0) = 0
         return deepMap(x, self, true)
       }),
 
       'Array, number | BigNumber': typed.referToSelf(
-        (self: any) =>
-          (x: any, n: any): any => {
-            // deep map collection, skip zeros since ceil(0) = 0
+        (self: TypedFunction) =>
+          (x: unknown[], n: number | BigNumberType): unknown[] => {
+            // deep map collection, skip zeros since floor(0) = 0
             return deepMap(x, (i) => self(i, n), true)
           }
       ),
 
       'SparseMatrix, number | BigNumber': typed.referToSelf(
-        (self: any) =>
-          (x: any, y: any): any => {
+        (self: TypedFunction) =>
+          (x: Matrix, y: number | BigNumberType): Matrix => {
             return matAlgo11xS0s(x, y, self, false)
           }
       ),
 
       'DenseMatrix, number | BigNumber': typed.referToSelf(
-        (self: any) =>
-          (x: any, y: any): any => {
+        (self: TypedFunction) =>
+          (x: Matrix, y: number | BigNumberType): Matrix => {
             return matAlgo14xDs(x, y, self, false)
           }
       ),
 
       'number | Complex | Fraction | BigNumber, Array': typed.referToSelf(
-        (self: any) =>
-          (x: any, y: any): any => {
+        (self: TypedFunction) =>
+          (x: number | ComplexType | FractionType | BigNumberType, y: unknown[]): unknown[] => {
             // use matrix implementation
-            return matAlgo14xDs(matrix(y), x, self, true).valueOf()
+            return matAlgo14xDs(matrix(y), x, self, true).valueOf() as unknown[]
           }
       ),
 
       'number | Complex | Fraction | BigNumber, Matrix': typed.referToSelf(
-        (self: any) =>
-          (x: any, y: any): any => {
+        (self: TypedFunction) =>
+          (x: number | ComplexType | FractionType | BigNumberType, y: Matrix): Matrix => {
             if (equalScalar(x, 0)) return zeros(y.size(), y.storage())
             if (y.storage() === 'dense') {
               return matAlgo14xDs(y, x, self, true)

@@ -77,7 +77,7 @@ export const createDeepEqual = /* #__PURE__ */ factory(
         if (Array.isArray(y)) {
           return false
         } else {
-          return equal(x, y)
+          return equal(x, y) as boolean
         }
       }
     }

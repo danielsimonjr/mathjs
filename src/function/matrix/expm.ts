@@ -3,24 +3,33 @@ import { format } from '../../utils/string.ts'
 import { factory } from '../../utils/factory.ts'
 
 // Type definitions
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
+
+/** Scalar types supported by expm */
+type Scalar = number | BigNumber | Complex
+
+/** Matrix interface */
 interface Matrix {
   size(): number[]
-  get(index: number[]): any
+  get(index: number[]): Scalar
   storage(): string
-  createSparseMatrix?(data: any): Matrix
+  createSparseMatrix?(data: Matrix): Matrix
 }
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
+/** Typed function interface for math.js functions */
+interface TypedFunction<R = Scalar | Matrix> {
+  (...args: unknown[]): R
 }
 
+/** Dependencies for expm factory */
 interface Dependencies {
   typed: TypedFunction
-  abs: TypedFunction
-  add: TypedFunction
-  identity: TypedFunction
-  inv: TypedFunction
-  multiply: TypedFunction
+  abs: TypedFunction<number | BigNumber>
+  add: TypedFunction<Scalar | Matrix>
+  identity: TypedFunction<Matrix>
+  inv: TypedFunction<Matrix>
+  multiply: TypedFunction<Scalar | Matrix>
 }
 
 const name = 'expm'
@@ -96,32 +105,32 @@ export const createExpm = /* #__PURE__ */ factory(
         const Apos = multiply(A, Math.pow(2, -j))
 
         // The i=0 term is just the identity matrix
-        let N: any = identity(n)
-        let D: any = identity(n)
+        let N: Matrix = identity(n)
+        let D: Matrix = identity(n)
 
         // Initialization (i=0)
         let factor = 1
 
         // Initialization (i=1)
-        let AposToI: any = Apos // Cloning not necessary
+        let AposToI: Matrix = Apos as Matrix // Cloning not necessary
         let alternate = -1
 
         for (let i = 1; i <= q; i++) {
           if (i > 1) {
-            AposToI = multiply(AposToI, Apos)
+            AposToI = multiply(AposToI, Apos) as Matrix
             alternate = -alternate
           }
           factor = (factor * (q - i + 1)) / ((2 * q - i + 1) * i)
 
-          N = add(N, multiply(factor, AposToI))
-          D = add(D, multiply(factor * alternate, AposToI))
+          N = add(N, multiply(factor, AposToI)) as Matrix
+          D = add(D, multiply(factor * alternate, AposToI)) as Matrix
         }
 
-        let R: any = multiply(inv(D), N)
+        let R: Matrix = multiply(inv(D), N) as Matrix
 
         // Square j times
         for (let i = 0; i < j; i++) {
-          R = multiply(R, R)
+          R = multiply(R, R) as Matrix
         }
 
         return isSparseMatrix(A) ? A.createSparseMatrix!(R) : R

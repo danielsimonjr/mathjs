@@ -2,17 +2,14 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createMin } from '../../function/statistics/min.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
+import type { TypedFunction, MathFunction, MathJsConfig, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface MinDependencies {
   typed: TypedFunction
-  config: any
-  numeric: (...args: any[]) => any
-  smaller: (...args: any[]) => any
-  isNaN: (x: any) => boolean
+  config: MathJsConfig
+  numeric: MathFunction
+  smaller: MathFunction<boolean>
+  isNaN: (x: unknown) => boolean
 }
 
 const name = 'min'
@@ -21,7 +18,7 @@ const dependencies = ['typed', 'config', 'numeric', 'smaller', 'isNaN']
 export const createMinTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, numeric, smaller, isNaN: mathIsNaN }: Dependencies) => {
+  ({ typed, config, numeric, smaller, isNaN: mathIsNaN }: MinDependencies) => {
     const min = createMin({ typed, config, numeric, smaller, isNaN: mathIsNaN })
 
     /**
@@ -32,7 +29,7 @@ export const createMinTransform = /* #__PURE__ */ factory(
      * from one-based to zero based
      */
     return typed('min', {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         args = lastDimToZeroBase(args)
 
         try {

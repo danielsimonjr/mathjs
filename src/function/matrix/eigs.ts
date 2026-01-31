@@ -11,15 +11,28 @@ import {
 } from '../../utils/is.ts'
 
 // Type definitions
-type NestedArray<T = any> = T | NestedArray<T>[]
-type MatrixData = NestedArray<any>
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
+
+/** Scalar types supported by eigs */
+type Scalar = number | BigNumber | Complex
+
+/** Nested array of scalar values */
+type NestedArray<T = Scalar> = T | NestedArray<T>[]
+
+/** Matrix data can be nested arrays of scalars */
+type MatrixData = NestedArray<Scalar>
+
+/** Supported data types for eigenvalue computation */
 type DataType = 'number' | 'BigNumber' | 'Complex'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
+/** Typed function interface for math.js functions */
+interface TypedFunction<R = Scalar> {
+  (...args: unknown[]): R
+  find(func: TypedFunction, signature: string[]): TypedFunction<R>
 }
 
+/** Matrix interface */
 interface Matrix {
   type: string
   storage(): string
@@ -33,65 +46,71 @@ interface Matrix {
   _datatype?: string
 }
 
+/** Matrix constructor function */
 interface MatrixConstructor {
-  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
+  (data: Scalar[] | Scalar[][], storage?: 'dense' | 'sparse'): Matrix
 }
 
+/** Configuration object */
 interface Config {
-  relTol: number | any
+  relTol: number | BigNumber
 }
 
+/** Result for a single eigenvector with its corresponding eigenvalue */
 interface EigenvectorResult {
-  value: any
-  vector: any[] | Matrix
+  value: Scalar
+  vector: Scalar[] | Matrix
 }
 
+/** Result of the eigs function */
 interface EigenResult {
-  values: any[] | Matrix
+  values: Scalar[] | Matrix
   eigenvectors?: EigenvectorResult[]
   vectors?: never
 }
 
+/** Options for the eigs function */
 interface EigenOptions {
-  precision?: number | any
+  precision?: number | BigNumber
   eigenvectors?: boolean
   matricize?: boolean
 }
 
+/** Dependencies for eigs factory */
 interface Dependencies {
   config: Config
   typed: TypedFunction
   matrix: MatrixConstructor
-  addScalar: TypedFunction
-  equal: TypedFunction
-  subtract: TypedFunction
-  abs: TypedFunction
-  atan: TypedFunction
-  cos: TypedFunction
-  sin: TypedFunction
-  multiplyScalar: TypedFunction
-  divideScalar: TypedFunction
-  inv: TypedFunction
-  bignumber: TypedFunction
-  multiply: TypedFunction
-  add: TypedFunction
-  larger: TypedFunction
-  column: TypedFunction
-  flatten: TypedFunction
-  number: TypedFunction
-  complex: TypedFunction
-  sqrt: TypedFunction
-  diag: TypedFunction
-  size: TypedFunction
-  reshape: TypedFunction
-  qr: TypedFunction
-  usolve: TypedFunction
-  usolveAll: TypedFunction
-  im: TypedFunction
-  re: TypedFunction
-  smaller: TypedFunction
-  matrixFromColumns: TypedFunction
-  dot: TypedFunction
+  addScalar: TypedFunction<Scalar>
+  equal: TypedFunction<boolean>
+  subtract: TypedFunction<Scalar>
+  abs: TypedFunction<number | BigNumber>
+  atan: TypedFunction<Scalar>
+  cos: TypedFunction<Scalar>
+  sin: TypedFunction<Scalar>
+  multiplyScalar: TypedFunction<Scalar>
+  divideScalar: TypedFunction<Scalar>
+  inv: TypedFunction<Scalar[][] | Matrix>
+  bignumber: TypedFunction<BigNumber>
+  multiply: TypedFunction<Scalar | Scalar[][] | Matrix>
+  add: TypedFunction<Scalar>
+  larger: TypedFunction<boolean>
+  column: TypedFunction<Scalar[]>
+  flatten: TypedFunction<Scalar[]>
+  number: TypedFunction<number>
+  complex: TypedFunction<Complex>
+  sqrt: TypedFunction<Scalar>
+  diag: TypedFunction<Scalar[][]>
+  size: TypedFunction<number[]>
+  reshape: TypedFunction<Scalar[]>
+  qr: TypedFunction<{ Q: Scalar[][]; R: Scalar[][] }>
+  usolve: TypedFunction<Scalar[]>
+  usolveAll: TypedFunction<Scalar[][]>
+  im: TypedFunction<number | BigNumber>
+  re: TypedFunction<number | BigNumber>
+  smaller: TypedFunction<boolean>
+  matrixFromColumns: TypedFunction<Scalar[][]>
+  dot: TypedFunction<Scalar>
 }
 
 const name = 'eigs'
@@ -278,16 +297,16 @@ export const createEigs = /* #__PURE__ */ factory(
       // streamlined. It is done because the Matrix object carries some
       // type information about its entries, and so constructing the matrix
       // is a roundabout way of doing type detection.
-      Array: function (x: any[][]): EigenResult {
+      Array: function (x: Scalar[][]): EigenResult {
         return doEigs(matrix(x))
       },
       'Array, number|BigNumber': function (
-        x: any[][],
-        prec: number | any
+        x: Scalar[][],
+        prec: number | BigNumber
       ): EigenResult {
         return doEigs(matrix(x), { precision: prec })
       },
-      'Array, Object'(x: any[][], opts: EigenOptions): EigenResult {
+      'Array, Object'(x: Scalar[][], opts: EigenOptions): EigenResult {
         return doEigs(matrix(x), opts)
       },
       Matrix: function (mat: Matrix): EigenResult {
@@ -295,7 +314,7 @@ export const createEigs = /* #__PURE__ */ factory(
       },
       'Matrix, number|BigNumber': function (
         mat: Matrix,
-        prec: number | any
+        prec: number | BigNumber
       ): EigenResult {
         return doEigs(mat, { precision: prec, matricize: true })
       },
@@ -314,15 +333,15 @@ export const createEigs = /* #__PURE__ */ factory(
       const prec = opts.precision ?? config.relTol
       const result = computeValuesAndVectors(mat, prec, computeVectors!)
       if (opts.matricize) {
-        result.values = matrix(result.values as any[])
+        result.values = matrix(result.values as Scalar[])
         if (computeVectors) {
           result.eigenvectors = result.eigenvectors!.map(
-            ({ value, vector }) => ({ value, vector: matrix(vector as any[]) })
+            ({ value, vector }) => ({ value, vector: matrix(vector as Scalar[]) })
           )
         }
       }
       if (computeVectors) {
-        ;(Object as any).defineProperty(result, 'vectors', {
+        Object.defineProperty(result, 'vectors', {
           enumerable: false, // to make sure that the eigenvectors can still be
           // converted to string.
           get: () => {
@@ -337,10 +356,10 @@ export const createEigs = /* #__PURE__ */ factory(
 
     function computeValuesAndVectors(
       mat: Matrix,
-      prec: number | any,
+      prec: number | BigNumber,
       computeVectors: boolean
     ): EigenResult {
-      const arr = mat.toArray() as any[][] // NOTE: arr is guaranteed to be unaliased
+      const arr = mat.toArray() as Scalar[][] // NOTE: arr is guaranteed to be unaliased
       // and so safe to modify in place
       const asize = mat.size()
 
@@ -357,7 +376,7 @@ export const createEigs = /* #__PURE__ */ factory(
 
         if (isSymmetric(arr, N, prec)) {
           const type = coerceTypes(mat, arr, N) // modifies arr by side effect
-          return doRealSymmetric(arr, N, prec, type as any, computeVectors)
+          return doRealSymmetric(arr, N, prec, type, computeVectors)
         }
       }
 
@@ -365,8 +384,8 @@ export const createEigs = /* #__PURE__ */ factory(
       return doComplexEigs(arr, N, prec, type, computeVectors)
     }
 
-    /** @return {boolean} */
-    function isSymmetric(arr: any[][], N: number, prec: number | any): boolean {
+    /** Check if matrix is symmetric within precision */
+    function isSymmetric(arr: Scalar[][], N: number, prec: number | BigNumber): boolean {
       for (let i = 0; i < N; i++) {
         for (let j = i; j < N; j++) {
           // TODO proper comparison of bignum and frac
@@ -379,8 +398,8 @@ export const createEigs = /* #__PURE__ */ factory(
       return true
     }
 
-    /** @return {boolean} */
-    function isReal(arr: any[][], N: number, prec: number | any): boolean {
+    /** Check if matrix contains only real values within precision */
+    function isReal(arr: Scalar[][], N: number, prec: number | BigNumber): boolean {
       for (let i = 0; i < N; i++) {
         for (let j = 0; j < N; j++) {
           // TODO proper comparison of bignum and frac
@@ -393,17 +412,17 @@ export const createEigs = /* #__PURE__ */ factory(
       return true
     }
 
-    function coerceReal(arr: any[][], N: number): void {
+    /** Coerce all elements to their real parts */
+    function coerceReal(arr: Scalar[][], N: number): void {
       for (let i = 0; i < N; i++) {
         for (let j = 0; j < N; j++) {
-          arr[i][j] = re(arr[i][j])
+          arr[i][j] = re(arr[i][j]) as Scalar
         }
       }
     }
 
-    /** @return {'number' | 'BigNumber' | 'Complex'} */
-    function coerceTypes(mat: Matrix, arr: any[][], N: number): DataType {
-      /** @type {string | undefined} */
+    /** Detect and coerce matrix elements to a consistent type */
+    function coerceTypes(mat: Matrix, arr: Scalar[][], N: number): DataType {
       const type = mat.datatype()
 
       if (type === 'number' || type === 'BigNumber' || type === 'Complex') {

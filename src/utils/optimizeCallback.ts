@@ -3,22 +3,22 @@ import { get, arraySize } from './array.ts'
 import { typeOf as _typeOf } from './is.ts'
 
 // Type definitions
-interface Matrix {
+interface Matrix<T = unknown> {
   isMatrix: boolean
   size(): number[]
-  get(index: number[]): any
+  get(index: number[]): T
   dataType?: string
 }
 
-interface TypedFunction {
-  (...args: any[]): any
+interface TypedFunction<T = unknown, R = unknown> {
+  (...args: T[]): R
   signatures: Record<string, Function>
   name: string
 }
 
-interface OptimizedCallback {
+interface OptimizedCallback<T = unknown, R = unknown> {
   isUnary: boolean
-  fn: (...args: any[]) => any
+  fn: (...args: T[]) => R
 }
 
 /**
@@ -30,45 +30,47 @@ interface OptimizedCallback {
  * @param isUnary - If true, the callback function is unary and will be optimized as such.
  * @returns Returns a simplified version of the callback function.
  */
-export function optimizeCallback(
+export function optimizeCallback<T, R>(
   callback: Function,
-  array: any[] | Matrix,
+  array: T[] | Matrix<T>,
   name: string,
   isUnary?: boolean
-): OptimizedCallback {
-  if ((typed as any).isTypedFunction(callback)) {
+): OptimizedCallback<unknown, R> {
+  const typedAny = typed as unknown as { isTypedFunction: (fn: Function) => boolean; resolve: (fn: Function, args: unknown[]) => Function | null }
+  if (typedAny.isTypedFunction(callback)) {
     let numberOfArguments: number | undefined
     if (isUnary) {
       numberOfArguments = 1
     } else {
-      const size = (array as Matrix).isMatrix
-        ? (array as Matrix).size()
-        : arraySize(array as any[])
+      const size = (array as Matrix<T>).isMatrix
+        ? (array as Matrix<T>).size()
+        : arraySize(array as T[])
 
       // Check the size of the last dimension to see if the array/matrix is empty
       const isEmpty = size.length ? size[size.length - 1] === 0 : true
       if (isEmpty) {
         // don't optimize callbacks for empty arrays/matrix, as they will never be called
         // and in fact will throw an exception when we try to access the first element below
-        return { isUnary: false, fn: callback as (...args: any[]) => any }
+        return { isUnary: false, fn: callback as (...args: unknown[]) => R }
       }
 
       const firstIndex = size.map(() => 0)
-      const firstValue = (array as Matrix).isMatrix
-        ? (array as Matrix).get(firstIndex)
-        : get(array as any[], firstIndex)
+      const firstValue = (array as Matrix<T>).isMatrix
+        ? (array as Matrix<T>).get(firstIndex)
+        : get(array as T[], firstIndex)
       numberOfArguments = _findNumberOfArgumentsTyped(
         callback as TypedFunction,
         firstValue,
         firstIndex,
-        array
+        array,
+        typedAny
       )
     }
     let fastCallback: Function
     if (
-      (array as Matrix).isMatrix &&
-      (array as Matrix).dataType !== 'mixed' &&
-      (array as Matrix).dataType !== undefined
+      (array as Matrix<T>).isMatrix &&
+      (array as Matrix<T>).dataType !== 'mixed' &&
+      (array as Matrix<T>).dataType !== undefined
     ) {
       const singleSignature = _findSingleSignatureWithArity(
         callback as TypedFunction,
@@ -81,7 +83,7 @@ export function optimizeCallback(
     if (numberOfArguments! >= 1 && numberOfArguments! <= 3) {
       return {
         isUnary: numberOfArguments === 1,
-        fn: (...args: any[]) =>
+        fn: (...args: unknown[]) =>
           _tryFunctionWithArgs(
             fastCallback,
             args.slice(0, numberOfArguments),
@@ -92,7 +94,7 @@ export function optimizeCallback(
     }
     return {
       isUnary: false,
-      fn: (...args: any[]) =>
+      fn: (...args: unknown[]) =>
         _tryFunctionWithArgs(
           fastCallback,
           args,
@@ -104,10 +106,10 @@ export function optimizeCallback(
   if (isUnary === undefined) {
     return {
       isUnary: _findIfCallbackIsUnary(callback),
-      fn: callback as (...args: any[]) => any
+      fn: callback as (...args: unknown[]) => R
     }
   } else {
-    return { isUnary, fn: callback as (...args: any[]) => any }
+    return { isUnary, fn: callback as (...args: unknown[]) => R }
   }
 }
 
@@ -153,16 +155,17 @@ function _findIfCallbackIsUnary(callback: Function): boolean {
   return true
 }
 
-function _findNumberOfArgumentsTyped(
+function _findNumberOfArgumentsTyped<T>(
   callback: TypedFunction,
-  value: any,
+  value: T,
   index: number[],
-  array: any[] | Matrix
+  array: T[] | Matrix<T>,
+  typedAny: { resolve: (fn: Function, args: unknown[]) => Function | null }
 ): number | undefined {
-  const testArgs = [value, index, array]
+  const testArgs: unknown[] = [value, index, array]
   for (let i = 3; i > 0; i--) {
     const args = testArgs.slice(0, i)
-    if ((typed as any).resolve(callback, args) !== null) {
+    if (typedAny.resolve(callback, args) !== null) {
       return i
     }
   }
@@ -177,12 +180,12 @@ function _findNumberOfArgumentsTyped(
  * @returns Returns the return value of the invoked signature
  * @throws Throws an error when no matching signature was found
  */
-function _tryFunctionWithArgs(
+function _tryFunctionWithArgs<R>(
   func: Function,
-  args: any[],
+  args: unknown[],
   mappingFnName: string,
   callbackName: string
-): any {
+): R {
   try {
     return func(...args)
   } catch (err) {
@@ -201,12 +204,13 @@ function _tryFunctionWithArgs(
  */
 function _createCallbackError(
   err: Error,
-  args: any[],
+  args: unknown[],
   mappingFnName: string,
   callbackName: string
 ): never {
   // Enrich the error message so the user understands that it took place inside the callback function
-  if (err instanceof TypeError && (err as any).data?.category === 'wrongType') {
+  const errWithData = err as Error & { data?: { category?: string } }
+  if (err instanceof TypeError && errWithData.data?.category === 'wrongType') {
     const argsDesc: string[] = []
     argsDesc.push(`value: ${_typeOf(args[0])}`)
     if (args.length >= 2) {

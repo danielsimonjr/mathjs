@@ -2,17 +2,14 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createDiff } from '../../function/matrix/diff.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
+import type { TypedFunction, MathFunction, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface DiffDependencies {
   typed: TypedFunction
-  matrix: (...args: any[]) => any
-  subtract: (...args: any[]) => any
-  number: (...args: any[]) => any
-  bignumber: (...args: any[]) => any
+  matrix: MathFunction
+  subtract: MathFunction
+  number: MathFunction<number>
+  bignumber: MathFunction
 }
 
 const name = 'diff'
@@ -21,7 +18,7 @@ const dependencies = ['typed', 'matrix', 'subtract', 'number', 'bignumber']
 export const createDiffTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, subtract, number, bignumber }: Dependencies) => {
+  ({ typed, matrix, subtract, number, bignumber }: DiffDependencies) => {
     const diff = createDiff({ typed, matrix, subtract, number, bignumber })
 
     /**
@@ -31,7 +28,7 @@ export const createDiffTransform = /* #__PURE__ */ factory(
      * This transform creates a range which includes the end value
      */
     return typed(name, {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         args = lastDimToZeroBase(args)
 
         try {

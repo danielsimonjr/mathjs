@@ -1,4 +1,19 @@
 import { factory } from '../../../utils/factory.ts'
+import type { TypedFunction } from '../../../core/function/typed.ts'
+
+/**
+ * Unit instance interface with splitUnit method
+ */
+interface UnitInstance {
+  splitUnit(parts: Array<string | UnitInstance>): UnitInstance[]
+}
+
+/**
+ * Dependencies for createSplitUnit
+ */
+interface SplitUnitDependencies {
+  typed: TypedFunction
+}
 
 const name = 'splitUnit'
 const dependencies = ['typed'] as const
@@ -6,7 +21,7 @@ const dependencies = ['typed'] as const
 export const createSplitUnit = /* #__PURE__ */ factory(
   name,
   dependencies as unknown as string[],
-  ({ typed }: any) => {
+  ({ typed }: SplitUnitDependencies) => {
     /**
      * Split a unit in an array of units whose sum is equal to the original unit.
      *
@@ -27,7 +42,7 @@ export const createSplitUnit = /* #__PURE__ */ factory(
      * @return {Array} An array of units.
      */
     return typed(name, {
-      'Unit, Array': function (unit: any, parts: any[]) {
+      'Unit, Array': function (unit: UnitInstance, parts: Array<string | UnitInstance>): UnitInstance[] {
         return unit.splitUnit(parts)
       }
     })

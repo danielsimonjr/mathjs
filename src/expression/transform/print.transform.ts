@@ -1,16 +1,23 @@
 import { createPrint } from '../../function/string/print.ts'
 import { factory } from '../../utils/factory.ts'
 import { printTemplate } from '../../utils/print.ts'
+import type { TypedFunction, MathFunction } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
+/**
+ * Print format options
+ */
+interface PrintOptions {
+  notation?: 'fixed' | 'exponential' | 'engineering' | 'auto'
+  precision?: number
+  lowerExp?: number
+  upperExp?: number
 }
 
-interface Dependencies {
+interface PrintDependencies {
   typed: TypedFunction
-  matrix: (...args: any[]) => any
-  zeros: (...args: any[]) => any
-  add: (...args: any[]) => any
+  matrix: MathFunction
+  zeros: MathFunction
+  add: MathFunction
 }
 
 const name = 'print'
@@ -19,19 +26,19 @@ const dependencies = ['typed', 'matrix', 'zeros', 'add']
 export const createPrintTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, zeros, add }: Dependencies) => {
+  ({ typed, matrix, zeros, add }: PrintDependencies) => {
     const print = createPrint({ typed, matrix, zeros, add })
     return typed(name, {
       'string, Object | Array': function (
         template: string,
-        values: any
+        values: object | unknown[]
       ): string {
         return print(_convertTemplateToZeroBasedIndex(template), values)
       },
       'string, Object | Array, number | Object': function (
         template: string,
-        values: any,
-        options: any
+        values: object | unknown[],
+        options: number | PrintOptions
       ): string {
         return print(
           _convertTemplateToZeroBasedIndex(template),
@@ -45,8 +52,9 @@ export const createPrintTransform = /* #__PURE__ */ factory(
       return template.replace(printTemplate, (x: string) => {
         const parts = x.slice(1).split('.')
         const result = parts.map(function (part) {
-          if (!isNaN(part as any) && part.length > 0) {
-            return parseInt(part) - 1
+          const num = Number(part)
+          if (!isNaN(num) && part.length > 0) {
+            return num - 1
           } else {
             return part
           }

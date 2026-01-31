@@ -1,11 +1,40 @@
 import { factory } from '../../utils/factory.ts'
 import type { MathJsConfig } from '../../core/config.ts'
-import type { Decimal } from 'decimal.js'
+import type Decimal from 'decimal.js'
 
+/**
+ * Constructor for BigNumber instances
+ */
 interface BigNumberConstructor {
   new (value: string | number): Decimal
 }
 
+/**
+ * Unit class interface for physical constants
+ */
+interface UnitClass {
+  new (value: number | Decimal, unit: string): UnitInstance
+}
+
+/**
+ * Unit instance with fixPrefix property
+ */
+interface UnitInstance {
+  fixPrefix: boolean
+}
+
+/**
+ * Dependencies for unit factory functions
+ */
+interface UnitFactoryDependencies {
+  config: MathJsConfig
+  Unit: UnitClass
+  BigNumber: BigNumberConstructor
+}
+
+/**
+ * Dependencies for number factory functions
+ */
 interface NumberFactoryDependencies {
   config: MathJsConfig
   BigNumber: BigNumberConstructor
@@ -277,27 +306,25 @@ export const createPlanckTemperature = /* #__PURE__ */ unitFactory(
   'K'
 )
 
-// helper function to create a factory function which creates a physical constant,
-// a Unit with either a number value or a BigNumber value depending on the configuration
-function unitFactory(name: any, valueStr: any, unitStr: any) {
+/**
+ * Helper function to create a factory function which creates a physical constant,
+ * a Unit with either a number value or a BigNumber value depending on the configuration
+ * @param name - The name of the physical constant
+ * @param valueStr - The string representation of the constant's value
+ * @param unitStr - The unit string (e.g., 'm s^-1')
+ * @returns A factory function that creates the physical constant
+ */
+function unitFactory(name: string, valueStr: string, unitStr: string) {
   const dependencies = ['config', 'Unit', 'BigNumber']
 
   return factory(
     name,
     dependencies,
-    ({
-      config,
-      Unit,
-      BigNumber
-    }: {
-      config: any
-      Unit: any
-      BigNumber: any
-    }) => {
+    ({ config, Unit, BigNumber }: UnitFactoryDependencies): UnitInstance => {
       // Note that we can parse into number or BigNumber.
       // We do not parse into Fractions as that doesn't make sense: we would lose precision of the values
       // Therefore we dont use Unit.parse()
-      const value =
+      const value: number | Decimal =
         config.number === 'BigNumber'
           ? new BigNumber(valueStr)
           : parseFloat(valueStr)
@@ -309,15 +336,20 @@ function unitFactory(name: any, valueStr: any, unitStr: any) {
   )
 }
 
-// helper function to create a factory function which creates a numeric constant,
-// either a number or BigNumber depending on the configuration
+/**
+ * Helper function to create a factory function which creates a numeric constant,
+ * either a number or BigNumber depending on the configuration
+ * @param name - The name of the constant
+ * @param value - The numeric value of the constant
+ * @returns A factory function that creates the numeric constant
+ */
 function numberFactory(name: string, value: number | string) {
   const dependencies = ['config', 'BigNumber']
 
   return factory(
     name,
     dependencies,
-    ({ config, BigNumber }: NumberFactoryDependencies) => {
+    ({ config, BigNumber }: NumberFactoryDependencies): number | string | Decimal => {
       return config.number === 'BigNumber' ? new BigNumber(value) : value
     }
   )

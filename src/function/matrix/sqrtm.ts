@@ -4,29 +4,41 @@ import { arraySize } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 
 // Type definitions
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
+
+/** Scalar types supported by sqrtm */
+type Scalar = number | BigNumber | Complex
+
+/** Matrix data representation */
+type MatrixData = Scalar | Scalar[] | Scalar[][]
+
+/** Matrix interface */
 interface Matrix {
   size(): number[]
-  valueOf(): any
-  _data?: any
+  valueOf(): MatrixData
+  _data?: MatrixData
   _size?: number[]
 }
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
+/** Typed function interface for math.js functions */
+interface TypedFunction<R = Scalar | Matrix> {
+  (...args: unknown[]): R
 }
 
+/** Dependencies for sqrtm factory */
 interface Dependencies {
   typed: TypedFunction
-  abs: TypedFunction
-  add: TypedFunction
-  multiply: TypedFunction
-  map: TypedFunction
-  sqrt: TypedFunction
-  subtract: TypedFunction
-  inv: TypedFunction
+  abs: TypedFunction<number | BigNumber>
+  add: TypedFunction<Scalar | Matrix>
+  multiply: TypedFunction<Scalar | Matrix>
+  map: TypedFunction<Matrix>
+  sqrt: TypedFunction<Scalar>
+  subtract: TypedFunction<Scalar | Matrix>
+  inv: TypedFunction<Scalar[][] | Matrix>
   size: TypedFunction<number[]>
-  max: TypedFunction
-  identity: TypedFunction
+  max: TypedFunction<number | BigNumber>
+  identity: TypedFunction<Matrix>
 }
 
 const name = 'sqrtm'
@@ -64,27 +76,27 @@ export const createSqrtm = /* #__PURE__ */ factory(
     const _tolerance = 1e-6
 
     /**
-     * Calculate the principal square root matrix using the Denman–Beavers iterative method
+     * Calculate the principal square root matrix using the Denman-Beavers iterative method
      *
-     * https://en.wikipedia.org/wiki/Square_root_of_a_matrix#By_Denman–Beavers_iteration
+     * https://en.wikipedia.org/wiki/Square_root_of_a_matrix#By_Denman-Beavers_iteration
      *
-     * @param  {Array | Matrix} A   The square matrix `A`
-     * @return {Array | Matrix}     The principal square root of matrix `A`
+     * @param A   The square matrix `A`
+     * @return    The principal square root of matrix `A`
      * @private
      */
-    function _denmanBeavers(A: any): any {
+    function _denmanBeavers(A: Scalar[][] | Matrix): Scalar[][] | Matrix {
       let error: number
       let iterations = 0
 
-      let Y = A
-      let Z = identity(size(A))
+      let Y: Scalar[][] | Matrix = A
+      let Z: Scalar[][] | Matrix = identity(size(A))
 
       do {
         const Yk = Y
-        Y = multiply(0.5, add(Yk, inv(Z)))
-        Z = multiply(0.5, add(Z, inv(Yk)))
+        Y = multiply(0.5, add(Yk, inv(Z))) as Scalar[][] | Matrix
+        Z = multiply(0.5, add(Z, inv(Yk))) as Scalar[][] | Matrix
 
-        error = max(abs(subtract(Y, Yk)))
+        error = max(abs(subtract(Y, Yk))) as number
 
         if (error > _tolerance && ++iterations > _maxIterations) {
           throw new Error(
@@ -118,10 +130,10 @@ export const createSqrtm = /* #__PURE__ */ factory(
      * @return {Array | Matrix}     The principal square root of matrix `A`
      */
     return typed(name, {
-      'Array | Matrix': function (A: any[] | Matrix): any {
+      'Array | Matrix': function (A: Scalar[] | Scalar[][] | Matrix): Scalar[][] | Matrix {
         const sizeArray = isMatrix(A)
           ? (A as Matrix).size()
-          : arraySize(A as any[])
+          : arraySize(A as Scalar[] | Scalar[][])
         switch (sizeArray.length) {
           case 1:
             // Single element Array | Matrix
@@ -141,7 +153,7 @@ export const createSqrtm = /* #__PURE__ */ factory(
             const rows = sizeArray[0]
             const cols = sizeArray[1]
             if (rows === cols) {
-              return _denmanBeavers(A)
+              return _denmanBeavers(A as Scalar[][] | Matrix)
             } else {
               throw new RangeError(
                 'Matrix must be square ' +

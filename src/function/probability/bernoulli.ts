@@ -21,6 +21,7 @@ interface FractionConstructor {
 interface BernoulliDependencies {
   typed: TypedFunction
   config: ConfigOptions
+  isInteger: (value: unknown) => boolean
   number: (value: unknown) => number
   BigNumber?: BigNumberConstructor
   Fraction?: FractionConstructor
@@ -42,10 +43,11 @@ export const createBernoulli = /* #__PURE__ */ factory(
   ({
     typed,
     config,
+    isInteger: _isInteger,
     number,
     BigNumber,
     Fraction
-  }: BernoulliDependencies): TypedFunction => {
+  }: BernoulliDependencies) => {
     /**
      * Return the `n`th Bernoulli number, for positive integers `n`
      *

@@ -84,57 +84,110 @@ import {
 import { digits } from '../../utils/number.ts'
 
 /**
+ * Type definition for a signature map used in typed functions
+ */
+export type TypedSignatures = Record<string, (...args: unknown[]) => unknown>
+
+/**
  * Type definition for a typed function
  */
 export interface TypedFunction extends Function {
-  (...args: any[]): any
-  isTypedFunction?: (value: any) => boolean
-  referToSelf: (callback: (self: any) => (...args: any[]) => any) => any
+  (...args: unknown[]): unknown
+  /** The signatures of this typed function */
+  signatures?: TypedSignatures
+  /** Check if a value is a typed function */
+  isTypedFunction: (value: unknown) => value is TypedFunction
+  referToSelf: (
+    callback: (self: TypedFunction) => (...args: unknown[]) => unknown
+  ) => (...args: unknown[]) => unknown
   referTo: (
-    ...signatures: string[]
-  ) => (callback: (...refs: any[]) => (...args: any[]) => any) => any
+    ...signatureNames: string[]
+  ) => (
+    callback: (
+      ...refs: Array<(...args: unknown[]) => unknown>
+    ) => (...args: unknown[]) => unknown
+  ) => (...args: unknown[]) => unknown
   create: () => TypedFunction
-  addTypes: (types: any[]) => void
-  addConversions: (conversions: any[]) => void
-  addConversion: (conversion: any) => void
+  addTypes: (types: TypeDefinition[]) => void
+  addConversions: (conversions: TypeConversion[]) => void
+  addConversion: (conversion: TypeConversion) => void
   clear: () => void
-  onMismatch: (name: string, args: any[], signatures: any[]) => any
-  createError: (name: string, args: any[], signatures: any[]) => Error
+  onMismatch: (
+    name: string,
+    args: unknown[],
+    signatures: TypedSignatures
+  ) => unknown
+  createError: (
+    name: string,
+    args: unknown[],
+    signatures: TypedSignatures
+  ) => Error
   find: (
     fn: TypedFunction,
-    signature: string | any[]
-  ) => ((...args: any[]) => any) | null
-  resolve: (fn: TypedFunction, args: any[]) => any
+    signature: string | string[]
+  ) => ((...args: unknown[]) => unknown) | null
+  resolve: (
+    fn: TypedFunction,
+    args: unknown[]
+  ) => { implementation: (...args: unknown[]) => unknown; params: string[] } | null
+}
+
+/**
+ * Constructor type for BigNumber
+ */
+interface BigNumberConstructor {
+  new (value: number | string | bigint): unknown
+}
+
+/**
+ * Constructor type for Complex numbers
+ */
+interface ComplexConstructor {
+  new (re: number | string, im?: number): unknown
+}
+
+/**
+ * Constructor type for DenseMatrix
+ */
+interface DenseMatrixConstructor {
+  new (data: unknown[]): unknown
+}
+
+/**
+ * Constructor type for Fraction
+ */
+interface FractionConstructor {
+  new (value: number | string | bigint): { valueOf: () => number }
 }
 
 /**
  * Type for the dependencies required by createTyped
  */
 interface TypedDependencies {
-  BigNumber?: any
-  Complex?: any
-  DenseMatrix?: any
-  Fraction?: any
+  BigNumber?: BigNumberConstructor
+  Complex?: ComplexConstructor
+  DenseMatrix?: DenseMatrixConstructor
+  Fraction?: FractionConstructor
 }
 
 /**
  * Type definition for a type test function
  */
-type TypeTest = (value: any) => boolean
+export type TypeTest = (value: unknown) => boolean
 
 /**
  * Type definition for a type conversion function
  */
-type TypeConversion = {
+export type TypeConversion = {
   from: string
   to: string
-  convert: (value: any) => any
+  convert: (value: unknown) => unknown
 }
 
 /**
  * Type definition for a type definition
  */
-type TypeDefinition = {
+export type TypeDefinition = {
   name: string
   test: TypeTest
 }
@@ -166,7 +219,7 @@ export const createTyped = /* #__PURE__ */ factory(
     // TODO: typed-function must be able to silently ignore signatures with unknown data types
 
     // get a new instance of typed-function
-    const _typed: any = _createTyped()
+    const _typed: TypedFunction = _createTyped()
 
     // define all types. The order of the types determines in which order function
     // arguments are type-checked (so for performance it's important to put the
@@ -187,7 +240,7 @@ export const createTyped = /* #__PURE__ */ factory(
       {
         name: 'identifier',
         // Using simpler regex for TS compatibility (original: /^\p{L}[\p{L}\d]*$/u)
-        test: (s: any): boolean =>
+        test: (s: unknown): boolean =>
           isString(s) && /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(s)
       },
       { name: 'string', test: isString },
@@ -264,12 +317,13 @@ export const createTyped = /* #__PURE__ */ factory(
       {
         from: 'BigNumber',
         to: 'Complex',
-        convert: function (x: any) {
+        convert: function (x: unknown) {
           if (!Complex) {
             throwNoComplex(x)
           }
 
-          return new Complex((x as any).toNumber(), 0)
+          const bigNum = x as { toNumber: () => number }
+          return new Complex(bigNum.toNumber(), 0)
         }
       },
       {
@@ -313,7 +367,7 @@ export const createTyped = /* #__PURE__ */ factory(
       {
         from: 'Fraction',
         to: 'BigNumber',
-        convert: function (_x: any) {
+        convert: function (_x: unknown) {
           throw new TypeError(
             'Cannot implicitly convert a Fraction to BigNumber or vice versa. ' +
               'Use function bignumber(x) to convert to BigNumber or fraction(x) to convert to Fraction.'
@@ -323,12 +377,13 @@ export const createTyped = /* #__PURE__ */ factory(
       {
         from: 'Fraction',
         to: 'Complex',
-        convert: function (x: any) {
+        convert: function (x: unknown) {
           if (!Complex) {
             throwNoComplex(x)
           }
 
-          return new Complex(x.valueOf(), 0)
+          const frac = x as { valueOf: () => number }
+          return new Complex(frac.valueOf(), 0)
         }
       },
       {
@@ -472,19 +527,20 @@ export const createTyped = /* #__PURE__ */ factory(
       {
         from: 'Array',
         to: 'Matrix',
-        convert: function (array: any[]) {
+        convert: function (array: unknown) {
           if (!DenseMatrix) {
             throwNoMatrix()
           }
 
-          return new DenseMatrix(array)
+          return new DenseMatrix(array as unknown[])
         }
       },
       {
         from: 'Matrix',
         to: 'Array',
-        convert: function (matrix: any): any[] {
-          return matrix.valueOf()
+        convert: function (matrix: unknown): unknown[] {
+          const mat = matrix as { valueOf: () => unknown[] }
+          return mat.valueOf()
         }
       }
     ] as TypeConversion[])
@@ -493,19 +549,25 @@ export const createTyped = /* #__PURE__ */ factory(
     // This was added primarily as guidance for the v10 -> v11 transition,
     // and could potentially be removed in the future if it no longer seems
     // to be helpful.
-    _typed.onMismatch = (name: string, args: any[], signatures: any[]) => {
-      const usualError = _typed.createError(name, args, signatures)
+    _typed.onMismatch = (
+      name: string,
+      args: unknown[],
+      signatures: TypedSignatures
+    ) => {
+      const usualError = _typed.createError(name, args, signatures) as Error & {
+        data: { category: string }
+      }
       if (
         ['wrongType', 'mismatch'].includes(usualError.data.category) &&
         args.length === 1 &&
         isCollection(args[0]) &&
         // check if the function can be unary:
-        signatures.some((sig: any) => !sig.params.includes(','))
+        Object.keys(signatures).some((sig) => !sig.includes(','))
       ) {
         const err = new TypeError(
           `Function '${name}' doesn't apply to matrices. To call it ` +
             `elementwise on a matrix 'M', try 'map(M, ${name})'.`
-        ) as TypeError & { data: any }
+        ) as TypeError & { data: { category: string } }
         err.data = usualError.data
         throw err
       }
@@ -516,13 +578,13 @@ export const createTyped = /* #__PURE__ */ factory(
   }
 )
 
-function throwNoBignumber(x: any): never {
+function throwNoBignumber(x: unknown): never {
   throw new Error(
     `Cannot convert value ${x} into a BigNumber: no class 'BigNumber' provided`
   )
 }
 
-function throwNoComplex(x: any): never {
+function throwNoComplex(x: unknown): never {
   throw new Error(
     `Cannot convert value ${x} into a Complex number: no class 'Complex' provided`
   )
@@ -534,7 +596,7 @@ function throwNoMatrix(): never {
   )
 }
 
-function throwNoFraction(x: any): never {
+function throwNoFraction(x: unknown): never {
   throw new Error(
     `Cannot convert value ${x} into a Fraction, no class 'Fraction' provided.`
   )

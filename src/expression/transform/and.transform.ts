@@ -1,31 +1,22 @@
 import { createAnd } from '../../function/logical/and.ts'
 import { factory } from '../../utils/factory.ts'
 import { isCollection } from '../../utils/is.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  ExpressionNode,
+  EvaluationScope,
+  MathJsLike,
+  RawArgsTransformFunction
+} from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Node {
-  compile(): CompiledExpression
-}
-
-interface CompiledExpression {
-  evaluate(scope: any): any
-}
-
-interface TransformFunction {
-  (args: Node[], math: any, scope: any): any
-  rawArgs?: boolean
-}
-
-interface Dependencies {
+interface AndDependencies {
   typed: TypedFunction
-  matrix: (...args: any[]) => any
-  equalScalar: (...args: any[]) => any
-  zeros: (...args: any[]) => any
-  not: (...args: any[]) => any
-  concat: (...args: any[]) => any
+  matrix: MathFunction
+  equalScalar: MathFunction<boolean>
+  zeros: MathFunction
+  not: MathFunction<boolean>
+  concat: MathFunction
 }
 
 const name = 'and'
@@ -42,10 +33,14 @@ const dependencies = [
 export const createAndTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, zeros, not, concat }: Dependencies) => {
+  ({ typed, matrix, equalScalar, zeros, not, concat }: AndDependencies) => {
     const and = createAnd({ typed, matrix, equalScalar, zeros, not, concat })
 
-    function andTransform(args: Node[], math: any, scope: any): any {
+    function andTransform(
+      args: ExpressionNode[],
+      math: MathJsLike,
+      scope: EvaluationScope | Map<string, unknown>
+    ): unknown {
       const condition1 = args[0].compile().evaluate(scope)
       if (!isCollection(condition1) && !and(condition1, true)) {
         return false
@@ -54,9 +49,9 @@ export const createAndTransform = /* #__PURE__ */ factory(
       return and(condition1, condition2)
     }
 
-    andTransform.rawArgs = true
+    andTransform.rawArgs = true as const
 
-    return andTransform as TransformFunction
+    return andTransform as RawArgsTransformFunction
   },
   { isTransformFunction: true }
 )

@@ -2,19 +2,16 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createVariance } from '../../function/statistics/variance.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
+import type { TypedFunction, MathFunction, VariadicArgs } from './types.ts'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
-
-interface Dependencies {
+interface VarianceDependencies {
   typed: TypedFunction
   add: TypedFunction
   subtract: TypedFunction
   multiply: TypedFunction
   divide: TypedFunction
   mapSlices: TypedFunction
-  isNaN: (x: any) => boolean
+  isNaN: (x: unknown) => boolean
 }
 
 const name = 'variance'
@@ -46,7 +43,7 @@ export const createVarianceTransform = /* #__PURE__ */ factory(
     divide,
     mapSlices,
     isNaN: mathIsNaN
-  }: Dependencies) => {
+  }: VarianceDependencies) => {
     const variance = createVariance({
       typed,
       add,
@@ -58,7 +55,7 @@ export const createVarianceTransform = /* #__PURE__ */ factory(
     })
 
     return typed(name, {
-      '...any': function (args: any[]): any {
+      '...any': function (args: VariadicArgs): unknown {
         args = lastDimToZeroBase(args)
 
         try {

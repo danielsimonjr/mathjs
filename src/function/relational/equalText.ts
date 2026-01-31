@@ -43,7 +43,7 @@ export const createEqualText = /* #__PURE__ */ factory(
      */
     return typed(name, {
       'any, any': function (x: unknown, y: unknown): boolean {
-        return isZero(compareText(x, y))
+        return isZero(compareText(x, y)) as boolean
       }
     })
   }

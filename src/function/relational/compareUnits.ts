@@ -16,11 +16,14 @@ export const createCompareUnits = /* #__PURE__ */ factory(
   'compareUnits',
   ['typed'],
   ({ typed }: CompareUnitsDependencies) => ({
-    'Unit, Unit': typed.referToSelf((self: TypedFunction) => (x: UnitType, y: UnitType): unknown => {
-      if (!x.equalBase(y)) {
+    'Unit, Unit': typed.referToSelf((self: TypedFunction) => (x: unknown, y: unknown): unknown => {
+      const unitX = x as UnitType
+      const unitY = y as UnitType
+      if (!unitX.equalBase(unitY)) {
         throw new Error('Cannot compare units with different base')
       }
-      return typed.find(self, [x.valueType(), y.valueType()])(x.value, y.value)
+      const fn = typed.find(self, [unitX.valueType(), unitY.valueType()])
+      return fn ? fn(unitX.value, unitY.value) : undefined
     })
   })
 )

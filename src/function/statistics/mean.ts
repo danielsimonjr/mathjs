@@ -26,8 +26,20 @@ function isFlatNumberArray(arr: unknown[]): arr is number[] {
 
 // Type definitions for mean
 interface MatrixType {
+  forEach(
+    callback: (value: unknown) => void,
+    skipZeros: boolean,
+    recurse: boolean
+  ): void
+  map(
+    callback: (value: unknown) => unknown,
+    skipZeros: boolean,
+    recurse: boolean
+  ): MatrixType
   size(): number[]
   valueOf(): unknown[] | unknown[][]
+  create(data: unknown[], datatype?: string): MatrixType
+  datatype(): string | undefined
 }
 
 interface MeanDependencies {
@@ -97,9 +109,9 @@ export const createMean = /* #__PURE__ */ factory(
      */
     function _nmeanDim(array: unknown[] | MatrixType, dim: number | { valueOf(): number }): unknown {
       try {
-        const sum = reduce(array, dim, add)
-        const s = Array.isArray(array) ? arraySize(array) : (array as MatrixType).size()
         const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
+        const sum = reduce(array, dimValue, add)
+        const s = Array.isArray(array) ? arraySize(array) : (array as MatrixType).size()
         return divide(sum, s[dimValue])
       } catch (err) {
         throw improveErrorMessage(err, 'mean', undefined)

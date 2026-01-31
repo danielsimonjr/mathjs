@@ -16,13 +16,9 @@ interface ComplexType {
 }
 
 interface UnitType {
-  constructor: new (value: unknown, format: string) => UnitType
+  constructor: new (value: any, format: string) => UnitType
   toNumeric(): number | BigNumberType | ComplexType
   formatUnits(): string
-}
-
-interface Matrix {
-  valueOf(): unknown[][]
 }
 
 interface ConjDependencies {
@@ -65,11 +61,12 @@ export const createConj = /* #__PURE__ */ factory(
       'number | BigNumber | Fraction': (x: number | BigNumberType | FractionType): number | BigNumberType | FractionType => x,
       Complex: (x: ComplexType): ComplexType => x.conjugate(),
       Unit: typed.referToSelf(
-        (self: TypedFunction) => (x: UnitType): UnitType =>
-          new x.constructor(self(x.toNumeric()), x.formatUnits())
+        (self: any) =>
+          (x: any): any =>
+            new x.constructor(self(x.toNumeric()), x.formatUnits())
       ),
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+        (self: (value: any) => any) => (x: any) => deepMap(x, self)
       )
     })
   }
