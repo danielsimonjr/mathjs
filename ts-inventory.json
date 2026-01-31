@@ -4238,19 +4238,21 @@
     "file": "src\\function\\algebra\\decomposition\\lup.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 15,
     "as_complexity": 7,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/algebra/decomposition.ts (luDecomposition, luDecompositionSIMD) and wasm/algebra/sparseLu.ts"
   },
   {
     "file": "src\\function\\algebra\\decomposition\\qr.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 8,
     "as_complexity": 8,
-    "as_effort": "High"
+    "as_effort": "High",
+    "as_notes": "Implemented in src/wasm/algebra/decomposition.ts (qrDecomposition, qrDecompositionSIMD)"
   },
   {
     "file": "src\\function\\algebra\\decomposition\\schur.ts",
@@ -4361,10 +4363,11 @@
     "file": "src\\function\\algebra\\solver\\lsolve.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 25,
     "as_complexity": 6,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/matrix/linalg.ts (lsolve, lsolveUnit, lsolveMultiple)"
   },
   {
     "file": "src\\function\\algebra\\solver\\lsolveAll.ts",
@@ -4380,10 +4383,11 @@
     "file": "src\\function\\algebra\\solver\\usolve.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 26,
     "as_complexity": 6,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/matrix/linalg.ts (usolve, usolveMultiple)"
   },
   {
     "file": "src\\function\\algebra\\solver\\usolveAll.ts",
@@ -4534,10 +4538,11 @@
     "file": "src\\function\\arithmetic\\cbrt.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 44,
     "as_complexity": 4,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/"
   },
   {
     "file": "src\\function\\arithmetic\\ceil.js",
@@ -4608,10 +4613,11 @@
     "file": "src\\function\\arithmetic\\gcd.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 22,
     "as_complexity": 6,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/utils/checks.ts"
   },
   {
     "file": "src\\function\\arithmetic\\hypot.js",
@@ -4632,10 +4638,11 @@
     "file": "src\\function\\arithmetic\\lcm.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 36,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/utils/checks.ts (gcd/lcm)"
   },
   {
     "file": "src\\function\\arithmetic\\log.ts",
@@ -4676,10 +4683,11 @@
     "file": "src\\function\\arithmetic\\norm.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 5,
     "as_complexity": 8,
-    "as_effort": "High"
+    "as_effort": "High",
+    "as_notes": "Implemented in src/wasm/arithmetic/advanced.ts (norm1, norm2, normInf, normP) and src/wasm/matrix/linalg.ts"
   },
   {
     "file": "src\\function\\arithmetic\\nthRoot.ts",
@@ -4695,10 +4703,11 @@
     "file": "src\\function\\arithmetic\\pow.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 17,
     "as_complexity": 7,
-    "as_effort": "High"
+    "as_effort": "High",
+    "as_notes": "Implemented in src/wasm/arithmetic/logarithmic.ts (pow, powConstantArray) and src/wasm/plain/arithmetic.ts"
   },
   {
     "file": "src\\function\\arithmetic\\round.ts",
@@ -4714,10 +4723,11 @@
     "file": "src\\function\\arithmetic\\sqrt.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 39,
     "as_complexity": 5,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/arithmetic/logarithmic.ts (sqrt, sqrtArray) and src/wasm/plain/arithmetic.ts"
   },
   {
     "file": "src\\function\\arithmetic\\square.ts",
@@ -4798,10 +4808,11 @@
     "file": "src\\function\\combinatorics\\bellNumbers.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 18,
     "as_complexity": 6,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/combinatorics/basic.ts"
   },
   {
     "file": "src\\function\\combinatorics\\catalan.js",
@@ -4812,10 +4823,11 @@
     "file": "src\\function\\combinatorics\\catalan.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 28,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/combinatorics/basic.ts"
   },
   {
     "file": "src\\function\\combinatorics\\composition.js",
@@ -4826,10 +4838,11 @@
     "file": "src\\function\\combinatorics\\composition.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 19,
     "as_complexity": 6,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/combinatorics/basic.ts"
   },
   {
     "file": "src\\function\\combinatorics\\stirlingS2.js",
@@ -4840,10 +4853,11 @@
     "file": "src\\function\\combinatorics\\stirlingS2.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 13,
     "as_complexity": 7,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/combinatorics/basic.ts"
   },
   {
     "file": "src\\function\\complex\\arg.ts",
@@ -4869,10 +4883,11 @@
     "file": "src\\function\\geometry\\distance.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 11,
     "as_complexity": 7,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/geometry/operations.ts (distance2D, distance3D, distanceND, manhattanDistance)"
   },
   {
     "file": "src\\function\\geometry\\intersect.ts",
@@ -4933,19 +4948,21 @@
     "file": "src\\function\\matrix\\det.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 16,
     "as_complexity": 7,
-    "as_effort": "High"
+    "as_effort": "High",
+    "as_notes": "Implemented in src/wasm/matrix/linalg.ts (det with LU decomposition, optimized 2x2/3x3)"
   },
   {
     "file": "src\\function\\matrix\\diag.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 38,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/matrix/basic.ts (diag, diagFromVector, diagK)"
   },
   {
     "file": "src\\function\\matrix\\diff.ts",
@@ -4996,10 +5013,11 @@
     "file": "src\\function\\matrix\\flatten.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 34,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/matrix/basic.ts"
   },
   {
     "file": "src\\function\\matrix\\forEach.js",
@@ -5030,10 +5048,11 @@
     "file": "src\\function\\matrix\\inv.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 2,
     "as_complexity": 8,
-    "as_effort": "High"
+    "as_effort": "High",
+    "as_notes": "Implemented in src/wasm/matrix/linalg.ts (inv, inv2x2, inv3x3)"
   },
   {
     "file": "src\\function\\matrix\\kron.ts",
@@ -5169,10 +5188,11 @@
     "file": "src\\function\\matrix\\transpose.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 45,
     "as_complexity": 4,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/"
   },
   {
     "file": "src\\function\\matrix\\zeros.ts",
@@ -5183,10 +5203,11 @@
     "file": "src\\function\\numeric\\solveODE.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 1,
     "as_complexity": 9,
-    "as_effort": "High"
+    "as_effort": "High",
+    "as_notes": "Implemented in src/wasm/numeric/ode.ts (rk45Step, rk23Step, maxError, computeStepAdjustment, interpolate, etc.)"
   },
   {
     "file": "src\\function\\probability\\bernoulli.js",
@@ -5312,19 +5333,21 @@
     "file": "src\\function\\relational\\compare.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 41,
     "as_complexity": 5,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/relational/operations.ts (compare, compareArray)"
   },
   {
     "file": "src\\function\\relational\\compareNatural.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "not_suitable",
     "as_priority": 27,
     "as_complexity": 6,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Core numeric compare already in WASM; this is type dispatch wrapper"
   },
   {
     "file": "src\\function\\relational\\compareText.js",
@@ -5500,10 +5523,11 @@
     "file": "src\\function\\special\\erf.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 23,
     "as_complexity": 6,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/special/functions.ts (erf, erfc, erfArray, erfcArray)"
   },
   {
     "file": "src\\function\\special\\zeta.js",
@@ -5514,10 +5538,11 @@
     "file": "src\\function\\special\\zeta.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 24,
     "as_complexity": 6,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/special/functions.ts (zeta, zetaArray)"
   },
   {
     "file": "src\\function\\statistics\\corr.js",
@@ -5528,10 +5553,11 @@
     "file": "src\\function\\statistics\\corr.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 6,
     "as_complexity": 8,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\cumsum.js",
@@ -5542,10 +5568,11 @@
     "file": "src\\function\\statistics\\cumsum.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 20,
     "as_complexity": 6,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\mad.js",
@@ -5556,10 +5583,11 @@
     "file": "src\\function\\statistics\\mad.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 12,
     "as_complexity": 7,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\max.js",
@@ -5570,10 +5598,11 @@
     "file": "src\\function\\statistics\\max.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 32,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\mean.js",
@@ -5594,10 +5623,11 @@
     "file": "src\\function\\statistics\\median.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 4,
     "as_complexity": 8,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\min.js",
@@ -5608,10 +5638,11 @@
     "file": "src\\function\\statistics\\min.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 31,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\mode.js",
@@ -5622,10 +5653,11 @@
     "file": "src\\function\\statistics\\mode.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "not_suitable",
     "as_priority": 10,
     "as_complexity": 7,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Could implement numeric-only version but overhead doesn't justify the limited speedup for counting operations"
   },
   {
     "file": "src\\function\\statistics\\prod.js",
@@ -5636,10 +5668,11 @@
     "file": "src\\function\\statistics\\prod.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 33,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\quantileSeq.js",
@@ -5650,10 +5683,11 @@
     "file": "src\\function\\statistics\\quantileSeq.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 7,
     "as_complexity": 8,
-    "as_effort": "High"
+    "as_effort": "High",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\std.js",
@@ -5664,10 +5698,11 @@
     "file": "src\\function\\statistics\\std.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 9,
     "as_complexity": 7,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\statistics\\sum.js",
@@ -5698,10 +5733,11 @@
     "file": "src\\function\\statistics\\variance.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 3,
     "as_complexity": 8,
-    "as_effort": "Medium"
+    "as_effort": "Medium",
+    "as_notes": "Implemented in src/wasm/statistics/basic.ts"
   },
   {
     "file": "src\\function\\string\\bin.ts",
@@ -5797,10 +5833,11 @@
     "file": "src\\function\\trigonometry\\atan2.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 40,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/trigonometry/basic.ts"
   },
   {
     "file": "src\\function\\trigonometry\\atanh.ts",
@@ -5926,10 +5963,11 @@
     "file": "src\\function\\utils\\isInteger.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 47,
     "as_complexity": 3,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/utils/checks.ts"
   },
   {
     "file": "src\\function\\utils\\isNaN.ts",
@@ -5940,10 +5978,11 @@
     "file": "src\\function\\utils\\isNegative.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 48,
     "as_complexity": 3,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/utils/checks.ts"
   },
   {
     "file": "src\\function\\utils\\isNumeric.js",
@@ -5954,19 +5993,21 @@
     "file": "src\\function\\utils\\isNumeric.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 46,
     "as_complexity": 3,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/utils/checks.ts"
   },
   {
     "file": "src\\function\\utils\\isPositive.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 49,
     "as_complexity": 3,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/utils/checks.ts"
   },
   {
     "file": "src\\function\\utils\\isPrime.js",
@@ -5982,10 +6023,11 @@
     "file": "src\\function\\utils\\isZero.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 50,
     "as_complexity": 3,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/utils/checks.ts"
   },
   {
     "file": "src\\function\\utils\\numeric.js",
@@ -6076,10 +6118,11 @@
     "file": "src\\plain\\number\\arithmetic.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 29,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/arithmetic/basic.ts and src/wasm/plain/arithmetic.ts"
   },
   {
     "file": "src\\plain\\number\\bitwise.js",
@@ -6090,10 +6133,11 @@
     "file": "src\\plain\\number\\bitwise.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 35,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/bitwise/operations.ts (bitAnd, bitOr, bitXor, bitNot, shifts)"
   },
   {
     "file": "src\\plain\\number\\combinations.js",
@@ -6104,10 +6148,11 @@
     "file": "src\\plain\\number\\combinations.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 21,
     "as_complexity": 6,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/combinatorics/basic.ts (factorial, combinations, combinationsWithRep, permutations)"
   },
   {
     "file": "src\\plain\\number\\constants.js",
@@ -6133,10 +6178,11 @@
     "file": "src\\plain\\number\\logical.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 43,
     "as_complexity": 4,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/"
   },
   {
     "file": "src\\plain\\number\\probability.js",
@@ -6147,19 +6193,21 @@
     "file": "src\\plain\\number\\probability.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 14,
     "as_complexity": 7,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/special/functions.ts (gamma, lgamma, gammaArray, lgammaArray)"
   },
   {
     "file": "src\\plain\\number\\relational.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 42,
     "as_complexity": 4,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Already implemented in src/wasm/"
   },
   {
     "file": "src\\plain\\number\\trigonometry.js",
@@ -6170,10 +6218,11 @@
     "file": "src\\plain\\number\\trigonometry.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 30,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Implemented in src/wasm/trigonometry/basic.ts (sin, cos, tan, all trig functions)"
   },
   {
     "file": "src\\plain\\number\\utils.js",
@@ -6184,10 +6233,11 @@
     "file": "src\\plain\\number\\utils.ts",
     "lines": 100,
     "status": "converted",
-    "as_conversion": "candidate",
+    "as_conversion": "already_in_wasm",
     "as_priority": 37,
     "as_complexity": 5,
-    "as_effort": "Low"
+    "as_effort": "Low",
+    "as_notes": "Core utilities implemented in src/wasm/utils/checks.ts and src/wasm/relational/operations.ts"
   },
   {
     "file": "src\\type\\bigint.js",

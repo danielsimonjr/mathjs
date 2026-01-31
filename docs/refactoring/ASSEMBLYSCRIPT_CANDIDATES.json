@@ -8,463 +8,633 @@
   },
   "summary": {
     "total_candidates": 50,
+    "already_in_wasm": 48,
+    "not_suitable": 2,
+    "pending": 0,
     "high_complexity": 12,
     "medium_complexity": 18,
     "low_complexity": 20,
     "effort_high": 8,
     "effort_medium": 16,
-    "effort_low": 26
+    "effort_low": 26,
+    "conversion_complete": true,
+    "notes": "Assessment complete - 48 functions already have WASM implementations, 2 not suitable for WASM (mode requires JS hash maps, compareNatural uses external JS library)"
   },
   "candidates": [
     {
       "file": "src/function/numeric/solveODE.ts",
       "complexity": 9,
       "effort": "High",
-      "status": "pending",
-      "issues": ["uses any in interfaces", "async-like structure with iterations"],
+      "status": "already_in_wasm",
+      "issues": [
+        "uses any in interfaces",
+        "async-like structure with iterations"
+      ],
       "recommendation": "High-value numerical solver. Complex algorithm but pure numeric. Consider for WASM for 5-10x speedup on large systems.",
-      "priority": 1
+      "priority": 1,
+      "notes": "Implemented in src/wasm/numeric/ode.ts (rk45Step, rk23Step, maxError, computeStepAdjustment, interpolate, etc.)"
     },
     {
       "file": "src/function/matrix/inv.ts",
       "complexity": 8,
       "effort": "High",
-      "status": "pending",
-      "issues": ["matrix inversion via decomposition"],
+      "status": "already_in_wasm",
+      "issues": [
+        "matrix inversion via decomposition"
+      ],
       "recommendation": "Matrix inversion. Uses LU/QR. High computational complexity. Significant WASM benefit.",
-      "priority": 2
+      "priority": 2,
+      "notes": "Implemented in src/wasm/matrix/linalg.ts (inv, inv2x2, inv3x3)"
     },
     {
       "file": "src/function/statistics/variance.ts",
       "complexity": 8,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["depends on add/subtract/multiply/divide functions"],
+      "status": "already_in_wasm",
+      "issues": [
+        "depends on add/subtract/multiply/divide functions"
+      ],
       "recommendation": "Good numeric reduction. Already decomposed into numeric operations. Moderate effort for significant gain.",
-      "priority": 3
+      "priority": 3,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/statistics/median.ts",
       "complexity": 8,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["uses partitionSelect helper"],
+      "status": "already_in_wasm",
+      "issues": [
+        "uses partitionSelect helper"
+      ],
       "recommendation": "Selection-based algorithm. Good for WASM. Requires partitionSelect conversion first.",
-      "priority": 4
+      "priority": 4,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/arithmetic/norm.ts",
       "complexity": 8,
       "effort": "High",
-      "status": "pending",
-      "issues": ["depends on eigs for spectral norm", "matrix format dependency"],
+      "status": "already_in_wasm",
+      "issues": [
+        "depends on eigs for spectral norm",
+        "matrix format dependency"
+      ],
       "recommendation": "Multiple norm types (1, 2, inf, fro). Core numeric but complex. Partial WASM for vector norms.",
-      "priority": 5
+      "priority": 5,
+      "notes": "Implemented in src/wasm/arithmetic/advanced.ts (norm1, norm2, normInf, normP) and src/wasm/matrix/linalg.ts"
     },
     {
       "file": "src/function/statistics/corr.ts",
       "complexity": 8,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["already has WASM threshold check", "uses wasmLoader"],
+      "status": "already_in_wasm",
+      "issues": [
+        "already has WASM threshold check",
+        "uses wasmLoader"
+      ],
       "recommendation": "Already WASM-aware. Core numeric. Flagged for conversion at 200+ element threshold.",
-      "priority": 6
+      "priority": 6,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/statistics/quantileSeq.ts",
       "complexity": 8,
       "effort": "High",
-      "status": "pending",
-      "issues": ["quantile computation with type dependencies"],
+      "status": "already_in_wasm",
+      "issues": [
+        "quantile computation with type dependencies"
+      ],
       "recommendation": "Complex numeric algorithm. Type-dependent implementation. Partial WASM feasible for core numeric path.",
-      "priority": 7
+      "priority": 7,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/algebra/decomposition/qr.ts",
       "complexity": 8,
       "effort": "High",
-      "status": "pending",
-      "issues": ["linear algebra algorithm", "householder reflections"],
+      "status": "already_in_wasm",
+      "issues": [
+        "linear algebra algorithm",
+        "householder reflections"
+      ],
       "recommendation": "QR decomposition via Householder. Significant speedup in WASM. Complex but high value.",
-      "priority": 8
+      "priority": 8,
+      "notes": "Implemented in src/wasm/algebra/decomposition.ts (qrDecomposition, qrDecompositionSIMD)"
     },
     {
       "file": "src/function/statistics/std.ts",
       "complexity": 7,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["depends on sqrt and variance"],
+      "status": "already_in_wasm",
+      "issues": [
+        "depends on sqrt and variance"
+      ],
       "recommendation": "Build after variance. Pure numeric stats operation. Benefits from WASM vectorization.",
-      "priority": 9
+      "priority": 9,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/statistics/mode.ts",
       "complexity": 7,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["sorting dependency", "collection traversal"],
-      "recommendation": "Pure numeric reduction with sorting. Good fit after adding sort support.",
-      "priority": 10
+      "status": "not_suitable",
+      "issues": [
+        "handles mixed types (numbers, strings)",
+        "uses JavaScript hash map for counting",
+        "returns multiple values (multimodal)",
+        "algorithm is O(n) counting, not compute-intensive"
+      ],
+      "recommendation": "Not suitable for WASM - relies on JS hash maps and mixed type handling. Limited WASM benefit for counting algorithm.",
+      "priority": 10,
+      "notes": "Could implement numeric-only version but overhead doesn't justify the limited speedup for counting operations"
     },
     {
       "file": "src/function/geometry/distance.ts",
       "complexity": 7,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["generic algebra dependencies", "multiple signatures for different geometries"],
+      "status": "already_in_wasm",
+      "issues": [
+        "generic algebra dependencies",
+        "multiple signatures for different geometries"
+      ],
       "recommendation": "Euclidean geometry core is pure numeric. Multiple branches reduce WASM benefit. Consider specialized path.",
-      "priority": 11
+      "priority": 11,
+      "notes": "Implemented in src/wasm/geometry/operations.ts (distance2D, distance3D, distanceND, manhattanDistance)"
     },
     {
       "file": "src/function/statistics/mad.ts",
       "complexity": 7,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["depends on mean, abs, subtract", "scalar operations"],
+      "status": "already_in_wasm",
+      "issues": [
+        "depends on mean, abs, subtract",
+        "scalar operations"
+      ],
       "recommendation": "Mean absolute deviation. Pure numeric reduction. Easy conversion, good teaching case.",
-      "priority": 12
+      "priority": 12,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/combinatorics/stirlingS2.ts",
       "complexity": 7,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["Stirling number DP algorithm"],
+      "status": "already_in_wasm",
+      "issues": [
+        "Stirling number DP algorithm"
+      ],
       "recommendation": "Stirling partition numbers. DP algorithm good for WASM. Significant speedup expected.",
-      "priority": 13
+      "priority": 13,
+      "notes": "Implemented in src/wasm/combinatorics/basic.ts"
     },
     {
       "file": "src/plain/number/probability.ts",
       "complexity": 7,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["gamma/lgamma approximations", "transcendental functions"],
+      "status": "already_in_wasm",
+      "issues": [
+        "gamma/lgamma approximations",
+        "transcendental functions"
+      ],
       "recommendation": "Pure number implementations. Gamma function approximations. Direct WASM translation ideal.",
-      "priority": 14
+      "priority": 14,
+      "notes": "Implemented in src/wasm/special/functions.ts (gamma, lgamma, gammaArray, lgammaArray)"
     },
     {
       "file": "src/function/algebra/decomposition/lup.ts",
       "complexity": 7,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["LU factorization with pivoting"],
+      "status": "already_in_wasm",
+      "issues": [
+        "LU factorization with pivoting"
+      ],
       "recommendation": "LU with partial pivoting. Numerical algorithm good for WASM. Already complex JS.",
-      "priority": 15
+      "priority": 15,
+      "notes": "Implemented in src/wasm/algebra/decomposition.ts (luDecomposition, luDecompositionSIMD) and wasm/algebra/sparseLu.ts"
     },
     {
       "file": "src/function/matrix/det.ts",
       "complexity": 7,
       "effort": "High",
-      "status": "pending",
-      "issues": ["determinant computation via decomposition"],
+      "status": "already_in_wasm",
+      "issues": [
+        "determinant computation via decomposition"
+      ],
       "recommendation": "Determinant via factorization. Depends on LU. High numeric load.",
-      "priority": 16
+      "priority": 16,
+      "notes": "Implemented in src/wasm/matrix/linalg.ts (det with LU decomposition, optimized 2x2/3x3)"
     },
     {
       "file": "src/function/arithmetic/pow.ts",
       "complexity": 7,
       "effort": "High",
-      "status": "pending",
-      "issues": ["complex exponentiation with type handling"],
+      "status": "already_in_wasm",
+      "issues": [
+        "complex exponentiation with type handling"
+      ],
       "recommendation": "Power function. Handles real/complex/BigNumber. Partial WASM for numeric path only.",
-      "priority": 17
+      "priority": 17,
+      "notes": "Implemented in src/wasm/arithmetic/logarithmic.ts (pow, powConstantArray) and src/wasm/plain/arithmetic.ts"
     },
     {
       "file": "src/function/combinatorics/bellNumbers.ts",
       "complexity": 6,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["BigNumber support optional"],
+      "status": "already_in_wasm",
+      "issues": [
+        "BigNumber support optional"
+      ],
       "recommendation": "Pure numeric combinatorial. Bell number DP algorithm. Clean conversion target.",
-      "priority": 18
+      "priority": 18,
+      "notes": "Implemented in src/wasm/combinatorics/basic.ts"
     },
     {
       "file": "src/function/combinatorics/composition.ts",
       "complexity": 6,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["recursive combinatorial generation"],
+      "status": "already_in_wasm",
+      "issues": [
+        "recursive combinatorial generation"
+      ],
       "recommendation": "Composition enumeration. Recursive structure benefits from stack efficiency in WASM.",
-      "priority": 19
+      "priority": 19,
+      "notes": "Implemented in src/wasm/combinatorics/basic.ts"
     },
     {
       "file": "src/function/statistics/cumsum.ts",
       "complexity": 6,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["dimension handling complexity", "uses _switch utility"],
+      "status": "already_in_wasm",
+      "issues": [
+        "dimension handling complexity",
+        "uses _switch utility"
+      ],
       "recommendation": "Good cumulative operation. WASM beneficial for large arrays. Handles multi-dimensional arrays.",
-      "priority": 20
+      "priority": 20,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/plain/number/combinations.ts",
       "complexity": 6,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["factorial and permutation logic"],
+      "status": "already_in_wasm",
+      "issues": [
+        "factorial and permutation logic"
+      ],
       "recommendation": "Pure numeric combinatorics. Clean iteration-based logic. Good WASM candidate.",
-      "priority": 21
+      "priority": 21,
+      "notes": "Implemented in src/wasm/combinatorics/basic.ts (factorial, combinations, combinationsWithRep, permutations)"
     },
     {
       "file": "src/function/arithmetic/gcd.ts",
       "complexity": 6,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["Euclidean algorithm"],
+      "status": "already_in_wasm",
+      "issues": [
+        "Euclidean algorithm"
+      ],
       "recommendation": "GCD via Euclidean algorithm. Pure numeric iteration. Clean WASM translation.",
-      "priority": 22
+      "priority": 22,
+      "notes": "Implemented in src/wasm/utils/checks.ts"
     },
     {
       "file": "src/function/special/erf.ts",
       "complexity": 6,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["special function approximation"],
+      "status": "already_in_wasm",
+      "issues": [
+        "special function approximation"
+      ],
       "recommendation": "Error function approximation. Pure numeric. Series expansion good for WASM.",
-      "priority": 23
+      "priority": 23,
+      "notes": "Implemented in src/wasm/special/functions.ts (erf, erfc, erfArray, erfcArray)"
     },
     {
       "file": "src/function/special/zeta.ts",
       "complexity": 6,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["zeta function series computation"],
+      "status": "already_in_wasm",
+      "issues": [
+        "zeta function series computation"
+      ],
       "recommendation": "Riemann zeta approximation. Pure numeric series. Good WASM candidate.",
-      "priority": 24
+      "priority": 24,
+      "notes": "Implemented in src/wasm/special/functions.ts (zeta, zetaArray)"
     },
     {
       "file": "src/function/algebra/solver/lsolve.ts",
       "complexity": 6,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["forward substitution"],
+      "status": "already_in_wasm",
+      "issues": [
+        "forward substitution"
+      ],
       "recommendation": "Forward substitution solver. After LU, this benefits from WASM. Stream processing.",
-      "priority": 25
+      "priority": 25,
+      "notes": "Implemented in src/wasm/matrix/linalg.ts (lsolve, lsolveUnit, lsolveMultiple)"
     },
     {
       "file": "src/function/algebra/solver/usolve.ts",
       "complexity": 6,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["backward substitution"],
+      "status": "already_in_wasm",
+      "issues": [
+        "backward substitution"
+      ],
       "recommendation": "Backward substitution solver. Pairs with lsolve. Simple loop intensive.",
-      "priority": 26
+      "priority": 26,
+      "notes": "Implemented in src/wasm/matrix/linalg.ts (usolve, usolveMultiple)"
     },
     {
       "file": "src/function/relational/compareNatural.ts",
       "complexity": 6,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["natural order comparison"],
-      "recommendation": "Natural number comparison. Good for sorting support. Pure numeric path.",
-      "priority": 27
+      "status": "not_suitable",
+      "issues": [
+        "uses external javascript-natural-sort library",
+        "heavily relies on JavaScript type introspection",
+        "type dispatch logic, not numeric computation"
+      ],
+      "recommendation": "Not suitable for WASM - relies on JS-specific type system and external library for natural string sorting.",
+      "priority": 27,
+      "notes": "Core numeric compare already in WASM; this is type dispatch wrapper"
     },
     {
       "file": "src/function/combinatorics/catalan.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["simple recursive formula"],
+      "status": "already_in_wasm",
+      "issues": [
+        "simple recursive formula"
+      ],
       "recommendation": "Catalan number computation. Simple numeric formula. Ideal for WASM.",
-      "priority": 28
+      "priority": 28,
+      "notes": "Implemented in src/wasm/combinatorics/basic.ts"
     },
     {
       "file": "src/plain/number/arithmetic.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["wrapper around Math functions"],
+      "status": "already_in_wasm",
+      "issues": [
+        "wrapper around Math functions"
+      ],
       "recommendation": "Already optimal. Direct Math.* calls. Low overhead, mostly for completeness.",
-      "priority": 29
+      "priority": 29,
+      "notes": "Implemented in src/wasm/arithmetic/basic.ts and src/wasm/plain/arithmetic.ts"
     },
     {
       "file": "src/plain/number/trigonometry.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["direct Math trigonometric calls"],
+      "status": "already_in_wasm",
+      "issues": [
+        "direct Math trigonometric calls"
+      ],
       "recommendation": "Direct Math wrappers. Minimal benefit over native. Keep as JS fallback.",
-      "priority": 30
+      "priority": 30,
+      "notes": "Implemented in src/wasm/trigonometry/basic.ts (sin, cos, tan, all trig functions)"
     },
     {
       "file": "src/function/statistics/min.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["comparison-based reduction", "NaN handling"],
+      "status": "already_in_wasm",
+      "issues": [
+        "comparison-based reduction",
+        "NaN handling"
+      ],
       "recommendation": "Simple reduction. WASM beneficial for large arrays. Vectorizable.",
-      "priority": 31
+      "priority": 31,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/statistics/max.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["comparison-based reduction", "NaN handling"],
+      "status": "already_in_wasm",
+      "issues": [
+        "comparison-based reduction",
+        "NaN handling"
+      ],
       "recommendation": "Simple reduction. WASM beneficial for large arrays. Vectorizable.",
-      "priority": 32
+      "priority": 32,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/statistics/prod.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["multiplicative reduction"],
+      "status": "already_in_wasm",
+      "issues": [
+        "multiplicative reduction"
+      ],
       "recommendation": "Product accumulation. Simple loop. Good WASM candidate for numeric paths.",
-      "priority": 33
+      "priority": 33,
+      "notes": "Implemented in src/wasm/statistics/basic.ts"
     },
     {
       "file": "src/function/matrix/flatten.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["array traversal"],
+      "status": "already_in_wasm",
+      "issues": [
+        "array traversal"
+      ],
       "recommendation": "Array flattening. Simple recursive descent. Minimal WASM benefit but good test case.",
-      "priority": 34
+      "priority": 34,
+      "notes": "Implemented in src/wasm/matrix/basic.ts"
     },
     {
       "file": "src/plain/number/bitwise.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["bitwise operations"],
+      "status": "already_in_wasm",
+      "issues": [
+        "bitwise operations"
+      ],
       "recommendation": "Direct bitwise operations. WASM natural fit. i32 operations ideal.",
-      "priority": 35
+      "priority": 35,
+      "notes": "Implemented in src/wasm/bitwise/operations.ts (bitAnd, bitOr, bitXor, bitNot, shifts)"
     },
     {
       "file": "src/function/arithmetic/lcm.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["depends on gcd"],
+      "status": "already_in_wasm",
+      "issues": [
+        "depends on gcd"
+      ],
       "recommendation": "LCM computation. Once GCD is in WASM, can wrap it for LCM.",
-      "priority": 36
+      "priority": 36,
+      "notes": "Implemented in src/wasm/utils/checks.ts (gcd/lcm)"
     },
     {
       "file": "src/plain/number/utils.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["various numeric utilities"],
+      "status": "already_in_wasm",
+      "issues": [
+        "various numeric utilities"
+      ],
       "recommendation": "Utility functions collection. Mixed complexity. Good intermediate targets.",
-      "priority": 37
+      "priority": 37,
+      "notes": "Core utilities implemented in src/wasm/utils/checks.ts and src/wasm/relational/operations.ts"
     },
     {
       "file": "src/function/matrix/diag.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["diagonal extraction/construction"],
+      "status": "already_in_wasm",
+      "issues": [
+        "diagonal extraction/construction"
+      ],
       "recommendation": "Diagonal matrix operations. Simple indexing. Good basic example.",
-      "priority": 38
+      "priority": 38,
+      "notes": "Implemented in src/wasm/matrix/basic.ts (diag, diagFromVector, diagK)"
     },
     {
       "file": "src/function/arithmetic/sqrt.ts",
       "complexity": 5,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["square root for different types"],
+      "status": "already_in_wasm",
+      "issues": [
+        "square root for different types"
+      ],
       "recommendation": "Square root. Multiple branches for types. Core numeric path good for WASM.",
-      "priority": 39
+      "priority": 39,
+      "notes": "Implemented in src/wasm/arithmetic/logarithmic.ts (sqrt, sqrtArray) and src/wasm/plain/arithmetic.ts"
     },
     {
       "file": "src/function/trigonometry/atan2.ts",
       "complexity": 5,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["two-argument arctangent"],
+      "status": "already_in_wasm",
+      "issues": [
+        "two-argument arctangent"
+      ],
       "recommendation": "atan2 for 2D geometry. Direct Math wrapper but vectorizable.",
-      "priority": 40
+      "priority": 40,
+      "notes": "Implemented in src/wasm/trigonometry/basic.ts"
     },
     {
       "file": "src/function/relational/compare.ts",
       "complexity": 5,
       "effort": "Medium",
-      "status": "pending",
-      "issues": ["type-aware comparison"],
+      "status": "already_in_wasm",
+      "issues": [
+        "type-aware comparison"
+      ],
       "recommendation": "Universal comparison. Type dispatch complex but numeric path simple.",
-      "priority": 41
+      "priority": 41,
+      "notes": "Implemented in src/wasm/relational/operations.ts (compare, compareArray)"
     },
     {
       "file": "src/plain/number/relational.ts",
       "complexity": 4,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["comparison operations only"],
+      "status": "already_in_wasm",
+      "issues": [
+        "comparison operations only"
+      ],
       "recommendation": "Pure comparison functions. Trivial WASM conversion. Good first WASM project.",
-      "priority": 42
+      "priority": 42,
+      "notes": "Already implemented in src/wasm/"
     },
     {
       "file": "src/plain/number/logical.ts",
       "complexity": 4,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["boolean operations"],
+      "status": "already_in_wasm",
+      "issues": [
+        "boolean operations"
+      ],
       "recommendation": "Logical operations on numbers. Simple bit/boolean logic. Minimal overhead.",
-      "priority": 43
+      "priority": 43,
+      "notes": "Already implemented in src/wasm/"
     },
     {
       "file": "src/function/arithmetic/cbrt.ts",
       "complexity": 4,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["cube root"],
+      "status": "already_in_wasm",
+      "issues": [
+        "cube root"
+      ],
       "recommendation": "Cube root. Simple transcendental. Pairs with sqrt for radical functions.",
-      "priority": 44
+      "priority": 44,
+      "notes": "Already implemented in src/wasm/"
     },
     {
       "file": "src/function/matrix/transpose.ts",
       "complexity": 4,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["simple memory layout transform"],
+      "status": "already_in_wasm",
+      "issues": [
+        "simple memory layout transform"
+      ],
       "recommendation": "Transpose operation. Trivial algorithm but high data volume. WASM reduces overhead.",
-      "priority": 45
+      "priority": 45,
+      "notes": "Already implemented in src/wasm/"
     },
     {
       "file": "src/function/utils/isNumeric.ts",
       "complexity": 3,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["type checking only"],
+      "status": "already_in_wasm",
+      "issues": [
+        "type checking only"
+      ],
       "recommendation": "Simple type predicate. Minimal WASM benefit but useful utility.",
-      "priority": 46
+      "priority": 46,
+      "notes": "Already implemented in src/wasm/utils/checks.ts"
     },
     {
       "file": "src/function/utils/isInteger.ts",
       "complexity": 3,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["simple numeric check"],
+      "status": "already_in_wasm",
+      "issues": [
+        "simple numeric check"
+      ],
       "recommendation": "Integer predicate. Trivial WASM conversion. Good basic example.",
-      "priority": 47
+      "priority": 47,
+      "notes": "Already implemented in src/wasm/utils/checks.ts"
     },
     {
       "file": "src/function/utils/isNegative.ts",
       "complexity": 3,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["sign check"],
+      "status": "already_in_wasm",
+      "issues": [
+        "sign check"
+      ],
       "recommendation": "Sign checking. Trivial conversion. Demonstrates WASM utility functions.",
-      "priority": 48
+      "priority": 48,
+      "notes": "Already implemented in src/wasm/utils/checks.ts"
     },
     {
       "file": "src/function/utils/isPositive.ts",
       "complexity": 3,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["sign check"],
+      "status": "already_in_wasm",
+      "issues": [
+        "sign check"
+      ],
       "recommendation": "Sign checking. Trivial conversion. Pairs with isNegative.",
-      "priority": 49
+      "priority": 49,
+      "notes": "Already implemented in src/wasm/utils/checks.ts"
     },
     {
       "file": "src/function/utils/isZero.ts",
       "complexity": 3,
       "effort": "Low",
-      "status": "pending",
-      "issues": ["zero check"],
+      "status": "already_in_wasm",
+      "issues": [
+        "zero check"
+      ],
       "recommendation": "Zero predicate. Trivial conversion. Common utility function.",
-      "priority": 50
+      "priority": 50,
+      "notes": "Already implemented in src/wasm/utils/checks.ts"
     }
   ]
 }

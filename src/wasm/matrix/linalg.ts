@@ -709,6 +709,192 @@ export function solve(
 }
 
 // ============================================
+// TRIANGULAR SOLVERS
+// ============================================
+
+/**
+ * Forward substitution: Solve L*x = b where L is lower triangular
+ * Used after LU decomposition or for lower triangular systems
+ * @param lPtr - Pointer to lower triangular matrix (n x n, row-major)
+ * @param bPtr - Pointer to right-hand side vector (n)
+ * @param n - Size of the system
+ * @param resultPtr - Pointer to solution vector (n)
+ * @returns 1 if successful, 0 if singular (zero diagonal)
+ */
+export function lsolve(
+  lPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): i32 {
+  // Forward substitution: x[j] = (b[j] - sum(L[j][k]*x[k] for k<j)) / L[j][j]
+  for (let j: i32 = 0; j < n; j++) {
+    // Get diagonal element L[j][j]
+    const ljj: f64 = load<f64>(lPtr + ((<usize>(j * n + j)) << 3))
+
+    // Check for singularity
+    if (Math.abs(ljj) < 1e-14) {
+      return 0 // Singular matrix
+    }
+
+    // Compute x[j] = (b[j] - sum) / L[j][j]
+    let sum: f64 = load<f64>(bPtr + ((<usize>j) << 3))
+    for (let k: i32 = 0; k < j; k++) {
+      sum -=
+        load<f64>(lPtr + ((<usize>(j * n + k)) << 3)) *
+        load<f64>(resultPtr + ((<usize>k) << 3))
+    }
+
+    store<f64>(resultPtr + ((<usize>j) << 3), sum / ljj)
+  }
+
+  return 1
+}
+
+/**
+ * Backward substitution: Solve U*x = b where U is upper triangular
+ * Used after LU decomposition or for upper triangular systems
+ * @param uPtr - Pointer to upper triangular matrix (n x n, row-major)
+ * @param bPtr - Pointer to right-hand side vector (n)
+ * @param n - Size of the system
+ * @param resultPtr - Pointer to solution vector (n)
+ * @returns 1 if successful, 0 if singular (zero diagonal)
+ */
+export function usolve(
+  uPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): i32 {
+  // Backward substitution: x[j] = (b[j] - sum(U[j][k]*x[k] for k>j)) / U[j][j]
+  for (let j: i32 = n - 1; j >= 0; j--) {
+    // Get diagonal element U[j][j]
+    const ujj: f64 = load<f64>(uPtr + ((<usize>(j * n + j)) << 3))
+
+    // Check for singularity
+    if (Math.abs(ujj) < 1e-14) {
+      return 0 // Singular matrix
+    }
+
+    // Compute x[j] = (b[j] - sum) / U[j][j]
+    let sum: f64 = load<f64>(bPtr + ((<usize>j) << 3))
+    for (let k: i32 = j + 1; k < n; k++) {
+      sum -=
+        load<f64>(uPtr + ((<usize>(j * n + k)) << 3)) *
+        load<f64>(resultPtr + ((<usize>k) << 3))
+    }
+
+    store<f64>(resultPtr + ((<usize>j) << 3), sum / ujj)
+  }
+
+  return 1
+}
+
+/**
+ * Forward substitution for unit lower triangular matrix (diagonal = 1)
+ * More efficient when diagonal elements are known to be 1
+ * @param lPtr - Pointer to unit lower triangular matrix (n x n, row-major)
+ * @param bPtr - Pointer to right-hand side vector (n)
+ * @param n - Size of the system
+ * @param resultPtr - Pointer to solution vector (n)
+ */
+export function lsolveUnit(
+  lPtr: usize,
+  bPtr: usize,
+  n: i32,
+  resultPtr: usize
+): void {
+  // Forward substitution with L[j][j] = 1
+  for (let j: i32 = 0; j < n; j++) {
+    let sum: f64 = load<f64>(bPtr + ((<usize>j) << 3))
+    for (let k: i32 = 0; k < j; k++) {
+      sum -=
+        load<f64>(lPtr + ((<usize>(j * n + k)) << 3)) *
+        load<f64>(resultPtr + ((<usize>k) << 3))
+    }
+    store<f64>(resultPtr + ((<usize>j) << 3), sum)
+  }
+}
+
+/**
+ * Vectorized forward substitution: Solve L*X = B for multiple right-hand sides
+ * @param lPtr - Pointer to lower triangular matrix (n x n)
+ * @param bPtr - Pointer to right-hand side matrix (n x m, row-major)
+ * @param n - Size of the system
+ * @param m - Number of right-hand sides
+ * @param resultPtr - Pointer to solution matrix (n x m)
+ * @returns 1 if successful, 0 if singular
+ */
+export function lsolveMultiple(
+  lPtr: usize,
+  bPtr: usize,
+  n: i32,
+  m: i32,
+  resultPtr: usize
+): i32 {
+  // Solve for each right-hand side
+  for (let col: i32 = 0; col < m; col++) {
+    for (let j: i32 = 0; j < n; j++) {
+      const ljj: f64 = load<f64>(lPtr + ((<usize>(j * n + j)) << 3))
+
+      if (Math.abs(ljj) < 1e-14) {
+        return 0
+      }
+
+      let sum: f64 = load<f64>(bPtr + ((<usize>(j * m + col)) << 3))
+      for (let k: i32 = 0; k < j; k++) {
+        sum -=
+          load<f64>(lPtr + ((<usize>(j * n + k)) << 3)) *
+          load<f64>(resultPtr + ((<usize>(k * m + col)) << 3))
+      }
+
+      store<f64>(resultPtr + ((<usize>(j * m + col)) << 3), sum / ljj)
+    }
+  }
+
+  return 1
+}
+
+/**
+ * Vectorized backward substitution: Solve U*X = B for multiple right-hand sides
+ * @param uPtr - Pointer to upper triangular matrix (n x n)
+ * @param bPtr - Pointer to right-hand side matrix (n x m, row-major)
+ * @param n - Size of the system
+ * @param m - Number of right-hand sides
+ * @param resultPtr - Pointer to solution matrix (n x m)
+ * @returns 1 if successful, 0 if singular
+ */
+export function usolveMultiple(
+  uPtr: usize,
+  bPtr: usize,
+  n: i32,
+  m: i32,
+  resultPtr: usize
+): i32 {
+  // Solve for each right-hand side
+  for (let col: i32 = 0; col < m; col++) {
+    for (let j: i32 = n - 1; j >= 0; j--) {
+      const ujj: f64 = load<f64>(uPtr + ((<usize>(j * n + j)) << 3))
+
+      if (Math.abs(ujj) < 1e-14) {
+        return 0
+      }
+
+      let sum: f64 = load<f64>(bPtr + ((<usize>(j * m + col)) << 3))
+      for (let k: i32 = j + 1; k < n; k++) {
+        sum -=
+          load<f64>(uPtr + ((<usize>(j * n + k)) << 3)) *
+          load<f64>(resultPtr + ((<usize>(k * m + col)) << 3))
+      }
+
+      store<f64>(resultPtr + ((<usize>(j * m + col)) << 3), sum / ujj)
+    }
+  }
+
+  return 1
+}
+
+// ============================================
 // OPTIMIZED 2x2 INVERSE
 // ============================================
 
