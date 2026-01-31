@@ -9,13 +9,21 @@ import { factory } from '../../utils/factory.ts'
 import { getPrecedence } from '../operators.ts'
 import type { MathNode } from './Node.ts'
 
+interface NodeConstructor {
+  new (...args: any[]): MathNode
+}
+
+interface ConditionalNodeDependencies {
+  Node: NodeConstructor
+}
+
 const name = 'ConditionalNode'
 const dependencies = ['Node']
 
 export const createConditionalNode = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ Node }: { Node: new (...args: any[]) => MathNode }) => {
+  ({ Node }: ConditionalNodeDependencies) => {
     /**
      * Test whether a condition is met
      * @param {*} condition

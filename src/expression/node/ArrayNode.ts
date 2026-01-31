@@ -3,13 +3,21 @@ import { map } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 import type { MathNode } from './Node.ts'
 
+interface NodeConstructor {
+  new (...args: any[]): MathNode
+}
+
+interface ArrayNodeDependencies {
+  Node: NodeConstructor
+}
+
 const name = 'ArrayNode'
 const dependencies = ['Node']
 
 export const createArrayNode = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ Node }: { Node: new (...args: any[]) => MathNode }) => {
+  ({ Node }: ArrayNodeDependencies) => {
     class ArrayNode extends Node {
       items: MathNode[]
 

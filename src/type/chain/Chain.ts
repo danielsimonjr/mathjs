@@ -2,6 +2,21 @@ import { isChain } from '../../utils/is.ts'
 import { format } from '../../utils/string.ts'
 import { hasOwnProperty, lazy } from '../../utils/object.ts'
 import { factory } from '../../utils/factory.ts'
+import type { TypedFunction } from '../../core/function/typed.ts'
+
+interface OnFunction {
+  (event: string, callback: (name: string, fn: Function) => void): void
+}
+
+interface MathInstance {
+  [key: string]: any
+}
+
+interface ChainDependencies {
+  on?: OnFunction
+  math: MathInstance
+  typed: TypedFunction
+}
 
 const name = 'Chain'
 const dependencies = ['?on', 'math', 'typed']
@@ -9,7 +24,7 @@ const dependencies = ['?on', 'math', 'typed']
 export const createChainClass = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ on, math, typed }: { on?: any; math: any; typed: any }) => {
+  ({ on, math, typed }: ChainDependencies) => {
     /**
      * @constructor Chain
      * Wrap any value in a chain, allowing to perform chained operations on
