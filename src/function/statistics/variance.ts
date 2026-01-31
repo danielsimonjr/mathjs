@@ -2,7 +2,23 @@ import { deepForEach } from '../../utils/collection.ts'
 import { isBigNumber } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Minimum array length for WASM to be beneficial
+const WASM_VARIANCE_THRESHOLD = 100
+
+/**
+ * Check if an array is a flat array of plain numbers
+ */
+function isFlatNumberArray(arr: unknown[]): arr is number[] {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== 'number') {
+      return false
+    }
+  }
+  return true
+}
 
 // Type definitions for variance
 interface MatrixType {
@@ -141,14 +157,40 @@ export const createVariance = /* #__PURE__ */ factory(
       array: unknown[] | MatrixType,
       normalization: NormalizationType
     ): unknown {
-      let sum: unknown
-      let num = 0
-
       if ((array as unknown[]).length === 0) {
         throw new SyntaxError(
           'Function variance requires one or more parameters (0 provided)'
         )
       }
+
+      // WASM fast path for flat arrays of plain numbers
+      // Note: WASM supports unbiased (ddof=1) and uncorrected (ddof=0), but not biased
+      if (
+        Array.isArray(array) &&
+        array.length >= WASM_VARIANCE_THRESHOLD &&
+        (normalization === 'unbiased' || normalization === 'uncorrected')
+      ) {
+        if (isFlatNumberArray(array)) {
+          const wasm = wasmLoader.getModule()
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array)
+              try {
+                const ddof = normalization === 'unbiased' ? 1 : 0
+                return wasm.statsVariance(alloc.ptr, array.length, ddof)
+              } finally {
+                wasmLoader.free(alloc.ptr)
+              }
+            } catch {
+              // Fall back to JS implementation on WASM error
+            }
+          }
+        }
+      }
+
+      // JavaScript fallback for mixed types, BigNumber, Complex, biased normalization, etc.
+      let sum: unknown
+      let num = 0
 
       // calculate the mean and number of elements
       deepForEach(array, function (value: unknown) {

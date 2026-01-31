@@ -299,6 +299,8 @@ export {
   std as statsStd,
   sum as statsSum,
   prod as statsProd,
+  min as statsMin,
+  max as statsMax,
   mad as statsMad,
   kurtosis as statsKurtosis,
   skewness as statsSkewness,

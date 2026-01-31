@@ -4,7 +4,23 @@ import { _switch } from '../../utils/switch.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
 import { arraySize } from '../../utils/array.ts'
 import { IndexError } from '../../error/IndexError.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Minimum array length for WASM to be beneficial
+const WASM_CUMSUM_THRESHOLD = 100
+
+/**
+ * Check if an array is a flat array of plain numbers
+ */
+function isFlatNumberArray(arr: unknown[]): arr is number[] {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== 'number') {
+      return false
+    }
+  }
+  return true
+}
 
 // Type definitions for cumsum
 interface MatrixType {
@@ -109,6 +125,31 @@ export const createCumSum = /* #__PURE__ */ factory(
         return []
       }
 
+      // WASM fast path for flat arrays of plain numbers
+      if (array.length >= WASM_CUMSUM_THRESHOLD && isFlatNumberArray(array)) {
+        const wasm = wasmLoader.getModule()
+        if (wasm) {
+          try {
+            // WASM statsCumsum operates in-place, so we allocate and copy
+            const alloc = wasmLoader.allocateFloat64Array(array)
+            try {
+              wasm.statsCumsum(alloc.ptr, array.length)
+              // Read results back
+              const result: number[] = new Array(array.length)
+              for (let i = 0; i < array.length; i++) {
+                result[i] = alloc.array[i]
+              }
+              return result
+            } finally {
+              wasmLoader.free(alloc.ptr)
+            }
+          } catch {
+            // Fall back to JS implementation on WASM error
+          }
+        }
+      }
+
+      // JavaScript fallback
       const sums = [unaryPlus(array[0])] // unaryPlus converts to number if need be
       for (let i = 1; i < array.length; ++i) {
         // Must use add below and not addScalar for the case of summing a

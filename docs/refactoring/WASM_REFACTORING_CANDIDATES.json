@@ -18,7 +18,9 @@
       "name": "Statistics Reductions",
       "duration": "2 days",
       "files": ["sum.ts", "prod.ts", "mean.ts", "cumsum.ts", "max.ts", "min.ts", "variance.ts", "std.ts"],
-      "total_speedup": "15-25x"
+      "total_speedup": "15-25x",
+      "status": "completed",
+      "completed_date": "2026-01-30"
     },
     {
       "phase": 2,
@@ -62,8 +64,8 @@
         "Eliminate type conversions in hot loop",
         "Add dimension-aware accumulation"
       ],
-      "status": "pending",
-      "notes": "High call frequency, significant optimization opportunity"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls statsSum for flat number arrays >= 100 elements"
     },
     {
       "file": "src/function/statistics/prod.ts",
@@ -76,8 +78,8 @@
         "Mirror of sum.ts refactoring",
         "Multiplicative accumulation pattern"
       ],
-      "status": "pending",
-      "notes": "Often called with large arrays"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls statsProd for flat number arrays >= 100 elements"
     },
     {
       "file": "src/function/statistics/mean.ts",
@@ -91,8 +93,8 @@
         "Fast path for pure numbers",
         "Dimension-aware calculation"
       ],
-      "status": "pending",
-      "notes": "Very high call frequency"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls statsMean for flat number arrays >= 100 elements"
     },
     {
       "file": "src/function/statistics/cumsum.ts",
@@ -106,8 +108,8 @@
         "Eliminate type checks inside loop",
         "Add dimension support"
       ],
-      "status": "pending",
-      "notes": "Sequential memory access patterns optimal for WASM"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls statsCumsum for flat number arrays >= 100 elements"
     },
     {
       "file": "src/function/statistics/max.ts",
@@ -121,8 +123,8 @@
         "Extract pure number fast path",
         "Add dimension-wise optimization"
       ],
-      "status": "pending",
-      "notes": "Already handles numeric case, needs extraction"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls statsMax for flat number arrays >= 100 elements"
     },
     {
       "file": "src/function/statistics/min.ts",
@@ -134,8 +136,8 @@
       "refactoring_needed": [
         "Mirror of max.ts refactoring"
       ],
-      "status": "pending",
-      "notes": "Parallel refactoring opportunity with max"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls statsMin for flat number arrays >= 100 elements"
     },
     {
       "file": "src/function/statistics/variance.ts",
@@ -149,8 +151,8 @@
         "Eliminate type checks in loop",
         "Normalization parameter optimization"
       ],
-      "status": "pending",
-      "notes": "Two normalization modes can be handled in WASM"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls statsVariance for flat number arrays >= 100 elements (unbiased/uncorrected modes)"
     },
     {
       "file": "src/function/statistics/std.ts",
@@ -163,8 +165,8 @@
         "Combine variance + sqrt into single WASM function",
         "Eliminate intermediate allocation"
       ],
-      "status": "pending",
-      "notes": "Frequently called after variance"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls statsStd for flat number arrays >= 100 elements (unbiased/uncorrected modes)"
     },
     {
       "file": "src/function/statistics/median.ts",

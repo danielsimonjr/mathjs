@@ -357,6 +357,9 @@ export interface WasmModule {
   statsStd: (aPtr: number, n: number, ddof: number) => number
   statsSum: (aPtr: number, n: number) => number
   statsProd: (aPtr: number, n: number) => number
+  statsMin: (aPtr: number, n: number) => number
+  statsMax: (aPtr: number, n: number) => number
+  statsCumsum: (aPtr: number, n: number) => void
   statsMad: (aPtr: number, n: number) => number
   statsCorrelation: (aPtr: number, bPtr: number, n: number) => number
   statsCovariance: (

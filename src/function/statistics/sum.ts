@@ -5,8 +5,24 @@ import {
 } from '../../utils/collection.ts'
 import { factory } from '../../utils/factory.ts'
 import { improveErrorMessage } from './utils/improveErrorMessage.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { ConfigOptions } from '../../core/config.ts'
+
+// Minimum array length for WASM to be beneficial
+const WASM_SUM_THRESHOLD = 100
+
+/**
+ * Check if an array is a flat array of plain numbers
+ */
+function isFlatNumberArray(arr: unknown[]): arr is number[] {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== 'number') {
+      return false
+    }
+  }
+  return true
+}
 
 // Type definitions for sum
 interface MatrixType {
@@ -87,6 +103,26 @@ export const createSum = /* #__PURE__ */ factory(
      * @private
      */
     function _sum(array: unknown[] | MatrixType): unknown {
+      // WASM fast path for flat arrays of plain numbers
+      if (Array.isArray(array) && array.length >= WASM_SUM_THRESHOLD) {
+        if (isFlatNumberArray(array)) {
+          const wasm = wasmLoader.getModule()
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array)
+              try {
+                return wasm.statsSum(alloc.ptr, array.length)
+              } finally {
+                wasmLoader.free(alloc.ptr)
+              }
+            } catch {
+              // Fall back to JS implementation on WASM error
+            }
+          }
+        }
+      }
+
+      // JavaScript fallback for mixed types, BigNumber, Complex, etc.
       let sum: unknown
 
       deepForEach(array, function (value: unknown) {

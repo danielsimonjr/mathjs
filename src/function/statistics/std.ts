@@ -1,6 +1,22 @@
 import { factory } from '../../utils/factory.ts'
 import { isCollection } from '../../utils/is.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
+
+// Minimum array length for WASM to be beneficial
+const WASM_STD_THRESHOLD = 100
+
+/**
+ * Check if an array is a flat array of plain numbers
+ */
+function isFlatNumberArray(arr: unknown[]): arr is number[] {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== 'number') {
+      return false
+    }
+  }
+  return true
+}
 
 // Type definitions for std
 interface MatrixType {
@@ -96,7 +112,7 @@ export const createStd = /* #__PURE__ */ factory(
 
     function _std(
       array: unknown[] | MatrixType,
-      _normalization?: NormalizationType | number | { valueOf(): number }
+      normalizationOrDim?: NormalizationType | number | { valueOf(): number }
     ): unknown {
       if ((array as unknown[]).length === 0) {
         throw new SyntaxError(
@@ -104,6 +120,40 @@ export const createStd = /* #__PURE__ */ factory(
         )
       }
 
+      // WASM fast path for flat arrays of plain numbers with normalization (not dimension)
+      // Only use WASM when we have a flat array and string normalization (or default)
+      const normalization: NormalizationType =
+        typeof normalizationOrDim === 'string'
+          ? normalizationOrDim
+          : 'unbiased'
+      const isDimension = typeof normalizationOrDim === 'number' ||
+        (normalizationOrDim !== undefined && typeof normalizationOrDim === 'object')
+
+      if (
+        !isDimension &&
+        Array.isArray(array) &&
+        array.length >= WASM_STD_THRESHOLD &&
+        (normalization === 'unbiased' || normalization === 'uncorrected')
+      ) {
+        if (isFlatNumberArray(array)) {
+          const wasm = wasmLoader.getModule()
+          if (wasm) {
+            try {
+              const alloc = wasmLoader.allocateFloat64Array(array)
+              try {
+                const ddof = normalization === 'unbiased' ? 1 : 0
+                return wasm.statsStd(alloc.ptr, array.length, ddof)
+              } finally {
+                wasmLoader.free(alloc.ptr)
+              }
+            } catch {
+              // Fall back to JS implementation on WASM error
+            }
+          }
+        }
+      }
+
+      // JavaScript fallback
       try {
         const v = variance.apply(null, arguments as unknown as unknown[])
         if (isCollection(v)) {
