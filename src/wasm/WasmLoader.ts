@@ -100,7 +100,25 @@ export interface WasmModule {
   laDot: (aPtr: number, bPtr: number, n: number) => number
   laCross: (aPtr: number, bPtr: number) => number // returns ptr to result (3 elements)
   laNorm2: (xPtr: number, n: number) => number
-  laSolve: (aPtr: number, bPtr: number, n: number) => number // returns ptr to result
+  laSolve: (
+    aPtr: number,
+    bPtr: number,
+    n: number,
+    resultPtr: number,
+    workPtr: number
+  ) => number // returns 1 if successful, 0 if singular
+  laLsolve: (
+    lPtr: number,
+    bPtr: number,
+    n: number,
+    resultPtr: number
+  ) => number // returns 1 if successful, 0 if singular
+  laUsolve: (
+    uPtr: number,
+    bPtr: number,
+    n: number,
+    resultPtr: number
+  ) => number // returns 1 if successful, 0 if singular
 
   // Eigenvalue operations
   eigsSymmetric: (

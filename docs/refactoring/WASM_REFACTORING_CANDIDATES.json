@@ -37,7 +37,10 @@
       "name": "Linear Solvers",
       "duration": "1 week",
       "files": ["lsolve.ts", "usolve.ts", "lusolve.ts"],
-      "total_speedup": "20-100x"
+      "total_speedup": "20-100x",
+      "status": "completed",
+      "completed_date": "2026-01-30",
+      "notes": "All three files have WASM fast paths for dense plain number matrices >= 4x4"
     },
     {
       "phase": 4,
@@ -320,8 +323,36 @@
         "Cache LU factors in WASM memory",
         "Support iterative refinement"
       ],
-      "status": "pending",
-      "notes": "High performance critical for solving systems"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls laSolve for dense plain number matrices >= 4x4, combines LU + solve in one WASM call"
+    },
+    {
+      "file": "src/function/algebra/solver/lsolve.ts",
+      "category": "Solver",
+      "priority": 2,
+      "complexity": "Medium",
+      "effort": "Medium",
+      "speedup_estimate": "20-50x",
+      "refactoring_needed": [
+        "WASM forward substitution",
+        "Eliminate scalar function indirection"
+      ],
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls laLsolve for dense plain number matrices >= 4x4"
+    },
+    {
+      "file": "src/function/algebra/solver/usolve.ts",
+      "category": "Solver",
+      "priority": 2,
+      "complexity": "Medium",
+      "effort": "Medium",
+      "speedup_estimate": "20-50x",
+      "refactoring_needed": [
+        "WASM backward substitution",
+        "Eliminate scalar function indirection"
+      ],
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls laUsolve for dense plain number matrices >= 4x4"
     },
     {
       "file": "src/function/algebra/decomposition/lup.ts",

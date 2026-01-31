@@ -342,7 +342,9 @@ export {
   cond1 as laCond1,
   condInf as laCondInf,
   rank as laRank,
-  solve as laSolve
+  solve as laSolve,
+  lsolve as laLsolve,
+  usolve as laUsolve
 } from './matrix/linalg'
 
 // Eigenvalue operations
