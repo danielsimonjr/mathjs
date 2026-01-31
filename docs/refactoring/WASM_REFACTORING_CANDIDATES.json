@@ -1,0 +1,655 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generated": "2026-01-30",
+    "description": "TypeScript files that could become WASM candidates after refactoring",
+    "criteria": "Based on docs/ASSEMBLYSCRIPT_STYLE_GUIDE.md"
+  },
+  "summary": {
+    "total_candidates": 55,
+    "priority_1_quick_wins": 10,
+    "priority_2_high_impact": 12,
+    "priority_3_complex": 33,
+    "estimated_phases": 5
+  },
+  "implementation_phases": [
+    {
+      "phase": 1,
+      "name": "Statistics Reductions",
+      "duration": "2 days",
+      "files": ["sum.ts", "prod.ts", "mean.ts", "cumsum.ts", "max.ts", "min.ts", "variance.ts", "std.ts"],
+      "total_speedup": "15-25x"
+    },
+    {
+      "phase": 2,
+      "name": "Matrix Operations",
+      "duration": "2-3 days",
+      "files": ["transpose.ts", "det.ts (extend)", "inv.ts", "partitionSelect.ts", "sort.ts"],
+      "total_speedup": "15-100x"
+    },
+    {
+      "phase": 3,
+      "name": "Linear Solvers",
+      "duration": "1 week",
+      "files": ["lsolve.ts", "usolve.ts", "lusolve.ts"],
+      "total_speedup": "20-100x"
+    },
+    {
+      "phase": 4,
+      "name": "Matrix Decompositions",
+      "duration": "1 week",
+      "files": ["lup.ts", "qr.ts", "schur.ts"],
+      "total_speedup": "50-200x"
+    },
+    {
+      "phase": 5,
+      "name": "Eigenvalues & Advanced",
+      "duration": "1-2 weeks",
+      "files": ["eigs.ts", "realSymmetric.ts", "complexEigs.ts", "fft.ts", "ifft.ts"],
+      "total_speedup": "50-300x"
+    }
+  ],
+  "candidates": [
+    {
+      "file": "src/function/statistics/sum.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low",
+      "effort": "Low",
+      "speedup_estimate": "15-20x",
+      "refactoring_needed": [
+        "Extract pure number fast path",
+        "Eliminate type conversions in hot loop",
+        "Add dimension-aware accumulation"
+      ],
+      "status": "pending",
+      "notes": "High call frequency, significant optimization opportunity"
+    },
+    {
+      "file": "src/function/statistics/prod.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low",
+      "effort": "Low",
+      "speedup_estimate": "15-20x",
+      "refactoring_needed": [
+        "Mirror of sum.ts refactoring",
+        "Multiplicative accumulation pattern"
+      ],
+      "status": "pending",
+      "notes": "Often called with large arrays"
+    },
+    {
+      "file": "src/function/statistics/mean.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low",
+      "effort": "Low",
+      "speedup_estimate": "12-18x",
+      "refactoring_needed": [
+        "Combine sum + divide into single WASM function",
+        "Fast path for pure numbers",
+        "Dimension-aware calculation"
+      ],
+      "status": "pending",
+      "notes": "Very high call frequency"
+    },
+    {
+      "file": "src/function/statistics/cumsum.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low",
+      "effort": "Low",
+      "speedup_estimate": "20-25x",
+      "refactoring_needed": [
+        "Extract pure number fast path",
+        "Eliminate type checks inside loop",
+        "Add dimension support"
+      ],
+      "status": "pending",
+      "notes": "Sequential memory access patterns optimal for WASM"
+    },
+    {
+      "file": "src/function/statistics/max.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low",
+      "effort": "Low",
+      "speedup_estimate": "10-15x",
+      "refactoring_needed": [
+        "Replace deepForEach with typed iteration",
+        "Extract pure number fast path",
+        "Add dimension-wise optimization"
+      ],
+      "status": "pending",
+      "notes": "Already handles numeric case, needs extraction"
+    },
+    {
+      "file": "src/function/statistics/min.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low",
+      "effort": "Low",
+      "speedup_estimate": "10-15x",
+      "refactoring_needed": [
+        "Mirror of max.ts refactoring"
+      ],
+      "status": "pending",
+      "notes": "Parallel refactoring opportunity with max"
+    },
+    {
+      "file": "src/function/statistics/variance.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low",
+      "effort": "Low",
+      "speedup_estimate": "12-18x",
+      "refactoring_needed": [
+        "Single-pass Welford's algorithm",
+        "Eliminate type checks in loop",
+        "Normalization parameter optimization"
+      ],
+      "status": "pending",
+      "notes": "Two normalization modes can be handled in WASM"
+    },
+    {
+      "file": "src/function/statistics/std.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low",
+      "effort": "Low",
+      "speedup_estimate": "12-18x",
+      "refactoring_needed": [
+        "Combine variance + sqrt into single WASM function",
+        "Eliminate intermediate allocation"
+      ],
+      "status": "pending",
+      "notes": "Frequently called after variance"
+    },
+    {
+      "file": "src/function/statistics/median.ts",
+      "category": "Statistics",
+      "priority": 1,
+      "complexity": "Low-Medium",
+      "effort": "Low",
+      "speedup_estimate": "8-12x",
+      "refactoring_needed": [
+        "Extract numeric path",
+        "Optimize sort for numbers",
+        "Dimension-wise fast path"
+      ],
+      "status": "pending",
+      "notes": "Depends on partitionSelect quality"
+    },
+    {
+      "file": "src/function/matrix/partitionSelect.ts",
+      "category": "Selection",
+      "priority": 1,
+      "complexity": "Low-Medium",
+      "effort": "Medium",
+      "speedup_estimate": "10-20x",
+      "refactoring_needed": [
+        "Pure number path with numeric comparison",
+        "Eliminate comparison function indirection",
+        "Partition in-place in WASM"
+      ],
+      "status": "pending",
+      "notes": "Called by median and sort algorithms"
+    },
+    {
+      "file": "src/function/matrix/sort.ts",
+      "category": "Sorting",
+      "priority": 2,
+      "complexity": "Low-Medium",
+      "effort": "Medium",
+      "speedup_estimate": "15-25x",
+      "refactoring_needed": [
+        "Extract numeric sort fast path",
+        "Eliminate compare function call overhead",
+        "Multi-threaded WASM option for large arrays"
+      ],
+      "status": "pending",
+      "notes": "High performance impact for analytics"
+    },
+    {
+      "file": "src/function/geometry/distance.ts",
+      "category": "Geometry",
+      "priority": 2,
+      "complexity": "Low-Medium",
+      "effort": "Low",
+      "speedup_estimate": "8-15x",
+      "refactoring_needed": [
+        "Extract pure number Euclidean fast path",
+        "Eliminate scalar operation indirection",
+        "Vector norm optimization"
+      ],
+      "status": "pending",
+      "notes": "Heavy use in ML/graphics operations"
+    },
+    {
+      "file": "src/function/arithmetic/norm.ts",
+      "category": "Arithmetic",
+      "priority": 2,
+      "complexity": "Low-Medium",
+      "effort": "Medium",
+      "speedup_estimate": "12-20x",
+      "refactoring_needed": [
+        "Pure number norm (L2, L1, Linf fast paths)",
+        "Eliminate type conversion loop",
+        "SIMD vectorization opportunity"
+      ],
+      "status": "pending",
+      "notes": "Very high call frequency in numerical algorithms"
+    },
+    {
+      "file": "src/function/arithmetic/hypot.ts",
+      "category": "Arithmetic",
+      "priority": 2,
+      "complexity": "Low-Medium",
+      "effort": "Low",
+      "speedup_estimate": "8-12x",
+      "refactoring_needed": [
+        "Pure number fast path",
+        "Vectorized for N-ary hypot"
+      ],
+      "status": "pending",
+      "notes": "Building block for norm calculations"
+    },
+    {
+      "file": "src/function/matrix/transpose.ts",
+      "category": "Matrix",
+      "priority": 2,
+      "complexity": "Medium",
+      "effort": "Medium",
+      "speedup_estimate": "15-25x",
+      "refactoring_needed": [
+        "Direct WASM copy with stride optimization",
+        "Cache-friendly transpose for large matrices",
+        "Support both dense and sparse layouts"
+      ],
+      "status": "pending",
+      "notes": "Building block for many algorithms"
+    },
+    {
+      "file": "src/function/matrix/det.ts",
+      "category": "Matrix",
+      "priority": 2,
+      "complexity": "Medium",
+      "effort": "Medium",
+      "speedup_estimate": "20-50x",
+      "refactoring_needed": [
+        "Extend WASM to support Complex, BigNumber paths",
+        "Implement sparse matrix determinant",
+        "Lower threshold from 4x4 to 2x2",
+        "Add LU-cached determinant path"
+      ],
+      "status": "partial_wasm",
+      "notes": "Already has WASM for 4x4+, needs extension"
+    },
+    {
+      "file": "src/function/matrix/inv.ts",
+      "category": "Matrix",
+      "priority": 2,
+      "complexity": "Medium",
+      "effort": "Medium",
+      "speedup_estimate": "30-100x",
+      "refactoring_needed": [
+        "WASM dense matrix inversion",
+        "Handle square and near-singular cases",
+        "Add structured matrix optimizations",
+        "Complex number support"
+      ],
+      "status": "pending",
+      "notes": "Very high performance impact"
+    },
+    {
+      "file": "src/function/algebra/solver/lusolve.ts",
+      "category": "Solver",
+      "priority": 2,
+      "complexity": "Medium",
+      "effort": "Medium",
+      "speedup_estimate": "50-100x",
+      "refactoring_needed": [
+        "Combine LU + forward + back solve in single WASM pass",
+        "Eliminate JS callback overhead between steps",
+        "Cache LU factors in WASM memory",
+        "Support iterative refinement"
+      ],
+      "status": "pending",
+      "notes": "High performance critical for solving systems"
+    },
+    {
+      "file": "src/function/algebra/decomposition/lup.ts",
+      "category": "Decomposition",
+      "priority": 2,
+      "complexity": "Medium-High",
+      "effort": "High",
+      "speedup_estimate": "50-200x",
+      "refactoring_needed": [
+        "WASM LU factorization (Doolittle algorithm)",
+        "In-place factorization with permutation vector",
+        "Pivoting strategies optimization",
+        "Support for dense and sparse"
+      ],
+      "status": "pending",
+      "notes": "Foundation for many solvers"
+    },
+    {
+      "file": "src/function/algebra/decomposition/qr.ts",
+      "category": "Decomposition",
+      "priority": 2,
+      "complexity": "Medium-High",
+      "effort": "High",
+      "speedup_estimate": "50-150x",
+      "refactoring_needed": [
+        "WASM QR via Householder or Givens rotations",
+        "Householder reflection vectors stored efficiently",
+        "Support complex matrices",
+        "Rank-deficient detection"
+      ],
+      "status": "pending",
+      "notes": "Critical for least squares problems"
+    },
+    {
+      "file": "src/function/matrix/fft.ts",
+      "category": "Signal",
+      "priority": 2,
+      "complexity": "Medium-High",
+      "effort": "Medium",
+      "speedup_estimate": "20-100x",
+      "refactoring_needed": [
+        "Format conversion: Complex to interleaved [re, im]",
+        "Power-of-2 detection and optimized path",
+        "Connect to existing WASM FFT in src/wasm/signal/fft.ts"
+      ],
+      "status": "partial_wasm",
+      "notes": "Has TODO comment for WASM, WASM FFT exists"
+    },
+    {
+      "file": "src/function/matrix/ifft.ts",
+      "category": "Signal",
+      "priority": 2,
+      "complexity": "Medium-High",
+      "effort": "Medium",
+      "speedup_estimate": "20-100x",
+      "refactoring_needed": [
+        "Direct WASM ifft",
+        "Combined with fft for twiddle factor reuse",
+        "Format conversion layer"
+      ],
+      "status": "pending",
+      "notes": "Mirror of fft refactoring"
+    },
+    {
+      "file": "src/function/algebra/decomposition/schur.ts",
+      "category": "Decomposition",
+      "priority": 3,
+      "complexity": "Medium-High",
+      "effort": "High",
+      "speedup_estimate": "50-100x",
+      "refactoring_needed": [
+        "WASM QR iteration algorithm",
+        "Deflation strategies",
+        "Shift strategies (single/double)",
+        "Hessenberg form computation"
+      ],
+      "status": "pending",
+      "notes": "Eigenvalue algorithm, complex to optimize"
+    },
+    {
+      "file": "src/function/matrix/eigs.ts",
+      "category": "Eigenvalue",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "High",
+      "speedup_estimate": "50-200x",
+      "refactoring_needed": [
+        "WASM QR iteration for eigenvalues",
+        "Separate real symmetric vs general",
+        "Power iteration for dominant eigenvalue",
+        "Subspace iteration for multiple eigenvalues",
+        "Complex number support"
+      ],
+      "status": "pending",
+      "notes": "Critical but complex algorithm"
+    },
+    {
+      "file": "src/function/matrix/eigs/realSymmetric.ts",
+      "category": "Eigenvalue",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "High",
+      "speedup_estimate": "100-300x",
+      "refactoring_needed": [
+        "WASM tridiagonal eigenvalue algorithm",
+        "Lanczos iteration for large matrices",
+        "Bisection method for eigenvalue location",
+        "WASM QR and implicit Q theorem"
+      ],
+      "status": "pending",
+      "notes": "Frequently called, high-impact optimization"
+    },
+    {
+      "file": "src/function/matrix/eigs/complexEigs.ts",
+      "category": "Eigenvalue",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "High",
+      "speedup_estimate": "80-200x",
+      "refactoring_needed": [
+        "WASM complex QR iteration",
+        "Hessenberg form computation",
+        "Complex arithmetic in WASM",
+        "Wilkinson shift strategies"
+      ],
+      "status": "pending",
+      "notes": "Very compute intensive"
+    },
+    {
+      "file": "src/function/algebra/polynomialRoot.ts",
+      "category": "Algebra",
+      "priority": 3,
+      "complexity": "Medium-High",
+      "effort": "High",
+      "speedup_estimate": "50-150x",
+      "refactoring_needed": [
+        "WASM companion matrix eigenvalue approach",
+        "Durand-Kerner method",
+        "Aberth-Ehrlich method",
+        "Complex arithmetic required"
+      ],
+      "status": "pending",
+      "notes": "Iterative algorithm, good WASM fit"
+    },
+    {
+      "file": "src/function/algebra/decomposition/slu.ts",
+      "category": "Sparse",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "Very High",
+      "speedup_estimate": "100-500x",
+      "refactoring_needed": [
+        "WASM sparse LU with supernodal approach",
+        "Efficient CSparse format in WASM memory",
+        "Memory-efficient sparse representation",
+        "Symbolic/numeric phase separation"
+      ],
+      "status": "pending",
+      "notes": "Major performance bottleneck for sparse problems"
+    },
+    {
+      "file": "src/function/complex/arg.ts",
+      "category": "Complex",
+      "priority": 3,
+      "complexity": "Very Low",
+      "effort": "Low",
+      "speedup_estimate": "5-8x",
+      "refactoring_needed": [
+        "Extract numeric path",
+        "Create WASM wrapper for pure number inputs"
+      ],
+      "status": "pending",
+      "notes": "Polar coordinate conversion"
+    },
+    {
+      "file": "src/function/complex/conj.ts",
+      "category": "Complex",
+      "priority": 3,
+      "complexity": "Very Low",
+      "effort": "Low",
+      "speedup_estimate": "8-12x",
+      "refactoring_needed": [
+        "Pure number path extraction",
+        "Add WASM interleaved format support"
+      ],
+      "status": "pending",
+      "notes": "Simple conjugate operation"
+    },
+    {
+      "file": "src/function/probability/gamma.ts",
+      "category": "Special",
+      "priority": 3,
+      "complexity": "Medium",
+      "effort": "Medium",
+      "speedup_estimate": "15-30x",
+      "refactoring_needed": [
+        "WASM pure number gamma path",
+        "Fast path for integer/half-integer arguments",
+        "Complex gamma via duplication formula"
+      ],
+      "status": "pending",
+      "notes": "Uses specialized numeric implementation"
+    },
+    {
+      "file": "src/function/probability/combinations.ts",
+      "category": "Combinatorics",
+      "priority": 3,
+      "complexity": "Low-Medium",
+      "effort": "Low",
+      "speedup_estimate": "10-20x",
+      "refactoring_needed": [
+        "WASM pure number path",
+        "BigNumber path remains in JS",
+        "Memoization table in WASM"
+      ],
+      "status": "pending",
+      "notes": "Number case is common"
+    },
+    {
+      "file": "src/function/probability/permutations.ts",
+      "category": "Combinatorics",
+      "priority": 3,
+      "complexity": "Low-Medium",
+      "effort": "Low",
+      "speedup_estimate": "10-20x",
+      "refactoring_needed": [
+        "WASM pure number path",
+        "Optimize for repeated calls"
+      ],
+      "status": "pending",
+      "notes": "Less frequently called"
+    },
+    {
+      "file": "src/function/probability/factorial.ts",
+      "category": "Combinatorics",
+      "priority": 3,
+      "complexity": "Low-Medium",
+      "effort": "Low",
+      "speedup_estimate": "10-15x",
+      "refactoring_needed": [
+        "Pure number fast path with precomputed table",
+        "Stirling approximation in WASM",
+        "Cache table in WASM memory"
+      ],
+      "status": "pending",
+      "notes": "Very high call frequency"
+    },
+    {
+      "file": "src/function/algebra/sparse/csAmd.ts",
+      "category": "Sparse",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "Very High",
+      "speedup_estimate": "100-500x",
+      "refactoring_needed": [
+        "AMD ordering in WASM",
+        "Efficient CSparse format handling",
+        "Eliminate JS callback overhead"
+      ],
+      "status": "pending",
+      "notes": "Recursive algorithm"
+    },
+    {
+      "file": "src/function/algebra/sparse/csChol.ts",
+      "category": "Sparse",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "Very High",
+      "speedup_estimate": "100-500x",
+      "refactoring_needed": [
+        "Sparse Cholesky in WASM",
+        "Symbolic factorization",
+        "Supernodal approach"
+      ],
+      "status": "pending",
+      "notes": "Cholesky factorization"
+    },
+    {
+      "file": "src/function/algebra/sparse/csLu.ts",
+      "category": "Sparse",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "Very High",
+      "speedup_estimate": "100-500x",
+      "refactoring_needed": [
+        "Sparse LU in WASM",
+        "Pivoting optimization",
+        "Fill-in minimization"
+      ],
+      "status": "pending",
+      "notes": "Sparse LU factorization"
+    },
+    {
+      "file": "src/function/algebra/sparse/csSpsolve.ts",
+      "category": "Sparse",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "High",
+      "speedup_estimate": "50-200x",
+      "refactoring_needed": [
+        "Sparse triangular solve in WASM",
+        "Optimize for sparse RHS"
+      ],
+      "status": "pending",
+      "notes": "Sparse triangular solve"
+    },
+    {
+      "file": "src/function/algebra/sparse/csDfs.ts",
+      "category": "Sparse",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "High",
+      "speedup_estimate": "50-100x",
+      "refactoring_needed": [
+        "DFS in WASM with stack-based approach",
+        "Eliminate recursion"
+      ],
+      "status": "pending",
+      "notes": "Depth-first search"
+    },
+    {
+      "file": "src/function/algebra/sparse/csReach.ts",
+      "category": "Sparse",
+      "priority": 3,
+      "complexity": "High",
+      "effort": "High",
+      "speedup_estimate": "50-100x",
+      "refactoring_needed": [
+        "Reachability in WASM",
+        "Efficient sparse traversal"
+      ],
+      "status": "pending",
+      "notes": "Reachability analysis"
+    }
+  ]
+}
