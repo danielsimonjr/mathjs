@@ -57,7 +57,10 @@
       "name": "Eigenvalues & Advanced",
       "duration": "1-2 weeks",
       "files": ["eigs.ts", "realSymmetric.ts", "complexEigs.ts", "fft.ts", "ifft.ts"],
-      "total_speedup": "50-300x"
+      "total_speedup": "50-300x",
+      "status": "completed",
+      "completed_date": "2026-01-30",
+      "notes": "All five files have WASM fast paths. realSymmetric uses eigsSymmetric, complexEigs uses qrAlgorithm (eigenvalues only), fft/ifft use interleaved complex format"
     }
   ],
   "candidates": [
@@ -417,8 +420,8 @@
         "Power-of-2 detection and optimized path",
         "Connect to existing WASM FFT in src/wasm/signal/fft.ts"
       ],
-      "status": "partial_wasm",
-      "notes": "Has TODO comment for WASM, WASM FFT exists"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls WASM fft for 1D power-of-2 arrays >= 64 elements, uses interleaved complex format [re, im, ...]"
     },
     {
       "file": "src/function/matrix/ifft.ts",
@@ -432,8 +435,8 @@
         "Combined with fft for twiddle factor reuse",
         "Format conversion layer"
       ],
-      "status": "pending",
-      "notes": "Mirror of fft refactoring"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls WASM fft with inverse=1 for 1D power-of-2 arrays >= 64 elements"
     },
     {
       "file": "src/function/matrix/eigs.ts",
@@ -449,8 +452,8 @@
         "Subspace iteration for multiple eigenvalues",
         "Complex number support"
       ],
-      "status": "pending",
-      "notes": "Critical but complex algorithm"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 via realSymmetric.ts and complexEigs.ts - delegates to underlying implementations"
     },
     {
       "file": "src/function/matrix/eigs/realSymmetric.ts",
@@ -465,8 +468,8 @@
         "Bisection method for eigenvalue location",
         "WASM QR and implicit Q theorem"
       ],
-      "status": "pending",
-      "notes": "Frequently called, high-impact optimization"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls eigsSymmetric for dense plain number matrices >= 4x4, computes both eigenvalues and eigenvectors"
     },
     {
       "file": "src/function/matrix/eigs/complexEigs.ts",
@@ -481,8 +484,8 @@
         "Complex arithmetic in WASM",
         "Wilkinson shift strategies"
       ],
-      "status": "pending",
-      "notes": "Very compute intensive"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls qrAlgorithm for eigenvalues-only computation of plain number matrices >= 4x4"
     },
     {
       "file": "src/function/algebra/polynomialRoot.ts",

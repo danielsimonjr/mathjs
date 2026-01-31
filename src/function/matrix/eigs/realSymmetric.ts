@@ -1,4 +1,25 @@
 import { clone } from '../../../utils/object.ts'
+import { wasmLoader } from '../../../wasm/WasmLoader.ts'
+
+// Minimum matrix size (n*n elements) for WASM to be beneficial
+const WASM_EIGS_THRESHOLD = 16 // 4x4 matrix
+
+/**
+ * Flatten a 2D array to a Float64Array in row-major order
+ */
+function flattenToFloat64(
+  matrix: number[][],
+  rows: number,
+  cols: number
+): Float64Array {
+  const result = new Float64Array(rows * cols)
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j]
+    }
+  }
+  return result
+}
 
 // Type definitions
 interface EigenvectorResult {
@@ -77,6 +98,85 @@ export function createRealSymmetric({
     computeVectors: boolean
   ): EigenResult {
     const N = x.length
+
+    // WASM fast path for plain number symmetric matrices
+    const wasm = wasmLoader.getModule()
+    if (wasm && N * N >= WASM_EIGS_THRESHOLD) {
+      try {
+        const flat = flattenToFloat64(x, N, N)
+        const matrixAlloc = wasmLoader.allocateFloat64Array(flat)
+        const eigenvaluesAlloc = wasmLoader.allocateFloat64ArrayEmpty(N)
+        const eigenvectorsAlloc = computeVectors
+          ? wasmLoader.allocateFloat64ArrayEmpty(N * N)
+          : { ptr: 0, array: new Float64Array(0) }
+        const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(N * N)
+
+        try {
+          const iterations = wasm.eigsSymmetric(
+            matrixAlloc.ptr,
+            N,
+            eigenvaluesAlloc.ptr,
+            eigenvectorsAlloc.ptr,
+            workAlloc.ptr,
+            1000, // maxIterations
+            precision
+          )
+
+          if (iterations >= 0) {
+            // Extract eigenvalues
+            const values: number[] = Array(N)
+            for (let i = 0; i < N; i++) {
+              values[i] = eigenvaluesAlloc.array[i]
+            }
+
+            if (!computeVectors) {
+              // Sort by absolute value
+              const sortedValues = values
+                .map((v, i) => ({ v, i }))
+                .sort((a, b) => Math.abs(a.v) - Math.abs(b.v))
+                .map((x) => x.v)
+              return { values: sortedValues }
+            }
+
+            // Extract eigenvectors (stored column-major in WASM)
+            const eigenvectors: EigenvectorResult[] = []
+            const sortedIndices = values
+              .map((v, i) => ({ v, i }))
+              .sort((a, b) => Math.abs(a.v) - Math.abs(b.v))
+              .map((x) => x.i)
+
+            for (const origIdx of sortedIndices) {
+              const vector: number[] = Array(N)
+              for (let i = 0; i < N; i++) {
+                // Eigenvectors stored column-major: column origIdx
+                vector[i] = eigenvectorsAlloc.array[i * N + origIdx]
+              }
+              eigenvectors.push({
+                value: values[origIdx],
+                vector
+              })
+            }
+
+            return {
+              values: sortedIndices.map((i) => values[i]),
+              eigenvectors
+            }
+          }
+          // Fall through to JS implementation if WASM failed
+        } finally {
+          wasmLoader.free(matrixAlloc.ptr)
+          wasmLoader.free(eigenvaluesAlloc.ptr)
+          if (computeVectors) {
+            wasmLoader.free(eigenvectorsAlloc.ptr)
+          }
+          wasmLoader.free(workAlloc.ptr)
+        }
+      } catch (e) {
+        // Fall back to JS implementation on WASM error
+      }
+    }
+
+    // JavaScript fallback
     const e0 = Math.abs(precision / N)
     let psi: number
     let Sij: number[][] | undefined

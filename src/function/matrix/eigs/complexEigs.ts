@@ -1,4 +1,25 @@
 import { clone } from '../../../utils/object.ts'
+import { wasmLoader } from '../../../wasm/WasmLoader.ts'
+
+// Minimum matrix size (n*n elements) for WASM to be beneficial
+const WASM_EIGS_THRESHOLD = 16 // 4x4 matrix
+
+/**
+ * Flatten a 2D array to a Float64Array in row-major order
+ */
+function flattenToFloat64(
+  matrix: number[][],
+  rows: number,
+  cols: number
+): Float64Array {
+  const result = new Float64Array(rows * cols)
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j]
+    }
+  }
+  return result
+}
 
 // Type definitions
 interface EigenvectorResult {
@@ -88,6 +109,67 @@ export function createComplexEigs({
     type: DataType,
     findVectors: boolean = true
   ): ComplexEigsResult {
+    // WASM fast path for eigenvalues-only computation of plain number matrices
+    // Note: WASM qrAlgorithm only computes eigenvalues, not eigenvectors
+    if (!findVectors && type === 'number' && N * N >= WASM_EIGS_THRESHOLD) {
+      const wasm = wasmLoader.getModule()
+      if (wasm) {
+        try {
+          const flat = flattenToFloat64(arr as number[][], N, N)
+          const matrixAlloc = wasmLoader.allocateFloat64Array(flat)
+          const eigenvaluesRealAlloc = wasmLoader.allocateFloat64ArrayEmpty(N)
+          const eigenvaluesImagAlloc = wasmLoader.allocateFloat64ArrayEmpty(N)
+          const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(N * N)
+
+          try {
+            const iterations = wasm.qrAlgorithm(
+              matrixAlloc.ptr,
+              N,
+              eigenvaluesRealAlloc.ptr,
+              eigenvaluesImagAlloc.ptr,
+              workAlloc.ptr,
+              1000, // maxIterations
+              typeof prec === 'number' ? prec : 1e-12
+            )
+
+            if (iterations >= 0) {
+              // Extract eigenvalues as complex numbers
+              const values: any[] = []
+              for (let i = 0; i < N; i++) {
+                const re = eigenvaluesRealAlloc.array[i]
+                const im = eigenvaluesImagAlloc.array[i]
+                if (Math.abs(im) < 1e-14) {
+                  values.push(re)
+                } else {
+                  values.push(complex(re, im))
+                }
+              }
+
+              // Sort by absolute value
+              values.sort((a, b) => {
+                const absA =
+                  typeof a === 'number' ? Math.abs(a) : Math.sqrt(a.re ** 2 + a.im ** 2)
+                const absB =
+                  typeof b === 'number' ? Math.abs(b) : Math.sqrt(b.re ** 2 + b.im ** 2)
+                return absA - absB
+              })
+
+              return { values }
+            }
+            // Fall through to JS implementation if WASM failed
+          } finally {
+            wasmLoader.free(matrixAlloc.ptr)
+            wasmLoader.free(eigenvaluesRealAlloc.ptr)
+            wasmLoader.free(eigenvaluesImagAlloc.ptr)
+            wasmLoader.free(workAlloc.ptr)
+          }
+        } catch (e) {
+          // Fall back to JS implementation on WASM error
+        }
+      }
+    }
+
+    // JavaScript fallback
     // TODO check if any row/col are zero except the diagonal
 
     // make sure corresponding rows and columns have similar magnitude

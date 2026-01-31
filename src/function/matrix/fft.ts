@@ -1,5 +1,57 @@
 import { arraySize } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
+
+// Minimum array size for WASM to be beneficial
+const WASM_FFT_THRESHOLD = 64 // At least 64 elements
+
+/**
+ * Check if n is a power of 2
+ */
+function isPowerOf2(n: number): boolean {
+  return n > 0 && (n & (n - 1)) === 0
+}
+
+/**
+ * Convert complex array to interleaved Float64Array [re0, im0, re1, im1, ...]
+ */
+function complexToInterleaved(
+  arr: any[],
+  complex: (re: number, im?: number) => any
+): Float64Array | null {
+  const n = arr.length
+  const result = new Float64Array(n * 2)
+  for (let i = 0; i < n; i++) {
+    const val = arr[i]
+    if (typeof val === 'number') {
+      result[i * 2] = val
+      result[i * 2 + 1] = 0
+    } else if (val && typeof val.re === 'number' && typeof val.im === 'number') {
+      result[i * 2] = val.re
+      result[i * 2 + 1] = val.im
+    } else {
+      // Unsupported type, fall back to JS
+      return null
+    }
+  }
+  return result
+}
+
+/**
+ * Convert interleaved Float64Array back to complex array
+ */
+function interleavedToComplex(
+  data: Float64Array,
+  n: number,
+  complex: (re: number, im?: number) => any
+): any[] {
+  const result: any[] = []
+  for (let i = 0; i < n; i++) {
+    result.push(complex(data[i * 2], data[i * 2 + 1]))
+  }
+  return result
+}
+
 // WASM integration for FFT is complex due to complex number format differences
 // See note above dependencies array for details
 
@@ -51,6 +103,7 @@ interface Dependencies {
   pow: TypedFunction
   ceil: TypedFunction
   log2: TypedFunction
+  complex: (re: number, im?: number) => any
 }
 
 // FFT WASM integration note:
@@ -76,7 +129,8 @@ const dependencies = [
   'conj',
   'pow',
   'ceil',
-  'log2'
+  'log2',
+  'complex'
 ]
 
 export const createFft = /* #__PURE__ */ factory(
@@ -95,7 +149,8 @@ export const createFft = /* #__PURE__ */ factory(
     conj,
     pow,
     ceil,
-    log2
+    log2,
+    complex
   }: Dependencies) => {
     /**
      * Calculate N-dimensional Fourier transform
@@ -226,6 +281,32 @@ export const createFft = /* #__PURE__ */ factory(
     function _fft(arr: ComplexArray, len?: number): ComplexArray {
       const length = len ?? arr.length
       if (length === 1) return [arr[0]]
+
+      // WASM fast path for power-of-2 sized arrays
+      const wasm = wasmLoader.getModule()
+      if (
+        wasm &&
+        length >= WASM_FFT_THRESHOLD &&
+        isPowerOf2(length) &&
+        len === undefined // Only use WASM for top-level call
+      ) {
+        const interleaved = complexToInterleaved(arr, complex)
+        if (interleaved) {
+          try {
+            const dataAlloc = wasmLoader.allocateFloat64Array(interleaved)
+            try {
+              wasm.fft(dataAlloc.ptr, length, 0) // 0 = forward FFT
+              return interleavedToComplex(dataAlloc.array, length, complex)
+            } finally {
+              wasmLoader.free(dataAlloc.ptr)
+            }
+          } catch (e) {
+            // Fall back to JS implementation on WASM error
+          }
+        }
+      }
+
+      // JavaScript fallback
       if (length % 2 === 0) {
         const ret: ComplexNumber[] = [
           ..._fft(
