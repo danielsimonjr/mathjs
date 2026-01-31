@@ -537,7 +537,10 @@ export interface FibonacciHeapInterface<T = MatrixValue> {
 
 /**
  * Callback for Range forEach operations.
- * The range parameter uses 'any' to allow the Range class to pass 'this'.
+ *
+ * INTENTIONAL ANY: The range parameter uses 'any' because the Range class
+ * passes 'this' which is the class instance. Using RangeInterface here would
+ * create a circular reference since Range implements RangeInterface.
  */
 export type RangeForEachCallback = (
   value: number,
@@ -547,7 +550,10 @@ export type RangeForEachCallback = (
 
 /**
  * Callback for Range map operations.
- * The range parameter uses 'any' to allow the Range class to pass 'this'.
+ *
+ * INTENTIONAL ANY: The range parameter uses 'any' because the Range class
+ * passes 'this' which is the class instance. Using RangeInterface here would
+ * create a circular reference since Range implements RangeInterface.
  */
 export type RangeMapCallback<T> = (
   value: number,
@@ -568,7 +574,7 @@ export interface RangeFormatOptions {
  * Range interface
  */
 export interface RangeInterface {
-  readonly type: 'Range'
+  readonly type: string
   readonly isRange: boolean
   start: number
   end: number

@@ -11,26 +11,28 @@ import type {
 
 /**
  * DenseMatrix interface for algorithm operations.
+ * Note: This algorithm only operates on 2D matrices, so we use MatrixArray (T[][]).
  */
 interface DenseMatrix {
   _data: MatrixArray
-  _size: number[]
+  _size: [number, number]
   _datatype?: DataType
-  getDataType(): DataType
+  getDataType(): string
   createDenseMatrix(config: DenseMatrixConstructorData): DenseMatrix
 }
 
 /**
  * SparseMatrix interface for algorithm operations.
+ * Note: SparseMatrix is always 2D.
  */
 interface SparseMatrix {
   _values?: MatrixValue[]
   _index: number[]
   _ptr: number[]
-  _size: number[]
+  _size: [number, number]
   _data?: MatrixArray
   _datatype?: DataType
-  getDataType(): DataType
+  getDataType(): string
 }
 
 const name = 'matAlgo01xDSid'

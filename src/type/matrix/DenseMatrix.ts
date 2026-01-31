@@ -622,7 +622,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
 
         const s = this.size()
         if (s.length !== 2) {
-          throw new TypeError('Rows can only be returned for a 2D matrix.')
+          throw new TypeError('Columns can only be returned for a 2D matrix.')
         }
 
         const data = this._data as any[][]

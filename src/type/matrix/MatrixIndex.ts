@@ -16,7 +16,10 @@ const dependencies = ['ImmutableDenseMatrix', 'getMatrixDataType']
 /**
  * Type representing a single dimension in an Index.
  * Can be a number, string (for object properties), Range, or ImmutableDenseMatrix.
- * Note: Uses 'any' for Range to accommodate both RangeInterface and Range class.
+ *
+ * INTENTIONAL structural type: Range is defined as a structural type rather than
+ * importing RangeInterface to avoid circular dependencies. The Range class is created
+ * in a separate factory and its interface matches this structural definition.
  */
 export type IndexDimension = number | string | ImmutableDenseMatrix | { size(): number[]; min(): number | undefined; max(): number | undefined; toArray(): number[]; toString(): string }
 

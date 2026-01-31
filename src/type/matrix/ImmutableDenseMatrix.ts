@@ -260,8 +260,14 @@ export const createImmutableDenseMatrixClass = /* #__PURE__ */ factory(
       }
 
       /**
-       * Get a JSON representation of the matrix
-       * @returns {Object}
+       * Get a JSON representation of the matrix.
+       *
+       * Note: min and max are intentionally excluded from the JSON output
+       * because they are computed lazily and caching them in JSON serialization
+       * would not be useful (they would need to be recomputed on deserialization
+       * anyway if the matrix data changed).
+       *
+       * @returns {ImmutableDenseMatrixJSON}
        */
       toJSON(): ImmutableDenseMatrixJSON {
         return {
