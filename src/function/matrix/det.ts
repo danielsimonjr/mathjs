@@ -208,11 +208,14 @@ export const createDet = /* #__PURE__ */ factory(
         try {
           const flat = flattenToFloat64(matrix, rows, rows)
           const a = wasmLoader.allocateFloat64Array(flat)
+          // workPtr needs n*n f64 values for LU decomposition
+          const work = wasmLoader.allocateFloat64ArrayEmpty(rows * rows)
           try {
-            const result = wasm.laDet(a.ptr, rows)
+            const result = wasm.laDet(a.ptr, rows, work.ptr)
             return result
           } finally {
             wasmLoader.free(a.ptr)
+            wasmLoader.free(work.ptr)
           }
         } catch {
           // Fall back to JS implementation on WASM error

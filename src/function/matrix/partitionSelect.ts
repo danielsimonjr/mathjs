@@ -1,6 +1,10 @@
 import { isMatrix } from '../../utils/is.ts'
 import { isInteger } from '../../utils/number.ts'
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
+
+// Minimum array length for WASM to be beneficial
+const WASM_PARTITION_SELECT_THRESHOLD = 100
 
 // Type definitions
 interface Matrix {
@@ -19,6 +23,18 @@ interface Dependencies {
   isNumeric: TypedFunction<boolean>
   isNaN: TypedFunction<boolean>
   compare: CompareFunction
+}
+
+/**
+ * Check if an array is a flat array of plain numbers
+ */
+function isFlatNumberArray(arr: any[]): arr is number[] {
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== 'number') {
+      return false
+    }
+  }
+  return true
 }
 
 const name = 'partitionSelect'
@@ -131,6 +147,44 @@ export const createPartitionSelect = /* #__PURE__ */ factory(
       for (let i = 0; i < arr.length; i++) {
         if (isNumeric(arr[i]) && mathIsNaN(arr[i])) {
           return arr[i] // return NaN
+        }
+      }
+
+      // WASM fast path for large flat number arrays with standard compare
+      const wasm = wasmLoader.getModule()
+      if (
+        wasm &&
+        arr.length >= WASM_PARTITION_SELECT_THRESHOLD &&
+        isFlatNumberArray(arr)
+      ) {
+        // Check if compare is one of our standard comparators
+        const isAsc = compare === asc
+        const isDesc = compare === desc
+
+        if (isAsc || isDesc) {
+          try {
+            const effectiveK = isDesc ? arr.length - 1 - k : k
+            const data = wasmLoader.allocateFloat64Array(arr)
+            const work = wasmLoader.allocateFloat64ArrayEmpty(arr.length)
+            try {
+              const result = wasm.partitionSelect(
+                data.ptr,
+                arr.length,
+                effectiveK,
+                work.ptr
+              )
+              // WASM modifies work array in-place, copy back to arr
+              for (let i = 0; i < arr.length; i++) {
+                arr[i] = work.array[i]
+              }
+              return result
+            } finally {
+              wasmLoader.free(data.ptr)
+              wasmLoader.free(work.ptr)
+            }
+          } catch {
+            // Fall back to JS implementation on WASM error
+          }
         }
       }
 

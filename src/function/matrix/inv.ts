@@ -2,6 +2,10 @@ import { isMatrix } from '../../utils/is.ts'
 import { arraySize } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 import { format } from '../../utils/string.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
+
+// Minimum matrix size (n*n elements) for WASM to be beneficial
+const WASM_INV_THRESHOLD = 16 // 4x4 matrix
 
 // Type definitions
 type NestedArray<T = any> = T | NestedArray<T>[]
@@ -43,6 +47,38 @@ interface Dependencies {
   det: TypedFunction
   identity: IdentityFunction
   abs: TypedFunction
+}
+
+/**
+ * Check if a 2D array contains only plain numbers
+ */
+function isPlainNumberMatrix(matrix: any[][]): boolean {
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i]
+    for (let j = 0; j < row.length; j++) {
+      if (typeof row[j] !== 'number') {
+        return false
+      }
+    }
+  }
+  return true
+}
+
+/**
+ * Flatten a 2D array to a Float64Array in row-major order
+ */
+function flattenToFloat64(
+  matrix: number[][],
+  rows: number,
+  cols: number
+): Float64Array {
+  const result = new Float64Array(rows * cols)
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      result[i * cols + j] = matrix[i][j]
+    }
+  }
+  return result
 }
 
 const name = 'inv'
@@ -161,6 +197,49 @@ export const createInv = /* #__PURE__ */ factory(
      */
     function _inv(mat: any[][], rows: number, cols: number): any[][] {
       let r: number, s: number, f: any, value: any, temp: any[]
+
+      // Try WASM for large matrices with plain numbers
+      const wasm = wasmLoader.getModule()
+      if (
+        wasm &&
+        rows >= 3 &&
+        rows * rows >= WASM_INV_THRESHOLD &&
+        isPlainNumberMatrix(mat)
+      ) {
+        try {
+          const flat = flattenToFloat64(mat, rows, rows)
+          const input = wasmLoader.allocateFloat64Array(flat)
+          const result = wasmLoader.allocateFloat64ArrayEmpty(rows * rows)
+          // workPtr needs n * 2n f64 values for augmented matrix
+          const work = wasmLoader.allocateFloat64ArrayEmpty(rows * 2 * rows)
+          try {
+            const success = wasm.laInv(input.ptr, rows, result.ptr, work.ptr)
+            if (success === 0) {
+              throw Error('Cannot calculate inverse, determinant is zero')
+            }
+            // Convert flat result back to 2D array
+            const invMatrix: number[][] = []
+            for (let i = 0; i < rows; i++) {
+              const row: number[] = []
+              for (let j = 0; j < rows; j++) {
+                row[j] = result.array[i * rows + j]
+              }
+              invMatrix[i] = row
+            }
+            return invMatrix
+          } finally {
+            wasmLoader.free(input.ptr)
+            wasmLoader.free(result.ptr)
+            wasmLoader.free(work.ptr)
+          }
+        } catch (e) {
+          // If it's a singularity error, rethrow it
+          if (e instanceof Error && e.message.includes('determinant is zero')) {
+            throw e
+          }
+          // Otherwise fall back to JS implementation on WASM error
+        }
+      }
 
       if (rows === 1) {
         // this is a 1 x 1 matrix

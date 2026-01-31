@@ -290,6 +290,9 @@ export {
   simdVectorSizeF32
 } from './simd/operations'
 
+// Selection algorithms
+export { partitionSelect, selectMedian, selectMin, selectMax } from './statistics/select'
+
 // Statistics operations
 export {
   mean as statsMean,

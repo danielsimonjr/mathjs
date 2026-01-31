@@ -27,7 +27,10 @@
       "name": "Matrix Operations",
       "duration": "2-3 days",
       "files": ["transpose.ts", "det.ts (extend)", "inv.ts", "partitionSelect.ts", "sort.ts"],
-      "total_speedup": "15-100x"
+      "total_speedup": "15-100x",
+      "status": "completed",
+      "completed_date": "2026-01-30",
+      "notes": "All files except sort.ts have WASM fast paths. sort.ts skipped - no direct WASM sort function available."
     },
     {
       "phase": 3,
@@ -195,8 +198,8 @@
         "Eliminate comparison function indirection",
         "Partition in-place in WASM"
       ],
-      "status": "pending",
-      "notes": "Called by median and sort algorithms"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls partitionSelect for flat number arrays >= 100 elements with asc/desc compare"
     },
     {
       "file": "src/function/matrix/sort.ts",
@@ -269,8 +272,8 @@
         "Cache-friendly transpose for large matrices",
         "Support both dense and sparse layouts"
       ],
-      "status": "pending",
-      "notes": "Building block for many algorithms"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls transpose for dense plain number matrices >= 100 elements"
     },
     {
       "file": "src/function/matrix/det.ts",
@@ -285,8 +288,8 @@
         "Lower threshold from 4x4 to 2x2",
         "Add LU-cached determinant path"
       ],
-      "status": "partial_wasm",
-      "notes": "Already has WASM for 4x4+, needs extension"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path fixed 2026-01-30 - fixed missing workPtr parameter, now correctly calls laDet for 4x4+ plain number matrices"
     },
     {
       "file": "src/function/matrix/inv.ts",
@@ -301,8 +304,8 @@
         "Add structured matrix optimizations",
         "Complex number support"
       ],
-      "status": "pending",
-      "notes": "Very high performance impact"
+      "status": "wasm_fast_path_added",
+      "notes": "WASM fast path added 2026-01-30 - calls laInv for 3x3+ plain number matrices, handles singular matrix errors"
     },
     {
       "file": "src/function/algebra/solver/lusolve.ts",

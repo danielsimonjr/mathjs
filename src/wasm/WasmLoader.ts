@@ -78,8 +78,13 @@ export interface WasmModule {
   luDeterminant: (luPtr: number, n: number, permPtr: number) => number
 
   // Linear algebra (linalg module)
-  laDet: (aPtr: number, n: number) => number
-  laInv: (aPtr: number, n: number) => number // returns ptr to result
+  laDet: (aPtr: number, n: number, workPtr: number) => number
+  laInv: (
+    aPtr: number,
+    n: number,
+    resultPtr: number,
+    workPtr: number
+  ) => number // returns 1 if successful, 0 if singular
   laInv2x2: (aPtr: number, resultPtr: number) => number // returns 0 on success, -1 if singular
   laInv3x3: (aPtr: number, resultPtr: number) => number // returns 0 on success, -1 if singular
   laCond1: (aPtr: number, n: number, workPtr: number) => number // 1-norm condition number
@@ -349,6 +354,14 @@ export interface WasmModule {
     k: number,
     n: number
   ) => void
+
+  // Selection algorithms
+  partitionSelect: (
+    dataPtr: number,
+    n: number,
+    k: number,
+    workPtr: number
+  ) => number
 
   // Statistics operations
   statsMean: (aPtr: number, n: number) => number
