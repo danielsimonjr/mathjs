@@ -23,7 +23,6 @@
 
 import { Bench } from 'tinybench'
 import os from 'os'
-import { performance } from 'perf_hooks'
 
 // =============================================================================
 // CONFIGURATION
@@ -42,7 +41,7 @@ const CONFIG = {
 
   // Output formatting
   columnWidth: 50,
-  showAllSizes: true, // Show all sizes or just largest
+  showAllSizes: true // Show all sizes or just largest
 }
 
 // =============================================================================
@@ -151,7 +150,7 @@ function generateComplexVector(size: number): Float64Array {
   return data
 }
 
-function generateArrayVector(size: number): number[] {
+function _generateArrayVector(size: number): number[] {
   const data: number[] = []
   for (let i = 0; i < size; i++) {
     data.push(Math.random() * 100 - 50)
@@ -165,7 +164,13 @@ function generateArrayVector(size: number): number[] {
 
 const jsBaseline = {
   // Matrix operations
-  matrixMultiply(a: Float64Array, b: Float64Array, m: number, k: number, n: number): Float64Array {
+  matrixMultiply(
+    a: Float64Array,
+    b: Float64Array,
+    m: number,
+    k: number,
+    n: number
+  ): Float64Array {
     const result = new Float64Array(m * n)
     for (let i = 0; i < m; i++) {
       for (let j = 0; j < n; j++) {
@@ -206,7 +211,10 @@ const jsBaseline = {
   },
 
   // Linear algebra
-  luDecomposition(a: Float64Array, n: number): { L: Float64Array; U: Float64Array } {
+  luDecomposition(
+    a: Float64Array,
+    n: number
+  ): { L: Float64Array; U: Float64Array } {
     const L = new Float64Array(n * n)
     const U = new Float64Array(n * n)
 
@@ -275,7 +283,9 @@ const jsBaseline = {
     const n = a.length
     const meanA = jsBaseline.mean(a)
     const meanB = jsBaseline.mean(b)
-    let sumAB = 0, sumA2 = 0, sumB2 = 0
+    let sumAB = 0,
+      sumA2 = 0,
+      sumB2 = 0
     for (let i = 0; i < n; i++) {
       const dA = a[i] - meanA
       const dB = b[i] - meanB
@@ -295,7 +305,7 @@ const jsBaseline = {
     let j = 0
     for (let i = 0; i < n - 1; i++) {
       if (i < j) {
-        [real[i], real[j]] = [real[j], real[i]]
+        ;[real[i], real[j]] = [real[j], real[i]]
         ;[imag[i], imag[j]] = [imag[j], imag[i]]
       }
       let k = n >> 1
@@ -349,11 +359,13 @@ const jsBaseline = {
   },
 
   // Complex numbers
-  complexMultiply(aReal: number, aImag: number, bReal: number, bImag: number): [number, number] {
-    return [
-      aReal * bReal - aImag * bImag,
-      aReal * bImag + aImag * bReal
-    ]
+  complexMultiply(
+    aReal: number,
+    aImag: number,
+    bReal: number,
+    bImag: number
+  ): [number, number] {
+    return [aReal * bReal - aImag * bImag, aReal * bImag + aImag * bReal]
   },
 
   complexArrayMultiply(a: Float64Array, b: Float64Array): Float64Array {
@@ -384,7 +396,9 @@ const jsBaseline = {
     x = Math.abs(x)
 
     const t = 1.0 / (1.0 + p * x)
-    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x)
+    const y =
+      1.0 -
+      ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x)
 
     return sign * y
   },
@@ -463,7 +477,14 @@ const jsBaseline = {
   },
 
   // Geometry
-  distance3D(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number): number {
+  distance3D(
+    x1: number,
+    y1: number,
+    z1: number,
+    x2: number,
+    y2: number,
+    z2: number
+  ): number {
     const dx = x2 - x1
     const dy = y2 - y1
     const dz = z2 - z1
@@ -497,7 +518,7 @@ const jsBaseline = {
 
   // Power iteration for largest eigenvalue
   powerIteration(A: Float64Array, n: number, maxIter: number = 100): number {
-    let v = new Float64Array(n)
+    const v = new Float64Array(n)
     for (let i = 0; i < n; i++) v[i] = 1 / Math.sqrt(n)
 
     for (let iter = 0; iter < maxIter; iter++) {
@@ -514,7 +535,8 @@ const jsBaseline = {
     }
 
     // Compute Rayleigh quotient
-    let numerator = 0, denominator = 0
+    let numerator = 0,
+      denominator = 0
     for (let i = 0; i < n; i++) {
       let Av_i = 0
       for (let j = 0; j < n; j++) {
@@ -565,7 +587,9 @@ async function loadImplementations(): Promise<Implementations> {
     const testA = new Float64Array([1, 2, 3, 4])
     const testB = new Float64Array([5, 6, 7, 8])
     const result = impl.wasm.dotProduct(testA, testB, 4)
-    console.log(`       Verification: dot([1,2,3,4], [5,6,7,8]) = ${result} (expected: 70)`)
+    console.log(
+      `       Verification: dot([1,2,3,4], [5,6,7,8]) = ${result} (expected: 70)`
+    )
   } catch (e: any) {
     console.log(`  [--] WASM: ${e.message}`)
     console.log('       Run: npm run build:wasm')
@@ -610,7 +634,7 @@ function defineBenchmarks(impl: Implementations): BenchmarkCategory[] {
       },
       {
         name: 'Matrix Addition (NxN)',
-        sizes: CONFIG.matrixSizes.map(s => s * s),
+        sizes: CONFIG.matrixSizes.map((s) => s * s),
         js: (size) => {
           const A = generateVector(size)
           const B = generateVector(size)
@@ -953,7 +977,7 @@ function defineBenchmarks(impl: Implementations): BenchmarkCategory[] {
     benchmarks: [
       {
         name: 'Complex Array Multiply',
-        sizes: CONFIG.vectorSizes.map(s => s / 2), // Half because interleaved
+        sizes: CONFIG.vectorSizes.map((s) => s / 2), // Half because interleaved
         js: (size) => {
           const A = generateComplexVector(size)
           const B = generateComplexVector(size)
@@ -1142,8 +1166,12 @@ function defineBenchmarks(impl: Implementations): BenchmarkCategory[] {
             for (let i = 0; i < size; i++) {
               const base = i * 6
               results[i] = jsBaseline.distance3D(
-                points[base], points[base + 1], points[base + 2],
-                points[base + 3], points[base + 4], points[base + 5]
+                points[base],
+                points[base + 1],
+                points[base + 2],
+                points[base + 3],
+                points[base + 4],
+                points[base + 5]
               )
             }
             return results
@@ -1158,8 +1186,12 @@ function defineBenchmarks(impl: Implementations): BenchmarkCategory[] {
             for (let i = 0; i < size; i++) {
               const base = i * 6
               results[i] = impl.wasm.distance3D(
-                points[base], points[base + 1], points[base + 2],
-                points[base + 3], points[base + 4], points[base + 5]
+                points[base],
+                points[base + 1],
+                points[base + 2],
+                points[base + 3],
+                points[base + 4],
+                points[base + 5]
               )
             }
             return results
@@ -1201,8 +1233,12 @@ function defineBenchmarks(impl: Implementations): BenchmarkCategory[] {
             const results = new Float64Array(size * 3)
             for (let i = 0; i < size; i++) {
               const cross = impl.wasm.cross3D(
-                A[i * 3], A[i * 3 + 1], A[i * 3 + 2],
-                B[i * 3], B[i * 3 + 1], B[i * 3 + 2]
+                A[i * 3],
+                A[i * 3 + 1],
+                A[i * 3 + 2],
+                B[i * 3],
+                B[i * 3 + 1],
+                B[i * 3 + 2]
               )
               results[i * 3] = cross[0]
               results[i * 3 + 1] = cross[1]
@@ -1296,18 +1332,18 @@ async function runCategoryBenchmarks(
     console.log(`  ${'-'.repeat(86)}`)
 
     for (const size of benchmark.sizes) {
-      const sizeLabel = size >= 1000 ? `${(size / 1000).toFixed(0)}K` : `${size}`
+      const sizeLabel =
+        size >= 1000 ? `${(size / 1000).toFixed(0)}K` : `${size}`
       console.log(`\n  Size: ${sizeLabel}`)
 
       // JavaScript baseline
       const jsFn = benchmark.js?.(size, impl)
       let jsResult: BenchmarkResult | null = null
       if (jsFn) {
-        const stats = await runBenchmark(
-          `JS ${benchmark.name}`,
-          jsFn,
-          { time: CONFIG.benchTime, iterations: CONFIG.iterations }
-        )
+        const stats = await runBenchmark(`JS ${benchmark.name}`, jsFn, {
+          time: CONFIG.benchTime,
+          iterations: CONFIG.iterations
+        })
         jsResult = {
           name: benchmark.name,
           mode: 'JavaScript',
@@ -1323,12 +1359,13 @@ async function runCategoryBenchmarks(
       // WASM
       const wasmFn = benchmark.wasm?.(size, impl)
       if (wasmFn) {
-        const stats = await runBenchmark(
-          `WASM ${benchmark.name}`,
-          wasmFn,
-          { time: CONFIG.benchTime, iterations: CONFIG.iterations }
-        )
-        const speedup = jsResult ? stats.opsPerSec / jsResult.opsPerSec : undefined
+        const stats = await runBenchmark(`WASM ${benchmark.name}`, wasmFn, {
+          time: CONFIG.benchTime,
+          iterations: CONFIG.iterations
+        })
+        const speedup = jsResult
+          ? stats.opsPerSec / jsResult.opsPerSec
+          : undefined
         results.push({
           name: benchmark.name,
           mode: 'WASM',
@@ -1350,7 +1387,9 @@ async function runCategoryBenchmarks(
           simdFn,
           { time: CONFIG.benchTime, iterations: CONFIG.iterations }
         )
-        const speedup = jsResult ? stats.opsPerSec / jsResult.opsPerSec : undefined
+        const speedup = jsResult
+          ? stats.opsPerSec / jsResult.opsPerSec
+          : undefined
         results.push({
           name: benchmark.name,
           mode: 'WASM+SIMD',
@@ -1367,12 +1406,13 @@ async function runCategoryBenchmarks(
       // TypeScript (optional, usually same as JS)
       const tsFn = benchmark.ts?.(size, impl)
       if (tsFn && impl.ts) {
-        const stats = await runBenchmark(
-          `TS ${benchmark.name}`,
-          tsFn,
-          { time: CONFIG.benchTime, iterations: CONFIG.iterations }
-        )
-        const speedup = jsResult ? stats.opsPerSec / jsResult.opsPerSec : undefined
+        const stats = await runBenchmark(`TS ${benchmark.name}`, tsFn, {
+          time: CONFIG.benchTime,
+          iterations: CONFIG.iterations
+        })
+        const speedup = jsResult
+          ? stats.opsPerSec / jsResult.opsPerSec
+          : undefined
         results.push({
           name: benchmark.name,
           mode: 'TypeScript',
@@ -1409,21 +1449,29 @@ function printSummary(results: BenchmarkResult[]): void {
   const wasmSpeedups: number[] = []
   const simdSpeedups: number[] = []
 
-  console.log('\n  Operation                                    | JS ops/s     | WASM ops/s   | SIMD ops/s   | WASM Speedup | SIMD Speedup')
+  console.log(
+    '\n  Operation                                    | JS ops/s     | WASM ops/s   | SIMD ops/s   | WASM Speedup | SIMD Speedup'
+  )
   console.log('  ' + '-'.repeat(124))
 
   for (const [op, opResults] of byOperation) {
     // Get largest size results
-    const maxSize = Math.max(...opResults.map(r => r.size))
-    const largestResults = opResults.filter(r => r.size === maxSize)
+    const maxSize = Math.max(...opResults.map((r) => r.size))
+    const largestResults = opResults.filter((r) => r.size === maxSize)
 
-    const jsRes = largestResults.find(r => r.mode === 'JavaScript')
-    const wasmRes = largestResults.find(r => r.mode === 'WASM')
-    const simdRes = largestResults.find(r => r.mode === 'WASM+SIMD')
+    const jsRes = largestResults.find((r) => r.mode === 'JavaScript')
+    const wasmRes = largestResults.find((r) => r.mode === 'WASM')
+    const simdRes = largestResults.find((r) => r.mode === 'WASM+SIMD')
 
-    const jsOps = jsRes ? jsRes.opsPerSec.toFixed(0).padStart(10) : '-'.padStart(10)
-    const wasmOps = wasmRes ? wasmRes.opsPerSec.toFixed(0).padStart(10) : '-'.padStart(10)
-    const simdOps = simdRes ? simdRes.opsPerSec.toFixed(0).padStart(10) : '-'.padStart(10)
+    const jsOps = jsRes
+      ? jsRes.opsPerSec.toFixed(0).padStart(10)
+      : '-'.padStart(10)
+    const wasmOps = wasmRes
+      ? wasmRes.opsPerSec.toFixed(0).padStart(10)
+      : '-'.padStart(10)
+    const simdOps = simdRes
+      ? simdRes.opsPerSec.toFixed(0).padStart(10)
+      : '-'.padStart(10)
 
     let wasmSpeedup = '-'
     if (wasmRes?.speedupVsJs) {
@@ -1448,7 +1496,8 @@ function printSummary(results: BenchmarkResult[]): void {
   console.log(`${'='.repeat(90)}`)
 
   if (wasmSpeedups.length > 0) {
-    const avgWasm = wasmSpeedups.reduce((a, b) => a + b, 0) / wasmSpeedups.length
+    const avgWasm =
+      wasmSpeedups.reduce((a, b) => a + b, 0) / wasmSpeedups.length
     const maxWasm = Math.max(...wasmSpeedups)
     const minWasm = Math.min(...wasmSpeedups)
     console.log(`\n  WASM vs JavaScript:`)
@@ -1459,7 +1508,8 @@ function printSummary(results: BenchmarkResult[]): void {
   }
 
   if (simdSpeedups.length > 0) {
-    const avgSimd = simdSpeedups.reduce((a, b) => a + b, 0) / simdSpeedups.length
+    const avgSimd =
+      simdSpeedups.reduce((a, b) => a + b, 0) / simdSpeedups.length
     const maxSimd = Math.max(...simdSpeedups)
     const minSimd = Math.min(...simdSpeedups)
     console.log(`\n  WASM+SIMD vs JavaScript:`)
@@ -1513,8 +1563,10 @@ async function main(): Promise<void> {
   console.log(`\n  System Information:`)
   console.log(`    Platform:  ${process.platform} ${process.arch}`)
   console.log(`    Node.js:   ${process.version}`)
-  console.log(`    CPUs:      ${os.cpus().length} x ${os.cpus()[0]?.model || 'Unknown'}`)
-  console.log(`    Memory:    ${(os.totalmem() / (1024 ** 3)).toFixed(1)} GB`)
+  console.log(
+    `    CPUs:      ${os.cpus().length} x ${os.cpus()[0]?.model || 'Unknown'}`
+  )
+  console.log(`    Memory:    ${(os.totalmem() / 1024 ** 3).toFixed(1)} GB`)
 
   // Load implementations
   const impl = await loadImplementations()

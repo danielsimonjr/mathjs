@@ -179,7 +179,7 @@ export function createRealSymmetric({
           }
           wasmLoader.free(workAlloc.ptr)
         }
-      } catch (e) {
+      } catch {
         // Fall back to JS implementation on WASM error
       }
     }
@@ -245,7 +245,11 @@ export function createRealSymmetric({
     for (let i = 0; i < N; i++) {
       Ei[i] = x[i][i]
     }
-    return sorting(clone(Ei) as Scalar[], Sij as Scalar[][] | undefined, computeVectors)
+    return sorting(
+      clone(Ei) as Scalar[],
+      Sij as Scalar[][] | undefined,
+      computeVectors
+    )
   }
 
   // get angle
@@ -259,12 +263,19 @@ export function createRealSymmetric({
   }
 
   // get angle for BigNumber
-  function getThetaBig(aii: BigNumber, ajj: BigNumber, aij: BigNumber): BigNumber {
+  function getThetaBig(
+    aii: BigNumber,
+    ajj: BigNumber,
+    aij: BigNumber
+  ): BigNumber {
     const denom = subtract(ajj, aii) as BigNumber
     if ((abs(denom) as number) <= (config.relTol as number)) {
       return bignumber(-1).acos().div(4) as unknown as BigNumber
     } else {
-      return multiplyScalar(0.5 as unknown as BigNumber, atan(multiply(bignumber(2.0), aij, inv(denom)))) as BigNumber
+      return multiplyScalar(
+        0.5 as unknown as BigNumber,
+        atan(multiply(bignumber(2.0), aij, inv(denom)))
+      ) as BigNumber
     }
   }
 
@@ -292,7 +303,12 @@ export function createRealSymmetric({
   }
 
   // update eigenvectors for BigNumber
-  function Sij1Big(Sij: BigNumber[][], theta: BigNumber, i: number, j: number): BigNumber[][] {
+  function Sij1Big(
+    Sij: BigNumber[][],
+    theta: BigNumber,
+    i: number,
+    j: number
+  ): BigNumber[][] {
     const N = Sij.length
     const c = cos(theta) as BigNumber
     const s = sin(theta) as BigNumber
@@ -316,7 +332,12 @@ export function createRealSymmetric({
   }
 
   // update matrix for BigNumber
-  function x1Big(Hij: BigNumber[][], theta: BigNumber, i: number, j: number): BigNumber[][] {
+  function x1Big(
+    Hij: BigNumber[][],
+    theta: BigNumber,
+    i: number,
+    j: number
+  ): BigNumber[][] {
     const N = Hij.length
     const c = bignumber((cos(theta) as BigNumber).toString())
     const s = bignumber((sin(theta) as BigNumber).toString())

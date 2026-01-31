@@ -282,7 +282,7 @@ export const createQr = /* #__PURE__ */ factory(
             wasmLoader.free(aAlloc.ptr)
             wasmLoader.free(qAlloc.ptr)
           }
-        } catch (e) {
+        } catch {
           // Fall back to JS implementation on WASM error
         }
       }

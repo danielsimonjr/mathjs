@@ -2,7 +2,6 @@ import { isArray, isMatrix, isString, typeOf } from '../../utils/is.ts'
 import { clone } from '../../utils/object.ts'
 import { factory } from '../../utils/factory.ts'
 import type {
-  NestedArray,
   DenseMatrixData,
   DataType,
   MatrixValue,
@@ -39,8 +38,18 @@ interface _DenseMatrix {
   clone(): _DenseMatrix
   toArray(): DenseMatrixData
   valueOf(): DenseMatrixData
-  subset(index: Index, replacement?: DenseMatrixData | _DenseMatrix | MatrixValue, defaultValue?: MatrixValue): _DenseMatrix | MatrixValue
-  forEach(callback: (value: MatrixValue, index?: number[], matrix?: _DenseMatrix) => void): void
+  subset(
+    index: Index,
+    replacement?: DenseMatrixData | _DenseMatrix | MatrixValue,
+    defaultValue?: MatrixValue
+  ): _DenseMatrix | MatrixValue
+  forEach(
+    callback: (
+      value: MatrixValue,
+      index?: number[],
+      matrix?: _DenseMatrix
+    ) => void
+  ): void
 }
 
 /**
@@ -54,7 +63,10 @@ type CompareFunction = (a: MatrixValue, b: MatrixValue) => boolean
  */
 interface ImmutableDenseMatrixDependencies {
   smaller: CompareFunction
-  DenseMatrix: new (data?: DenseMatrixData | ImmutableDenseMatrixConstructorData, datatype?: DataType) => _DenseMatrix
+  DenseMatrix: new (
+    data?: DenseMatrixData | ImmutableDenseMatrixConstructorData,
+    datatype?: DataType
+  ) => _DenseMatrix
 }
 
 export const createImmutableDenseMatrixClass = /* #__PURE__ */ factory(
@@ -314,11 +326,14 @@ export const createImmutableDenseMatrixClass = /* #__PURE__ */ factory(
           let m: MatrixValue | null = null
           // compute min
           const smallerFn = smaller
-          ;(DenseMatrix.prototype as _DenseMatrix).forEach.call(this, function (v: MatrixValue) {
-            if (m === null || smallerFn(v, m)) {
-              m = v
+          ;(DenseMatrix.prototype as _DenseMatrix).forEach.call(
+            this,
+            function (v: MatrixValue) {
+              if (m === null || smallerFn(v, m)) {
+                m = v
+              }
             }
-          })
+          )
           this._min = m !== null ? m : undefined
         }
         return this._min ?? undefined
@@ -335,11 +350,14 @@ export const createImmutableDenseMatrixClass = /* #__PURE__ */ factory(
           let m: MatrixValue | null = null
           // compute max
           const smallerFn = smaller
-          ;(DenseMatrix.prototype as _DenseMatrix).forEach.call(this, function (v: MatrixValue) {
-            if (m === null || smallerFn(m, v)) {
-              m = v
+          ;(DenseMatrix.prototype as _DenseMatrix).forEach.call(
+            this,
+            function (v: MatrixValue) {
+              if (m === null || smallerFn(m, v)) {
+                m = v
+              }
             }
-          })
+          )
           this._max = m !== null ? m : undefined
         }
         return this._max ?? undefined

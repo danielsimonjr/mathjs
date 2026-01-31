@@ -211,7 +211,7 @@ export const createSchur = /* #__PURE__ */ factory(
             wasmLoader.free(tAlloc.ptr)
             wasmLoader.free(workAlloc.ptr)
           }
-        } catch (e) {
+        } catch {
           // Fall back to JS implementation on WASM error
         }
       }

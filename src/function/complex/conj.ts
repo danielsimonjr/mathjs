@@ -15,12 +15,6 @@ interface ComplexType {
   conjugate(): ComplexType
 }
 
-interface UnitType {
-  constructor: new (value: any, format: string) => UnitType
-  toNumeric(): number | BigNumberType | ComplexType
-  formatUnits(): string
-}
-
 interface ConjDependencies {
   typed: TypedFunction
 }
@@ -58,7 +52,9 @@ export const createConj = /* #__PURE__ */ factory(
      *            The complex conjugate of x
      */
     return typed(name, {
-      'number | BigNumber | Fraction': (x: number | BigNumberType | FractionType): number | BigNumberType | FractionType => x,
+      'number | BigNumber | Fraction': (
+        x: number | BigNumberType | FractionType
+      ): number | BigNumberType | FractionType => x,
       Complex: (x: ComplexType): ComplexType => x.conjugate(),
       Unit: typed.referToSelf(
         (self: any) =>

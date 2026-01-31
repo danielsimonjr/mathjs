@@ -6,15 +6,19 @@ import type {
   RangeForEachCallback,
   RangeMapCallback,
   RangeFormatOptions,
-  RangeJSON,
-  RangeInterface
+  RangeJSON
 } from './types.ts'
 
 const name = 'Range'
 const dependencies: string[] = []
 
 // Re-export types for backward compatibility
-export type { RangeForEachCallback, RangeMapCallback, RangeFormatOptions, RangeJSON }
+export type {
+  RangeForEachCallback,
+  RangeMapCallback,
+  RangeFormatOptions,
+  RangeJSON
+}
 
 export const createRangeClass = /* #__PURE__ */ factory(
   name,

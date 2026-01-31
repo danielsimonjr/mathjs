@@ -5,10 +5,6 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
 // Type definitions for diag
-interface BigNumberType {
-  isBigNumber: boolean
-  toNumber(): number
-}
 
 interface MatrixType {
   _size: number[]
@@ -23,11 +19,19 @@ interface MatrixConstructor {
 }
 
 interface DenseMatrixConstructor {
-  diagonal(size: number[], values: unknown[] | MatrixType, k?: number): MatrixType
+  diagonal(
+    size: number[],
+    values: unknown[] | MatrixType,
+    k?: number
+  ): MatrixType
 }
 
 interface SparseMatrixConstructor {
-  diagonal(size: number[], values: unknown[] | MatrixType, k?: number): MatrixType
+  diagonal(
+    size: number[],
+    values: unknown[] | MatrixType,
+    k?: number
+  ): MatrixType
 }
 
 interface DiagDependencies {

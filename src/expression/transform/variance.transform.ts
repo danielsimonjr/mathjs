@@ -2,7 +2,7 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createVariance } from '../../function/statistics/variance.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
-import type { TypedFunction, MathFunction, VariadicArgs } from './types.ts'
+import type { TypedFunction, VariadicArgs } from './types.ts'
 
 interface VarianceDependencies {
   typed: TypedFunction

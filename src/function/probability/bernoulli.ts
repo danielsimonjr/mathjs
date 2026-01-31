@@ -4,8 +4,6 @@ import type { TypedFunction } from '../../core/function/typed.ts'
 import type { ConfigOptions } from '../../core/config.ts'
 
 // Type definitions for bernoulli
-// Generic type for numeric values that support arithmetic operations
-type NumericValue<T> = T
 
 // Cache entry type: [cotangent coefficient, prefactor, Bernoulli number]
 type CacheEntry<T> = [T, T, T] | undefined
@@ -94,8 +92,10 @@ export const createBernoulli = /* #__PURE__ */ factory(
           number(index),
           (n: number) => new (Fraction as FractionConstructor)(n),
           fractionCache,
-          (a: unknown, b: unknown) => (a as { add(b: unknown): unknown }).add(b),
-          (a: unknown, b: unknown) => (a as { mul(b: unknown): unknown }).mul(b),
+          (a: unknown, b: unknown) =>
+            (a as { add(b: unknown): unknown }).add(b),
+          (a: unknown, b: unknown) =>
+            (a as { mul(b: unknown): unknown }).mul(b),
           (a: unknown, b: unknown) => (a as { div(b: unknown): unknown }).div(b)
         ),
       BigNumber: (index: unknown): unknown => {
@@ -107,8 +107,10 @@ export const createBernoulli = /* #__PURE__ */ factory(
           number(index),
           (n: number) => new (BigNumber as BigNumberConstructor)(n),
           bigCache,
-          (a: unknown, b: unknown) => (a as { add(b: unknown): unknown }).add(b),
-          (a: unknown, b: unknown) => (a as { mul(b: unknown): unknown }).mul(b),
+          (a: unknown, b: unknown) =>
+            (a as { add(b: unknown): unknown }).add(b),
+          (a: unknown, b: unknown) =>
+            (a as { mul(b: unknown): unknown }).mul(b),
           (a: unknown, b: unknown) => (a as { div(b: unknown): unknown }).div(b)
         )
       }
@@ -132,7 +134,7 @@ export const createBernoulli = /* #__PURE__ */ factory(
 function _bernoulli<T>(
   index: number,
   promote: (n: number) => T,
-  A: (CacheEntry<T>)[],
+  A: CacheEntry<T>[],
   plus: (a: T, b: T) => T,
   times: (a: T, b: T) => T,
   divide: (a: T, b: T) => T
@@ -174,7 +176,10 @@ function _bernoulli<T>(
     }
     a = divide(a, promote(-(2 * i + 1)))
     const entry_i_1 = A[i - 1] as [T, T, T]
-    const prefactor = divide(times(entry_i_1[1], promote(-i * (2 * i - 1))), two)
+    const prefactor = divide(
+      times(entry_i_1[1], promote(-i * (2 * i - 1))),
+      two
+    )
     A.push([a, prefactor, times(prefactor, a)])
   }
   const entry_half = A[half] as [T, T, T]

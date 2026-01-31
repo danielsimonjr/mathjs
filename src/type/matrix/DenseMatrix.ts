@@ -29,7 +29,6 @@ import { factory } from '../../utils/factory.ts'
 import { optimizeCallback } from '../../utils/optimizeCallback.ts'
 import type { MathJsConfig } from '../../core/config.ts'
 import type {
-  NestedArray,
   DenseMatrixData,
   DataType,
   MatrixValue,
@@ -68,11 +67,23 @@ interface Matrix {
   isDenseMatrix?: boolean
   get(index: number[]): MatrixValue
   set(index: number[], value: MatrixValue, defaultValue?: MatrixValue): Matrix
-  subset(index: Index, replacement?: DenseMatrixData | Matrix | MatrixValue, defaultValue?: MatrixValue): Matrix | MatrixValue
-  resize(size: number[] | Matrix, defaultValue?: MatrixValue, copy?: boolean): Matrix
+  subset(
+    index: Index,
+    replacement?: DenseMatrixData | Matrix | MatrixValue,
+    defaultValue?: MatrixValue
+  ): Matrix | MatrixValue
+  resize(
+    size: number[] | Matrix,
+    defaultValue?: MatrixValue,
+    copy?: boolean
+  ): Matrix
   reshape(size: number[], copy?: boolean): Matrix
   map(callback: MapCallback, skipZeros?: boolean, isUnary?: boolean): Matrix
-  forEach(callback: ForEachCallback, skipZeros?: boolean, isUnary?: boolean): void
+  forEach(
+    callback: ForEachCallback,
+    skipZeros?: boolean,
+    isUnary?: boolean
+  ): void
   rows?(): Matrix[]
   columns?(): Matrix[]
   format?(options?: MatrixFormatOptions): string
@@ -89,12 +100,20 @@ interface Matrix {
  * INTENTIONAL ANY: The value and return types are determined at runtime
  * by typed-function based on matrix._datatype.
  */
-type MapCallback = (value: MatrixValue, index?: number[], matrix?: Matrix) => MatrixValue
+type MapCallback = (
+  value: MatrixValue,
+  index?: number[],
+  matrix?: Matrix
+) => MatrixValue
 
 /**
  * ForEach callback signature for DenseMatrix.forEach()
  */
-type ForEachCallback = (value: MatrixValue, index?: number[], matrix?: Matrix) => void
+type ForEachCallback = (
+  value: MatrixValue,
+  index?: number[],
+  matrix?: Matrix
+) => void
 
 /**
  * Result of optimizeCallback utility
@@ -194,7 +213,10 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
       /**
        * Create a new DenseMatrix
        */
-      createDenseMatrix(data?: DenseMatrixData, datatype?: DataType): DenseMatrix {
+      createDenseMatrix(
+        data?: DenseMatrixData,
+        datatype?: DataType
+      ): DenseMatrix {
         return new DenseMatrix(data, datatype)
       }
 
@@ -261,7 +283,11 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
        *                                  the matrix is resized. If not provided,
        *                                  new matrix elements will be filled with zeros.
        */
-      subset(index: Index, replacement?: DenseMatrixData | Matrix | MatrixValue, defaultValue?: MatrixValue): DenseMatrix | MatrixValue {
+      subset(
+        index: Index,
+        replacement?: DenseMatrixData | Matrix | MatrixValue,
+        defaultValue?: MatrixValue
+      ): DenseMatrix | MatrixValue {
         switch (arguments.length) {
           case 1:
             return _get(this, index)
@@ -296,7 +322,11 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
        *                                  new matrix elements will be left undefined.
        * @return {DenseMatrix} self
        */
-      set(index: number[], value: MatrixValue, defaultValue?: MatrixValue): DenseMatrix {
+      set(
+        index: number[],
+        value: MatrixValue,
+        defaultValue?: MatrixValue
+      ): DenseMatrix {
         if (!isArray(index)) {
           throw new TypeError('Array expected')
         }
@@ -661,7 +691,12 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
        *                                                options.
        * @returns {string} str
        */
-      format(options?: MatrixFormatOptions | number | ((value: MatrixValue) => string)): string {
+      format(
+        options?:
+          | MatrixFormatOptions
+          | number
+          | ((value: MatrixValue) => string)
+      ): string {
         return format(this._data, options)
       }
 
@@ -901,7 +936,9 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
        *                       where mathjs is optional
        * @returns {DenseMatrix}
        */
-      static fromJSON(json: DenseMatrixJSON | DenseMatrixConstructorData): DenseMatrix {
+      static fromJSON(
+        json: DenseMatrixJSON | DenseMatrixConstructorData
+      ): DenseMatrix {
         return new DenseMatrix(json)
       }
 
@@ -941,7 +978,10 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
      * @param {Index} index   Zero-based index
      * @private
      */
-    function _get(matrix: DenseMatrix, index: Index): DenseMatrix | MatrixValue {
+    function _get(
+      matrix: DenseMatrix,
+      index: Index
+    ): DenseMatrix | MatrixValue {
       if (!isIndex(index)) {
         throw new TypeError('Invalid index')
       }
@@ -1069,7 +1109,11 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
         if (sSize.length !== 0) {
           throw new TypeError('Scalar expected')
         }
-        matrix.set(index.min() as number[], submatrix as MatrixValue, defaultValue)
+        matrix.set(
+          index.min() as number[],
+          submatrix as MatrixValue,
+          defaultValue
+        )
       } else {
         // set a submatrix
 

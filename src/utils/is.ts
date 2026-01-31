@@ -14,16 +14,6 @@
 
 import { ObjectWrappingMap } from './map.ts'
 
-// Generic interface for objects with a constructor prototype pattern
-interface ConstructorWithPrototype<T extends string> {
-  prototype: { [K in T]: boolean }
-}
-
-// Base interface for math.js value types that use duck typing
-interface MathJsValue<T extends string> {
-  constructor: ConstructorWithPrototype<T>
-}
-
 // Type interfaces for math.js types
 export interface BigNumber {
   isBigNumber: boolean
@@ -280,7 +270,9 @@ export function isDenseMatrix(x: unknown): x is DenseMatrix {
     isDenseMatrix?: boolean
     constructor?: { prototype?: { isMatrix?: boolean } }
   }
-  return obj.isDenseMatrix === true && obj.constructor?.prototype?.isMatrix === true
+  return (
+    obj.isDenseMatrix === true && obj.constructor?.prototype?.isMatrix === true
+  )
 }
 
 export function isSparseMatrix(x: unknown): x is SparseMatrix {
@@ -289,7 +281,9 @@ export function isSparseMatrix(x: unknown): x is SparseMatrix {
     isSparseMatrix?: boolean
     constructor?: { prototype?: { isMatrix?: boolean } }
   }
-  return obj.isSparseMatrix === true && obj.constructor?.prototype?.isMatrix === true
+  return (
+    obj.isSparseMatrix === true && obj.constructor?.prototype?.isMatrix === true
+  )
 }
 
 export function isRange(x: unknown): x is Range {
@@ -402,7 +396,9 @@ export function isAccessorNode(x: unknown): x is AccessorNode {
     isAccessorNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isAccessorNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isAccessorNode === true && obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isArrayNode(x: unknown): x is ArrayNode {
@@ -420,7 +416,9 @@ export function isAssignmentNode(x: unknown): x is AssignmentNode {
     isAssignmentNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isAssignmentNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isAssignmentNode === true && obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isBlockNode(x: unknown): x is BlockNode {
@@ -438,7 +436,10 @@ export function isConditionalNode(x: unknown): x is ConditionalNode {
     isConditionalNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isConditionalNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isConditionalNode === true &&
+    obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isConstantNode(x: unknown): x is ConstantNode {
@@ -447,7 +448,9 @@ export function isConstantNode(x: unknown): x is ConstantNode {
     isConstantNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isConstantNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isConstantNode === true && obj.constructor?.prototype?.isNode === true
+  )
 }
 
 /* Very specialized: returns true for those nodes which in the numerator of
@@ -478,7 +481,10 @@ export function isFunctionAssignmentNode(
     isFunctionAssignmentNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isFunctionAssignmentNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isFunctionAssignmentNode === true &&
+    obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isFunctionNode(x: unknown): x is FunctionNode {
@@ -487,7 +493,9 @@ export function isFunctionNode(x: unknown): x is FunctionNode {
     isFunctionNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isFunctionNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isFunctionNode === true && obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isIndexNode(x: unknown): x is IndexNode {
@@ -514,7 +522,9 @@ export function isObjectNode(x: unknown): x is ObjectNode {
     isObjectNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isObjectNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isObjectNode === true && obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isOperatorNode(x: unknown): x is OperatorNode {
@@ -523,7 +533,9 @@ export function isOperatorNode(x: unknown): x is OperatorNode {
     isOperatorNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isOperatorNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isOperatorNode === true && obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isParenthesisNode(x: unknown): x is ParenthesisNode {
@@ -532,7 +544,10 @@ export function isParenthesisNode(x: unknown): x is ParenthesisNode {
     isParenthesisNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isParenthesisNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isParenthesisNode === true &&
+    obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isRangeNode(x: unknown): x is RangeNode {
@@ -550,7 +565,9 @@ export function isRelationalNode(x: unknown): x is RelationalNode {
     isRelationalNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isRelationalNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isRelationalNode === true && obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isSymbolNode(x: unknown): x is SymbolNode {
@@ -559,7 +576,9 @@ export function isSymbolNode(x: unknown): x is SymbolNode {
     isSymbolNode?: boolean
     constructor?: { prototype?: { isNode?: boolean } }
   }
-  return obj.isSymbolNode === true && obj.constructor?.prototype?.isNode === true
+  return (
+    obj.isSymbolNode === true && obj.constructor?.prototype?.isNode === true
+  )
 }
 
 export function isChain(x: unknown): x is Chain {

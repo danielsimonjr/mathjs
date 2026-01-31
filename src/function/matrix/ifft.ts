@@ -18,7 +18,7 @@ function isPowerOf2(n: number): boolean {
  */
 function complexToInterleaved(
   arr: any[],
-  complex: (re: number, im?: number) => any
+  _complex: (re: number, im?: number) => any
 ): Float64Array | null {
   const n = arr.length
   const result = new Float64Array(n * 2)
@@ -27,7 +27,11 @@ function complexToInterleaved(
     if (typeof val === 'number') {
       result[i * 2] = val
       result[i * 2 + 1] = 0
-    } else if (val && typeof val.re === 'number' && typeof val.im === 'number') {
+    } else if (
+      val &&
+      typeof val.re === 'number' &&
+      typeof val.im === 'number'
+    ) {
       result[i * 2] = val.re
       result[i * 2 + 1] = val.im
     } else {
@@ -145,7 +149,7 @@ export const createIfft = /* #__PURE__ */ factory(
                 } finally {
                   wasmLoader.free(dataAlloc.ptr)
                 }
-              } catch (e) {
+              } catch {
                 // Fall back to JS implementation on WASM error
               }
             }

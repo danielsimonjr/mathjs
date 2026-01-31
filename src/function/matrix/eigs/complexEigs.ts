@@ -56,7 +56,10 @@ interface Dependencies {
   addScalar: (a: Scalar, b: Scalar) => Scalar
   subtract: (a: Scalar | Scalar[], b: Scalar | Scalar[]) => Scalar | Scalar[]
   flatten: <T>(arr: T[][] | T[]) => T[]
-  multiply: (a: Scalar | Scalar[][], b: Scalar | Scalar[][]) => Scalar | Scalar[][]
+  multiply: (
+    a: Scalar | Scalar[][],
+    b: Scalar | Scalar[][]
+  ) => Scalar | Scalar[][]
   multiplyScalar: (a: Scalar, b: Scalar) => Scalar
   divideScalar: (a: Scalar, b: Scalar) => Scalar
   sqrt: (x: Scalar) => Scalar
@@ -159,9 +162,13 @@ export function createComplexEigs({
               // Sort by absolute value
               values.sort((a, b) => {
                 const absA =
-                  typeof a === 'number' ? Math.abs(a) : Math.sqrt((a as Complex).re ** 2 + (a as Complex).im ** 2)
+                  typeof a === 'number'
+                    ? Math.abs(a)
+                    : Math.sqrt((a as Complex).re ** 2 + (a as Complex).im ** 2)
                 const absB =
-                  typeof b === 'number' ? Math.abs(b) : Math.sqrt((b as Complex).re ** 2 + (b as Complex).im ** 2)
+                  typeof b === 'number'
+                    ? Math.abs(b)
+                    : Math.sqrt((b as Complex).re ** 2 + (b as Complex).im ** 2)
                 return absA - absB
               })
 
@@ -174,7 +181,7 @@ export function createComplexEigs({
             wasmLoader.free(eigenvaluesImagAlloc.ptr)
             wasmLoader.free(workAlloc.ptr)
           }
-        } catch (e) {
+        } catch {
           // Fall back to JS implementation on WASM error
         }
       }
@@ -600,7 +607,9 @@ export function createComplexEigs({
 
     // combine the overall QR transformation Qtotal with the subsequent
     // transformation S that turns the diagonal 2x2 blocks to upper triangular
-    const C = findVectors ? multiply(Qtotal!, blockDiag(Sdiag, N)) as Scalar[][] : undefined
+    const C = findVectors
+      ? (multiply(Qtotal!, blockDiag(Sdiag, N)) as Scalar[][])
+      : undefined
 
     return { values: lambdas, C }
   }
@@ -692,7 +701,12 @@ export function createComplexEigs({
   /**
    * Compute the eigenvalues of a 2x2 matrix
    */
-  function eigenvalues2x2(a: Scalar, b: Scalar, c: Scalar, d: Scalar): [Scalar, Scalar] {
+  function eigenvalues2x2(
+    a: Scalar,
+    b: Scalar,
+    c: Scalar,
+    d: Scalar
+  ): [Scalar, Scalar] {
     // lambda_+- = 1/2 trA +- 1/2 sqrt( tr^2 A - 4 detA )
     const trA = addScalar(a, d)
     const detA = subtract(multiplyScalar(a, d), multiplyScalar(b, c))
@@ -930,7 +944,10 @@ export function createComplexEigs({
     for (let w of orthog) {
       w = reshape(w, vectorShape) // make sure this is just a vector computation
       // v := v - (w, v)/|w|^2 w
-      v = subtract(v, multiply(divideScalar(dot(w, v), dot(w, w)), w) as Scalar[]) as Scalar[]
+      v = subtract(
+        v,
+        multiply(divideScalar(dot(w, v), dot(w, w)), w) as Scalar[]
+      ) as Scalar[]
     }
 
     return v

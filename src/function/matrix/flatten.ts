@@ -3,11 +3,6 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
 // Type definitions
-interface DenseMatrix {
-  create(data: any[], datatype?: string): DenseMatrix
-  datatype(): string
-  valueOf(): any[]
-}
 
 interface FlattenDependencies {
   typed: TypedFunction
