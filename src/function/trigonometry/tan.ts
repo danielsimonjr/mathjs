@@ -52,7 +52,9 @@ export const createTan = /* #__PURE__ */ factory(
       name,
       {
         number: Math.tan,
-        'Complex | BigNumber': (x: ComplexType | BigNumberType): ComplexType | BigNumberType => x.tan()
+        'Complex | BigNumber': (
+          x: ComplexType | BigNumberType
+        ): ComplexType | BigNumberType => x.tan()
       },
       trigUnit
     )

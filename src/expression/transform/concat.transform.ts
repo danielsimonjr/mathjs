@@ -2,7 +2,12 @@ import { isBigNumber, isNumber } from '../../utils/is.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { factory } from '../../utils/factory.ts'
 import { createConcat } from '../../function/matrix/concat.ts'
-import type { TypedFunction, MathFunction, BigNumberLike, VariadicArgs } from './types.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  BigNumberLike,
+  VariadicArgs
+} from './types.ts'
 
 interface ConcatDependencies {
   typed: TypedFunction

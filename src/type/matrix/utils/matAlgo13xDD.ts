@@ -142,7 +142,14 @@ export const createMatAlgo13xDD = /* #__PURE__ */ factory(
         // iterate current level
         for (let j = 0; j < n; j++) {
           // iterate next level
-          cv[j] = _iterate(f, level + 1, s, s[level + 1], (av as DenseMatrixData[])[j], (bv as DenseMatrixData[])[j])
+          cv[j] = _iterate(
+            f,
+            level + 1,
+            s,
+            s[level + 1],
+            (av as DenseMatrixData[])[j],
+            (bv as DenseMatrixData[])[j]
+          )
         }
       }
       return cv

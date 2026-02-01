@@ -20,7 +20,10 @@ interface PickRandomOptions {
 interface PickRandomDependencies {
   typed: TypedFunction
   config: ConfigOptions
-  on?: (event: string, callback: (curr: ConfigOptions, prev: ConfigOptions) => void) => void
+  on?: (
+    event: string,
+    callback: (curr: ConfigOptions, prev: ConfigOptions) => void
+  ) => void
 }
 
 const name = 'pickRandom'
@@ -81,11 +84,17 @@ export const createPickRandom = /* #__PURE__ */ factory(
         return _pickRandom(possibles, {})
       },
 
-      'Array | Matrix, Object': function (possibles: unknown[] | MatrixType, options: PickRandomOptions): unknown {
+      'Array | Matrix, Object': function (
+        possibles: unknown[] | MatrixType,
+        options: PickRandomOptions
+      ): unknown {
         return _pickRandom(possibles, options)
       },
 
-      'Array | Matrix, number': function (possibles: unknown[] | MatrixType, number: number): unknown {
+      'Array | Matrix, number': function (
+        possibles: unknown[] | MatrixType,
+        number: number
+      ): unknown {
         return _pickRandom(possibles, { number })
       },
 
@@ -146,7 +155,7 @@ export const createPickRandom = /* #__PURE__ */ factory(
 
       if (elementWise === true) {
         possiblesArr = flatten(possiblesArr) as unknown[]
-        weightsArr = weightsArr ? flatten(weightsArr) as number[] : undefined
+        weightsArr = weightsArr ? (flatten(weightsArr) as number[]) : undefined
       }
 
       let totalWeights = 0

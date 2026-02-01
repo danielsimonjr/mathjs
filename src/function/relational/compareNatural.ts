@@ -29,7 +29,10 @@ export const createCompareNatural = /* #__PURE__ */ factory(
   name,
   dependencies,
   ({ typed, compare }: CompareNaturalDependencies) => {
-    const compareBooleans = compare.signatures['boolean,boolean'] as (x: boolean, y: boolean) => number
+    const compareBooleans = compare.signatures['boolean,boolean'] as (
+      x: boolean,
+      y: boolean
+    ) => number
 
     /**
      * Compare two values of any type in a deterministic, natural way.
@@ -148,7 +151,11 @@ export const createCompareNatural = /* #__PURE__ */ factory(
         }
 
         // compare by units
-        return compareArrays(_compareNatural, unitX.formatUnits(), unitY.formatUnits())
+        return compareArrays(
+          _compareNatural,
+          unitX.formatUnits(),
+          unitY.formatUnits()
+        )
       }
 
       if (typeX === 'boolean') {
@@ -160,7 +167,11 @@ export const createCompareNatural = /* #__PURE__ */ factory(
       }
 
       if (typeX === 'Object') {
-        return compareObjects(_compareNatural, x as Record<string, unknown>, y as Record<string, unknown>)
+        return compareObjects(
+          _compareNatural,
+          x as Record<string, unknown>,
+          y as Record<string, unknown>
+        )
       }
 
       if (typeX === 'null') {
@@ -196,11 +207,19 @@ export const createCompareNatural = /* #__PURE__ */ factory(
       }
       if (isSparseMatrix(x)) {
         // note: convert to array is expensive
-        return compareMatricesAndArrays(compareNatural, (x as unknown as { toArray(): unknown[] }).toArray(), y)
+        return compareMatricesAndArrays(
+          compareNatural,
+          (x as unknown as { toArray(): unknown[] }).toArray(),
+          y
+        )
       }
       if (isSparseMatrix(y)) {
         // note: convert to array is expensive
-        return compareMatricesAndArrays(compareNatural, x, (y as unknown as { toArray(): unknown[] }).toArray())
+        return compareMatricesAndArrays(
+          compareNatural,
+          x,
+          (y as unknown as { toArray(): unknown[] }).toArray()
+        )
       }
 
       // convert DenseArray into Array

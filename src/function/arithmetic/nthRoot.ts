@@ -193,7 +193,10 @@ export const createNthRoot = /* #__PURE__ */ factory(
      * @param {BigNumber} root
      * @private
      */
-    function _bigNthRoot(a: BigNumberType, root: BigNumberType): BigNumberType | number {
+    function _bigNthRoot(
+      a: BigNumberType,
+      root: BigNumberType
+    ): BigNumberType | number {
       const precision = BigNumber.precision
       const Big = BigNumber.clone({ precision: precision + 2 })
       const zero = new BigNumber(0)

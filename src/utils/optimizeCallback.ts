@@ -36,7 +36,10 @@ export function optimizeCallback<T, R>(
   name: string,
   isUnary?: boolean
 ): OptimizedCallback<unknown, R> {
-  const typedAny = typed as unknown as { isTypedFunction: (fn: Function) => boolean; resolve: (fn: Function, args: unknown[]) => Function | null }
+  const typedAny = typed as unknown as {
+    isTypedFunction: (fn: Function) => boolean
+    resolve: (fn: Function, args: unknown[]) => Function | null
+  }
   if (typedAny.isTypedFunction(callback)) {
     let numberOfArguments: number | undefined
     if (isUnary) {

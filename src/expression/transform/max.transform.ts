@@ -2,7 +2,12 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createMax } from '../../function/statistics/max.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
-import type { TypedFunction, MathFunction, MathJsConfig, VariadicArgs } from './types.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  MathJsConfig,
+  VariadicArgs
+} from './types.ts'
 
 interface MaxDependencies {
   typed: TypedFunction

@@ -108,7 +108,10 @@ export const createLargerEq = /* #__PURE__ */ factory(
       {
         'boolean, boolean': (x: boolean, y: boolean): boolean => x >= y,
 
-        'BigNumber, BigNumber': function (x: BigNumberType, y: BigNumberType): boolean {
+        'BigNumber, BigNumber': function (
+          x: BigNumberType,
+          y: BigNumberType
+        ): boolean {
           return x.gte(y) || bigNearlyEqual(x, y, config.relTol, config.absTol)
         },
 
@@ -116,7 +119,8 @@ export const createLargerEq = /* #__PURE__ */ factory(
           return x >= y
         },
 
-        'Fraction, Fraction': (x: FractionType, y: FractionType): boolean => x.compare(y) !== -1,
+        'Fraction, Fraction': (x: FractionType, y: FractionType): boolean =>
+          x.compare(y) !== -1,
 
         'Complex, Complex': function (): never {
           throw new TypeError(

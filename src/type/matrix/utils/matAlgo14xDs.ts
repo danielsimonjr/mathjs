@@ -116,13 +116,23 @@ export const createMatAlgo14xDs = /* #__PURE__ */ factory(
         // loop arrays in last level
         for (let i = 0; i < n; i++) {
           // invoke callback and store value
-          cv[i] = inverse ? f(bv, (av as MatrixValue[])[i]) : f((av as MatrixValue[])[i], bv)
+          cv[i] = inverse
+            ? f(bv, (av as MatrixValue[])[i])
+            : f((av as MatrixValue[])[i], bv)
         }
       } else {
         // iterate current level
         for (let j = 0; j < n; j++) {
           // iterate next level
-          cv[j] = _iterate(f, level + 1, s, s[level + 1], (av as DenseMatrixData[])[j], bv, inverse)
+          cv[j] = _iterate(
+            f,
+            level + 1,
+            s,
+            s[level + 1],
+            (av as DenseMatrixData[])[j],
+            bv,
+            inverse
+          )
         }
       }
       return cv

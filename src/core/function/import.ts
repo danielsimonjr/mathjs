@@ -124,10 +124,7 @@ export function importFactory(
    * @param {Object | Array} functions  Object with functions to be imported.
    * @param {Object} [options]          Import options.
    */
-  function mathImport(
-    functions: unknown,
-    options?: ImportOptions
-  ): void {
+  function mathImport(functions: unknown, options?: ImportOptions): void {
     const num = arguments.length
     if (num !== 1 && num !== 2) {
       throw new ArgumentsError('import', num, 1, 2)
@@ -225,7 +222,10 @@ export function importFactory(
     }
 
     const existingValue = math[name]
-    if (typed.isTypedFunction(existingValue) && typed.isTypedFunction(importValue)) {
+    if (
+      typed.isTypedFunction(existingValue) &&
+      typed.isTypedFunction(importValue)
+    ) {
       const typedImportValue = importValue as TypedFunction
       if (options.override) {
         // give the typed function the right name
@@ -265,7 +265,10 @@ export function importFactory(
 
   function _importTransform(name: string, value: unknown): void {
     const valueWithTransform = value as { transform?: Function }
-    if (valueWithTransform && typeof valueWithTransform.transform === 'function') {
+    if (
+      valueWithTransform &&
+      typeof valueWithTransform.transform === 'function'
+    ) {
       math.expression.transform[name] = valueWithTransform.transform
       if (allowedInExpressions(name)) {
         math.expression.mathWithTransform[name] = valueWithTransform.transform
@@ -342,7 +345,9 @@ export function importFactory(
       : math
 
     const existingTransform = name in math.expression.transform
-    const existing = hasOwnProperty(namespace, name) ? namespace[name] : undefined
+    const existing = hasOwnProperty(namespace, name)
+      ? namespace[name]
+      : undefined
 
     const resolver = function (): unknown {
       // collect all dependencies, handle finding both functions and classes and other special cases
@@ -401,7 +406,8 @@ export function importFactory(
     const meta = factory.meta as FactoryMeta | undefined
     const former = meta?.formerly ?? ''
     const needsTransform =
-      isTransformFunctionFactory(factory) || factoryAllowedInExpressions(factory)
+      isTransformFunctionFactory(factory) ||
+      factoryAllowedInExpressions(factory)
     const withTransform = math.expression.mathWithTransform
 
     // TODO: add unit test with non-lazy factory
@@ -472,7 +478,10 @@ export function importFactory(
   }
 
   function hasTypedFunctionSignature(fn: unknown): fn is FunctionWithSignature {
-    return typeof fn === 'function' && typeof (fn as FunctionWithSignature).signature === 'string'
+    return (
+      typeof fn === 'function' &&
+      typeof (fn as FunctionWithSignature).signature === 'string'
+    )
   }
 
   function allowedInExpressions(name: string): boolean {

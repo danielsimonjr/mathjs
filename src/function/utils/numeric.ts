@@ -27,12 +27,13 @@ export const createNumeric = /* #__PURE__ */ factory(
     }
 
     // Load the conversion functions for each output type
-    const validOutputTypes: Record<string, (x: NumericValue) => NumericOutput> = {
-      number: (x: NumericValue) => number(x),
-      BigNumber: bignumber ? (x: NumericValue) => bignumber(x) : noBignumber,
-      bigint: (x: NumericValue) => BigInt(x as string | number | bigint),
-      Fraction: fraction ? (x: NumericValue) => fraction(x) : noFraction
-    }
+    const validOutputTypes: Record<string, (x: NumericValue) => NumericOutput> =
+      {
+        number: (x: NumericValue) => number(x),
+        BigNumber: bignumber ? (x: NumericValue) => bignumber(x) : noBignumber,
+        bigint: (x: NumericValue) => BigInt(x as string | number | bigint),
+        Fraction: fraction ? (x: NumericValue) => fraction(x) : noFraction
+      }
 
     /**
      * Convert a numeric input to a specific numeric type: number, BigNumber, bigint, or Fraction.

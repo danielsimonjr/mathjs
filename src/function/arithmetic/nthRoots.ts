@@ -11,7 +11,10 @@ interface ComplexType {
 }
 
 interface ComplexConstructor {
-  new (value: number | { r: number; phi: number }, imaginary?: number): ComplexType
+  new (
+    value: number | { r: number; phi: number },
+    imaginary?: number
+  ): ComplexType
 }
 
 interface NthRootsDependencies {

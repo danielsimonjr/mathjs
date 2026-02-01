@@ -57,10 +57,17 @@ export const createFilterTransform = /* #__PURE__ */ factory(
       if (callback) {
         if (isSymbolNode(callback) || isFunctionAssignmentNode(callback)) {
           // a function pointer, like filter([3, -2, 5], myTestFunction)
-          callback = _compileAndEvaluate(callback as ExpressionNode, scope) as CallbackFunction
+          callback = _compileAndEvaluate(
+            callback as ExpressionNode,
+            scope
+          ) as CallbackFunction
         } else {
           // an expression like filter([3, -2, 5], x > 0)
-          callback = compileInlineExpression(callback as ExpressionNode, math, scope)
+          callback = compileInlineExpression(
+            callback as ExpressionNode,
+            math,
+            scope
+          )
         }
       }
 

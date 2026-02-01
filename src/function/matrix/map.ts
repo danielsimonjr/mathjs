@@ -76,7 +76,10 @@ export const createMap = /* #__PURE__ */ factory(
     return typed(name, {
       'Array, function': _mapArray,
 
-      'Matrix, function': function (x: MatrixType, callback: MapCallback): MatrixType {
+      'Matrix, function': function (
+        x: MatrixType,
+        callback: MapCallback
+      ): MatrixType {
         return x.map(callback)
       },
 
@@ -102,7 +105,10 @@ export const createMap = /* #__PURE__ */ factory(
      * @example
      * _mapMultiple([[1, 2, 3], [4, 5, 6]], (a, b) => a + b); // Returns [5, 7, 9]
      */
-    function _mapMultiple(Arrays: (unknown[] | MatrixType)[], multiCallback: MapCallback): unknown[] | MatrixType {
+    function _mapMultiple(
+      Arrays: (unknown[] | MatrixType)[],
+      multiCallback: MapCallback
+    ): unknown[] | MatrixType {
       if (typeof multiCallback !== 'function') {
         throw new Error('Last argument must be a callback function')
       }

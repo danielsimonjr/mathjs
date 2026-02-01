@@ -223,7 +223,9 @@ export const createLusolve = /* #__PURE__ */ factory(
               const aAlloc = wasmLoader.allocateFloat64Array(aFlat)
               const bAlloc = wasmLoader.allocateFloat64Array(bFlat)
               const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows)
-              const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows * rows)
+              const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(
+                rows * rows
+              )
 
               try {
                 const success = wasm.laSolve(
@@ -295,7 +297,9 @@ export const createLusolve = /* #__PURE__ */ factory(
               const bAlloc = wasmLoader.allocateFloat64Array(bFlat)
               const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows)
               // Work buffer needs at least n*n for LU decomposition
-              const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(rows * rows)
+              const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(
+                rows * rows
+              )
 
               try {
                 const success = wasm.laSolve(

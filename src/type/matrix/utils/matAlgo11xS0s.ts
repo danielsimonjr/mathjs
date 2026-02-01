@@ -1,36 +1,25 @@
 import { factory } from '../../../utils/factory.ts'
+import type {
+  DataType,
+  MatrixValue,
+  MatrixCallback,
+  EqualScalarFunction,
+  TypedFunction,
+  SparseMatrixConstructorData
+} from '../types.ts'
 
-// Type definitions
-type DataType = string | undefined
-type MatrixValue = any
-
-interface TypedFunction {
-  find(fn: Function, signature: string[]): Function
-  convert(value: any, datatype: string): any
-}
-
-interface EqualScalarFunction {
-  (a: any, b: any): boolean
-}
-
-interface SparseMatrixData {
-  values?: MatrixValue[]
-  index: number[]
-  ptr: number[]
-  size: number[]
-  datatype?: DataType
-}
-
+/**
+ * SparseMatrix interface for algorithm operations.
+ * Note: SparseMatrix is always 2D.
+ */
 interface SparseMatrix {
   _values?: MatrixValue[]
   _index: number[]
   _ptr: number[]
-  _size: number[]
+  _size: [number, number]
   _datatype?: DataType
-  createSparseMatrix(data: SparseMatrixData): SparseMatrix
+  createSparseMatrix(data: SparseMatrixConstructorData): SparseMatrix
 }
-
-type CallbackFunction = (a: any, b: any) => any
 
 const name = 'matAlgo11xS0s'
 const dependencies = ['typed', 'equalScalar']
@@ -67,7 +56,7 @@ export const createMatAlgo11xS0s = /* #__PURE__ */ factory(
     return function matAlgo11xS0s(
       s: SparseMatrix,
       b: any,
-      callback: CallbackFunction,
+      callback: MatrixCallback,
       inverse: boolean
     ): SparseMatrix {
       // sparse matrix arrays
@@ -95,7 +84,7 @@ export const createMatAlgo11xS0s = /* #__PURE__ */ factory(
       // zero value
       let zero: any = 0
       // callback signature to use
-      let cf: CallbackFunction = callback
+      let cf: MatrixCallback = callback
 
       // process data types
       if (typeof adt === 'string') {
@@ -108,7 +97,7 @@ export const createMatAlgo11xS0s = /* #__PURE__ */ factory(
         // convert b to the same datatype
         b = typed.convert(b, dt)
         // callback
-        cf = typed.find(callback, [dt, dt]) as any as any as CallbackFunction
+        cf = typed.find(callback, [dt, dt]) as any as any as MatrixCallback
       }
 
       // result arrays

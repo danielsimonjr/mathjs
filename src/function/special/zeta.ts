@@ -201,7 +201,10 @@ export const createZeta = /* #__PURE__ */ factory(
         return f(s, createValue(n), createValue)
       } else {
         // Function Equation for reflection to x < 1
-        let c = multiply(pow(2, s), pow(createValue(pi as number), subtract(s, 1)))
+        let c = multiply(
+          pow(2, s),
+          pow(createValue(pi as number), subtract(s, 1))
+        )
         c = multiply(c, sin(multiply(divide(createValue(pi as number), 2), s)))
         c = multiply(c, gamma(subtract(1, s)))
         return multiply(
@@ -237,14 +240,21 @@ export const createZeta = /* #__PURE__ */ factory(
      * @param {(number) => number | BigNumber | Complex} createValue
      * @return {number}    Riemann Zeta of s
      **/
-    function f(s: NumericValue, n: NumericValue, createValue: (value: number) => NumericValue): NumericValue {
+    function f(
+      s: NumericValue,
+      n: NumericValue,
+      createValue: (value: number) => NumericValue
+    ): NumericValue {
       const c = divide(
         1,
         multiply(d(createValue(0), n), subtract(1, pow(2, subtract(1, s))))
       )
       let S = createValue(0)
       for (let k = createValue(1); smallerEq(k, n); k = add(k, 1)) {
-        S = add(S, divide(multiply((-1) ** ((k as number) - 1), d(k, n)), pow(k, s)))
+        S = add(
+          S,
+          divide(multiply((-1) ** ((k as number) - 1), d(k, n)), pow(k, s))
+        )
       }
       return multiply(c, S)
     }

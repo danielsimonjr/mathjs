@@ -42,7 +42,10 @@ export const createSplitUnit = /* #__PURE__ */ factory(
      * @return {Array} An array of units.
      */
     return typed(name, {
-      'Unit, Array': function (unit: UnitInstance, parts: Array<string | UnitInstance>): UnitInstance[] {
+      'Unit, Array': function (
+        unit: UnitInstance,
+        parts: Array<string | UnitInstance>
+      ): UnitInstance[] {
         return unit.splitUnit(parts)
       }
     })

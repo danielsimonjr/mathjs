@@ -1,37 +1,29 @@
 import { factory } from '../../../utils/factory.ts'
 import { DimensionError } from '../../../error/DimensionError.ts'
+import type {
+  DataType,
+  MatrixValue,
+  MatrixArray,
+  MatrixCallback,
+  EqualScalarFunction,
+  TypedFunction,
+  SparseMatrixConstructorData
+} from '../types.ts'
 
-// Type definitions
-type DataType = string | undefined
-type MatrixValue = any
-
+/**
+ * SparseMatrix interface for algorithm operations.
+ * Note: SparseMatrix is always 2D.
+ */
 interface SparseMatrix {
   _values?: MatrixValue[]
   _index: number[]
   _ptr: number[]
-  _size: number[]
-  _data?: any
+  _size: [number, number]
+  _data?: MatrixArray
   _datatype?: DataType
-  getDataType(): DataType
-  createSparseMatrix(config: {
-    values?: MatrixValue[]
-    index: number[]
-    ptr: number[]
-    size: number[]
-    datatype?: DataType
-  }): SparseMatrix
+  getDataType(): string
+  createSparseMatrix(config: SparseMatrixConstructorData): SparseMatrix
 }
-
-interface TypedFunction {
-  find(fn: Function, signature: string[]): Function
-  convert(value: any, datatype: string): any
-}
-
-interface EqualScalarFunction {
-  (a: any, b: any): boolean
-}
-
-type MatrixCallback = (a: any, b: any) => any
 
 const name = 'matAlgo05xSfSf'
 const dependencies = ['typed', 'equalScalar']

@@ -31,7 +31,12 @@ const dependencies = ['typed']
 export const createTransformCallback = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: TransformCallbackDependencies): (callback: CallbackFunction, numberOfArrays: number) => CallbackFunction => {
+  ({
+    typed
+  }: TransformCallbackDependencies): ((
+    callback: CallbackFunction,
+    numberOfArrays: number
+  ) => CallbackFunction) => {
     const typedChecker = typed as TypedWithChecker
 
     /**
@@ -41,7 +46,10 @@ export const createTransformCallback = /* #__PURE__ */ factory(
      * @param numberOfArrays - The number of arrays to pass to the callback function.
      * @returns The transformed callback function.
      */
-    return function (callback: CallbackFunction, numberOfArrays: number): CallbackFunction {
+    return function (
+      callback: CallbackFunction,
+      numberOfArrays: number
+    ): CallbackFunction {
       if (typedChecker.isTypedFunction(callback)) {
         return _transformTypedCallbackFunction(callback, numberOfArrays)
       } else {

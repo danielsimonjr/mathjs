@@ -6,7 +6,10 @@ import type { TypedFunction } from '../../core/function/typed.ts'
 interface IsFiniteDependencies {
   typed: TypedFunction
   isBounded: (x: unknown) => boolean
-  map: (arr: unknown[] | Matrix, fn: (x: unknown) => boolean) => unknown[] | Matrix
+  map: (
+    arr: unknown[] | Matrix,
+    fn: (x: unknown) => boolean
+  ) => unknown[] | Matrix
 }
 
 const name = 'isFinite'
@@ -15,11 +18,7 @@ const dependencies = ['typed', 'isBounded', 'map']
 export const createIsFinite = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    isBounded,
-    map
-  }: IsFiniteDependencies): TypedFn => {
+  ({ typed, isBounded, map }: IsFiniteDependencies): TypedFn => {
     /**
      * Test whether a value is finite.
      *
@@ -51,7 +50,8 @@ export const createIsFinite = /* #__PURE__ */ factory(
      * @return {boolean | Array | Matrix}
      */
     return typed(name, {
-      'Array | Matrix': (A: unknown[] | Matrix): unknown[] | Matrix => map(A, isBounded),
+      'Array | Matrix': (A: unknown[] | Matrix): unknown[] | Matrix =>
+        map(A, isBounded),
       any: (x: unknown): boolean => isBounded(x)
     })
   }

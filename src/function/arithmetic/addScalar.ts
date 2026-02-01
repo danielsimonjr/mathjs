@@ -49,7 +49,10 @@ export const createAddScalar = /* #__PURE__ */ factory(
         return x.add(y)
       },
 
-      'BigNumber, BigNumber': function (x: HasPlusMethod, y: HasPlusMethod): unknown {
+      'BigNumber, BigNumber': function (
+        x: HasPlusMethod,
+        y: HasPlusMethod
+      ): unknown {
         return x.plus(y)
       },
 
@@ -57,27 +60,37 @@ export const createAddScalar = /* #__PURE__ */ factory(
         return x + y
       },
 
-      'Fraction, Fraction': function (x: HasAddMethod, y: HasAddMethod): unknown {
+      'Fraction, Fraction': function (
+        x: HasAddMethod,
+        y: HasAddMethod
+      ): unknown {
         return x.add(y)
       },
 
-      'Unit, Unit': typed.referToSelf((self: TypedFunction) => (x: UnitType, y: UnitType): UnitType => {
-        if (x.value === null || x.value === undefined) {
-          throw new Error('Parameter x contains a unit with undefined value')
-        }
-        if (y.value === null || y.value === undefined) {
-          throw new Error('Parameter y contains a unit with undefined value')
-        }
-        if (!x.equalBase(y)) throw new Error('Units do not match')
+      'Unit, Unit': typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: UnitType, y: UnitType): UnitType => {
+            if (x.value === null || x.value === undefined) {
+              throw new Error(
+                'Parameter x contains a unit with undefined value'
+              )
+            }
+            if (y.value === null || y.value === undefined) {
+              throw new Error(
+                'Parameter y contains a unit with undefined value'
+              )
+            }
+            if (!x.equalBase(y)) throw new Error('Units do not match')
 
-        const res = x.clone()
-        res.value = typed.find(self, [res.valueType(), y.valueType()])(
-          res.value,
-          y.value
-        )
-        res.fixPrefix = false
-        return res
-      })
+            const res = x.clone()
+            res.value = typed.find(self, [res.valueType(), y.valueType()])(
+              res.value,
+              y.value
+            )
+            res.fixPrefix = false
+            return res
+          }
+      )
     })
   }
 )

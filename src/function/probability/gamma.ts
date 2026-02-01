@@ -115,7 +115,7 @@ export const createGamma = /* #__PURE__ */ factory(
 
       // Lanczos approximation
       // z -= 1
-      let z = new Complex(n.re - 1, n.im)
+      const z = new Complex(n.re - 1, n.im)
 
       // x = gammaPval[0]
       let x: ComplexType = new Complex(gammaP[0], 0)

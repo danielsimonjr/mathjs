@@ -2,7 +2,12 @@ import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createSum } from '../../function/statistics/sum.ts'
 import { lastDimToZeroBase } from './utils/lastDimToZeroBase.ts'
-import type { TypedFunction, MathFunction, MathJsConfig, VariadicArgs } from './types.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  MathJsConfig,
+  VariadicArgs
+} from './types.ts'
 
 interface SumDependencies {
   typed: TypedFunction

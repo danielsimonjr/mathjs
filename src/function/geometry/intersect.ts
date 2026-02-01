@@ -12,13 +12,22 @@ interface IntersectDependencies {
   typed: TypedFunction
   config: ConfigOptions
   abs: (x: MathNumericType) => MathNumericType
-  add: (a: MathNumericType | MathNumericType[], b: MathNumericType | MathNumericType[]) => MathNumericType | MathNumericType[]
+  add: (
+    a: MathNumericType | MathNumericType[],
+    b: MathNumericType | MathNumericType[]
+  ) => MathNumericType | MathNumericType[]
   addScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
   matrix: (arr: MathNumericType[]) => Matrix
-  multiply: (a: MathNumericType | MathNumericType[], b: MathNumericType | MathNumericType[]) => MathNumericType | MathNumericType[]
+  multiply: (
+    a: MathNumericType | MathNumericType[],
+    b: MathNumericType | MathNumericType[]
+  ) => MathNumericType | MathNumericType[]
   multiplyScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
   divideScalar: (a: MathNumericType, b: MathNumericType) => MathNumericType
-  subtract: (a: MathNumericType | MathNumericType[], b: MathNumericType | MathNumericType[]) => MathNumericType | MathNumericType[]
+  subtract: (
+    a: MathNumericType | MathNumericType[],
+    b: MathNumericType | MathNumericType[]
+  ) => MathNumericType | MathNumericType[]
   smaller: (a: MathNumericType, b: number) => boolean
   equalScalar: (a: MathNumericType, b: MathNumericType) => boolean
   flatten: (arr: MathNumericType[][]) => MathNumericType[]
@@ -97,7 +106,11 @@ export const createIntersect = /* #__PURE__ */ factory(
 
       'Array, Array, Array, Array': _AAAA,
 
-      'Matrix, Matrix, Matrix': function (x: Matrix, y: Matrix, plane: Matrix): Matrix | null {
+      'Matrix, Matrix, Matrix': function (
+        x: Matrix,
+        y: Matrix,
+        plane: Matrix
+      ): Matrix | null {
         const arr = _AAA(
           x.valueOf() as MathNumericType[],
           y.valueOf() as MathNumericType[],
@@ -123,7 +136,11 @@ export const createIntersect = /* #__PURE__ */ factory(
       }
     })
 
-    function _AAA(x: MathNumericType[], y: MathNumericType[], plane: MathNumericType[]): MathNumericType[] | null {
+    function _AAA(
+      x: MathNumericType[],
+      y: MathNumericType[],
+      plane: MathNumericType[]
+    ): MathNumericType[] | null {
       x = _coerceArr(x)
       y = _coerceArr(y)
       plane = _coerceArr(plane)
@@ -234,13 +251,20 @@ export const createIntersect = /* #__PURE__ */ factory(
     }
 
     /** Coerce row and column 2-dim arrays to 1-dim array */
-    function _coerceArr(arr: MathNumericType[] | MathNumericType[][]): MathNumericType[] {
+    function _coerceArr(
+      arr: MathNumericType[] | MathNumericType[][]
+    ): MathNumericType[] {
       // row matrix
-      if (arr.length === 1 && Array.isArray(arr[0])) return arr[0] as MathNumericType[]
+      if (arr.length === 1 && Array.isArray(arr[0]))
+        return arr[0] as MathNumericType[]
 
       // column matrix
       if (arr.length > 1 && Array.isArray(arr[0])) {
-        if ((arr as MathNumericType[][]).every((el) => Array.isArray(el) && el.length === 1))
+        if (
+          (arr as MathNumericType[][]).every(
+            (el) => Array.isArray(el) && el.length === 1
+          )
+        )
           return flatten(arr as MathNumericType[][])
       }
 
@@ -290,7 +314,13 @@ export const createIntersect = /* #__PURE__ */ factory(
       const d20o21 = multiplyScalar(d2[0], o2[1])
       const d21o20 = multiplyScalar(d2[1], o2[0])
       const t = divideScalar(
-        addScalar(subtract(subtract(d20o11, d21o10) as MathNumericType, d20o21) as MathNumericType, d21o20),
+        addScalar(
+          subtract(
+            subtract(d20o11, d21o10) as MathNumericType,
+            d20o21
+          ) as MathNumericType,
+          d21o20
+        ),
         det
       )
       return add(multiply(d1, t), o1) as MathNumericType[]
@@ -311,9 +341,18 @@ export const createIntersect = /* #__PURE__ */ factory(
       l: MathNumericType
     ): MathNumericType {
       // (a - b)*(c - d) + (e - f)*(g - h) + (i - j)*(k - l)
-      const add1 = multiplyScalar(subtract(a, b) as MathNumericType, subtract(c, d) as MathNumericType)
-      const add2 = multiplyScalar(subtract(e, f) as MathNumericType, subtract(g, h) as MathNumericType)
-      const add3 = multiplyScalar(subtract(i, j) as MathNumericType, subtract(k, l) as MathNumericType)
+      const add1 = multiplyScalar(
+        subtract(a, b) as MathNumericType,
+        subtract(c, d) as MathNumericType
+      )
+      const add2 = multiplyScalar(
+        subtract(e, f) as MathNumericType,
+        subtract(g, h) as MathNumericType
+      )
+      const add3 = multiplyScalar(
+        subtract(i, j) as MathNumericType,
+        subtract(k, l) as MathNumericType
+      )
       return addScalar(addScalar(add1, add2), add3)
     }
 
@@ -416,12 +455,30 @@ export const createIntersect = /* #__PURE__ */ factory(
         d4343
       )
 
-      const pax = addScalar(x1, multiplyScalar(ta, subtract(x2, x1) as MathNumericType))
-      const pay = addScalar(y1, multiplyScalar(ta, subtract(y2, y1) as MathNumericType))
-      const paz = addScalar(z1, multiplyScalar(ta, subtract(z2, z1) as MathNumericType))
-      const pbx = addScalar(x3, multiplyScalar(tb, subtract(x4, x3) as MathNumericType))
-      const pby = addScalar(y3, multiplyScalar(tb, subtract(y4, y3) as MathNumericType))
-      const pbz = addScalar(z3, multiplyScalar(tb, subtract(z4, z3) as MathNumericType))
+      const pax = addScalar(
+        x1,
+        multiplyScalar(ta, subtract(x2, x1) as MathNumericType)
+      )
+      const pay = addScalar(
+        y1,
+        multiplyScalar(ta, subtract(y2, y1) as MathNumericType)
+      )
+      const paz = addScalar(
+        z1,
+        multiplyScalar(ta, subtract(z2, z1) as MathNumericType)
+      )
+      const pbx = addScalar(
+        x3,
+        multiplyScalar(tb, subtract(x4, x3) as MathNumericType)
+      )
+      const pby = addScalar(
+        y3,
+        multiplyScalar(tb, subtract(y4, y3) as MathNumericType)
+      )
+      const pbz = addScalar(
+        z3,
+        multiplyScalar(tb, subtract(z4, z3) as MathNumericType)
+      )
       if (
         equalScalar(pax, pbx) &&
         equalScalar(pay, pby) &&
@@ -452,17 +509,32 @@ export const createIntersect = /* #__PURE__ */ factory(
       const z1z = multiplyScalar(z1, z)
       const z2z = multiplyScalar(z2, z)
 
-      const numerator = subtract(subtract(subtract(c, x1x) as MathNumericType, y1y) as MathNumericType, z1z) as MathNumericType
+      const numerator = subtract(
+        subtract(subtract(c, x1x) as MathNumericType, y1y) as MathNumericType,
+        z1z
+      ) as MathNumericType
       const denominator = subtract(
-        subtract(subtract(addScalar(addScalar(x2x, y2y), z2z), x1x) as MathNumericType, y1y) as MathNumericType,
+        subtract(
+          subtract(addScalar(addScalar(x2x, y2y), z2z), x1x) as MathNumericType,
+          y1y
+        ) as MathNumericType,
         z1z
       ) as MathNumericType
 
       const t = divideScalar(numerator, denominator)
 
-      const px = addScalar(x1, multiplyScalar(t, subtract(x2, x1) as MathNumericType))
-      const py = addScalar(y1, multiplyScalar(t, subtract(y2, y1) as MathNumericType))
-      const pz = addScalar(z1, multiplyScalar(t, subtract(z2, z1) as MathNumericType))
+      const px = addScalar(
+        x1,
+        multiplyScalar(t, subtract(x2, x1) as MathNumericType)
+      )
+      const py = addScalar(
+        y1,
+        multiplyScalar(t, subtract(y2, y1) as MathNumericType)
+      )
+      const pz = addScalar(
+        z1,
+        multiplyScalar(t, subtract(z2, z1) as MathNumericType)
+      )
       return [px, py, pz]
       // TODO: Add cases when line is parallel to the plane:
       //       (a) no intersection,

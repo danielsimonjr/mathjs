@@ -15,7 +15,11 @@ interface TypedError extends Error {
  * @param {*} [value]
  * @return {Error}
  */
-export function improveErrorMessage(err: TypedError, fnName: string, value?: unknown): Error {
+export function improveErrorMessage(
+  err: TypedError,
+  fnName: string,
+  value?: unknown
+): Error {
   // TODO: add information with the index (also needs transform in expression parser)
   let details
 

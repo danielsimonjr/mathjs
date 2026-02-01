@@ -67,7 +67,9 @@ export const createSqrt = /* #__PURE__ */ factory(
         return x.sqrt()
       },
 
-      BigNumber: function (x: BigNumberType): BigNumberType | number | ComplexType {
+      BigNumber: function (
+        x: BigNumberType
+      ): BigNumberType | number | ComplexType {
         if (!x.isNegative() || config.predictable) {
           return x.sqrt()
         } else {

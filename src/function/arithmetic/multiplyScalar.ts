@@ -45,7 +45,10 @@ export const createMultiplyScalar = /* #__PURE__ */ factory(
         return x.mul(y)
       },
 
-      'BigNumber, BigNumber': function (x: HasTimesMethod, y: HasTimesMethod): unknown {
+      'BigNumber, BigNumber': function (
+        x: HasTimesMethod,
+        y: HasTimesMethod
+      ): unknown {
         return x.times(y)
       },
 
@@ -53,15 +56,22 @@ export const createMultiplyScalar = /* #__PURE__ */ factory(
         return x * y
       },
 
-      'Fraction, Fraction': function (x: HasMulMethod, y: HasMulMethod): unknown {
+      'Fraction, Fraction': function (
+        x: HasMulMethod,
+        y: HasMulMethod
+      ): unknown {
         return x.mul(y)
       },
 
-      'number | Fraction | Complex, Unit': (x: unknown, y: HasMultiplyMethod): unknown =>
-        y.multiply(x),
+      'number | Fraction | Complex, Unit': (
+        x: unknown,
+        y: HasMultiplyMethod
+      ): unknown => y.multiply(x),
 
-      'Unit, number | Fraction | Complex | Unit': (x: HasMultiplyMethod, y: unknown): unknown =>
-        x.multiply(y)
+      'Unit, number | Fraction | Complex | Unit': (
+        x: HasMultiplyMethod,
+        y: unknown
+      ): unknown => x.multiply(y)
     })
   }
 )

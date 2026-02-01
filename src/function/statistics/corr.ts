@@ -156,7 +156,8 @@ export const createCorr = /* #__PURE__ */ factory(
       const sumX = sum(A)
       const sumY = sum(B)
       const sumXY = A.reduce(
-        (acc: unknown, x: unknown, index: number) => add(acc, multiply(x, B[index])),
+        (acc: unknown, x: unknown, index: number) =>
+          add(acc, multiply(x, B[index])),
         0
       )
       const sumXSquare = sum(A.map((x: unknown) => pow(x, 2)))

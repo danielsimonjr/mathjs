@@ -1,6 +1,11 @@
 import { factory } from '../../utils/factory.ts'
 import { createRange } from '../../function/matrix/range.ts'
-import type { TypedFunction, MathFunction, MathJsConfig, VariadicArgs } from './types.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  MathJsConfig,
+  VariadicArgs
+} from './types.ts'
 
 interface RangeDependencies {
   typed: TypedFunction

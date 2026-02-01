@@ -209,7 +209,9 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
         argNames: Record<string, boolean>
       ): CompileFunction {
         const evalObject = this.object._compile(math, argNames)
-        const evalIndex = this.index ? this.index._compile(math, argNames) : null
+        const evalIndex = this.index
+          ? this.index._compile(math, argNames)
+          : null
         const evalValue = this.value._compile(math, argNames)
         const symbolName = (this.object as SymbolNodeLike).name
 
@@ -252,7 +254,11 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
             const childObject = evalObject(scope, args, context)
             const value = evalValue(scope, args, context)
             // Important:  we pass childObject instead of context:
-            const index = (evalIndex as CompileFunction)(scope, args, childObject)
+            const index = (evalIndex as CompileFunction)(
+              scope,
+              args,
+              childObject
+            )
             scope.set(symbolName, assign(childObject, index, value))
             return value
           }
@@ -265,7 +271,10 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
           // AccessorNode:
           // we need to apply the updated object to parent object
           const accessorObject = this.object as AccessorNodeLike
-          const evalParentObject = accessorObject.object._compile(math, argNames)
+          const evalParentObject = accessorObject.object._compile(
+            math,
+            argNames
+          )
 
           if (accessorObject.index.isObjectProperty()) {
             const parentProp = accessorObject.index.getObjectProperty()
@@ -281,7 +290,11 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
                 parentProp
               )
               // Important: we pass childObject instead of context:
-              const index = (evalIndex as CompileFunction)(scope, args, childObject)
+              const index = (evalIndex as CompileFunction)(
+                scope,
+                args,
+                childObject
+              )
               const value = evalValue(scope, args, context)
               setSafeProperty(
                 parent as Record<string, unknown>,
@@ -293,7 +306,10 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
           } else {
             // if some parameters use the 'end' parameter, we need to calculate
             // the size
-            const evalParentIndex = accessorObject.index._compile(math, argNames)
+            const evalParentIndex = accessorObject.index._compile(
+              math,
+              argNames
+            )
 
             return function evalAssignmentNode(
               scope: Scope,
@@ -305,7 +321,11 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
               const parentIndex = evalParentIndex(scope, args, parent)
               const childObject = access(parent, parentIndex)
               // Important:  we pass childObject instead of context
-              const index = (evalIndex as CompileFunction)(scope, args, childObject)
+              const index = (evalIndex as CompileFunction)(
+                scope,
+                args,
+                childObject
+              )
               const value = evalValue(scope, args, context)
 
               assign(parent, parentIndex, assign(childObject, index, value))

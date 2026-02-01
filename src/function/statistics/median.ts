@@ -66,7 +66,9 @@ export const createMedian = /* #__PURE__ */ factory(
 
     // helper function to type check the middle value of the array
     const middle = typed({
-      'number | BigNumber | Complex | Unit': function (value: unknown): unknown {
+      'number | BigNumber | Complex | Unit': function (
+        value: unknown
+      ): unknown {
         return value
       }
     }) as (value: unknown) => unknown

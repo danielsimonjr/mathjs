@@ -55,7 +55,9 @@ export const createIm = /* #__PURE__ */ factory(
      */
     return typed(name, {
       number: (): number => 0,
-      'BigNumber | Fraction': (x: BigNumberType | FractionType): BigNumberType | FractionType => x.mul(0),
+      'BigNumber | Fraction': (
+        x: BigNumberType | FractionType
+      ): BigNumberType | FractionType => x.mul(0),
       Complex: (x: ComplexType): number => x.im,
       'Array | Matrix': typed.referToSelf(
         (self: (value: any) => any) => (x: any) => deepMap(x, self)

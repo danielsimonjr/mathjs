@@ -49,7 +49,10 @@ export type BigNumber = BigNumberInstance
  * Factory dependencies interface
  */
 interface BigNumberDependencies {
-  on?: (event: string, callback: (curr: ConfigChangeEvent, prev: ConfigChangeEvent) => void) => void
+  on?: (
+    event: string,
+    callback: (curr: ConfigChangeEvent, prev: ConfigChangeEvent) => void
+  ) => void
   config: { precision: number }
 }
 
@@ -57,7 +60,11 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
   name,
   dependencies,
   ({ on, config }: BigNumberDependencies) => {
-    const BigNumber = (Decimal as unknown as { clone: (config: Decimal.Config) => BigNumberClass }).clone({
+    const BigNumber = (
+      Decimal as unknown as {
+        clone: (config: Decimal.Config) => BigNumberClass
+      }
+    ).clone({
       precision: config.precision,
       modulo: EUCLID
     })
@@ -78,7 +85,9 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
      * @returns {Object} Returns a JSON object structured as:
      *                   `{"mathjs": "BigNumber", "value": "0.2"}`
      */
-    ;(BigNumber.prototype as BigNumberInstance).toJSON = function (this: BigNumberInstance): BigNumberJSON {
+    ;(BigNumber.prototype as BigNumberInstance).toJSON = function (
+      this: BigNumberInstance
+    ): BigNumberJSON {
       return {
         mathjs: 'BigNumber',
         value: this.toString()
@@ -91,7 +100,9 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
      *                       `{"mathjs": "BigNumber", "value": "0.2"}`
      * @return {BigNumber}
      */
-    ;(BigNumber as BigNumberClass).fromJSON = function (json: BigNumberJSON): BigNumberInstance {
+    ;(BigNumber as BigNumberClass).fromJSON = function (
+      json: BigNumberJSON
+    ): BigNumberInstance {
       return new BigNumber(json.value)
     }
 

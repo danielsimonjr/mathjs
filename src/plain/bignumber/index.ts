@@ -18,7 +18,9 @@ export interface PlainBigNumberConstructor {
 }
 
 // TODO: this is ugly. Instead, be able to pass your own isBigNumber function to typed?
-const BigNumber = (Decimal as unknown as { clone: () => PlainBigNumberConstructor }).clone()
+const BigNumber = (
+  Decimal as unknown as { clone: () => PlainBigNumberConstructor }
+).clone()
 BigNumber.prototype.isBigNumber = true
 
 /**

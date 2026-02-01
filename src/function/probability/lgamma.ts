@@ -40,10 +40,7 @@ const dependencies = ['Complex', 'typed']
 export const createLgamma = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    Complex,
-    typed
-  }: LgammaDependencies) => {
+  ({ Complex, typed }: LgammaDependencies) => {
     // Stirling series is non-convergent, we need to use the recurrence `lgamma(z) = lgamma(z+1) - log z` to get
     // sufficient accuracy.
     //

@@ -195,15 +195,23 @@ export const createFloor = /* #__PURE__ */ factory(
         return x.floor(n)
       },
 
-      'Complex, BigNumber': function (x: ComplexType, n: BigNumberType): ComplexType {
+      'Complex, BigNumber': function (
+        x: ComplexType,
+        n: BigNumberType
+      ): ComplexType {
         return x.floor((n as unknown as { toNumber(): number }).toNumber())
       },
 
       BigNumber: _bigFloor,
 
-      'BigNumber, BigNumber': function (x: BigNumberType, n: BigNumberType): BigNumberType {
+      'BigNumber, BigNumber': function (
+        x: BigNumberType,
+        n: BigNumberType
+      ): BigNumberType {
         const shift = bigTen.pow(n as unknown as Decimal)
-        return _bigFloor(x.mul(shift as unknown as BigNumberType)).div(shift as unknown as BigNumberType)
+        return _bigFloor(x.mul(shift as unknown as BigNumberType)).div(
+          shift as unknown as BigNumberType
+        )
       },
 
       bigint: (b: bigint): bigint => b,
@@ -218,7 +226,10 @@ export const createFloor = /* #__PURE__ */ factory(
         return x.floor(n)
       },
 
-      'Fraction, BigNumber': function (x: FractionType, n: BigNumberType): FractionType {
+      'Fraction, BigNumber': function (
+        x: FractionType,
+        n: BigNumberType
+      ): FractionType {
         return x.floor((n as unknown as { toNumber(): number }).toNumber())
       },
 
@@ -238,7 +249,11 @@ export const createFloor = /* #__PURE__ */ factory(
 
       'Array | Matrix, number | BigNumber, Unit': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: unknown[] | Matrix, n: number | BigNumberType, unit: UnitType): unknown[] | Matrix => {
+          (
+            x: unknown[] | Matrix,
+            n: number | BigNumberType,
+            unit: UnitType
+          ): unknown[] | Matrix => {
             // deep map collection, skip zeros since floor(0) = 0
             return deepMap(x, (value) => self(value, n, unit), true)
           }
@@ -246,14 +261,20 @@ export const createFloor = /* #__PURE__ */ factory(
 
       'Array | Matrix | Unit, Unit': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: unknown[] | Matrix | UnitType, unit: UnitType): unknown[] | Matrix | UnitType =>
+          (
+            x: unknown[] | Matrix | UnitType,
+            unit: UnitType
+          ): unknown[] | Matrix | UnitType =>
             self(x, 0, unit)
       ),
 
-      'Array | Matrix': typed.referToSelf((self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => {
-        // deep map collection, skip zeros since floor(0) = 0
-        return deepMap(x, self, true)
-      }),
+      'Array | Matrix': typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: unknown[] | Matrix): unknown[] | Matrix => {
+            // deep map collection, skip zeros since floor(0) = 0
+            return deepMap(x, self, true)
+          }
+      ),
 
       'Array, number | BigNumber': typed.referToSelf(
         (self: TypedFunction) =>
@@ -279,7 +300,10 @@ export const createFloor = /* #__PURE__ */ factory(
 
       'number | Complex | Fraction | BigNumber, Array': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: number | ComplexType | FractionType | BigNumberType, y: unknown[]): unknown[] => {
+          (
+            x: number | ComplexType | FractionType | BigNumberType,
+            y: unknown[]
+          ): unknown[] => {
             // use matrix implementation
             return matAlgo14xDs(matrix(y), x, self, true).valueOf() as unknown[]
           }
@@ -287,7 +311,10 @@ export const createFloor = /* #__PURE__ */ factory(
 
       'number | Complex | Fraction | BigNumber, Matrix': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: number | ComplexType | FractionType | BigNumberType, y: Matrix): Matrix => {
+          (
+            x: number | ComplexType | FractionType | BigNumberType,
+            y: Matrix
+          ): Matrix => {
             if (equalScalar(x, 0)) return zeros(y.size(), y.storage())
             if (y.storage() === 'dense') {
               return matAlgo14xDs(y, x, self, true)

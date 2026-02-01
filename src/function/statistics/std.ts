@@ -123,11 +123,11 @@ export const createStd = /* #__PURE__ */ factory(
       // WASM fast path for flat arrays of plain numbers with normalization (not dimension)
       // Only use WASM when we have a flat array and string normalization (or default)
       const normalization: NormalizationType =
-        typeof normalizationOrDim === 'string'
-          ? normalizationOrDim
-          : 'unbiased'
-      const isDimension = typeof normalizationOrDim === 'number' ||
-        (normalizationOrDim !== undefined && typeof normalizationOrDim === 'object')
+        typeof normalizationOrDim === 'string' ? normalizationOrDim : 'unbiased'
+      const isDimension =
+        typeof normalizationOrDim === 'number' ||
+        (normalizationOrDim !== undefined &&
+          typeof normalizationOrDim === 'object')
 
       if (
         !isDimension &&

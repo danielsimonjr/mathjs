@@ -119,7 +119,10 @@ export const createPow = /* #__PURE__ */ factory(
     return typed(name, {
       'number, number': _pow,
 
-      'Complex, Complex': function (x: ComplexType, y: ComplexType): ComplexType {
+      'Complex, Complex': function (
+        x: ComplexType,
+        y: ComplexType
+      ): ComplexType {
         return x.pow(y)
       },
 
@@ -130,10 +133,7 @@ export const createPow = /* #__PURE__ */ factory(
         if (y.isInteger() || x.gte(0) || config.predictable) {
           return x.pow(y)
         } else {
-          return new Complex(x.toNumber(), 0).pow(
-            y.toNumber(),
-            0
-          )
+          return new Complex(x.toNumber(), 0).pow(y.toNumber(), 0)
         }
       },
 
@@ -160,13 +160,19 @@ export const createPow = /* #__PURE__ */ factory(
 
       'Array, number': _powArray,
 
-      'Array, BigNumber': function (x: unknown[][], y: BigNumberType): unknown[][] {
+      'Array, BigNumber': function (
+        x: unknown[][],
+        y: BigNumberType
+      ): unknown[][] {
         return _powArray(x, y.toNumber())
       },
 
       'Matrix, number': _powMatrix,
 
-      'Matrix, BigNumber': function (x: MatrixType, y: BigNumberType): MatrixType {
+      'Matrix, BigNumber': function (
+        x: MatrixType,
+        y: BigNumberType
+      ): MatrixType {
         return _powMatrix(x, y.toNumber())
       },
 

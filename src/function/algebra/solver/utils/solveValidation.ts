@@ -29,14 +29,20 @@ interface SparseMatrixType {
 }
 
 interface DenseMatrixConstructor {
-  new (data: { data: any[][]; size: number[]; datatype?: string }): DenseMatrixType
+  new (data: {
+    data: any[][]
+    size: number[]
+    datatype?: string
+  }): DenseMatrixType
 }
 
 interface SolveValidationDependencies {
   DenseMatrix: DenseMatrixConstructor
 }
 
-export function createSolveValidation({ DenseMatrix }: SolveValidationDependencies) {
+export function createSolveValidation({
+  DenseMatrix
+}: SolveValidationDependencies) {
   /**
    * Validates matrix and column vector b for backward/forward substitution algorithms.
    *

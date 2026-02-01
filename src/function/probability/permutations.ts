@@ -75,7 +75,10 @@ export const createPermutations = /* #__PURE__ */ factory(
         return product(n - k + 1, n)
       },
 
-      'BigNumber, BigNumber': function (n: BigNumberType, k: BigNumberType): BigNumberType {
+      'BigNumber, BigNumber': function (
+        n: BigNumberType,
+        k: BigNumberType
+      ): BigNumberType {
         let result: BigNumberType
         let i: BigNumberType
 

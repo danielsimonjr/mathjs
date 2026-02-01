@@ -41,7 +41,14 @@ const dependencies = [
 export const createRightArithShift = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, equalScalar, zeros, DenseMatrix, concat }: RightArithShiftDependencies) => {
+  ({
+    typed,
+    matrix,
+    equalScalar,
+    zeros,
+    DenseMatrix,
+    concat
+  }: RightArithShiftDependencies) => {
     const matAlgo01xDSid = createMatAlgo01xDSid({ typed })
     const matAlgo02xDS0 = createMatAlgo02xDS0({ typed, equalScalar })
     const matAlgo08xS0Sid = createMatAlgo08xS0Sid({ typed, equalScalar })
@@ -91,43 +98,47 @@ export const createRightArithShift = /* #__PURE__ */ factory(
         'bigint, bigint': (x: bigint, y: bigint): bigint => x >> y,
 
         'SparseMatrix, number | BigNumber': typed.referToSelf(
-          (self: TypedFunction) => (x: Matrix, y: number | BigNumber): Matrix => {
-            // check scalar
-            if (equalScalar(y, 0)) {
-              return x.clone()
+          (self: TypedFunction) =>
+            (x: Matrix, y: number | BigNumber): Matrix => {
+              // check scalar
+              if (equalScalar(y, 0)) {
+                return x.clone()
+              }
+              return matAlgo11xS0s(x, y, self, false)
             }
-            return matAlgo11xS0s(x, y, self, false)
-          }
         ),
 
         'DenseMatrix, number | BigNumber': typed.referToSelf(
-          (self: TypedFunction) => (x: Matrix, y: number | BigNumber): Matrix => {
-            // check scalar
-            if (equalScalar(y, 0)) {
-              return x.clone()
+          (self: TypedFunction) =>
+            (x: Matrix, y: number | BigNumber): Matrix => {
+              // check scalar
+              if (equalScalar(y, 0)) {
+                return x.clone()
+              }
+              return matAlgo14xDs(x, y, self, false)
             }
-            return matAlgo14xDs(x, y, self, false)
-          }
         ),
 
         'number | BigNumber, SparseMatrix': typed.referToSelf(
-          (self: TypedFunction) => (x: number | BigNumber, y: Matrix): Matrix => {
-            // check scalar
-            if (equalScalar(x, 0)) {
-              return zeros(y.size(), y.storage())
+          (self: TypedFunction) =>
+            (x: number | BigNumber, y: Matrix): Matrix => {
+              // check scalar
+              if (equalScalar(x, 0)) {
+                return zeros(y.size(), y.storage())
+              }
+              return matAlgo10xSids(y, x, self, true)
             }
-            return matAlgo10xSids(y, x, self, true)
-          }
         ),
 
         'number | BigNumber, DenseMatrix': typed.referToSelf(
-          (self: TypedFunction) => (x: number | BigNumber, y: Matrix): Matrix => {
-            // check scalar
-            if (equalScalar(x, 0)) {
-              return zeros(y.size(), y.storage())
+          (self: TypedFunction) =>
+            (x: number | BigNumber, y: Matrix): Matrix => {
+              // check scalar
+              if (equalScalar(x, 0)) {
+                return zeros(y.size(), y.storage())
+              }
+              return matAlgo14xDs(y, x, self, true)
             }
-            return matAlgo14xDs(y, x, self, true)
-          }
         )
       },
       useMatrixForArrayScalar,

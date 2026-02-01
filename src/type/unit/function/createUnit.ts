@@ -104,7 +104,9 @@ export const createCreateUnit = /* #__PURE__ */ factory(
       },
 
       // Same as above but without the options.
-      Object: function (obj: Record<string, string | UnitInstance | UnitDefinition>): UnitInstance {
+      Object: function (
+        obj: Record<string, string | UnitInstance | UnitDefinition>
+      ): UnitInstance {
         return Unit.createUnit(obj, {})
       },
 
@@ -120,7 +122,10 @@ export const createCreateUnit = /* #__PURE__ */ factory(
       },
 
       // Same as above but without the options.
-      'string, Unit | string | Object': function (name: string, def: string | UnitInstance | UnitDefinition): UnitInstance {
+      'string, Unit | string | Object': function (
+        name: string,
+        def: string | UnitInstance | UnitDefinition
+      ): UnitInstance {
         const obj: Record<string, string | UnitInstance | UnitDefinition> = {}
         obj[name] = def
         return Unit.createUnit(obj, {})

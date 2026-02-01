@@ -179,10 +179,14 @@ describe('SparseMatrix', function () {
       assert.strictEqual(a.type, 'SparseMatrix')
     })
 
-    it('should throw an error when input array does not have two dimensions', function () {
-      assert.throws(function () {
-        console.log(new SparseMatrix([1, 2, 3]))
-      }, /DimensionError: Two dimensional array expected/)
+    it('should treat 1D arrays as column vectors', function () {
+      // 1D arrays are intentionally supported as column vectors
+      const a = new SparseMatrix([1, 2, 3])
+      assert.deepStrictEqual(a.size(), [3, 1])
+      assert.deepStrictEqual(a.toArray(), [[1], [2], [3]])
+    })
+
+    it('should throw an error when input array has more than two dimensions', function () {
       assert.throws(function () {
         console.log(new SparseMatrix([[[1]], [[2]], [[3]]]))
       }, /DimensionError: Two dimensional array expected/)

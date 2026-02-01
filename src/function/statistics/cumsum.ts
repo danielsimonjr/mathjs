@@ -72,7 +72,10 @@ export const createCumSum = /* #__PURE__ */ factory(
       // sum([a, b, c, d, ...])
       Array: _cumsum,
       Matrix: function (matrix: MatrixType): MatrixType {
-        return matrix.create(_cumsum(matrix.valueOf() as unknown[], matrix.datatype()), matrix.datatype())
+        return matrix.create(
+          _cumsum(matrix.valueOf() as unknown[], matrix.datatype()),
+          matrix.datatype()
+        )
       },
 
       // sum([a, b, c, d, ...], dim)
@@ -167,7 +170,10 @@ export const createCumSum = /* #__PURE__ */ factory(
      * @return {Array} cumulative sums
      * @private
      */
-    function _ncumSumDim(array: unknown[], dim: number | { valueOf(): number }): unknown[] {
+    function _ncumSumDim(
+      array: unknown[],
+      dim: number | { valueOf(): number }
+    ): unknown[] {
       const size = arraySize(array)
       const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
       if (dimValue < 0 || dimValue >= size.length) {

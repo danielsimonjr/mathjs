@@ -55,7 +55,9 @@ export const createSin = /* #__PURE__ */ factory(
       name,
       {
         number: Math.sin,
-        'Complex | BigNumber': (x: ComplexType | BigNumberType): ComplexType | BigNumberType => x.sin()
+        'Complex | BigNumber': (
+          x: ComplexType | BigNumberType
+        ): ComplexType | BigNumberType => x.sin()
       },
       trigUnit
     )

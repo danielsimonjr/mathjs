@@ -14,7 +14,10 @@ interface MatrixType {
 interface RandomDependencies {
   typed: TypedFunction
   config: ConfigOptions
-  on?: (event: string, callback: (curr: ConfigOptions, prev: ConfigOptions) => void) => void
+  on?: (
+    event: string,
+    callback: (curr: ConfigOptions, prev: ConfigOptions) => void
+  ) => void
 }
 
 const name = 'random'
@@ -69,16 +72,29 @@ export const createRandom = /* #__PURE__ */ factory(
       '': () => _random(0, 1),
       number: (max: number) => _random(0, max),
       'number, number': (min: number, max: number) => _random(min, max),
-      'Array | Matrix': (size: unknown[] | MatrixType) => _randomMatrix(size, 0, 1),
+      'Array | Matrix': (size: unknown[] | MatrixType) =>
+        _randomMatrix(size, 0, 1),
       'Array | Matrix, number': (size: unknown[] | MatrixType, max: number) =>
         _randomMatrix(size, 0, max),
-      'Array | Matrix, number, number': (size: unknown[] | MatrixType, min: number, max: number) =>
-        _randomMatrix(size, min, max)
+      'Array | Matrix, number, number': (
+        size: unknown[] | MatrixType,
+        min: number,
+        max: number
+      ) => _randomMatrix(size, min, max)
     })
 
-    function _randomMatrix(size: unknown[] | MatrixType, min: number, max: number): unknown[] | MatrixType {
-      const res = randomMatrix((size as { valueOf(): number[] }).valueOf(), () => _random(min, max))
-      return isMatrix(size) ? (size as MatrixType).create(res as unknown[], 'number') : res
+    function _randomMatrix(
+      size: unknown[] | MatrixType,
+      min: number,
+      max: number
+    ): unknown[] | MatrixType {
+      const res = randomMatrix(
+        (size as { valueOf(): number[] }).valueOf(),
+        () => _random(min, max)
+      )
+      return isMatrix(size)
+        ? (size as MatrixType).create(res as unknown[], 'number')
+        : res
     }
 
     function _random(min: number, max: number): number {

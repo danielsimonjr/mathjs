@@ -2,7 +2,12 @@ import { factory } from '../../utils/factory.ts'
 import { createRow } from '../../function/matrix/row.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { isNumber } from '../../utils/is.ts'
-import type { TypedFunction, MathFunction, IndexConstructor, VariadicArgs } from './types.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  IndexConstructor,
+  VariadicArgs
+} from './types.ts'
 
 interface RowDependencies {
   typed: TypedFunction

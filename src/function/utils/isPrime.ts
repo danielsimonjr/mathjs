@@ -16,7 +16,9 @@ interface BigNumberType {
   toNumber(): number
   toFixed(n: number): string
   constructor: {
-    clone(config: { precision: number }): new (value: BigNumberType | number) => BigNumberType
+    clone(config: {
+      precision: number
+    }): new (value: BigNumberType | number) => BigNumberType
   }
 }
 
@@ -103,7 +105,11 @@ export const createIsPrime = /* #__PURE__ */ factory(
           return true
         }
 
-        function modPow(base: BigNumberType, exponent: BigNumberType, modulus: BigNumberType): BigNumberType | number {
+        function modPow(
+          base: BigNumberType,
+          exponent: BigNumberType,
+          modulus: BigNumberType
+        ): BigNumberType | number {
           // exponent can be huge, use non-recursive variant
           let accumulator: BigNumberType | number = 1
           while (!exponent.eq(0)) {
@@ -164,7 +170,9 @@ export const createIsPrime = /* #__PURE__ */ factory(
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self)
+        (self: TypedFunction) =>
+          (x: unknown): unknown =>
+            deepMap(x, self)
       )
     })
   }

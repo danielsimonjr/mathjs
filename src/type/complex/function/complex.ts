@@ -1,7 +1,13 @@
 import { factory } from '../../../utils/factory.ts'
 import { deepMap } from '../../../utils/collection.ts'
 import type { TypedFunction } from '../../../core/function/typed.ts'
-import type { Complex, ComplexConstructor, ComplexJSON, PolarInput, AbsArgInput } from '../Complex.ts'
+import type {
+  Complex,
+  ComplexConstructor,
+  ComplexJSON,
+  PolarInput,
+  AbsArgInput
+} from '../Complex.ts'
 import type { MathCollection } from '../../../types.ts'
 
 /**
@@ -71,7 +77,10 @@ export const createComplex = /* #__PURE__ */ factory(
       },
 
       // TODO: this signature should be redundant
-      'BigNumber, BigNumber': function (re: { toNumber: () => number }, im: { toNumber: () => number }): Complex {
+      'BigNumber, BigNumber': function (
+        re: { toNumber: () => number },
+        im: { toNumber: () => number }
+      ): Complex {
         return new Complex(re.toNumber(), im.toNumber())
       },
 
@@ -106,7 +115,12 @@ export const createComplex = /* #__PURE__ */ factory(
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: MathCollection): MathCollection => deepMap(x as unknown[], self as (item: unknown) => unknown) as unknown as MathCollection
+        (self: TypedFunction) =>
+          (x: MathCollection): MathCollection =>
+            deepMap(
+              x as unknown[],
+              self as (item: unknown) => unknown
+            ) as unknown as MathCollection
       )
     })
   }

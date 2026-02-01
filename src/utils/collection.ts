@@ -89,7 +89,11 @@ export function deepMap<T, U>(
   }
   const skipZerosCallback = (x: T): T | U => (x === 0 ? x : callback(x))
   if (isMatrix(array)) {
-    return (array as Matrix<T>).map((x) => skipZerosCallback(x), false, true) as Matrix<U>
+    return (array as Matrix<T>).map(
+      (x) => skipZerosCallback(x),
+      false,
+      true
+    ) as Matrix<U>
   } else {
     return arrayDeepMap(array as T[], skipZerosCallback, true) as U[]
   }

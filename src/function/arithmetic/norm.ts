@@ -12,7 +12,14 @@ interface BigNumberType {
 
 interface MatrixType {
   size(): number[]
-  forEach(callback: (value: number | BigNumberType | ComplexType, index: number[], matrix: MatrixType) => void, skipZeros?: boolean): void
+  forEach(
+    callback: (
+      value: number | BigNumberType | ComplexType,
+      index: number[],
+      matrix: MatrixType
+    ) => void,
+    skipZeros?: boolean
+  ): void
   toArray(): (number | BigNumberType | ComplexType)[]
 }
 
@@ -134,11 +141,17 @@ export const createNorm = /* #__PURE__ */ factory(
         return _norm(x, 2)
       },
 
-      'Array, number | BigNumber | string': function (x: unknown[], p: number | BigNumberType | string): number | BigNumberType {
+      'Array, number | BigNumber | string': function (
+        x: unknown[],
+        p: number | BigNumberType | string
+      ): number | BigNumberType {
         return _norm(matrix(x), p)
       },
 
-      'Matrix, number | BigNumber | string': function (x: MatrixType, p: number | BigNumberType | string): number | BigNumberType {
+      'Matrix, number | BigNumber | string': function (
+        x: MatrixType,
+        p: number | BigNumberType | string
+      ): number | BigNumberType {
         return _norm(x, p)
       }
     })
@@ -188,7 +201,10 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number | BigNumberType} Returns the norm
      * @private
      */
-    function _vectorNorm(x: MatrixType, p: number | BigNumberType | string): number | BigNumberType {
+    function _vectorNorm(
+      x: MatrixType,
+      p: number | BigNumberType | string
+    ): number | BigNumberType {
       // check p
       if (p === Number.POSITIVE_INFINITY || p === 'inf') {
         return _vectorNormPlusInfinity(x)
@@ -243,7 +259,10 @@ export const createNorm = /* #__PURE__ */ factory(
       // result
       let maxc: number | BigNumberType = 0
       // skip zeros since abs(0) == 0
-      x.forEach(function (value: number | BigNumberType | ComplexType, index: number[]) {
+      x.forEach(function (
+        value: number | BigNumberType | ComplexType,
+        index: number[]
+      ) {
         const j = index[1]
         const cj = add(c[j] || 0, abs(value)) as number | BigNumberType
         if (larger(cj, maxc)) {
@@ -285,7 +304,10 @@ export const createNorm = /* #__PURE__ */ factory(
       // result
       let maxr: number | BigNumberType = 0
       // skip zeros since abs(0) == 0
-      x.forEach(function (value: number | BigNumberType | ComplexType, index: number[]) {
+      x.forEach(function (
+        value: number | BigNumberType | ComplexType,
+        index: number[]
+      ) {
         const i = index[0]
         const ri = add(r[i] || 0, abs(value)) as number | BigNumberType
         if (larger(ri, maxr)) {
@@ -303,7 +325,10 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number | BigNumberType} Returns the norm
      * @private
      */
-    function _matrixNorm(x: MatrixType, p: number | BigNumberType | string): number | BigNumberType {
+    function _matrixNorm(
+      x: MatrixType,
+      p: number | BigNumberType | string
+    ): number | BigNumberType {
       // check p
       if (p === 1) {
         return _matrixNormOne(x)
@@ -328,7 +353,10 @@ export const createNorm = /* #__PURE__ */ factory(
      * @returns {number | BigNumberType} Returns the norm
      * @private
      */
-    function _norm(x: MatrixType, p: number | BigNumberType | string): number | BigNumberType {
+    function _norm(
+      x: MatrixType,
+      p: number | BigNumberType | string
+    ): number | BigNumberType {
       // size
       const sizeX = x.size()
 

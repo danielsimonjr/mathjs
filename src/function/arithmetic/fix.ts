@@ -159,7 +159,10 @@ export const createFix = /* #__PURE__ */ factory(
         )
       },
 
-      'Complex, BigNumber': function (x: ComplexType, bn: BigNumberType): ComplexType {
+      'Complex, BigNumber': function (
+        x: ComplexType,
+        bn: BigNumberType
+      ): ComplexType {
         const n = bn.toNumber()
         return new Complex(
           x.re > 0 ? floor(x.re, n) : ceil(x.re, n),
@@ -171,7 +174,10 @@ export const createFix = /* #__PURE__ */ factory(
         return x.isNegative() ? ceil(x) : floor(x)
       },
 
-      'BigNumber, number | BigNumber': function (x: BigNumberType, n: number | BigNumberType): BigNumberType {
+      'BigNumber, number | BigNumber': function (
+        x: BigNumberType,
+        n: number | BigNumberType
+      ): BigNumberType {
         return x.isNegative() ? ceil(x, n) : floor(x, n)
       },
 
@@ -183,7 +189,10 @@ export const createFix = /* #__PURE__ */ factory(
         return x.s < 0n ? x.ceil() : x.floor()
       },
 
-      'Fraction, number | BigNumber': function (x: FractionType, n: number | BigNumberType): FractionType {
+      'Fraction, number | BigNumber': function (
+        x: FractionType,
+        n: number | BigNumberType
+      ): FractionType {
         return x.s < 0n ? ceil(x, n) : floor(x, n)
       },
 
@@ -203,7 +212,11 @@ export const createFix = /* #__PURE__ */ factory(
 
       'Array | Matrix, number | BigNumber, Unit': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: unknown[] | Matrix, n: number | BigNumberType, unit: UnitType): unknown[] | Matrix => {
+          (
+            x: unknown[] | Matrix,
+            n: number | BigNumberType,
+            unit: UnitType
+          ): unknown[] | Matrix => {
             // deep map collection, skip zeros since fix(0) = 0
             return deepMap(x, (value) => self(value, n, unit), true)
           }
@@ -211,18 +224,27 @@ export const createFix = /* #__PURE__ */ factory(
 
       'Array | Matrix | Unit, Unit': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: unknown[] | Matrix | UnitType, unit: UnitType): unknown[] | Matrix | UnitType =>
+          (
+            x: unknown[] | Matrix | UnitType,
+            unit: UnitType
+          ): unknown[] | Matrix | UnitType =>
             self(x, 0, unit)
       ),
 
-      'Array | Matrix': typed.referToSelf((self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => {
-        // deep map collection, skip zeros since fix(0) = 0
-        return deepMap(x, self, true)
-      }),
+      'Array | Matrix': typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: unknown[] | Matrix): unknown[] | Matrix => {
+            // deep map collection, skip zeros since fix(0) = 0
+            return deepMap(x, self, true)
+          }
+      ),
 
       'Array | Matrix, number | BigNumber': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: unknown[] | Matrix, n: number | BigNumberType): unknown[] | Matrix => {
+          (
+            x: unknown[] | Matrix,
+            n: number | BigNumberType
+          ): unknown[] | Matrix => {
             // deep map collection, skip zeros since fix(0) = 0
             return deepMap(x, (i) => self(i, n), true)
           }
@@ -230,7 +252,10 @@ export const createFix = /* #__PURE__ */ factory(
 
       'number | Complex | Fraction | BigNumber, Array': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: number | ComplexType | FractionType | BigNumberType, y: unknown[]): unknown[] => {
+          (
+            x: number | ComplexType | FractionType | BigNumberType,
+            y: unknown[]
+          ): unknown[] => {
             // use matrix implementation
             return matAlgo14xDs(matrix(y), x, self, true).valueOf() as unknown[]
           }
@@ -238,7 +263,10 @@ export const createFix = /* #__PURE__ */ factory(
 
       'number | Complex | Fraction | BigNumber, Matrix': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: number | ComplexType | FractionType | BigNumberType, y: Matrix): Matrix => {
+          (
+            x: number | ComplexType | FractionType | BigNumberType,
+            y: Matrix
+          ): Matrix => {
             if (equalScalar(x, 0)) return zeros(y.size(), y.storage())
             if (y.storage() === 'dense') {
               return matAlgo14xDs(y, x, self, true)

@@ -21,7 +21,17 @@ const dependencies = ['ImmutableDenseMatrix', 'getMatrixDataType']
  * importing RangeInterface to avoid circular dependencies. The Range class is created
  * in a separate factory and its interface matches this structural definition.
  */
-export type IndexDimension = number | string | ImmutableDenseMatrix | { size(): number[]; min(): number | undefined; max(): number | undefined; toArray(): number[]; toString(): string }
+export type IndexDimension =
+  | number
+  | string
+  | ImmutableDenseMatrix
+  | {
+      size(): number[]
+      min(): number | undefined
+      max(): number | undefined
+      toArray(): number[]
+      toString(): string
+    }
 
 // Forward declaration for Index class (used in callback type)
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

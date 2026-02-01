@@ -57,7 +57,10 @@ export const createCombinations = /* #__PURE__ */ factory(
     return typed(name, {
       'number, number': combinationsNumber,
 
-      'BigNumber, BigNumber': function (n: BigNumberType, k: BigNumberType): BigNumberType {
+      'BigNumber, BigNumber': function (
+        n: BigNumberType,
+        k: BigNumberType
+      ): BigNumberType {
         const BigNumber = n.constructor
         let result: BigNumberType
         let i: BigNumberType

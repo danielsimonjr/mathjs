@@ -1,10 +1,6 @@
 import { isSymbolNode } from '../../../utils/is.ts'
 import { PartitionedMap } from '../../../utils/map.ts'
-import type {
-  ExpressionNode,
-  EvaluationScope,
-  MathJsLike
-} from '../types.ts'
+import type { ExpressionNode, EvaluationScope, MathJsLike } from '../types.ts'
 
 /**
  * Compile an inline expression like "x > 0"
@@ -25,14 +21,17 @@ export function compileInlineExpression(
     throw new Error('Expression does not support filter')
   }
 
-  const symbols = filterFn.call(expression, function (node: ExpressionNode): boolean {
-    return (
-      isSymbolNode(node) &&
-      node.name !== undefined &&
-      !(node.name in math) &&
-      !scope.has(node.name)
-    )
-  })
+  const symbols = filterFn.call(
+    expression,
+    function (node: ExpressionNode): boolean {
+      return (
+        isSymbolNode(node) &&
+        node.name !== undefined &&
+        !(node.name in math) &&
+        !scope.has(node.name)
+      )
+    }
+  )
 
   const symbol = symbols[0]
 

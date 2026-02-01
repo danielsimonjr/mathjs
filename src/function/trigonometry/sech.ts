@@ -48,7 +48,8 @@ export const createSech = /* #__PURE__ */ factory(
     return typed(name, {
       number: sechNumber,
       Complex: (x: Complex) => x.sech(),
-      BigNumber: (x: BigNumber): BigNumber => new BigNumber(1).div((x as unknown as { cosh(): BigNumber }).cosh())
+      BigNumber: (x: BigNumber): BigNumber =>
+        new BigNumber(1).div((x as unknown as { cosh(): BigNumber }).cosh())
     }) as TypedFunction
   }
 )

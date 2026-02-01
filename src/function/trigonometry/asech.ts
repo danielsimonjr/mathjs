@@ -27,12 +27,7 @@ const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
 export const createAsech = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    Complex,
-    BigNumber
-  }: AsechDependencies) => {
+  ({ typed, config, Complex, BigNumber }: AsechDependencies) => {
     /**
      * Calculate the hyperbolic arcsecant of a value,
      * defined as `asech(x) = acosh(1/x) = ln(sqrt(1/x^2 - 1) + 1/x)`.

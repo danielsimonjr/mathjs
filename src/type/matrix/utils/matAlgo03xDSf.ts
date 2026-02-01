@@ -1,39 +1,40 @@
 import { factory } from '../../../utils/factory.ts'
 import { DimensionError } from '../../../error/DimensionError.ts'
+import type {
+  DataType,
+  MatrixValue,
+  MatrixArray,
+  MatrixCallback,
+  TypedFunction,
+  DenseMatrixConstructorData
+} from '../types.ts'
 
-// Type definitions
-type DataType = string | undefined
-type MatrixValue = any
-type MatrixData = any[][]
-
+/**
+ * DenseMatrix interface for algorithm operations.
+ * Note: This algorithm only operates on 2D matrices, so we use MatrixArray (T[][]).
+ */
 interface DenseMatrix {
-  _data: MatrixData
-  _size: number[]
+  _data: MatrixArray
+  _size: [number, number]
   _datatype?: DataType
-  getDataType(): DataType
-  createDenseMatrix(config: {
-    data: MatrixData
-    size: number[]
-    datatype?: DataType
-  }): DenseMatrix
+  _data_backup?: MatrixArray
+  getDataType(): string
+  createDenseMatrix(config: DenseMatrixConstructorData): DenseMatrix
 }
 
+/**
+ * SparseMatrix interface for algorithm operations.
+ * Note: SparseMatrix is always 2D.
+ */
 interface SparseMatrix {
   _values?: MatrixValue[]
   _index: number[]
   _ptr: number[]
-  _size: number[]
-  _data?: any
+  _size: [number, number]
+  _data?: MatrixArray
   _datatype?: DataType
-  getDataType(): DataType
+  getDataType(): string
 }
-
-interface _TypedFunction {
-  find(fn: Function, signature: string[]): Function
-  convert(value: any, datatype: string): any
-}
-
-type MatrixCallback = (a: any, b: any) => any
 
 const name = 'matAlgo03xDSf'
 const dependencies = ['typed']
@@ -41,7 +42,7 @@ const dependencies = ['typed']
 export const createMatAlgo03xDSf = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed }: any) => {
+  ({ typed }: { typed: TypedFunction }) => {
     /**
      * Iterates over SparseMatrix items and invokes the callback function f(Dij, Sij).
      * Callback function invoked M*N times.
@@ -68,7 +69,7 @@ export const createMatAlgo03xDSf = /* #__PURE__ */ factory(
       inverse: boolean
     ): DenseMatrix {
       // dense matrix arrays
-      const adata: MatrixData = denseMatrix._data
+      const adata: MatrixArray = denseMatrix._data
       const asize: number[] = denseMatrix._size
       const adt: DataType = denseMatrix._datatype || denseMatrix.getDataType()
 
@@ -127,7 +128,7 @@ export const createMatAlgo03xDSf = /* #__PURE__ */ factory(
       }
 
       // result (DenseMatrix)
-      const cdata: MatrixData = []
+      const cdata: MatrixArray = []
 
       // initialize dense matrix
       for (let z = 0; z < rows; z++) {

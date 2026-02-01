@@ -7,7 +7,10 @@ type NestedNumberArray = number | NestedNumberArray[]
  * @param {function} random
  * @returns {Array}
  */
-export function randomMatrix(size: number[], random: () => number): NestedNumberArray[] {
+export function randomMatrix(
+  size: number[],
+  random: () => number
+): NestedNumberArray[] {
   const data: NestedNumberArray[] = []
   size = size.slice(0)
 

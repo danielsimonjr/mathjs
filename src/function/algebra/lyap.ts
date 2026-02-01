@@ -20,13 +20,7 @@ const dependencies = ['typed', 'matrix', 'sylvester', 'multiply', 'transpose']
 export const createLyap = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    matrix,
-    sylvester,
-    multiply,
-    transpose
-  }: LyapDependencies) => {
+  ({ typed, matrix, sylvester, multiply, transpose }: LyapDependencies) => {
     /**
      *
      * Solves the Continuous-time Lyapunov equation AP+PA'+Q=0 for P, where
@@ -61,7 +55,11 @@ export const createLyap = /* #__PURE__ */ factory(
         return sylvester(matrix(A), transpose(matrix(A)), multiply(-1, Q))
       },
       'Matrix, Array': function (A: MatrixType, Q: unknown[][]): MatrixType {
-        return sylvester(A, transpose(matrix(A)), matrix(multiply(-1, Q) as unknown[][]))
+        return sylvester(
+          A,
+          transpose(matrix(A)),
+          matrix(multiply(-1, Q) as unknown[][])
+        )
       },
       'Array, Array': function (A: unknown[][], Q: unknown[][]): unknown[][] {
         return sylvester(

@@ -165,7 +165,10 @@ export const createSum = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Complex | Unit | Array | Matrix} sum
      * @private
      */
-    function _nsumDim(array: unknown[] | MatrixType, dim: number | { valueOf(): number }): unknown {
+    function _nsumDim(
+      array: unknown[] | MatrixType,
+      dim: number | { valueOf(): number }
+    ): unknown {
       try {
         const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
         const sum = reduce(array, dimValue, add)

@@ -50,7 +50,9 @@ export const createIndexTransform = /* #__PURE__ */ factory(
           })
         } else if (isArray(arg) || isMatrix(arg)) {
           if (getMatrixDataType(arg) !== 'boolean') {
-            arg = (arg as MatrixLike | unknown[]).map(function (v: unknown): unknown {
+            arg = (arg as MatrixLike | unknown[]).map(function (
+              v: unknown
+            ): unknown {
               return (v as number) - 1
             })
           }

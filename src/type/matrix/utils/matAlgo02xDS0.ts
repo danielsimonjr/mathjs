@@ -1,45 +1,41 @@
 import { factory } from '../../../utils/factory.ts'
 import { DimensionError } from '../../../error/DimensionError.ts'
+import type {
+  DataType,
+  MatrixValue,
+  MatrixArray,
+  MatrixCallback,
+  EqualScalarFunction,
+  TypedFunction,
+  SparseMatrixConstructorData
+} from '../types.ts'
 
-// Type definitions
-type DataType = string | undefined
-type MatrixValue = any
-type MatrixData = any[][]
-
+/**
+ * DenseMatrix interface for algorithm operations.
+ * Note: This algorithm only operates on 2D matrices, so we use MatrixArray (T[][]).
+ */
 interface DenseMatrix {
-  _data: MatrixData
-  _size: number[]
+  _data: MatrixArray
+  _size: [number, number]
   _datatype?: DataType
-  getDataType(): DataType
+  _data_backup?: MatrixArray
+  getDataType(): string
 }
 
+/**
+ * SparseMatrix interface for algorithm operations.
+ * Note: SparseMatrix is always 2D.
+ */
 interface SparseMatrix {
   _values?: MatrixValue[]
   _index: number[]
   _ptr: number[]
-  _size: number[]
-  _data?: any
+  _size: [number, number]
+  _data?: MatrixArray
   _datatype?: DataType
-  getDataType(): DataType
-  createSparseMatrix(config: {
-    values: MatrixValue[]
-    index: number[]
-    ptr: number[]
-    size: number[]
-    datatype?: DataType
-  }): SparseMatrix
+  getDataType(): string
+  createSparseMatrix(config: SparseMatrixConstructorData): SparseMatrix
 }
-
-interface TypedFunction {
-  find(fn: Function, signature: string[]): Function
-  convert(value: any, datatype: string): any
-}
-
-interface EqualScalarFunction {
-  (a: any, b: any): boolean
-}
-
-type MatrixCallback = (a: any, b: any) => any
 
 const name = 'matAlgo02xDS0'
 const dependencies = ['typed', 'equalScalar']
@@ -80,7 +76,7 @@ export const createMatAlgo02xDS0 = /* #__PURE__ */ factory(
       inverse: boolean
     ): SparseMatrix {
       // dense matrix arrays
-      const adata: MatrixData = denseMatrix._data
+      const adata: MatrixArray = denseMatrix._data
       const asize: number[] = denseMatrix._size
       const adt: DataType = denseMatrix._datatype || denseMatrix.getDataType()
 

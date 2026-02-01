@@ -78,7 +78,10 @@ export const createCombinationsWithRep = /* #__PURE__ */ factory(
         return prodrange / product(1, n - 1)
       },
 
-      'BigNumber, BigNumber': function (n: BigNumberType, k: BigNumberType): BigNumberType {
+      'BigNumber, BigNumber': function (
+        n: BigNumberType,
+        k: BigNumberType
+      ): BigNumberType {
         const BigNumber = n.constructor
         let result: BigNumberType
         let i: BigNumberType

@@ -91,7 +91,10 @@ export const createStirlingS2 = /* #__PURE__ */ factory(
      * @return {Number | BigNumber}     S(n,k)
      */
     return typed(name, {
-      'number | BigNumber, number | BigNumber': function (n: NumericValue, k: NumericValue): NumericValue {
+      'number | BigNumber, number | BigNumber': function (
+        n: NumericValue,
+        k: NumericValue
+      ): NumericValue {
         if (!isInteger(n) || isNegative(n) || !isInteger(k) || isNegative(k)) {
           throw new TypeError(
             'Non-negative integer value expected in function stirlingS2'

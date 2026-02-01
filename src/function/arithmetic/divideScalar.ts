@@ -47,7 +47,10 @@ export const createDivideScalar = /* #__PURE__ */ factory(
         return x.div(y)
       },
 
-      'BigNumber, BigNumber': function (x: HasDivMethod, y: HasDivMethod): unknown {
+      'BigNumber, BigNumber': function (
+        x: HasDivMethod,
+        y: HasDivMethod
+      ): unknown {
         return x.div(y)
       },
 
@@ -55,7 +58,10 @@ export const createDivideScalar = /* #__PURE__ */ factory(
         return x / y
       },
 
-      'Fraction, Fraction': function (x: HasDivMethod, y: HasDivMethod): unknown {
+      'Fraction, Fraction': function (
+        x: HasDivMethod,
+        y: HasDivMethod
+      ): unknown {
         return x.div(y)
       },
 
@@ -64,8 +70,10 @@ export const createDivideScalar = /* #__PURE__ */ factory(
         y: unknown
       ): unknown => x.divide(y),
 
-      'number | Fraction | Complex | BigNumber, Unit': (x: unknown, y: HasDivideIntoMethod): unknown =>
-        y.divideInto(x)
+      'number | Fraction | Complex | BigNumber, Unit': (
+        x: unknown,
+        y: HasDivideIntoMethod
+      ): unknown => y.divideInto(x)
     })
   }
 )

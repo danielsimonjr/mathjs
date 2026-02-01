@@ -51,7 +51,8 @@ export const createCot = /* #__PURE__ */ factory(
       {
         number: cotNumber,
         Complex: (x: Complex) => x.cot(),
-        BigNumber: (x: BigNumber): BigNumber => new BigNumber(1).div((x as unknown as { tan(): BigNumber }).tan())
+        BigNumber: (x: BigNumber): BigNumber =>
+          new BigNumber(1).div((x as unknown as { tan(): BigNumber }).tan())
       },
       trigUnit
     ) as TypedFunction

@@ -65,7 +65,9 @@ export const createErf = /* #__PURE__ */ factory(
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (n: unknown[] | Matrix): unknown[] | Matrix => deepMap(n, self)
+        (self: TypedFunction) =>
+          (n: unknown[] | Matrix): unknown[] | Matrix =>
+            deepMap(n, self)
       )
 
       // TODO: For complex numbers, use the approximation for the Faddeeva function

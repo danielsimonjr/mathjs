@@ -150,7 +150,10 @@ export const createRound = /* #__PURE__ */ factory(
         return roundNumber(xSelected, n)
       },
 
-      'number, BigNumber': function (x: number, n: BigNumberType): BigNumberType {
+      'number, BigNumber': function (
+        x: number,
+        n: BigNumberType
+      ): BigNumberType {
         if (!n.isInteger()) {
           throw new TypeError(NO_INT)
         }
@@ -170,7 +173,10 @@ export const createRound = /* #__PURE__ */ factory(
         return x.round(n)
       },
 
-      'Complex, BigNumber': function (x: ComplexType, n: BigNumberType): ComplexType {
+      'Complex, BigNumber': function (
+        x: ComplexType,
+        n: BigNumberType
+      ): ComplexType {
         if (!n.isInteger()) {
           throw new TypeError(NO_INT)
         }
@@ -195,7 +201,10 @@ export const createRound = /* #__PURE__ */ factory(
         return xSelected.toDecimalPlaces(0)
       },
 
-      'BigNumber, BigNumber': function (x: BigNumberType, n: BigNumberType): BigNumberType {
+      'BigNumber, BigNumber': function (
+        x: BigNumberType,
+        n: BigNumberType
+      ): BigNumberType {
         if (!n.isInteger()) {
           throw new TypeError(NO_INT)
         }
@@ -234,7 +243,10 @@ export const createRound = /* #__PURE__ */ factory(
         return x.round(n)
       },
 
-      'Fraction, BigNumber': function (x: FractionType, n: BigNumberType): FractionType {
+      'Fraction, BigNumber': function (
+        x: FractionType,
+        n: BigNumberType
+      ): FractionType {
         if (!n.isInteger()) {
           throw new TypeError(NO_INT)
         }
@@ -257,7 +269,11 @@ export const createRound = /* #__PURE__ */ factory(
 
       'Array | Matrix, number | BigNumber, Unit': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: unknown[] | Matrix, n: number | BigNumberType, unit: UnitType): unknown[] | Matrix => {
+          (
+            x: unknown[] | Matrix,
+            n: number | BigNumberType,
+            unit: UnitType
+          ): unknown[] | Matrix => {
             // deep map collection, skip zeros since round(0) = 0
             return deepMap(x, (value) => self(value, n, unit), true)
           }
@@ -265,14 +281,20 @@ export const createRound = /* #__PURE__ */ factory(
 
       'Array | Matrix | Unit, Unit': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: unknown[] | Matrix | UnitType, unit: UnitType): unknown[] | Matrix | UnitType =>
+          (
+            x: unknown[] | Matrix | UnitType,
+            unit: UnitType
+          ): unknown[] | Matrix | UnitType =>
             self(x, 0, unit)
       ),
 
-      'Array | Matrix': typed.referToSelf((self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => {
-        // deep map collection, skip zeros since round(0) = 0
-        return deepMap(x, self, true)
-      }),
+      'Array | Matrix': typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: unknown[] | Matrix): unknown[] | Matrix => {
+            // deep map collection, skip zeros since round(0) = 0
+            return deepMap(x, self, true)
+          }
+      ),
 
       'SparseMatrix, number | BigNumber': typed.referToSelf(
         (self: TypedFunction) =>
@@ -292,23 +314,37 @@ export const createRound = /* #__PURE__ */ factory(
         (self: TypedFunction) =>
           (x: unknown[], n: number | BigNumberType): unknown[] => {
             // use matrix implementation
-            return matAlgo14xDs(matrix(x), n, self, false).valueOf() as unknown[]
+            return matAlgo14xDs(
+              matrix(x),
+              n,
+              self,
+              false
+            ).valueOf() as unknown[]
           }
       ),
 
       'number | Complex | BigNumber | Fraction, SparseMatrix':
-        typed.referToSelf((self: TypedFunction) => (x: number | ComplexType | BigNumberType | FractionType, n: Matrix): Matrix => {
-          // check scalar is zero
-          if (equalScalar(x, 0)) {
-            // do not execute algorithm, result will be a zero matrix
-            return zeros(n.size(), n.storage())
-          }
-          return matAlgo12xSfs(n, x, self, true)
-        }),
+        typed.referToSelf(
+          (self: TypedFunction) =>
+            (
+              x: number | ComplexType | BigNumberType | FractionType,
+              n: Matrix
+            ): Matrix => {
+              // check scalar is zero
+              if (equalScalar(x, 0)) {
+                // do not execute algorithm, result will be a zero matrix
+                return zeros(n.size(), n.storage())
+              }
+              return matAlgo12xSfs(n, x, self, true)
+            }
+        ),
 
       'number | Complex | BigNumber | Fraction, DenseMatrix': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: number | ComplexType | BigNumberType | FractionType, n: Matrix): Matrix => {
+          (
+            x: number | ComplexType | BigNumberType | FractionType,
+            n: Matrix
+          ): Matrix => {
             // check scalar is zero
             if (equalScalar(x, 0)) {
               // do not execute algorithm, result will be a zero matrix
@@ -320,7 +356,10 @@ export const createRound = /* #__PURE__ */ factory(
 
       'number | Complex | BigNumber | Fraction, Array': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: number | ComplexType | BigNumberType | FractionType, n: unknown[]): unknown[] => {
+          (
+            x: number | ComplexType | BigNumberType | FractionType,
+            n: unknown[]
+          ): unknown[] => {
             // use matrix implementation
             return matAlgo14xDs(matrix(n), x, self, true).valueOf() as unknown[]
           }

@@ -28,7 +28,13 @@ const dependencies = [
 export const createBitXor = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, matrix, DenseMatrix, concat, SparseMatrix }: BitXorDependencies) => {
+  ({
+    typed,
+    matrix,
+    DenseMatrix,
+    concat,
+    SparseMatrix
+  }: BitXorDependencies) => {
     const matAlgo03xDSf = createMatAlgo03xDSf({ typed })
     const matAlgo07xSSf = createMatAlgo07xSSf({ typed, SparseMatrix })
     const matAlgo12xSfs = createMatAlgo12xSfs({ typed, DenseMatrix })

@@ -54,7 +54,10 @@ interface RawArgsFunction {
 interface MathFunctionWithTex {
   toTex?:
     | ((node: FunctionNode, options?: StringOptions) => string)
-    | Record<number, string | ((node: FunctionNode, options?: StringOptions) => string)>
+    | Record<
+        number,
+        string | ((node: FunctionNode, options?: StringOptions) => string)
+      >
     | string
 }
 
@@ -72,7 +75,10 @@ type LatexFunctionsMap = Record<
   string,
   | string
   | ((node: FunctionNode, options?: StringOptions) => string)
-  | Record<number, string | ((node: FunctionNode, options?: StringOptions) => string)>
+  | Record<
+      number,
+      string | ((node: FunctionNode, options?: StringOptions) => string)
+    >
 >
 
 /**
@@ -268,16 +274,19 @@ export const createFunctionNode = /* #__PURE__ */ factory(
         const evalArgs = this.args.map((arg) => arg._compile(math, argNames))
         const fromOptionalChaining =
           this.optional ||
-          (isAccessorNode(this.fn) && (this.fn as AccessorNodeLike).optionalChaining)
+          (isAccessorNode(this.fn) &&
+            (this.fn as AccessorNodeLike).optionalChaining)
 
         if (isSymbolNode(this.fn)) {
           const fnName = (this.fn as SymbolNodeLike).name
           if (!argNames[fnName]) {
             // we can statically determine whether the function
             // has the rawArgs property
-            const fn = fnName in math ? getSafeProperty(math, fnName) : undefined
+            const fn =
+              fnName in math ? getSafeProperty(math, fnName) : undefined
             const isRaw =
-              typeof fn === 'function' && (fn as RawArgsFunction).rawArgs === true
+              typeof fn === 'function' &&
+              (fn as RawArgsFunction).rawArgs === true
 
             const resolveFn = (scope: Scope): RawArgsFunction | undefined => {
               let value: unknown
@@ -389,7 +398,9 @@ export const createFunctionNode = /* #__PURE__ */ factory(
               args: Record<string, unknown>,
               context: unknown
             ): unknown {
-              const fn = getSafeProperty(args, fnName) as RawArgsFunction | undefined
+              const fn = getSafeProperty(args, fnName) as
+                | RawArgsFunction
+                | undefined
               if (fromOptionalChaining && fn === undefined) return undefined
               if (typeof fn !== 'function') {
                 throw new TypeError(
@@ -464,7 +475,9 @@ export const createFunctionNode = /* #__PURE__ */ factory(
             args: Record<string, unknown>,
             context: unknown
           ): unknown {
-            const fn = evalFn(scope, args, context) as RawArgsFunction | undefined
+            const fn = evalFn(scope, args, context) as
+              | RawArgsFunction
+              | undefined
             if (fromOptionalChaining && fn === undefined) return undefined
             if (typeof fn !== 'function') {
               throw new TypeError(
@@ -716,25 +729,22 @@ export const createFunctionNode = /* #__PURE__ */ factory(
           case 'string': // a template string
             customToTex = expandTemplate(latexConverter, this, options)
             break
-          case 'object':
-            // an object with different "converters" for different
-            // numbers of arguments
-            {
-              const converterMap = latexConverter as Record<
-                number,
-                | string
-                | ((node: FunctionNode, options?: StringOptions) => string)
-              >
-              const converter = converterMap[args.length]
-              switch (typeof converter) {
-                case 'function':
-                  customToTex = converter(this, options)
-                  break
-                case 'string':
-                  customToTex = expandTemplate(converter, this, options)
-                  break
-              }
+          case 'object': {
+            // numbers of arguments // an object with different "converters" for different
+            const converterMap = latexConverter as Record<
+              number,
+              string | ((node: FunctionNode, options?: StringOptions) => string)
+            >
+            const converter = converterMap[args.length]
+            switch (typeof converter) {
+              case 'function':
+                customToTex = converter(this, options)
+                break
+              case 'string':
+                customToTex = expandTemplate(converter, this, options)
+                break
             }
+          }
         }
 
         if (typeof customToTex !== 'undefined') {

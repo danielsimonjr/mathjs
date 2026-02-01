@@ -54,7 +54,8 @@ export const createToBest = /* #__PURE__ */ factory(
         unitList: string,
         options: object
       ): Unit => x.toBest(unitList.split(','), options),
-      'Unit, Array': (x: Unit, unitList: (string | Unit)[]): Unit => x.toBest(unitList),
+      'Unit, Array': (x: Unit, unitList: (string | Unit)[]): Unit =>
+        x.toBest(unitList),
       'Unit, Array, Object': (
         x: Unit,
         unitList: (string | Unit)[],

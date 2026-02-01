@@ -30,7 +30,14 @@ const dependencies = [
 export const createSetIntersect = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, size, subset, compareNatural, Index, DenseMatrix }: SetIntersectDependencies) => {
+  ({
+    typed,
+    size,
+    subset,
+    compareNatural,
+    Index,
+    DenseMatrix
+  }: SetIntersectDependencies) => {
     /**
      * Create the intersection of two (multi)sets.
      * Multi-dimension arrays will be converted to single-dimension arrays before the operation.

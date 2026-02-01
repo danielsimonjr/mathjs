@@ -39,7 +39,11 @@ export interface ChainConstructor {
 /**
  * Import event callback type
  */
-type ImportEventCallback = (name: string, resolver: () => unknown, path: string | undefined) => void
+type ImportEventCallback = (
+  name: string,
+  resolver: () => unknown,
+  path: string | undefined
+) => void
 
 /**
  * On function interface for event subscription
@@ -154,7 +158,9 @@ export const createChainClass = /* #__PURE__ */ factory(
      *                       where mathjs is optional
      * @returns {Chain}
      */
-    ;(Chain as unknown as ChainConstructor).fromJSON = function (json: ChainJSON): ChainInstance {
+    ;(Chain as unknown as ChainConstructor).fromJSON = function (
+      json: ChainJSON
+    ): ChainInstance {
       return new (Chain as unknown as ChainConstructor)(json.value)
     }
 
@@ -167,7 +173,9 @@ export const createChainClass = /* #__PURE__ */ factory(
      */
     function createProxy(name: string, fn: unknown): void {
       if (typeof fn === 'function') {
-        ;(Chain.prototype as Record<string, unknown>)[name] = chainify(fn as (...args: unknown[]) => unknown)
+        ;(Chain.prototype as Record<string, unknown>)[name] = chainify(
+          fn as (...args: unknown[]) => unknown
+        )
       }
     }
 
@@ -179,14 +187,18 @@ export const createChainClass = /* #__PURE__ */ factory(
      * @private
      */
     function createLazyProxy(name: string, resolver: () => unknown): void {
-      lazy(Chain.prototype as Record<string, unknown>, name, function outerResolver() {
-        const fn = resolver()
-        if (typeof fn === 'function') {
-          return chainify(fn as (...args: unknown[]) => unknown)
-        }
+      lazy(
+        Chain.prototype as Record<string, unknown>,
+        name,
+        function outerResolver() {
+          const fn = resolver()
+          if (typeof fn === 'function') {
+            return chainify(fn as (...args: unknown[]) => unknown)
+          }
 
-        return undefined // if not a function, ignore
-      })
+          return undefined // if not a function, ignore
+        }
+      )
     }
 
     /**
@@ -195,7 +207,9 @@ export const createChainClass = /* #__PURE__ */ factory(
      * @return {Function} chain function
      * @private
      */
-    function chainify(fn: ((...args: unknown[]) => unknown) & { name?: string }): (this: ChainInstance, ...args: unknown[]) => ChainInstance {
+    function chainify(
+      fn: ((...args: unknown[]) => unknown) & { name?: string }
+    ): (this: ChainInstance, ...args: unknown[]) => ChainInstance {
       return function (this: ChainInstance, ...rest: unknown[]): ChainInstance {
         // Here, `this` will be the context of a Chain instance
         if (rest.length === 0) {
@@ -220,7 +234,9 @@ export const createChainClass = /* #__PURE__ */ factory(
             )
           }
           if (sigObject) {
-            return new (Chain as unknown as ChainConstructor)(sigObject.implementation.apply(fn, args))
+            return new (Chain as unknown as ChainConstructor)(
+              sigObject.implementation.apply(fn, args)
+            )
           }
         }
         return new (Chain as unknown as ChainConstructor)(fn.apply(fn, args))
@@ -275,7 +291,11 @@ export const createChainClass = /* #__PURE__ */ factory(
     if (on) {
       on(
         'import',
-        function (name: string, resolver: () => unknown, path: string | undefined) {
+        function (
+          name: string,
+          resolver: () => unknown,
+          path: string | undefined
+        ) {
           if (!path) {
             // an imported function (not a data type or something special)
             createLazyProxy(name, resolver)

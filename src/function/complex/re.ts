@@ -54,7 +54,9 @@ export const createRe = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Array | Matrix} The real part of x
      */
     return typed(name, {
-      'number | BigNumber | Fraction': (x: number | BigNumberType | FractionType): number | BigNumberType | FractionType => x,
+      'number | BigNumber | Fraction': (
+        x: number | BigNumberType | FractionType
+      ): number | BigNumberType | FractionType => x,
       Complex: (x: ComplexType): number => x.re,
       'Array | Matrix': typed.referToSelf(
         (self: (value: any) => any) => (x: any) => deepMap(x, self)

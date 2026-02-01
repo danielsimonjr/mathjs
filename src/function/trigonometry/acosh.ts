@@ -22,11 +22,7 @@ const dependencies = ['typed', 'config', 'Complex']
 export const createAcosh = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    Complex
-  }: AcoshDependencies) => {
+  ({ typed, config, Complex }: AcoshDependencies) => {
     /**
      * Calculate the hyperbolic arccos of a value,
      * defined as `acosh(x) = ln(sqrt(x^2 - 1) + x)`.

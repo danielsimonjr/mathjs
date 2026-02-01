@@ -46,13 +46,15 @@ export const createLcm = /* #__PURE__ */ factory(
     const lcmTypes = 'number | BigNumber | Fraction | Matrix | Array'
     const lcmManySignature: Record<string, TypedFunction> = {}
     lcmManySignature[`${lcmTypes}, ${lcmTypes}, ...${lcmTypes}`] =
-      typed.referToSelf((self: TypedFunction) => (a: unknown, b: unknown, args: unknown[]) => {
-        let res = self(a, b)
-        for (let i = 0; i < args.length; i++) {
-          res = self(res, args[i])
+      typed.referToSelf(
+        (self: TypedFunction) => (a: unknown, b: unknown, args: unknown[]) => {
+          let res = self(a, b)
+          for (let i = 0; i < args.length; i++) {
+            res = self(res, args[i])
+          }
+          return res
         }
-        return res
-      })
+      )
 
     /**
      * Calculate the least common multiple for two or more values or arrays.
@@ -88,7 +90,10 @@ export const createLcm = /* #__PURE__ */ factory(
       {
         'number, number': lcmNumber,
         'BigNumber, BigNumber': _lcmBigNumber,
-        'Fraction, Fraction': (x: FractionType, y: FractionType): FractionType => x.lcm(y)
+        'Fraction, Fraction': (
+          x: FractionType,
+          y: FractionType
+        ): FractionType => x.lcm(y)
       },
       matrixAlgorithmSuite({
         SS: matAlgo06xS0S0,

@@ -124,7 +124,10 @@ export const createGcd = /* #__PURE__ */ factory(
       {
         'number, number': _gcdNumber,
         'BigNumber, BigNumber': _gcdBigNumber,
-        'Fraction, Fraction': (x: FractionType, y: FractionType): FractionType => x.gcd(y)
+        'Fraction, Fraction': (
+          x: FractionType,
+          y: FractionType
+        ): FractionType => x.gcd(y)
       },
       matrixAlgorithmSuite({
         SS: matAlgo04xSidSid,
@@ -133,26 +136,35 @@ export const createGcd = /* #__PURE__ */ factory(
       }),
       {
         [gcdManyTypesSignature]: typed.referToSelf(
-          (self: TypedFunction) => (a: unknown, b: unknown, args: unknown[]) => {
-            let res = self(a, b)
-            for (let i = 0; i < args.length; i++) {
-              res = self(res, args[i])
+          (self: TypedFunction) =>
+            (a: unknown, b: unknown, args: unknown[]) => {
+              let res = self(a, b)
+              for (let i = 0; i < args.length; i++) {
+                res = self(res, args[i])
+              }
+              return res
             }
-            return res
+        ),
+        Array: typed.referToSelf(
+          (self: TypedFunction) => (array: unknown[]) => {
+            if (
+              array.length === 1 &&
+              Array.isArray(array[0]) &&
+              is1d(array[0])
+            ) {
+              return self(...array[0])
+            }
+            if (is1d(array)) {
+              return self(...array)
+            }
+            throw new ArgumentsError('gcd() supports only 1d matrices!')
           }
         ),
-        Array: typed.referToSelf((self: TypedFunction) => (array: unknown[]) => {
-          if (array.length === 1 && Array.isArray(array[0]) && is1d(array[0])) {
-            return self(...array[0])
+        Matrix: typed.referToSelf(
+          (self: TypedFunction) => (matrixArg: MatrixType) => {
+            return self(matrixArg.toArray())
           }
-          if (is1d(array)) {
-            return self(...array)
-          }
-          throw new ArgumentsError('gcd() supports only 1d matrices!')
-        }),
-        Matrix: typed.referToSelf((self: TypedFunction) => (matrixArg: MatrixType) => {
-          return self(matrixArg.toArray())
-        })
+        )
       }
     )
 

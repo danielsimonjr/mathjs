@@ -25,26 +25,30 @@ export const createUseMatrixForArrayScalar = /* #__PURE__ */ factory(
   ({ typed, matrix }: UseMatrixDependencies) => ({
     'Array, number': typed.referTo(
       'DenseMatrix, number',
-      (selfDn: TypedFunction) => (x: unknown[], y: number): unknown[] =>
-        selfDn(matrix(x), y).valueOf()
+      (selfDn: TypedFunction) =>
+        (x: unknown[], y: number): unknown[] =>
+          selfDn(matrix(x), y).valueOf()
     ),
 
     'Array, BigNumber': typed.referTo(
       'DenseMatrix, BigNumber',
-      (selfDB: TypedFunction) => (x: unknown[], y: BigNumberType): unknown[] =>
-        selfDB(matrix(x), y).valueOf()
+      (selfDB: TypedFunction) =>
+        (x: unknown[], y: BigNumberType): unknown[] =>
+          selfDB(matrix(x), y).valueOf()
     ),
 
     'number, Array': typed.referTo(
       'number, DenseMatrix',
-      (selfnD: TypedFunction) => (x: number, y: unknown[]): unknown[] =>
-        selfnD(x, matrix(y)).valueOf()
+      (selfnD: TypedFunction) =>
+        (x: number, y: unknown[]): unknown[] =>
+          selfnD(x, matrix(y)).valueOf()
     ),
 
     'BigNumber, Array': typed.referTo(
       'BigNumber, DenseMatrix',
-      (selfBD: TypedFunction) => (x: BigNumberType, y: unknown[]): unknown[] =>
-        selfBD(x, matrix(y)).valueOf()
+      (selfBD: TypedFunction) =>
+        (x: BigNumberType, y: unknown[]): unknown[] =>
+          selfBD(x, matrix(y)).valueOf()
     )
   })
 )

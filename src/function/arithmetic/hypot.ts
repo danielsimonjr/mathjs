@@ -83,7 +83,8 @@ export const createHypot = /* #__PURE__ */ factory(
 
       Array: _hypot,
 
-      Matrix: (M: Matrix): NumericValue => _hypot(flatten(M.toArray(), true) as NumericValue[])
+      Matrix: (M: Matrix): NumericValue =>
+        _hypot(flatten(M.toArray(), true) as NumericValue[])
     })
 
     /**

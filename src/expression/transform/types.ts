@@ -11,7 +11,12 @@ export type { TypedFunction }
 /**
  * Represents a mathjs value that could be various numeric types
  */
-export type MathValue = number | bigint | BigNumberLike | ComplexLike | FractionLike
+export type MathValue =
+  | number
+  | bigint
+  | BigNumberLike
+  | ComplexLike
+  | FractionLike
 
 /**
  * BigNumber-like interface (minimal for transform operations)
@@ -79,7 +84,11 @@ export interface ExpressionNode {
  * Used for transforms that need access to unevaluated AST nodes
  */
 export interface RawArgsTransformFunction {
-  (args: ExpressionNode[], math: MathJsLike, scope: EvaluationScope | Map<string, unknown>): unknown
+  (
+    args: ExpressionNode[],
+    math: MathJsLike,
+    scope: EvaluationScope | Map<string, unknown>
+  ): unknown
   rawArgs: true
 }
 
@@ -122,8 +131,12 @@ export interface MatrixLike {
   valueOf(): unknown[][]
   toArray(): unknown[][]
   size(): number[]
-  map<T>(callback: (value: unknown, index: number[], matrix: MatrixLike) => T): MatrixLike
-  forEach(callback: (value: unknown, index: number[], matrix: MatrixLike) => void): void
+  map<T>(
+    callback: (value: unknown, index: number[], matrix: MatrixLike) => T
+  ): MatrixLike
+  forEach(
+    callback: (value: unknown, index: number[], matrix: MatrixLike) => void
+  ): void
   isMatrix?: boolean
 }
 

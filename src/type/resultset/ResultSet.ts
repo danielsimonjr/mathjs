@@ -63,7 +63,9 @@ export const createResultSet = /* #__PURE__ */ factory(
      * @memberof ResultSet
      * @returns {Array} entries
      */
-    ResultSet.prototype.valueOf = function (this: ResultSetInstance): unknown[] {
+    ResultSet.prototype.valueOf = function (
+      this: ResultSetInstance
+    ): unknown[] {
       return this.entries
     }
 
@@ -82,7 +84,9 @@ export const createResultSet = /* #__PURE__ */ factory(
      * @returns {Object} Returns a JSON object structured as:
      *                   `{"mathjs": "ResultSet", "entries": [...]}`
      */
-    ResultSet.prototype.toJSON = function (this: ResultSetInstance): ResultSetJSON {
+    ResultSet.prototype.toJSON = function (
+      this: ResultSetInstance
+    ): ResultSetJSON {
       return {
         mathjs: 'ResultSet',
         entries: this.entries
@@ -96,7 +100,9 @@ export const createResultSet = /* #__PURE__ */ factory(
      *                       `{"mathjs": "ResultSet", "entries": [...]}`
      * @return {ResultSet}
      */
-    ;(ResultSet as unknown as ResultSetConstructor).fromJSON = function (json: ResultSetJSON): ResultSetInstance {
+    ;(ResultSet as unknown as ResultSetConstructor).fromJSON = function (
+      json: ResultSetJSON
+    ): ResultSetInstance {
       return new (ResultSet as unknown as ResultSetConstructor)(json.entries)
     }
 

@@ -47,7 +47,9 @@ export const createBitNot = /* #__PURE__ */ factory(
       BigNumber: bitNotBigNumber,
       bigint: (x: bigint): bigint => ~x,
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: unknown[] | Matrix): unknown[] | Matrix => deepMap(x, self)
+        (self: TypedFunction) =>
+          (x: unknown[] | Matrix): unknown[] | Matrix =>
+            deepMap(x, self)
       )
     })
   }

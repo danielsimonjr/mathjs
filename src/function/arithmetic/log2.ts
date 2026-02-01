@@ -33,11 +33,7 @@ const dependencies = ['typed', 'config', 'Complex']
 export const createLog2 = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    Complex
-  }: Log2Dependencies) => {
+  ({ typed, config, Complex }: Log2Dependencies) => {
     /**
      * Calculate the 2-base of a value. This is the same as calculating `log(x, 2)`.
      *

@@ -130,7 +130,9 @@ export const createSqrtm = /* #__PURE__ */ factory(
      * @return {Array | Matrix}     The principal square root of matrix `A`
      */
     return typed(name, {
-      'Array | Matrix': function (A: Scalar[] | Scalar[][] | Matrix): Scalar[][] | Matrix {
+      'Array | Matrix': function (
+        A: Scalar[] | Scalar[][] | Matrix
+      ): Scalar[][] | Matrix {
         const sizeArray = isMatrix(A)
           ? (A as Matrix).size()
           : arraySize(A as Scalar[] | Scalar[][])

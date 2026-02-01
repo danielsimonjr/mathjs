@@ -127,13 +127,20 @@ export const createLarger = /* #__PURE__ */ factory(
 
         'bigint, bigint': (x: bigint, y: bigint): boolean => x > y,
 
-        'Fraction, Fraction': (x: FractionType, y: FractionType): boolean => x.compare(y) === 1,
+        'Fraction, Fraction': (x: FractionType, y: FractionType): boolean =>
+          x.compare(y) === 1,
 
-        'Fraction, BigNumber': function (x: FractionType, y: BigNumberType): boolean {
+        'Fraction, BigNumber': function (
+          x: FractionType,
+          y: BigNumberType
+        ): boolean {
           return bignumLarger(bignumber(x), y)
         },
 
-        'BigNumber, Fraction': function (x: BigNumberType, y: FractionType): boolean {
+        'BigNumber, Fraction': function (
+          x: BigNumberType,
+          y: FractionType
+        ): boolean {
           return bignumLarger(x, bignumber(y))
         },
 

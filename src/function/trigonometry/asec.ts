@@ -27,12 +27,7 @@ const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
 export const createAsec = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    Complex,
-    BigNumber
-  }: AsecDependencies) => {
+  ({ typed, config, Complex, BigNumber }: AsecDependencies) => {
     /**
      * Calculate the inverse secant of a value. Defined as `asec(x) = acos(1/x)`.
      *

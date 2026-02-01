@@ -129,7 +129,10 @@ export interface TypedFunction extends Function {
   resolve: (
     fn: TypedFunction,
     args: unknown[]
-  ) => { implementation: (...args: unknown[]) => unknown; params: string[] } | null
+  ) => {
+    implementation: (...args: unknown[]) => unknown
+    params: string[]
+  } | null
 }
 
 /**

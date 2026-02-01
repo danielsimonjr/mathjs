@@ -44,7 +44,10 @@ export const createDeepEqual = /* #__PURE__ */ factory(
      *            Returns true when the input matrices have the same size and each of their elements is equal.
      */
     return typed(name, {
-      'any, any': function (x: { valueOf(): unknown }, y: { valueOf(): unknown }): boolean {
+      'any, any': function (
+        x: { valueOf(): unknown },
+        y: { valueOf(): unknown }
+      ): boolean {
         return _deepEqual(x.valueOf(), y.valueOf())
       }
     })

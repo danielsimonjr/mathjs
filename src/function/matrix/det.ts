@@ -179,7 +179,11 @@ export const createDet = /* #__PURE__ */ factory(
             const rows = size[0]
             const cols = size[1]
             if (rows === cols) {
-              return _det(matrixValue.clone().valueOf() as Scalar[][], rows, cols)
+              return _det(
+                matrixValue.clone().valueOf() as Scalar[][],
+                rows,
+                cols
+              )
             }
             if (cols === 0) {
               return 1 // det of an empty matrix is per definition 1

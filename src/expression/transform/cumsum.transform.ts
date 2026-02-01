@@ -2,7 +2,12 @@ import { isBigNumber, isCollection, isNumber } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
 import { errorTransform } from './utils/errorTransform.ts'
 import { createCumSum } from '../../function/statistics/cumsum.ts'
-import type { TypedFunction, MathFunction, BigNumberLike, VariadicArgs } from './types.ts'
+import type {
+  TypedFunction,
+  MathFunction,
+  BigNumberLike,
+  VariadicArgs
+} from './types.ts'
 
 interface CumSumDependencies {
   typed: TypedFunction

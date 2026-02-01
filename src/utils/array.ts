@@ -210,7 +210,8 @@ export function resize<T = any>(
   }
 
   // recursively resize the array
-  const _defaultValue = defaultValue !== undefined ? defaultValue : (0 as unknown as T)
+  const _defaultValue =
+    defaultValue !== undefined ? defaultValue : (0 as unknown as T)
   _resize(arr as NestedArray<T>[], size, 0, _defaultValue)
 
   return arr
@@ -445,7 +446,11 @@ export function squeeze<T>(
  * @returns {Array | *} Returns the squeezed array
  * @private
  */
-function _squeeze<T>(array: NestedArray<T>, dims: number, dim: number): NestedArray<T> {
+function _squeeze<T>(
+  array: NestedArray<T>,
+  dims: number,
+  dim: number
+): NestedArray<T> {
   if (dim < dims) {
     const next = dim + 1
     const arr = array as NestedArray<T>[]
@@ -509,7 +514,11 @@ export function unsqueeze<T>(
  * @returns {Array | *} Returns the unsqueezed array
  * @private
  */
-function _unsqueeze<T>(array: NestedArray<T>, dims: number, dim: number): NestedArray<T> {
+function _unsqueeze<T>(
+  array: NestedArray<T>,
+  dims: number,
+  dim: number
+): NestedArray<T> {
   if (Array.isArray(array)) {
     const next = dim + 1
     const arr = array as NestedArray<T>[]
@@ -801,7 +810,9 @@ function concatRecursive<T>(
  * @param {number} concatDim The dimension on which to concatenate (zero-based)
  * @returns {Array}
  */
-export function concat<T>(...args: [...NestedArray<T>[], number]): NestedArray<T>[] {
+export function concat<T>(
+  ...args: [...NestedArray<T>[], number]
+): NestedArray<T>[] {
   const arrays = Array.prototype.slice.call(args, 0, -1) as NestedArray<T>[][]
   const concatDim = Array.prototype.slice.call(args, -1)[0] as number
 
@@ -965,7 +976,10 @@ export function get<T>(array: NestedArray<T>, index: number[]): T {
   for (let x = 0; x < index.length; x++) {
     validateIndex(index[x], size[x])
   }
-  return index.reduce((acc: NestedArray<T>, curr) => (acc as NestedArray<T>[])[curr], array) as T
+  return index.reduce(
+    (acc: NestedArray<T>, curr) => (acc as NestedArray<T>[])[curr],
+    array
+  ) as T
 }
 
 /**
@@ -997,7 +1011,10 @@ export function deepMap<T, U>(
 
   return recursiveMapWithIndex(array, 0) as NestedArray<U>
 
-  function recursiveMapWithIndex(value: NestedArray<T>, depth: number): NestedArray<U> {
+  function recursiveMapWithIndex(
+    value: NestedArray<T>,
+    depth: number
+  ): NestedArray<U> {
     if (Array.isArray(value)) {
       const N = value.length
       const result: NestedArray<U>[] = Array(N)
@@ -1007,11 +1024,9 @@ export function deepMap<T, U>(
       }
       return result
     } else {
-      return (callback as (value: T, index: number[], array: NestedArray<T>) => U)(
-        value as T,
-        index.slice(0, depth),
-        array
-      )
+      return (
+        callback as (value: T, index: number[], array: NestedArray<T>) => U
+      )(value as T, index.slice(0, depth), array)
     }
   }
 
@@ -1057,7 +1072,10 @@ export function deepForEach<T>(
   const index: number[] = []
   recursiveForEachWithIndex(array, 0)
 
-  function recursiveForEachWithIndex(value: NestedArray<T>, depth: number): void {
+  function recursiveForEachWithIndex(
+    value: NestedArray<T>,
+    depth: number
+  ): void {
     if (Array.isArray(value)) {
       const N = value.length
       for (let i = 0; i < N; i++) {

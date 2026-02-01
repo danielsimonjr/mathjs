@@ -39,7 +39,9 @@ export interface Complex extends ComplexClass {
   isComplex: true
   toJSON(): ComplexJSON
   toPolar(): PolarCoordinates
-  format(options?: number | ComplexFormatOptions | ((value: number) => string)): string
+  format(
+    options?: number | ComplexFormatOptions | ((value: number) => string)
+  ): string
 }
 
 /**
@@ -62,8 +64,14 @@ export interface AbsArgInput {
  * Complex constructor interface with static methods
  */
 export interface ComplexConstructor {
-  new (a?: number | string | ComplexJSON | PolarInput | AbsArgInput, b?: number): Complex
-  (a?: number | string | ComplexJSON | PolarInput | AbsArgInput, b?: number): Complex
+  new (
+    a?: number | string | ComplexJSON | PolarInput | AbsArgInput,
+    b?: number
+  ): Complex
+  (
+    a?: number | string | ComplexJSON | PolarInput | AbsArgInput,
+    b?: number
+  ): Complex
   prototype: Complex
   fromPolar: {
     (polar: PolarInput): Complex
@@ -133,7 +141,10 @@ export const createComplexClass = /* #__PURE__ */ factory(
      *                                                options.
      * @return {string} str
      */
-    Complex.prototype.format = function (this: Complex, options?: number | ComplexFormatOptions | ((value: number) => string)): string {
+    Complex.prototype.format = function (
+      this: Complex,
+      options?: number | ComplexFormatOptions | ((value: number) => string)
+    ): string {
       let str = ''
       let im = this.im
       let re = this.re
@@ -144,7 +155,7 @@ export const createComplexClass = /* #__PURE__ */ factory(
       const precision: number | null = isNumber(options)
         ? options
         : options && typeof options === 'object'
-          ? (options as ComplexFormatOptions).precision ?? null
+          ? ((options as ComplexFormatOptions).precision ?? null)
           : null
       if (precision !== null) {
         const epsilon = Math.pow(10, -precision)
@@ -212,11 +223,21 @@ export const createComplexClass = /* #__PURE__ */ factory(
         }
         case 2: {
           const r = arguments[0] as number
-          let phi = arguments[1] as number | { hasBase: (base: string) => boolean; toNumber: (unit: string) => number }
+          let phi = arguments[1] as
+            | number
+            | {
+                hasBase: (base: string) => boolean
+                toNumber: (unit: string) => number
+              }
           if (isNumber(r)) {
-            if (isUnit(phi) && (phi as { hasBase: (base: string) => boolean }).hasBase('ANGLE')) {
+            if (
+              isUnit(phi) &&
+              (phi as { hasBase: (base: string) => boolean }).hasBase('ANGLE')
+            ) {
               // convert unit to a number in radians
-              phi = (phi as { toNumber: (unit: string) => number }).toNumber('rad')
+              phi = (phi as { toNumber: (unit: string) => number }).toNumber(
+                'rad'
+              )
             }
 
             if (isNumber(phi)) {
@@ -235,7 +256,8 @@ export const createComplexClass = /* #__PURE__ */ factory(
           )
       }
     }
-    ;(Complex.prototype as Complex & { valueOf: () => string }).valueOf = Complex.prototype.toString
+    ;(Complex.prototype as Complex & { valueOf: () => string }).valueOf =
+      Complex.prototype.toString
 
     /**
      * Create a Complex number from a JSON object

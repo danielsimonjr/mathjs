@@ -107,11 +107,16 @@ export const createMean = /* #__PURE__ */ factory(
      * @return {number | BigNumber | Array | Matrix} mean
      * @private
      */
-    function _nmeanDim(array: unknown[] | MatrixType, dim: number | { valueOf(): number }): unknown {
+    function _nmeanDim(
+      array: unknown[] | MatrixType,
+      dim: number | { valueOf(): number }
+    ): unknown {
       try {
         const dimValue = typeof dim === 'number' ? dim : dim.valueOf()
         const sum = reduce(array, dimValue, add)
-        const s = Array.isArray(array) ? arraySize(array) : (array as MatrixType).size()
+        const s = Array.isArray(array)
+          ? arraySize(array)
+          : (array as MatrixType).size()
         return divide(sum, s[dimValue])
       } catch (err) {
         throw improveErrorMessage(err, 'mean', undefined)

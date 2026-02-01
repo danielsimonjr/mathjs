@@ -278,7 +278,9 @@ export const createMatrixClass = /* #__PURE__ */ factory(
        *                                               options.
        * @returns {string} str
        */
-      format(_options?: MatrixFormatOptions | number | ((value: T) => string)): string {
+      format(
+        _options?: MatrixFormatOptions | number | ((value: T) => string)
+      ): string {
         // must be implemented by each of the Matrix implementations
         throw new Error('Cannot invoke format on a Matrix interface')
       }

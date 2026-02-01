@@ -30,7 +30,14 @@ const dependencies = [
 export const createSetDifference = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, size, subset, compareNatural, Index, DenseMatrix }: SetDifferenceDependencies) => {
+  ({
+    typed,
+    size,
+    subset,
+    compareNatural,
+    Index,
+    DenseMatrix
+  }: SetDifferenceDependencies) => {
     /**
      * Create the difference of two (multi)sets: every element of set1, that is not the element of set2.
      * Multi-dimension arrays will be converted to single-dimension arrays before the operation.

@@ -1,38 +1,41 @@
 import { factory } from '../../../utils/factory.ts'
+import type {
+  DataType,
+  MatrixValue,
+  MatrixArray,
+  MatrixCallback,
+  TypedFunction,
+  DenseMatrixConstructorData
+} from '../types.ts'
 
-// Type definitions
-type DataType = string | undefined
-type MatrixValue = any
-type MatrixData = any[][]
-
-interface TypedFunction {
-  find(fn: Function, signature: string[]): Function
-  convert(value: any, datatype: string): any
-}
-
-interface DenseMatrixConstructor {
-  new (data: {
-    data: MatrixData
-    size: number[]
-    datatype?: DataType
-  }): DenseMatrix
-}
-
+/**
+ * DenseMatrix interface for algorithm operations.
+ * Note: This algorithm only operates on 2D matrices, so we use MatrixArray (T[][]).
+ */
 interface DenseMatrix {
-  _data: MatrixData
-  _size: number[]
+  _data: MatrixArray
+  _size: [number, number]
   _datatype?: DataType
 }
 
+/**
+ * DenseMatrix constructor interface for creating new dense matrices.
+ */
+interface DenseMatrixConstructor {
+  new (data: DenseMatrixConstructorData): DenseMatrix
+}
+
+/**
+ * SparseMatrix interface for algorithm operations.
+ * Note: SparseMatrix is always 2D.
+ */
 interface SparseMatrix {
   _values?: MatrixValue[]
   _index: number[]
   _ptr: number[]
-  _size: number[]
+  _size: [number, number]
   _datatype?: DataType
 }
-
-type CallbackFunction = (a: any, b: any) => any
 
 const name = 'matAlgo10xSids'
 const dependencies = ['typed', 'DenseMatrix']
@@ -69,7 +72,7 @@ export const createMatAlgo10xSids = /* #__PURE__ */ factory(
     return function matAlgo10xSids(
       s: SparseMatrix,
       b: any,
-      callback: CallbackFunction,
+      callback: MatrixCallback,
       inverse: boolean
     ): DenseMatrix {
       // sparse matrix arrays
@@ -93,7 +96,7 @@ export const createMatAlgo10xSids = /* #__PURE__ */ factory(
       // datatype
       let dt: DataType
       // callback signature to use
-      let cf: CallbackFunction = callback
+      let cf: MatrixCallback = callback
 
       // process data types
       if (typeof adt === 'string') {
@@ -102,11 +105,11 @@ export const createMatAlgo10xSids = /* #__PURE__ */ factory(
         // convert b to the same datatype
         b = typed.convert(b, dt)
         // callback
-        cf = typed.find(callback, [dt, dt]) as any as any as CallbackFunction
+        cf = typed.find(callback, [dt, dt]) as any as any as MatrixCallback
       }
 
       // result arrays
-      const cdata: MatrixData = []
+      const cdata: MatrixArray = []
 
       // workspaces
       const x: MatrixValue[] = []

@@ -88,7 +88,12 @@ export const createUnitFunction = /* #__PURE__ */ factory(
       },
 
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: MathCollection): MathCollection => deepMap(x as unknown[], self as (item: unknown) => unknown) as unknown as MathCollection
+        (self: TypedFunction) =>
+          (x: MathCollection): MathCollection =>
+            deepMap(
+              x as unknown[],
+              self as (item: unknown) => unknown
+            ) as unknown as MathCollection
       )
     })
   }

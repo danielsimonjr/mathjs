@@ -110,9 +110,7 @@ export const createKldivergence = /* #__PURE__ */ factory(
       const result = sum(
         multiply(
           qnorm,
-          map(dotDivide(qnorm, pnorm), (x: unknown) =>
-            log(x)
-          )
+          map(dotDivide(qnorm, pnorm), (x: unknown) => log(x))
         )
       )
       if (isNumeric(result)) {

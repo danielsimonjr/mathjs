@@ -241,7 +241,9 @@ export const createVariance = /* #__PURE__ */ factory(
           return divide(sum, num + 1)
 
         case 'unbiased': {
-          const zero = isBigNumber(sum) ? (sum as unknown as { mul(n: number): unknown }).mul(0) : 0
+          const zero = isBigNumber(sum)
+            ? (sum as unknown as { mul(n: number): unknown }).mul(0)
+            : 0
           return num === 1 ? zero : divide(sum, num - 1)
         }
 
@@ -274,7 +276,9 @@ export const createVariance = /* #__PURE__ */ factory(
             'Function variance requires one or more parameters (0 provided)'
           )
         }
-        return mapSlices(array, dim, (x: unknown) => _var(x as unknown[] | MatrixType, normalization))
+        return mapSlices(array, dim, (x: unknown) =>
+          _var(x as unknown[] | MatrixType, normalization)
+        )
       } catch (err) {
         throw improveErrorMessage(err, 'variance', undefined)
       }

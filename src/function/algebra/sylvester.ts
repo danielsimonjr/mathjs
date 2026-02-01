@@ -101,29 +101,61 @@ export const createSylvester = /* #__PURE__ */ factory(
      */
     return typed(name, {
       'Matrix, Matrix, Matrix': _sylvester,
-      'Array, Matrix, Matrix': function (A: unknown[][], B: MatrixType, C: MatrixType): MatrixType {
+      'Array, Matrix, Matrix': function (
+        A: unknown[][],
+        B: MatrixType,
+        C: MatrixType
+      ): MatrixType {
         return _sylvester(matrix(A), B, C)
       },
-      'Array, Array, Matrix': function (A: unknown[][], B: unknown[][], C: MatrixType): MatrixType {
+      'Array, Array, Matrix': function (
+        A: unknown[][],
+        B: unknown[][],
+        C: MatrixType
+      ): MatrixType {
         return _sylvester(matrix(A), matrix(B), C)
       },
-      'Array, Matrix, Array': function (A: unknown[][], B: MatrixType, C: unknown[][]): MatrixType {
+      'Array, Matrix, Array': function (
+        A: unknown[][],
+        B: MatrixType,
+        C: unknown[][]
+      ): MatrixType {
         return _sylvester(matrix(A), B, matrix(C))
       },
-      'Matrix, Array, Matrix': function (A: MatrixType, B: unknown[][], C: MatrixType): MatrixType {
+      'Matrix, Array, Matrix': function (
+        A: MatrixType,
+        B: unknown[][],
+        C: MatrixType
+      ): MatrixType {
         return _sylvester(A, matrix(B), C)
       },
-      'Matrix, Array, Array': function (A: MatrixType, B: unknown[][], C: unknown[][]): MatrixType {
+      'Matrix, Array, Array': function (
+        A: MatrixType,
+        B: unknown[][],
+        C: unknown[][]
+      ): MatrixType {
         return _sylvester(A, matrix(B), matrix(C))
       },
-      'Matrix, Matrix, Array': function (A: MatrixType, B: MatrixType, C: unknown[][]): MatrixType {
+      'Matrix, Matrix, Array': function (
+        A: MatrixType,
+        B: MatrixType,
+        C: unknown[][]
+      ): MatrixType {
         return _sylvester(A, B, matrix(C))
       },
-      'Array, Array, Array': function (A: unknown[][], B: unknown[][], C: unknown[][]): unknown[][] {
+      'Array, Array, Array': function (
+        A: unknown[][],
+        B: unknown[][],
+        C: unknown[][]
+      ): unknown[][] {
         return _sylvester(matrix(A), matrix(B), matrix(C)).toArray()
       }
     })
-    function _sylvester(A: MatrixType, B: MatrixType, C: MatrixType): MatrixType {
+    function _sylvester(
+      A: MatrixType,
+      B: MatrixType,
+      C: MatrixType
+    ): MatrixType {
       const n = B.size()[0]
       const m = A.size()[0]
 

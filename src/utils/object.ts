@@ -122,7 +122,10 @@ export function deepExtend<T extends Record<string, unknown>>(
           ;(a as Record<string, unknown>)[prop] = {}
         }
         if (aValue && (aValue as object).constructor === Object) {
-          deepExtend(aValue as Record<string, unknown>, bValue as Record<string, unknown>)
+          deepExtend(
+            aValue as Record<string, unknown>,
+            bValue as Record<string, unknown>
+          )
         } else {
           ;(a as Record<string, unknown>)[prop] = bValue
         }
@@ -338,7 +341,10 @@ export function isLegacyFactory(object: unknown): boolean {
  * @param {string | string[]} path
  * @returns {Object}
  */
-export function get(object: Record<string, unknown>, path: string | string[]): unknown {
+export function get(
+  object: Record<string, unknown>,
+  path: string | string[]
+): unknown {
   if (typeof path === 'string') {
     if (isPath(path)) {
       return get(object, path.split('.'))

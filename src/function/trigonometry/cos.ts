@@ -55,7 +55,9 @@ export const createCos = /* #__PURE__ */ factory(
       name,
       {
         number: Math.cos,
-        'Complex | BigNumber': (x: ComplexType | BigNumberType): ComplexType | BigNumberType => x.cos()
+        'Complex | BigNumber': (
+          x: ComplexType | BigNumberType
+        ): ComplexType | BigNumberType => x.cos()
       },
       trigUnit
     )

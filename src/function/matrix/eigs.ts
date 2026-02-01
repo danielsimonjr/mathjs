@@ -336,7 +336,10 @@ export const createEigs = /* #__PURE__ */ factory(
         result.values = matrix(result.values as Scalar[])
         if (computeVectors) {
           result.eigenvectors = result.eigenvectors!.map(
-            ({ value, vector }) => ({ value, vector: matrix(vector as Scalar[]) })
+            ({ value, vector }) => ({
+              value,
+              vector: matrix(vector as Scalar[])
+            })
           )
         }
       }
@@ -385,7 +388,11 @@ export const createEigs = /* #__PURE__ */ factory(
     }
 
     /** Check if matrix is symmetric within precision */
-    function isSymmetric(arr: Scalar[][], N: number, prec: number | BigNumber): boolean {
+    function isSymmetric(
+      arr: Scalar[][],
+      N: number,
+      prec: number | BigNumber
+    ): boolean {
       for (let i = 0; i < N; i++) {
         for (let j = i; j < N; j++) {
           // TODO proper comparison of bignum and frac
@@ -399,7 +406,11 @@ export const createEigs = /* #__PURE__ */ factory(
     }
 
     /** Check if matrix contains only real values within precision */
-    function isReal(arr: Scalar[][], N: number, prec: number | BigNumber): boolean {
+    function isReal(
+      arr: Scalar[][],
+      N: number,
+      prec: number | BigNumber
+    ): boolean {
       for (let i = 0; i < N; i++) {
         for (let j = 0; j < N; j++) {
           // TODO proper comparison of bignum and frac

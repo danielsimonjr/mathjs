@@ -79,7 +79,7 @@ export const createInvmod = /* #__PURE__ */ factory(
         throw new Error('Parameters in function invmod must be integer numbers')
       a = mod(a, b)
       if (equal(b, 0)) throw new Error('Divisor must be non zero')
-      let res = xgcd(a, b) as { valueOf(): unknown[] }
+      const res = xgcd(a, b) as { valueOf(): unknown[] }
       const resVal = res.valueOf()
       const [gcd, invValue] = resVal
       if (!equal(gcd, BigNumber(1))) return NaN

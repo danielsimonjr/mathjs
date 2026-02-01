@@ -27,12 +27,7 @@ const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
 export const createAcsc = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    Complex,
-    BigNumber
-  }: AcscDependencies) => {
+  ({ typed, config, Complex, BigNumber }: AcscDependencies) => {
     /**
      * Calculate the inverse cosecant of a value, defined as `acsc(x) = asin(1/x)`.
      *

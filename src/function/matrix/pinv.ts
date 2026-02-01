@@ -123,8 +123,12 @@ export const createPinv = /* #__PURE__ */ factory(
      * @return {number | Complex | Array | Matrix} The inverse of `x`.
      */
     return typed(name, {
-      'Array | Matrix': function (x: Scalar[] | Scalar[][] | Matrix): Scalar[] | Scalar[][] | Matrix {
-        const size = isMatrix(x) ? (x as Matrix).size() : arraySize(x as Scalar[] | Scalar[][])
+      'Array | Matrix': function (
+        x: Scalar[] | Scalar[][] | Matrix
+      ): Scalar[] | Scalar[][] | Matrix {
+        const size = isMatrix(x)
+          ? (x as Matrix).size()
+          : arraySize(x as Scalar[] | Scalar[][])
         switch (size.length) {
           case 1:
             // vector
@@ -196,8 +200,14 @@ export const createPinv = /* #__PURE__ */ factory(
      */
     function _pinv(mat: Scalar[][], rows: number, cols: number): Scalar[][] {
       const { C, F } = _rankFact(mat, rows, cols) // TODO: Use SVD instead (may improve precision)
-      const Cpinv = multiply(inv(multiply(ctranspose(C), C) as Scalar[][]), ctranspose(C))
-      const Fpinv = multiply(ctranspose(F), inv(multiply(F, ctranspose(F)) as Scalar[][]))
+      const Cpinv = multiply(
+        inv(multiply(ctranspose(C), C) as Scalar[][]),
+        ctranspose(C)
+      )
+      const Fpinv = multiply(
+        ctranspose(F),
+        inv(multiply(F, ctranspose(F)) as Scalar[][])
+      )
       return multiply(Fpinv, Cpinv) as Scalar[][]
     }
 
@@ -242,7 +252,10 @@ export const createPinv = /* #__PURE__ */ factory(
           if (i === r) continue
           val = M[i][lead]
           for (let j = 0; j < cols; j++) {
-            M[i][j] = add(M[i][j], multiply(-1, multiply(val, M[r][j])) as Scalar)
+            M[i][j] = add(
+              M[i][j],
+              multiply(-1, multiply(val, M[r][j])) as Scalar
+            )
           }
         }
         lead++

@@ -110,7 +110,8 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
         data: unknown[] | MatrixType,
         prob: number | BigNumberType,
         dim: number
-      ): unknown => _quantileSeqDim(data, prob, false, dim, _quantileSeqProbNumber),
+      ): unknown =>
+        _quantileSeqDim(data, prob, false, dim, _quantileSeqProbNumber),
       'Array | Matrix, number | BigNumber, boolean': _quantileSeqProbNumber,
       'Array | Matrix, number | BigNumber, boolean, number': (
         data: unknown[] | MatrixType,
@@ -146,7 +147,9 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
       dim: number,
       fn: (data: unknown[] | MatrixType, prob: T, sorted: boolean) => unknown
     ): unknown {
-      return mapSlices(data, dim, (x: unknown) => fn(x as unknown[] | MatrixType, prob, sorted))
+      return mapSlices(data, dim, (x: unknown) =>
+        fn(x as unknown[] | MatrixType, prob, sorted)
+      )
     }
 
     function _quantileSeqProbNumber(
@@ -211,7 +214,9 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
       const probOrNArr = (probOrN as MatrixType).valueOf() as unknown[]
       const probArr: unknown[] = []
       for (let i = 0; i < probOrNArr.length; ++i) {
-        probArr.push(_quantileSeq(dataArr, probOrNArr[i] as number | BigNumberType, sorted))
+        probArr.push(
+          _quantileSeq(dataArr, probOrNArr[i] as number | BigNumberType, sorted)
+        )
       }
       return probArr
     }
@@ -236,16 +241,23 @@ export const createQuantileSeq = /* #__PURE__ */ factory(
         throw new Error('Cannot calculate quantile of an empty sequence')
       }
 
-      const index = isNumber(prob) ? prob * (len - 1) : (prob as BigNumberType).times(len - 1)
+      const index = isNumber(prob)
+        ? prob * (len - 1)
+        : (prob as BigNumberType).times(len - 1)
       const integerPart = isNumber(prob)
         ? Math.floor(index as number)
         : (index as BigNumberType).floor().toNumber()
-      const fracPart = isNumber(prob) ? (index as number) % 1 : (index as BigNumberType).minus(integerPart)
+      const fracPart = isNumber(prob)
+        ? (index as number) % 1
+        : (index as BigNumberType).minus(integerPart)
 
       if (isInteger(index)) {
         return sorted
           ? flat[index as number]
-          : partitionSelect(flat, isNumber(prob) ? index : (index as BigNumberType).valueOf())
+          : partitionSelect(
+              flat,
+              isNumber(prob) ? index : (index as BigNumberType).valueOf()
+            )
       }
       let left: unknown
       let right: unknown

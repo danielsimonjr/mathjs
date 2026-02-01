@@ -88,7 +88,9 @@ function _print(
     printTemplate,
     function (original: string, key: string): string {
       const keys = key.split('.')
-      let value: PrintValue = (values as Record<string, PrintValue>)[keys.shift()!]
+      let value: PrintValue = (values as Record<string, PrintValue>)[
+        keys.shift()!
+      ]
       if (value !== undefined && (value as { isMatrix?: boolean }).isMatrix) {
         value = (value as { toArray: () => unknown[] }).toArray()
       }

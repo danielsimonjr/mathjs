@@ -130,7 +130,10 @@ export const createCompare = /* #__PURE__ */ factory(
           return x === y ? 0 : x > y ? 1 : -1
         },
 
-        'BigNumber, BigNumber': function (x: BigNumberType, y: BigNumberType): BigNumberType {
+        'BigNumber, BigNumber': function (
+          x: BigNumberType,
+          y: BigNumberType
+        ): BigNumberType {
           return bigNearlyEqual(x, y, config.relTol, config.absTol)
             ? new BigNumber(0)
             : new BigNumber(x.cmp(y))
@@ -140,7 +143,10 @@ export const createCompare = /* #__PURE__ */ factory(
           return x === y ? 0n : x > y ? 1n : -1n
         },
 
-        'Fraction, Fraction': function (x: FractionType, y: FractionType): FractionType {
+        'Fraction, Fraction': function (
+          x: FractionType,
+          y: FractionType
+        ): FractionType {
           return new Fraction(x.compare(y))
         },
 

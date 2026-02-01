@@ -139,17 +139,10 @@ export const createResolve = /* #__PURE__ */ factory(
         const args = opNode.args.map(function (arg: MathNode) {
           return _resolve(arg, scope, within)
         })
-        return new OperatorNode(
-          opNode.op,
-          opNode.fn,
-          args,
-          opNode.implicit
-        )
+        return new OperatorNode(opNode.op, opNode.fn, args, opNode.implicit)
       } else if (isParenthesisNode(node)) {
         const parenNode = node as ParenthesisNodeType
-        return new ParenthesisNode(
-          _resolve(parenNode.content, scope, within)
-        )
+        return new ParenthesisNode(_resolve(parenNode.content, scope, within))
       } else if (isFunctionNode(node)) {
         const funcNode = node as FunctionNodeType
         const args = funcNode.args.map(function (arg: MathNode) {
@@ -172,22 +165,37 @@ export const createResolve = /* #__PURE__ */ factory(
       // because resolve is fairly expensive anyway, and this way
       // we get nice error messages if one entry in the array has wrong type.
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (A: { map: (fn: (n: MathNode) => MathNode) => unknown }) => A.map((n: MathNode) => self(n))
+        (self: TypedFunction) =>
+          (A: { map: (fn: (n: MathNode) => MathNode) => unknown }) =>
+            A.map((n: MathNode) => self(n))
       ),
       'Array | Matrix, null | undefined': typed.referToSelf(
-        (self: TypedFunction) => (A: { map: (fn: (n: MathNode) => MathNode) => unknown }) => A.map((n: MathNode) => self(n))
+        (self: TypedFunction) =>
+          (A: { map: (fn: (n: MathNode) => MathNode) => unknown }) =>
+            A.map((n: MathNode) => self(n))
       ),
       'Array, Object': typed.referTo(
         'Array,Map',
-        (selfAM: TypedFunction) => (A: unknown[], scope: Record<string, unknown>) => selfAM(A, createMap(scope))
+        (selfAM: TypedFunction) =>
+          (A: unknown[], scope: Record<string, unknown>) =>
+            selfAM(A, createMap(scope))
       ),
       'Matrix, Object': typed.referTo(
         'Matrix,Map',
-        (selfMM: TypedFunction) => (A: { map: (fn: (n: MathNode) => MathNode) => unknown }, scope: Record<string, unknown>) => selfMM(A, createMap(scope))
+        (selfMM: TypedFunction) =>
+          (
+            A: { map: (fn: (n: MathNode) => MathNode) => unknown },
+            scope: Record<string, unknown>
+          ) =>
+            selfMM(A, createMap(scope))
       ),
       'Array | Matrix, Map': typed.referToSelf(
-        (self: TypedFunction) => (A: { map: (fn: (n: MathNode) => MathNode) => unknown }, scope: Map<string, unknown>) =>
-          A.map((n: MathNode) => self(n, scope))
+        (self: TypedFunction) =>
+          (
+            A: { map: (fn: (n: MathNode) => MathNode) => unknown },
+            scope: Map<string, unknown>
+          ) =>
+            A.map((n: MathNode) => self(n, scope))
       )
     })
   }

@@ -108,12 +108,15 @@ export const createSign = /* #__PURE__ */ factory(
             deepMap(x, self, true)
       ),
 
-      Unit: typed.referToSelf((self: TypedFunction) => (x: UnitType): unknown => {
-        if (!x._isDerived() && x.units[0].unit.offset !== 0) {
-          throw new TypeError('sign is ambiguous for units with offset')
-        }
-        return typed.find(self, x.valueType())(x.value)
-      })
+      Unit: typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: UnitType): unknown => {
+            if (!x._isDerived() && x.units[0].unit.offset !== 0) {
+              throw new TypeError('sign is ambiguous for units with offset')
+            }
+            return typed.find(self, x.valueType())(x.value)
+          }
+      )
     })
   }
 )

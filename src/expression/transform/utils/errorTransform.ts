@@ -6,7 +6,9 @@ import type { IndexError as IndexErrorType } from '../types.ts'
  * @param err - The error to transform
  * @returns The transformed error (IndexError with adjusted indices) or original error
  */
-export function errorTransform(err: Error | IndexErrorType): Error | IndexError {
+export function errorTransform(
+  err: Error | IndexErrorType
+): Error | IndexError {
   if (err && (err as IndexErrorType).isIndexError) {
     const indexErr = err as IndexErrorType
     return new IndexError(

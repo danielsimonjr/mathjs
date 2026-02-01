@@ -64,7 +64,10 @@ export const createComposition = /* #__PURE__ */ factory(
      * @return {Number | BigNumber}     Returns the composition counts of n into k parts.
      */
     return typed(name, {
-      'number | BigNumber, number | BigNumber': function (n: NumericValue, k: NumericValue): NumericValue {
+      'number | BigNumber, number | BigNumber': function (
+        n: NumericValue,
+        k: NumericValue
+      ): NumericValue {
         if (
           !isInteger(n) ||
           !isPositive(n) ||
@@ -80,10 +83,7 @@ export const createComposition = /* #__PURE__ */ factory(
           )
         }
 
-        return combinations(
-          addScalar(n, -1),
-          addScalar(k, -1)
-        )
+        return combinations(addScalar(n, -1), addScalar(k, -1))
       }
     })
   }

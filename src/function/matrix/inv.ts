@@ -144,14 +144,18 @@ export const createInv = /* #__PURE__ */ factory(
      */
     return typed(name, {
       'Array | Matrix': function (x: Scalar[] | Matrix): Scalar[] | Matrix {
-        const size = isMatrix(x) ? (x as Matrix).size() : arraySize(x as Scalar[])
+        const size = isMatrix(x)
+          ? (x as Matrix).size()
+          : arraySize(x as Scalar[])
         switch (size.length) {
           case 1:
             // vector
             if (size[0] === 1) {
               if (isMatrix(x)) {
                 const matX = x as Matrix
-                return matrix([divideScalar(1, (matX.valueOf() as Scalar[])[0])])
+                return matrix([
+                  divideScalar(1, (matX.valueOf() as Scalar[])[0])
+                ])
               } else {
                 return [divideScalar(1, (x as Scalar[])[0])]
               }

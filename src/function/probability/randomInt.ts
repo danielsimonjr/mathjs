@@ -15,7 +15,10 @@ interface RandomIntDependencies {
   typed: TypedFunction
   config: ConfigOptions
   log2: (n: bigint) => number
-  on?: (event: string, callback: (curr: ConfigOptions, prev: ConfigOptions) => void) => void
+  on?: (
+    event: string,
+    callback: (curr: ConfigOptions, prev: ConfigOptions) => void
+  ) => void
 }
 
 const name = 'randomInt'
@@ -24,12 +27,7 @@ const dependencies = ['typed', 'config', 'log2', '?on']
 export const createRandomInt = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    log2,
-    on
-  }: RandomIntDependencies) => {
+  ({ typed, config, log2, on }: RandomIntDependencies) => {
     // seeded pseudo random number generator
     let rng = createRng(config.randomSeed)
 
@@ -76,16 +74,29 @@ export const createRandomInt = /* #__PURE__ */ factory(
       'number, number': (min: number, max: number) => _randomInt(min, max),
       bigint: (max: bigint) => _randomBigint(0n, max),
       'bigint, bigint': _randomBigint,
-      'Array | Matrix': (size: number[] | MatrixType) => _randomIntMatrix(size, 0, 1),
+      'Array | Matrix': (size: number[] | MatrixType) =>
+        _randomIntMatrix(size, 0, 1),
       'Array | Matrix, number': (size: number[] | MatrixType, max: number) =>
         _randomIntMatrix(size, 0, max),
-      'Array | Matrix, number, number': (size: number[] | MatrixType, min: number, max: number) =>
-        _randomIntMatrix(size, min, max)
+      'Array | Matrix, number, number': (
+        size: number[] | MatrixType,
+        min: number,
+        max: number
+      ) => _randomIntMatrix(size, min, max)
     })
 
-    function _randomIntMatrix(size: number[] | MatrixType, min: number, max: number): unknown[] | MatrixType {
-      const res = randomMatrix((size as { valueOf(): number[] }).valueOf(), () => _randomInt(min, max))
-      return isMatrix(size) ? (size as MatrixType).create(res as unknown[], 'number') : res
+    function _randomIntMatrix(
+      size: number[] | MatrixType,
+      min: number,
+      max: number
+    ): unknown[] | MatrixType {
+      const res = randomMatrix(
+        (size as { valueOf(): number[] }).valueOf(),
+        () => _randomInt(min, max)
+      )
+      return isMatrix(size)
+        ? (size as MatrixType).create(res as unknown[], 'number')
+        : res
     }
 
     function _randomInt(min: number, max: number): number {

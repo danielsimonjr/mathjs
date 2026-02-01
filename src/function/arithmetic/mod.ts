@@ -124,9 +124,7 @@ export const createMod = /* #__PURE__ */ factory(
           x: BigNumberType,
           y: BigNumberType
         ): BigNumberType {
-          return y.isZero()
-            ? x
-            : x.sub(y.mul(floor(x.div(y)) as BigNumberType))
+          return y.isZero() ? x : x.sub(y.mul(floor(x.div(y)) as BigNumberType))
         },
 
         'bigint, bigint': function (x: bigint, y: bigint): bigint {
@@ -142,7 +140,10 @@ export const createMod = /* #__PURE__ */ factory(
           return x % y
         },
 
-        'Fraction, Fraction': function (x: FractionType, y: FractionType): FractionType {
+        'Fraction, Fraction': function (
+          x: FractionType,
+          y: FractionType
+        ): FractionType {
           return y.equals(0) ? x : x.sub(y.mul(floor(x.div(y)) as FractionType))
         }
       },

@@ -19,7 +19,11 @@ interface SimplifyOptions {
 
 interface SymbolicEqualDependencies {
   parse: (expr: string) => MathNode
-  simplify: (node: MathNode, rules: unknown[], options: SimplifyOptions) => MathNode
+  simplify: (
+    node: MathNode,
+    rules: unknown[],
+    options: SimplifyOptions
+  ) => MathNode
   typed: TypedFunction
   OperatorNode: OperatorNodeConstructor
 }
@@ -81,7 +85,9 @@ export const createSymbolicEqual = /* #__PURE__ */ factory(
     ): boolean {
       const diff = new OperatorNode('-', 'subtract', [e1, e2])
       const simplified = simplify(diff, [], options)
-      return isConstantNode(simplified) && !(simplified as ConstantNodeType).value
+      return (
+        isConstantNode(simplified) && !(simplified as ConstantNodeType).value
+      )
     }
 
     return typed(name, {

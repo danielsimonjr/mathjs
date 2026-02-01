@@ -349,7 +349,10 @@ function numberFactory(name: string, value: number | string) {
   return factory(
     name,
     dependencies,
-    ({ config, BigNumber }: NumberFactoryDependencies): number | string | Decimal => {
+    ({
+      config,
+      BigNumber
+    }: NumberFactoryDependencies): number | string | Decimal => {
       return config.number === 'BigNumber' ? new BigNumber(value) : value
     }
   )

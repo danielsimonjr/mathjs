@@ -141,7 +141,10 @@ export const createCbrt = /* #__PURE__ */ factory(
      * @returns {Complex | Array.<Complex> | Matrix.<Complex>} Returns the cubic root(s) of x
      * @private
      */
-    function _cbrtComplex(x: ComplexType, allRoots?: boolean): ComplexType | ComplexType[] | unknown {
+    function _cbrtComplex(
+      x: ComplexType,
+      allRoots?: boolean
+    ): ComplexType | ComplexType[] | unknown {
       // https://www.wikiwand.com/en/Cube_root#/Complex_numbers
 
       const arg3 = x.arg() / 3

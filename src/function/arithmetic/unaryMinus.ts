@@ -27,11 +27,7 @@ const dependencies = ['typed', 'config', '?bignumber']
 export const createUnaryMinus = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    bignumber
-  }: UnaryMinusDependencies) => {
+  ({ typed, config, bignumber }: UnaryMinusDependencies) => {
     /**
      * Inverse the sign of a value, apply a unary minus operation.
      *
@@ -62,11 +58,14 @@ export const createUnaryMinus = /* #__PURE__ */ factory(
 
       bigint: (x: bigint): bigint => -x,
 
-      Unit: typed.referToSelf((self: TypedFunction) => (x: UnitType): UnitType => {
-        const res = x.clone()
-        res.value = typed.find(self, res.valueType())(x.value)
-        return res
-      }),
+      Unit: typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: UnitType): UnitType => {
+            const res = x.clone()
+            res.value = typed.find(self, res.valueType())(x.value)
+            return res
+          }
+      ),
 
       boolean: function (x: boolean): number | bigint | unknown {
         // Convert boolean to number: true→1, false→0
@@ -100,7 +99,9 @@ export const createUnaryMinus = /* #__PURE__ */ factory(
 
       // deep map collection, skip zeros since unaryMinus(0) = 0
       'Array | Matrix': typed.referToSelf(
-        (self: TypedFunction) => (x: unknown): unknown => deepMap(x, self, true)
+        (self: TypedFunction) =>
+          (x: unknown): unknown =>
+            deepMap(x, self, true)
       )
 
       // TODO: add support for string

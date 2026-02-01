@@ -38,13 +38,7 @@ const nlg16 = Math.log(16)
 export const createLog = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    typeOf,
-    config,
-    divideScalar,
-    Complex
-  }: LogDependencies) => {
+  ({ typed, typeOf, config, divideScalar, Complex }: LogDependencies) => {
     /**
      * Calculate the logarithm of a value.
      *
@@ -111,19 +105,22 @@ export const createLog = /* #__PURE__ */ factory(
         }
       },
 
-      'any, any': typed.referToSelf((self: TypedFunction) => (x: unknown, base: unknown): unknown => {
-        // calculate logarithm for a specified base, log(x, base)
+      'any, any': typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: unknown, base: unknown): unknown => {
+            // calculate logarithm for a specified base, log(x, base)
 
-        if (typeOf(x) === 'Fraction' && typeOf(base) === 'Fraction') {
-          const result = (x as FractionType).log(base as FractionType)
+            if (typeOf(x) === 'Fraction' && typeOf(base) === 'Fraction') {
+              const result = (x as FractionType).log(base as FractionType)
 
-          if (result !== null) {
-            return result
+              if (result !== null) {
+                return result
+              }
+            }
+
+            return divideScalar(self(x), self(base))
           }
-        }
-
-        return divideScalar(self(x), self(base))
-      })
+      )
     })
   }
 )

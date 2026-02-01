@@ -47,7 +47,11 @@ interface Index {
   max(): number[]
   size(): number[]
   isScalar(): boolean
-  dimension(dim: number): number | { forEach(callback: (value: number, index: [number]) => void): void }
+  dimension(
+    dim: number
+  ):
+    | number
+    | { forEach(callback: (value: number, index: [number]) => void): void }
   forEach?(callback: (value: number, index: [number]) => void): void
 }
 
@@ -739,7 +743,12 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
        *                                                options.
        * @returns {string} str
        */
-      format(options?: MatrixFormatOptions | number | ((value: MatrixValue) => string)): string {
+      format(
+        options?:
+          | MatrixFormatOptions
+          | number
+          | ((value: MatrixValue) => string)
+      ): string {
         // rows and columns
         const rows = this._size[0]
         const columns = this._size[1]
@@ -1345,7 +1354,10 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
         w[i] = true
       }
       if (Number.isInteger(rows)) rowsCallback(rows as number, [0])
-      else (rows as { forEach(callback: (i: number, r: [number]) => void): void }).forEach(rowsCallback)
+      else
+        (
+          rows as { forEach(callback: (i: number, r: [number]) => void): void }
+        ).forEach(rowsCallback)
 
       // result matrix arrays
       const values: any[] | undefined = mvalues ? [] : undefined
@@ -1372,7 +1384,10 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(
         }
       }
       if (Number.isInteger(columns)) columnsCallback(columns as number)
-      else (columns as { forEach(callback: (j: number) => void): void }).forEach(columnsCallback)
+      else
+        (columns as { forEach(callback: (j: number) => void): void }).forEach(
+          columnsCallback
+        )
       // update ptr
       ptr.push(index.length)
 

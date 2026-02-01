@@ -27,12 +27,7 @@ const dependencies = ['typed', 'config', 'Complex', 'BigNumber']
 export const createAcoth = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    Complex,
-    BigNumber
-  }: AcothDependencies) => {
+  ({ typed, config, Complex, BigNumber }: AcothDependencies) => {
     /**
      * Calculate the inverse hyperbolic tangent of a value,
      * defined as `acoth(x) = atanh(1/x) = (ln((x+1)/x) + ln(x/(x-1))) / 2`.

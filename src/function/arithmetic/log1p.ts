@@ -35,13 +35,7 @@ const dependencies = ['typed', 'config', 'divideScalar', 'log', 'Complex']
 export const createLog1p = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    divideScalar,
-    log,
-    Complex
-  }: Log1pDependencies) => {
+  ({ typed, config, divideScalar, log, Complex }: Log1pDependencies) => {
     /**
      * Calculate the logarithm of a `value+1`.
      *
@@ -101,10 +95,13 @@ export const createLog1p = /* #__PURE__ */ factory(
             deepMap(x, self)
       ),
 
-      'any, any': typed.referToSelf((self: TypedFunction) => (x: unknown, base: unknown): unknown => {
-        // calculate logarithm for a specified base, log1p(x, base)
-        return divideScalar(self(x), log(base))
-      })
+      'any, any': typed.referToSelf(
+        (self: TypedFunction) =>
+          (x: unknown, base: unknown): unknown => {
+            // calculate logarithm for a specified base, log1p(x, base)
+            return divideScalar(self(x), log(base))
+          }
+      )
     })
 
     /**

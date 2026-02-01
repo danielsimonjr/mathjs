@@ -22,11 +22,7 @@ const dependencies = ['typed', 'config', 'Complex']
 export const createAtanh = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    Complex
-  }: AtanhDependencies) => {
+  ({ typed, config, Complex }: AtanhDependencies) => {
     /**
      * Calculate the hyperbolic arctangent of a value,
      * defined as `atanh(x) = ln((1 + x)/(1 - x)) / 2`.

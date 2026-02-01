@@ -33,11 +33,7 @@ const log16 = log10Number(16)
 export const createLog10 = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({
-    typed,
-    config,
-    Complex
-  }: Log10Dependencies) => {
+  ({ typed, config, Complex }: Log10Dependencies) => {
     /**
      * Calculate the 10-base logarithm of a value. This is the same as calculating `log(x, 10)`.
      *

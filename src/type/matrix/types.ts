@@ -209,7 +209,11 @@ export interface IndexInterface {
 
   /** Iterate over dimensions */
   forEach(
-    callback: (dimension: any, index: number, indexObject: IndexInterface) => void
+    callback: (
+      dimension: any,
+      index: number,
+      indexObject: IndexInterface
+    ) => void
   ): void
 
   /** Clone the index */
@@ -283,7 +287,9 @@ export interface MatrixInterface<T = MatrixValue> {
   forEach(callback: ForEachCallback<T>, skipZeros?: boolean): void
 
   /** Format as string */
-  format(options?: MatrixFormatOptions | number | ((value: T) => string)): string
+  format(
+    options?: MatrixFormatOptions | number | ((value: T) => string)
+  ): string
 
   /** Convert to string */
   toString(): string
@@ -292,13 +298,17 @@ export interface MatrixInterface<T = MatrixValue> {
 /**
  * DenseMatrix-specific interface
  */
-export interface DenseMatrixInterface<T = MatrixValue> extends MatrixInterface<T> {
+export interface DenseMatrixInterface<T = MatrixValue>
+  extends MatrixInterface<T> {
   readonly isDenseMatrix: boolean
   _data: DenseMatrixData<T>
   _size: number[]
   _datatype?: DataType
 
-  createDenseMatrix(data: DenseMatrixData<T>, datatype?: string): DenseMatrixInterface<T>
+  createDenseMatrix(
+    data: DenseMatrixData<T>,
+    datatype?: string
+  ): DenseMatrixInterface<T>
   getDataType(): string
   rows?(): DenseMatrixInterface<T>[]
   columns?(): DenseMatrixInterface<T>[]
@@ -309,7 +319,8 @@ export interface DenseMatrixInterface<T = MatrixValue> extends MatrixInterface<T
 /**
  * SparseMatrix-specific interface
  */
-export interface SparseMatrixInterface<T = MatrixValue> extends MatrixInterface<T> {
+export interface SparseMatrixInterface<T = MatrixValue>
+  extends MatrixInterface<T> {
   readonly isSparseMatrix: boolean
   _values?: T[]
   _index: number[]
@@ -588,7 +599,9 @@ export interface RangeInterface {
   map<T>(callback: RangeMapCallback<T>): T[]
   toArray(): number[]
   valueOf(): number[]
-  format(options?: RangeFormatOptions | number | ((value: number) => string)): string
+  format(
+    options?: RangeFormatOptions | number | ((value: number) => string)
+  ): string
   toString(): string
   toJSON(): RangeJSON
 }

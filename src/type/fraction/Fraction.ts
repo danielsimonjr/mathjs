@@ -1,4 +1,7 @@
-import FractionJs, { Fraction as FractionClass, NumeratorDenominator } from 'fraction.js'
+import FractionJs, {
+  Fraction as FractionClass,
+  NumeratorDenominator
+} from 'fraction.js'
 import { factory } from '../../utils/factory.ts'
 
 /**
@@ -22,7 +25,12 @@ export interface Fraction extends FractionClass {
 /**
  * Valid input types for Fraction constructor
  */
-export type FractionValue = number | string | bigint | NumeratorDenominator | FractionJSON
+export type FractionValue =
+  | number
+  | string
+  | bigint
+  | NumeratorDenominator
+  | FractionJSON
 
 /**
  * Fraction constructor interface with static methods
