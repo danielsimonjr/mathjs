@@ -2,6 +2,25 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Reference
+
+```bash
+npm install                    # Install dependencies
+npm run build                  # Full build (ESM, CJS, browser, WASM)
+npm test                       # Run tests + lint
+npm run format                 # Auto-fix code style
+npm run compile:ts             # Compile TypeScript only
+npx mocha test/unit-tests/function/<category>/<name>.test.js  # Run single test
+```
+
+## ⚠️ Critical: ES Module File Extensions
+
+**All imports MUST include `.js` extensions** (even in TypeScript files):
+- ✅ `import { foo } from './bar.js'`
+- ❌ `import { foo } from './bar'`
+
+Configure your IDE to add extensions on auto-import. This is enforced by ESLint.
+
 ## Project Overview
 
 Math.js is an extensive math library for JavaScript and Node.js featuring:
@@ -89,33 +108,23 @@ npm run format
 npm run validate:ascii
 ```
 
-## Codebase Statistics
+## Codebase Scale
 
-Quick reference numbers from codebase analysis (updated 2026-01-30):
+Key architectural constants (see `ts-inventory.json` for current file counts):
 
-| Metric | Count |
-|--------|-------|
-| Total source files | 2,014 |
-| TypeScript files | 1,340 (66.5%) |
-| JavaScript files | 674 (33.5%) |
-| WASM/AssemblyScript files | 65 |
-| Total lines of code | 194,602 |
-| TypeScript lines | 133,362 (68.5%) |
-| WASM lines | 35,249 |
-| Generated .ts files | 585 |
-| Factory functions | 396 |
+| Component | Approximate Count |
+|-----------|-------------------|
+| Factory functions | ~400 |
 | AST node types | 16 |
 | Type classes | 15 |
 | Matrix algorithms | 15 |
 | Expression transforms | 25 |
 
-**Most-used dependencies** (by usage count):
-- `typed` (280) - type dispatch system
-- `matrix` (93) - matrix operations
-- `config` (63) - configuration
-- `equalScalar` (48) - equality checks
-- `DenseMatrix` (44) - dense matrix class
-- `add` (39), `multiply` (34), `concat` (34) - core operations
+**Most-used dependencies** in factory functions:
+- `typed` - type dispatch system (used by nearly all functions)
+- `matrix`, `DenseMatrix`, `SparseMatrix` - matrix operations
+- `config` - configuration access
+- `equalScalar` - equality checks
 
 ## Architecture Overview
 
@@ -196,32 +205,18 @@ types/
 
 The codebase is being gradually converted to TypeScript with WASM support:
 
-- **Migration Tracking**: `ts-inventory.json` tracks 2,014 source files
-- **Current Status**: 66.5% files converted (1,340 TypeScript, 674 JavaScript), 68.5% by lines (133,362 TS / 194,602 total)
-- **Fully Converted**: parallel, wasm, entry/dependencies*, type/local, expression/Help, expression/Parser, expression/parse
-- **In Progress (50%)**: All function categories, expression/embeddedDocs, expression/node, expression/transform, type/matrix, utils
-- **WASM/AssemblyScript**: 65 modules totaling 35,249 lines of code
-- **Generated Files**: 585 TypeScript files auto-generated (entry points, dependencies)
+- **Migration Tracking**: `ts-inventory.json` tracks all source files and conversion status
 - **TypeScript Errors**: Run `npx tsc --noEmit 2>&1 | grep -c "error TS"` to check current count
 - **Goal**: Type safety, 2-25x performance improvements, multi-core support
 - **Strategy**: Incremental conversion with dual .ts/.js files, 100% backward compatible
-- **See**: `docs/architecture/README_TYPESCRIPT_WASM.md`, `docs/refactoring/REFACTORING_PLAN.md`
+- **Full Details**: `docs/architecture/README_TYPESCRIPT_WASM.md`, `docs/refactoring/REFACTORING_PLAN.md`
 
 **Three-tier performance system**:
 1. JavaScript fallback (always available)
 2. WASM acceleration (2-10x faster for large operations)
 3. Parallel/multicore execution (2-4x additional speedup)
 
-**WASM Module Categories** (65 files in `src/wasm/`):
-- `algebra/` - Decomposition, equations, polynomial, Schur, solvers, sparse operations
-- `matrix/` - Basic ops, multiply, eigs, linalg, sparse, rotation, expm, sqrtm
-- `arithmetic/` - Basic, advanced, logarithmic operations
-- `signal/` - FFT, signal processing
-- `numeric/` - Calculus, interpolation, ODE, rootfinding, rational
-- `statistics/` - Basic stats, selection algorithms
-- `trigonometry/` - Basic trig functions
-- `special/` - Special mathematical functions
-- `geometry/`, `combinatorics/`, `probability/`, `bitwise/`, `logical/`, `relational/`, `set/`, `string/`, `unit/`
+**WASM modules** are in `src/wasm/` organized by category (algebra, matrix, arithmetic, signal, numeric, statistics, trigonometry, special, etc.)
 
 ### Build System
 
@@ -342,13 +337,6 @@ The expression parser uses 16 AST node types:
 
 Plus 25 expression transforms for special handling (e.g., `MapTransform`, `FilterTransform`, `RangeTransform`)
 
-### ES Module Requirements
-
-- All import statements **must** include file extensions (`.js` or `.ts`)
-- Configure your IDE to add extensions on auto-import
-- Incorrect: `import { foo } from './bar'`
-- Correct: `import { foo } from './bar.js'`
-
 ### Code Style
 
 - Follows [JavaScript Standard Style](https://standardjs.com/)
@@ -463,22 +451,18 @@ node -e "import('./lib/wasm/index.js').then(wasm => console.log(wasm))"
 
 ### Common Gotchas
 
-1. **File extensions required**: Always use `.js` in imports, even in TypeScript files during transition
+1. **File extensions required**: Always use `.js` in imports, even in TypeScript files (see warning at top)
 2. **Factory dependencies**: When adding function dependencies, ensure they're declared in factory function parameters
 3. **TypeScript definitions**: Must be added in **multiple** places (see `types/EXPLANATION.md`)
 4. **Don't commit generated files**: Only commit changes in `src/`, not `lib/` or `dist/`
-5. **Pull requests**: For the upstream josdejong/mathjs, PRs go to `develop` branch. For this fork (danielsimonjr/mathjs), PRs go to `master`
-6. **Dual JS/TS tests**: When writing TS tests, always use isolated math instances to prevent state pollution between JS and TS test suites
+5. **Dual JS/TS tests**: When writing TS tests, always use isolated math instances to prevent state pollution between JS and TS test suites
 
-## MCP Servers (Environment-Specific)
+### Pull Request Branches
 
-If MCP servers are configured in `.mcp.json`, useful ones for this project include:
-
-- **memory-mcp** - Persistent knowledge graph for maintaining context across sessions
-- **everything-mcp** / **fzf-mcp** - Fast file system search
-- **playwright** - Browser automation for testing
-
-Check `.mcp.json` for the current configuration.
+| Repository | Target Branch |
+|------------|---------------|
+| **This fork** (danielsimonjr/mathjs) | `master` |
+| **Upstream** (josdejong/mathjs) | `develop` |
 
 ## Documentation References
 
