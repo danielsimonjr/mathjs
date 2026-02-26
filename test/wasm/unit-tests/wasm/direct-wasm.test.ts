@@ -3,7 +3,7 @@
  * These tests import directly from the compiled WASM module
  */
 import assert from 'assert'
-import * as wasm from '../../../../../lib/wasm/index.js'
+import * as wasm from '../../../../lib/wasm/index.js'
 
 // Tolerance for floating point comparisons
 const EPSILON = 1e-10
@@ -16,6 +16,30 @@ function approxEqual(actual: number, expected: number, tolerance = EPSILON): voi
   )
 }
 
+// Helper: write f64 array into WASM memory and return byte offset
+function writeF64(data: number[], offset: number): number {
+  const view = new Float64Array(wasm.memory.buffer, offset, data.length)
+  view.set(data)
+  return offset
+}
+
+// Helper: read f64 array from WASM memory
+function readF64(offset: number, count: number): number[] {
+  const view = new Float64Array(wasm.memory.buffer, offset, count)
+  return Array.from(view)
+}
+
+// Helper: write i32 array into WASM memory and return byte offset
+function writeI32(data: number[], offset: number): number {
+  const view = new Int32Array(wasm.memory.buffer, offset, data.length)
+  view.set(data)
+  return offset
+}
+
+// Use high memory offsets to avoid collisions with WASM internals
+const SCRATCH_BASE = 1 << 16 // 64KB offset
+const RESULT_BASE = SCRATCH_BASE + 4096
+
 describe('WASM Direct Tests', function () {
   describe('Complex Operations', function () {
     it('should compute arg (argument/phase)', function () {
@@ -27,7 +51,8 @@ describe('WASM Direct Tests', function () {
     })
 
     it('should compute conj (conjugate)', function () {
-      const result = wasm.conj(3, 4)
+      wasm.conj(3, 4, RESULT_BASE)
+      const result = readF64(RESULT_BASE, 2)
       assert.strictEqual(result[0], 3) // real unchanged
       assert.strictEqual(result[1], -4) // imaginary negated
     })
@@ -50,14 +75,16 @@ describe('WASM Direct Tests', function () {
 
     it('should multiply complex numbers', function () {
       // (2+3i) * (4+5i) = 8 + 10i + 12i + 15i^2 = 8 + 22i - 15 = -7 + 22i
-      const result = wasm.mulComplex(2, 3, 4, 5)
+      wasm.mulComplex(2, 3, 4, 5, RESULT_BASE)
+      const result = readF64(RESULT_BASE, 2)
       approxEqual(result[0], -7)
       approxEqual(result[1], 22)
     })
 
     it('should divide complex numbers', function () {
       // (1+0i) / (1+0i) = 1+0i
-      const result = wasm.divComplex(1, 0, 1, 0)
+      wasm.divComplex(1, 0, 1, 0, RESULT_BASE)
+      const result = readF64(RESULT_BASE, 2)
       approxEqual(result[0], 1)
       approxEqual(result[1], 0)
     })
@@ -75,7 +102,8 @@ describe('WASM Direct Tests', function () {
 
     it('should compute cross product', function () {
       // i x j = k: (1,0,0) x (0,1,0) = (0,0,1)
-      const result = wasm.cross3D(1, 0, 0, 0, 1, 0)
+      wasm.cross3D(1, 0, 0, 0, 1, 0, RESULT_BASE)
+      const result = readF64(RESULT_BASE, 3)
       approxEqual(result[0], 0)
       approxEqual(result[1], 0)
       approxEqual(result[2], 1)
@@ -143,43 +171,44 @@ describe('WASM Direct Tests', function () {
 
   describe('Set Operations', function () {
     it('should create a set (sorted unique)', function () {
-      const arr = new Float64Array([3, 1, 2, 1, 3])
-      const set = wasm.createSet(arr)
-      assert.strictEqual(set.length, 3)
-      assert.strictEqual(set[0], 1)
-      assert.strictEqual(set[1], 2)
-      assert.strictEqual(set[2], 3)
+      const arrPtr = writeF64([3, 1, 2, 1, 3], SCRATCH_BASE)
+      const resultLen = wasm.createSet(arrPtr, 5, RESULT_BASE)
+      assert.strictEqual(resultLen, 3)
+      const result = readF64(RESULT_BASE, 3)
+      assert.strictEqual(result[0], 1)
+      assert.strictEqual(result[1], 2)
+      assert.strictEqual(result[2], 3)
     })
 
     it('should compute union', function () {
-      const a = new Float64Array([1, 2, 3])
-      const b = new Float64Array([2, 3, 4])
-      const result = wasm.setUnion(a, b)
-      assert.strictEqual(result.length, 4)
-      assert.deepStrictEqual(Array.from(result), [1, 2, 3, 4])
+      const aPtr = writeF64([1, 2, 3], SCRATCH_BASE)
+      const bPtr = writeF64([2, 3, 4], SCRATCH_BASE + 256)
+      const resultLen = wasm.setUnion(aPtr, 3, bPtr, 3, RESULT_BASE)
+      assert.strictEqual(resultLen, 4)
+      assert.deepStrictEqual(readF64(RESULT_BASE, 4), [1, 2, 3, 4])
     })
 
     it('should compute intersection', function () {
-      const a = new Float64Array([1, 2, 3])
-      const b = new Float64Array([2, 3, 4])
-      const result = wasm.setIntersect(a, b)
-      assert.strictEqual(result.length, 2)
-      assert.deepStrictEqual(Array.from(result), [2, 3])
+      const aPtr = writeF64([1, 2, 3], SCRATCH_BASE)
+      const bPtr = writeF64([2, 3, 4], SCRATCH_BASE + 256)
+      const resultLen = wasm.setIntersect(aPtr, 3, bPtr, 3, RESULT_BASE)
+      assert.strictEqual(resultLen, 2)
+      assert.deepStrictEqual(readF64(RESULT_BASE, 2), [2, 3])
     })
 
     it('should compute difference', function () {
-      const a = new Float64Array([1, 2, 3])
-      const b = new Float64Array([2, 3, 4])
-      const result = wasm.setDifference(a, b)
-      assert.strictEqual(result.length, 1)
-      assert.deepStrictEqual(Array.from(result), [1])
+      const aPtr = writeF64([1, 2, 3], SCRATCH_BASE)
+      const bPtr = writeF64([2, 3, 4], SCRATCH_BASE + 256)
+      const resultLen = wasm.setDifference(aPtr, 3, bPtr, 3, RESULT_BASE)
+      assert.strictEqual(resultLen, 1)
+      assert.deepStrictEqual(readF64(RESULT_BASE, 1), [1])
     })
 
     it('should check subset', function () {
-      const a = new Float64Array([2, 3])
-      const b = new Float64Array([1, 2, 3, 4])
-      assert.strictEqual(wasm.setIsSubset(a, b), 1)
-      assert.strictEqual(wasm.setIsSubset(b, a), 0)
+      const aPtr = writeF64([2, 3], SCRATCH_BASE)
+      const bPtr = writeF64([1, 2, 3, 4], SCRATCH_BASE + 256)
+      assert.strictEqual(wasm.setIsSubset(aPtr, 2, bPtr, 4), 1)
+      assert.strictEqual(wasm.setIsSubset(bPtr, 4, aPtr, 2), 0)
     })
   })
 
@@ -245,15 +274,15 @@ describe('WASM Direct Tests', function () {
     })
 
     it('should parse float from codes', function () {
-      // "123.45" = [49, 50, 51, 46, 52, 53]
-      const codes = new Int32Array([49, 50, 51, 46, 52, 53])
-      approxEqual(wasm.parseFloatFromCodes(codes), 123.45)
+      // "123.45" = [49, 50, 51, 46, 52, 53] - i32 codes (4 bytes each)
+      const codesPtr = writeI32([49, 50, 51, 46, 52, 53], SCRATCH_BASE)
+      approxEqual(wasm.parseFloatFromCodes(codesPtr, 6), 123.45)
     })
 
     it('should parse int from codes', function () {
-      // "42" = [52, 50]
-      const codes = new Int32Array([52, 50])
-      assert.strictEqual(wasm.parseIntFromCodes(codes), 42)
+      // "42" = [52, 50] - i32 codes (4 bytes each)
+      const codesPtr = writeI32([52, 50], SCRATCH_BASE)
+      assert.strictEqual(wasm.parseIntFromCodes(codesPtr, 2), 42)
     })
   })
 })

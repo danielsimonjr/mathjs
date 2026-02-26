@@ -193,22 +193,27 @@ describe('Plain Number AssemblyScript Operations', { timeout: 10000 }, () => {
     it('should compute Stirling numbers (second kind)', async () => {
       const comb = await import('../../../../src/wasm/combinatorics/basic')
 
-      approxEqual(comb.stirlingS2(0, 0), 1)
-      approxEqual(comb.stirlingS2(4, 1), 1)
-      approxEqual(comb.stirlingS2(4, 2), 7)
-      approxEqual(comb.stirlingS2(4, 3), 6)
-      approxEqual(comb.stirlingS2(4, 4), 1)
+      // stirlingS2 requires workPtr for DP table: (n+1) * (k+1) f64 values
+      // Use a high offset in simulated memory to avoid collisions
+      const workPtr = 1 << 16 // 64KB offset
+      approxEqual(comb.stirlingS2(0, 0, workPtr), 1)
+      approxEqual(comb.stirlingS2(4, 1, workPtr), 1)
+      approxEqual(comb.stirlingS2(4, 2, workPtr), 7)
+      approxEqual(comb.stirlingS2(4, 3, workPtr), 6)
+      approxEqual(comb.stirlingS2(4, 4, workPtr), 1)
     })
 
     it('should compute Bell numbers', async () => {
       const comb = await import('../../../../src/wasm/combinatorics/basic')
 
-      approxEqual(comb.bellNumbers(0), 1)
-      approxEqual(comb.bellNumbers(1), 1)
-      approxEqual(comb.bellNumbers(2), 2)
-      approxEqual(comb.bellNumbers(3), 5)
-      approxEqual(comb.bellNumbers(4), 15)
-      approxEqual(comb.bellNumbers(5), 52)
+      // bellNumbers requires workPtr for stirlingS2 DP table
+      const workPtr = 1 << 16
+      approxEqual(comb.bellNumbers(0, workPtr), 1)
+      approxEqual(comb.bellNumbers(1, workPtr), 1)
+      approxEqual(comb.bellNumbers(2, workPtr), 2)
+      approxEqual(comb.bellNumbers(3, workPtr), 5)
+      approxEqual(comb.bellNumbers(4, workPtr), 15)
+      approxEqual(comb.bellNumbers(5, workPtr), 52)
     })
 
     it('should compute Catalan numbers', async () => {

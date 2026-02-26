@@ -79,7 +79,7 @@ function getBroadcastIndex(
   inRows: i32,
   inCols: i32
 ): i32 {
-  const outRow: i32 = outIdx / outCols
+  const outRow: i32 = <i32>Math.trunc(<f64>outIdx / <f64>outCols)
   const outCol: i32 = outIdx % outCols
 
   const inRow: i32 = inRows === 1 ? 0 : outRow
