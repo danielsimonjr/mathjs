@@ -120,13 +120,13 @@ All 46 test files created for src/wasm/ modules:
 
 ### Documentation
 
-- [ ] **Update main README with TypeScript/WASM status**
+- [x] **Update main README with TypeScript/WASM status** ✅ COMPLETE
   - Document the three-tier performance system
   - Add usage examples for WASM acceleration
 
-- [ ] **Add migration guide for users**
-  - Document breaking changes (if any)
-  - Provide upgrade path from JS-only version
+- [x] **Add migration guide for users** ✅ COMPLETE
+  - See `docs/migration/MIGRATION_GUIDE.md`
+  - No breaking changes - WASM acceleration is transparent
 
 ### CI/CD ✅ COMPLETE
 
