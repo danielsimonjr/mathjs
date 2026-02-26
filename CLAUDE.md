@@ -181,8 +181,27 @@ src/
 │   ├── pureFunctionsNumber.generated.ts
 │   ├── impureFunctionsAny.generated.ts
 │   └── impureFunctionsNumber.generated.ts
-├── wasm/                    # WASM modules (AssemblyScript)
-│   └── algebra/             # Algebra WASM (polynomial.ts)
+├── wasm/                    # WASM modules (AssemblyScript, raw pointer API)
+│   ├── algebra/             # Decomposition, polynomial, schur, solver, sparse/
+│   ├── arithmetic/          # basic, advanced, logarithmic
+│   ├── complex/             # Complex number operations
+│   ├── geometry/            # Distance, intersection, cross product
+│   ├── logical/             # Boolean array operations
+│   ├── matrix/              # multiply, linalg, eigs, complexEigs, expm, sqrtm, sparse
+│   ├── numeric/             # ODE solvers, interpolation, rootfinding, rational
+│   ├── plain/               # Scalar number operations (arithmetic, trig, probability)
+│   ├── relational/          # Comparison operations
+│   ├── set/                 # Set operations
+│   ├── signal/              # FFT, signal processing
+│   ├── simd/                # SIMD-optimized operations (v128)
+│   ├── special/             # erf, gamma, zeta, Bessel
+│   ├── statistics/          # Mean, median, variance, etc.
+│   ├── string/              # Character code operations
+│   ├── unit/                # Unit conversion
+│   ├── utils/               # Checks, workPtr validation
+│   ├── WasmLoader.ts        # JS-side WASM module loader
+│   ├── MatrixWasmBridge.ts  # JS-side bridge with auto JS/WASM selection
+│   └── index.ts             # AssemblyScript entry point (all exports)
 └── version.js               # Version string
 
 dist/                        # Built distribution files (main output)
@@ -246,6 +265,34 @@ The codebase has been converted to TypeScript with WASM support:
 3. Parallel/multicore execution (2-4x additional speedup)
 
 **WASM modules** are in `src/wasm/` organized by category (algebra, matrix, arithmetic, signal, numeric, statistics, trigonometry, special, etc.)
+
+### WASM Raw Pointer API (Critical Convention)
+
+All AssemblyScript WASM functions use **raw memory pointers** (`usize`) instead of managed arrays (`Float64Array`, `Int32Array`, `StaticArray`). This ensures proper JS↔WASM interop.
+
+**Required patterns:**
+```typescript
+// Parameters: use usize for all array inputs/outputs
+export function myFunc(aPtr: usize, n: i32, resultPtr: usize, workPtr: usize): i32 {
+  // Read: load<f64>(ptr + (i << 3)) for f64, load<i32>(ptr + (i << 2)) for i32
+  const val: f64 = load<f64>(aPtr + (<usize>i << 3))
+  // Write: store<f64>(ptr + offset, value)
+  store<f64>(resultPtr + (<usize>i << 3), val * 2.0)
+  // Temp storage: carve from workPtr
+  const tempPtr: usize = workPtr
+  const temp2Ptr: usize = workPtr + (<usize>(n * n) << 3)
+  return 1 // success
+}
+```
+
+**Key rules:**
+- Never use `Float64Array`, `Int32Array`, or `StaticArray` in exported functions
+- Never use `throw` — return error codes (0 = failure, 1 = success) or `f64.NaN`
+- Constants that were `f64[]` arrays → inline lookup functions (e.g., `getGammaP(i: i32): f64`)
+- Document `workPtr` size requirements in JSDoc comments
+- Use `src/wasm/utils/workPtrValidation.ts` for size calculation helpers
+
+**WASM test framework:** WASM tests use **vitest** (not mocha) — see `vitest.config.ts` and `test/wasm/`
 
 ### Build System
 
@@ -408,75 +455,21 @@ npm run test:types  # Verify type definitions
 
 ## Common Development Workflows
 
-### Running Tests
+### WASM Development Cycle
 
 ```bash
-# Single test file
-npx mocha test/unit-tests/function/arithmetic/add.test.js
-
-# All tests in a category
-npx mocha test/unit-tests/function/arithmetic/**/*.test.js
-
-# With coverage
-npm run coverage
+npm run validate:wasm                          # Syntax check (fast, no build)
+npm run build:wasm:debug && npm run test:wasm   # Build + test
+npm run build:wasm                              # Release build
 ```
 
-### Building & Compilation
+### Quick Verification
 
 ```bash
-# Full build (dist + lib + browser + WASM)
-npm run build
-
-# Just compile TypeScript to dist/
-npm run compile:ts
-
-# Watch for changes while developing
-npm run watch:ts
-
-# Build browser bundle only
-npx gulp bundle
-
-# Clean all build output
-npm run build:clean
-```
-
-### TypeScript & WASM Work
-
-```bash
-# Validate WASM syntax (no build)
-npm run validate:wasm
-
-# Build and test WASM
-npm run build:wasm:debug && npm run test:wasm
-
-# Check TypeScript compilation status
-npx tsc --noEmit
-```
-
-### Code Quality
-
-```bash
-# Check linting only
-npm run lint
-
-# Fix all linting issues
-npm run format
-
-# Full test + lint verification
-npm test
-
-# Run all test suites (unit, generated, node, types)
-npm run test:all
-```
-
-### Performance & Documentation
-
-```bash
-# Generate documentation
-npm run build:docs
-
-# Run benchmarks
-npm run benchmark
+npx tsc --noEmit           # TypeScript compilation check
+npm run lint               # ESLint only
+npm test                   # Full test + lint
+npm run test:all           # All test suites (unit, generated, node, types)
 ```
 
 ## Important Notes
@@ -510,6 +503,8 @@ node -e "const fs=require('fs'); const inv=JSON.parse(fs.readFileSync('ts-invent
 3. **TypeScript definitions**: Must be added in **multiple** places (instance method, chain method, static export, dependencies) - see `types/EXPLANATION.md`
 4. **Factory function dependencies**: Declared dependencies must match the destructured parameters
 5. **Generated files**: Don't commit `*.generated.js`, `*.generated.ts`, or any changes to `dist/` and `lib/`
+6. **WASM raw pointers**: All AssemblyScript exports must use `usize` pointers, never managed arrays — see "WASM Raw Pointer API" section above
+7. **WASM task tracking**: Active WASM tasks are in `docs/refactoring/WASM_TODO.md`, not in-memory todo lists
 
 ### Key Dependencies
 
@@ -545,6 +540,7 @@ node -e "const fs=require('fs'); const inv=JSON.parse(fs.readFileSync('ts-invent
 ### TypeScript & WASM (specific refactoring topics)
 - **Refactoring Plan**: `docs/refactoring/REFACTORING_PLAN.md` - Strategy & architecture for TS/WASM conversion
 - **Refactoring Tasks**: `docs/refactoring/REFACTORING_TASKS.md` - File-by-file conversion task list
+- **WASM Remaining Tasks**: `docs/refactoring/WASM_TODO.md` - Remaining WASM conversion and optimization tasks
 - **Type Definitions**: `types/EXPLANATION.md` - Maintaining TypeScript type system
 - **AssemblyScript Style**: `docs/ASSEMBLYSCRIPT_STYLE_GUIDE.md` - WASM module coding conventions
 
