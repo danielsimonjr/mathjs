@@ -5,8 +5,9 @@ import { format } from '../../utils/string.ts'
 import { clone } from '../../utils/object.ts'
 
 // Type definitions
-import type { BigNumber } from 'bignumber.js'
-import type Complex from 'complex.js'
+import type { Decimal } from 'decimal.js'
+type BigNumber = Decimal
+import type { Complex } from 'complex.js'
 
 /** Scalar types supported by pinv */
 type Scalar = number | BigNumber | Complex

@@ -1,11 +1,12 @@
 import Decimal from 'decimal.js'
+import type { Decimal as DecimalType } from 'decimal.js'
 
 export * from './arithmetic.ts'
 
 /**
  * Extended BigNumber interface with mathjs-specific properties
  */
-export interface PlainBigNumber extends Decimal {
+export interface PlainBigNumber extends DecimalType {
   isBigNumber: true
 }
 

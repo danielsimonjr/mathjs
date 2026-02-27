@@ -11,8 +11,9 @@ import {
 } from '../../utils/is.ts'
 
 // Type definitions
-import type { BigNumber } from 'bignumber.js'
-import type Complex from 'complex.js'
+import type { Decimal } from 'decimal.js'
+type BigNumber = Decimal
+import type { Complex } from 'complex.js'
 
 /** Scalar types supported by eigs */
 type Scalar = number | BigNumber | Complex

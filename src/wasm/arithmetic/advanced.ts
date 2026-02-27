@@ -331,7 +331,7 @@ export function nthRootsReal(x: f64, n: i32, outputPtr: usize): void {
   const twoPiOverN = (2.0 * Math.PI) / f64(n)
 
   for (let k: i32 = 0; k < n; k++) {
-    const angle = (theta + twoPiOverN * f64(k)) / f64(n)
+    const angle = theta / f64(n) + twoPiOverN * f64(k)
     store<f64>(outputPtr + ((<usize>(k * 2)) << 3), r * Math.cos(angle)) // Real part
     store<f64>(outputPtr + ((<usize>(k * 2 + 1)) << 3), r * Math.sin(angle)) // Imaginary part
   }
@@ -375,7 +375,7 @@ export function nthRootsComplex(
   const twoPiOverN = (2.0 * Math.PI) / f64(n)
 
   for (let k: i32 = 0; k < n; k++) {
-    const angle = (theta + twoPiOverN * f64(k)) / f64(n)
+    const angle = theta / f64(n) + twoPiOverN * f64(k)
     store<f64>(outputPtr + ((<usize>(k * 2)) << 3), rootR * Math.cos(angle)) // Real part
     store<f64>(outputPtr + ((<usize>(k * 2 + 1)) << 3), rootR * Math.sin(angle)) // Imaginary part
   }

@@ -1,6 +1,7 @@
 import { clone } from '../../../utils/object.ts'
 import { wasmLoader } from '../../../wasm/WasmLoader.ts'
-import type { BigNumber } from 'bignumber.js'
+import type { Decimal } from 'decimal.js'
+type BigNumber = Decimal
 
 // Minimum matrix size (n*n elements) for WASM to be beneficial
 const WASM_EIGS_THRESHOLD = 16 // 4x4 matrix

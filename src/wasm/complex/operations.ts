@@ -98,7 +98,7 @@ export function im(re: f64, im: f64): f64 {
  */
 export function imArray(dataPtr: usize, len: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < len; i++) {
-    const srcOffset: usize = (<usize>(i << 1)) << (3 + 8)
+    const srcOffset: usize = (<usize>((i << 1) + 1)) << 3
     const dstOffset: usize = (<usize>i) << 3
     store<f64>(resultPtr + dstOffset, load<f64>(dataPtr + srcOffset))
   }

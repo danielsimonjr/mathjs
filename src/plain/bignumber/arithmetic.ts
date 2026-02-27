@@ -1,4 +1,4 @@
-import type Decimal from 'decimal.js'
+import type { Decimal } from 'decimal.js'
 
 const signature1 = 'BigNumber'
 const signature2 = 'BigNumber, BigNumber'

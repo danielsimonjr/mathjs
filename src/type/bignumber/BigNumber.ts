@@ -1,4 +1,5 @@
 import Decimal from 'decimal.js'
+import type { Decimal as DecimalType } from 'decimal.js'
 import { factory } from '../../utils/factory.ts'
 
 // EUCLID constant for modulo rounding mode
@@ -27,16 +28,16 @@ export interface ConfigChangeEvent {
  * BigNumber class constructor interface
  */
 export interface BigNumberClass {
-  new (value: Decimal.Value): BigNumberInstance
+  new (value: DecimalType.Value): BigNumberInstance
   fromJSON(json: BigNumberJSON): BigNumberInstance
-  config(options: Decimal.Config): BigNumberClass
+  config(options: DecimalType.Config): BigNumberClass
 }
 
 /**
  * BigNumber instance interface with mathjs-specific properties
  * Extends Omit<Decimal, 'toJSON'> to avoid conflict with Decimal's toJSON() signature
  */
-export interface BigNumberInstance extends Omit<Decimal, 'toJSON'> {
+export interface BigNumberInstance extends Omit<DecimalType, 'toJSON'> {
   type: 'BigNumber'
   isBigNumber: true
   toJSON(): BigNumberJSON

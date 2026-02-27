@@ -132,11 +132,10 @@ export interface WasmModule {
   eigsSymmetric: (
     matrixPtr: number,
     n: number,
+    precision: number,
     eigenvaluesPtr: number,
     eigenvectorsPtr: number,
-    workPtr: number,
-    maxIterations: number,
-    tolerance: number
+    workPtr: number
   ) => number // returns number of iterations, -1 on failure
   powerIteration: (
     matrixPtr: number,

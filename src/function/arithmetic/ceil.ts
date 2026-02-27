@@ -1,4 +1,5 @@
 import Decimal from 'decimal.js'
+import type { Decimal as DecimalType } from 'decimal.js'
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
 import { isInteger, nearlyEqual } from '../../utils/number.ts'
@@ -203,7 +204,7 @@ export const createCeil = /* #__PURE__ */ factory(
         x: BigNumberType,
         n: BigNumberType
       ): BigNumberType {
-        const shift = bigTen.pow(n as unknown as Decimal)
+        const shift = bigTen.pow(n as unknown as DecimalType)
         return _bigCeil(x.mul(shift as unknown as BigNumberType)).div(
           shift as unknown as BigNumberType
         )

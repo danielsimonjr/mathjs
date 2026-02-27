@@ -5,8 +5,9 @@ import { factory } from '../../utils/factory.ts'
 import { wasmLoader } from '../../wasm/WasmLoader.ts'
 
 // Type definitions
-import type { BigNumber } from 'bignumber.js'
-import type Complex from 'complex.js'
+import type { Decimal } from 'decimal.js'
+type BigNumber = Decimal
+import type { Complex } from 'complex.js'
 
 /** Scalar types supported by det */
 type Scalar = number | BigNumber | Complex

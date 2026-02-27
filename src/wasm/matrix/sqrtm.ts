@@ -65,16 +65,30 @@ export function sqrtm(
       store<f64>(YkPtr + (<usize>i << 3), load<f64>(YPtr + (<usize>i << 3)))
     }
 
-    // Compute Z^{-1}
-    const invZSuccess: i32 = matrixInverse(ZPtr, invZPtr, n)
+    // Copy Z before inverting (matrixInverse destroys its input)
+    for (let i: i32 = 0; i < nn; i++) {
+      store<f64>(invZPtr + (<usize>i << 3), load<f64>(ZPtr + (<usize>i << 3)))
+    }
+    const invZSuccess: i32 = matrixInverse(invZPtr, resultPtr, n)
     if (invZSuccess < 0) {
       return -1 // Z is singular
     }
+    // invZ result is now in resultPtr, copy back to invZPtr
+    for (let i: i32 = 0; i < nn; i++) {
+      store<f64>(invZPtr + (<usize>i << 3), load<f64>(resultPtr + (<usize>i << 3)))
+    }
 
-    // Compute Y_k^{-1}
-    const invYkSuccess: i32 = matrixInverse(YkPtr, invYkPtr, n)
+    // Copy Yk before inverting (matrixInverse destroys its input)
+    for (let i: i32 = 0; i < nn; i++) {
+      store<f64>(invYkPtr + (<usize>i << 3), load<f64>(YkPtr + (<usize>i << 3)))
+    }
+    const invYkSuccess: i32 = matrixInverse(invYkPtr, resultPtr, n)
     if (invYkSuccess < 0) {
       return -1 // Y_k is singular
+    }
+    // invYk result is now in resultPtr, copy back to invYkPtr
+    for (let i: i32 = 0; i < nn; i++) {
+      store<f64>(invYkPtr + (<usize>i << 3), load<f64>(resultPtr + (<usize>i << 3)))
     }
 
     // Y = 0.5 * (Yk + invZ)

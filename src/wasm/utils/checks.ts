@@ -20,9 +20,8 @@ export function isNaN(x: f64): i32 {
  * @returns 1 if finite, 0 otherwise
  */
 export function isFinite(x: f64): i32 {
-  // In JavaScript, use Number.isFinite behavior
   if (x !== x) return 0 // NaN
-  if (!Number.isFinite(x)) return 0
+  if (x === f64.POSITIVE_INFINITY || x === f64.NEGATIVE_INFINITY) return 0
   return 1
 }
 

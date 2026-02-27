@@ -345,6 +345,70 @@ export function expmSmall(
     store<f64>(resultPtr + 8, r01)
     store<f64>(resultPtr + 16, r10)
     store<f64>(resultPtr + 24, r11)
+    return
+  }
+
+  // 3x3 case: use same Taylor series approach with local variables
+  if (n === 3) {
+    // Load matrix A
+    const a00: f64 = load<f64>(matrixPtr)
+    const a01: f64 = load<f64>(matrixPtr + 8)
+    const a02: f64 = load<f64>(matrixPtr + 16)
+    const a10: f64 = load<f64>(matrixPtr + 24)
+    const a11: f64 = load<f64>(matrixPtr + 32)
+    const a12: f64 = load<f64>(matrixPtr + 40)
+    const a20: f64 = load<f64>(matrixPtr + 48)
+    const a21: f64 = load<f64>(matrixPtr + 56)
+    const a22: f64 = load<f64>(matrixPtr + 64)
+
+    // Term matrix (starts as I)
+    let t00: f64 = 1.0, t01: f64 = 0.0, t02: f64 = 0.0
+    let t10: f64 = 0.0, t11: f64 = 1.0, t12: f64 = 0.0
+    let t20: f64 = 0.0, t21: f64 = 0.0, t22: f64 = 1.0
+
+    // Result (starts as I)
+    let r00: f64 = 1.0, r01: f64 = 0.0, r02: f64 = 0.0
+    let r10: f64 = 0.0, r11: f64 = 1.0, r12: f64 = 0.0
+    let r20: f64 = 0.0, r21: f64 = 0.0, r22: f64 = 1.0
+
+    for (let k: i32 = 1; k <= numTerms; k++) {
+      const invK: f64 = 1.0 / <f64>k
+
+      // term = term * A / k
+      const n00: f64 = (t00 * a00 + t01 * a10 + t02 * a20) * invK
+      const n01: f64 = (t00 * a01 + t01 * a11 + t02 * a21) * invK
+      const n02: f64 = (t00 * a02 + t01 * a12 + t02 * a22) * invK
+      const n10: f64 = (t10 * a00 + t11 * a10 + t12 * a20) * invK
+      const n11: f64 = (t10 * a01 + t11 * a11 + t12 * a21) * invK
+      const n12: f64 = (t10 * a02 + t11 * a12 + t12 * a22) * invK
+      const n20: f64 = (t20 * a00 + t21 * a10 + t22 * a20) * invK
+      const n21: f64 = (t20 * a01 + t21 * a11 + t22 * a21) * invK
+      const n22: f64 = (t20 * a02 + t21 * a12 + t22 * a22) * invK
+
+      t00 = n00; t01 = n01; t02 = n02
+      t10 = n10; t11 = n11; t12 = n12
+      t20 = n20; t21 = n21; t22 = n22
+
+      r00 += t00; r01 += t01; r02 += t02
+      r10 += t10; r11 += t11; r12 += t12
+      r20 += t20; r21 += t21; r22 += t22
+
+      if (Math.abs(t00) + Math.abs(t01) + Math.abs(t02) +
+          Math.abs(t10) + Math.abs(t11) + Math.abs(t12) +
+          Math.abs(t20) + Math.abs(t21) + Math.abs(t22) < 1e-16) {
+        break
+      }
+    }
+
+    store<f64>(resultPtr, r00)
+    store<f64>(resultPtr + 8, r01)
+    store<f64>(resultPtr + 16, r02)
+    store<f64>(resultPtr + 24, r10)
+    store<f64>(resultPtr + 32, r11)
+    store<f64>(resultPtr + 40, r12)
+    store<f64>(resultPtr + 48, r20)
+    store<f64>(resultPtr + 56, r21)
+    store<f64>(resultPtr + 64, r22)
   }
 }
 
