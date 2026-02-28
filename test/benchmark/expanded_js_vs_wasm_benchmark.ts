@@ -560,6 +560,7 @@ async function loadImplementations(): Promise<Implementations> {
 
   // Original JavaScript (lib/esm/) - Babel-compiled from JS source
   try {
+    // @ts-ignore - build output may not exist; handled by try/catch
     const jsModule = await import('../../lib/esm/defaultInstance.js')
     impl.js = jsModule.default
     console.log('  [OK] JavaScript (lib/esm/) - Original JS build')
@@ -570,6 +571,7 @@ async function loadImplementations(): Promise<Implementations> {
 
   // TypeScript (dist/) - tsup-compiled from TS source
   try {
+    // @ts-ignore - build output may not exist; handled by try/catch
     const tsModule = await import('../../dist/index.js')
     impl.ts = tsModule.default
     console.log('  [OK] TypeScript (dist/) - TS build')

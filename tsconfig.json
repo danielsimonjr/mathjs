@@ -26,6 +26,7 @@
     "src/wasm",
     "test/wasm/unit-tests",
     "test/unit-tests/wasm",
+    "test/wasm/assemblyscript-stubs.ts",
     "lib",
     "dist",
     "node_modules"
