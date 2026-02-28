@@ -17,7 +17,7 @@ interface TypedFunctionWithSignatures extends CallbackFunction {
 /**
  * Extended typed function interface with isTypedFunction method
  */
-interface TypedWithChecker extends TypedFunction {
+interface TypedWithChecker extends Omit<TypedFunction, 'isTypedFunction'> {
   isTypedFunction(fn: unknown): fn is TypedFunctionWithSignatures
 }
 

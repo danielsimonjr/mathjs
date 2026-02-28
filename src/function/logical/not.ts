@@ -77,7 +77,7 @@ export const createNot = /* #__PURE__ */ factory(
       Unit: typed.referToSelf(
         (self: TypedFunction) =>
           (x: Unit): boolean =>
-            typed.find(self, x.valueType())(x.value)
+            typed.find(self, x.valueType())(x.value) as boolean
       ),
 
       'Array | Matrix': typed.referToSelf(

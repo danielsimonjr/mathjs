@@ -476,7 +476,7 @@ export type ElementwiseOperation = ((a: any, b: any) => any) & {
 /**
  * Algorithm function type (for sparse/dense matrix algorithms)
  */
-export type AlgorithmFunction = (...args: any[]) => MatrixInterface
+export type AlgorithmFunction = (...args: any[]) => any
 
 /**
  * Options for matrixAlgorithmSuite

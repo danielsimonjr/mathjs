@@ -6,6 +6,7 @@ import type { TypedFunction } from '../../core/function/typed.ts'
 
 // Type definitions for diag
 type Matrix = MatrixType
+type BigNumber = any
 
 interface MatrixType {
   _size: number[]

@@ -183,7 +183,7 @@ export const createCbrt = /* #__PURE__ */ factory(
         let result = x.clone()
         result.value = 1.0
         result = result.pow(1.0 / 3) // Compute the units
-        result.value = _cbrtComplex(x.value) // Compute the value
+        result.value = _cbrtComplex(x.value as any) // Compute the value
         return result
       } else {
         const negate = isNegative(x.value)

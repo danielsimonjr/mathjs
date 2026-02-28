@@ -41,6 +41,7 @@ interface SymbolicAnalysis {
   parent: number[]
   cp: number[]
   pinv?: number[]
+  [key: number]: any
 }
 
 // Cholesky factorization result

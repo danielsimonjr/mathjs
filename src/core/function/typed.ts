@@ -92,21 +92,21 @@ export type TypedSignatures = Record<string, (...args: unknown[]) => unknown>
  * Type definition for a typed function
  */
 export interface TypedFunction extends Function {
-  (...args: unknown[]): unknown
+  (...args: any[]): any
   /** The signatures of this typed function */
   signatures?: TypedSignatures
   /** Check if a value is a typed function */
   isTypedFunction: (value: unknown) => value is TypedFunction
-  referToSelf: (
-    callback: (self: TypedFunction) => (...args: unknown[]) => unknown
-  ) => (...args: unknown[]) => unknown
-  referTo: (
+  referToSelf: <T extends (...args: any[]) => any>(
+    callback: (self: TypedFunction) => T
+  ) => T
+  referTo: <T extends (...args: any[]) => any>(
     ...signatureNames: string[]
   ) => (
     callback: (
-      ...refs: Array<(...args: unknown[]) => unknown>
-    ) => (...args: unknown[]) => unknown
-  ) => (...args: unknown[]) => unknown
+      ...refs: Array<(...args: any[]) => any>
+    ) => T
+  ) => T
   create: () => TypedFunction
   addTypes: (types: TypeDefinition[]) => void
   addConversions: (conversions: TypeConversion[]) => void

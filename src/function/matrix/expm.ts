@@ -144,7 +144,7 @@ export const createExpm = /* #__PURE__ */ factory(
       for (let i = 0; i < n; i++) {
         let rowSum = 0
         for (let j = 0; j < n; j++) {
-          rowSum += abs(A.get([i, j]))
+          rowSum += abs(A.get([i, j])) as number
         }
         infNorm = Math.max(rowSum, infNorm)
       }

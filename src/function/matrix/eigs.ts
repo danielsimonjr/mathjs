@@ -380,7 +380,7 @@ export const createEigs = /* #__PURE__ */ factory(
 
         if (isSymmetric(arr, N, prec)) {
           const type = coerceTypes(mat, arr, N) // modifies arr by side effect
-          return doRealSymmetric(arr, N, prec, type, computeVectors)
+          return doRealSymmetric(arr as any, N, prec, type as any, computeVectors)
         }
       }
 

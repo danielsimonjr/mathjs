@@ -1086,7 +1086,7 @@ export const createMultiply = /* #__PURE__ */ factory(
       ),
 
       'SparseMatrix, any': function (x: SparseMatrix, y: any): SparseMatrix {
-        return matAlgo11xS0s(x as any, y, multiplyScalar, false) as SparseMatrix
+        return matAlgo11xS0s(x as any, y, multiplyScalar, false) as unknown as SparseMatrix
       },
 
       'DenseMatrix, any': function (x: DenseMatrix, y: any): DenseMatrix {
@@ -1094,7 +1094,7 @@ export const createMultiply = /* #__PURE__ */ factory(
       },
 
       'any, SparseMatrix': function (x: any, y: SparseMatrix): SparseMatrix {
-        return matAlgo11xS0s(y as any, x, multiplyScalar, true) as SparseMatrix
+        return matAlgo11xS0s(y as any, x, multiplyScalar, true) as unknown as SparseMatrix
       },
 
       'any, DenseMatrix': function (x: any, y: DenseMatrix): DenseMatrix {

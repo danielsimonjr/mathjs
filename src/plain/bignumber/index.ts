@@ -14,7 +14,7 @@ export interface PlainBigNumber extends DecimalType {
  * BigNumber constructor interface
  */
 export interface PlainBigNumberConstructor {
-  new (value: Decimal.Value): PlainBigNumber
+  new (value: string | number | DecimalType): PlainBigNumber
   prototype: PlainBigNumber
 }
 
@@ -29,6 +29,6 @@ BigNumber.prototype.isBigNumber = true
  * @param x - The value to convert to BigNumber (number, string, or Decimal)
  * @returns A new BigNumber instance
  */
-export function bignumber(x: Decimal.Value): PlainBigNumber {
+export function bignumber(x: string | number | DecimalType): PlainBigNumber {
   return new BigNumber(x)
 }

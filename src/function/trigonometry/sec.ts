@@ -7,7 +7,7 @@ import { createTrigUnit } from './trigUnit.ts'
 
 // Type definitions for sec
 interface BigNumberConstructor {
-  new (value: number): BigNumber
+  new (value: number): any
 }
 
 interface SecDependencies {

@@ -6,7 +6,7 @@ import { cschNumber } from '../../plain/number/index.ts'
 
 // Type definitions for csch
 interface BigNumberConstructor {
-  new (value: number): BigNumber
+  new (value: number): any
 }
 
 interface CschDependencies {

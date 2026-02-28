@@ -115,7 +115,7 @@ export const createResolve = /* #__PURE__ */ factory(
         return node
       }
       if (isSymbolNode(node)) {
-        const symbolNode = node as SymbolNodeType
+        const symbolNode = node as unknown as SymbolNodeType
         if (within.has(symbolNode.name)) {
           const variables = Array.from(within).join(', ')
           throw new ReferenceError(
@@ -135,16 +135,16 @@ export const createResolve = /* #__PURE__ */ factory(
           return node
         }
       } else if (isOperatorNode(node)) {
-        const opNode = node as OperatorNodeType
+        const opNode = node as unknown as OperatorNodeType
         const args = opNode.args.map(function (arg: MathNode) {
           return _resolve(arg, scope, within)
         })
         return new OperatorNode(opNode.op, opNode.fn, args, opNode.implicit)
       } else if (isParenthesisNode(node)) {
-        const parenNode = node as ParenthesisNodeType
+        const parenNode = node as unknown as ParenthesisNodeType
         return new ParenthesisNode(_resolve(parenNode.content, scope, within))
       } else if (isFunctionNode(node)) {
-        const funcNode = node as FunctionNodeType
+        const funcNode = node as unknown as FunctionNodeType
         const args = funcNode.args.map(function (arg: MathNode) {
           return _resolve(arg, scope, within)
         })
@@ -174,13 +174,13 @@ export const createResolve = /* #__PURE__ */ factory(
           (A: { map: (fn: (n: MathNode) => MathNode) => unknown }) =>
             A.map((n: MathNode) => self(n))
       ),
-      'Array, Object': typed.referTo(
+      'Array, Object': (typed.referTo as any)(
         'Array,Map',
         (selfAM: TypedFunction) =>
           (A: unknown[], scope: Record<string, unknown>) =>
             selfAM(A, createMap(scope))
       ),
-      'Matrix, Object': typed.referTo(
+      'Matrix, Object': (typed.referTo as any)(
         'Matrix,Map',
         (selfMM: TypedFunction) =>
           (

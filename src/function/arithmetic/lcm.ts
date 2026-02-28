@@ -44,7 +44,7 @@ export const createLcm = /* #__PURE__ */ factory(
     })
 
     const lcmTypes = 'number | BigNumber | Fraction | Matrix | Array'
-    const lcmManySignature: Record<string, TypedFunction> = {}
+    const lcmManySignature: Record<string, any> = {}
     lcmManySignature[`${lcmTypes}, ${lcmTypes}, ...${lcmTypes}`] =
       typed.referToSelf(
         (self: TypedFunction) => (a: unknown, b: unknown, args: unknown[]) => {

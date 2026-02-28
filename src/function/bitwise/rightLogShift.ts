@@ -11,12 +11,8 @@ import { createUseMatrixForArrayScalar } from './useMatrixForArrayScalar.ts'
 import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Type definitions for rightLogShift
-interface Matrix {
-  size(): number[]
-  storage(): string
-  clone(): Matrix
-}
+// Use any for Matrix to avoid conflicts with matAlgo types
+type Matrix = any
 
 interface RightLogShiftDependencies {
   typed: TypedFunction

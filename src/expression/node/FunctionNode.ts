@@ -13,6 +13,9 @@ import { factory } from '../../utils/factory.ts'
 import { defaultTemplate, latexFunctions } from '../../utils/latex.ts'
 import type { MathNode, Scope, CompileFunction, StringOptions } from './Node.ts'
 
+// Forward declaration for FunctionNode used in interfaces before the class definition
+type FunctionNode = MathNode & { name: string; args: MathNode[]; fn: SymbolNodeLike | AccessorNodeLike }
+
 const name = 'FunctionNode'
 const dependencies = ['math', 'Node', 'SymbolNode']
 
@@ -243,7 +246,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(
 
       // readonly property name
       get name(): string {
-        return (this.fn as SymbolNodeLike).name || ''
+        return (this.fn as unknown as SymbolNodeLike).name || ''
       }
 
       get type(): string {
@@ -275,10 +278,10 @@ export const createFunctionNode = /* #__PURE__ */ factory(
         const fromOptionalChaining =
           this.optional ||
           (isAccessorNode(this.fn) &&
-            (this.fn as AccessorNodeLike).optionalChaining)
+            (this.fn as unknown as AccessorNodeLike).optionalChaining)
 
         if (isSymbolNode(this.fn)) {
-          const fnName = (this.fn as SymbolNodeLike).name
+          const fnName = (this.fn as unknown as SymbolNodeLike).name
           if (!argNames[fnName]) {
             // we can statically determine whether the function
             // has the rawArgs property
@@ -420,13 +423,13 @@ export const createFunctionNode = /* #__PURE__ */ factory(
           }
         } else if (
           isAccessorNode(this.fn) &&
-          isIndexNode((this.fn as AccessorNodeLike).index) &&
-          (this.fn as AccessorNodeLike).index.isObjectProperty()
+          isIndexNode((this.fn as unknown as AccessorNodeLike).index) &&
+          (this.fn as unknown as AccessorNodeLike).index.isObjectProperty()
         ) {
           // execute the function with the right context:
           // the object of the AccessorNode
 
-          const accessorFn = this.fn as AccessorNodeLike
+          const accessorFn = this.fn as unknown as AccessorNodeLike
           const evalObject = accessorFn.object._compile(math, argNames)
           const prop = accessorFn.index.getObjectProperty()
           const rawArgs = this.args
@@ -706,7 +709,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(
 
         const latexFunctionsMap = latexFunctions as LatexFunctionsMap
         if (latexFunctionsMap[this.name]) {
-          latexConverter = latexFunctionsMap[this.name]
+          latexConverter = latexFunctionsMap[this.name] as LatexConverterType
         }
 
         // toTex property on the function itself
@@ -718,7 +721,7 @@ export const createFunctionNode = /* #__PURE__ */ factory(
             typeof mathFn.toTex === 'string')
         ) {
           // .toTex is a callback function
-          latexConverter = mathFn.toTex
+          latexConverter = mathFn.toTex as LatexConverterType
         }
 
         let customToTex: string | undefined

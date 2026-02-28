@@ -44,7 +44,7 @@ export function compileInlineExpression(
   // create a test function for this equation
   const name = symbol.name as string // variable name
   const argsScope = new Map<string, unknown>()
-  const subScope = new PartitionedMap(scope, argsScope, new Set([name]))
+  const subScope = new PartitionedMap(scope as Map<string, unknown>, argsScope, new Set([name]))
   const eq = expression.compile()
 
   return function inlineExpression(x: unknown): unknown {

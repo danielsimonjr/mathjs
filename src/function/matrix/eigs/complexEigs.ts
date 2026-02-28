@@ -55,12 +55,9 @@ interface QRResult {
 /** Dependencies for createComplexEigs */
 interface Dependencies {
   addScalar: (a: Scalar, b: Scalar) => Scalar
-  subtract: (a: Scalar | Scalar[], b: Scalar | Scalar[]) => Scalar | Scalar[]
-  flatten: <T>(arr: T[][] | T[]) => T[]
-  multiply: (
-    a: Scalar | Scalar[][],
-    b: Scalar | Scalar[][]
-  ) => Scalar | Scalar[][]
+  subtract: (a: any, b: any) => any
+  flatten: (arr: any) => any
+  multiply: (...args: any[]) => any
   multiplyScalar: (a: Scalar, b: Scalar) => Scalar
   divideScalar: (a: Scalar, b: Scalar) => Scalar
   sqrt: (x: Scalar) => Scalar
@@ -68,7 +65,7 @@ interface Dependencies {
   bignumber: (x: number | string) => BigNumber
   diag: (arr: Scalar[]) => Scalar[][]
   size: (arr: Scalar[]) => number[]
-  reshape: (arr: Scalar[], shape: number[]) => Scalar[]
+  reshape: (arr: any, shape: number[]) => any
   inv: (x: Scalar[][]) => Scalar[][]
   qr: (x: Scalar[][]) => QRResult
   usolve: (A: Scalar[][], b: Scalar[]) => Scalar[]

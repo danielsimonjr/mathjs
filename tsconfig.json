@@ -25,6 +25,7 @@
   "exclude": [
     "src/wasm",
     "test/wasm/unit-tests",
+    "test/unit-tests/wasm",
     "lib",
     "dist",
     "node_modules"

@@ -23,11 +23,7 @@ interface Unit {
   valueType?(): string
 }
 
-interface Matrix {
-  size(): number[]
-  storage(): string
-  valueOf(): unknown[][]
-}
+type Matrix = any
 
 type ScalarValue = number | BigNumber | bigint | Complex | Unit
 

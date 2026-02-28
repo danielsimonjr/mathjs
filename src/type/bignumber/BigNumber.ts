@@ -63,7 +63,7 @@ export const createBigNumberClass = /* #__PURE__ */ factory(
   ({ on, config }: BigNumberDependencies) => {
     const BigNumber = (
       Decimal as unknown as {
-        clone: (config: Decimal.Config) => BigNumberClass
+        clone: (config: any) => BigNumberClass
       }
     ).clone({
       precision: config.precision,

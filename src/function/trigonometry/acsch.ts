@@ -6,7 +6,7 @@ import { acschNumber } from '../../plain/number/index.ts'
 
 // Type definitions for acsch
 interface BigNumberConstructor {
-  new (value: number): BigNumber
+  new (value: number): any
 }
 
 interface AcschDependencies {

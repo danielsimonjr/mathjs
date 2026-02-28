@@ -136,7 +136,7 @@ export const createParserClass = /* #__PURE__ */ factory(
         const c = name.charAt(i)
         const cNext = name.charAt(i + 1)
         const valid =
-          parse.isAlpha(c, cPrev, cNext) || (i > 0 && parse.isDigit(c))
+          (parse as any).isAlpha(c, cPrev, cNext) || (i > 0 && (parse as any).isDigit(c))
 
         if (!valid) {
           return false

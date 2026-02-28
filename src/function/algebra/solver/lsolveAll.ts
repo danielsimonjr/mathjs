@@ -5,7 +5,7 @@ import { createSolveValidation } from './utils/solveValidation.ts'
 type ScalarValue = number | bigint | { re: number; im: number } | unknown
 
 interface TypedFunction {
-  <T>(name: string, signatures: Record<string, (...args: unknown[]) => T>): T
+  <T>(name: string, signatures: Record<string, (...args: any[]) => any>): any
 }
 
 interface MatrixConstructor {
@@ -89,7 +89,7 @@ export const createLsolveAll = /* #__PURE__ */ factory(
     equalScalar,
     DenseMatrix
   }: Dependencies) => {
-    const solveValidation = createSolveValidation({
+    const solveValidation = (createSolveValidation as any)({
       DenseMatrix
     }) as SolveValidationFunction
 

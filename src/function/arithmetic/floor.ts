@@ -10,12 +10,8 @@ import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { ConfigOptions } from '../../core/config.ts'
 
-// Type definitions for dependency injection
-interface Matrix {
-  size(): number[]
-  storage(): string
-  valueOf(): unknown[] | unknown[][]
-}
+// Use any for Matrix to avoid conflicts with matAlgo types
+type Matrix = any
 
 interface BigNumberType {
   floor(): BigNumberType
@@ -61,7 +57,7 @@ const dependencies = [
   'DenseMatrix'
 ]
 
-const bigTen = new Decimal(10)
+const bigTen = new (Decimal as any)(10)
 
 export const createFloorNumber = /* #__PURE__ */ factory(
   name,
@@ -281,7 +277,7 @@ export const createFloor = /* #__PURE__ */ factory(
         (self: TypedFunction) =>
           (x: unknown[], n: number | BigNumberType): unknown[] => {
             // deep map collection, skip zeros since floor(0) = 0
-            return deepMap(x, (i) => self(i, n), true)
+            return deepMap(x, (i) => self(i, n), true) as unknown[]
           }
       ),
 

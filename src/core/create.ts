@@ -364,7 +364,7 @@ export function create(
     lazyTyped as any,
     load,
     math,
-    importedFactories
+    importedFactories as any
   )
   math.import = internalImport
 
@@ -390,7 +390,7 @@ export function create(
   // import the factory functions like createAdd as an array instead of object,
   // else they will get a different naming (`createAdd` instead of `add`).
   if (factories) {
-    math.import(Object.values(deepFlatten(factories)))
+    math.import(Object.values(deepFlatten(factories as any)))
   }
 
   math.ArgumentsError = ArgumentsError

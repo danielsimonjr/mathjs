@@ -113,7 +113,7 @@ export const createSlu = /* #__PURE__ */ factory(
       larger,
       largerEq,
       SparseMatrix
-    }) as CsLuFunction
+    }) as unknown as CsLuFunction
 
     /**
      * Calculate the Sparse Matrix LU decomposition with full pivoting. Sparse Matrix `A` is decomposed in two matrices (`L`, `U`) and two permutation vectors (`pinv`, `q`) where

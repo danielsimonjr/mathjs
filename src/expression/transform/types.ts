@@ -187,7 +187,7 @@ export interface IndexError extends Error {
 /**
  * Common math function type - accepts various inputs and returns a value
  */
-export type MathFunction<TReturn = unknown> = (...args: unknown[]) => TReturn
+export type MathFunction<TReturn = any> = (...args: any[]) => TReturn
 
 /**
  * Predicate function type

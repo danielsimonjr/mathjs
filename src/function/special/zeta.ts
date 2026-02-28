@@ -154,7 +154,7 @@ export const createZeta = /* #__PURE__ */ factory(
         return isNegative(s) ? createValue(NaN) : createValue(1)
       }
 
-      return zeta(s, createValue, determineDigits, (s: T) => s as number)
+      return zeta(s, createValue, determineDigits, (s: T) => s as number) as T
     }
 
     /**
@@ -176,11 +176,11 @@ export const createZeta = /* #__PURE__ */ factory(
       }
 
       return zeta(
-        s,
+        s as any,
         (value: number) => value,
         (s: ComplexType) => Math.round(1.3 * 15 + 0.9 * Math.abs(s.im)),
         (s: ComplexType) => s.re
-      )
+      ) as unknown as ComplexType
     }
 
     /**

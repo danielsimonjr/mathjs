@@ -7,7 +7,7 @@ import { createTrigUnit } from './trigUnit.ts'
 
 // Type definitions for cot
 interface BigNumberConstructor {
-  new (value: number): BigNumber
+  new (value: number): any
 }
 
 interface CotDependencies {

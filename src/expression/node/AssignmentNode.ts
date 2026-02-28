@@ -79,7 +79,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
   name,
   dependencies,
   ({ subset, matrix, Node }: AssignmentNodeDependencies) => {
-    const access = accessFactory({ subset })
+    const access = accessFactory({ subset: subset as any })
     const assign = assignFactory({ subset, matrix })
 
     /*
@@ -161,7 +161,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
         if (!isSymbolNode(object) && !isAccessorNode(object)) {
           throw new TypeError('SymbolNode or AccessorNode expected as "object"')
         }
-        if (isSymbolNode(object) && (object as SymbolNodeLike).name === 'end') {
+        if (isSymbolNode(object) && (object as unknown as SymbolNodeLike).name === 'end') {
           throw new Error('Cannot assign to symbol "end"')
         }
         if (this.index && !isIndexNode(this.index)) {
@@ -180,7 +180,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
             ? this.index.getObjectProperty()
             : ''
         } else {
-          return (this.object as SymbolNodeLike).name || ''
+          return (this.object as unknown as SymbolNodeLike).name || ''
         }
       }
 
@@ -213,7 +213,7 @@ export const createAssignmentNode = /* #__PURE__ */ factory(
           ? this.index._compile(math, argNames)
           : null
         const evalValue = this.value._compile(math, argNames)
-        const symbolName = (this.object as SymbolNodeLike).name
+        const symbolName = (this.object as unknown as SymbolNodeLike).name
 
         if (!this.index) {
           // apply a variable to the scope, for example `a=2`

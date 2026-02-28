@@ -16,6 +16,7 @@ interface BigNumberType {
   neg(): BigNumberType
   abs(): BigNumberType
   pow(exp: BigNumberType): BigNumberType
+  div(n: BigNumberType): BigNumberType
   mod(n: number): BigNumberType
   equals(n: number): boolean
   toPrecision(digits: number): string

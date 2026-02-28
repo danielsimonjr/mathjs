@@ -67,7 +67,7 @@ function _validate<T>(array: T[], size: number[], dim: number): void {
       if (!Array.isArray(child)) {
         throw new DimensionError(size.length - 1, size.length, '<')
       }
-      _validate(array[i], size, dimNext)
+      _validate(array[i] as any, size, dimNext)
     }
   } else {
     // last dimension. none of the children may be an array

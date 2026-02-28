@@ -141,7 +141,7 @@ export const createLsolve = /* #__PURE__ */ factory(
     equalScalar,
     DenseMatrix
   }: Dependencies) => {
-    const solveValidation = createSolveValidation({
+    const solveValidation = (createSolveValidation as any)({
       DenseMatrix
     }) as SolveValidationFunction
 

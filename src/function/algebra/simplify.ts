@@ -326,7 +326,7 @@ export const createSimplify = /* #__PURE__ */ factory(
       'Node, Array, Map': _simplify,
       'Node, Array, Map, Object': _simplify
     })
-    typed.removeConversion({ from: 'Object', to: 'Map', convert: createMap })
+    ;(typed as any).removeConversion({ from: 'Object', to: 'Map', convert: createMap })
 
     simplify.defaultContext = defaultContext
     simplify.realContext = realContext
@@ -584,14 +584,14 @@ export const createSimplify = /* #__PURE__ */ factory(
       if (ruleObject.s) {
         const lr = ruleObject.s.split('->')
         if (lr.length === 2) {
-          newRule.l = lr[0]
-          newRule.r = lr[1]
+          newRule.l = lr[0] as any
+          newRule.r = lr[1] as any
         } else {
           throw SyntaxError('Could not parse rule: ' + ruleObject.s)
         }
       } else {
-        newRule.l = ruleObject.l
-        newRule.r = ruleObject.r
+        newRule.l = ruleObject.l as any
+        newRule.r = ruleObject.r as any
       }
       newRule.l = removeParens(parse(newRule.l as unknown as string))
       newRule.r = removeParens(parse(newRule.r as unknown as string))
@@ -614,7 +614,7 @@ export const createSimplify = /* #__PURE__ */ factory(
         // Gen. the LHS placeholder used in this NC-context specific expansion rules
         if (nonCommutative) leftExpandsym = _getExpandPlaceholderSymbol()
 
-        const makeNode = createMakeNodeFunction(newRule.l!)
+        const makeNode = createMakeNodeFunction(newRule.l! as any)
         const expandsym = _getExpandPlaceholderSymbol()
         const expandedL = makeNode([newRule.l!, expandsym])
         // Push the expandsym into the deepest possible branch.
@@ -710,10 +710,10 @@ export const createSimplify = /* #__PURE__ */ factory(
       options: SimplifyOptions = {}
     ): MathNode {
       const debug = options.consoleDebug
-      rules = _buildRules(
+      const builtRules: any[] = _buildRules(
         (rules as SimplifyRule[]) || simplify.rules,
         options.context
-      )
+      ) as any
       let res = resolve(expr, scope)
       res = removeParens(res)
       const visited: Record<string, boolean> = {}
@@ -723,16 +723,16 @@ export const createSimplify = /* #__PURE__ */ factory(
         _lastsym = 0 // counter for placeholder symbols
         let laststr = str
         if (debug) console.log('Working on: ', str)
-        for (let i = 0; i < rules.length; i++) {
+        for (let i = 0; i < builtRules.length; i++) {
           let rulestr = ''
-          if (typeof rules[i] === 'function') {
-            res = (rules[i] as Function)(res, options)
-            if (debug) rulestr = (rules[i] as Function).name
+          if (typeof builtRules[i] === 'function') {
+            res = (builtRules[i] as Function)(res, options)
+            if (debug) rulestr = (builtRules[i] as Function).name
           } else {
             flatten(res as any, options.context)
-            res = applyRule(res, rules[i], options.context)
+            res = applyRule(res, builtRules[i], options.context)
             if (debug) {
-              rulestr = `${(rules[i] as any).l.toString()} -> ${(rules[i] as any).r.toString()}`
+              rulestr = `${(builtRules[i] as any).l.toString()} -> ${(builtRules[i] as any).r.toString()}`
             }
           }
           if (debug) {
@@ -810,13 +810,13 @@ export const createSimplify = /* #__PURE__ */ factory(
       // First replace our child nodes with their simplified versions
       // If a child could not be simplified, applying the rule to it
       // will have no effect since the node is returned unchanged
-      if (res instanceof OperatorNode || res instanceof FunctionNode) {
+      if ((res as any) instanceof OperatorNode || (res as any) instanceof FunctionNode) {
         const newArgs = mapRule((res as any).args, rule, context)
         if (newArgs !== (res as any).args) {
           res = res.clone()
           ;(res as any).args = newArgs
         }
-      } else if (res instanceof ParenthesisNode) {
+      } else if ((res as any) instanceof ParenthesisNode) {
         if ((res as ParenthesisNode).content) {
           const newContent = applyRule(
             (res as ParenthesisNode).content,
@@ -827,12 +827,12 @@ export const createSimplify = /* #__PURE__ */ factory(
             res = new ParenthesisNode(newContent)
           }
         }
-      } else if (res instanceof ArrayNode) {
+      } else if ((res as any) instanceof ArrayNode) {
         const newItems = mapRule((res as ArrayNode).items, rule, context)
         if (newItems !== (res as ArrayNode).items) {
           res = new ArrayNode(newItems!)
         }
-      } else if (res instanceof AccessorNode) {
+      } else if ((res as any) instanceof AccessorNode) {
         let newObj = (res as AccessorNode).object
         if ((res as AccessorNode).object) {
           newObj = applyRule((res as AccessorNode).object, rule, context)
@@ -851,12 +851,12 @@ export const createSimplify = /* #__PURE__ */ factory(
         ) {
           res = new AccessorNode(newObj, newIndex)
         }
-      } else if (res instanceof IndexNode) {
+      } else if ((res as any) instanceof IndexNode) {
         const newDims = mapRule((res as IndexNode).dimensions, rule, context)
         if (newDims !== (res as IndexNode).dimensions) {
           res = new IndexNode(newDims!) as MathNode
         }
-      } else if (res instanceof ObjectNode) {
+      } else if ((res as any) instanceof ObjectNode) {
         let changed = false
         const newProps: Record<string, MathNode> = {}
         for (const prop in (res as ObjectNode).properties) {
@@ -1094,7 +1094,7 @@ export const createSimplify = /* #__PURE__ */ factory(
           ) {
             return []
           }
-        } else if (rule instanceof FunctionNode) {
+        } else if ((rule as any) instanceof FunctionNode) {
           if ((rule as any).name !== (node as any).name) {
             return []
           }
@@ -1325,7 +1325,7 @@ export const createSimplify = /* #__PURE__ */ factory(
           ) {
             return false
           }
-        } else if (p instanceof FunctionNode) {
+        } else if ((p as any) instanceof FunctionNode) {
           if ((p as any).name !== (q as any).name) {
             return false
           }

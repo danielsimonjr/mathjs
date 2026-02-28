@@ -52,8 +52,8 @@ export function containsCollections(array: unknown[]): boolean {
  * @param array - Array or Matrix to iterate over
  * @param callback - The callback method is invoked with one parameter: the current element in the array
  */
-export function deepForEach<T>(
-  array: T[] | Matrix<T>,
+export function deepForEach<T = any>(
+  array: T[] | Matrix<T> | any,
   callback: (value: T) => void
 ): void {
   if (isMatrix(array)) {
@@ -75,8 +75,8 @@ export function deepForEach<T>(
  *
  * @return Mapped result
  */
-export function deepMap<T, U>(
-  array: T[] | Matrix<T>,
+export function deepMap<T = any, U = any>(
+  array: T[] | Matrix<T> | any,
   callback: (value: T) => U,
   skipZeros?: boolean
 ): U[] | Matrix<U> {
@@ -108,8 +108,8 @@ export function deepMap<T, U>(
  * @param callback - Callback function
  * @return Reduced result
  */
-export function reduce<T, U>(
-  mat: T[] | Matrix<T>,
+export function reduce<T = any, U = any>(
+  mat: T[] | Matrix<T> | any,
   dim: number,
   callback: (acc: U | T, val: T) => U
 ): U[] | Matrix<U> {

@@ -143,13 +143,13 @@ export const createDerivative = /* #__PURE__ */ factory(
 
     function parseIdentifier(string: string): SymbolNode {
       const symbol = parse(string)
-      if (!symbol.isSymbolNode) {
+      if (!(symbol as any).isSymbolNode) {
         throw new TypeError(
           'Invalid variable. ' +
             `Cannot parse ${JSON.stringify(string)} into a variable in function derivative`
         )
       }
-      return symbol
+      return symbol as unknown as SymbolNode
     }
 
     const derivative = typed(name, {

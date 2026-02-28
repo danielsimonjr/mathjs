@@ -89,8 +89,8 @@ export const createMap = /* #__PURE__ */ factory(
         rest: (unknown[] | MatrixType | MapCallback)[]
       ) =>
         _mapMultiple(
-          [A, B, ...rest.slice(0, rest.length - 1)],
-          rest[rest.length - 1]
+          [A, B, ...rest.slice(0, rest.length - 1)] as (unknown[] | MatrixType)[],
+          rest[rest.length - 1] as MapCallback
         )
     })
 
@@ -113,7 +113,7 @@ export const createMap = /* #__PURE__ */ factory(
         throw new Error('Last argument must be a callback function')
       }
 
-      const firstArrayIsMatrix = Arrays[0].isMatrix
+      const firstArrayIsMatrix = (Arrays[0] as any).isMatrix
       const sizes = Arrays.map((M: any) =>
         M.isMatrix ? M.size() : arraySize(M)
       )
@@ -153,7 +153,7 @@ export const createMap = /* #__PURE__ */ factory(
         ? Arrays.map((M: any) =>
             M.isMatrix
               ? M.create(broadcastTo(M.toArray(), newSize), M.datatype())
-              : Arrays[0].create(broadcastTo(M.valueOf(), newSize))
+              : (Arrays[0] as any).create(broadcastTo(M.valueOf(), newSize))
           )
         : Arrays.map((M: any) =>
             M.isMatrix
@@ -306,7 +306,7 @@ export const createMap = /* #__PURE__ */ factory(
      */
 
     function _getTypedCallbackArgCount(
-      callback: Function,
+      callback: any,
       values: any[],
       idx: number[],
       arrays: any[]
@@ -332,7 +332,7 @@ export const createMap = /* #__PURE__ */ factory(
      */
     function _mapArray(array: any[], callback: Function): any[] {
       const fastCallback = optimizeCallback(callback, array, name)
-      return deepMap(array, fastCallback.fn, fastCallback.isUnary)
+      return deepMap(array, fastCallback.fn, fastCallback.isUnary) as any[]
     }
   }
 )

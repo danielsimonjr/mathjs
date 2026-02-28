@@ -256,7 +256,7 @@ export const createComplexClass = /* #__PURE__ */ factory(
           )
       }
     }
-    ;(Complex.prototype as Complex & { valueOf: () => string }).valueOf =
+    ;(Complex.prototype as any).valueOf =
       Complex.prototype.toString
 
     /**

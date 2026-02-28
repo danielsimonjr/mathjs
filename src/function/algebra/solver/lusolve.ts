@@ -157,7 +157,7 @@ export const createLusolve = /* #__PURE__ */ factory(
   name,
   dependencies,
   ({ typed, matrix, lup, slu, usolve, lsolve, DenseMatrix }: Dependencies) => {
-    const solveValidation = createSolveValidation({
+    const solveValidation = (createSolveValidation as any)({
       DenseMatrix
     }) as SolveValidationFunction
 

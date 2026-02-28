@@ -160,7 +160,7 @@ export const createDet = /* #__PURE__ */ factory(
         switch (size.length) {
           case 0:
             // scalar
-            return clone(x) as Scalar
+            return clone(x) as unknown as Scalar
 
           case 1:
             // vector
@@ -224,7 +224,7 @@ export const createDet = /* #__PURE__ */ factory(
         isPlainNumberMatrix(matrix)
       ) {
         try {
-          const flat = flattenToFloat64(matrix, rows, rows)
+          const flat = flattenToFloat64(matrix as any, rows, rows)
           const a = wasmLoader.allocateFloat64Array(flat)
           // workPtr needs n*n f64 values for LU decomposition
           const work = wasmLoader.allocateFloat64ArrayEmpty(rows * rows)

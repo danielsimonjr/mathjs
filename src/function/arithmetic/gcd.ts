@@ -157,7 +157,7 @@ export const createGcd = /* #__PURE__ */ factory(
             if (is1d(array)) {
               return self(...array)
             }
-            throw new ArgumentsError('gcd() supports only 1d matrices!')
+            throw new Error('gcd() supports only 1d matrices!')
           }
         ),
         Matrix: typed.referToSelf(
