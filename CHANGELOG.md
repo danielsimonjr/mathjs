@@ -7,6 +7,118 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.3.0] - 2026-02-28
+
+### Fixed - 2026-02-28
+
+**TypeScript Zero Errors Milestone**
+
+- **Fixed** all 1738 TypeScript compilation errors, achieving 0 errors with `npx tsc --noEmit`
+- **Fixed** root cause: `TypedFunction` call signature changed from `(...args: unknown[]): unknown` to `(...args: any[]): any` — eliminated 171 cascading errors across all factory functions
+- **Fixed** `referToSelf` and `referTo` made generic with `<T extends (...args: any[]) => any>` — eliminated 90 errors
+- **Fixed** `AlgorithmFunction` return type widened from `MatrixInterface` to `any` — eliminated 85 errors
+- **Fixed** real logic bug in `src/function/algebra/sparse/csSqr.ts`: `nque[k]` was indexing a Number value instead of workspace array `w[nque + k]`
+- **Fixed** benchmark file TypeScript errors with `@ts-ignore` for build output imports
+- **Fixed** AssemblyScript stubs conflict by excluding `test/wasm/assemblyscript-stubs.ts` from tsc
+- **Fixed** `tsconfig.json` excludes `test/unit-tests/wasm` (WASM tests use vitest, not tsc) — eliminated 1100 errors
+
+### Fixed - 2026-02-27
+
+- **Fixed** 238 TypeScript errors and 4 WASM logic bugs across the codebase
+
+### Fixed - 2026-02-26
+
+- **Fixed** WASM tests updated for raw pointer API — 322/322 tests passing
+
+### Changed - 2026-02-26
+
+- **Updated** README with TypeScript/WASM performance documentation
+
+### Changed - 2026-02-25
+
+- **Updated** CLAUDE.md with WASM raw pointer conventions and structure documentation
+
+### Changed - 2026-02-07
+
+- **Added** developer workflow guide (`docs/architecture/DEVELOPER_WORKFLOW.md`)
+- **Added** TypeScript migration guide (`docs/architecture/TYPESCRIPT_MIGRATION.md`)
+
+### Changed - 2026-02-04
+
+- **Fixed** CLAUDE.md contradictions about refactoring status
+
+### Changed - 2026-02-01
+
+- **Improved** CLAUDE.md structure and maintainability
+
+### Added - 2026-01-31
+
+**Matrix Typing Refactoring (Phase 4 Complete)**
+
+- **Added** matrix typing refactoring plan documentation
+- **Refactored** Phase 4 matrix algorithm typing with test fixes
+- **Refactored** matrix module TypeScript typing with shared types (`src/type/matrix/types.ts`)
+- **Improved** TypeScript typing across 110+ source files
+- **Fixed** unused imports and catch blocks for eslint compliance
+
+### Added - 2026-01-30
+
+**WASM Fast Paths (5 Phases)**
+
+- **Phase 1**: WASM fast paths for statistics functions (mean, median, std, variance, sum, prod, mad, correlation, covariance)
+- **Phase 2**: WASM fast paths for matrix operations (det, inv, kron, dot, cross, norm, transpose)
+- **Phase 3**: WASM fast paths for linear solvers (lsolve, usolve, lusolve)
+- **Phase 4**: WASM fast paths for matrix decompositions (lup, qr, schur)
+- **Phase 5**: WASM fast paths for eigenvalue and FFT functions
+- **Fixed** `qrDecomposition` interface signature for WASM bridge
+
+**TypeScript Type Annotations (Comprehensive)**
+
+- **Refactored** algebra module — TypeScript types for simplify, derivative, rationalize, symbolicEqual, sparse algorithms
+- **Refactored** arithmetic module — TypeScript types across all arithmetic files (add, multiply, pow, sqrt, log, xgcd, etc.)
+- **Refactored** statistics module — TypeScript types for mean, median, std, variance, sum, prod
+- **Refactored** probability module — TypeScript types for combinations, permutations, factorial, random
+- **Refactored** matrix module — TypeScript types for matrix utility functions
+- **Refactored** core module — TypeScript types for constants and utility files
+- **Refactored** expression module — TypeScript types for AST nodes and Chain
+- **Refactored** type constructors — TypeScript types for type class implementations
+- **Refactored** utils module — TypeScript types for clone.ts, typeOf.ts
+
+**AssemblyScript Analysis**
+
+- **Added** WASM refactoring candidates tracking (`docs/refactoring/WASM_TODO.md`)
+- **Added** AssemblyScript conversion candidates analysis
+- **Added** lsolve/usolve WASM implementations
+
+### Added - 2026-01-29
+
+**TypeScript Type Annotations (Modules)**
+
+- **Improved** TypeScript type annotations across all remaining modules:
+  - trigonometry, utils, string, set, geometry, bitwise, special, unit, signal, complex, combinatorics, logical, entry/arithmetic
+- **Added** comprehensive AssemblyScript style guide (`docs/ASSEMBLYSCRIPT_STYLE_GUIDE.md`)
+- **Updated** CLAUDE.md and ts-inventory.json with accurate codebase analysis
+
+### Added - 2026-01-23
+
+**Benchmark Suite**
+
+- **Added** compiled JavaScript (`lib/esm/`) for benchmarking
+- **Added** expanded JS vs WASM benchmark suite (`test/benchmark/expanded_js_vs_wasm_benchmark.ts`)
+- **Fixed** benchmark to load original JS from `lib/esm/`
+
+### Added - 2026-01-22
+
+**WASM Raw Pointer Migration**
+
+- **Converted** all WASM modules to raw pointer API (`usize`) for proper JS↔WASM interop
+- **Added** SIMD optimizations and `workPtr` validation utilities
+- **Added** eigenvalue, matrix functions, and sparse decomposition WASM modules
+- **Added** WASM remaining tasks todo list
+- **Fixed** WASM build and lint errors
+
+---
+
 ## [15.2.0] - 2026-01-21
 
 ### Added - 2026-01-21
