@@ -14,6 +14,7 @@ interface SumDependencies {
   config: MathJsConfig
   add: MathFunction
   numeric: MathFunction
+  parseNumberWithConfig: MathFunction
 }
 
 /**
@@ -24,13 +25,13 @@ interface SumDependencies {
  * from one-based to zero based
  */
 const name = 'sum'
-const dependencies = ['typed', 'config', 'add', 'numeric']
+const dependencies = ['typed', 'config', 'add', 'numeric', 'parseNumberWithConfig']
 
 export const createSumTransform = /* #__PURE__ */ factory(
   name,
   dependencies,
-  ({ typed, config, add, numeric }: SumDependencies) => {
-    const sum = createSum({ typed, config, add, numeric })
+  ({ typed, config, add, numeric, parseNumberWithConfig }: SumDependencies) => {
+    const sum = createSum({ typed, config, add, numeric, parseNumberWithConfig } as any)
 
     return typed(name, {
       '...any': function (args: VariadicArgs): unknown {

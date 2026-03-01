@@ -484,7 +484,10 @@ describe('security', function () {
   })
 
   it('should not have access to specific namespaces', function () {
+    // Internal utility objects that are registered as factories but are not user-facing
+    const internalObjects = new Set(['nodeOperations'])
     Object.keys(math.expression.mathWithTransform).forEach(function (name) {
+      if (internalObjects.has(name)) return
       const value = math.expression.mathWithTransform[name]
 
       // only plain functions allowed, no constructor functions

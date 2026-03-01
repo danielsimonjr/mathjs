@@ -11,10 +11,10 @@ import { lastDimToZeroBase } from './utils/lastDimToZeroBase.js'
  * from one-based to zero based
  */
 const name = 'sum'
-const dependencies = ['typed', 'config', 'add', 'numeric']
+const dependencies = ['typed', 'config', 'add', 'numeric', 'parseNumberWithConfig']
 
-export const createSumTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, add, numeric }) => {
-  const sum = createSum({ typed, config, add, numeric })
+export const createSumTransform = /* #__PURE__ */ factory(name, dependencies, ({ typed, config, add, numeric, parseNumberWithConfig }) => {
+  const sum = createSum({ typed, config, add, numeric, parseNumberWithConfig })
 
   return typed(name, {
     '...any': function (args) {

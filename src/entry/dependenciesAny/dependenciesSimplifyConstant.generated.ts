@@ -15,6 +15,7 @@ import { SymbolNodeDependencies } from './dependenciesSymbolNode.generated.js'
 import { isBoundedDependencies } from './dependenciesIsBounded.generated.js'
 import { matrixDependencies } from './dependenciesMatrix.generated.js'
 import { typedDependencies } from './dependenciesTyped.generated.js'
+import { parseDependencies } from './dependenciesParse.generated.js'
 import { createSimplifyConstant } from '../../factoriesAny.js'
 
 export const simplifyConstantDependencies: Record<string, unknown> = {
@@ -31,5 +32,6 @@ export const simplifyConstantDependencies: Record<string, unknown> = {
   isBoundedDependencies,
   matrixDependencies,
   typedDependencies,
+  parseDependencies,
   createSimplifyConstant
 }

@@ -63,7 +63,7 @@ export const createTo = /* #__PURE__ */ factory(
           unit: UnitType | string
         ): UnitType => x.to(unit)
       },
-      matrixAlgorithmSuite({})
+      matrixAlgorithmSuite({ Ds: true } as any)
     )
   }
 )

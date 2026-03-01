@@ -96,6 +96,8 @@ interface Dependencies {
   multiply: TypedFunction<Scalar | Scalar[][] | Matrix>
   add: TypedFunction<Scalar>
   larger: TypedFunction<boolean>
+  largerEq: TypedFunction<boolean>
+  smallerEq: TypedFunction<boolean>
   column: TypedFunction<Scalar[]>
   flatten: TypedFunction<Scalar[]>
   number: TypedFunction<number>
@@ -135,6 +137,8 @@ const dependencies = [
   'multiply',
   'add',
   'larger',
+  'largerEq',
+  'smallerEq',
   'column',
   'flatten',
   'number',
@@ -174,6 +178,8 @@ export const createEigs = /* #__PURE__ */ factory(
     multiply,
     add,
     larger,
+    largerEq,
+    smallerEq,
     column: _column,
     flatten,
     number,
@@ -204,7 +210,9 @@ export const createEigs = /* #__PURE__ */ factory(
       bignumber,
       complex,
       multiply,
-      add
+      add,
+      largerEq,
+      smallerEq
     } as any)
     const doComplexEigs = createComplexEigs({
       addScalar,

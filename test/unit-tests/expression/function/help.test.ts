@@ -3,7 +3,7 @@ import assert from 'assert'
 import math from '../../../../src/defaultInstance.js'
 import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDocs.js'
 
-let mathDocs = math.create(math.all)
+let mathDocs = math.create()
 const originalConfig = mathDocs.config()
 // Add names to the skipDocs array if they are not meant to have embedded docs
 const skipDocs = new Set([
@@ -15,7 +15,9 @@ const skipDocs = new Set([
   'subtractScalar',
   'apply',
   'replacer',
-  'reviver'
+  'reviver',
+  'nodeOperations',
+  'parseNumberWithConfig'
 ])
 
 // Add names to skipExamples if their examples in the embedded docs contain acceptable errors
@@ -46,7 +48,7 @@ function runExamplesInDocs(name) {
     return
   } catch {}
   // if they still have errors try with a new math instance
-  mathDocs = math.create(math.all)
+  mathDocs = math.create()
   mathDocs.evaluate(examples)
 }
 

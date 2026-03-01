@@ -10,8 +10,7 @@ interface MathNode {
   toTex(): string
 }
 
-// Skipped: simplifyConstant has source-level typed-function mismatch (also fails in mocha)
-describe.skip('simplifyConstant', function (): void {
+describe('simplifyConstant', function (): void {
   const testSimplifyConstant = function (
     expr: string,
     expected: string,

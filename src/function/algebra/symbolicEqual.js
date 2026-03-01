@@ -55,12 +55,14 @@ export const createSymbolicEqual = /* #__PURE__ */ factory(name, dependencies, (
    */
   function _symbolicEqual (e1, e2, options = {}) {
     const diff = new OperatorNode('-', 'subtract', [e1, e2])
-    const simplified = simplify(diff, {}, options)
+    const simplified = simplify(diff, simplify.rules, new Map(), options)
     return (isConstantNode(simplified) && !(simplified.value))
   }
 
   return typed(name, {
     'Node, Node': _symbolicEqual,
-    'Node, Node, Object': _symbolicEqual
+    'Node, Node, Object': _symbolicEqual,
+    'string, string': (s1, s2) => _symbolicEqual(parse(s1), parse(s2)),
+    'string, string, Object': (s1, s2, options) => _symbolicEqual(parse(s1), parse(s2), options)
   })
 })

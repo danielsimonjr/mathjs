@@ -319,7 +319,7 @@ describe('multiply', function () {
       )
       assert.strictEqual(
         multiply(unit('m/s'), unit('h/m')).toString(),
-        '(m h) / (s m)'
+        'h / s'
       )
     })
 

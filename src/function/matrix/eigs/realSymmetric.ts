@@ -58,6 +58,8 @@ interface Dependencies {
   bignumber: (x: number | string) => BigNumber
   multiply: (...args: Scalar[]) => Scalar
   add: (...args: Scalar[]) => Scalar
+  largerEq: (a: Scalar, b: Scalar) => boolean
+  smallerEq: (a: Scalar, b: Scalar) => boolean
 }
 
 export function createRealSymmetric({
@@ -72,7 +74,9 @@ export function createRealSymmetric({
   inv,
   bignumber,
   multiply,
-  add
+  add,
+  largerEq,
+  smallerEq
 }: Dependencies) {
   /**
    * Compute eigenvalues and optionally eigenvectors of a real symmetric matrix
@@ -234,7 +238,7 @@ export function createRealSymmetric({
     }
     // initial error
     let Vab = getAijBig(x)
-    while ((abs(Vab[1]) as number) >= (abs(e0) as number)) {
+    while (largerEq(abs(Vab[1]) as Scalar, abs(e0) as Scalar)) {
       const i = Vab[0][0]
       const j = Vab[0][1]
       psi = getThetaBig(x[i][i], x[j][j], x[i][j])
@@ -270,7 +274,7 @@ export function createRealSymmetric({
     aij: BigNumber
   ): BigNumber {
     const denom = subtract(ajj, aii) as BigNumber
-    if ((abs(denom) as number) <= (config.relTol as number)) {
+    if (smallerEq(abs(denom) as Scalar, config.relTol as Scalar)) {
       return bignumber(-1).acos().div(4) as unknown as BigNumber
     } else {
       return multiplyScalar(

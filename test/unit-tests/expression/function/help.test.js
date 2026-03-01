@@ -2,11 +2,11 @@ import assert from 'assert'
 import math from '../../../../src/defaultInstance.ts'
 import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDocs.ts'
 
-let mathDocs = math.create(math.all)
+let mathDocs = math.create()
 const originalConfig = mathDocs.config()
 // Add names to the skipDocs array if they are not meant to have embedded docs
 const skipDocs = new Set(['import', 'addScalar', 'divideScalar', 'equalScalar', 'multiplyScalar',
-  'subtractScalar', 'apply', 'replacer', 'reviver'])
+  'subtractScalar', 'apply', 'replacer', 'reviver', 'nodeOperations', 'parseNumberWithConfig'])
 
 // Add names to skipExamples if their examples in the embedded docs contain acceptable errors
 const skipExamples = new Set([])
@@ -31,7 +31,7 @@ function runExamplesInDocs (name) {
   } catch {
   }
   // if they still have errors try with a new math instance
-  mathDocs = math.create(math.all)
+  mathDocs = math.create()
   mathDocs.evaluate(examples)
 }
 

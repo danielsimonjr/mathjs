@@ -20,7 +20,8 @@ const dependencies = [
   'IndexNode',
   'ObjectNode',
   'OperatorNode',
-  'SymbolNode'
+  'SymbolNode',
+  'parse'
 ]
 
 export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies, ({
@@ -38,7 +39,8 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
   IndexNode,
   ObjectNode,
   OperatorNode,
-  SymbolNode
+  SymbolNode,
+  parse
 }) => {
   const { isCommutative, isAssociative, allChildren, createMakeNodeFunction } =
     createUtil({ FunctionNode, OperatorNode, SymbolNode })
@@ -75,6 +77,14 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
 
     'Node, Object': function (expr, options) {
       return _ensureNode(foldFraction(expr, options))
+    },
+
+    string: function (s) {
+      return _ensureNode(foldFraction(parse(s), {}))
+    },
+
+    'string, Object': function (s, options) {
+      return _ensureNode(foldFraction(parse(s), options))
     }
   })
 

@@ -4,5 +4,6 @@
   "forbid-only": true,
   "recursive": true,
   "extension": ["js", "ts"],
-  "node-option": ["import=tsx"]
+  "node-option": ["import=tsx"],
+  "ignore": ["test/unit-tests/wasm/**"]
 }

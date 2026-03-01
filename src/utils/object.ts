@@ -116,14 +116,13 @@ export function deepExtend<T extends Record<string, unknown>>(
       !(prop in Function.prototype)
     ) {
       const bValue = b[prop]
-      const aValue = (a as Record<string, unknown>)[prop]
       if (bValue && (bValue as object).constructor === Object) {
-        if (aValue === undefined) {
+        if ((a as Record<string, unknown>)[prop] === undefined) {
           ;(a as Record<string, unknown>)[prop] = {}
         }
-        if (aValue && (aValue as object).constructor === Object) {
+        if ((a as Record<string, unknown>)[prop] && ((a as Record<string, unknown>)[prop] as object).constructor === Object) {
           deepExtend(
-            aValue as Record<string, unknown>,
+            (a as Record<string, unknown>)[prop] as Record<string, unknown>,
             bValue as Record<string, unknown>
           )
         } else {
