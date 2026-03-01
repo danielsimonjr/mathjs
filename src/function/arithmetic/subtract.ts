@@ -6,17 +6,7 @@ import { createMatAlgo05xSfSf } from '../../type/matrix/utils/matAlgo05xSfSf.ts'
 import { createMatAlgo10xSids } from '../../type/matrix/utils/matAlgo10xSids.ts'
 import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
-
-// Type definitions for subtract
-interface NodeOperations {
-  createBinaryNode: (
-    op: string,
-    fn: string,
-    left: unknown,
-    right: unknown
-  ) => unknown
-  hasNodeArg: (...args: unknown[]) => boolean
-}
+import type { NodeOperations } from '../shared/types.ts'
 
 interface SubtractDependencies {
   typed: TypedFunction

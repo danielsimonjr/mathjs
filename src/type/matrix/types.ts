@@ -148,10 +148,15 @@ export type ForEachCallback<T = MatrixValue> = (
  */
 export interface TypedFunction {
   /**
+   * Call signature — makes typed function instances callable.
+   */
+  (...args: any[]): any
+
+  /**
    * Find a specific signature of a typed function.
    * Returns the function matching the given type signature.
    */
-  find(fn: Function, signature: string[]): Function | null
+  find(fn: Function, signature: string[]): any
 
   /**
    * Convert a value to a specific datatype.
@@ -168,6 +173,14 @@ export interface TypedFunction {
    * which has dynamic signatures.
    */
   referToSelf<T>(fn: (self: T) => any): any
+
+  /**
+   * Reference other typed function signatures by name.
+   * Used when one signature needs to delegate to another.
+   */
+  referTo<T extends (...args: any[]) => any>(
+    ...signatureNames: string[]
+  ): (callback: (...refs: Array<(...args: any[]) => any>) => T) => T
 
   /**
    * Signatures of the typed function (optional)
