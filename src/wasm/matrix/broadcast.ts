@@ -46,8 +46,8 @@ export function canBroadcast(
   const maxLen: i32 = n1 > n2 ? n1 : n2
 
   for (let i: i32 = 0; i < maxLen; i++) {
-    const d1: i32 = i < n1 ? load<i32>(shape1Ptr + (<usize>(n1 - 1 - i) << 2)) : 1
-    const d2: i32 = i < n2 ? load<i32>(shape2Ptr + (<usize>(n2 - 1 - i) << 2)) : 1
+    const d1: i32 = i < n1 ? load<i32>(shape1Ptr + (<usize>(n1 - 1 - i)) << 2) : 1
+    const d2: i32 = i < n2 ? load<i32>(shape2Ptr + (<usize>(n2 - 1 - i)) << 2) : 1
     if (d1 !== d2 && d1 !== 1 && d2 !== 1) {
       return false
     }
@@ -74,15 +74,15 @@ export function broadcastShape(
   const maxLen: i32 = n1 > n2 ? n1 : n2
 
   for (let i: i32 = 0; i < maxLen; i++) {
-    const d1: i32 = i < n1 ? load<i32>(shape1Ptr + (<usize>(n1 - 1 - i) << 2)) : 1
-    const d2: i32 = i < n2 ? load<i32>(shape2Ptr + (<usize>(n2 - 1 - i) << 2)) : 1
+    const d1: i32 = i < n1 ? load<i32>(shape1Ptr + (<usize>(n1 - 1 - i)) << 2) : 1
+    const d2: i32 = i < n2 ? load<i32>(shape2Ptr + (<usize>(n2 - 1 - i)) << 2) : 1
 
     if (d1 === d2) {
-      store<i32>(resultPtr + (<usize>(maxLen - 1 - i) << 2), d1)
+      store<i32>(resultPtr + (<usize>(maxLen - 1 - i)) << 2, d1)
     } else if (d1 === 1) {
-      store<i32>(resultPtr + (<usize>(maxLen - 1 - i) << 2), d2)
+      store<i32>(resultPtr + (<usize>(maxLen - 1 - i)) << 2, d2)
     } else if (d2 === 1) {
-      store<i32>(resultPtr + (<usize>(maxLen - 1 - i) << 2), d1)
+      store<i32>(resultPtr + (<usize>(maxLen - 1 - i)) << 2, d1)
     } else {
       return 0 // Incompatible
     }
@@ -171,9 +171,9 @@ function broadcastBinaryOp(
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    const a: f64 = load<f64>(aPtr + (<usize>idxA << 3))
-    const b: f64 = load<f64>(bPtr + (<usize>idxB << 3))
-    store<f64>(resultPtr + (<usize>i << 3), applyOp(a, b, op))
+    const a: f64 = load<f64>(aPtr + (<usize>idxA) << 3)
+    const b: f64 = load<f64>(bPtr + (<usize>idxB) << 3)
+    store<f64>(resultPtr + (<usize>i) << 3, applyOp(a, b, op))
   }
 
   return 1
@@ -283,7 +283,7 @@ export function broadcastEqual(
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    store<f64>(resultPtr + (<usize>i << 3), Math.abs(load<f64>(aPtr + (<usize>idxA << 3)) - load<f64>(bPtr + (<usize>idxB << 3))) < tol ? 1.0 : 0.0)
+    store<f64>(resultPtr + (<usize>i) << 3, Math.abs(load<f64>(aPtr + (<usize>idxA) << 3) - load<f64>(bPtr + (<usize>idxB) << 3)) < tol ? 1.0 : 0.0)
   }
 
   return 1
@@ -321,7 +321,7 @@ export function broadcastScalarMultiply(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)) * scalar)
+    store<f64>(resultPtr + (<usize>i) << 3, load<f64>(aPtr + (<usize>i) << 3) * scalar)
   }
 }
 
@@ -339,7 +339,7 @@ export function broadcastScalarAdd(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(aPtr + (<usize>i << 3)) + scalar)
+    store<f64>(resultPtr + (<usize>i) << 3, load<f64>(aPtr + (<usize>i) << 3) + scalar)
   }
 }
 
@@ -361,9 +361,9 @@ export function broadcastApply(
   resultPtr: usize
 ): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    const a: f64 = load<f64>(aPtr + (<usize>i << 3))
-    const b: f64 = load<f64>(bPtr + (<usize>i << 3))
-    store<f64>(resultPtr + (<usize>i << 3), applyOp(a, b, op))
+    const a: f64 = load<f64>(aPtr + (<usize>i) << 3)
+    const b: f64 = load<f64>(bPtr + (<usize>i) << 3)
+    store<f64>(resultPtr + (<usize>i) << 3, applyOp(a, b, op))
   }
 
   return 1

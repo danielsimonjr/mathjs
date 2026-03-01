@@ -38,20 +38,20 @@ export function sqrtm(
   // workPtr + 3*nn*8: invZ (inverse of Z)
   // workPtr + 4*nn*8: invYk (inverse of Yk)
   const YPtr: usize = workPtr
-  const ZPtr: usize = workPtr + (<usize>nn << 3)
-  const YkPtr: usize = workPtr + (<usize>(2 * nn) << 3)
-  const invZPtr: usize = workPtr + (<usize>(3 * nn) << 3)
-  const invYkPtr: usize = workPtr + (<usize>(4 * nn) << 3)
+  const ZPtr: usize = workPtr + (<usize>nn) << 3
+  const YkPtr: usize = workPtr + (<usize>(2 * nn)) << 3
+  const invZPtr: usize = workPtr + (<usize>(3 * nn)) << 3
+  const invYkPtr: usize = workPtr + (<usize>(4 * nn)) << 3
 
   // Initialize Y = A
   for (let i: i32 = 0; i < nn; i++) {
-    store<f64>(YPtr + (<usize>i << 3), load<f64>(matrixPtr + (<usize>i << 3)))
+    store<f64>(YPtr + (<usize>i) << 3, load<f64>(matrixPtr + (<usize>i) << 3))
   }
 
   // Initialize Z = I (identity matrix)
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      store<f64>(ZPtr + (<usize>(i * n + j) << 3), i === j ? 1.0 : 0.0)
+      store<f64>(ZPtr + (<usize>(i * n + j)) << 3, i === j ? 1.0 : 0.0)
     }
   }
 
@@ -62,12 +62,12 @@ export function sqrtm(
   for (let iter: i32 = 0; iter < maxIterations; iter++) {
     // Save Yk for convergence check
     for (let i: i32 = 0; i < nn; i++) {
-      store<f64>(YkPtr + (<usize>i << 3), load<f64>(YPtr + (<usize>i << 3)))
+      store<f64>(YkPtr + (<usize>i) << 3, load<f64>(YPtr + (<usize>i) << 3))
     }
 
     // Copy Z before inverting (matrixInverse destroys its input)
     for (let i: i32 = 0; i < nn; i++) {
-      store<f64>(invZPtr + (<usize>i << 3), load<f64>(ZPtr + (<usize>i << 3)))
+      store<f64>(invZPtr + (<usize>i) << 3, load<f64>(ZPtr + (<usize>i) << 3))
     }
     const invZSuccess: i32 = matrixInverse(invZPtr, resultPtr, n)
     if (invZSuccess < 0) {
@@ -75,12 +75,12 @@ export function sqrtm(
     }
     // invZ result is now in resultPtr, copy back to invZPtr
     for (let i: i32 = 0; i < nn; i++) {
-      store<f64>(invZPtr + (<usize>i << 3), load<f64>(resultPtr + (<usize>i << 3)))
+      store<f64>(invZPtr + (<usize>i) << 3, load<f64>(resultPtr + (<usize>i) << 3))
     }
 
     // Copy Yk before inverting (matrixInverse destroys its input)
     for (let i: i32 = 0; i < nn; i++) {
-      store<f64>(invYkPtr + (<usize>i << 3), load<f64>(YkPtr + (<usize>i << 3)))
+      store<f64>(invYkPtr + (<usize>i) << 3, load<f64>(YkPtr + (<usize>i) << 3))
     }
     const invYkSuccess: i32 = matrixInverse(invYkPtr, resultPtr, n)
     if (invYkSuccess < 0) {
@@ -88,7 +88,7 @@ export function sqrtm(
     }
     // invYk result is now in resultPtr, copy back to invYkPtr
     for (let i: i32 = 0; i < nn; i++) {
-      store<f64>(invYkPtr + (<usize>i << 3), load<f64>(resultPtr + (<usize>i << 3)))
+      store<f64>(invYkPtr + (<usize>i) << 3, load<f64>(resultPtr + (<usize>i) << 3))
     }
 
     // Y = 0.5 * (Yk + invZ)
@@ -102,7 +102,7 @@ export function sqrtm(
     // Check convergence: max(abs(Y - Yk))
     let maxDiff: f64 = 0.0
     for (let i: i32 = 0; i < nn; i++) {
-      const diff: f64 = Math.abs(load<f64>(YPtr + (<usize>i << 3)) - load<f64>(YkPtr + (<usize>i << 3)))
+      const diff: f64 = Math.abs(load<f64>(YPtr + (<usize>i) << 3) - load<f64>(YkPtr + (<usize>i) << 3))
       if (diff > maxDiff) {
         maxDiff = diff
       }
@@ -111,7 +111,7 @@ export function sqrtm(
     if (maxDiff <= tolerance) {
       // Converged - copy result
       for (let i: i32 = 0; i < nn; i++) {
-        store<f64>(resultPtr + (<usize>i << 3), load<f64>(YPtr + (<usize>i << 3)))
+        store<f64>(resultPtr + (<usize>i) << 3, load<f64>(YPtr + (<usize>i) << 3))
       }
       return iter + 1
     }
@@ -119,7 +119,7 @@ export function sqrtm(
 
   // Did not converge - still copy best approximation
   for (let i: i32 = 0; i < nn; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(YPtr + (<usize>i << 3)))
+    store<f64>(resultPtr + (<usize>i) << 3, load<f64>(YPtr + (<usize>i) << 3))
   }
 
   return -1
@@ -135,18 +135,18 @@ function matrixInverse(aPtr: usize, invPtr: usize, n: i32): i32 {
   // Initialize inverse to identity
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      store<f64>(invPtr + (<usize>(i * n + j) << 3), i === j ? 1.0 : 0.0)
+      store<f64>(invPtr + (<usize>(i * n + j)) << 3, i === j ? 1.0 : 0.0)
     }
   }
 
   // Gauss-Jordan elimination
   for (let col: i32 = 0; col < n; col++) {
     // Find pivot
-    let maxVal: f64 = Math.abs(load<f64>(aPtr + (<usize>(col * n + col) << 3)))
+    let maxVal: f64 = Math.abs(load<f64>(aPtr + (<usize>(col * n + col)) << 3))
     let maxRow: i32 = col
 
     for (let row: i32 = col + 1; row < n; row++) {
-      const val: f64 = Math.abs(load<f64>(aPtr + (<usize>(row * n + col) << 3)))
+      const val: f64 = Math.abs(load<f64>(aPtr + (<usize>(row * n + col)) << 3))
       if (val > maxVal) {
         maxVal = val
         maxRow = row
@@ -174,7 +174,7 @@ function matrixInverse(aPtr: usize, invPtr: usize, n: i32): i32 {
     }
 
     // Scale pivot row
-    const pivot: f64 = load<f64>(aPtr + (<usize>(col * n + col) << 3))
+    const pivot: f64 = load<f64>(aPtr + (<usize>(col * n + col)) << 3)
     for (let j: i32 = 0; j < n; j++) {
       const idx: usize = (<usize>(col * n + j)) << 3
       store<f64>(aPtr + idx, load<f64>(aPtr + idx) / pivot)
@@ -184,7 +184,7 @@ function matrixInverse(aPtr: usize, invPtr: usize, n: i32): i32 {
     // Eliminate column
     for (let row: i32 = 0; row < n; row++) {
       if (row !== col) {
-        const factor: f64 = load<f64>(aPtr + (<usize>(row * n + col) << 3))
+        const factor: f64 = load<f64>(aPtr + (<usize>(row * n + col)) << 3)
         for (let j: i32 = 0; j < n; j++) {
           const rowIdx: usize = (<usize>(row * n + j)) << 3
           const colIdx: usize = (<usize>(col * n + j)) << 3
@@ -223,13 +223,13 @@ export function sqrtmNewtonSchulz(
 
   // Workspace: Y, Z, temp
   const YPtr: usize = workPtr
-  const ZPtr: usize = workPtr + (<usize>nn << 3)
-  const tempPtr: usize = workPtr + (<usize>(2 * nn) << 3)
+  const ZPtr: usize = workPtr + (<usize>nn) << 3
+  const tempPtr: usize = workPtr + (<usize>(2 * nn)) << 3
 
   // Compute scaling factor (Frobenius norm)
   let normA: f64 = 0.0
   for (let i: i32 = 0; i < nn; i++) {
-    const val: f64 = load<f64>(matrixPtr + (<usize>i << 3))
+    const val: f64 = load<f64>(matrixPtr + (<usize>i) << 3)
     normA += val * val
   }
   normA = Math.sqrt(normA)
@@ -237,7 +237,7 @@ export function sqrtmNewtonSchulz(
   if (normA < 1e-15) {
     // Zero matrix
     for (let i: i32 = 0; i < nn; i++) {
-      store<f64>(resultPtr + (<usize>i << 3), 0.0)
+      store<f64>(resultPtr + (<usize>i) << 3, 0.0)
     }
     return 0
   }
@@ -245,12 +245,12 @@ export function sqrtmNewtonSchulz(
   // Initialize: Y = A / ||A||, Z = I
   const invNorm: f64 = 1.0 / normA
   for (let i: i32 = 0; i < nn; i++) {
-    store<f64>(YPtr + (<usize>i << 3), load<f64>(matrixPtr + (<usize>i << 3)) * invNorm)
+    store<f64>(YPtr + (<usize>i) << 3, load<f64>(matrixPtr + (<usize>i) << 3) * invNorm)
   }
 
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      store<f64>(ZPtr + (<usize>(i * n + j) << 3), i === j ? 1.0 : 0.0)
+      store<f64>(ZPtr + (<usize>(i * n + j)) << 3, i === j ? 1.0 : 0.0)
     }
   }
 
@@ -264,10 +264,10 @@ export function sqrtmNewtonSchulz(
       for (let j: i32 = 0; j < n; j++) {
         let sum: f64 = 0.0
         for (let k: i32 = 0; k < n; k++) {
-          sum += load<f64>(ZPtr + (<usize>(i * n + k) << 3)) *
-                 load<f64>(YPtr + (<usize>(k * n + j) << 3))
+          sum += load<f64>(ZPtr + (<usize>(i * n + k)) << 3) *
+                 load<f64>(YPtr + (<usize>(k * n + j)) << 3)
         }
-        store<f64>(tempPtr + (<usize>(i * n + j) << 3), sum)
+        store<f64>(tempPtr + (<usize>(i * n + j)) << 3, sum)
       }
     }
 
@@ -276,7 +276,7 @@ export function sqrtmNewtonSchulz(
     for (let i: i32 = 0; i < n; i++) {
       for (let j: i32 = 0; j < n; j++) {
         const expected: f64 = i === j ? 1.0 : 0.0
-        const diff: f64 = Math.abs(load<f64>(tempPtr + (<usize>(i * n + j) << 3)) - expected)
+        const diff: f64 = Math.abs(load<f64>(tempPtr + (<usize>(i * n + j)) << 3) - expected)
         if (diff > maxDiff) {
           maxDiff = diff
         }
@@ -287,7 +287,7 @@ export function sqrtmNewtonSchulz(
       // Converged - scale result by sqrt(||A||)
       const sqrtNorm: f64 = Math.sqrt(normA)
       for (let i: i32 = 0; i < nn; i++) {
-        store<f64>(resultPtr + (<usize>i << 3), load<f64>(YPtr + (<usize>i << 3)) * sqrtNorm)
+        store<f64>(resultPtr + (<usize>i) << 3, load<f64>(YPtr + (<usize>i) << 3) * sqrtNorm)
       }
       return iter + 1
     }
@@ -309,11 +309,11 @@ export function sqrtmNewtonSchulz(
       for (let j: i32 = 0; j < n; j++) {
         let sum: f64 = 0.0
         for (let k: i32 = 0; k < n; k++) {
-          sum += load<f64>(YPtr + (<usize>(i * n + k) << 3)) *
-                 load<f64>(tempPtr + (<usize>(k * n + j) << 3))
+          sum += load<f64>(YPtr + (<usize>(i * n + k)) << 3) *
+                 load<f64>(tempPtr + (<usize>(k * n + j)) << 3)
         }
         // Store temporarily in result
-        store<f64>(resultPtr + (<usize>(i * n + j) << 3), 0.5 * sum)
+        store<f64>(resultPtr + (<usize>(i * n + j)) << 3, 0.5 * sum)
       }
     }
 
@@ -322,24 +322,24 @@ export function sqrtmNewtonSchulz(
       for (let j: i32 = 0; j < n; j++) {
         let sum: f64 = 0.0
         for (let k: i32 = 0; k < n; k++) {
-          sum += load<f64>(tempPtr + (<usize>(i * n + k) << 3)) *
-                 load<f64>(ZPtr + (<usize>(k * n + j) << 3))
+          sum += load<f64>(tempPtr + (<usize>(i * n + k)) << 3) *
+                 load<f64>(ZPtr + (<usize>(k * n + j)) << 3)
         }
         // Store new Z value
-        store<f64>(ZPtr + (<usize>(i * n + j) << 3), 0.5 * sum)
+        store<f64>(ZPtr + (<usize>(i * n + j)) << 3, 0.5 * sum)
       }
     }
 
     // Copy new Y from result to YPtr
     for (let i: i32 = 0; i < nn; i++) {
-      store<f64>(YPtr + (<usize>i << 3), load<f64>(resultPtr + (<usize>i << 3)))
+      store<f64>(YPtr + (<usize>i) << 3, load<f64>(resultPtr + (<usize>i) << 3))
     }
   }
 
   // Did not converge
   const sqrtNorm: f64 = Math.sqrt(normA)
   for (let i: i32 = 0; i < nn; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(YPtr + (<usize>i << 3)) * sqrtNorm)
+    store<f64>(resultPtr + (<usize>i) << 3, load<f64>(YPtr + (<usize>i) << 3) * sqrtNorm)
   }
 
   return -1
@@ -367,30 +367,30 @@ export function sqrtmCholesky(
 
   // Initialize L to zero
   for (let i: i32 = 0; i < n * n; i++) {
-    store<f64>(LPtr + (<usize>i << 3), 0.0)
+    store<f64>(LPtr + (<usize>i) << 3, 0.0)
   }
 
   // Cholesky decomposition
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j <= i; j++) {
-      let sum: f64 = load<f64>(matrixPtr + (<usize>(i * n + j) << 3))
+      let sum: f64 = load<f64>(matrixPtr + (<usize>(i * n + j)) << 3)
 
       for (let k: i32 = 0; k < j; k++) {
-        sum -= load<f64>(LPtr + (<usize>(i * n + k) << 3)) *
-               load<f64>(LPtr + (<usize>(j * n + k) << 3))
+        sum -= load<f64>(LPtr + (<usize>(i * n + k)) << 3) *
+               load<f64>(LPtr + (<usize>(j * n + k)) << 3)
       }
 
       if (i === j) {
         if (sum <= 0.0) {
           return -1 // Not positive definite
         }
-        store<f64>(LPtr + (<usize>(i * n + j) << 3), Math.sqrt(sum))
+        store<f64>(LPtr + (<usize>(i * n + j)) << 3, Math.sqrt(sum))
       } else {
-        const Ljj: f64 = load<f64>(LPtr + (<usize>(j * n + j) << 3))
+        const Ljj: f64 = load<f64>(LPtr + (<usize>(j * n + j)) << 3)
         if (Math.abs(Ljj) < 1e-15) {
           return -1
         }
-        store<f64>(LPtr + (<usize>(i * n + j) << 3), sum / Ljj)
+        store<f64>(LPtr + (<usize>(i * n + j)) << 3, sum / Ljj)
       }
     }
   }
@@ -407,7 +407,7 @@ export function sqrtmCholesky(
   // For now, just copy L as a lower triangular "approximation"
   // (This is NOT the true matrix square root, but useful for some applications)
   for (let i: i32 = 0; i < n * n; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), load<f64>(LPtr + (<usize>i << 3)))
+    store<f64>(resultPtr + (<usize>i) << 3, load<f64>(LPtr + (<usize>i) << 3))
   }
 
   return 0

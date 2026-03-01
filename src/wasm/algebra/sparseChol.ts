@@ -45,16 +45,16 @@ export function sparseChol(
   // workPtr + n*8: c array (i32, size n) - column counts
   // workPtr + n*8 + n*4: s array (i32, size n) - stack for ereach
   const xPtr: usize = workPtr
-  const cPtr: usize = workPtr + (<usize>n << 3)
-  const sPtr: usize = cPtr + (<usize>n << 2)
+  const cPtr: usize = workPtr + (<usize>n) << 3
+  const sPtr: usize = cPtr + (<usize>n) << 2
 
   // Initialize column pointers and counts
   for (let k: i32 = 0; k < n; k++) {
-    const cpk: i32 = load<i32>(cpPtr + (<usize>k << 2))
-    store<i32>(lptrPtr + (<usize>k << 2), cpk)
-    store<i32>(cPtr + (<usize>k << 2), cpk)
+    const cpk: i32 = load<i32>(cpPtr + (<usize>k) << 2)
+    store<i32>(lptrPtr + (<usize>k) << 2, cpk)
+    store<i32>(cPtr + (<usize>k) << 2, cpk)
   }
-  store<i32>(lptrPtr + (<usize>n << 2), load<i32>(cpPtr + (<usize>n << 2)))
+  store<i32>(lptrPtr + (<usize>n) << 2, load<i32>(cpPtr + (<usize>n) << 2))
 
   // Apply permutation to A if provided (compute C = P * A * P^T)
   // For simplicity, we'll work directly with A and apply permutation on-the-fly
@@ -65,63 +65,63 @@ export function sparseChol(
     const top: i32 = ereach(k, aptrPtr, aindexPtr, parentPtr, sPtr, cPtr, pinvPtr, n)
 
     // Clear x[k]
-    store<f64>(xPtr + (<usize>k << 3), 0.0)
+    store<f64>(xPtr + (<usize>k) << 3, 0.0)
 
     // Get column k of A (or permuted column if pinv provided)
-    const pk: i32 = pinvPtr !== 0 ? load<i32>(pinvPtr + (<usize>k << 2)) : k
-    const aStart: i32 = load<i32>(aptrPtr + (<usize>pk << 2))
-    const aEnd: i32 = load<i32>(aptrPtr + (<usize>(pk + 1) << 2))
+    const pk: i32 = pinvPtr !== 0 ? load<i32>(pinvPtr + (<usize>k) << 2) : k
+    const aStart: i32 = load<i32>(aptrPtr + (<usize>pk) << 2)
+    const aEnd: i32 = load<i32>(aptrPtr + (<usize>(pk + 1)) << 2)
 
     // Scatter A(:,k) into x (only upper triangular part)
     for (let p: i32 = aStart; p < aEnd; p++) {
-      let i: i32 = load<i32>(aindexPtr + (<usize>p << 2))
+      let i: i32 = load<i32>(aindexPtr + (<usize>p) << 2)
       // Apply inverse permutation to row index
       if (pinvPtr !== 0) {
         // Find permuted index
         for (let j: i32 = 0; j < n; j++) {
-          if (load<i32>(pinvPtr + (<usize>j << 2)) === i) {
+          if (load<i32>(pinvPtr + (<usize>j) << 2) === i) {
             i = j
             break
           }
         }
       }
       if (i <= k) {
-        store<f64>(xPtr + (<usize>i << 3), load<f64>(avaluesPtr + (<usize>p << 3)))
+        store<f64>(xPtr + (<usize>i) << 3, load<f64>(avaluesPtr + (<usize>p) << 3))
       }
     }
 
     // d = A(k,k)
-    let d: f64 = load<f64>(xPtr + (<usize>k << 3))
-    store<f64>(xPtr + (<usize>k << 3), 0.0) // Clear for next iteration
+    let d: f64 = load<f64>(xPtr + (<usize>k) << 3)
+    store<f64>(xPtr + (<usize>k) << 3, 0.0) // Clear for next iteration
 
     // Solve L(0:k-1, 0:k-1) * x = A(:,k)
     for (let t: i32 = top; t < n; t++) {
-      const i: i32 = load<i32>(sPtr + (<usize>t << 2))
-      const lStartI: i32 = load<i32>(lptrPtr + (<usize>i << 2))
+      const i: i32 = load<i32>(sPtr + (<usize>t) << 2)
+      const lStartI: i32 = load<i32>(lptrPtr + (<usize>i) << 2)
 
       // L(k,i) = x[i] / L(i,i)
-      const lii: f64 = load<f64>(lvaluesPtr + (<usize>lStartI << 3))
-      const lki: f64 = load<f64>(xPtr + (<usize>i << 3)) / lii
+      const lii: f64 = load<f64>(lvaluesPtr + (<usize>lStartI) << 3)
+      const lki: f64 = load<f64>(xPtr + (<usize>i) << 3) / lii
 
       // Clear x[i] for next iteration
-      store<f64>(xPtr + (<usize>i << 3), 0.0)
+      store<f64>(xPtr + (<usize>i) << 3, 0.0)
 
       // Update x for remaining nonzeros in L(:,i)
-      const cI: i32 = load<i32>(cPtr + (<usize>i << 2))
+      const cI: i32 = load<i32>(cPtr + (<usize>i) << 2)
       for (let p: i32 = lStartI + 1; p < cI; p++) {
-        const r: i32 = load<i32>(lindexPtr + (<usize>p << 2))
-        const xr: f64 = load<f64>(xPtr + (<usize>r << 3))
-        store<f64>(xPtr + (<usize>r << 3), xr - load<f64>(lvaluesPtr + (<usize>p << 3)) * lki)
+        const r: i32 = load<i32>(lindexPtr + (<usize>p) << 2)
+        const xr: f64 = load<f64>(xPtr + (<usize>r) << 3)
+        store<f64>(xPtr + (<usize>r) << 3, xr - load<f64>(lvaluesPtr + (<usize>p) << 3) * lki)
       }
 
       // d = d - L(k,i) * L(k,i)^*  (for real: d -= lki * lki)
       d = d - lki * lki
 
       // Store L(k,i) in column i
-      const pStore: i32 = load<i32>(cPtr + (<usize>i << 2))
-      store<i32>(lindexPtr + (<usize>pStore << 2), k)
-      store<f64>(lvaluesPtr + (<usize>pStore << 3), lki)
-      store<i32>(cPtr + (<usize>i << 2), pStore + 1)
+      const pStore: i32 = load<i32>(cPtr + (<usize>i) << 2)
+      store<i32>(lindexPtr + (<usize>pStore) << 2, k)
+      store<f64>(lvaluesPtr + (<usize>pStore) << 3, lki)
+      store<i32>(cPtr + (<usize>i) << 2, pStore + 1)
     }
 
     // Check positive definiteness
@@ -130,13 +130,13 @@ export function sparseChol(
     }
 
     // Store L(k,k) = sqrt(d) in column k
-    const pK: i32 = load<i32>(cPtr + (<usize>k << 2))
-    store<i32>(lindexPtr + (<usize>pK << 2), k)
-    store<f64>(lvaluesPtr + (<usize>pK << 3), Math.sqrt(d))
-    store<i32>(cPtr + (<usize>k << 2), pK + 1)
+    const pK: i32 = load<i32>(cPtr + (<usize>k) << 2)
+    store<i32>(lindexPtr + (<usize>pK) << 2, k)
+    store<f64>(lvaluesPtr + (<usize>pK) << 3, Math.sqrt(d))
+    store<i32>(cPtr + (<usize>k) << 2, pK + 1)
   }
 
-  return load<i32>(cpPtr + (<usize>n << 2))
+  return load<i32>(cpPtr + (<usize>n) << 2)
 }
 
 /**
@@ -156,21 +156,21 @@ function ereach(
   let top: i32 = n
 
   // Mark k as visited
-  store<i32>(cPtr + (<usize>k << 2), -1)
+  store<i32>(cPtr + (<usize>k) << 2, -1)
 
   // Get column k of A
-  const pk: i32 = pinvPtr !== 0 ? load<i32>(pinvPtr + (<usize>k << 2)) : k
-  const aStart: i32 = load<i32>(aptrPtr + (<usize>pk << 2))
-  const aEnd: i32 = load<i32>(aptrPtr + (<usize>(pk + 1) << 2))
+  const pk: i32 = pinvPtr !== 0 ? load<i32>(pinvPtr + (<usize>k) << 2) : k
+  const aStart: i32 = load<i32>(aptrPtr + (<usize>pk) << 2)
+  const aEnd: i32 = load<i32>(aptrPtr + (<usize>(pk + 1)) << 2)
 
   // For each nonzero A(i,k) with i < k
   for (let p: i32 = aStart; p < aEnd; p++) {
-    let i: i32 = load<i32>(aindexPtr + (<usize>p << 2))
+    let i: i32 = load<i32>(aindexPtr + (<usize>p) << 2)
 
     // Apply inverse permutation
     if (pinvPtr !== 0) {
       for (let j: i32 = 0; j < n; j++) {
-        if (load<i32>(pinvPtr + (<usize>j << 2)) === i) {
+        if (load<i32>(pinvPtr + (<usize>j) << 2) === i) {
           i = j
           break
         }
@@ -185,32 +185,32 @@ function ereach(
 
     while (node !== -1 && node < k) {
       // Check if already visited
-      if (load<i32>(cPtr + (<usize>node << 2)) < 0) {
+      if (load<i32>(cPtr + (<usize>node) << 2) < 0) {
         break
       }
 
       // Mark as visited (use negative value)
-      store<i32>(sPtr + (<usize>len << 2), node)
+      store<i32>(sPtr + (<usize>len) << 2, node)
       len++
-      store<i32>(cPtr + (<usize>node << 2), -1)
+      store<i32>(cPtr + (<usize>node) << 2, -1)
 
       // Move to parent
-      node = load<i32>(parentPtr + (<usize>node << 2))
+      node = load<i32>(parentPtr + (<usize>node) << 2)
     }
 
     // Push path onto stack in reverse order
     while (len > 0) {
       len--
       top--
-      store<i32>(sPtr + (<usize>top << 2), load<i32>(sPtr + (<usize>len << 2)))
+      store<i32>(sPtr + (<usize>top) << 2, load<i32>(sPtr + (<usize>len) << 2))
     }
   }
 
   // Restore column counts (unmark visited nodes)
   for (let t: i32 = top; t < n; t++) {
-    const node: i32 = load<i32>(sPtr + (<usize>t << 2))
+    const node: i32 = load<i32>(sPtr + (<usize>t) << 2)
     // Restore from cpPtr
-    store<i32>(cPtr + (<usize>node << 2), load<i32>(cPtr + (<usize>node << 2)) & 0x7FFFFFFF)
+    store<i32>(cPtr + (<usize>node) << 2, load<i32>(cPtr + (<usize>node) << 2) & 0x7FFFFFFF)
   }
 
   return top
@@ -239,64 +239,64 @@ export function sparseCholSolve(
   // Apply permutation: work = P * b
   if (pinvPtr !== 0) {
     for (let i: i32 = 0; i < n; i++) {
-      const pi: i32 = load<i32>(pinvPtr + (<usize>i << 2))
-      store<f64>(workPtr + (<usize>pi << 3), load<f64>(bPtr + (<usize>i << 3)))
+      const pi: i32 = load<i32>(pinvPtr + (<usize>i) << 2)
+      store<f64>(workPtr + (<usize>pi) << 3, load<f64>(bPtr + (<usize>i) << 3))
     }
   } else {
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(workPtr + (<usize>i << 3), load<f64>(bPtr + (<usize>i << 3)))
+      store<f64>(workPtr + (<usize>i) << 3, load<f64>(bPtr + (<usize>i) << 3))
     }
   }
 
   // Solve L * y = P * b (forward substitution)
   for (let j: i32 = 0; j < n; j++) {
-    const lStart: i32 = load<i32>(lptrPtr + (<usize>j << 2))
-    const lEnd: i32 = load<i32>(lptrPtr + (<usize>(j + 1) << 2))
+    const lStart: i32 = load<i32>(lptrPtr + (<usize>j) << 2)
+    const lEnd: i32 = load<i32>(lptrPtr + (<usize>(j + 1)) << 2)
 
     if (lStart >= lEnd) continue
 
     // Diagonal element is first in column
-    const diag: f64 = load<f64>(lvaluesPtr + (<usize>lStart << 3))
-    const wj: f64 = load<f64>(workPtr + (<usize>j << 3)) / diag
-    store<f64>(workPtr + (<usize>j << 3), wj)
+    const diag: f64 = load<f64>(lvaluesPtr + (<usize>lStart) << 3)
+    const wj: f64 = load<f64>(workPtr + (<usize>j) << 3) / diag
+    store<f64>(workPtr + (<usize>j) << 3, wj)
 
     // Update rest of column
     for (let p: i32 = lStart + 1; p < lEnd; p++) {
-      const i: i32 = load<i32>(lindexPtr + (<usize>p << 2))
-      const wi: f64 = load<f64>(workPtr + (<usize>i << 3))
-      store<f64>(workPtr + (<usize>i << 3), wi - load<f64>(lvaluesPtr + (<usize>p << 3)) * wj)
+      const i: i32 = load<i32>(lindexPtr + (<usize>p) << 2)
+      const wi: f64 = load<f64>(workPtr + (<usize>i) << 3)
+      store<f64>(workPtr + (<usize>i) << 3, wi - load<f64>(lvaluesPtr + (<usize>p) << 3) * wj)
     }
   }
 
   // Solve L^T * z = y (backward substitution)
   for (let j: i32 = n - 1; j >= 0; j--) {
-    const lStart: i32 = load<i32>(lptrPtr + (<usize>j << 2))
-    const lEnd: i32 = load<i32>(lptrPtr + (<usize>(j + 1) << 2))
+    const lStart: i32 = load<i32>(lptrPtr + (<usize>j) << 2)
+    const lEnd: i32 = load<i32>(lptrPtr + (<usize>(j + 1)) << 2)
 
     if (lStart >= lEnd) continue
 
-    let wj: f64 = load<f64>(workPtr + (<usize>j << 3))
+    let wj: f64 = load<f64>(workPtr + (<usize>j) << 3)
 
     // Subtract contributions from L^T (which is L in row j)
     for (let p: i32 = lStart + 1; p < lEnd; p++) {
-      const i: i32 = load<i32>(lindexPtr + (<usize>p << 2))
-      wj -= load<f64>(lvaluesPtr + (<usize>p << 3)) * load<f64>(workPtr + (<usize>i << 3))
+      const i: i32 = load<i32>(lindexPtr + (<usize>p) << 2)
+      wj -= load<f64>(lvaluesPtr + (<usize>p) << 3) * load<f64>(workPtr + (<usize>i) << 3)
     }
 
     // Divide by diagonal
-    const diag: f64 = load<f64>(lvaluesPtr + (<usize>lStart << 3))
-    store<f64>(workPtr + (<usize>j << 3), wj / diag)
+    const diag: f64 = load<f64>(lvaluesPtr + (<usize>lStart) << 3)
+    store<f64>(workPtr + (<usize>j) << 3, wj / diag)
   }
 
   // Apply inverse permutation: x = P^T * z
   if (pinvPtr !== 0) {
     for (let i: i32 = 0; i < n; i++) {
-      const pi: i32 = load<i32>(pinvPtr + (<usize>i << 2))
-      store<f64>(bPtr + (<usize>i << 3), load<f64>(workPtr + (<usize>pi << 3)))
+      const pi: i32 = load<i32>(pinvPtr + (<usize>i) << 2)
+      store<f64>(bPtr + (<usize>i) << 3, load<f64>(workPtr + (<usize>pi) << 3))
     }
   } else {
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(bPtr + (<usize>i << 3), load<f64>(workPtr + (<usize>i << 3)))
+      store<f64>(bPtr + (<usize>i) << 3, load<f64>(workPtr + (<usize>i) << 3))
     }
   }
 }
@@ -321,24 +321,24 @@ export function eliminationTree(
 
   // Initialize
   for (let k: i32 = 0; k < n; k++) {
-    store<i32>(parentPtr + (<usize>k << 2), -1)
-    store<i32>(ancestorPtr + (<usize>k << 2), -1)
+    store<i32>(parentPtr + (<usize>k) << 2, -1)
+    store<i32>(ancestorPtr + (<usize>k) << 2, -1)
   }
 
   // Build elimination tree
   for (let k: i32 = 0; k < n; k++) {
-    const aStart: i32 = load<i32>(aptrPtr + (<usize>k << 2))
-    const aEnd: i32 = load<i32>(aptrPtr + (<usize>(k + 1) << 2))
+    const aStart: i32 = load<i32>(aptrPtr + (<usize>k) << 2)
+    const aEnd: i32 = load<i32>(aptrPtr + (<usize>(k + 1)) << 2)
 
     for (let p: i32 = aStart; p < aEnd; p++) {
-      let i: i32 = load<i32>(aindexPtr + (<usize>p << 2))
+      let i: i32 = load<i32>(aindexPtr + (<usize>p) << 2)
 
       if (i >= k) continue
 
       // Find root of tree containing i
       let root: i32 = i
       while (true) {
-        const anc: i32 = load<i32>(ancestorPtr + (<usize>root << 2))
+        const anc: i32 = load<i32>(ancestorPtr + (<usize>root) << 2)
         if (anc < 0 || anc === k) break
         root = anc
       }
@@ -346,17 +346,17 @@ export function eliminationTree(
       // Path compression
       let node: i32 = i
       while (node !== root) {
-        const next: i32 = load<i32>(ancestorPtr + (<usize>node << 2))
-        store<i32>(ancestorPtr + (<usize>node << 2), k)
+        const next: i32 = load<i32>(ancestorPtr + (<usize>node) << 2)
+        store<i32>(ancestorPtr + (<usize>node) << 2, k)
         node = next
       }
 
       // Set parent if not yet set
-      if (load<i32>(parentPtr + (<usize>root << 2)) < 0) {
-        store<i32>(parentPtr + (<usize>root << 2), k)
+      if (load<i32>(parentPtr + (<usize>root) << 2) < 0) {
+        store<i32>(parentPtr + (<usize>root) << 2, k)
       }
 
-      store<i32>(ancestorPtr + (<usize>root << 2), k)
+      store<i32>(ancestorPtr + (<usize>root) << 2, k)
     }
   }
 }
@@ -380,58 +380,58 @@ export function columnCounts(
   workPtr: usize
 ): void {
   const postPtr: usize = workPtr
-  const firstPtr: usize = workPtr + (<usize>n << 2)
-  const levelPtr: usize = workPtr + (<usize>(2 * n) << 2)
+  const firstPtr: usize = workPtr + (<usize>n) << 2
+  const levelPtr: usize = workPtr + (<usize>(2 * n)) << 2
 
   // Compute postorder
   postorder(parentPtr, n, postPtr, levelPtr)
 
   // Initialize
   for (let k: i32 = 0; k < n; k++) {
-    store<i32>(firstPtr + (<usize>k << 2), -1)
-    store<i32>(cpPtr + (<usize>k << 2), 0)
+    store<i32>(firstPtr + (<usize>k) << 2, -1)
+    store<i32>(cpPtr + (<usize>k) << 2, 0)
   }
 
   // Count nonzeros per column
   for (let k: i32 = 0; k < n; k++) {
-    const j: i32 = load<i32>(postPtr + (<usize>k << 2))
+    const j: i32 = load<i32>(postPtr + (<usize>k) << 2)
 
-    const aStart: i32 = load<i32>(aptrPtr + (<usize>j << 2))
-    const aEnd: i32 = load<i32>(aptrPtr + (<usize>(j + 1) << 2))
+    const aStart: i32 = load<i32>(aptrPtr + (<usize>j) << 2)
+    const aEnd: i32 = load<i32>(aptrPtr + (<usize>(j + 1)) << 2)
 
     for (let p: i32 = aStart; p < aEnd; p++) {
-      const i: i32 = load<i32>(aindexPtr + (<usize>p << 2))
+      const i: i32 = load<i32>(aindexPtr + (<usize>p) << 2)
       if (i > j) continue
 
       // Find least common ancestor
       let q: i32 = i
-      while (load<i32>(firstPtr + (<usize>q << 2)) !== -1 && load<i32>(firstPtr + (<usize>q << 2)) !== j) {
-        const next: i32 = load<i32>(firstPtr + (<usize>q << 2))
-        store<i32>(firstPtr + (<usize>q << 2), j)
-        const cnt: i32 = load<i32>(cpPtr + (<usize>q << 2))
-        store<i32>(cpPtr + (<usize>q << 2), cnt + 1)
-        q = load<i32>(parentPtr + (<usize>q << 2))
+      while (load<i32>(firstPtr + (<usize>q) << 2) !== -1 && load<i32>(firstPtr + (<usize>q) << 2) !== j) {
+        const next: i32 = load<i32>(firstPtr + (<usize>q) << 2)
+        store<i32>(firstPtr + (<usize>q) << 2, j)
+        const cnt: i32 = load<i32>(cpPtr + (<usize>q) << 2)
+        store<i32>(cpPtr + (<usize>q) << 2, cnt + 1)
+        q = load<i32>(parentPtr + (<usize>q) << 2)
         if (q < 0) break
       }
 
-      if (load<i32>(firstPtr + (<usize>i << 2)) === -1) {
-        store<i32>(firstPtr + (<usize>i << 2), j)
+      if (load<i32>(firstPtr + (<usize>i) << 2) === -1) {
+        store<i32>(firstPtr + (<usize>i) << 2, j)
       }
     }
 
     // Add diagonal
-    const cnt: i32 = load<i32>(cpPtr + (<usize>j << 2))
-    store<i32>(cpPtr + (<usize>j << 2), cnt + 1)
+    const cnt: i32 = load<i32>(cpPtr + (<usize>j) << 2)
+    store<i32>(cpPtr + (<usize>j) << 2, cnt + 1)
   }
 
   // Convert to cumulative sum
   let sum: i32 = 0
   for (let k: i32 = 0; k < n; k++) {
-    const cnt: i32 = load<i32>(cpPtr + (<usize>k << 2))
-    store<i32>(cpPtr + (<usize>k << 2), sum)
+    const cnt: i32 = load<i32>(cpPtr + (<usize>k) << 2)
+    store<i32>(cpPtr + (<usize>k) << 2, sum)
     sum += cnt
   }
-  store<i32>(cpPtr + (<usize>n << 2), sum)
+  store<i32>(cpPtr + (<usize>n) << 2, sum)
 }
 
 /**
@@ -447,30 +447,30 @@ function postorder(
   let postCount: i32 = 0
 
   for (let root: i32 = 0; root < n; root++) {
-    if (load<i32>(parentPtr + (<usize>root << 2)) !== -1) continue
+    if (load<i32>(parentPtr + (<usize>root) << 2) !== -1) continue
 
     // DFS from root
     let stackTop: i32 = 0
-    store<i32>(stackPtr + (<usize>stackTop << 2), root)
+    store<i32>(stackPtr + (<usize>stackTop) << 2, root)
     stackTop++
 
     while (stackTop > 0) {
-      const node: i32 = load<i32>(stackPtr + (<usize>(stackTop - 1) << 2))
+      const node: i32 = load<i32>(stackPtr + (<usize>(stackTop - 1)) << 2)
 
       // Find unvisited child
       let foundChild: bool = false
       for (let c: i32 = 0; c < n; c++) {
-        if (load<i32>(parentPtr + (<usize>c << 2)) === node) {
+        if (load<i32>(parentPtr + (<usize>c) << 2) === node) {
           // Check if already processed
           let processed: bool = false
           for (let p: i32 = 0; p < postCount; p++) {
-            if (load<i32>(postPtr + (<usize>p << 2)) === c) {
+            if (load<i32>(postPtr + (<usize>p) << 2) === c) {
               processed = true
               break
             }
           }
           if (!processed) {
-            store<i32>(stackPtr + (<usize>stackTop << 2), c)
+            store<i32>(stackPtr + (<usize>stackTop) << 2, c)
             stackTop++
             foundChild = true
             break
@@ -481,7 +481,7 @@ function postorder(
       if (!foundChild) {
         // All children processed, add to postorder
         stackTop--
-        store<i32>(postPtr + (<usize>postCount << 2), node)
+        store<i32>(postPtr + (<usize>postCount) << 2, node)
         postCount++
       }
     }

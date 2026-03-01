@@ -18,19 +18,19 @@
  */
 export function lsolve(LPtr: usize, bPtr: usize, n: i32, xPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    let sum: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let sum: f64 = load<f64>(bPtr + (<usize>i) << 3)
 
     for (let j: i32 = 0; j < i; j++) {
       sum -=
-        load<f64>(LPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(xPtr + (<usize>j << 3))
+        load<f64>(LPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(xPtr + (<usize>j) << 3)
     }
 
-    const diag: f64 = load<f64>(LPtr + (<usize>(i * n + i) << 3))
+    const diag: f64 = load<f64>(LPtr + (<usize>(i * n + i)) << 3)
     if (diag === 0.0) {
-      store<f64>(xPtr + (<usize>i << 3), f64.NaN)
+      store<f64>(xPtr + (<usize>i) << 3, f64.NaN)
     } else {
-      store<f64>(xPtr + (<usize>i << 3), sum / diag)
+      store<f64>(xPtr + (<usize>i) << 3, sum / diag)
     }
   }
 }
@@ -46,15 +46,15 @@ export function lsolve(LPtr: usize, bPtr: usize, n: i32, xPtr: usize): void {
  */
 export function lsolveUnit(LPtr: usize, bPtr: usize, n: i32, xPtr: usize): void {
   for (let i: i32 = 0; i < n; i++) {
-    let sum: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let sum: f64 = load<f64>(bPtr + (<usize>i) << 3)
 
     for (let j: i32 = 0; j < i; j++) {
       sum -=
-        load<f64>(LPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(xPtr + (<usize>j << 3))
+        load<f64>(LPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(xPtr + (<usize>j) << 3)
     }
 
-    store<f64>(xPtr + (<usize>i << 3), sum) // Unit diagonal means no division
+    store<f64>(xPtr + (<usize>i) << 3, sum) // Unit diagonal means no division
   }
 }
 
@@ -69,19 +69,19 @@ export function lsolveUnit(LPtr: usize, bPtr: usize, n: i32, xPtr: usize): void 
  */
 export function usolve(UPtr: usize, bPtr: usize, n: i32, xPtr: usize): void {
   for (let i: i32 = n - 1; i >= 0; i--) {
-    let sum: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let sum: f64 = load<f64>(bPtr + (<usize>i) << 3)
 
     for (let j: i32 = i + 1; j < n; j++) {
       sum -=
-        load<f64>(UPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(xPtr + (<usize>j << 3))
+        load<f64>(UPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(xPtr + (<usize>j) << 3)
     }
 
-    const diag: f64 = load<f64>(UPtr + (<usize>(i * n + i) << 3))
+    const diag: f64 = load<f64>(UPtr + (<usize>(i * n + i)) << 3)
     if (diag === 0.0) {
-      store<f64>(xPtr + (<usize>i << 3), f64.NaN)
+      store<f64>(xPtr + (<usize>i) << 3, f64.NaN)
     } else {
-      store<f64>(xPtr + (<usize>i << 3), sum / diag)
+      store<f64>(xPtr + (<usize>i) << 3, sum / diag)
     }
   }
 }
@@ -97,15 +97,15 @@ export function usolve(UPtr: usize, bPtr: usize, n: i32, xPtr: usize): void {
  */
 export function usolveUnit(UPtr: usize, bPtr: usize, n: i32, xPtr: usize): void {
   for (let i: i32 = n - 1; i >= 0; i--) {
-    let sum: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let sum: f64 = load<f64>(bPtr + (<usize>i) << 3)
 
     for (let j: i32 = i + 1; j < n; j++) {
       sum -=
-        load<f64>(UPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(xPtr + (<usize>j << 3))
+        load<f64>(UPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(xPtr + (<usize>j) << 3)
     }
 
-    store<f64>(xPtr + (<usize>i << 3), sum) // Unit diagonal means no division
+    store<f64>(xPtr + (<usize>i) << 3, sum) // Unit diagonal means no division
   }
 }
 
@@ -128,19 +128,19 @@ export function lsolveMultiple(
   for (let k: i32 = 0; k < m; k++) {
     // Solve for column k
     for (let i: i32 = 0; i < n; i++) {
-      let sum: f64 = load<f64>(BPtr + (<usize>(i * m + k) << 3))
+      let sum: f64 = load<f64>(BPtr + (<usize>(i * m + k)) << 3)
 
       for (let j: i32 = 0; j < i; j++) {
         sum -=
-          load<f64>(LPtr + (<usize>(i * n + j) << 3)) *
-          load<f64>(XPtr + (<usize>(j * m + k) << 3))
+          load<f64>(LPtr + (<usize>(i * n + j)) << 3) *
+          load<f64>(XPtr + (<usize>(j * m + k)) << 3)
       }
 
-      const diag: f64 = load<f64>(LPtr + (<usize>(i * n + i) << 3))
+      const diag: f64 = load<f64>(LPtr + (<usize>(i * n + i)) << 3)
       if (diag === 0.0) {
-        store<f64>(XPtr + (<usize>(i * m + k) << 3), f64.NaN)
+        store<f64>(XPtr + (<usize>(i * m + k)) << 3, f64.NaN)
       } else {
-        store<f64>(XPtr + (<usize>(i * m + k) << 3), sum / diag)
+        store<f64>(XPtr + (<usize>(i * m + k)) << 3, sum / diag)
       }
     }
   }
@@ -165,19 +165,19 @@ export function usolveMultiple(
   for (let k: i32 = 0; k < m; k++) {
     // Solve for column k
     for (let i: i32 = n - 1; i >= 0; i--) {
-      let sum: f64 = load<f64>(BPtr + (<usize>(i * m + k) << 3))
+      let sum: f64 = load<f64>(BPtr + (<usize>(i * m + k)) << 3)
 
       for (let j: i32 = i + 1; j < n; j++) {
         sum -=
-          load<f64>(UPtr + (<usize>(i * n + j) << 3)) *
-          load<f64>(XPtr + (<usize>(j * m + k) << 3))
+          load<f64>(UPtr + (<usize>(i * n + j)) << 3) *
+          load<f64>(XPtr + (<usize>(j * m + k)) << 3)
       }
 
-      const diag: f64 = load<f64>(UPtr + (<usize>(i * n + i) << 3))
+      const diag: f64 = load<f64>(UPtr + (<usize>(i * n + i)) << 3)
       if (diag === 0.0) {
-        store<f64>(XPtr + (<usize>(i * m + k) << 3), f64.NaN)
+        store<f64>(XPtr + (<usize>(i * m + k)) << 3, f64.NaN)
       } else {
-        store<f64>(XPtr + (<usize>(i * m + k) << 3), sum / diag)
+        store<f64>(XPtr + (<usize>(i * m + k)) << 3, sum / diag)
       }
     }
   }
@@ -193,7 +193,7 @@ export function usolveMultiple(
  */
 export function lsolveHasSolution(LPtr: usize, n: i32): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    if (load<f64>(LPtr + (<usize>(i * n + i) << 3)) === 0.0) {
+    if (load<f64>(LPtr + (<usize>(i * n + i)) << 3) === 0.0) {
       return 0
     }
   }
@@ -210,7 +210,7 @@ export function lsolveHasSolution(LPtr: usize, n: i32): i32 {
  */
 export function usolveHasSolution(UPtr: usize, n: i32): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    if (load<f64>(UPtr + (<usize>(i * n + i) << 3)) === 0.0) {
+    if (load<f64>(UPtr + (<usize>(i * n + i)) << 3) === 0.0) {
       return 0
     }
   }
@@ -235,20 +235,20 @@ export function lsolveBanded(
   xPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    let sum: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let sum: f64 = load<f64>(bPtr + (<usize>i) << 3)
     const jStart: i32 = i - bandwidth > 0 ? i - bandwidth : 0
 
     for (let j: i32 = jStart; j < i; j++) {
       sum -=
-        load<f64>(LPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(xPtr + (<usize>j << 3))
+        load<f64>(LPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(xPtr + (<usize>j) << 3)
     }
 
-    const diag: f64 = load<f64>(LPtr + (<usize>(i * n + i) << 3))
+    const diag: f64 = load<f64>(LPtr + (<usize>(i * n + i)) << 3)
     if (diag === 0.0) {
-      store<f64>(xPtr + (<usize>i << 3), f64.NaN)
+      store<f64>(xPtr + (<usize>i) << 3, f64.NaN)
     } else {
-      store<f64>(xPtr + (<usize>i << 3), sum / diag)
+      store<f64>(xPtr + (<usize>i) << 3, sum / diag)
     }
   }
 }
@@ -271,20 +271,20 @@ export function usolveBanded(
   xPtr: usize
 ): void {
   for (let i: i32 = n - 1; i >= 0; i--) {
-    let sum: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let sum: f64 = load<f64>(bPtr + (<usize>i) << 3)
     const jEnd: i32 = i + bandwidth + 1 < n ? i + bandwidth + 1 : n
 
     for (let j: i32 = i + 1; j < jEnd; j++) {
       sum -=
-        load<f64>(UPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(xPtr + (<usize>j << 3))
+        load<f64>(UPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(xPtr + (<usize>j) << 3)
     }
 
-    const diag: f64 = load<f64>(UPtr + (<usize>(i * n + i) << 3))
+    const diag: f64 = load<f64>(UPtr + (<usize>(i * n + i)) << 3)
     if (diag === 0.0) {
-      store<f64>(xPtr + (<usize>i << 3), f64.NaN)
+      store<f64>(xPtr + (<usize>i) << 3, f64.NaN)
     } else {
-      store<f64>(xPtr + (<usize>i << 3), sum / diag)
+      store<f64>(xPtr + (<usize>i) << 3, sum / diag)
     }
   }
 }
@@ -311,7 +311,7 @@ export function solveTridiagonal(
   workPtr: usize
 ): void {
   const cPrimePtr = workPtr
-  const dPrimePtr = workPtr + (<usize>n << 3)
+  const dPrimePtr = workPtr + (<usize>n) << 3
 
   // Forward sweep
   store<f64>(
@@ -325,34 +325,34 @@ export function solveTridiagonal(
 
   for (let i: i32 = 1; i < n; i++) {
     const denom: f64 =
-      load<f64>(bPtr + (<usize>i << 3)) -
-      load<f64>(aPtr + (<usize>i << 3)) *
-        load<f64>(cPrimePtr + (<usize>(i - 1) << 3))
+      load<f64>(bPtr + (<usize>i) << 3) -
+      load<f64>(aPtr + (<usize>i) << 3) *
+        load<f64>(cPrimePtr + (<usize>(i - 1)) << 3)
 
     if (i < n - 1) {
       store<f64>(
-        cPrimePtr + (<usize>i << 3),
-        load<f64>(cPtr + (<usize>i << 3)) / denom
+        cPrimePtr + (<usize>i) << 3,
+        load<f64>(cPtr + (<usize>i) << 3) / denom
       )
     }
     store<f64>(
-      dPrimePtr + (<usize>i << 3),
-      (load<f64>(dPtr + (<usize>i << 3)) -
-        load<f64>(aPtr + (<usize>i << 3)) *
-          load<f64>(dPrimePtr + (<usize>(i - 1) << 3))) /
+      dPrimePtr + (<usize>i) << 3,
+      (load<f64>(dPtr + (<usize>i) << 3) -
+        load<f64>(aPtr + (<usize>i) << 3) *
+          load<f64>(dPrimePtr + (<usize>(i - 1)) << 3)) /
         denom
     )
   }
 
   // Back substitution
-  store<f64>(xPtr + (<usize>(n - 1) << 3), load<f64>(dPrimePtr + (<usize>(n - 1) << 3)))
+  store<f64>(xPtr + (<usize>(n - 1)) << 3, load<f64>(dPrimePtr + (<usize>(n - 1)) << 3))
 
   for (let i: i32 = n - 2; i >= 0; i--) {
     store<f64>(
-      xPtr + (<usize>i << 3),
-      load<f64>(dPrimePtr + (<usize>i << 3)) -
-        load<f64>(cPrimePtr + (<usize>i << 3)) *
-          load<f64>(xPtr + (<usize>(i + 1) << 3))
+      xPtr + (<usize>i) << 3,
+      load<f64>(dPrimePtr + (<usize>i) << 3) -
+        load<f64>(cPrimePtr + (<usize>i) << 3) *
+          load<f64>(xPtr + (<usize>(i + 1)) << 3)
     )
   }
 }
@@ -376,10 +376,10 @@ export function lowerTriangularMV(
     let sum: f64 = 0.0
     for (let j: i32 = 0; j <= i; j++) {
       sum +=
-        load<f64>(LPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(xPtr + (<usize>j << 3))
+        load<f64>(LPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(xPtr + (<usize>j) << 3)
     }
-    store<f64>(yPtr + (<usize>i << 3), sum)
+    store<f64>(yPtr + (<usize>i) << 3, sum)
   }
 }
 
@@ -402,10 +402,10 @@ export function upperTriangularMV(
     let sum: f64 = 0.0
     for (let j: i32 = i; j < n; j++) {
       sum +=
-        load<f64>(UPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(xPtr + (<usize>j << 3))
+        load<f64>(UPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(xPtr + (<usize>j) << 3)
     }
-    store<f64>(yPtr + (<usize>i << 3), sum)
+    store<f64>(yPtr + (<usize>i) << 3, sum)
   }
 }
 
@@ -419,7 +419,7 @@ export function upperTriangularMV(
 export function lowerTriangularInverse(LPtr: usize, n: i32, invPtr: usize): void {
   // Initialize to zero
   for (let i: i32 = 0; i < n * n; i++) {
-    store<f64>(invPtr + (<usize>i << 3), 0.0)
+    store<f64>(invPtr + (<usize>i) << 3, 0.0)
   }
 
   // Solve L * X_j = e_j for each column j
@@ -430,13 +430,13 @@ export function lowerTriangularInverse(LPtr: usize, n: i32, invPtr: usize): void
 
       for (let k: i32 = 0; k < i; k++) {
         sum -=
-          load<f64>(LPtr + (<usize>(i * n + k) << 3)) *
-          load<f64>(invPtr + (<usize>(k * n + j) << 3))
+          load<f64>(LPtr + (<usize>(i * n + k)) << 3) *
+          load<f64>(invPtr + (<usize>(k * n + j)) << 3)
       }
 
       store<f64>(
-        invPtr + (<usize>(i * n + j) << 3),
-        sum / load<f64>(LPtr + (<usize>(i * n + i) << 3))
+        invPtr + (<usize>(i * n + j)) << 3,
+        sum / load<f64>(LPtr + (<usize>(i * n + i)) << 3)
       )
     }
   }
@@ -452,7 +452,7 @@ export function lowerTriangularInverse(LPtr: usize, n: i32, invPtr: usize): void
 export function upperTriangularInverse(UPtr: usize, n: i32, invPtr: usize): void {
   // Initialize to zero
   for (let i: i32 = 0; i < n * n; i++) {
-    store<f64>(invPtr + (<usize>i << 3), 0.0)
+    store<f64>(invPtr + (<usize>i) << 3, 0.0)
   }
 
   // Solve U * X_j = e_j for each column j
@@ -463,13 +463,13 @@ export function upperTriangularInverse(UPtr: usize, n: i32, invPtr: usize): void
 
       for (let k: i32 = i + 1; k < n; k++) {
         sum -=
-          load<f64>(UPtr + (<usize>(i * n + k) << 3)) *
-          load<f64>(invPtr + (<usize>(k * n + j) << 3))
+          load<f64>(UPtr + (<usize>(i * n + k)) << 3) *
+          load<f64>(invPtr + (<usize>(k * n + j)) << 3)
       }
 
       store<f64>(
-        invPtr + (<usize>(i * n + j) << 3),
-        sum / load<f64>(UPtr + (<usize>(i * n + i) << 3))
+        invPtr + (<usize>(i * n + j)) << 3,
+        sum / load<f64>(UPtr + (<usize>(i * n + i)) << 3)
       )
     }
   }
@@ -487,7 +487,7 @@ export function triangularDeterminant(TPtr: usize, n: i32): f64 {
   let det: f64 = 1.0
 
   for (let i: i32 = 0; i < n; i++) {
-    det *= load<f64>(TPtr + (<usize>(i * n + i) << 3))
+    det *= load<f64>(TPtr + (<usize>(i * n + i)) << 3)
   }
 
   return det
@@ -517,17 +517,17 @@ export function lsolveAll(
 ): void {
   const TOL: f64 = 1e-14
   const isFreePtr = workPtr
-  const particularPtr = workPtr + (<usize>n << 2)
+  const particularPtr = workPtr + (<usize>n) << 2
 
   // Find zero diagonals (free variables)
   let numFree: i32 = 0
 
   for (let i: i32 = 0; i < n; i++) {
-    if (Math.abs(load<f64>(LPtr + (<usize>(i * n + i) << 3))) < TOL) {
-      store<i32>(isFreePtr + (<usize>i << 2), 1)
+    if (Math.abs(load<f64>(LPtr + (<usize>(i * n + i)) << 3)) < TOL) {
+      store<i32>(isFreePtr + (<usize>i) << 2, 1)
       numFree++
     } else {
-      store<i32>(isFreePtr + (<usize>i << 2), 0)
+      store<i32>(isFreePtr + (<usize>i) << 2, 0)
     }
   }
 
@@ -535,25 +535,25 @@ export function lsolveAll(
   let isConsistent: i32 = 1
 
   for (let i: i32 = 0; i < n; i++) {
-    let sum: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let sum: f64 = load<f64>(bPtr + (<usize>i) << 3)
 
     for (let j: i32 = 0; j < i; j++) {
       sum -=
-        load<f64>(LPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(particularPtr + (<usize>j << 3))
+        load<f64>(LPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(particularPtr + (<usize>j) << 3)
     }
 
-    if (load<i32>(isFreePtr + (<usize>i << 2)) === 1) {
+    if (load<i32>(isFreePtr + (<usize>i) << 2) === 1) {
       // Free variable - check consistency
       if (Math.abs(sum) > TOL) {
         isConsistent = 0
         break
       }
-      store<f64>(particularPtr + (<usize>i << 3), 0.0)
+      store<f64>(particularPtr + (<usize>i) << 3, 0.0)
     } else {
       store<f64>(
-        particularPtr + (<usize>i << 3),
-        sum / load<f64>(LPtr + (<usize>(i * n + i) << 3))
+        particularPtr + (<usize>i) << 3,
+        sum / load<f64>(LPtr + (<usize>(i * n + i)) << 3)
       )
     }
   }
@@ -571,7 +571,7 @@ export function lsolveAll(
     store<i32>(infoPtr, 1)
     store<i32>(infoPtr + 4, 0)
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(solutionsPtr + (<usize>i << 3), load<f64>(particularPtr + (<usize>i << 3)))
+      store<f64>(solutionsPtr + (<usize>i) << 3, load<f64>(particularPtr + (<usize>i) << 3))
     }
     return
   }
@@ -584,53 +584,53 @@ export function lsolveAll(
   // Store particular solution in first column
   for (let i: i32 = 0; i < n; i++) {
     store<f64>(
-      solutionsPtr + (<usize>(i * numCols) << 3),
-      load<f64>(particularPtr + (<usize>i << 3))
+      solutionsPtr + (<usize>(i * numCols)) << 3,
+      load<f64>(particularPtr + (<usize>i) << 3)
     )
   }
 
   // Compute null space basis vectors
   let freeIdx: i32 = 0
   for (let k: i32 = 0; k < n; k++) {
-    if (load<i32>(isFreePtr + (<usize>k << 2)) === 1) {
+    if (load<i32>(isFreePtr + (<usize>k) << 2) === 1) {
       // Compute null space vector for this free variable
       for (let i: i32 = 0; i < n; i++) {
         if (i === k) {
           store<f64>(
-            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
+            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
             1.0
           )
-        } else if (load<i32>(isFreePtr + (<usize>i << 2)) === 1) {
+        } else if (load<i32>(isFreePtr + (<usize>i) << 2) === 1) {
           store<f64>(
-            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
+            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
             0.0
           )
         } else if (i < k) {
           let sum: f64 = 0.0
           for (let j: i32 = 0; j < i; j++) {
             sum -=
-              load<f64>(LPtr + (<usize>(i * n + j) << 3)) *
-              load<f64>(solutionsPtr + (<usize>(j * numCols + 1 + freeIdx) << 3))
+              load<f64>(LPtr + (<usize>(i * n + j)) << 3) *
+              load<f64>(solutionsPtr + (<usize>(j * numCols + 1 + freeIdx)) << 3)
           }
           store<f64>(
-            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
-            sum / load<f64>(LPtr + (<usize>(i * n + i) << 3))
+            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
+            sum / load<f64>(LPtr + (<usize>(i * n + i)) << 3)
           )
         } else {
           let sum: f64 = 0.0
           for (let j: i32 = 0; j < i; j++) {
             sum -=
-              load<f64>(LPtr + (<usize>(i * n + j) << 3)) *
-              load<f64>(solutionsPtr + (<usize>(j * numCols + 1 + freeIdx) << 3))
+              load<f64>(LPtr + (<usize>(i * n + j)) << 3) *
+              load<f64>(solutionsPtr + (<usize>(j * numCols + 1 + freeIdx)) << 3)
           }
-          if (Math.abs(load<f64>(LPtr + (<usize>(i * n + i) << 3))) > TOL) {
+          if (Math.abs(load<f64>(LPtr + (<usize>(i * n + i)) << 3)) > TOL) {
             store<f64>(
-              solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
-              sum / load<f64>(LPtr + (<usize>(i * n + i) << 3))
+              solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
+              sum / load<f64>(LPtr + (<usize>(i * n + i)) << 3)
             )
           } else {
             store<f64>(
-              solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
+              solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
               0.0
             )
           }
@@ -661,17 +661,17 @@ export function usolveAll(
 ): void {
   const TOL: f64 = 1e-14
   const isFreePtr = workPtr
-  const particularPtr = workPtr + (<usize>n << 2)
+  const particularPtr = workPtr + (<usize>n) << 2
 
   // Find zero diagonals (free variables)
   let numFree: i32 = 0
 
   for (let i: i32 = 0; i < n; i++) {
-    if (Math.abs(load<f64>(UPtr + (<usize>(i * n + i) << 3))) < TOL) {
-      store<i32>(isFreePtr + (<usize>i << 2), 1)
+    if (Math.abs(load<f64>(UPtr + (<usize>(i * n + i)) << 3)) < TOL) {
+      store<i32>(isFreePtr + (<usize>i) << 2, 1)
       numFree++
     } else {
-      store<i32>(isFreePtr + (<usize>i << 2), 0)
+      store<i32>(isFreePtr + (<usize>i) << 2, 0)
     }
   }
 
@@ -679,24 +679,24 @@ export function usolveAll(
   let isConsistent: i32 = 1
 
   for (let i: i32 = n - 1; i >= 0; i--) {
-    let sum: f64 = load<f64>(bPtr + (<usize>i << 3))
+    let sum: f64 = load<f64>(bPtr + (<usize>i) << 3)
 
     for (let j: i32 = i + 1; j < n; j++) {
       sum -=
-        load<f64>(UPtr + (<usize>(i * n + j) << 3)) *
-        load<f64>(particularPtr + (<usize>j << 3))
+        load<f64>(UPtr + (<usize>(i * n + j)) << 3) *
+        load<f64>(particularPtr + (<usize>j) << 3)
     }
 
-    if (load<i32>(isFreePtr + (<usize>i << 2)) === 1) {
+    if (load<i32>(isFreePtr + (<usize>i) << 2) === 1) {
       if (Math.abs(sum) > TOL) {
         isConsistent = 0
         break
       }
-      store<f64>(particularPtr + (<usize>i << 3), 0.0)
+      store<f64>(particularPtr + (<usize>i) << 3, 0.0)
     } else {
       store<f64>(
-        particularPtr + (<usize>i << 3),
-        sum / load<f64>(UPtr + (<usize>(i * n + i) << 3))
+        particularPtr + (<usize>i) << 3,
+        sum / load<f64>(UPtr + (<usize>(i * n + i)) << 3)
       )
     }
   }
@@ -714,7 +714,7 @@ export function usolveAll(
     store<i32>(infoPtr, 1)
     store<i32>(infoPtr + 4, 0)
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(solutionsPtr + (<usize>i << 3), load<f64>(particularPtr + (<usize>i << 3)))
+      store<f64>(solutionsPtr + (<usize>i) << 3, load<f64>(particularPtr + (<usize>i) << 3))
     }
     return
   }
@@ -727,53 +727,53 @@ export function usolveAll(
   // Store particular solution in first column
   for (let i: i32 = 0; i < n; i++) {
     store<f64>(
-      solutionsPtr + (<usize>(i * numCols) << 3),
-      load<f64>(particularPtr + (<usize>i << 3))
+      solutionsPtr + (<usize>(i * numCols)) << 3,
+      load<f64>(particularPtr + (<usize>i) << 3)
     )
   }
 
   // Compute null space basis vectors
   let freeIdx: i32 = 0
   for (let k: i32 = 0; k < n; k++) {
-    if (load<i32>(isFreePtr + (<usize>k << 2)) === 1) {
+    if (load<i32>(isFreePtr + (<usize>k) << 2) === 1) {
       // Backward substitution for null space vector
       for (let i: i32 = n - 1; i >= 0; i--) {
         if (i === k) {
           store<f64>(
-            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
+            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
             1.0
           )
-        } else if (load<i32>(isFreePtr + (<usize>i << 2)) === 1) {
+        } else if (load<i32>(isFreePtr + (<usize>i) << 2) === 1) {
           store<f64>(
-            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
+            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
             0.0
           )
         } else if (i > k) {
           let sum: f64 = 0.0
           for (let j: i32 = i + 1; j < n; j++) {
             sum -=
-              load<f64>(UPtr + (<usize>(i * n + j) << 3)) *
-              load<f64>(solutionsPtr + (<usize>(j * numCols + 1 + freeIdx) << 3))
+              load<f64>(UPtr + (<usize>(i * n + j)) << 3) *
+              load<f64>(solutionsPtr + (<usize>(j * numCols + 1 + freeIdx)) << 3)
           }
           store<f64>(
-            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
-            sum / load<f64>(UPtr + (<usize>(i * n + i) << 3))
+            solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
+            sum / load<f64>(UPtr + (<usize>(i * n + i)) << 3)
           )
         } else {
           let sum: f64 = 0.0
           for (let j: i32 = i + 1; j < n; j++) {
             sum -=
-              load<f64>(UPtr + (<usize>(i * n + j) << 3)) *
-              load<f64>(solutionsPtr + (<usize>(j * numCols + 1 + freeIdx) << 3))
+              load<f64>(UPtr + (<usize>(i * n + j)) << 3) *
+              load<f64>(solutionsPtr + (<usize>(j * numCols + 1 + freeIdx)) << 3)
           }
-          if (Math.abs(load<f64>(UPtr + (<usize>(i * n + i) << 3))) > TOL) {
+          if (Math.abs(load<f64>(UPtr + (<usize>(i * n + i)) << 3)) > TOL) {
             store<f64>(
-              solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
-              sum / load<f64>(UPtr + (<usize>(i * n + i) << 3))
+              solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
+              sum / load<f64>(UPtr + (<usize>(i * n + i)) << 3)
             )
           } else {
             store<f64>(
-              solutionsPtr + (<usize>(i * numCols + 1 + freeIdx) << 3),
+              solutionsPtr + (<usize>(i * numCols + 1 + freeIdx)) << 3,
               0.0
             )
           }
@@ -795,7 +795,7 @@ export function lowerTriangularRank(LPtr: usize, n: i32): i32 {
   let rank: i32 = 0
 
   for (let i: i32 = 0; i < n; i++) {
-    if (Math.abs(load<f64>(LPtr + (<usize>(i * n + i) << 3))) > TOL) {
+    if (Math.abs(load<f64>(LPtr + (<usize>(i * n + i)) << 3)) > TOL) {
       rank++
     }
   }
@@ -814,7 +814,7 @@ export function upperTriangularRank(UPtr: usize, n: i32): i32 {
   let rank: i32 = 0
 
   for (let i: i32 = 0; i < n; i++) {
-    if (Math.abs(load<f64>(UPtr + (<usize>(i * n + i) << 3))) > TOL) {
+    if (Math.abs(load<f64>(UPtr + (<usize>(i * n + i)) << 3)) > TOL) {
       rank++
     }
   }

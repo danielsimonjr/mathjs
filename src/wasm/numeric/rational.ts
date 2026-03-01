@@ -692,7 +692,7 @@ export function toContinuedFraction(
 
   while (den !== 0 && count < maxTerms) {
     const q = num / den
-    store<i32>(resultPtr + (<usize>count << 2), i32(q))
+    store<i32>(resultPtr + (<usize>count) << 2, i32(q))
     count++
 
     const r = num - q * den
@@ -726,7 +726,7 @@ export function fromContinuedFraction(
     k1: i64 = 1
 
   for (let i: i32 = 1; i < n; i++) {
-    const a = i64(load<i32>(termsPtr + (<usize>i << 2)))
+    const a = i64(load<i32>(termsPtr + (<usize>i) << 2))
     const h2 = a * h1 + h0
     const k2 = a * k1 + k0
 

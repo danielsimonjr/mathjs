@@ -48,7 +48,7 @@ export function freqz(
       const angle: f64 = -(<f64>k) * omega
       const cosAngle: f64 = Math.cos(angle)
       const sinAngle: f64 = Math.sin(angle)
-      const bk: f64 = load<f64>(bPtr + (<usize>k << 3))
+      const bk: f64 = load<f64>(bPtr + (<usize>k) << 3)
 
       numReal += bk * cosAngle
       numImag += bk * sinAngle
@@ -62,7 +62,7 @@ export function freqz(
       const angle: f64 = -(<f64>k) * omega
       const cosAngle: f64 = Math.cos(angle)
       const sinAngle: f64 = Math.sin(angle)
-      const ak: f64 = load<f64>(aPtr + (<usize>k << 3))
+      const ak: f64 = load<f64>(aPtr + (<usize>k) << 3)
 
       denReal += ak * cosAngle
       denImag += ak * sinAngle
@@ -108,7 +108,7 @@ export function freqzUniform(
 
     for (let k: i32 = 0; k < bLen; k++) {
       const angle: f64 = -(<f64>k) * omega
-      const bk: f64 = load<f64>(bPtr + (<usize>k << 3))
+      const bk: f64 = load<f64>(bPtr + (<usize>k) << 3)
       numReal += bk * Math.cos(angle)
       numImag += bk * Math.sin(angle)
     }
@@ -119,7 +119,7 @@ export function freqzUniform(
 
     for (let k: i32 = 0; k < aLen; k++) {
       const angle: f64 = -(<f64>k) * omega
-      const ak: f64 = load<f64>(aPtr + (<usize>k << 3))
+      const ak: f64 = load<f64>(aPtr + (<usize>k) << 3)
       denReal += ak * Math.cos(angle)
       denImag += ak * Math.sin(angle)
     }
@@ -484,7 +484,7 @@ export function groupDelay(
 ): void {
   if (n < 2) {
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(resultPtr + (<usize>i << 3), 0.0)
+      store<f64>(resultPtr + (<usize>i) << 3, 0.0)
     }
     return
   }
@@ -493,7 +493,7 @@ export function groupDelay(
   // phaseArray: workPtr (n elements)
   // unwrappedPhase: workPtr + n*8 (n elements)
   const phasePtr: usize = workPtr
-  const unwrappedPtr: usize = workPtr + (<usize>n << 3)
+  const unwrappedPtr: usize = workPtr + (<usize>n) << 3
 
   // Compute phase
   phase(hRealPtr, hImagPtr, n, phasePtr)
@@ -520,9 +520,9 @@ export function groupDelay(
   const w1: f64 = load<f64>(wPtr + 8)
   store<f64>(resultPtr, -(phase1 - phase0) / (w1 - w0))
 
-  const phaseNm1: f64 = load<f64>(unwrappedPtr + (<usize>(n - 1) << 3))
-  const phaseNm2: f64 = load<f64>(unwrappedPtr + (<usize>(n - 2) << 3))
-  const wNm1: f64 = load<f64>(wPtr + (<usize>(n - 1) << 3))
-  const wNm2: f64 = load<f64>(wPtr + (<usize>(n - 2) << 3))
-  store<f64>(resultPtr + (<usize>(n - 1) << 3), -(phaseNm1 - phaseNm2) / (wNm1 - wNm2))
+  const phaseNm1: f64 = load<f64>(unwrappedPtr + (<usize>(n - 1)) << 3)
+  const phaseNm2: f64 = load<f64>(unwrappedPtr + (<usize>(n - 2)) << 3)
+  const wNm1: f64 = load<f64>(wPtr + (<usize>(n - 1)) << 3)
+  const wNm2: f64 = load<f64>(wPtr + (<usize>(n - 2)) << 3)
+  store<f64>(resultPtr + (<usize>(n - 1)) << 3, -(phaseNm1 - phaseNm2) / (wNm1 - wNm2))
 }

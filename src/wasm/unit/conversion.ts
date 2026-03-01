@@ -531,118 +531,118 @@ export function fromSI(siValue: f64, toUnit: i32): f64 {
 export function getDimensions(unitCode: i32, resultPtr: usize): void {
   // Zero out first
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
-    store<f64>(resultPtr + (<usize>i << 3), 0.0)
+    store<f64>(resultPtr + (<usize>i) << 3, 0.0)
   }
 
   // Base units
   if (unitCode >= 100 && unitCode < 200) {
     // Length
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 1.0)
   } else if (unitCode >= 200 && unitCode < 300) {
     // Mass
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
   } else if (unitCode >= 300 && unitCode < 400) {
     // Time
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, 1.0)
   } else if (unitCode >= 400 && unitCode < 500) {
     // Temperature
-    store<f64>(resultPtr + (<usize>DIM_TEMPERATURE << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TEMPERATURE) << 3, 1.0)
   } else if (unitCode >= 500 && unitCode < 600) {
     // Current
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, 1.0)
   } else if (unitCode >= 600 && unitCode < 700) {
     // Amount
-    store<f64>(resultPtr + (<usize>DIM_AMOUNT << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_AMOUNT) << 3, 1.0)
   } else if (unitCode >= 700 && unitCode < 800) {
     // Luminosity
-    store<f64>(resultPtr + (<usize>DIM_LUMINOSITY << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LUMINOSITY) << 3, 1.0)
   }
   // Force: kg·m/s² = M¹L¹T⁻²
   else if (unitCode >= 800 && unitCode < 900) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -2.0)
   }
   // Energy: kg·m²/s² = M¹L²T⁻²
   else if (unitCode >= 900 && unitCode < 1000) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -2.0)
   }
   // Power: kg·m²/s³ = M¹L²T⁻³
   else if (unitCode >= 1000 && unitCode < 1100) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -3.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -3.0)
   }
   // Pressure: kg/(m·s²) = M¹L⁻¹T⁻²
   else if (unitCode >= 1100 && unitCode < 1200) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), -1.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, -1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -2.0)
   }
   // Frequency: 1/s = T⁻¹
   else if (unitCode >= 1200 && unitCode < 1300) {
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -1.0)
   }
   // Electric derived units
   else if (unitCode === UNIT_VOLT || unitCode === UNIT_MILLIVOLT) {
     // kg·m²/(A·s³)
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -3.0)
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -1.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -3.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, -1.0)
   } else if (
     unitCode === UNIT_OHM ||
     unitCode === UNIT_KILOHM ||
     unitCode === UNIT_MEGOHM
   ) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -3.0)
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -3.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, -2.0)
   } else if (unitCode >= 1305 && unitCode <= 1308) {
     // Farad
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), -1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), -2.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), 4.0)
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, -1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, -2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, 4.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, 2.0)
   } else if (unitCode === UNIT_COULOMB) {
     // A·s
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), 1.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, 1.0)
   } else if (unitCode === UNIT_HENRY) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -2.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -2.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, -2.0)
   } else if (unitCode === UNIT_SIEMENS) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), -1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), -2.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), 3.0)
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, -1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, -2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, 3.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, 2.0)
   } else if (unitCode === UNIT_WEBER) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -1.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 2.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -2.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, -1.0)
   } else if (unitCode === UNIT_TESLA) {
-    store<f64>(resultPtr + (<usize>DIM_MASS << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -2.0)
-    store<f64>(resultPtr + (<usize>DIM_CURRENT << 3), -1.0)
+    store<f64>(resultPtr + (<usize>DIM_MASS) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -2.0)
+    store<f64>(resultPtr + (<usize>DIM_CURRENT) << 3, -1.0)
   }
   // Area: L²
   else if (unitCode >= 1400 && unitCode < 1500) {
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 2.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 2.0)
   }
   // Volume: L³
   else if (unitCode >= 1500 && unitCode < 1600) {
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 3.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 3.0)
   }
   // Speed: L/T
   else if (unitCode >= 1600 && unitCode < 1700) {
-    store<f64>(resultPtr + (<usize>DIM_LENGTH << 3), 1.0)
-    store<f64>(resultPtr + (<usize>DIM_TIME << 3), -1.0)
+    store<f64>(resultPtr + (<usize>DIM_LENGTH) << 3, 1.0)
+    store<f64>(resultPtr + (<usize>DIM_TIME) << 3, -1.0)
   }
   // Angle and data are dimensionless in SI
   // (but can be tracked separately if needed)
@@ -657,7 +657,7 @@ export function getDimensions(unitCode: i32, resultPtr: usize): void {
  */
 export function areCompatible(unit1: i32, unit2: i32, workPtr: usize): bool {
   const d1Ptr: usize = workPtr
-  const d2Ptr: usize = workPtr + (<usize>NUM_DIMENSIONS << 3)
+  const d2Ptr: usize = workPtr + (<usize>NUM_DIMENSIONS) << 3
 
   getDimensions(unit1, d1Ptr)
   getDimensions(unit2, d2Ptr)
@@ -727,7 +727,7 @@ export function powerDimensions(
  */
 export function isDimensionless(dimsPtr: usize): bool {
   for (let i: i32 = 0; i < NUM_DIMENSIONS; i++) {
-    if (load<f64>(dimsPtr + (<usize>i << 3)) !== 0.0) return false
+    if (load<f64>(dimsPtr + (<usize>i) << 3) !== 0.0) return false
   }
   return true
 }
