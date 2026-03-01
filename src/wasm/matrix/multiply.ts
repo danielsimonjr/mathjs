@@ -48,10 +48,19 @@ export function multiplyDense(
             const resultIdx: usize = (<usize>(i * bCols + j)) << 3
             let sum: f64 = load<f64>(resultPtr + resultIdx)
 
-            for (let k: i32 = kk; k < kEnd; k++) {
-              const aVal = load<f64>(aPtr + ((<usize>(i * aCols + k)) << 3))
-              const bVal = load<f64>(bPtr + ((<usize>(k * bCols + j)) << 3))
-              sum += aVal * bVal
+            // Unrolled by 4 for better ILP
+            const kUnroll: i32 = kEnd - ((kEnd - kk) & 3)
+            let k: i32 = kk
+            for (; k < kUnroll; k += 4) {
+              const aBase: usize = (<usize>(i * aCols + k)) << 3
+              sum += load<f64>(aPtr + aBase) * load<f64>(bPtr + ((<usize>(k * bCols + j)) << 3))
+              sum += load<f64>(aPtr + aBase + 8) * load<f64>(bPtr + ((<usize>((k + 1) * bCols + j)) << 3))
+              sum += load<f64>(aPtr + aBase + 16) * load<f64>(bPtr + ((<usize>((k + 2) * bCols + j)) << 3))
+              sum += load<f64>(aPtr + aBase + 24) * load<f64>(bPtr + ((<usize>((k + 3) * bCols + j)) << 3))
+            }
+            // Handle remainder
+            for (; k < kEnd; k++) {
+              sum += load<f64>(aPtr + ((<usize>(i * aCols + k)) << 3)) * load<f64>(bPtr + ((<usize>(k * bCols + j)) << 3))
             }
 
             store<f64>(resultPtr + resultIdx, sum)
