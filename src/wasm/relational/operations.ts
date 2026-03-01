@@ -5,8 +5,7 @@
  * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
 
-// Tolerance for floating-point comparisons
-const EPSILON: f64 = 1e-12
+import { EPSILON } from '../utils/constants'
 
 /**
  * Compare two numbers: returns -1 if a < b, 0 if equal, 1 if a > b
