@@ -134,10 +134,13 @@ export const createDistance = /* #__PURE__ */ factory(
         y: Record<string, MathNumericType>,
         z: Record<string, MathNumericType>
       ): MathNumericType {
+        const xKeys = Object.keys(x)
+        const yKeys = Object.keys(y)
+        const zKeys = Object.keys(z)
         if (
-          Object.keys(x).length === 2 &&
-          Object.keys(y).length === 2 &&
-          Object.keys(z).length === 2
+          xKeys.length === 2 &&
+          yKeys.length === 2 &&
+          zKeys.length === 2
         ) {
           if (!_2d(x)) {
             throw new TypeError(
@@ -249,7 +252,9 @@ export const createDistance = /* #__PURE__ */ factory(
         x: Record<string, MathNumericType>,
         y: Record<string, MathNumericType>
       ): MathNumericType {
-        if (Object.keys(x).length === 2 && Object.keys(y).length === 3) {
+        const xKeys = Object.keys(x)
+        const yKeys = Object.keys(y)
+        if (xKeys.length === 2 && yKeys.length === 3) {
           if (!_2d(x)) {
             throw new TypeError(
               'Values of pointX and pointY should be numbers or BigNumbers'
@@ -277,7 +282,7 @@ export const createDistance = /* #__PURE__ */ factory(
           } else {
             throw new TypeError('Key names do not match')
           }
-        } else if (Object.keys(x).length === 3 && Object.keys(y).length === 6) {
+        } else if (xKeys.length === 3 && yKeys.length === 6) {
           // Point to Line 3D
           if (!_3d(x)) {
             throw new TypeError(
@@ -313,7 +318,7 @@ export const createDistance = /* #__PURE__ */ factory(
           } else {
             throw new TypeError('Key names do not match')
           }
-        } else if (Object.keys(x).length === 2 && Object.keys(y).length === 2) {
+        } else if (xKeys.length === 2 && yKeys.length === 2) {
           // Point to Point 2D
           if (!_2d(x)) {
             throw new TypeError(
@@ -338,7 +343,7 @@ export const createDistance = /* #__PURE__ */ factory(
           } else {
             throw new TypeError('Key names do not match')
           }
-        } else if (Object.keys(x).length === 3 && Object.keys(y).length === 3) {
+        } else if (xKeys.length === 3 && yKeys.length === 3) {
           // Point to Point 3D
           if (!_3d(x)) {
             throw new TypeError(
