@@ -6,9 +6,7 @@ import { wasmLoader } from '../../../wasm/WasmLoader.ts'
 const WASM_LSOLVE_THRESHOLD = 16 // 4x4 matrix
 
 // Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
+import type { TypedFunction } from '../../shared/types.js'
 
 interface MatrixConstructor {
   (

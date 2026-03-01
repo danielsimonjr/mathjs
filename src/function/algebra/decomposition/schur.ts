@@ -40,10 +40,7 @@ function flattenToFloat64(
 type NestedArray<T = any> = T | NestedArray<T>[]
 type MatrixData = NestedArray<any>
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-}
+import type { TypedFunction } from '../../shared/types.js'
 
 interface Matrix {
   type: string
@@ -87,8 +84,8 @@ interface Dependencies {
   matrix: MatrixConstructor
   identity: IdentityFunction
   multiply: TypedFunction
-  qr: TypedFunction<QRResult>
-  norm: TypedFunction<number>
+  qr: TypedFunction
+  norm: TypedFunction
   subtract: TypedFunction
 }
 

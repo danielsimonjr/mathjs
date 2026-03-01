@@ -4,6 +4,8 @@ import { clone } from '../../utils/object.ts'
 import { validateIndex } from '../../utils/array.ts'
 
 // Type definitions
+import type { TypedFunction } from '../shared/types.js'
+
 interface Matrix {
   size(): number[]
   subset(index: any): any
@@ -11,10 +13,6 @@ interface Matrix {
 
 interface Index {
   new (...ranges: any[]): Index
-}
-
-interface TypedFunction<T = any> {
-  (...args: any[]): T
 }
 
 interface MatrixConstructor {

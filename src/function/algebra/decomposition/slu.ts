@@ -4,9 +4,7 @@ import { createCsSqr } from '../sparse/csSqr.ts'
 import { createCsLu } from '../sparse/csLu.ts'
 
 // Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
+import type { TypedFunction } from '../../shared/types.js'
 
 interface SparseMatrix {
   type: 'SparseMatrix'
@@ -70,8 +68,8 @@ interface Dependencies {
   transpose: TypedFunction
   divideScalar: TypedFunction
   subtract: TypedFunction
-  larger: TypedFunction<boolean>
-  largerEq: TypedFunction<boolean>
+  larger: TypedFunction
+  largerEq: TypedFunction
   SparseMatrix: SparseMatrixConstructor
 }
 

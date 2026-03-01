@@ -61,11 +61,7 @@ function interleavedToComplex(
 type ComplexNumber = { re: number; im: number } | number
 type ComplexArrayND = ComplexNumber[] | ComplexArrayND[]
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-  convert(value: any, type: string): any
-}
+import type { TypedFunction } from '../shared/types.js'
 
 interface Matrix {
   _data?: any[] | any[][]
@@ -83,7 +79,7 @@ interface Matrix {
 
 interface Dependencies {
   typed: TypedFunction
-  fft: TypedFunction<ComplexArrayND | Matrix>
+  fft: TypedFunction
   dotDivide: TypedFunction
   conj: TypedFunction
   complex: (re: number, im?: number) => any

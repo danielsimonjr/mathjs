@@ -18,11 +18,7 @@ type NestedArray<T = Scalar> = T | NestedArray<T>[]
 /** Matrix data can be nested arrays of scalars */
 type MatrixData = NestedArray<Scalar>
 
-/** Typed function interface for math.js functions */
-interface TypedFunction<R = Scalar> {
-  (...args: unknown[]): R
-  find(func: TypedFunction, signature: string[]): TypedFunction<R>
-}
+import type { TypedFunction } from '../shared/types.js'
 
 /** Matrix interface */
 interface Matrix {
@@ -58,15 +54,15 @@ interface RankFactResult {
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
-  inv: TypedFunction<Scalar[][] | Matrix>
-  deepEqual: TypedFunction<boolean>
-  equal: TypedFunction<boolean>
-  dotDivide: TypedFunction<Scalar | Scalar[]>
-  dot: TypedFunction<Scalar>
-  ctranspose: TypedFunction<Scalar[][] | Matrix>
-  divideScalar: TypedFunction<Scalar>
-  multiply: TypedFunction<Scalar | Scalar[][] | Matrix>
-  add: TypedFunction<Scalar>
+  inv: TypedFunction
+  deepEqual: TypedFunction
+  equal: TypedFunction
+  dotDivide: TypedFunction
+  dot: TypedFunction
+  ctranspose: TypedFunction
+  divideScalar: TypedFunction
+  multiply: TypedFunction
+  add: TypedFunction
   Complex: ComplexConstructor
 }
 

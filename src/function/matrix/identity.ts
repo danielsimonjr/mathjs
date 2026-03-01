@@ -4,9 +4,7 @@ import { isInteger } from '../../utils/number.ts'
 import { factory } from '../../utils/factory.ts'
 
 // Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
+import type { TypedFunction } from '../shared/types.js'
 
 interface BigNumberConstructor {
   new (value: number | string): BigNumber

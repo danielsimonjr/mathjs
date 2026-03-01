@@ -2,9 +2,7 @@ import { arraySize } from '../../utils/array.ts'
 import { factory } from '../../utils/factory.ts'
 
 // Type definitions
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
+import type { TypedFunction } from '../shared/types.js'
 
 interface Matrix {
   size(): number[]

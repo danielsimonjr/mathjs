@@ -22,24 +22,21 @@ interface Matrix {
   _size?: number[]
 }
 
-/** Typed function interface for math.js functions */
-interface TypedFunction<R = Scalar | Matrix> {
-  (...args: unknown[]): R
-}
+import type { TypedFunction } from '../shared/types.js'
 
 /** Dependencies for sqrtm factory */
 interface Dependencies {
   typed: TypedFunction
-  abs: TypedFunction<number | BigNumber>
-  add: TypedFunction<Scalar | Matrix>
-  multiply: TypedFunction<Scalar | Matrix>
-  map: TypedFunction<Matrix>
-  sqrt: TypedFunction<Scalar>
-  subtract: TypedFunction<Scalar | Matrix>
-  inv: TypedFunction<Scalar[][] | Matrix>
-  size: TypedFunction<number[]>
-  max: TypedFunction<number | BigNumber>
-  identity: TypedFunction<Matrix>
+  abs: TypedFunction
+  add: TypedFunction
+  multiply: TypedFunction
+  map: TypedFunction
+  sqrt: TypedFunction
+  subtract: TypedFunction
+  inv: TypedFunction
+  size: TypedFunction
+  max: TypedFunction
+  identity: TypedFunction
 }
 
 const name = 'sqrtm'

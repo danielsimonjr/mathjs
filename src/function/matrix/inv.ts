@@ -35,11 +35,7 @@ interface Matrix {
   _datatype?: string
 }
 
-/** Typed function interface for math.js functions */
-interface TypedFunction<R = Scalar> {
-  (...args: unknown[]): R
-  find(func: TypedFunction, signature: string[]): TypedFunction<R>
-}
+import type { TypedFunction } from '../shared/types.js'
 
 /** Matrix constructor function */
 interface MatrixConstructor {
@@ -55,13 +51,13 @@ interface IdentityFunction {
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
-  divideScalar: TypedFunction<Scalar>
-  addScalar: TypedFunction<Scalar>
-  multiply: TypedFunction<Scalar>
-  unaryMinus: TypedFunction<Scalar>
-  det: TypedFunction<Scalar>
+  divideScalar: TypedFunction
+  addScalar: TypedFunction
+  multiply: TypedFunction
+  unaryMinus: TypedFunction
+  det: TypedFunction
   identity: IdentityFunction
-  abs: TypedFunction<number | BigNumber>
+  abs: TypedFunction
 }
 
 /**

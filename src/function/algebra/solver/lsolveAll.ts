@@ -2,11 +2,9 @@ import { factory } from '../../../utils/factory.ts'
 import { createSolveValidation } from './utils/solveValidation.ts'
 
 // Type definitions
-type ScalarValue = number | bigint | { re: number; im: number } | unknown
+import type { TypedFunction } from '../../shared/types.js'
 
-interface TypedFunction {
-  <T>(name: string, signatures: Record<string, (...args: any[]) => any>): any
-}
+type ScalarValue = number | bigint | { re: number; im: number } | unknown
 
 interface MatrixConstructor {
   (data: ScalarValue[] | ScalarValue[][]): DenseMatrix | SparseMatrix

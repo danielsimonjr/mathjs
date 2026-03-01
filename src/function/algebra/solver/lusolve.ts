@@ -8,11 +8,9 @@ import { wasmLoader } from '../../../wasm/WasmLoader.ts'
 const WASM_LUSOLVE_THRESHOLD = 16 // 4x4 matrix
 
 // Type definitions
-type _MatrixData = any[][] // eslint-disable-line @typescript-eslint/no-unused-vars
+import type { TypedFunction } from '../../shared/types.js'
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-}
+type _MatrixData = any[][] // eslint-disable-line @typescript-eslint/no-unused-vars
 
 interface MatrixConstructor {
   (

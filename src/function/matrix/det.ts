@@ -32,11 +32,7 @@ interface Matrix {
   _datatype?: string
 }
 
-/** Typed function interface for math.js functions */
-interface TypedFunction<R = Scalar> {
-  (...args: unknown[]): R
-  find(func: TypedFunction, signature: string[]): TypedFunction<R>
-}
+import type { TypedFunction } from '../shared/types.js'
 
 /** Matrix constructor function */
 interface MatrixConstructor {
@@ -47,11 +43,11 @@ interface MatrixConstructor {
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
-  subtractScalar: TypedFunction<Scalar>
-  multiply: TypedFunction<Scalar>
-  divideScalar: TypedFunction<Scalar>
-  isZero: TypedFunction<boolean>
-  unaryMinus: TypedFunction<Scalar>
+  subtractScalar: TypedFunction
+  multiply: TypedFunction
+  divideScalar: TypedFunction
+  isZero: TypedFunction
+  unaryMinus: TypedFunction
 }
 
 // Minimum matrix size (n*n elements) for WASM to be beneficial

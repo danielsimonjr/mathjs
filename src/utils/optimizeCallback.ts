@@ -3,17 +3,13 @@ import { get, arraySize } from './array.ts'
 import { typeOf as _typeOf } from './is.ts'
 
 // Type definitions
+import type { TypedFunction } from '../function/shared/types.js'
+
 interface Matrix<T = unknown> {
   isMatrix: boolean
   size(): number[]
   get(index: number[]): T
   dataType?: string
-}
-
-interface TypedFunction<T = unknown, R = unknown> {
-  (...args: T[]): R
-  signatures: Record<string, Function>
-  name: string
 }
 
 interface OptimizedCallback<T = unknown, R = unknown> {

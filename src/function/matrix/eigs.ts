@@ -27,11 +27,7 @@ type MatrixData = NestedArray<Scalar>
 /** Supported data types for eigenvalue computation */
 type DataType = 'number' | 'BigNumber' | 'Complex'
 
-/** Typed function interface for math.js functions */
-interface TypedFunction<R = Scalar> {
-  (...args: unknown[]): R
-  find(func: TypedFunction, signature: string[]): TypedFunction<R>
-}
+import type { TypedFunction } from '../shared/types.js'
 
 /** Matrix interface */
 interface Matrix {
@@ -82,38 +78,38 @@ interface Dependencies {
   config: Config
   typed: TypedFunction
   matrix: MatrixConstructor
-  addScalar: TypedFunction<Scalar>
-  equal: TypedFunction<boolean>
-  subtract: TypedFunction<Scalar>
-  abs: TypedFunction<number | BigNumber>
-  atan: TypedFunction<Scalar>
-  cos: TypedFunction<Scalar>
-  sin: TypedFunction<Scalar>
-  multiplyScalar: TypedFunction<Scalar>
-  divideScalar: TypedFunction<Scalar>
-  inv: TypedFunction<Scalar[][] | Matrix>
-  bignumber: TypedFunction<BigNumber>
-  multiply: TypedFunction<Scalar | Scalar[][] | Matrix>
-  add: TypedFunction<Scalar>
-  larger: TypedFunction<boolean>
-  largerEq: TypedFunction<boolean>
-  smallerEq: TypedFunction<boolean>
-  column: TypedFunction<Scalar[]>
-  flatten: TypedFunction<Scalar[]>
-  number: TypedFunction<number>
-  complex: TypedFunction<Complex>
-  sqrt: TypedFunction<Scalar>
-  diag: TypedFunction<Scalar[][]>
-  size: TypedFunction<number[]>
-  reshape: TypedFunction<Scalar[]>
-  qr: TypedFunction<{ Q: Scalar[][]; R: Scalar[][] }>
-  usolve: TypedFunction<Scalar[]>
-  usolveAll: TypedFunction<Scalar[][]>
-  im: TypedFunction<number | BigNumber>
-  re: TypedFunction<number | BigNumber>
-  smaller: TypedFunction<boolean>
-  matrixFromColumns: TypedFunction<Scalar[][]>
-  dot: TypedFunction<Scalar>
+  addScalar: TypedFunction
+  equal: TypedFunction
+  subtract: TypedFunction
+  abs: TypedFunction
+  atan: TypedFunction
+  cos: TypedFunction
+  sin: TypedFunction
+  multiplyScalar: TypedFunction
+  divideScalar: TypedFunction
+  inv: TypedFunction
+  bignumber: TypedFunction
+  multiply: TypedFunction
+  add: TypedFunction
+  larger: TypedFunction
+  largerEq: TypedFunction
+  smallerEq: TypedFunction
+  column: TypedFunction
+  flatten: TypedFunction
+  number: TypedFunction
+  complex: TypedFunction
+  sqrt: TypedFunction
+  diag: TypedFunction
+  size: TypedFunction
+  reshape: TypedFunction
+  qr: TypedFunction
+  usolve: TypedFunction
+  usolveAll: TypedFunction
+  im: TypedFunction
+  re: TypedFunction
+  smaller: TypedFunction
+  matrixFromColumns: TypedFunction
+  dot: TypedFunction
 }
 
 const name = 'eigs'

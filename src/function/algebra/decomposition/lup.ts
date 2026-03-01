@@ -41,10 +41,7 @@ function flattenToFloat64(
 type NestedArray<T = any> = T | NestedArray<T>[]
 type _MatrixData = NestedArray<any> // eslint-disable-line @typescript-eslint/no-unused-vars
 
-interface TypedFunction<T = any> {
-  (...args: any[]): T
-  find(func: any, signature: string[]): TypedFunction<T>
-}
+import type { TypedFunction } from '../../shared/types.js'
 
 interface MatrixConstructor {
   (
@@ -146,8 +143,8 @@ interface Dependencies {
   divideScalar: TypedFunction
   multiplyScalar: TypedFunction
   subtractScalar: TypedFunction
-  larger: TypedFunction<boolean>
-  equalScalar: TypedFunction<boolean>
+  larger: TypedFunction
+  equalScalar: TypedFunction
   unaryMinus: TypedFunction
   DenseMatrix: DenseMatrixConstructor
   SparseMatrix: SparseMatrixConstructor

@@ -18,19 +18,16 @@ interface Matrix {
   createSparseMatrix?(data: Matrix): Matrix
 }
 
-/** Typed function interface for math.js functions */
-interface TypedFunction<R = Scalar | Matrix> {
-  (...args: unknown[]): R
-}
+import type { TypedFunction } from '../shared/types.js'
 
 /** Dependencies for expm factory */
 interface Dependencies {
   typed: TypedFunction
-  abs: TypedFunction<number | BigNumber>
-  add: TypedFunction<Scalar | Matrix>
-  identity: TypedFunction<Matrix>
-  inv: TypedFunction<Matrix>
-  multiply: TypedFunction<Scalar | Matrix>
+  abs: TypedFunction
+  add: TypedFunction
+  identity: TypedFunction
+  inv: TypedFunction
+  multiply: TypedFunction
 }
 
 const name = 'expm'
