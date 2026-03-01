@@ -105,7 +105,7 @@ export const createMatAlgo12xSfs = /* #__PURE__ */ factory(
         // convert b to the same datatype
         b = typed.convert(b, dt)
         // callback
-        cf = typed.find(callback, [dt, dt]) as any as any as MatrixCallback
+        cf = typed.find(callback, [dt, dt])
       }
 
       // result arrays

@@ -91,13 +91,13 @@ export const createMatAlgo11xS0s = /* #__PURE__ */ factory(
         // datatype
         dt = adt
         // find signature that matches (dt, dt)
-        eq = typed.find(equalScalar as any, [dt, dt]) as EqualScalarFunction
+        eq = typed.find(equalScalar, [dt, dt])
         // convert 0 to the same datatype
         zero = typed.convert(0, dt)
         // convert b to the same datatype
         b = typed.convert(b, dt)
         // callback
-        cf = typed.find(callback, [dt, dt]) as any as any as MatrixCallback
+        cf = typed.find(callback, [dt, dt])
       }
 
       // result arrays
