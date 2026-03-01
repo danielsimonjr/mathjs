@@ -10,54 +10,11 @@
  * Performance: 2-5x faster than JavaScript for simple operations
  */
 
-/**
- * Unary minus operation (negation)
- * @param x The number to negate
- * @returns -x
- */
-export function unaryMinus(x: f64): f64 {
-  return -x
-}
-
-/**
- * Unary plus operation (identity)
- * @param x The input number
- * @returns x unchanged
- */
-export function unaryPlus(x: f64): f64 {
-  return x
-}
-
-/**
- * Cubic root
- * @param x The number
- * @returns The cubic root of x
- */
-export function cbrt(x: f64): f64 {
-  // For negative numbers, compute cbrt of absolute value and negate
-  if (x < 0) {
-    return -Math.pow(-x, 1.0 / 3.0)
-  }
-  return Math.pow(x, 1.0 / 3.0)
-}
-
-/**
- * Cube (x^3)
- * @param x The number
- * @returns x * x * x
- */
-export function cube(x: f64): f64 {
-  return x * x * x
-}
-
-/**
- * Square (x^2)
- * @param x The number
- * @returns x * x
- */
-export function square(x: f64): f64 {
-  return x * x
-}
+// Re-export canonical scalar operations from plain/operations
+export {
+  abs, add, subtract, multiply, divide,
+  unaryMinus, unaryPlus, cbrt, cube, square, sign
+} from '../plain/operations'
 
 /**
  * Round towards zero (fix)
@@ -137,66 +94,6 @@ export function round(x: f64): f64 {
 export function roundDecimals(x: f64, n: i32): f64 {
   const shift = Math.pow(10, n)
   return Math.round(x * shift) / shift
-}
-
-/**
- * Absolute value
- * @param x The number
- * @returns |x|
- */
-export function abs(x: f64): f64 {
-  return Math.abs(x)
-}
-
-/**
- * Sign function
- * @param x The number
- * @returns -1, 0, or 1 depending on sign of x
- */
-export function sign(x: f64): f64 {
-  if (x > 0) return 1.0
-  if (x < 0) return -1.0
-  return 0.0
-}
-
-/**
- * Addition
- * @param x First operand
- * @param y Second operand
- * @returns x + y
- */
-export function add(x: f64, y: f64): f64 {
-  return x + y
-}
-
-/**
- * Subtraction
- * @param x First operand
- * @param y Second operand
- * @returns x - y
- */
-export function subtract(x: f64, y: f64): f64 {
-  return x - y
-}
-
-/**
- * Multiplication
- * @param x First operand
- * @param y Second operand
- * @returns x * y
- */
-export function multiply(x: f64, y: f64): f64 {
-  return x * y
-}
-
-/**
- * Division
- * @param x Dividend
- * @param y Divisor
- * @returns x / y
- */
-export function divide(x: f64, y: f64): f64 {
-  return x / y
 }
 
 /**
