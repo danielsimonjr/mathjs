@@ -604,6 +604,39 @@ export function simdStdF64(aPtr: usize, length: i32, ddof: i32 = 0): f64 {
 }
 
 // ============================================================================
+// SIMD GEOMETRY OPERATIONS
+// ============================================================================
+
+/**
+ * SIMD-accelerated N-dimensional Euclidean distance
+ * Processes 2 dimensions per iteration using f64x2
+ * @param p1Ptr Pointer to first point (f64 array)
+ * @param p2Ptr Pointer to second point (f64 array)
+ * @param n Number of dimensions
+ * @returns Euclidean distance
+ */
+export function simdDistanceND(p1Ptr: usize, p2Ptr: usize, n: i32): f64 {
+  const simdLength = n & ~1
+  let vsum = f64x2.splat(0.0)
+
+  for (let i: i32 = 0; i < simdLength; i += 2) {
+    const offset: usize = (<usize>i) << 3
+    const vdiff = f64x2.sub(v128.load(p2Ptr + offset), v128.load(p1Ptr + offset))
+    vsum = f64x2.add(vsum, f64x2.mul(vdiff, vdiff))
+  }
+
+  let sum: f64 = f64x2.extract_lane(vsum, 0) + f64x2.extract_lane(vsum, 1)
+
+  if (n & 1) {
+    const offset: usize = (<usize>simdLength) << 3
+    const d: f64 = load<f64>(p2Ptr + offset) - load<f64>(p1Ptr + offset)
+    sum += d * d
+  }
+
+  return Math.sqrt(sum)
+}
+
+// ============================================================================
 // SIMD OPERATIONS (f32x4 - 4 floats per vector) for larger parallelism
 // ============================================================================
 

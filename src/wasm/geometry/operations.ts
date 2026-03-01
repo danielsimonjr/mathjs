@@ -4,6 +4,11 @@
  * All functions use raw memory pointers (usize) for proper WASM/JS interop
  */
 
+import { simdDistanceND } from '../simd/operations'
+
+/** Threshold for SIMD dispatch — vectors this size or larger use SIMD */
+const SIMD_THRESHOLD: i32 = 32
+
 /**
  * Calculate Euclidean distance between two points in 2D
  * @param x1 - X coordinate of first point
@@ -50,6 +55,8 @@ export function distance3D(
  * @returns The distance
  */
 export function distanceND(p1Ptr: usize, p2Ptr: usize, n: i32): f64 {
+  if (n >= SIMD_THRESHOLD) return simdDistanceND(p1Ptr, p2Ptr, n)
+
   let sum: f64 = 0.0
 
   for (let i: i32 = 0; i < n; i++) {
