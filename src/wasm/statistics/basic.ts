@@ -10,21 +10,25 @@
  * Performance: 3-6x faster than JavaScript for large datasets
  */
 
-// Size of f64 in bytes
-const F64_SIZE: usize = 8
+import { simdMeanF64, simdVarianceF64 } from '../simd/operations'
+
+/** Threshold for SIMD dispatch — arrays this size or larger use SIMD */
+const SIMD_THRESHOLD: i32 = 128
 
 /**
  * Calculate mean (average) of an array
+ * Uses SIMD acceleration for arrays >= SIMD_THRESHOLD elements
  * @param dataPtr Pointer to Float64Array data
  * @param length Length of array
  * @returns Mean value
  */
 export function mean(dataPtr: usize, length: i32): f64 {
   if (length === 0) return 0
+  if (length >= SIMD_THRESHOLD) return simdMeanF64(dataPtr, length)
 
   let sum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    sum += load<f64>(dataPtr + (<usize>i) << 3)
+    sum += load<f64>(dataPtr + ((<usize>i) << 3))
   }
   return sum / f64(length)
 }
@@ -43,10 +47,10 @@ export function median(dataPtr: usize, length: i32): f64 {
   const mid = length >> 1
   if (length & 1) {
     // Odd length
-    return load<f64>(dataPtr + (<usize>mid) << 3)
+    return load<f64>(dataPtr + ((<usize>mid) << 3))
   } else {
     // Even length
-    return (load<f64>(dataPtr + (<usize>(mid - 1)) << 3) + load<f64>(dataPtr + (<usize>mid) << 3)) / 2.0
+    return (load<f64>(dataPtr + ((<usize>(mid - 1)) << 3)) + load<f64>(dataPtr + ((<usize>mid) << 3))) / 2.0
   }
 }
 
@@ -60,12 +64,13 @@ export function median(dataPtr: usize, length: i32): f64 {
 export function variance(dataPtr: usize, length: i32, ddof: i32): f64 {
   if (length === 0) return 0
   if (length <= ddof) return NaN
+  if (length >= SIMD_THRESHOLD) return simdVarianceF64(dataPtr, length, ddof)
 
   const m = mean(dataPtr, length)
   let sumSquares: f64 = 0
 
   for (let i: i32 = 0; i < length; i++) {
-    const diff = load<f64>(dataPtr + (<usize>i) << 3) - m
+    const diff = load<f64>(dataPtr + ((<usize>i) << 3)) - m
     sumSquares += diff * diff
   }
 
@@ -92,7 +97,7 @@ export function std(dataPtr: usize, length: i32, ddof: i32): f64 {
 export function sum(dataPtr: usize, length: i32): f64 {
   let total: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    total += load<f64>(dataPtr + (<usize>i) << 3)
+    total += load<f64>(dataPtr + ((<usize>i) << 3))
   }
   return total
 }
@@ -106,7 +111,7 @@ export function sum(dataPtr: usize, length: i32): f64 {
 export function prod(dataPtr: usize, length: i32): f64 {
   let product: f64 = 1
   for (let i: i32 = 0; i < length; i++) {
-    product *= load<f64>(dataPtr + (<usize>i) << 3)
+    product *= load<f64>(dataPtr + ((<usize>i) << 3))
   }
   return product
 }
@@ -122,7 +127,7 @@ export function min(dataPtr: usize, length: i32): f64 {
 
   let minVal = load<f64>(dataPtr)
   for (let i: i32 = 1; i < length; i++) {
-    const val = load<f64>(dataPtr + (<usize>i) << 3)
+    const val = load<f64>(dataPtr + ((<usize>i) << 3))
     if (val < minVal) minVal = val
   }
   return minVal
@@ -139,7 +144,7 @@ export function max(dataPtr: usize, length: i32): f64 {
 
   let maxVal = load<f64>(dataPtr)
   for (let i: i32 = 1; i < length; i++) {
-    const val = load<f64>(dataPtr + (<usize>i) << 3)
+    const val = load<f64>(dataPtr + ((<usize>i) << 3))
     if (val > maxVal) maxVal = val
   }
   return maxVal
@@ -154,9 +159,9 @@ export function cumsum(dataPtr: usize, length: i32): void {
   if (length === 0) return
 
   for (let i: i32 = 1; i < length; i++) {
-    const prev = load<f64>(dataPtr + (<usize>(i - 1)) << 3)
-    const curr = load<f64>(dataPtr + (<usize>i) << 3)
-    store<f64>(dataPtr + (<usize>i) << 3, prev + curr)
+    const prev = load<f64>(dataPtr + ((<usize>(i - 1)) << 3))
+    const curr = load<f64>(dataPtr + ((<usize>i) << 3))
+    store<f64>(dataPtr + ((<usize>i) << 3), prev + curr)
   }
 }
 
@@ -178,23 +183,23 @@ function quicksortRaw(dataPtr: usize, left: i32, right: i32): void {
  * Partition helper for quicksort
  */
 function partitionRaw(dataPtr: usize, left: i32, right: i32): i32 {
-  const pivot = load<f64>(dataPtr + (<usize>right) << 3)
+  const pivot = load<f64>(dataPtr + ((<usize>right) << 3))
   let i = left - 1
 
   for (let j: i32 = left; j < right; j++) {
-    if (load<f64>(dataPtr + (<usize>j) << 3) <= pivot) {
+    if (load<f64>(dataPtr + ((<usize>j) << 3)) <= pivot) {
       i++
       // Swap
-      const temp = load<f64>(dataPtr + (<usize>i) << 3)
-      store<f64>(dataPtr + (<usize>i) << 3, load<f64>(dataPtr + (<usize>j) << 3))
-      store<f64>(dataPtr + (<usize>j) << 3, temp)
+      const temp = load<f64>(dataPtr + ((<usize>i) << 3))
+      store<f64>(dataPtr + ((<usize>i) << 3), load<f64>(dataPtr + ((<usize>j) << 3)))
+      store<f64>(dataPtr + ((<usize>j) << 3), temp)
     }
   }
 
   // Swap pivot
-  const temp = load<f64>(dataPtr + (<usize>(i + 1)) << 3)
-  store<f64>(dataPtr + (<usize>(i + 1)) << 3, load<f64>(dataPtr + (<usize>right) << 3))
-  store<f64>(dataPtr + (<usize>right) << 3, temp)
+  const temp = load<f64>(dataPtr + ((<usize>(i + 1)) << 3))
+  store<f64>(dataPtr + ((<usize>(i + 1)) << 3), load<f64>(dataPtr + ((<usize>right) << 3)))
+  store<f64>(dataPtr + ((<usize>right) << 3), temp)
 
   return i + 1
 }
@@ -212,7 +217,7 @@ export function mad(dataPtr: usize, length: i32, workPtr: usize): f64 {
 
   // Copy data to work buffer for sorting
   for (let i: i32 = 0; i < length; i++) {
-    store<f64>(workPtr + (<usize>i) << 3, load<f64>(dataPtr + (<usize>i) << 3))
+    store<f64>(workPtr + ((<usize>i) << 3), load<f64>(dataPtr + ((<usize>i) << 3)))
   }
 
   // Sort work buffer and get median
@@ -221,8 +226,8 @@ export function mad(dataPtr: usize, length: i32, workPtr: usize): f64 {
 
   // Calculate absolute deviations in work buffer
   for (let i: i32 = 0; i < length; i++) {
-    const val = load<f64>(dataPtr + (<usize>i) << 3)
-    store<f64>(workPtr + (<usize>i) << 3, Math.abs(val - med))
+    const val = load<f64>(dataPtr + ((<usize>i) << 3))
+    store<f64>(workPtr + ((<usize>i) << 3), Math.abs(val - med))
   }
 
   // Sort deviations and find median
@@ -247,11 +252,11 @@ export function quantile(dataPtr: usize, length: i32, p: f64): f64 {
   const upper = i32(Math.ceil(index))
 
   if (lower === upper) {
-    return load<f64>(dataPtr + (<usize>lower) << 3)
+    return load<f64>(dataPtr + ((<usize>lower) << 3))
   }
 
   const fraction = index - f64(lower)
-  return load<f64>(dataPtr + (<usize>lower) << 3) * (1 - fraction) + load<f64>(dataPtr + (<usize>upper) << 3) * fraction
+  return load<f64>(dataPtr + ((<usize>lower) << 3)) * (1 - fraction) + load<f64>(dataPtr + ((<usize>upper) << 3)) * fraction
 }
 
 /**
@@ -271,7 +276,7 @@ export function covariance(xPtr: usize, yPtr: usize, length: i32, ddof: i32): f6
 
   let sumProd: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    sumProd += (load<f64>(xPtr + (<usize>i) << 3) - meanX) * (load<f64>(yPtr + (<usize>i) << 3) - meanY)
+    sumProd += (load<f64>(xPtr + ((<usize>i) << 3)) - meanX) * (load<f64>(yPtr + ((<usize>i) << 3)) - meanY)
   }
 
   return sumProd / f64(length - ddof)
@@ -295,8 +300,8 @@ export function correlation(xPtr: usize, yPtr: usize, length: i32): f64 {
   let sumY2: f64 = 0
 
   for (let i: i32 = 0; i < length; i++) {
-    const dx = load<f64>(xPtr + (<usize>i) << 3) - meanX
-    const dy = load<f64>(yPtr + (<usize>i) << 3) - meanY
+    const dx = load<f64>(xPtr + ((<usize>i) << 3)) - meanX
+    const dy = load<f64>(yPtr + ((<usize>i) << 3)) - meanY
     sumXY += dx * dy
     sumX2 += dx * dx
     sumY2 += dy * dy
@@ -328,7 +333,7 @@ export function geometricMean(dataPtr: usize, length: i32): f64 {
 
   let logSum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const val = load<f64>(dataPtr + (<usize>i) << 3)
+    const val = load<f64>(dataPtr + ((<usize>i) << 3))
     if (val <= 0) return NaN
     logSum += Math.log(val)
   }
@@ -346,7 +351,7 @@ export function harmonicMean(dataPtr: usize, length: i32): f64 {
 
   let recipSum: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const val = load<f64>(dataPtr + (<usize>i) << 3)
+    const val = load<f64>(dataPtr + ((<usize>i) << 3))
     if (val === 0) return 0
     recipSum += 1.0 / val
   }
@@ -368,7 +373,7 @@ export function skewness(dataPtr: usize, length: i32): f64 {
 
   let sum3: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const diff = (load<f64>(dataPtr + (<usize>i) << 3) - m) / s
+    const diff = (load<f64>(dataPtr + ((<usize>i) << 3)) - m) / s
     sum3 += diff * diff * diff
   }
 
@@ -391,7 +396,7 @@ export function kurtosis(dataPtr: usize, length: i32): f64 {
 
   let sum4: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const diff = (load<f64>(dataPtr + (<usize>i) << 3) - m) / s
+    const diff = (load<f64>(dataPtr + ((<usize>i) << 3)) - m) / s
     const d2 = diff * diff
     sum4 += d2 * d2
   }
@@ -432,13 +437,13 @@ export function zscore(dataPtr: usize, resultPtr: usize, length: i32): void {
   if (s === 0) {
     // All values are the same
     for (let i: i32 = 0; i < length; i++) {
-      store<f64>(resultPtr + (<usize>i) << 3, 0)
+      store<f64>(resultPtr + ((<usize>i) << 3), 0)
     }
     return
   }
 
   for (let i: i32 = 0; i < length; i++) {
-    store<f64>(resultPtr + (<usize>i) << 3, (load<f64>(dataPtr + (<usize>i) << 3) - m) / s)
+    store<f64>(resultPtr + ((<usize>i) << 3), (load<f64>(dataPtr + ((<usize>i) << 3)) - m) / s)
   }
 }
 
@@ -476,7 +481,7 @@ export function rms(dataPtr: usize, length: i32): f64 {
 
   let sumSquares: f64 = 0
   for (let i: i32 = 0; i < length; i++) {
-    const val = load<f64>(dataPtr + (<usize>i) << 3)
+    const val = load<f64>(dataPtr + ((<usize>i) << 3))
     sumSquares += val * val
   }
   return Math.sqrt(sumSquares / f64(length))
