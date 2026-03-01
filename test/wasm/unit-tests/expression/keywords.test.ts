@@ -3,7 +3,7 @@
  */
 import assert from 'assert'
 
-import { keywords } from '../../../src/expression/keywords.js'
+import { keywords } from '../../../../src/expression/keywords.js'
 
 describe('keywords', function (): void {
   it('should return a map with reserved keywords', function (): void {

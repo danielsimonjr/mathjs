@@ -2,14 +2,14 @@
  * Test for is - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.ts'
 import {
   isBigInt,
   isBoolean,
   isNumber,
   isObject,
   isString
-} from '../../../src/utils/is.js'
+} from '../../../../src/utils/is.js'
 
 interface MathNode {
   type: string

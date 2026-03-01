@@ -3,7 +3,7 @@
  */
 import assert from 'assert'
 
-import math from '../../../../../src/defaultInstance.ts'
+import math from '../../../../../../src/defaultInstance.ts'
 
 describe('schur', function (): void {
   it('should calculate schur decomposition of order 5 Array with numbers', function (): void {

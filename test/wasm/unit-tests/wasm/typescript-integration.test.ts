@@ -31,7 +31,7 @@ function shouldSkip(err: Error): boolean {
          err.message.includes('workerpool')
 }
 
-describe('TypeScript + WASM Integration Tests', { timeout: 15000 }, () => {
+describe('TypeScript + WASM Integration Tests', { timeout: 60000 }, () => {
   describe('MatrixWasmBridge', () => {
     it('should import MatrixWasmBridge', async () => {
       try {

@@ -1,8 +1,8 @@
 /**
  * Test for slu - AssemblyScript-friendly TypeScript
  */
-import { approxDeepEqual } from '../../../../../tools/approx.js'
-import math from '../../../../../src/defaultInstance.ts'
+import { approxDeepEqual } from '../../../../../../tools/approx.js'
+import math from '../../../../../../src/defaultInstance.ts'
 
 describe('slu', function (): void {
   it('should decompose matrix, 4 x 4, natural ordering (order=0), partial pivoting', function (): void {

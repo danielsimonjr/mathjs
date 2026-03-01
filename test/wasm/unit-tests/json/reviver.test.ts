@@ -2,7 +2,7 @@
  * Test for json/reviver - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.ts'
 const reviver = math.reviver
 const Range = math.Range
 

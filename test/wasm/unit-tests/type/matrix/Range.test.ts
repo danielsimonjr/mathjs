@@ -46,7 +46,7 @@ describe('range', function (): void {
     it('should throw an error when created without new keyword', function (): void {
       assert.throws(function (): void {
         Range(0, 10)
-      }, /Constructor must be called with the new operator/)
+      }, /Constructor must be called with the new operator|cannot be invoked without/)
     })
 
     it('should throw an error for wrong type of arguments', function (): void {

@@ -2,8 +2,8 @@
  * Test for function - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { memoize, memoizeCompare } from '../../../src/utils/function.js'
-import { deepStrictEqual } from '../../../src/utils/object.js'
+import { memoize, memoizeCompare } from '../../../../src/utils/function.js'
+import { deepStrictEqual } from '../../../../src/utils/object.js'
 
 describe('util.function', function (): void {
   describe('memoize', function (): void {

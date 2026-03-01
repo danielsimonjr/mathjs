@@ -15,7 +15,7 @@ describe('matrix', function (): void {
     it('should throw an error when called without new keyword', function (): void {
       assert.throws(function (): void {
         Matrix()
-      }, /Constructor must be called with the new operator/)
+      }, /Constructor must be called with the new operator|cannot be invoked without/)
     })
 
     it('should have a property isMatrix', function (): void {

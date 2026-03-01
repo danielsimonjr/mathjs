@@ -5,6 +5,28 @@
  * that workPtr buffers are large enough for WASM operations.
  *
  * All sizes are in bytes unless otherwise noted.
+ *
+ * Quick Reference (for JS callers allocating workPtr):
+ *
+ *   Operation              | Size (f64 values)        | Size (bytes)
+ *   -----------------------|--------------------------|--------------------
+ *   eigsSymmetric          | 2*n                      | 2*n*8
+ *   powerIteration         | n                        | n*8
+ *   inverseIteration       | n*n + 2*n                | (n*n + 2*n)*8
+ *   qrAlgorithm            | n*n + 2*n                | (n*n + 2*n)*8
+ *   expm                   | 6*n*n                    | 6*n*n*8
+ *   sqrtm                  | 5*n*n                    | 5*n*n*8
+ *   sqrtmNewtonSchulz      | 3*n*n                    | 3*n*n*8
+ *   sparseLu               | n (f64) + 2*n (i32)      | n*8 + 2*n*4
+ *   sparseChol             | n (f64) + 2*n (i32)      | n*8 + 2*n*4
+ *   columnCounts           | 3*n (i32)                | 3*n*4
+ *   fft2d                  | max(rows,cols)*2          | max(rows,cols)*2*8
+ *   irfft                  | n*2                      | n*2*8
+ *   blockedMultiply        | bRows*bCols              | bRows*bCols*8
+ *   cond1/condInf          | 2*n*n                    | 2*n*n*8
+ *   det                    | n*n                      | n*n*8
+ *   inv                    | n*2n                     | n*2*n*8
+ *   mad                    | length                   | length*8
  */
 
 // ============================================================================

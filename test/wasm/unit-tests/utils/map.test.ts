@@ -2,14 +2,14 @@
  * Test for map - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { isMap } from '../../../src/utils/is.js'
+import { isMap } from '../../../../src/utils/is.js'
 import {
   assign,
   createMap,
   ObjectWrappingMap,
   PartitionedMap,
   toObject
-} from '../../../src/utils/map.js'
+} from '../../../../src/utils/map.js'
 
 describe('maps', function (): void {
   it('should provide isMap, a function to tell maps from non-maps', function (): void {

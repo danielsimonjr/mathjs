@@ -334,7 +334,7 @@ export function qrIterationStep(
     }
 
     // Apply rotation to columns i and i+1 (for RQ product)
-    for (let j: i32 = 0; j <= min(i + 2, n - 1); j++) {
+    for (let j: i32 = 0; j <= (i + 2 < n - 1 ? i + 2 : n - 1); j++) {
       const jiIdx: usize = (<usize>(j * fullN + i)) << 3
       const jip1Idx: usize = (<usize>(j * fullN + (i + 1))) << 3
       const aji: f64 = load<f64>(matrixPtr + jiIdx)
@@ -614,7 +614,7 @@ export function hessenbergQRStep(
     }
 
     // Apply to columns (RQ)
-    for (let j: i32 = 0; j <= min(i + 2, n - 1); j++) {
+    for (let j: i32 = 0; j <= (i + 2 < n - 1 ? i + 2 : n - 1); j++) {
       const jiIdx: usize = (<usize>(j * fullN + i)) << 3
       const jip1Idx: usize = (<usize>(j * fullN + (i + 1))) << 3
       const aji: f64 = load<f64>(matrixPtr + jiIdx)

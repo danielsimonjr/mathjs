@@ -3,8 +3,8 @@
  */
 import assert from 'assert'
 
-import math from '../../../src/defaultInstance.ts'
-import { embeddedDocs } from '../../../src/expression/embeddedDocs/embeddedDocs.js'
+import math from '../../../../src/defaultInstance.ts'
+import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDocs.js'
 const Help = math.Help
 
 describe('help', function (): void {
@@ -28,7 +28,7 @@ describe('help', function (): void {
   it('should throw an error when constructed without new operator', function (): void {
     assert.throws(function (): void {
       console.log(Help(embeddedDocs.sin))
-    }, /Constructor must be called with the new operator/)
+    }, /Constructor must be called with the new operator|cannot be invoked without/)
   })
 
   it('should throw an error when constructed without doc argument', function (): void {

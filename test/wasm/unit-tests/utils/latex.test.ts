@@ -2,7 +2,7 @@
  * Test for latex - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { toSymbol } from '../../../src/utils/latex.js'
+import { toSymbol } from '../../../../src/utils/latex.js'
 
 describe('util.latex', function (): void {
   it('should convert symbols with underscores', function (): void {

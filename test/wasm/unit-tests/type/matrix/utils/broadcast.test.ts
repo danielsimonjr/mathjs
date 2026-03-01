@@ -2,8 +2,8 @@
  * Test for broadcast - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../../src/defaultInstance.ts'
-import { broadcast } from '../../../../../src/type/matrix/utils/broadcast.js'
+import math from '../../../../../../src/defaultInstance.ts'
+import { broadcast } from '../../../../../../src/type/matrix/utils/broadcast.js'
 const matrix = math.matrix
 
 describe('broadcast', function (): void {

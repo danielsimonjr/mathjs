@@ -665,6 +665,7 @@ export function setPowerSetSize(n: i32): i32 {
  * @param index - Subset index (0 to 2^n - 1)
  * @param resultPtr - Pointer to output array (f64, must have space for n elements)
  * @returns Number of elements in the subset
+ * @note n must be <= 30 due to i32 bit-shift overflow (1 << 31 is negative in i32)
  */
 export function setGetSubset(
   aPtr: usize,

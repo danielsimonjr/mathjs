@@ -6,7 +6,7 @@ import {
   sortFactories,
   factory,
   isFactory
-} from '../../../src/utils/factory.js'
+} from '../../../../src/utils/factory.js'
 
 describe('factory', function (): void {
   it('should test whether something is a factory', function (): void {
@@ -27,14 +27,15 @@ describe('factory', function (): void {
     assert.strictEqual(isFactory(factory3), true)
   })
 
-  it('should only pass the dependencies, not the whole scope', function (done): void {
+  it('should only pass the dependencies, not the whole scope', function (): void {
+    let called = false
     const f = factory('fn1', ['a', 'c'], (scope) => {
       assert.deepStrictEqual(scope, { a: 1, c: 3 })
-
-      done()
+      called = true
     })
 
     f({ a: 1, b: 2, c: 3 })
+    assert.strictEqual(called, true)
   })
 
   // FIXME: this unit test doesn't work on IE either remove sortFactories if redundant, or use it and get the test working

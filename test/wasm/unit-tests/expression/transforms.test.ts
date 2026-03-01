@@ -2,8 +2,8 @@
  * Test for transforms - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../src/defaultInstance.ts'
-import { createMap } from '../../../src/utils/map.js'
+import math from '../../../../src/defaultInstance.ts'
+import { createMap } from '../../../../src/utils/map.js'
 
 interface MathNode {
   type: string

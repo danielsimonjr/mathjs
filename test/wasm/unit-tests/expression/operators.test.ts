@@ -2,13 +2,13 @@
  * Test for operators - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.ts'
 import {
   getAssociativity,
   getPrecedence,
   isAssociativeWith,
   getOperator
-} from '../../../src/expression/operators.js'
+} from '../../../../src/expression/operators.js'
 
 interface MathNode {
   type: string

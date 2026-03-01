@@ -3,8 +3,8 @@
  */
 import assert from 'assert'
 
-import { approxEqual, approxDeepEqual } from '../../../../../tools/approx.js'
-import math from '../../../../../src/defaultInstance.ts'
+import { approxEqual, approxDeepEqual } from '../../../../../../tools/approx.js'
+import math from '../../../../../../src/defaultInstance.ts'
 
 /**
  * Tests whether `Q` and `R` are the valid QR decomposition of `A`.

@@ -2,7 +2,7 @@
  * Test for bignumber - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../../src/defaultInstance.ts'
+import math from '../../../../../../src/defaultInstance.ts'
 const bignumber = math.bignumber
 const BigNumber = math.BigNumber
 
