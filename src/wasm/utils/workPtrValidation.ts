@@ -27,6 +27,14 @@
  *   det                    | n*n                      | n*n*8
  *   inv                    | n*2n                     | n*2*n*8
  *   mad                    | length                   | length*8
+ *   stirlingS2             | (n+1)*(k+1)             | (n+1)*(k+1)*8
+ *   bellNumbers            | (n+1)*(n+1)             | (n+1)*(n+1)*8
+ *   romberg                | maxIter*maxIter          | maxIter*maxIter*8
+ *   selectMedian/Min/Max   | length                   | length*8
+ *   countPrimesUpTo        | n+1 (u8)                 | n+1
+ *   invmod/invmodF64        | 3                        | 3*8
+ *   areCompatible (unit)   | 2*NUM_DIMS               | 2*7*8
+ *   isInteger (rational)   | 2 (i64)                  | 2*8
  */
 
 // ============================================================================
@@ -208,6 +216,78 @@ export function condWorkSize(n: i32): i32 {
   return n * n * 2 * 8 // 2*n*n f64 values
 }
 
+/**
+ * Calculate required workPtr size for det (LU decomposition copy)
+ * @param n - Matrix dimension
+ * @returns Required size in bytes
+ */
+export function detWorkSize(n: i32): i32 {
+  return n * n * 8 // n*n f64 values
+}
+
+/**
+ * Calculate required workPtr size for mad (median absolute deviation)
+ * @param length - Number of elements
+ * @returns Required size in bytes
+ */
+export function madWorkSize(length: i32): i32 {
+  return length * 8 // length f64 values
+}
+
+/**
+ * Calculate required workPtr size for stirlingS2
+ * @param n - First parameter
+ * @param k - Second parameter
+ * @returns Required size in bytes
+ */
+export function stirlingS2WorkSize(n: i32, k: i32): i32 {
+  return (n + 1) * (k + 1) * 8 // (n+1)*(k+1) f64 values
+}
+
+/**
+ * Calculate required workPtr size for bellNumbers
+ * @param n - Number
+ * @returns Required size in bytes
+ */
+export function bellNumbersWorkSize(n: i32): i32 {
+  return (n + 1) * (n + 1) * 8 // (n+1)^2 f64 values
+}
+
+/**
+ * Calculate required workPtr size for romberg integration
+ * @param maxIter - Maximum iterations
+ * @returns Required size in bytes
+ */
+export function rombergWorkSize(maxIter: i32): i32 {
+  return maxIter * maxIter * 8 // maxIter^2 f64 values
+}
+
+/**
+ * Calculate required workPtr size for selectMedian/selectMin/selectMax
+ * @param length - Number of elements
+ * @returns Required size in bytes
+ */
+export function selectWorkSize(length: i32): i32 {
+  return length * 8 // length f64 values (copy of input)
+}
+
+/**
+ * Calculate required workPtr size for invmod/invmodF64
+ * @returns Required size in bytes
+ */
+export function invmodWorkSize(): i32 {
+  return 3 * 8 // 3 i64 values for xgcd result
+}
+
+/**
+ * Calculate required workPtr size for countPrimesUpTo (sieve)
+ * @param n - Upper bound
+ * @returns Required size in bytes
+ */
+export function countPrimesWorkSize(n: i32): i32 {
+  return n + 1 // (n+1) u8 values
+}
+
 // ============================================================================
 // Validation Functions
 // ============================================================================
@@ -240,7 +320,9 @@ export function getWorkPtrRequirement(operation: i32, n: i32, m: i32 = 0): i32 {
   // 4 = qrAlgorithm, 5 = expm, 6 = sqrtm
   // 7 = sparseLu, 8 = sparseChol, 9 = columnCounts
   // 10 = fft2d, 11 = irfft, 12 = blockedMultiply
-  // 13 = cond1/condInf
+  // 13 = cond1/condInf, 14 = det, 15 = mad
+  // 16 = stirlingS2, 17 = bellNumbers, 18 = romberg
+  // 19 = selectMedian/Min/Max, 20 = invmod, 21 = countPrimes
 
   if (operation === 1) return eigsSymmetricWorkSize(n)
   if (operation === 2) return powerIterationWorkSize(n)
@@ -255,6 +337,14 @@ export function getWorkPtrRequirement(operation: i32, n: i32, m: i32 = 0): i32 {
   if (operation === 11) return irfftWorkSize(n)
   if (operation === 12) return blockedMultiplyWorkSize(n, m)
   if (operation === 13) return condWorkSize(n)
+  if (operation === 14) return detWorkSize(n)
+  if (operation === 15) return madWorkSize(n)
+  if (operation === 16) return stirlingS2WorkSize(n, m)
+  if (operation === 17) return bellNumbersWorkSize(n)
+  if (operation === 18) return rombergWorkSize(n)
+  if (operation === 19) return selectWorkSize(n)
+  if (operation === 20) return invmodWorkSize()
+  if (operation === 21) return countPrimesWorkSize(n)
 
   return 0 // Unknown operation
 }
