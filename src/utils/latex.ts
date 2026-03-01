@@ -65,7 +65,7 @@ export const latexSymbols = {
   true: '\\mathrm{True}',
   false: '\\mathrm{False}',
   // other
-  i: 'i', // TODO use \i ??
+  i: 'i',
   inf: '\\infty',
   Inf: '\\infty',
   infinity: '\\infty',
@@ -80,15 +80,15 @@ export const latexOperators = {
   ctranspose: '^H',
   factorial: '!',
   pow: '^',
-  dotPow: '.^\\wedge', // TODO find ideal solution
+  dotPow: '.^\\wedge',
   unaryPlus: '+',
   unaryMinus: '-',
-  bitNot: '\\~', // TODO find ideal solution
+  bitNot: '\\~',
   not: '\\neg',
   multiply: '\\cdot',
-  divide: '\\frac', // TODO how to handle that properly?
-  dotMultiply: '.\\cdot', // TODO find ideal solution
-  dotDivide: '.:', // TODO find ideal solution
+  divide: '\\frac',
+  dotMultiply: '.\\cdot',
+  dotDivide: '.:',
   mod: '\\mod',
   add: '+',
   subtract: '-',

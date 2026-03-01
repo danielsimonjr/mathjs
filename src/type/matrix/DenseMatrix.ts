@@ -195,7 +195,7 @@ export const createDenseMatrixClass = /* #__PURE__ */ factory(
           // get the dimensions of the array
           this._size = arraySize(this._data)
 
-          // verify the dimensions of the array, TODO: compute size while processing array
+          // verify the dimensions of the array
           validate(this._data, this._size)
           // data type unknown
           this._datatype = datatype

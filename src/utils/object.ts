@@ -102,7 +102,6 @@ export function deepExtend<T extends Record<string, unknown>>(
   a: T,
   b: Record<string, unknown>
 ): T {
-  // TODO: add support for Arrays to deepExtend
   if (Array.isArray(b)) {
     throw new TypeError('Arrays are not supported by deepExtend')
   }

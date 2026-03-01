@@ -56,8 +56,6 @@ export function gammaNumber(n: number): number {
 }
 gammaNumber.signature = 'number'
 
-// TODO: comment on the variables g and p
-
 export const gammaG: number = 4.7421875
 
 export const gammaP: number[] = [

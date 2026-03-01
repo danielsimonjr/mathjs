@@ -373,8 +373,6 @@ export function create(
   math.on('config', () => {
     Object.values(importedFactories).forEach((factory) => {
       if (factory && factory.meta && factory.meta.recreateOnConfigChange) {
-        // FIXME: only re-create when the current instance is the same as was initially created
-        // FIXME: delete the functions/constants before importing them again?
         internalImport(factory, { override: true })
       }
     })

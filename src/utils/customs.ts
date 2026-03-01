@@ -30,7 +30,6 @@ function getSafeProperty(object: any, prop: any) {
  * @param {*} value
  * @return {*} Returns the value
  */
-// TODO: merge this function into access.js?
 function setSafeProperty(object: any, prop: any, value: any) {
   // only allow setting safe properties of a plain object
   if (isSafeProperty(object, prop)) {

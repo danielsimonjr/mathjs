@@ -76,7 +76,6 @@ export const createComplex = /* #__PURE__ */ factory(
         return new Complex(re, im)
       },
 
-      // TODO: this signature should be redundant
       'BigNumber, BigNumber': function (
         re: { toNumber: () => number },
         im: { toNumber: () => number }

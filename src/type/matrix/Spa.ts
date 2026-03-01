@@ -46,7 +46,7 @@ export const createSpaClass = /* #__PURE__ */ factory(
       _heap: FibonacciHeapInterface<SpaValue>
 
       constructor() {
-        // allocate vector, TODO use typed arrays
+        // allocate vector
         this._values = []
         this._heap = new FibonacciHeap()
       }

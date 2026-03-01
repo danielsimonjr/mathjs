@@ -90,7 +90,6 @@ export function validateBundle(
       const actualType = validateTypeOf(actualValue)
       const expectedType = get(expectedBundleStructure, path) || 'undefined'
 
-      // FIXME: ugly to have these special cases
       if (path.join('.').includes('docs.')) {
         // ignore the contents of docs
         return
@@ -287,7 +286,6 @@ function traverse(
   callback: (value: any, path: (string | number)[]) => void = () => {},
   path: (string | number)[] = []
 ): void {
-  // FIXME: ugly to have these special cases
   if (path.length > 0 && path[0].toString().includes('Dependencies')) {
     // special case for objects holding a collection of dependencies
     callback(obj, path)
@@ -297,7 +295,6 @@ function traverse(
     )
   } else if (validateTypeOf(obj) === 'Object') {
     Object.keys(obj).forEach((key) => {
-      // FIXME: ugly to have these special cases
       // ignore special case of deprecated docs
       if (key === 'docs' && path.join('.') === 'expression') {
         return

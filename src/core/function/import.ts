@@ -149,7 +149,7 @@ export function importFactory(
       } else if (isFactory(value) || name !== undefined) {
         const flatName = isFactory(value)
           ? isTransformFunctionFactory(value)
-            ? value.fn + '.transform' // TODO: this is ugly
+            ? value.fn + '.transform'
             : value.fn
           : (name as string)
 

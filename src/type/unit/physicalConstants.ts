@@ -220,7 +220,6 @@ export const createFirstRadiation = /* #__PURE__ */ unitFactory(
   '3.7417718521927573e-16',
   'W m^2'
 )
-// TODO spectralRadiance = 1.1910429723971881e-16 W m^2 sr^-1
 export const createLoschmidt = /* #__PURE__ */ unitFactory(
   'loschmidt',
   '2.686780111798444e25',

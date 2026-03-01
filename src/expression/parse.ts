@@ -653,7 +653,6 @@ export const createParse = /* #__PURE__ */ factory(
       c: string,
       nestingLevel: number
     ): boolean {
-      // TODO: also take '\r' carriage return as newline? Or does that give problems on mac?
       return (
         c === ' ' ||
         c === '\t' ||

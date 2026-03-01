@@ -319,7 +319,6 @@ export const createRangeClass = /* #__PURE__ */ factory(
        * @returns {Array} array
        */
       valueOf(): number[] {
-        // TODO: implement a caching mechanism for range.valueOf()
         return this.toArray()
       }
 

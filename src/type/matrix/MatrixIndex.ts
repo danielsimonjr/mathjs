@@ -192,7 +192,6 @@ export const createIndexClass = /* #__PURE__ */ factory(
             )
           }
           this._sourceSize.push(sourceSize)
-          // TODO: implement support for wildcard '*'
         }
       }
 

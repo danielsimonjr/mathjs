@@ -243,7 +243,6 @@ export const createDot = /* #__PURE__ */ factory(
       return c
     }
 
-    // TODO remove this once #1771 is fixed
     /**
      * Get size of matrix or array
      * @param x - Matrix or array

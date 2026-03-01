@@ -93,7 +93,6 @@ export const createParserClass = /* #__PURE__ */ factory(
       this: any,
       expr: string | string[]
     ): any {
-      // TODO: validate arguments
       return evaluate(expr, this.scope)
     }
 
@@ -104,7 +103,6 @@ export const createParserClass = /* #__PURE__ */ factory(
      * @return {* | undefined} value
      */
     Parser.prototype.get = function (this: any, name: string): any {
-      // TODO: validate arguments
       if (this.scope.has(name)) {
         return this.scope.get(name)
       }

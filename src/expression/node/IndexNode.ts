@@ -108,12 +108,6 @@ export const createIndexNode = /* #__PURE__ */ factory(
         math: Record<string, any>,
         argNames: Record<string, boolean>
       ): CompileFunction {
-        // TODO: implement support for bignumber (currently bignumbers are silently
-        //       reduced to numbers when changing the value to zero-based)
-
-        // TODO: Optimization: when the range values are ConstantNodes,
-        //       we can beforehand resolve the zero-based value
-
         // optimization for a simple object property
         const evalDimensions = map(
           this.dimensions,

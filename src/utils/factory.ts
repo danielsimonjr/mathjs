@@ -209,7 +209,6 @@ export function sortFactories(
   return sorted
 }
 
-// TODO: comment or cleanup if unused in the end
 export function create(
   factories: Array<FactoryFunction | LegacyFactory>,
   scope: Record<string, any> = {}

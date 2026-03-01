@@ -87,7 +87,6 @@ export function memoizeCompare(fn: any, isEqual: any): any {
       const cached: any = memoize.cache[c]
 
       if (isEqual(args, cached.args)) {
-        // TODO: move this cache entry to the top so recently used entries move up?
         return cached.res
       }
     }
