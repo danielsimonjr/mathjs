@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.3.0] - 2026-03-01
 
+### Changed - 2026-03-01
+
+- **Refactored** arithmetic files (`add.ts`, `divide.ts`, `multiply.ts`, `subtract.ts`) to use shared `TypedFunction` interface from `src/type/matrix/types.ts` instead of duplicate local definitions (-181 lines)
+- **Added** shared function types module (`src/function/shared/types.ts`) for common type re-exports
+- **Added** call signature, `referTo` method, and widened `find()` return type in central `TypedFunction` interface
+- **Added** comprehensive TS/AS+WASM optimization implementation plan
+
 ### Fixed - 2026-03-01
 
 **Full Test Suite Green (13488 mocha + 6982 vitest, 0 failures)**
