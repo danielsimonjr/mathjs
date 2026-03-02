@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.3.0] - 2026-03-01
 
+### Performance - 2026-03-01
+
+**SIMD Acceleration & Loop Optimization**
+
+- **Added** SIMD threshold dispatch to `statistics/basic.ts` — mean/variance route to SIMD paths for arrays >= 128 elements
+- **Added** SIMD-accelerated N-dimensional distance (`simdDistanceND`) using f64x2 vectors; dispatches from `geometry/operations.ts` for >= 32 dimensions
+- **Unrolled** matrix multiply inner k-loop by 4 in `matrix/multiply.ts` for better instruction-level parallelism
+- **Cached** `Object.keys()` calls in `distance.ts` — eliminates 8 redundant key enumerations per call
+- **Fixed** critical operator precedence bug in `statistics/basic.ts`: `ptr + offset << 3` was parsed as `(ptr + offset) << 3` instead of `ptr + (offset << 3)`, causing all load/store operations to read from wrong memory addresses
+
 ### Changed - 2026-03-01
 
 - **Refactored** arithmetic files (`add.ts`, `divide.ts`, `multiply.ts`, `subtract.ts`) to use shared `TypedFunction` interface from `src/type/matrix/types.ts` instead of duplicate local definitions (-181 lines)
