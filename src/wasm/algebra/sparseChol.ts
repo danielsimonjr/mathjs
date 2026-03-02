@@ -45,7 +45,7 @@ export function sparseChol(
   // workPtr + n*8: c array (i32, size n) - column counts
   // workPtr + n*8 + n*4: s array (i32, size n) - stack for ereach
   const xPtr: usize = workPtr
-  const cPtr: usize = workPtr + (<usize>n) << 3
+  const cPtr: usize = workPtr + ((<usize>n) << 3)
   const sPtr: usize = cPtr + (<usize>n) << 2
 
   // Initialize column pointers and counts
@@ -65,7 +65,7 @@ export function sparseChol(
     const top: i32 = ereach(k, aptrPtr, aindexPtr, parentPtr, sPtr, cPtr, pinvPtr, n)
 
     // Clear x[k]
-    store<f64>(xPtr + (<usize>k) << 3, 0.0)
+    store<f64>(xPtr + ((<usize>k) << 3), 0.0)
 
     // Get column k of A (or permuted column if pinv provided)
     const pk: i32 = pinvPtr !== 0 ? load<i32>(pinvPtr + (<usize>k) << 2) : k
@@ -86,13 +86,13 @@ export function sparseChol(
         }
       }
       if (i <= k) {
-        store<f64>(xPtr + (<usize>i) << 3, load<f64>(avaluesPtr + (<usize>p) << 3))
+        store<f64>(xPtr + ((<usize>i) << 3), load<f64>(avaluesPtr + ((<usize>p) << 3)))
       }
     }
 
     // d = A(k,k)
-    let d: f64 = load<f64>(xPtr + (<usize>k) << 3)
-    store<f64>(xPtr + (<usize>k) << 3, 0.0) // Clear for next iteration
+    let d: f64 = load<f64>(xPtr + ((<usize>k) << 3))
+    store<f64>(xPtr + ((<usize>k) << 3), 0.0) // Clear for next iteration
 
     // Solve L(0:k-1, 0:k-1) * x = A(:,k)
     for (let t: i32 = top; t < n; t++) {
@@ -100,18 +100,18 @@ export function sparseChol(
       const lStartI: i32 = load<i32>(lptrPtr + (<usize>i) << 2)
 
       // L(k,i) = x[i] / L(i,i)
-      const lii: f64 = load<f64>(lvaluesPtr + (<usize>lStartI) << 3)
-      const lki: f64 = load<f64>(xPtr + (<usize>i) << 3) / lii
+      const lii: f64 = load<f64>(lvaluesPtr + ((<usize>lStartI) << 3))
+      const lki: f64 = load<f64>(xPtr + ((<usize>i) << 3)) / lii
 
       // Clear x[i] for next iteration
-      store<f64>(xPtr + (<usize>i) << 3, 0.0)
+      store<f64>(xPtr + ((<usize>i) << 3), 0.0)
 
       // Update x for remaining nonzeros in L(:,i)
       const cI: i32 = load<i32>(cPtr + (<usize>i) << 2)
       for (let p: i32 = lStartI + 1; p < cI; p++) {
         const r: i32 = load<i32>(lindexPtr + (<usize>p) << 2)
-        const xr: f64 = load<f64>(xPtr + (<usize>r) << 3)
-        store<f64>(xPtr + (<usize>r) << 3, xr - load<f64>(lvaluesPtr + (<usize>p) << 3) * lki)
+        const xr: f64 = load<f64>(xPtr + ((<usize>r) << 3))
+        store<f64>(xPtr + ((<usize>r) << 3), xr - load<f64>(lvaluesPtr + ((<usize>p) << 3)) * lki)
       }
 
       // d = d - L(k,i) * L(k,i)^*  (for real: d -= lki * lki)
@@ -120,7 +120,7 @@ export function sparseChol(
       // Store L(k,i) in column i
       const pStore: i32 = load<i32>(cPtr + (<usize>i) << 2)
       store<i32>(lindexPtr + (<usize>pStore) << 2, k)
-      store<f64>(lvaluesPtr + (<usize>pStore) << 3, lki)
+      store<f64>(lvaluesPtr + ((<usize>pStore) << 3), lki)
       store<i32>(cPtr + (<usize>i) << 2, pStore + 1)
     }
 
@@ -132,7 +132,7 @@ export function sparseChol(
     // Store L(k,k) = sqrt(d) in column k
     const pK: i32 = load<i32>(cPtr + (<usize>k) << 2)
     store<i32>(lindexPtr + (<usize>pK) << 2, k)
-    store<f64>(lvaluesPtr + (<usize>pK) << 3, Math.sqrt(d))
+    store<f64>(lvaluesPtr + ((<usize>pK) << 3), Math.sqrt(d))
     store<i32>(cPtr + (<usize>k) << 2, pK + 1)
   }
 
@@ -240,11 +240,11 @@ export function sparseCholSolve(
   if (pinvPtr !== 0) {
     for (let i: i32 = 0; i < n; i++) {
       const pi: i32 = load<i32>(pinvPtr + (<usize>i) << 2)
-      store<f64>(workPtr + (<usize>pi) << 3, load<f64>(bPtr + (<usize>i) << 3))
+      store<f64>(workPtr + ((<usize>pi) << 3), load<f64>(bPtr + ((<usize>i) << 3)))
     }
   } else {
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(workPtr + (<usize>i) << 3, load<f64>(bPtr + (<usize>i) << 3))
+      store<f64>(workPtr + ((<usize>i) << 3), load<f64>(bPtr + ((<usize>i) << 3)))
     }
   }
 
@@ -256,15 +256,15 @@ export function sparseCholSolve(
     if (lStart >= lEnd) continue
 
     // Diagonal element is first in column
-    const diag: f64 = load<f64>(lvaluesPtr + (<usize>lStart) << 3)
-    const wj: f64 = load<f64>(workPtr + (<usize>j) << 3) / diag
-    store<f64>(workPtr + (<usize>j) << 3, wj)
+    const diag: f64 = load<f64>(lvaluesPtr + ((<usize>lStart) << 3))
+    const wj: f64 = load<f64>(workPtr + ((<usize>j) << 3)) / diag
+    store<f64>(workPtr + ((<usize>j) << 3), wj)
 
     // Update rest of column
     for (let p: i32 = lStart + 1; p < lEnd; p++) {
       const i: i32 = load<i32>(lindexPtr + (<usize>p) << 2)
-      const wi: f64 = load<f64>(workPtr + (<usize>i) << 3)
-      store<f64>(workPtr + (<usize>i) << 3, wi - load<f64>(lvaluesPtr + (<usize>p) << 3) * wj)
+      const wi: f64 = load<f64>(workPtr + ((<usize>i) << 3))
+      store<f64>(workPtr + ((<usize>i) << 3), wi - load<f64>(lvaluesPtr + ((<usize>p) << 3)) * wj)
     }
   }
 
@@ -275,28 +275,28 @@ export function sparseCholSolve(
 
     if (lStart >= lEnd) continue
 
-    let wj: f64 = load<f64>(workPtr + (<usize>j) << 3)
+    let wj: f64 = load<f64>(workPtr + ((<usize>j) << 3))
 
     // Subtract contributions from L^T (which is L in row j)
     for (let p: i32 = lStart + 1; p < lEnd; p++) {
       const i: i32 = load<i32>(lindexPtr + (<usize>p) << 2)
-      wj -= load<f64>(lvaluesPtr + (<usize>p) << 3) * load<f64>(workPtr + (<usize>i) << 3)
+      wj -= load<f64>(lvaluesPtr + ((<usize>p) << 3)) * load<f64>(workPtr + ((<usize>i) << 3))
     }
 
     // Divide by diagonal
-    const diag: f64 = load<f64>(lvaluesPtr + (<usize>lStart) << 3)
-    store<f64>(workPtr + (<usize>j) << 3, wj / diag)
+    const diag: f64 = load<f64>(lvaluesPtr + ((<usize>lStart) << 3))
+    store<f64>(workPtr + ((<usize>j) << 3), wj / diag)
   }
 
   // Apply inverse permutation: x = P^T * z
   if (pinvPtr !== 0) {
     for (let i: i32 = 0; i < n; i++) {
       const pi: i32 = load<i32>(pinvPtr + (<usize>i) << 2)
-      store<f64>(bPtr + (<usize>i) << 3, load<f64>(workPtr + (<usize>pi) << 3))
+      store<f64>(bPtr + ((<usize>i) << 3), load<f64>(workPtr + ((<usize>pi) << 3)))
     }
   } else {
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(bPtr + (<usize>i) << 3, load<f64>(workPtr + (<usize>i) << 3))
+      store<f64>(bPtr + ((<usize>i) << 3), load<f64>(workPtr + ((<usize>i) << 3)))
     }
   }
 }

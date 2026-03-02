@@ -36,11 +36,11 @@ export function expm(
   // workPtr + 4*nn*8: temp1
   // workPtr + 5*nn*8: temp2
   const AposPtr: usize = workPtr
-  const NPtr: usize = workPtr + (<usize>nn) << 3
-  const DPtr: usize = workPtr + (<usize>(2 * nn)) << 3
-  const AposToIPtr: usize = workPtr + (<usize>(3 * nn)) << 3
-  const temp1Ptr: usize = workPtr + (<usize>(4 * nn)) << 3
-  const temp2Ptr: usize = workPtr + (<usize>(5 * nn)) << 3
+  const NPtr: usize = workPtr + ((<usize>nn) << 3)
+  const DPtr: usize = workPtr + ((<usize>(2 * nn)) << 3)
+  const AposToIPtr: usize = workPtr + ((<usize>(3 * nn)) << 3)
+  const temp1Ptr: usize = workPtr + ((<usize>(4 * nn)) << 3)
+  const temp2Ptr: usize = workPtr + ((<usize>(5 * nn)) << 3)
 
   // Compute infinity norm of A
   const infNorm: f64 = infinityNorm(matrixPtr, n)
@@ -53,7 +53,7 @@ export function expm(
   // Scale A by 1/2^j: Apos = A * 2^(-j)
   const scale: f64 = Math.pow(2.0, <f64>(-j))
   for (let i: i32 = 0; i < nn; i++) {
-    store<f64>(AposPtr + (<usize>i) << 3, load<f64>(matrixPtr + (<usize>i) << 3) * scale)
+    store<f64>(AposPtr + ((<usize>i) << 3), load<f64>(matrixPtr + ((<usize>i) << 3)) * scale)
   }
 
   // Initialize N and D to identity matrix
@@ -68,7 +68,7 @@ export function expm(
 
   // Copy Apos to AposToI for i=1 term
   for (let i: i32 = 0; i < nn; i++) {
-    store<f64>(AposToIPtr + (<usize>i) << 3, load<f64>(AposPtr + (<usize>i) << 3))
+    store<f64>(AposToIPtr + ((<usize>i) << 3), load<f64>(AposPtr + ((<usize>i) << 3)))
   }
 
   // Padé approximation loop
@@ -80,7 +80,7 @@ export function expm(
       // AposToI = AposToI * Apos
       matrixMultiply(AposToIPtr, AposPtr, temp1Ptr, n)
       for (let k: i32 = 0; k < nn; k++) {
-        store<f64>(AposToIPtr + (<usize>k) << 3, load<f64>(temp1Ptr + (<usize>k) << 3))
+        store<f64>(AposToIPtr + ((<usize>k) << 3), load<f64>(temp1Ptr + ((<usize>k) << 3)))
       }
       alternate = -alternate
     }
@@ -112,7 +112,7 @@ export function expm(
   for (let i: i32 = 0; i < j; i++) {
     matrixMultiply(resultPtr, resultPtr, temp1Ptr, n)
     for (let k: i32 = 0; k < nn; k++) {
-      store<f64>(resultPtr + (<usize>k) << 3, load<f64>(temp1Ptr + (<usize>k) << 3))
+      store<f64>(resultPtr + ((<usize>k) << 3), load<f64>(temp1Ptr + ((<usize>k) << 3)))
     }
   }
 
@@ -128,7 +128,7 @@ function infinityNorm(matrixPtr: usize, n: i32): f64 {
   for (let i: i32 = 0; i < n; i++) {
     let rowSum: f64 = 0.0
     for (let j: i32 = 0; j < n; j++) {
-      rowSum += Math.abs(load<f64>(matrixPtr + (<usize>(i * n + j)) << 3))
+      rowSum += Math.abs(load<f64>(matrixPtr + ((<usize>(i * n + j)) << 3)))
     }
     if (rowSum > maxNorm) {
       maxNorm = rowSum
@@ -188,10 +188,10 @@ function matrixMultiply(aPtr: usize, bPtr: usize, cPtr: usize, n: i32): void {
     for (let j: i32 = 0; j < n; j++) {
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
-        sum += load<f64>(aPtr + (<usize>(i * n + k)) << 3) *
-               load<f64>(bPtr + (<usize>(k * n + j)) << 3)
+        sum += load<f64>(aPtr + ((<usize>(i * n + k)) << 3)) *
+               load<f64>(bPtr + ((<usize>(k * n + j)) << 3))
       }
-      store<f64>(cPtr + (<usize>(i * n + j)) << 3, sum)
+      store<f64>(cPtr + ((<usize>(i * n + j)) << 3), sum)
     }
   }
 }
@@ -208,18 +208,18 @@ function matrixInverse(aPtr: usize, invPtr: usize, n: i32, workPtr: usize): i32 
   // Initialize inverse to identity
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      store<f64>(invPtr + (<usize>(i * n + j)) << 3, i === j ? 1.0 : 0.0)
+      store<f64>(invPtr + ((<usize>(i * n + j)) << 3), i === j ? 1.0 : 0.0)
     }
   }
 
   // Gauss-Jordan elimination
   for (let col: i32 = 0; col < n; col++) {
     // Find pivot
-    let maxVal: f64 = Math.abs(load<f64>(aPtr + (<usize>(col * n + col)) << 3))
+    let maxVal: f64 = Math.abs(load<f64>(aPtr + ((<usize>(col * n + col)) << 3)))
     let maxRow: i32 = col
 
     for (let row: i32 = col + 1; row < n; row++) {
-      const val: f64 = Math.abs(load<f64>(aPtr + (<usize>(row * n + col)) << 3))
+      const val: f64 = Math.abs(load<f64>(aPtr + ((<usize>(row * n + col)) << 3)))
       if (val > maxVal) {
         maxVal = val
         maxRow = row
@@ -249,7 +249,7 @@ function matrixInverse(aPtr: usize, invPtr: usize, n: i32, workPtr: usize): i32 
     }
 
     // Scale pivot row
-    const pivot: f64 = load<f64>(aPtr + (<usize>(col * n + col)) << 3)
+    const pivot: f64 = load<f64>(aPtr + ((<usize>(col * n + col)) << 3))
     for (let j: i32 = 0; j < n; j++) {
       const idx: usize = (<usize>(col * n + j)) << 3
       store<f64>(aPtr + idx, load<f64>(aPtr + idx) / pivot)
@@ -259,7 +259,7 @@ function matrixInverse(aPtr: usize, invPtr: usize, n: i32, workPtr: usize): i32 
     // Eliminate column
     for (let row: i32 = 0; row < n; row++) {
       if (row !== col) {
-        const factor: f64 = load<f64>(aPtr + (<usize>(row * n + col)) << 3)
+        const factor: f64 = load<f64>(aPtr + ((<usize>(row * n + col)) << 3))
         for (let j: i32 = 0; j < n; j++) {
           const rowIdx: usize = (<usize>(row * n + j)) << 3
           const colIdx: usize = (<usize>(col * n + j)) << 3
@@ -293,7 +293,7 @@ export function expmSmall(
   // Initialize result to identity
   for (let i: i32 = 0; i < n; i++) {
     for (let j: i32 = 0; j < n; j++) {
-      store<f64>(resultPtr + (<usize>(i * n + j)) << 3, i === j ? 1.0 : 0.0)
+      store<f64>(resultPtr + ((<usize>(i * n + j)) << 3), i === j ? 1.0 : 0.0)
     }
   }
 
@@ -435,13 +435,13 @@ export function expmv(
   //                  = x + A*x + A*(A*x)/2 + A*(A*(A*x))/6 + ...
 
   const termPtr: usize = workPtr
-  const tempPtr: usize = workPtr + (<usize>n) << 3
+  const tempPtr: usize = workPtr + ((<usize>n) << 3)
 
   // Initialize: term = x, y = x
   for (let i: i32 = 0; i < n; i++) {
-    const val: f64 = load<f64>(xPtr + (<usize>i) << 3)
-    store<f64>(termPtr + (<usize>i) << 3, val)
-    store<f64>(yPtr + (<usize>i) << 3, val)
+    const val: f64 = load<f64>(xPtr + ((<usize>i) << 3))
+    store<f64>(termPtr + ((<usize>i) << 3), val)
+    store<f64>(yPtr + ((<usize>i) << 3), val)
   }
 
   for (let k: i32 = 1; k <= numTerms; k++) {
@@ -451,18 +451,18 @@ export function expmv(
     for (let i: i32 = 0; i < n; i++) {
       let sum: f64 = 0.0
       for (let j: i32 = 0; j < n; j++) {
-        sum += load<f64>(matrixPtr + (<usize>(i * n + j)) << 3) *
-               load<f64>(termPtr + (<usize>j) << 3)
+        sum += load<f64>(matrixPtr + ((<usize>(i * n + j)) << 3)) *
+               load<f64>(termPtr + ((<usize>j) << 3))
       }
-      store<f64>(tempPtr + (<usize>i) << 3, sum * invK)
+      store<f64>(tempPtr + ((<usize>i) << 3), sum * invK)
     }
 
     // term = temp, y += term
     let normTerm: f64 = 0.0
     for (let i: i32 = 0; i < n; i++) {
-      const val: f64 = load<f64>(tempPtr + (<usize>i) << 3)
-      store<f64>(termPtr + (<usize>i) << 3, val)
-      store<f64>(yPtr + (<usize>i) << 3, load<f64>(yPtr + (<usize>i) << 3) + val)
+      const val: f64 = load<f64>(tempPtr + ((<usize>i) << 3))
+      store<f64>(termPtr + ((<usize>i) << 3), val)
+      store<f64>(yPtr + ((<usize>i) << 3), load<f64>(yPtr + ((<usize>i) << 3)) + val)
       normTerm += val * val
     }
 

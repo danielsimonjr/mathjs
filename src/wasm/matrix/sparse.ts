@@ -410,7 +410,7 @@ export function csPermute(
       // Row iOld of A becomes row pinv[iOld] of C (or iOld if pinv is null)
       const iNew: i32 = pinvPtr !== 0 ? load<i32>(pinvPtr + (<usize>iOld) << 2) : iOld
 
-      store<f64>(cValuesPtr + (<usize>nnz) << 3, load<f64>(aValuesPtr + (<usize>p) << 3))
+      store<f64>(cValuesPtr + ((<usize>nnz) << 3), load<f64>(aValuesPtr + ((<usize>p) << 3)))
       store<i32>(cIndexPtr + (<usize>nnz) << 2, iNew)
       nnz++
     }
@@ -464,21 +464,21 @@ export function csSpsolve(
       let diagVal: f64 = 1.0
       for (let k: i32 = diagStart; k < diagEnd; k++) {
         if (load<i32>(gIndexPtr + (<usize>k) << 2) === pj) {
-          diagVal = load<f64>(gValuesPtr + (<usize>k) << 3)
+          diagVal = load<f64>(gValuesPtr + ((<usize>k) << 3))
           break
         }
       }
 
-      const xj: f64 = load<f64>(xPtr + (<usize>j) << 3) / diagVal
-      store<f64>(xPtr + (<usize>j) << 3, xj)
+      const xj: f64 = load<f64>(xPtr + ((<usize>j) << 3)) / diagVal
+      store<f64>(xPtr + ((<usize>j) << 3), xj)
 
       // x[i] -= L[i,j] * x[j] for i > j
       for (let k: i32 = diagStart; k < diagEnd; k++) {
         const i: i32 = load<i32>(gIndexPtr + (<usize>k) << 2)
         if (i !== pj) {
           store<f64>(
-            xPtr + (<usize>i) << 3,
-            load<f64>(xPtr + (<usize>i) << 3) - load<f64>(gValuesPtr + (<usize>k) << 3) * xj
+            xPtr + ((<usize>i) << 3),
+            load<f64>(xPtr + ((<usize>i) << 3)) - load<f64>(gValuesPtr + ((<usize>k) << 3)) * xj
           )
         }
       }
@@ -498,15 +498,15 @@ export function csSpsolve(
       const pStart: i32 = load<i32>(gPtrPtr + (<usize>pj) << 2)
       const pEnd: i32 = load<i32>(gPtrPtr + (<usize>(pj + 1)) << 2)
 
-      const xj: f64 = load<f64>(xPtr + (<usize>j) << 3)
+      const xj: f64 = load<f64>(xPtr + ((<usize>j) << 3))
 
       // x[i] -= U[i,j] * x[j] for i < j (before we update x[j])
       for (let k: i32 = pStart; k < pEnd; k++) {
         const i: i32 = load<i32>(gIndexPtr + (<usize>k) << 2)
         if (i !== pj) {
           store<f64>(
-            xPtr + (<usize>i) << 3,
-            load<f64>(xPtr + (<usize>i) << 3) - load<f64>(gValuesPtr + (<usize>k) << 3) * xj
+            xPtr + ((<usize>i) << 3),
+            load<f64>(xPtr + ((<usize>i) << 3)) - load<f64>(gValuesPtr + ((<usize>k) << 3)) * xj
           )
         }
       }
@@ -515,11 +515,11 @@ export function csSpsolve(
       let diagVal: f64 = 1.0
       for (let k: i32 = pStart; k < pEnd; k++) {
         if (load<i32>(gIndexPtr + (<usize>k) << 2) === pj) {
-          diagVal = load<f64>(gValuesPtr + (<usize>k) << 3)
+          diagVal = load<f64>(gValuesPtr + ((<usize>k) << 3))
           break
         }
       }
-      store<f64>(xPtr + (<usize>j) << 3, xj / diagVal)
+      store<f64>(xPtr + ((<usize>j) << 3), xj / diagVal)
     }
   }
 }
@@ -661,7 +661,7 @@ export function csChol(
   // [n*8, n*8+n*4): c (i32)
   // [n*8+n*4, n*8+n*8): s (i32)
   const xPtr: usize = workPtr
-  const cPtr: usize = workPtr + (<usize>n) << 3
+  const cPtr: usize = workPtr + ((<usize>n) << 3)
   const sPtr: usize = cPtr + (<usize>n) << 2
 
   // Initialize column pointers in L
@@ -672,7 +672,7 @@ export function csChol(
   // Process each column k
   for (let k: i32 = 0; k < n; k++) {
     // Clear x
-    const top: i32 = csEreach(aIndexPtr, aPtrPtr, k, parentPtr, sPtr, cPtr, n, workPtr + (<usize>n) << 3 + (<usize>(2 * n)) << 2)
+    const top: i32 = csEreach(aIndexPtr, aPtrPtr, k, parentPtr, sPtr, cPtr, n, workPtr + ((<usize>n) << 3) + (<usize>(2 * n)) << 2)
 
     // Initialize x with A[:,k]
     const aStart: i32 = load<i32>(aPtrPtr + (<usize>k) << 2)
@@ -681,21 +681,21 @@ export function csChol(
       const i: i32 = load<i32>(aIndexPtr + (<usize>p) << 2)
       if (i >= k) {
         // Lower triangle only
-        store<f64>(xPtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>p) << 3))
+        store<f64>(xPtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>p) << 3)))
       }
     }
 
     // Compute L[:,k]
-    let d: f64 = load<f64>(xPtr + (<usize>k) << 3) // Diagonal
-    store<f64>(xPtr + (<usize>k) << 3, 0.0)
+    let d: f64 = load<f64>(xPtr + ((<usize>k) << 3)) // Diagonal
+    store<f64>(xPtr + ((<usize>k) << 3), 0.0)
 
     // Process nonzeros in L[:,k] in order
     for (let p: i32 = top; p < n; p++) {
       const i: i32 = load<i32>(sPtr + (<usize>p) << 2) // L[i,k] is nonzero
 
       // Get L[i,k] = x[i] / L[k,k] (but we need L[k,k] first)
-      const lki: f64 = load<f64>(xPtr + (<usize>i) << 3) / load<f64>(lValuesPtr + load<i32>(lPtrPtr + (<usize>i) << 2) * 8)
-      store<f64>(xPtr + (<usize>i) << 3, 0.0)
+      const lki: f64 = load<f64>(xPtr + ((<usize>i) << 3)) / load<f64>(lValuesPtr + load<i32>(lPtrPtr + (<usize>i) << 2) * 8)
+      store<f64>(xPtr + ((<usize>i) << 3), 0.0)
 
       // Subtract L[i,k] * L[j,k] from x[j] for j > i
       const lStart: i32 = load<i32>(lPtrPtr + (<usize>i) << 2) + 1 // Skip diagonal
@@ -703,8 +703,8 @@ export function csChol(
       for (let q: i32 = lStart; q < lEnd; q++) {
         const j: i32 = load<i32>(lIndexPtr + (<usize>q) << 2)
         store<f64>(
-          xPtr + (<usize>j) << 3,
-          load<f64>(xPtr + (<usize>j) << 3) - load<f64>(lValuesPtr + (<usize>q) << 3) * lki
+          xPtr + ((<usize>j) << 3),
+          load<f64>(xPtr + ((<usize>j) << 3)) - load<f64>(lValuesPtr + ((<usize>q) << 3)) * lki
         )
       }
 
@@ -714,7 +714,7 @@ export function csChol(
       // Store L[k,i]
       const cp: i32 = load<i32>(cPtr + (<usize>i) << 2)
       store<i32>(lIndexPtr + (<usize>cp) << 2, k)
-      store<f64>(lValuesPtr + (<usize>cp) << 3, lki)
+      store<f64>(lValuesPtr + ((<usize>cp) << 3), lki)
       store<i32>(cPtr + (<usize>i) << 2, cp + 1)
     }
 
@@ -726,7 +726,7 @@ export function csChol(
     // Store diagonal L[k,k] = sqrt(d)
     const ck: i32 = load<i32>(cPtr + (<usize>k) << 2)
     store<i32>(lIndexPtr + (<usize>ck) << 2, k)
-    store<f64>(lValuesPtr + (<usize>ck) << 3, Math.sqrt(d))
+    store<f64>(lValuesPtr + ((<usize>ck) << 3), Math.sqrt(d))
     store<i32>(cPtr + (<usize>k) << 2, ck + 1)
   }
 
@@ -818,7 +818,7 @@ export function csLu(
   // [0, n*8): x (f64)
   // [n*8, n*8+2n*4): xi (i32)
   const xPtr: usize = workPtr
-  const xiPtr: usize = workPtr + (<usize>n) << 3
+  const xiPtr: usize = workPtr + ((<usize>n) << 3)
 
   // Initialize pinv
   for (let i: i32 = 0; i < n; i++) {
@@ -835,7 +835,7 @@ export function csLu(
     store<i32>(uPtrPtr + (<usize>k) << 2, unz)
 
     // Compute x = L\A(:,k) using symbolic pattern
-    let top: i32 = csSpsolvePattern(aIndexPtr, aPtrPtr, lIndexPtr, lPtrPtr, k, xiPtr, pinvPtr, n, workPtr + (<usize>n) << 3 + (<usize>(2 * n)) << 2)
+    let top: i32 = csSpsolvePattern(aIndexPtr, aPtrPtr, lIndexPtr, lPtrPtr, k, xiPtr, pinvPtr, n, workPtr + ((<usize>n) << 3) + (<usize>(2 * n)) << 2)
 
     // Initialize x with A[:,k]
     for (let p: i32 = top; p < n; p++) {
@@ -845,7 +845,7 @@ export function csLu(
     const aEnd: i32 = load<i32>(aPtrPtr + (<usize>(k + 1)) << 2)
     for (let p: i32 = aStart; p < aEnd; p++) {
       const i: i32 = load<i32>(aIndexPtr + (<usize>p) << 2)
-      store<f64>(xPtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>p) << 3))
+      store<f64>(xPtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>p) << 3)))
     }
 
     // Sparse triangular solve L\A[:,k]
@@ -859,8 +859,8 @@ export function csLu(
       const ljj: f64 = load<f64>(lValuesPtr + (<usize>load<i32>(lPtrPtr + (<usize>jnew) << 2) << 3))
       if (ljj === 0.0) continue
 
-      const xj: f64 = load<f64>(xPtr + (<usize>j) << 3) / ljj
-      store<f64>(xPtr + (<usize>j) << 3, xj)
+      const xj: f64 = load<f64>(xPtr + ((<usize>j) << 3)) / ljj
+      store<f64>(xPtr + ((<usize>j) << 3), xj)
 
       // Subtract L[i,j] * x[j] from x[i]
       const lStart: i32 = load<i32>(lPtrPtr + (<usize>jnew) << 2) + 1
@@ -868,8 +868,8 @@ export function csLu(
       for (let q: i32 = lStart; q < lEnd; q++) {
         const i: i32 = load<i32>(lIndexPtr + (<usize>q) << 2)
         store<f64>(
-          xPtr + (<usize>i) << 3,
-          load<f64>(xPtr + (<usize>i) << 3) - load<f64>(lValuesPtr + (<usize>q) << 3) * xj
+          xPtr + ((<usize>i) << 3),
+          load<f64>(xPtr + ((<usize>i) << 3)) - load<f64>(lValuesPtr + ((<usize>q) << 3)) * xj
         )
       }
     }
@@ -882,7 +882,7 @@ export function csLu(
       const i: i32 = load<i32>(xiPtr + (<usize>p) << 2)
       if (load<i32>(pinvPtr + (<usize>i) << 2) < 0) {
         // Row not yet used as pivot
-        const t: f64 = Math.abs(load<f64>(xPtr + (<usize>i) << 3))
+        const t: f64 = Math.abs(load<f64>(xPtr + ((<usize>i) << 3)))
         if (t > pivotVal) {
           pivotVal = t
           pivot = i
@@ -902,7 +902,7 @@ export function csLu(
     for (let p: i32 = top; p < n; p++) {
       const i: i32 = load<i32>(xiPtr + (<usize>p) << 2)
       if (load<i32>(pinvPtr + (<usize>i) << 2) < 0) {
-        if (Math.abs(load<f64>(xPtr + (<usize>i) << 3)) >= thresh && i < ipiv) {
+        if (Math.abs(load<f64>(xPtr + ((<usize>i) << 3))) >= thresh && i < ipiv) {
           ipiv = i // Prefer smaller row index
         }
       }
@@ -917,19 +917,19 @@ export function csLu(
       if (load<i32>(pinvPtr + (<usize>i) << 2) < k || i === ipiv) {
         // This is in U
         store<i32>(uIndexPtr + (<usize>unz) << 2, i)
-        store<f64>(uValuesPtr + (<usize>unz) << 3, load<f64>(xPtr + (<usize>i) << 3))
+        store<f64>(uValuesPtr + ((<usize>unz) << 3), load<f64>(xPtr + ((<usize>i) << 3)))
         unz++
-        store<f64>(xPtr + (<usize>i) << 3, 0.0)
+        store<f64>(xPtr + ((<usize>i) << 3), 0.0)
       }
     }
 
     // Store L[:,k] (rows with pinv[i] < 0)
-    const ukk: f64 = load<f64>(xPtr + (<usize>ipiv) << 3) // Diagonal of U
-    store<f64>(xPtr + (<usize>ipiv) << 3, 0.0)
+    const ukk: f64 = load<f64>(xPtr + ((<usize>ipiv) << 3)) // Diagonal of U
+    store<f64>(xPtr + ((<usize>ipiv) << 3), 0.0)
 
     // Store diagonal of L as 1
     store<i32>(lIndexPtr + (<usize>lnz) << 2, ipiv)
-    store<f64>(lValuesPtr + (<usize>lnz) << 3, 1.0)
+    store<f64>(lValuesPtr + ((<usize>lnz) << 3), 1.0)
     lnz++
 
     // Store off-diagonal of L
@@ -937,9 +937,9 @@ export function csLu(
       const i: i32 = load<i32>(xiPtr + (<usize>p) << 2)
       if (load<i32>(pinvPtr + (<usize>i) << 2) < 0 && i !== ipiv) {
         store<i32>(lIndexPtr + (<usize>lnz) << 2, i)
-        store<f64>(lValuesPtr + (<usize>lnz) << 3, load<f64>(xPtr + (<usize>i) << 3) / ukk)
+        store<f64>(lValuesPtr + ((<usize>lnz) << 3), load<f64>(xPtr + ((<usize>i) << 3)) / ukk)
         lnz++
-        store<f64>(xPtr + (<usize>i) << 3, 0.0)
+        store<f64>(xPtr + ((<usize>i) << 3), 0.0)
       }
     }
   }
@@ -1079,7 +1079,7 @@ export function csQr(
 
     // Clear x
     for (let i: i32 = 0; i < m; i++) {
-      store<f64>(xPtr + (<usize>i) << 3, 0.0)
+      store<f64>(xPtr + ((<usize>i) << 3), 0.0)
     }
 
     // Load A[:,k] into x
@@ -1087,12 +1087,12 @@ export function csQr(
     const aEnd: i32 = load<i32>(aPtrPtr + (<usize>(k + 1)) << 2)
     for (let p: i32 = aStart; p < aEnd; p++) {
       const i: i32 = load<i32>(aIndexPtr + (<usize>p) << 2)
-      store<f64>(xPtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>p) << 3))
+      store<f64>(xPtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>p) << 3)))
     }
 
     // Apply previous Householder transformations
     for (let j: i32 = 0; j < k; j++) {
-      const betaJ: f64 = load<f64>(betaPtr + (<usize>j) << 3)
+      const betaJ: f64 = load<f64>(betaPtr + ((<usize>j) << 3))
       if (betaJ === 0.0) continue
 
       // Compute v^T * x
@@ -1101,15 +1101,15 @@ export function csQr(
       const vEnd: i32 = load<i32>(vPtrPtr + (<usize>(j + 1)) << 2)
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = load<i32>(vIndexPtr + (<usize>p) << 2)
-        vTx += load<f64>(vValuesPtr + (<usize>p) << 3) * load<f64>(xPtr + (<usize>i) << 3)
+        vTx += load<f64>(vValuesPtr + ((<usize>p) << 3)) * load<f64>(xPtr + ((<usize>i) << 3))
       }
 
       // x = x - beta * v * (v^T * x)
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = load<i32>(vIndexPtr + (<usize>p) << 2)
         store<f64>(
-          xPtr + (<usize>i) << 3,
-          load<f64>(xPtr + (<usize>i) << 3) - betaJ * load<f64>(vValuesPtr + (<usize>p) << 3) * vTx
+          xPtr + ((<usize>i) << 3),
+          load<f64>(xPtr + ((<usize>i) << 3)) - betaJ * load<f64>(vValuesPtr + ((<usize>p) << 3)) * vTx
         )
       }
     }
@@ -1118,42 +1118,42 @@ export function csQr(
     // Compute norm of x[k:m]
     let sigma: f64 = 0.0
     for (let i: i32 = k; i < m; i++) {
-      sigma += load<f64>(xPtr + (<usize>i) << 3) * load<f64>(xPtr + (<usize>i) << 3)
+      sigma += load<f64>(xPtr + ((<usize>i) << 3)) * load<f64>(xPtr + ((<usize>i) << 3))
     }
     sigma = Math.sqrt(sigma)
 
     if (sigma === 0.0) {
       // Zero column
-      store<f64>(betaPtr + (<usize>k) << 3, 0.0)
+      store<f64>(betaPtr + ((<usize>k) << 3), 0.0)
     } else {
       // v = x[k:m], v[0] = x[k] + sign(x[k])*sigma
-      const xk: f64 = load<f64>(xPtr + (<usize>k) << 3)
+      const xk: f64 = load<f64>(xPtr + ((<usize>k) << 3))
       const s: f64 = xk >= 0.0 ? 1.0 : -1.0
       const v0: f64 = xk + s * sigma
 
       // Store R[0:k, k] (above diagonal)
       for (let i: i32 = 0; i < k; i++) {
-        if (load<f64>(xPtr + (<usize>i) << 3) !== 0.0) {
+        if (load<f64>(xPtr + ((<usize>i) << 3)) !== 0.0) {
           store<i32>(rIndexPtr + (<usize>rnz) << 2, i)
-          store<f64>(rValuesPtr + (<usize>rnz) << 3, load<f64>(xPtr + (<usize>i) << 3))
+          store<f64>(rValuesPtr + ((<usize>rnz) << 3), load<f64>(xPtr + ((<usize>i) << 3)))
           rnz++
         }
       }
 
       // Store R[k,k] = -sign(x[k]) * sigma
       store<i32>(rIndexPtr + (<usize>rnz) << 2, k)
-      store<f64>(rValuesPtr + (<usize>rnz) << 3, -s * sigma)
+      store<f64>(rValuesPtr + ((<usize>rnz) << 3), -s * sigma)
       rnz++
 
       // Store Householder vector (normalized so first element is 1)
       store<i32>(vIndexPtr + (<usize>vnz) << 2, k)
-      store<f64>(vValuesPtr + (<usize>vnz) << 3, 1.0)
+      store<f64>(vValuesPtr + ((<usize>vnz) << 3), 1.0)
       vnz++
 
       for (let i: i32 = k + 1; i < m; i++) {
-        if (load<f64>(xPtr + (<usize>i) << 3) !== 0.0) {
+        if (load<f64>(xPtr + ((<usize>i) << 3)) !== 0.0) {
           store<i32>(vIndexPtr + (<usize>vnz) << 2, i)
-          store<f64>(vValuesPtr + (<usize>vnz) << 3, load<f64>(xPtr + (<usize>i) << 3) / v0)
+          store<f64>(vValuesPtr + ((<usize>vnz) << 3), load<f64>(xPtr + ((<usize>i) << 3)) / v0)
           vnz++
         }
       }
@@ -1161,10 +1161,10 @@ export function csQr(
       // beta = 2 / (v^T * v) = 2 * v0^2 / (v0^2 + x[k+1:m]^2)
       let vTv: f64 = v0 * v0
       for (let i: i32 = k + 1; i < m; i++) {
-        const vi: f64 = load<f64>(xPtr + (<usize>i) << 3)
+        const vi: f64 = load<f64>(xPtr + ((<usize>i) << 3))
         vTv += vi * vi
       }
-      store<f64>(betaPtr + (<usize>k) << 3, (2.0 * v0 * v0) / vTv)
+      store<f64>(betaPtr + ((<usize>k) << 3), (2.0 * v0 * v0) / vTv)
     }
   }
 
@@ -1202,7 +1202,7 @@ export function csQmult(
 ): void {
   // Copy x to y
   for (let i: i32 = 0; i < m; i++) {
-    store<f64>(yPtr + (<usize>i) << 3, load<f64>(xPtr + (<usize>i) << 3))
+    store<f64>(yPtr + ((<usize>i) << 3), load<f64>(xPtr + ((<usize>i) << 3)))
   }
 
   // Apply Householder transformations
@@ -1212,7 +1212,7 @@ export function csQmult(
   if (transpose) {
     // Apply H_{n-1}, H_{n-2}, ..., H_0
     for (let k: i32 = n - 1; k >= 0; k--) {
-      const betaK: f64 = load<f64>(betaPtr + (<usize>k) << 3)
+      const betaK: f64 = load<f64>(betaPtr + ((<usize>k) << 3))
       if (betaK === 0.0) continue
 
       // y = y - beta * v * (v^T * y)
@@ -1222,21 +1222,21 @@ export function csQmult(
 
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = load<i32>(vIndexPtr + (<usize>p) << 2)
-        vTy += load<f64>(vValuesPtr + (<usize>p) << 3) * load<f64>(yPtr + (<usize>i) << 3)
+        vTy += load<f64>(vValuesPtr + ((<usize>p) << 3)) * load<f64>(yPtr + ((<usize>i) << 3))
       }
 
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = load<i32>(vIndexPtr + (<usize>p) << 2)
         store<f64>(
-          yPtr + (<usize>i) << 3,
-          load<f64>(yPtr + (<usize>i) << 3) - betaK * load<f64>(vValuesPtr + (<usize>p) << 3) * vTy
+          yPtr + ((<usize>i) << 3),
+          load<f64>(yPtr + ((<usize>i) << 3)) - betaK * load<f64>(vValuesPtr + ((<usize>p) << 3)) * vTy
         )
       }
     }
   } else {
     // Apply H_0, H_1, ..., H_{n-1}
     for (let k: i32 = 0; k < n; k++) {
-      const betaK: f64 = load<f64>(betaPtr + (<usize>k) << 3)
+      const betaK: f64 = load<f64>(betaPtr + ((<usize>k) << 3))
       if (betaK === 0.0) continue
 
       let vTy: f64 = 0.0
@@ -1245,14 +1245,14 @@ export function csQmult(
 
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = load<i32>(vIndexPtr + (<usize>p) << 2)
-        vTy += load<f64>(vValuesPtr + (<usize>p) << 3) * load<f64>(yPtr + (<usize>i) << 3)
+        vTy += load<f64>(vValuesPtr + ((<usize>p) << 3)) * load<f64>(yPtr + ((<usize>i) << 3))
       }
 
       for (let p: i32 = vStart; p < vEnd; p++) {
         const i: i32 = load<i32>(vIndexPtr + (<usize>p) << 2)
         store<f64>(
-          yPtr + (<usize>i) << 3,
-          load<f64>(yPtr + (<usize>i) << 3) - betaK * load<f64>(vValuesPtr + (<usize>p) << 3) * vTy
+          yPtr + ((<usize>i) << 3),
+          load<f64>(yPtr + ((<usize>i) << 3)) - betaK * load<f64>(vValuesPtr + ((<usize>p) << 3)) * vTy
         )
       }
     }
@@ -1512,7 +1512,7 @@ export function csTranspose(
       const i: i32 = load<i32>(aIndexPtr + (<usize>p) << 2)
       const q: i32 = load<i32>(countPtr + (<usize>i) << 2)
       store<i32>(bIndexPtr + (<usize>q) << 2, j)
-      store<f64>(bValuesPtr + (<usize>q) << 3, load<f64>(aValuesPtr + (<usize>p) << 3))
+      store<f64>(bValuesPtr + ((<usize>q) << 3), load<f64>(aValuesPtr + ((<usize>p) << 3)))
       store<i32>(countPtr + (<usize>i) << 2, q + 1)
     }
   }
@@ -1555,7 +1555,7 @@ export function csMult(
 ): i32 {
   // Dense accumulator and mark array
   const xPtr: usize = workPtr
-  const wPtr: usize = workPtr + (<usize>aRows) << 3
+  const wPtr: usize = workPtr + ((<usize>aRows) << 3)
 
   let cnz: i32 = 0
 
@@ -1571,7 +1571,7 @@ export function csMult(
     // Scatter B[:,j] into x, multiplied by A columns
     for (let p: i32 = bStart; p < bEnd; p++) {
       const k: i32 = load<i32>(bIndexPtr + (<usize>p) << 2) // B[k,j]
-      const bkj: f64 = load<f64>(bValuesPtr + (<usize>p) << 3)
+      const bkj: f64 = load<f64>(bValuesPtr + ((<usize>p) << 3))
 
       // Add bkj * A[:,k] to x
       const aStart: i32 = load<i32>(aPtrPtr + (<usize>k) << 2)
@@ -1584,10 +1584,10 @@ export function csMult(
           store<i32>(wPtr + (<usize>i) << 2, mark)
           store<i32>(cIndexPtr + (<usize>cnz) << 2, i)
           cnz++
-          store<f64>(xPtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>q) << 3) * bkj)
+          store<f64>(xPtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>q) << 3)) * bkj)
         } else {
           // Add to existing
-          store<f64>(xPtr + (<usize>i) << 3, load<f64>(xPtr + (<usize>i) << 3) + load<f64>(aValuesPtr + (<usize>q) << 3) * bkj)
+          store<f64>(xPtr + ((<usize>i) << 3), load<f64>(xPtr + ((<usize>i) << 3)) + load<f64>(aValuesPtr + ((<usize>q) << 3)) * bkj)
         }
       }
     }
@@ -1595,7 +1595,7 @@ export function csMult(
     // Gather x into C[:,j]
     for (let p: i32 = load<i32>(cPtrPtr + (<usize>j) << 2); p < cnz; p++) {
       const i: i32 = load<i32>(cIndexPtr + (<usize>p) << 2)
-      store<f64>(cValuesPtr + (<usize>p) << 3, load<f64>(xPtr + (<usize>i) << 3))
+      store<f64>(cValuesPtr + ((<usize>p) << 3), load<f64>(xPtr + ((<usize>i) << 3)))
     }
   }
 

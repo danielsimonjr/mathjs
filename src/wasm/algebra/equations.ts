@@ -22,8 +22,8 @@ function transpose(aPtr: usize, rows: i32, cols: i32, resultPtr: usize): void {
   for (let i: i32 = 0; i < rows; i++) {
     for (let j: i32 = 0; j < cols; j++) {
       store<f64>(
-        resultPtr + (<usize>(j * rows + i)) << 3,
-        load<f64>(aPtr + (<usize>(i * cols + j)) << 3)
+        resultPtr + ((<usize>(j * rows + i)) << 3),
+        load<f64>(aPtr + ((<usize>(i * cols + j)) << 3))
       )
     }
   }
@@ -37,10 +37,10 @@ function transpose(aPtr: usize, rows: i32, cols: i32, resultPtr: usize): void {
 function eye(n: i32, resultPtr: usize): void {
   const n2: i32 = n * n
   for (let i: i32 = 0; i < n2; i++) {
-    store<f64>(resultPtr + (<usize>i) << 3, 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>(i * n + i)) << 3, 1.0)
+    store<f64>(resultPtr + ((<usize>(i * n + i)) << 3), 1.0)
   }
 }
 
@@ -67,15 +67,15 @@ function kron(
 
   for (let i: i32 = 0; i < aRows; i++) {
     for (let j: i32 = 0; j < aCols; j++) {
-      const aVal: f64 = load<f64>(aPtr + (<usize>(i * aCols + j)) << 3)
+      const aVal: f64 = load<f64>(aPtr + ((<usize>(i * aCols + j)) << 3))
 
       for (let k: i32 = 0; k < bRows; k++) {
         for (let l: i32 = 0; l < bCols; l++) {
           const row: i32 = i * bRows + k
           const col: i32 = j * bCols + l
           store<f64>(
-            resultPtr + (<usize>(row * resultCols + col)) << 3,
-            aVal * load<f64>(bPtr + (<usize>(k * bCols + l)) << 3)
+            resultPtr + ((<usize>(row * resultCols + col)) << 3),
+            aVal * load<f64>(bPtr + ((<usize>(k * bCols + l)) << 3))
           )
         }
       }
@@ -100,11 +100,11 @@ function solveLinear(
   workPtr: usize
 ): i32 {
   const luPtr = workPtr
-  const permPtr = workPtr + (<usize>(n * n)) << 3
+  const permPtr = workPtr + ((<usize>(n * n)) << 3)
 
   // Copy a to lu
   for (let i: i32 = 0; i < n * n; i++) {
-    store<f64>(luPtr + (<usize>i) << 3, load<f64>(aPtr + (<usize>i) << 3))
+    store<f64>(luPtr + ((<usize>i) << 3), load<f64>(aPtr + ((<usize>i) << 3)))
   }
 
   for (let i: i32 = 0; i < n; i++) {
@@ -113,11 +113,11 @@ function solveLinear(
 
   for (let k: i32 = 0; k < n - 1; k++) {
     // Find pivot
-    let maxVal: f64 = Math.abs(load<f64>(luPtr + (<usize>(k * n + k)) << 3))
+    let maxVal: f64 = Math.abs(load<f64>(luPtr + ((<usize>(k * n + k)) << 3)))
     let pivotRow: i32 = k
 
     for (let i: i32 = k + 1; i < n; i++) {
-      const val: f64 = Math.abs(load<f64>(luPtr + (<usize>(i * n + k)) << 3))
+      const val: f64 = Math.abs(load<f64>(luPtr + ((<usize>(i * n + k)) << 3)))
       if (val > maxVal) {
         maxVal = val
         pivotRow = i
@@ -131,12 +131,12 @@ function solveLinear(
     if (pivotRow !== k) {
       // Swap rows in LU
       for (let j: i32 = 0; j < n; j++) {
-        const temp: f64 = load<f64>(luPtr + (<usize>(k * n + j)) << 3)
+        const temp: f64 = load<f64>(luPtr + ((<usize>(k * n + j)) << 3))
         store<f64>(
-          luPtr + (<usize>(k * n + j)) << 3,
-          load<f64>(luPtr + (<usize>(pivotRow * n + j)) << 3)
+          luPtr + ((<usize>(k * n + j)) << 3),
+          load<f64>(luPtr + ((<usize>(pivotRow * n + j)) << 3))
         )
-        store<f64>(luPtr + (<usize>(pivotRow * n + j)) << 3, temp)
+        store<f64>(luPtr + ((<usize>(pivotRow * n + j)) << 3), temp)
       }
 
       // Swap in permutation
@@ -146,23 +146,23 @@ function solveLinear(
     }
 
     // Eliminate
-    const pivot: f64 = load<f64>(luPtr + (<usize>(k * n + k)) << 3)
+    const pivot: f64 = load<f64>(luPtr + ((<usize>(k * n + k)) << 3))
     for (let i: i32 = k + 1; i < n; i++) {
-      const factor: f64 = load<f64>(luPtr + (<usize>(i * n + k)) << 3) / pivot
-      store<f64>(luPtr + (<usize>(i * n + k)) << 3, factor)
+      const factor: f64 = load<f64>(luPtr + ((<usize>(i * n + k)) << 3)) / pivot
+      store<f64>(luPtr + ((<usize>(i * n + k)) << 3), factor)
 
       for (let j: i32 = k + 1; j < n; j++) {
         store<f64>(
-          luPtr + (<usize>(i * n + j)) << 3,
-          load<f64>(luPtr + (<usize>(i * n + j)) << 3) -
-            factor * load<f64>(luPtr + (<usize>(k * n + j)) << 3)
+          luPtr + ((<usize>(i * n + j)) << 3),
+          load<f64>(luPtr + ((<usize>(i * n + j)) << 3)) -
+            factor * load<f64>(luPtr + ((<usize>(k * n + j)) << 3))
         )
       }
     }
   }
 
   // Check last pivot for singularity
-  if (Math.abs(load<f64>(luPtr + (<usize>((n - 1) * n + (n - 1)) << 3))) < 1e-14) {
+  if (Math.abs(load<f64>(luPtr + ((<usize>((n - 1) * n + (n - 1)) << 3)))) < 1e-14) {
     return 0 // Singular
   }
 
@@ -171,21 +171,21 @@ function solveLinear(
     let sum: f64 = load<f64>(bPtr + (<usize>load<i32>(permPtr + (<usize>i) << 2) << 3))
 
     for (let j: i32 = 0; j < i; j++) {
-      sum -= load<f64>(luPtr + (<usize>(i * n + j)) << 3) * load<f64>(xPtr + (<usize>j) << 3)
+      sum -= load<f64>(luPtr + ((<usize>(i * n + j)) << 3)) * load<f64>(xPtr + ((<usize>j) << 3))
     }
 
-    store<f64>(xPtr + (<usize>i) << 3, sum)
+    store<f64>(xPtr + ((<usize>i) << 3), sum)
   }
 
   // Backward substitution: Ux = y
   for (let i: i32 = n - 1; i >= 0; i--) {
-    let sum: f64 = load<f64>(xPtr + (<usize>i) << 3)
+    let sum: f64 = load<f64>(xPtr + ((<usize>i) << 3))
 
     for (let j: i32 = i + 1; j < n; j++) {
-      sum -= load<f64>(luPtr + (<usize>(i * n + j)) << 3) * load<f64>(xPtr + (<usize>j) << 3)
+      sum -= load<f64>(luPtr + ((<usize>(i * n + j)) << 3)) * load<f64>(xPtr + ((<usize>j) << 3))
     }
 
-    store<f64>(xPtr + (<usize>i) << 3, sum / load<f64>(luPtr + (<usize>(i * n + i)) << 3))
+    store<f64>(xPtr + ((<usize>i) << 3), sum / load<f64>(luPtr + ((<usize>(i * n + i)) << 3)))
   }
 
   return 1
@@ -232,14 +232,14 @@ export function sylvester(
   // - vecX: nm f64
   // - solveWork: nm*nm f64 + nm i32
   const I_nPtr = workPtr
-  const I_mPtr = I_nPtr + (<usize>(n * n)) << 3
-  const BTPtr = I_mPtr + (<usize>(m * m)) << 3
-  const term1Ptr = BTPtr + (<usize>(m * m)) << 3
-  const term2Ptr = term1Ptr + (<usize>nm2) << 3
-  const coeffPtr = term2Ptr + (<usize>nm2) << 3
-  const vecCPtr = coeffPtr + (<usize>nm2) << 3
-  const vecXPtr = vecCPtr + (<usize>nm) << 3
-  const solveWorkPtr = vecXPtr + (<usize>nm) << 3
+  const I_mPtr = I_nPtr + ((<usize>(n * n)) << 3)
+  const BTPtr = I_mPtr + ((<usize>(m * m)) << 3)
+  const term1Ptr = BTPtr + ((<usize>(m * m)) << 3)
+  const term2Ptr = term1Ptr + ((<usize>nm2) << 3)
+  const coeffPtr = term2Ptr + ((<usize>nm2) << 3)
+  const vecCPtr = coeffPtr + ((<usize>nm2) << 3)
+  const vecXPtr = vecCPtr + ((<usize>nm) << 3)
+  const solveWorkPtr = vecXPtr + ((<usize>nm) << 3)
 
   // Create identity matrices
   eye(n, I_nPtr)
@@ -257,8 +257,8 @@ export function sylvester(
   // Coefficient matrix: term1 + term2
   for (let i: i32 = 0; i < nm2; i++) {
     store<f64>(
-      coeffPtr + (<usize>i) << 3,
-      load<f64>(term1Ptr + (<usize>i) << 3) + load<f64>(term2Ptr + (<usize>i) << 3)
+      coeffPtr + ((<usize>i) << 3),
+      load<f64>(term1Ptr + ((<usize>i) << 3)) + load<f64>(term2Ptr + ((<usize>i) << 3))
     )
   }
 
@@ -266,8 +266,8 @@ export function sylvester(
   for (let j: i32 = 0; j < m; j++) {
     for (let i: i32 = 0; i < n; i++) {
       store<f64>(
-        vecCPtr + (<usize>(j * n + i)) << 3,
-        load<f64>(cPtr + (<usize>(i * m + j)) << 3)
+        vecCPtr + ((<usize>(j * n + i)) << 3),
+        load<f64>(cPtr + ((<usize>(i * m + j)) << 3))
       )
     }
   }
@@ -283,8 +283,8 @@ export function sylvester(
   for (let j: i32 = 0; j < m; j++) {
     for (let i: i32 = 0; i < n; i++) {
       store<f64>(
-        xPtr + (<usize>(i * m + j)) << 3,
-        load<f64>(vecXPtr + (<usize>(j * n + i)) << 3)
+        xPtr + ((<usize>(i * m + j)) << 3),
+        load<f64>(vecXPtr + ((<usize>(j * n + i)) << 3))
       )
     }
   }
@@ -318,12 +318,12 @@ export function lyap(
 
   // Work buffer layout
   const I_nPtr = workPtr
-  const term1Ptr = I_nPtr + (<usize>n2) << 3
-  const term2Ptr = term1Ptr + (<usize>n4) << 3
-  const coeffPtr = term2Ptr + (<usize>n4) << 3
-  const vecQPtr = coeffPtr + (<usize>n4) << 3
-  const vecXPtr = vecQPtr + (<usize>n2) << 3
-  const solveWorkPtr = vecXPtr + (<usize>n2) << 3
+  const term1Ptr = I_nPtr + ((<usize>n2) << 3)
+  const term2Ptr = term1Ptr + ((<usize>n4) << 3)
+  const coeffPtr = term2Ptr + ((<usize>n4) << 3)
+  const vecQPtr = coeffPtr + ((<usize>n4) << 3)
+  const vecXPtr = vecQPtr + ((<usize>n2) << 3)
+  const solveWorkPtr = vecXPtr + ((<usize>n2) << 3)
 
   // Create identity matrix
   eye(n, I_nPtr)
@@ -337,8 +337,8 @@ export function lyap(
   // Coefficient matrix
   for (let i: i32 = 0; i < n4; i++) {
     store<f64>(
-      coeffPtr + (<usize>i) << 3,
-      load<f64>(term1Ptr + (<usize>i) << 3) + load<f64>(term2Ptr + (<usize>i) << 3)
+      coeffPtr + ((<usize>i) << 3),
+      load<f64>(term1Ptr + ((<usize>i) << 3)) + load<f64>(term2Ptr + ((<usize>i) << 3))
     )
   }
 
@@ -346,8 +346,8 @@ export function lyap(
   for (let j: i32 = 0; j < n; j++) {
     for (let i: i32 = 0; i < n; i++) {
       store<f64>(
-        vecQPtr + (<usize>(j * n + i)) << 3,
-        load<f64>(qPtr + (<usize>(i * n + j)) << 3)
+        vecQPtr + ((<usize>(j * n + i)) << 3),
+        load<f64>(qPtr + ((<usize>(i * n + j)) << 3))
       )
     }
   }
@@ -363,8 +363,8 @@ export function lyap(
   for (let j: i32 = 0; j < n; j++) {
     for (let i: i32 = 0; i < n; i++) {
       store<f64>(
-        xPtr + (<usize>(i * n + j)) << 3,
-        load<f64>(vecXPtr + (<usize>(j * n + i)) << 3)
+        xPtr + ((<usize>(i * n + j)) << 3),
+        load<f64>(vecXPtr + ((<usize>(j * n + i)) << 3))
       )
     }
   }
@@ -394,24 +394,24 @@ export function dlyap(
 
   // Work buffer layout
   const AkronAPtr = workPtr
-  const coeffPtr = AkronAPtr + (<usize>n4) << 3
-  const vecQPtr = coeffPtr + (<usize>n4) << 3
-  const vecXPtr = vecQPtr + (<usize>n2) << 3
-  const solveWorkPtr = vecXPtr + (<usize>n2) << 3
+  const coeffPtr = AkronAPtr + ((<usize>n4) << 3)
+  const vecQPtr = coeffPtr + ((<usize>n4) << 3)
+  const vecXPtr = vecQPtr + ((<usize>n2) << 3)
+  const solveWorkPtr = vecXPtr + ((<usize>n2) << 3)
 
   // A ⊗ A
   kron(aPtr, n, n, aPtr, n, n, AkronAPtr)
 
   // Coefficient matrix: A ⊗ A - I
   for (let i: i32 = 0; i < n4; i++) {
-    store<f64>(coeffPtr + (<usize>i) << 3, load<f64>(AkronAPtr + (<usize>i) << 3))
+    store<f64>(coeffPtr + ((<usize>i) << 3), load<f64>(AkronAPtr + ((<usize>i) << 3)))
   }
 
   // Subtract identity
   for (let i: i32 = 0; i < n2; i++) {
     store<f64>(
-      coeffPtr + (<usize>(i * n2 + i)) << 3,
-      load<f64>(coeffPtr + (<usize>(i * n2 + i)) << 3) - 1.0
+      coeffPtr + ((<usize>(i * n2 + i)) << 3),
+      load<f64>(coeffPtr + ((<usize>(i * n2 + i)) << 3)) - 1.0
     )
   }
 
@@ -419,8 +419,8 @@ export function dlyap(
   for (let j: i32 = 0; j < n; j++) {
     for (let i: i32 = 0; i < n; i++) {
       store<f64>(
-        vecQPtr + (<usize>(j * n + i)) << 3,
-        load<f64>(qPtr + (<usize>(i * n + j)) << 3)
+        vecQPtr + ((<usize>(j * n + i)) << 3),
+        load<f64>(qPtr + ((<usize>(i * n + j)) << 3))
       )
     }
   }
@@ -436,8 +436,8 @@ export function dlyap(
   for (let j: i32 = 0; j < n; j++) {
     for (let i: i32 = 0; i < n; i++) {
       store<f64>(
-        xPtr + (<usize>(i * n + j)) << 3,
-        load<f64>(vecXPtr + (<usize>(j * n + i)) << 3)
+        xPtr + ((<usize>(i * n + j)) << 3),
+        load<f64>(vecXPtr + ((<usize>(j * n + i)) << 3))
       )
     }
   }
@@ -470,7 +470,7 @@ export function sylvesterResidual(
   workPtr: usize
 ): f64 {
   const axPtr = workPtr
-  const xbPtr = axPtr + (<usize>(n * m)) << 3
+  const xbPtr = axPtr + ((<usize>(n * m)) << 3)
 
   // Compute AX
   for (let i: i32 = 0; i < n; i++) {
@@ -478,10 +478,10 @@ export function sylvesterResidual(
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
         sum +=
-          load<f64>(aPtr + (<usize>(i * n + k)) << 3) *
-          load<f64>(xPtr + (<usize>(k * m + j)) << 3)
+          load<f64>(aPtr + ((<usize>(i * n + k)) << 3)) *
+          load<f64>(xPtr + ((<usize>(k * m + j)) << 3))
       }
-      store<f64>(axPtr + (<usize>(i * m + j)) << 3, sum)
+      store<f64>(axPtr + ((<usize>(i * m + j)) << 3), sum)
     }
   }
 
@@ -491,10 +491,10 @@ export function sylvesterResidual(
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < m; k++) {
         sum +=
-          load<f64>(xPtr + (<usize>(i * m + k)) << 3) *
-          load<f64>(bPtr + (<usize>(k * m + j)) << 3)
+          load<f64>(xPtr + ((<usize>(i * m + k)) << 3)) *
+          load<f64>(bPtr + ((<usize>(k * m + j)) << 3))
       }
-      store<f64>(xbPtr + (<usize>(i * m + j)) << 3, sum)
+      store<f64>(xbPtr + ((<usize>(i * m + j)) << 3), sum)
     }
   }
 
@@ -503,9 +503,9 @@ export function sylvesterResidual(
 
   for (let i: i32 = 0; i < n * m; i++) {
     const diff: f64 =
-      load<f64>(axPtr + (<usize>i) << 3) +
-      load<f64>(xbPtr + (<usize>i) << 3) -
-      load<f64>(cPtr + (<usize>i) << 3)
+      load<f64>(axPtr + ((<usize>i) << 3)) +
+      load<f64>(xbPtr + ((<usize>i) << 3)) -
+      load<f64>(cPtr + ((<usize>i) << 3))
     normSq += diff * diff
   }
 
@@ -530,7 +530,7 @@ export function lyapResidual(
 ): f64 {
   const n2: i32 = n * n
   const axPtr = workPtr
-  const xatPtr = axPtr + (<usize>n2) << 3
+  const xatPtr = axPtr + ((<usize>n2) << 3)
 
   // Compute AX
   for (let i: i32 = 0; i < n; i++) {
@@ -538,10 +538,10 @@ export function lyapResidual(
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
         sum +=
-          load<f64>(aPtr + (<usize>(i * n + k)) << 3) *
-          load<f64>(xPtr + (<usize>(k * n + j)) << 3)
+          load<f64>(aPtr + ((<usize>(i * n + k)) << 3)) *
+          load<f64>(xPtr + ((<usize>(k * n + j)) << 3))
       }
-      store<f64>(axPtr + (<usize>(i * n + j)) << 3, sum)
+      store<f64>(axPtr + ((<usize>(i * n + j)) << 3), sum)
     }
   }
 
@@ -551,10 +551,10 @@ export function lyapResidual(
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
         sum +=
-          load<f64>(xPtr + (<usize>(i * n + k)) << 3) *
-          load<f64>(aPtr + (<usize>(j * n + k)) << 3) // A^T[k,j] = A[j,k]
+          load<f64>(xPtr + ((<usize>(i * n + k)) << 3)) *
+          load<f64>(aPtr + ((<usize>(j * n + k)) << 3)) // A^T[k,j] = A[j,k]
       }
-      store<f64>(xatPtr + (<usize>(i * n + j)) << 3, sum)
+      store<f64>(xatPtr + ((<usize>(i * n + j)) << 3), sum)
     }
   }
 
@@ -563,9 +563,9 @@ export function lyapResidual(
 
   for (let i: i32 = 0; i < n2; i++) {
     const diff: f64 =
-      load<f64>(axPtr + (<usize>i) << 3) +
-      load<f64>(xatPtr + (<usize>i) << 3) -
-      load<f64>(qPtr + (<usize>i) << 3)
+      load<f64>(axPtr + ((<usize>i) << 3)) +
+      load<f64>(xatPtr + ((<usize>i) << 3)) -
+      load<f64>(qPtr + ((<usize>i) << 3))
     normSq += diff * diff
   }
 
@@ -590,7 +590,7 @@ export function dlyapResidual(
 ): f64 {
   const n2: i32 = n * n
   const axPtr = workPtr
-  const axatPtr = axPtr + (<usize>n2) << 3
+  const axatPtr = axPtr + ((<usize>n2) << 3)
 
   // Compute AX
   for (let i: i32 = 0; i < n; i++) {
@@ -598,10 +598,10 @@ export function dlyapResidual(
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
         sum +=
-          load<f64>(aPtr + (<usize>(i * n + k)) << 3) *
-          load<f64>(xPtr + (<usize>(k * n + j)) << 3)
+          load<f64>(aPtr + ((<usize>(i * n + k)) << 3)) *
+          load<f64>(xPtr + ((<usize>(k * n + j)) << 3))
       }
-      store<f64>(axPtr + (<usize>(i * n + j)) << 3, sum)
+      store<f64>(axPtr + ((<usize>(i * n + j)) << 3), sum)
     }
   }
 
@@ -611,10 +611,10 @@ export function dlyapResidual(
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < n; k++) {
         sum +=
-          load<f64>(axPtr + (<usize>(i * n + k)) << 3) *
-          load<f64>(aPtr + (<usize>(j * n + k)) << 3)
+          load<f64>(axPtr + ((<usize>(i * n + k)) << 3)) *
+          load<f64>(aPtr + ((<usize>(j * n + k)) << 3))
       }
-      store<f64>(axatPtr + (<usize>(i * n + j)) << 3, sum)
+      store<f64>(axatPtr + ((<usize>(i * n + j)) << 3), sum)
     }
   }
 
@@ -623,9 +623,9 @@ export function dlyapResidual(
 
   for (let i: i32 = 0; i < n2; i++) {
     const diff: f64 =
-      load<f64>(axatPtr + (<usize>i) << 3) -
-      load<f64>(xPtr + (<usize>i) << 3) -
-      load<f64>(qPtr + (<usize>i) << 3)
+      load<f64>(axatPtr + ((<usize>i) << 3)) -
+      load<f64>(xPtr + ((<usize>i) << 3)) -
+      load<f64>(qPtr + ((<usize>i) << 3))
     normSq += diff * diff
   }
 

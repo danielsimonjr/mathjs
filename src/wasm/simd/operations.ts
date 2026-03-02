@@ -189,7 +189,7 @@ export function simdSumF64(aPtr: usize, length: i32): f64 {
   let result = f64x2.extract_lane(sum, 0) + f64x2.extract_lane(sum, 1)
 
   if (length & 1) {
-    result += load<f64>(aPtr + (<usize>simdLength) << 3)
+    result += load<f64>(aPtr + ((<usize>simdLength) << 3))
   }
 
   return result
@@ -211,7 +211,7 @@ export function simdSumSquaresF64(aPtr: usize, length: i32): f64 {
   let result = f64x2.extract_lane(sum, 0) + f64x2.extract_lane(sum, 1)
 
   if (length & 1) {
-    const val = load<f64>(aPtr + (<usize>simdLength) << 3)
+    const val = load<f64>(aPtr + ((<usize>simdLength) << 3))
     result += val * val
   }
 
@@ -246,7 +246,7 @@ export function simdMinF64(aPtr: usize, length: i32): f64 {
   )
 
   if (length & 1) {
-    result = Math.min(result, load<f64>(aPtr + (<usize>simdLength) << 3))
+    result = Math.min(result, load<f64>(aPtr + ((<usize>simdLength) << 3)))
   }
 
   return result
@@ -273,7 +273,7 @@ export function simdMaxF64(aPtr: usize, length: i32): f64 {
   )
 
   if (length & 1) {
-    result = Math.max(result, load<f64>(aPtr + (<usize>simdLength) << 3))
+    result = Math.max(result, load<f64>(aPtr + ((<usize>simdLength) << 3)))
   }
 
   return result
@@ -386,7 +386,7 @@ export function simdMatVecMulF64(
       rowSum += load<f64>(APtr + aOffset) * load<f64>(xPtr + xOffset)
     }
 
-    store<f64>(resultPtr + (<usize>i) << 3, rowSum)
+    store<f64>(resultPtr + ((<usize>i) << 3), rowSum)
   }
 }
 
@@ -474,7 +474,7 @@ export function simdMatMulF64(
         // Load 2 elements from row of A
         const va = v128.load(APtr + rowOffsetA + (<usize>p) << 3)
         // Load 2 elements from column of B (non-contiguous, so manual load)
-        const b0 = load<f64>(BPtr + (<usize>(p * n + j)) << 3)
+        const b0 = load<f64>(BPtr + ((<usize>(p * n + j)) << 3))
         const b1 = load<f64>(BPtr + (<usize>((p + 1) * n + j) << 3))
         const vb = f64x2.replace_lane(
           f64x2.replace_lane(f64x2.splat(0.0), 0, b0),
@@ -489,7 +489,7 @@ export function simdMatMulF64(
       // Handle remaining element
       if (k & 1) {
         const aVal = load<f64>(APtr + rowOffsetA + (<usize>simdK) << 3)
-        const bVal = load<f64>(BPtr + (<usize>(simdK * n + j)) << 3)
+        const bVal = load<f64>(BPtr + ((<usize>(simdK * n + j)) << 3))
         dotSum += aVal * bVal
       }
 
@@ -517,14 +517,14 @@ export function simdMatTransposeF64(
   for (let i: i32 = 0; i < m2; i += 2) {
     for (let j: i32 = 0; j < n2; j += 2) {
       // Load 2x2 block from A
-      const a00 = load<f64>(APtr + (<usize>(i * n + j)) << 3)
-      const a01 = load<f64>(APtr + (<usize>(i * n + j + 1)) << 3)
+      const a00 = load<f64>(APtr + ((<usize>(i * n + j)) << 3))
+      const a01 = load<f64>(APtr + ((<usize>(i * n + j + 1)) << 3))
       const a10 = load<f64>(APtr + (<usize>((i + 1) * n + j) << 3))
       const a11 = load<f64>(APtr + (<usize>((i + 1) * n + j + 1) << 3))
 
       // Store transposed 2x2 block to B
-      store<f64>(BPtr + (<usize>(j * m + i)) << 3, a00)
-      store<f64>(BPtr + (<usize>(j * m + i + 1)) << 3, a10)
+      store<f64>(BPtr + ((<usize>(j * m + i)) << 3), a00)
+      store<f64>(BPtr + ((<usize>(j * m + i + 1)) << 3), a10)
       store<f64>(BPtr + (<usize>((j + 1) * m + i) << 3), a01)
       store<f64>(BPtr + (<usize>((j + 1) * m + i + 1) << 3), a11)
     }
@@ -534,8 +534,8 @@ export function simdMatTransposeF64(
   for (let i: i32 = m2; i < m; i++) {
     for (let j: i32 = 0; j < n; j++) {
       store<f64>(
-        BPtr + (<usize>(j * m + i)) << 3,
-        load<f64>(APtr + (<usize>(i * n + j)) << 3)
+        BPtr + ((<usize>(j * m + i)) << 3),
+        load<f64>(APtr + ((<usize>(i * n + j)) << 3))
       )
     }
   }
@@ -544,8 +544,8 @@ export function simdMatTransposeF64(
   for (let i: i32 = 0; i < m2; i++) {
     for (let j: i32 = n2; j < n; j++) {
       store<f64>(
-        BPtr + (<usize>(j * m + i)) << 3,
-        load<f64>(APtr + (<usize>(i * n + j)) << 3)
+        BPtr + ((<usize>(j * m + i)) << 3),
+        load<f64>(APtr + ((<usize>(i * n + j)) << 3))
       )
     }
   }
@@ -589,7 +589,7 @@ export function simdVarianceF64(
   let result = f64x2.extract_lane(sumSq, 0) + f64x2.extract_lane(sumSq, 1)
 
   if (length & 1) {
-    const diff = load<f64>(aPtr + (<usize>simdLength) << 3) - mean
+    const diff = load<f64>(aPtr + ((<usize>simdLength) << 3)) - mean
     result += diff * diff
   }
 

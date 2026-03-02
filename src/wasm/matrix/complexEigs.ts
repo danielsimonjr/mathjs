@@ -139,7 +139,7 @@ export function reduceToHessenberg(
     let maxVal: f64 = Math.abs(load<f64>(matrixPtr + (<usize>((i + 1) * n + i) << 3)))
 
     for (let j: i32 = i + 2; j < n; j++) {
-      const val: f64 = Math.abs(load<f64>(matrixPtr + (<usize>(j * n + i)) << 3))
+      const val: f64 = Math.abs(load<f64>(matrixPtr + ((<usize>(j * n + i)) << 3)))
       if (val > maxVal) {
         maxVal = val
         maxIndex = j
@@ -187,7 +187,7 @@ export function reduceToHessenberg(
     const pivot: f64 = load<f64>(matrixPtr + (<usize>((i + 1) * n + i) << 3))
 
     for (let j: i32 = i + 2; j < n; j++) {
-      const factor: f64 = load<f64>(matrixPtr + (<usize>(j * n + i)) << 3) / pivot
+      const factor: f64 = load<f64>(matrixPtr + ((<usize>(j * n + i)) << 3)) / pivot
 
       if (Math.abs(factor) < tolerance) {
         continue
@@ -281,10 +281,10 @@ export function qrIterationStep(
   // Use Wilkinson shift: eigenvalue of bottom-right 2x2 closest to A[n-1][n-1]
   let shift: f64 = 0.0
   if (n >= 2) {
-    const a: f64 = load<f64>(matrixPtr + (<usize>((n - 2) * fullN + (n - 2)) << 3))
-    const b: f64 = load<f64>(matrixPtr + (<usize>((n - 2) * fullN + (n - 1)) << 3))
-    const c: f64 = load<f64>(matrixPtr + (<usize>((n - 1) * fullN + (n - 2)) << 3))
-    const d: f64 = load<f64>(matrixPtr + (<usize>((n - 1) * fullN + (n - 1)) << 3))
+    const a: f64 = load<f64>(matrixPtr + ((<usize>((n - 2) * fullN + (n - 2)) << 3)))
+    const b: f64 = load<f64>(matrixPtr + ((<usize>((n - 2) * fullN + (n - 1)) << 3)))
+    const c: f64 = load<f64>(matrixPtr + ((<usize>((n - 1) * fullN + (n - 2)) << 3)))
+    const d: f64 = load<f64>(matrixPtr + ((<usize>((n - 1) * fullN + (n - 1)) << 3)))
 
     // Compute eigenvalue closer to d
     const trace: f64 = a + d
@@ -397,7 +397,7 @@ export function qrAlgorithm(
   const workMatrix: usize = schurPtr !== 0 ? schurPtr : matrixPtr
   if (schurPtr !== 0) {
     for (let i: i32 = 0; i < n * n; i++) {
-      store<f64>(schurPtr + (<usize>i) << 3, load<f64>(matrixPtr + (<usize>i) << 3))
+      store<f64>(schurPtr + ((<usize>i) << 3), load<f64>(matrixPtr + ((<usize>i) << 3)))
     }
   }
 
@@ -405,7 +405,7 @@ export function qrAlgorithm(
   if (computeQ) {
     for (let i: i32 = 0; i < n; i++) {
       for (let j: i32 = 0; j < n; j++) {
-        store<f64>(qPtr + (<usize>(i * n + j)) << 3, i === j ? 1.0 : 0.0)
+        store<f64>(qPtr + ((<usize>(i * n + j)) << 3), i === j ? 1.0 : 0.0)
       }
     }
   }
@@ -427,9 +427,9 @@ export function qrAlgorithm(
     // Check for convergence at bottom
     if (currentN === 1) {
       // 1x1 block - real eigenvalue
-      store<f64>(eigenvaluesRealPtr + (<usize>numEigenvalues) << 3,
+      store<f64>(eigenvaluesRealPtr + ((<usize>numEigenvalues) << 3),
                  load<f64>(workMatrix + (<usize>((currentN - 1) * n + (currentN - 1)) << 3)))
-      store<f64>(eigenvaluesImagPtr + (<usize>numEigenvalues) << 3, 0.0)
+      store<f64>(eigenvaluesImagPtr + ((<usize>numEigenvalues) << 3), 0.0)
       numEigenvalues++
       currentN--
       iterSinceDeflation = 0
@@ -443,9 +443,9 @@ export function qrAlgorithm(
 
       if (subdiag < tolerance * (diagN1 + diagN2 + 1e-15)) {
         // Converged - extract 1x1 eigenvalue
-        store<f64>(eigenvaluesRealPtr + (<usize>numEigenvalues) << 3,
+        store<f64>(eigenvaluesRealPtr + ((<usize>numEigenvalues) << 3),
                    load<f64>(workMatrix + (<usize>((currentN - 1) * n + (currentN - 1)) << 3)))
-        store<f64>(eigenvaluesImagPtr + (<usize>numEigenvalues) << 3, 0.0)
+        store<f64>(eigenvaluesImagPtr + ((<usize>numEigenvalues) << 3), 0.0)
         numEigenvalues++
         currentN--
         iterSinceDeflation = 0
@@ -474,20 +474,20 @@ export function qrAlgorithm(
           if (discriminant >= 0.0) {
             // Two real eigenvalues
             const sqrtD: f64 = Math.sqrt(discriminant)
-            store<f64>(eigenvaluesRealPtr + (<usize>numEigenvalues) << 3, (trace + sqrtD) / 2.0)
-            store<f64>(eigenvaluesImagPtr + (<usize>numEigenvalues) << 3, 0.0)
+            store<f64>(eigenvaluesRealPtr + ((<usize>numEigenvalues) << 3), (trace + sqrtD) / 2.0)
+            store<f64>(eigenvaluesImagPtr + ((<usize>numEigenvalues) << 3), 0.0)
             numEigenvalues++
-            store<f64>(eigenvaluesRealPtr + (<usize>numEigenvalues) << 3, (trace - sqrtD) / 2.0)
-            store<f64>(eigenvaluesImagPtr + (<usize>numEigenvalues) << 3, 0.0)
+            store<f64>(eigenvaluesRealPtr + ((<usize>numEigenvalues) << 3), (trace - sqrtD) / 2.0)
+            store<f64>(eigenvaluesImagPtr + ((<usize>numEigenvalues) << 3), 0.0)
             numEigenvalues++
           } else {
             // Complex conjugate pair
             const sqrtD: f64 = Math.sqrt(-discriminant)
-            store<f64>(eigenvaluesRealPtr + (<usize>numEigenvalues) << 3, trace / 2.0)
-            store<f64>(eigenvaluesImagPtr + (<usize>numEigenvalues) << 3, sqrtD / 2.0)
+            store<f64>(eigenvaluesRealPtr + ((<usize>numEigenvalues) << 3), trace / 2.0)
+            store<f64>(eigenvaluesImagPtr + ((<usize>numEigenvalues) << 3), sqrtD / 2.0)
             numEigenvalues++
-            store<f64>(eigenvaluesRealPtr + (<usize>numEigenvalues) << 3, trace / 2.0)
-            store<f64>(eigenvaluesImagPtr + (<usize>numEigenvalues) << 3, -sqrtD / 2.0)
+            store<f64>(eigenvaluesRealPtr + ((<usize>numEigenvalues) << 3), trace / 2.0)
+            store<f64>(eigenvaluesImagPtr + ((<usize>numEigenvalues) << 3), -sqrtD / 2.0)
             numEigenvalues++
           }
 
@@ -530,14 +530,14 @@ function sortComplexEigenvalues(
 
     if (minIdx !== i) {
       // Swap real parts
-      const tmpRe: f64 = load<f64>(realPtr + (<usize>i) << 3)
-      store<f64>(realPtr + (<usize>i) << 3, load<f64>(realPtr + (<usize>minIdx) << 3))
-      store<f64>(realPtr + (<usize>minIdx) << 3, tmpRe)
+      const tmpRe: f64 = load<f64>(realPtr + ((<usize>i) << 3))
+      store<f64>(realPtr + ((<usize>i) << 3), load<f64>(realPtr + ((<usize>minIdx) << 3)))
+      store<f64>(realPtr + ((<usize>minIdx) << 3), tmpRe)
 
       // Swap imaginary parts
-      const tmpIm: f64 = load<f64>(imagPtr + (<usize>i) << 3)
-      store<f64>(imagPtr + (<usize>i) << 3, load<f64>(imagPtr + (<usize>minIdx) << 3))
-      store<f64>(imagPtr + (<usize>minIdx) << 3, tmpIm)
+      const tmpIm: f64 = load<f64>(imagPtr + ((<usize>i) << 3))
+      store<f64>(imagPtr + ((<usize>i) << 3), load<f64>(imagPtr + ((<usize>minIdx) << 3)))
+      store<f64>(imagPtr + ((<usize>minIdx) << 3), tmpIm)
     }
   }
 }
@@ -546,8 +546,8 @@ function sortComplexEigenvalues(
  * Get magnitude of complex eigenvalue at index i
  */
 function getMagnitude(realPtr: usize, imagPtr: usize, i: i32): f64 {
-  const re: f64 = load<f64>(realPtr + (<usize>i) << 3)
-  const im: f64 = load<f64>(imagPtr + (<usize>i) << 3)
+  const re: f64 = load<f64>(realPtr + ((<usize>i) << 3))
+  const im: f64 = load<f64>(imagPtr + ((<usize>i) << 3))
   return Math.sqrt(re * re + im * im)
 }
 
@@ -566,10 +566,10 @@ export function hessenbergQRStep(
   if (n < 2) return
 
   // Wilkinson shift
-  const a: f64 = load<f64>(matrixPtr + (<usize>((n - 2) * fullN + (n - 2)) << 3))
-  const b: f64 = load<f64>(matrixPtr + (<usize>((n - 2) * fullN + (n - 1)) << 3))
-  const c: f64 = load<f64>(matrixPtr + (<usize>((n - 1) * fullN + (n - 2)) << 3))
-  const d: f64 = load<f64>(matrixPtr + (<usize>((n - 1) * fullN + (n - 1)) << 3))
+  const a: f64 = load<f64>(matrixPtr + ((<usize>((n - 2) * fullN + (n - 2)) << 3)))
+  const b: f64 = load<f64>(matrixPtr + ((<usize>((n - 2) * fullN + (n - 1)) << 3)))
+  const c: f64 = load<f64>(matrixPtr + ((<usize>((n - 1) * fullN + (n - 2)) << 3)))
+  const d: f64 = load<f64>(matrixPtr + ((<usize>((n - 1) * fullN + (n - 1)) << 3)))
 
   const trace: f64 = a + d
   const det: f64 = a * d - b * c

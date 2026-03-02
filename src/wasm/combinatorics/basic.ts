@@ -122,7 +122,7 @@ export function stirlingS2(n: i32, k: i32, workPtr: usize): f64 {
   // Initialize dp table
   for (let i: i32 = 0; i <= n; i++) {
     for (let j: i32 = 0; j <= k; j++) {
-      store<f64>(workPtr + (<usize>(i * kp1 + j)) << 3, 0.0)
+      store<f64>(workPtr + ((<usize>(i * kp1 + j)) << 3), 0.0)
     }
   }
   store<f64>(workPtr, 1.0) // dp[0][0] = 1
@@ -131,16 +131,16 @@ export function stirlingS2(n: i32, k: i32, workPtr: usize): f64 {
   for (let i: i32 = 1; i <= n; i++) {
     for (let j: i32 = 1; j <= (i < k ? i : k); j++) {
       if (j === 1 || j === i) {
-        store<f64>(workPtr + (<usize>(i * kp1 + j)) << 3, 1.0)
+        store<f64>(workPtr + ((<usize>(i * kp1 + j)) << 3), 1.0)
       } else {
-        const val1: f64 = load<f64>(workPtr + (<usize>((i - 1) * kp1 + j) << 3))
-        const val2: f64 = load<f64>(workPtr + (<usize>((i - 1) * kp1 + (j - 1)) << 3))
-        store<f64>(workPtr + (<usize>(i * kp1 + j)) << 3, f64(j) * val1 + val2)
+        const val1: f64 = load<f64>(workPtr + ((<usize>((i - 1) * kp1 + j)) << 3))
+        const val2: f64 = load<f64>(workPtr + ((<usize>((i - 1) * kp1 + (j - 1))) << 3))
+        store<f64>(workPtr + ((<usize>(i * kp1 + j)) << 3), f64(j) * val1 + val2)
       }
     }
   }
 
-  return load<f64>(workPtr + (<usize>(n * kp1 + k)) << 3)
+  return load<f64>(workPtr + ((<usize>(n * kp1 + k)) << 3))
 }
 
 /**

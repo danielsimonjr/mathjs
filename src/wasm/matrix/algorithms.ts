@@ -36,7 +36,7 @@ export function algo01DenseSparseDensity(
 
   // Copy dense matrix to result first
   for (let i: i32 = 0; i < size; i++) {
-    store<f64>(resultPtr + (<usize>i) << 3, load<f64>(denseDataPtr + (<usize>i) << 3))
+    store<f64>(resultPtr + ((<usize>i) << 3), load<f64>(denseDataPtr + ((<usize>i) << 3)))
   }
 
   // Process each column
@@ -49,7 +49,7 @@ export function algo01DenseSparseDensity(
       const i: i32 = load<i32>(sparseIndexPtr + (<usize>k) << 2)
       const idx: usize = <usize>(i * cols + j) << 3
       const denseValue: f64 = load<f64>(denseDataPtr + idx)
-      const sparseValue: f64 = load<f64>(sparseValuesPtr + (<usize>k) << 3)
+      const sparseValue: f64 = load<f64>(sparseValuesPtr + ((<usize>k) << 3))
 
       // Apply operation
       store<f64>(resultPtr + idx, applyOperation(denseValue, sparseValue, operation))
@@ -97,14 +97,14 @@ export function algo02DenseSparseZero(
     // Process nonzero elements in column j
     for (let k: i32 = pStart; k < pEnd; k++) {
       const i: i32 = load<i32>(sparseIndexPtr + (<usize>k) << 2)
-      const denseValue: f64 = load<f64>(denseDataPtr + (<usize>(i * cols + j)) << 3)
-      const sparseValue: f64 = load<f64>(sparseValuesPtr + (<usize>k) << 3)
+      const denseValue: f64 = load<f64>(denseDataPtr + ((<usize>(i * cols + j)) << 3))
+      const sparseValue: f64 = load<f64>(sparseValuesPtr + ((<usize>k) << 3))
 
       const value: f64 = applyOperation(denseValue, sparseValue, operation)
 
       // Only store nonzero values
       if (value !== 0.0) {
-        store<f64>(resultValuesPtr + (<usize>nnz) << 3, value)
+        store<f64>(resultValuesPtr + ((<usize>nnz) << 3), value)
         store<i32>(resultIndexPtr + (<usize>nnz) << 2, i)
         nnz++
       }
@@ -143,7 +143,7 @@ export function algo03DenseSparseFunction(
 ): void {
   // Workspace layout: [0, rows*8): workspace (f64), [rows*8, rows*8+rows*4): marks (i32)
   const workspacePtr: usize = workPtr
-  const marksPtr: usize = workPtr + (<usize>rows) << 3
+  const marksPtr: usize = workPtr + ((<usize>rows) << 3)
 
   // Process each column
   for (let j: i32 = 0; j < cols; j++) {
@@ -154,10 +154,10 @@ export function algo03DenseSparseFunction(
     // Process nonzero elements in sparse matrix column j
     for (let k: i32 = pStart; k < pEnd; k++) {
       const i: i32 = load<i32>(sparseIndexPtr + (<usize>k) << 2)
-      const denseValue: f64 = load<f64>(denseDataPtr + (<usize>(i * cols + j)) << 3)
-      const sparseValue: f64 = load<f64>(sparseValuesPtr + (<usize>k) << 3)
+      const denseValue: f64 = load<f64>(denseDataPtr + ((<usize>(i * cols + j)) << 3))
+      const sparseValue: f64 = load<f64>(sparseValuesPtr + ((<usize>k) << 3))
 
-      store<f64>(workspacePtr + (<usize>i) << 3, applyOperation(denseValue, sparseValue, operation))
+      store<f64>(workspacePtr + ((<usize>i) << 3), applyOperation(denseValue, sparseValue, operation))
       store<i32>(marksPtr + (<usize>i) << 2, mark)
     }
 
@@ -165,7 +165,7 @@ export function algo03DenseSparseFunction(
     for (let i: i32 = 0; i < rows; i++) {
       const idx: usize = <usize>(i * cols + j) << 3
       if (load<i32>(marksPtr + (<usize>i) << 2) === mark) {
-        store<f64>(resultPtr + idx, load<f64>(workspacePtr + (<usize>i) << 3))
+        store<f64>(resultPtr + idx, load<f64>(workspacePtr + ((<usize>i) << 3)))
       } else {
         // Sparse element is zero
         store<f64>(resultPtr + idx, applyOperation(load<f64>(denseDataPtr + idx), 0.0, operation))
@@ -211,8 +211,8 @@ export function algo04SparseIdentity(
 ): i32 {
   // Work layout: xa (f64, rows), xb (f64, rows), wa (i32, rows), wb (i32, rows)
   const xaPtr: usize = workPtr
-  const xbPtr: usize = workPtr + (<usize>rows) << 3
-  const waPtr: usize = workPtr + (<usize>(2 * rows)) << 3
+  const xbPtr: usize = workPtr + ((<usize>rows) << 3)
+  const waPtr: usize = workPtr + ((<usize>(2 * rows)) << 3)
   const wbPtr: usize = waPtr + (<usize>rows) << 2
 
   let nnz: i32 = 0
@@ -231,7 +231,7 @@ export function algo04SparseIdentity(
       store<i32>(resultIndexPtr + (<usize>nnz) << 2, i)
       nnz++
       store<i32>(waPtr + (<usize>i) << 2, mark)
-      store<f64>(xaPtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>k) << 3))
+      store<f64>(xaPtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>k) << 3)))
     }
 
     // Scatter B(:,j) and merge
@@ -241,13 +241,13 @@ export function algo04SparseIdentity(
       const i: i32 = load<i32>(bIndexPtr + (<usize>k) << 2)
       if (load<i32>(waPtr + (<usize>i) << 2) === mark) {
         // Both A and B have values
-        store<f64>(xaPtr + (<usize>i) << 3, applyOperation(load<f64>(xaPtr + (<usize>i) << 3), load<f64>(bValuesPtr + (<usize>k) << 3), operation))
+        store<f64>(xaPtr + ((<usize>i) << 3), applyOperation(load<f64>(xaPtr + ((<usize>i) << 3)), load<f64>(bValuesPtr + ((<usize>k) << 3)), operation))
       } else {
         // Only B has value
         store<i32>(resultIndexPtr + (<usize>nnz) << 2, i)
         nnz++
         store<i32>(wbPtr + (<usize>i) << 2, mark)
-        store<f64>(xbPtr + (<usize>i) << 3, load<f64>(bValuesPtr + (<usize>k) << 3))
+        store<f64>(xbPtr + ((<usize>i) << 3), load<f64>(bValuesPtr + ((<usize>k) << 3)))
       }
     }
 
@@ -256,10 +256,10 @@ export function algo04SparseIdentity(
     while (p < nnz) {
       const i: i32 = load<i32>(resultIndexPtr + (<usize>p) << 2)
       if (load<i32>(waPtr + (<usize>i) << 2) === mark) {
-        store<f64>(resultValuesPtr + (<usize>p) << 3, load<f64>(xaPtr + (<usize>i) << 3))
+        store<f64>(resultValuesPtr + ((<usize>p) << 3), load<f64>(xaPtr + ((<usize>i) << 3)))
         p++
       } else if (load<i32>(wbPtr + (<usize>i) << 2) === mark) {
-        store<f64>(resultValuesPtr + (<usize>p) << 3, load<f64>(xbPtr + (<usize>i) << 3))
+        store<f64>(resultValuesPtr + ((<usize>p) << 3), load<f64>(xbPtr + ((<usize>i) << 3)))
         p++
       } else {
         // Remove zero element
@@ -311,8 +311,8 @@ export function algo05SparseFunctionFunction(
   workPtr: usize
 ): i32 {
   const xaPtr: usize = workPtr
-  const xbPtr: usize = workPtr + (<usize>rows) << 3
-  const waPtr: usize = workPtr + (<usize>(2 * rows)) << 3
+  const xbPtr: usize = workPtr + ((<usize>rows) << 3)
+  const waPtr: usize = workPtr + ((<usize>(2 * rows)) << 3)
   const wbPtr: usize = waPtr + (<usize>rows) << 2
 
   let nnz: i32 = 0
@@ -330,7 +330,7 @@ export function algo05SparseFunctionFunction(
       store<i32>(resultIndexPtr + (<usize>nnz) << 2, i)
       nnz++
       store<i32>(waPtr + (<usize>i) << 2, mark)
-      store<f64>(xaPtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>k) << 3))
+      store<f64>(xaPtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>k) << 3)))
     }
 
     // Scatter B(:,j)
@@ -343,19 +343,19 @@ export function algo05SparseFunctionFunction(
         nnz++
       }
       store<i32>(wbPtr + (<usize>i) << 2, mark)
-      store<f64>(xbPtr + (<usize>i) << 3, load<f64>(bValuesPtr + (<usize>k) << 3))
+      store<f64>(xbPtr + ((<usize>i) << 3), load<f64>(bValuesPtr + ((<usize>k) << 3)))
     }
 
     // Compute and gather
     let p: i32 = colStart
     while (p < nnz) {
       const i: i32 = load<i32>(resultIndexPtr + (<usize>p) << 2)
-      const va: f64 = load<i32>(waPtr + (<usize>i) << 2) === mark ? load<f64>(xaPtr + (<usize>i) << 3) : 0.0
-      const vb: f64 = load<i32>(wbPtr + (<usize>i) << 2) === mark ? load<f64>(xbPtr + (<usize>i) << 3) : 0.0
+      const va: f64 = load<i32>(waPtr + (<usize>i) << 2) === mark ? load<f64>(xaPtr + ((<usize>i) << 3)) : 0.0
+      const vb: f64 = load<i32>(wbPtr + (<usize>i) << 2) === mark ? load<f64>(xbPtr + ((<usize>i) << 3)) : 0.0
       const vc: f64 = applyOperation(va, vb, operation)
 
       if (vc !== 0.0) {
-        store<f64>(resultValuesPtr + (<usize>p) << 3, vc)
+        store<f64>(resultValuesPtr + ((<usize>p) << 3), vc)
         p++
       } else {
         // Remove zero
@@ -407,7 +407,7 @@ export function algo06SparseZeroZero(
   workPtr: usize
 ): i32 {
   const workspacePtr: usize = workPtr
-  const waPtr: usize = workPtr + (<usize>rows) << 3
+  const waPtr: usize = workPtr + ((<usize>rows) << 3)
   const updatedPtr: usize = waPtr + (<usize>rows) << 2
 
   let nnz: i32 = 0
@@ -425,7 +425,7 @@ export function algo06SparseZeroZero(
       store<i32>(resultIndexPtr + (<usize>nnz) << 2, i)
       nnz++
       store<i32>(waPtr + (<usize>i) << 2, mark)
-      store<f64>(workspacePtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>k) << 3))
+      store<f64>(workspacePtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>k) << 3)))
     }
 
     // Process B(:,j) and compute where both exist
@@ -434,7 +434,7 @@ export function algo06SparseZeroZero(
     for (let k: i32 = bStart; k < bEnd; k++) {
       const i: i32 = load<i32>(bIndexPtr + (<usize>k) << 2)
       if (load<i32>(waPtr + (<usize>i) << 2) === mark) {
-        store<f64>(workspacePtr + (<usize>i) << 3, applyOperation(load<f64>(workspacePtr + (<usize>i) << 3), load<f64>(bValuesPtr + (<usize>k) << 3), operation))
+        store<f64>(workspacePtr + ((<usize>i) << 3), applyOperation(load<f64>(workspacePtr + ((<usize>i) << 3)), load<f64>(bValuesPtr + ((<usize>k) << 3)), operation))
         store<i32>(updatedPtr + (<usize>i) << 2, mark)
       }
     }
@@ -444,9 +444,9 @@ export function algo06SparseZeroZero(
     while (p < nnz) {
       const i: i32 = load<i32>(resultIndexPtr + (<usize>p) << 2)
       if (load<i32>(updatedPtr + (<usize>i) << 2) === mark) {
-        const val: f64 = load<f64>(workspacePtr + (<usize>i) << 3)
+        const val: f64 = load<f64>(workspacePtr + ((<usize>i) << 3))
         if (val !== 0.0) {
-          store<f64>(resultValuesPtr + (<usize>p) << 3, val)
+          store<f64>(resultValuesPtr + ((<usize>p) << 3), val)
           p++
         } else {
           // Remove zero
@@ -505,8 +505,8 @@ export function algo07SparseSparseFull(
   workPtr: usize
 ): i32 {
   const xaPtr: usize = workPtr
-  const xbPtr: usize = workPtr + (<usize>rows) << 3
-  const waPtr: usize = workPtr + (<usize>(2 * rows)) << 3
+  const xbPtr: usize = workPtr + ((<usize>rows) << 3)
+  const waPtr: usize = workPtr + ((<usize>(2 * rows)) << 3)
   const wbPtr: usize = waPtr + (<usize>rows) << 2
 
   let nnz: i32 = 0
@@ -521,7 +521,7 @@ export function algo07SparseSparseFull(
     for (let k: i32 = aStart; k < aEnd; k++) {
       const i: i32 = load<i32>(aIndexPtr + (<usize>k) << 2)
       store<i32>(waPtr + (<usize>i) << 2, mark)
-      store<f64>(xaPtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>k) << 3))
+      store<f64>(xaPtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>k) << 3)))
     }
 
     // Scatter B(:,j)
@@ -530,18 +530,18 @@ export function algo07SparseSparseFull(
     for (let k: i32 = bStart; k < bEnd; k++) {
       const i: i32 = load<i32>(bIndexPtr + (<usize>k) << 2)
       store<i32>(wbPtr + (<usize>i) << 2, mark)
-      store<f64>(xbPtr + (<usize>i) << 3, load<f64>(bValuesPtr + (<usize>k) << 3))
+      store<f64>(xbPtr + ((<usize>i) << 3), load<f64>(bValuesPtr + ((<usize>k) << 3)))
     }
 
     // Process all rows
     for (let i: i32 = 0; i < rows; i++) {
-      const va: f64 = load<i32>(waPtr + (<usize>i) << 2) === mark ? load<f64>(xaPtr + (<usize>i) << 3) : 0.0
-      const vb: f64 = load<i32>(wbPtr + (<usize>i) << 2) === mark ? load<f64>(xbPtr + (<usize>i) << 3) : 0.0
+      const va: f64 = load<i32>(waPtr + (<usize>i) << 2) === mark ? load<f64>(xaPtr + ((<usize>i) << 3)) : 0.0
+      const vb: f64 = load<i32>(wbPtr + (<usize>i) << 2) === mark ? load<f64>(xbPtr + ((<usize>i) << 3)) : 0.0
       const vc: f64 = applyOperation(va, vb, operation)
 
       if (vc !== 0.0) {
         store<i32>(resultIndexPtr + (<usize>nnz) << 2, i)
-        store<f64>(resultValuesPtr + (<usize>nnz) << 3, vc)
+        store<f64>(resultValuesPtr + ((<usize>nnz) << 3), vc)
         nnz++
       }
     }
@@ -587,7 +587,7 @@ export function algo08SparseZeroIdentity(
   workPtr: usize
 ): i32 {
   const workspacePtr: usize = workPtr
-  const marksPtr: usize = workPtr + (<usize>rows) << 3
+  const marksPtr: usize = workPtr + ((<usize>rows) << 3)
 
   let nnz: i32 = 0
 
@@ -602,7 +602,7 @@ export function algo08SparseZeroIdentity(
     for (let k: i32 = aStart; k < aEnd; k++) {
       const i: i32 = load<i32>(aIndexPtr + (<usize>k) << 2)
       store<i32>(marksPtr + (<usize>i) << 2, mark)
-      store<f64>(workspacePtr + (<usize>i) << 3, load<f64>(aValuesPtr + (<usize>k) << 3))
+      store<f64>(workspacePtr + ((<usize>i) << 3), load<f64>(aValuesPtr + ((<usize>k) << 3)))
       store<i32>(resultIndexPtr + (<usize>nnz) << 2, i)
       nnz++
     }
@@ -613,7 +613,7 @@ export function algo08SparseZeroIdentity(
     for (let k: i32 = bStart; k < bEnd; k++) {
       const i: i32 = load<i32>(bIndexPtr + (<usize>k) << 2)
       if (load<i32>(marksPtr + (<usize>i) << 2) === mark) {
-        store<f64>(workspacePtr + (<usize>i) << 3, applyOperation(load<f64>(workspacePtr + (<usize>i) << 3), load<f64>(bValuesPtr + (<usize>k) << 3), operation))
+        store<f64>(workspacePtr + ((<usize>i) << 3), applyOperation(load<f64>(workspacePtr + ((<usize>i) << 3)), load<f64>(bValuesPtr + ((<usize>k) << 3)), operation))
       }
     }
 
@@ -621,10 +621,10 @@ export function algo08SparseZeroIdentity(
     let p: i32 = colStart
     while (p < nnz) {
       const i: i32 = load<i32>(resultIndexPtr + (<usize>p) << 2)
-      const v: f64 = load<f64>(workspacePtr + (<usize>i) << 3)
+      const v: f64 = load<f64>(workspacePtr + ((<usize>i) << 3))
 
       if (v !== 0.0) {
-        store<f64>(resultValuesPtr + (<usize>p) << 3, v)
+        store<f64>(resultValuesPtr + ((<usize>p) << 3), v)
         p++
       } else {
         // Remove zero

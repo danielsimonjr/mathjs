@@ -377,7 +377,7 @@ export function permuteVector(
 ): void {
   for (let i: i32 = 0; i < n; i++) {
     const permI = load<i32>(permPtr + (<usize>i) << 2)
-    store<f64>(yPtr + (<usize>i) << 3, load<f64>(xPtr + (<usize>permI) << 3))
+    store<f64>(yPtr + ((<usize>i) << 3), load<f64>(xPtr + ((<usize>permI) << 3)))
   }
 }
 
@@ -447,7 +447,7 @@ export function permuteMatrix(
       const pos: i32 = load<i32>(colPosPtr + (<usize>newJ) << 2)
       store<i32>(colPosPtr + (<usize>newJ) << 2, pos + 1)
       store<i32>(newRowIdxPtr + (<usize>pos) << 2, newI)
-      store<f64>(newValuesPtr + (<usize>pos) << 3, load<f64>(valuesPtr + (<usize>p) << 3))
+      store<f64>(newValuesPtr + ((<usize>pos) << 3), load<f64>(valuesPtr + ((<usize>p) << 3)))
     }
   }
 }

@@ -171,9 +171,9 @@ function broadcastBinaryOp(
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    const a: f64 = load<f64>(aPtr + (<usize>idxA) << 3)
-    const b: f64 = load<f64>(bPtr + (<usize>idxB) << 3)
-    store<f64>(resultPtr + (<usize>i) << 3, applyOp(a, b, op))
+    const a: f64 = load<f64>(aPtr + ((<usize>idxA) << 3))
+    const b: f64 = load<f64>(bPtr + ((<usize>idxB) << 3))
+    store<f64>(resultPtr + ((<usize>i) << 3), applyOp(a, b, op))
   }
 
   return 1
@@ -283,7 +283,7 @@ export function broadcastEqual(
   for (let i: i32 = 0; i < outRows * outCols; i++) {
     const idxA: i32 = getBroadcastIndex(i, outRows, outCols, rows1, cols1)
     const idxB: i32 = getBroadcastIndex(i, outRows, outCols, rows2, cols2)
-    store<f64>(resultPtr + (<usize>i) << 3, Math.abs(load<f64>(aPtr + (<usize>idxA) << 3) - load<f64>(bPtr + (<usize>idxB) << 3)) < tol ? 1.0 : 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), Math.abs(load<f64>(aPtr + ((<usize>idxA) << 3)) - load<f64>(bPtr + ((<usize>idxB) << 3))) < tol ? 1.0 : 0.0)
   }
 
   return 1
@@ -321,7 +321,7 @@ export function broadcastScalarMultiply(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>i) << 3, load<f64>(aPtr + (<usize>i) << 3) * scalar)
+    store<f64>(resultPtr + ((<usize>i) << 3), load<f64>(aPtr + ((<usize>i) << 3)) * scalar)
   }
 }
 
@@ -339,7 +339,7 @@ export function broadcastScalarAdd(
   resultPtr: usize
 ): void {
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>i) << 3, load<f64>(aPtr + (<usize>i) << 3) + scalar)
+    store<f64>(resultPtr + ((<usize>i) << 3), load<f64>(aPtr + ((<usize>i) << 3)) + scalar)
   }
 }
 
@@ -361,9 +361,9 @@ export function broadcastApply(
   resultPtr: usize
 ): i32 {
   for (let i: i32 = 0; i < n; i++) {
-    const a: f64 = load<f64>(aPtr + (<usize>i) << 3)
-    const b: f64 = load<f64>(bPtr + (<usize>i) << 3)
-    store<f64>(resultPtr + (<usize>i) << 3, applyOp(a, b, op))
+    const a: f64 = load<f64>(aPtr + ((<usize>i) << 3))
+    const b: f64 = load<f64>(bPtr + ((<usize>i) << 3))
+    store<f64>(resultPtr + ((<usize>i) << 3), applyOp(a, b, op))
   }
 
   return 1

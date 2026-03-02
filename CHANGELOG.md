@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [15.3.0] - 2026-03-01
+## [15.3.0] - 2026-03-02
+
+### Fixed - 2026-03-02
+
+**Critical: WASM operator precedence bug across 18 files (532 occurrences)**
+
+- **Fixed** systemic operator precedence bug in WASM load/store offset calculations: `Ptr + (<usize>X) << 3` was parsed as `(Ptr + X) << 3` instead of `Ptr + (X << 3)` because `+` (precedence 13) binds tighter than `<<` (precedence 12)
+- **Affected files**: `combinatorics/basic.ts`, `algebra/equations.ts`, `algebra/solver.ts`, `algebra/sparseChol.ts`, `algebra/sparseLu.ts`, `algebra/sparse/operations.ts`, `algebra/sparse/amd.ts`, `matrix/algorithms.ts`, `matrix/broadcast.ts`, `matrix/complexEigs.ts`, `matrix/eigs.ts`, `matrix/expm.ts`, `matrix/functions.ts`, `matrix/sparse.ts`, `matrix/sqrtm.ts`, `signal/processing.ts`, `simd/operations.ts`, `unit/conversion.ts`
+- **Impact**: All load/store operations in affected functions read/wrote wrong memory addresses, causing incorrect results for Stirling numbers, Bell numbers, matrix eigenvalues, sparse operations, equation solvers, signal processing, and unit conversion
+- **Fix**: Wrapped all offset expressions with extra parentheses: `Ptr + ((<usize>X) << 3)`
 
 ### Performance - 2026-03-01
 

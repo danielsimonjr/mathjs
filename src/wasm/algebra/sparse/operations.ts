@@ -47,20 +47,20 @@ export function sparseMatVec(
 ): void {
   // Initialize y to zero
   for (let i: i32 = 0; i < m; i++) {
-    store<f64>(yPtr + (<usize>i) << 3, 0.0)
+    store<f64>(yPtr + ((<usize>i) << 3), 0.0)
   }
 
   // Multiply column by column
   for (let j: i32 = 0; j < n; j++) {
-    const xj: f64 = load<f64>(xPtr + (<usize>j) << 3)
+    const xj: f64 = load<f64>(xPtr + ((<usize>j) << 3))
     if (xj !== 0.0) {
       const ptrJ = load<i32>(ptrPtr + (<usize>j) << 2)
       const ptrJ1 = load<i32>(ptrPtr + (<usize>(j + 1)) << 2)
       for (let p: i32 = ptrJ; p < ptrJ1; p++) {
         const i = load<i32>(indexPtr + (<usize>p) << 2)
-        const val = load<f64>(valuesPtr + (<usize>p) << 3)
-        const yi = load<f64>(yPtr + (<usize>i) << 3)
-        store<f64>(yPtr + (<usize>i) << 3, yi + val * xj)
+        const val = load<f64>(valuesPtr + ((<usize>p) << 3))
+        const yi = load<f64>(yPtr + ((<usize>i) << 3))
+        store<f64>(yPtr + ((<usize>i) << 3), yi + val * xj)
       }
     }
   }
@@ -124,7 +124,7 @@ export function sparseTranspose(
       const q: i32 = load<i32>(tempWorkPtr + (<usize>i) << 2)
       store<i32>(tempWorkPtr + (<usize>i) << 2, q + 1)
       store<i32>(cIndexPtr + (<usize>q) << 2, j)
-      store<f64>(cValuesPtr + (<usize>q) << 3, load<f64>(valuesPtr + (<usize>p) << 3))
+      store<f64>(cValuesPtr + ((<usize>q) << 3), load<f64>(valuesPtr + ((<usize>p) << 3)))
     }
   }
 }
@@ -288,7 +288,7 @@ export function sparseCholesky(
 ): i32 {
   // workPtr layout: x (n f64s = 8*n bytes), c (n i32s), parent (n i32s)
   const xPtr: usize = workPtr
-  const cPtr: usize = workPtr + (<usize>n) << 3
+  const cPtr: usize = workPtr + ((<usize>n) << 3)
   const parentPtr: usize = cPtr + (<usize>n) << 2
   const etreeWorkPtr: usize = parentPtr + (<usize>n) << 2
 
@@ -300,7 +300,7 @@ export function sparseCholesky(
 
   for (let k: i32 = 0; k < n; k++) {
     // Initialize column k
-    store<f64>(xPtr + (<usize>k) << 3, 0.0)
+    store<f64>(xPtr + ((<usize>k) << 3), 0.0)
     store<i32>(cPtr + (<usize>k) << 2, k)
 
     // Scatter A(:,k) into x
@@ -309,13 +309,13 @@ export function sparseCholesky(
     for (let p: i32 = ptrK; p < ptrK1; p++) {
       const i: i32 = load<i32>(indexPtr + (<usize>p) << 2)
       if (i >= k) {
-        store<f64>(xPtr + (<usize>i) << 3, load<f64>(valuesPtr + (<usize>p) << 3))
+        store<f64>(xPtr + ((<usize>i) << 3), load<f64>(valuesPtr + ((<usize>p) << 3)))
       }
     }
 
     // Numeric Cholesky
-    let d: f64 = load<f64>(xPtr + (<usize>k) << 3)
-    store<f64>(xPtr + (<usize>k) << 3, 0.0)
+    let d: f64 = load<f64>(xPtr + ((<usize>k) << 3))
+    store<f64>(xPtr + ((<usize>k) << 3), 0.0)
 
     // Solve L(0:k-1, 0:k-1) * x(0:k-1) = A(0:k-1, k)
     for (let j: i32 = 0; j < k; j++) {
@@ -330,22 +330,22 @@ export function sparseCholesky(
           break
         }
       }
-      const xj = load<f64>(xPtr + (<usize>j) << 3)
+      const xj = load<f64>(xPtr + ((<usize>j) << 3))
       if (!found && xj === 0.0) continue
 
       const lPtrJ_val = load<i32>(lPtrPtr + (<usize>j) << 2)
-      const ljj = load<f64>(lValuesPtr + (<usize>lPtrJ_val) << 3)
+      const ljj = load<f64>(lValuesPtr + ((<usize>lPtrJ_val) << 3))
       const lkj: f64 = xj / ljj
-      store<f64>(xPtr + (<usize>j) << 3, lkj)
+      store<f64>(xPtr + ((<usize>j) << 3), lkj)
 
       // Update x
       const lPtrJ1 = load<i32>(lPtrPtr + (<usize>(j + 1)) << 2)
       for (let p: i32 = lPtrJ_val + 1; p < lPtrJ1; p++) {
         const i: i32 = load<i32>(lIndexPtr + (<usize>p) << 2)
         if (i >= k) {
-          const xi = load<f64>(xPtr + (<usize>i) << 3)
-          const lVal = load<f64>(lValuesPtr + (<usize>p) << 3)
-          store<f64>(xPtr + (<usize>i) << 3, xi - lVal * lkj)
+          const xi = load<f64>(xPtr + ((<usize>i) << 3))
+          const lVal = load<f64>(lValuesPtr + ((<usize>p) << 3))
+          store<f64>(xPtr + ((<usize>i) << 3), xi - lVal * lkj)
         }
       }
 
@@ -359,20 +359,20 @@ export function sparseCholesky(
     }
 
     // Store L(:, k)
-    store<f64>(lValuesPtr + (<usize>nnzL) << 3, Math.sqrt(d))
+    store<f64>(lValuesPtr + ((<usize>nnzL) << 3), Math.sqrt(d))
     store<i32>(lIndexPtr + (<usize>nnzL) << 2, k)
     nnzL++
 
     // Store off-diagonal entries
     const lkkIdx = nnzL - 1
     for (let i: i32 = k + 1; i < n; i++) {
-      const xi = load<f64>(xPtr + (<usize>i) << 3)
+      const xi = load<f64>(xPtr + ((<usize>i) << 3))
       if (xi !== 0.0) {
-        const lkk = load<f64>(lValuesPtr + (<usize>lkkIdx) << 3)
-        store<f64>(lValuesPtr + (<usize>nnzL) << 3, xi / lkk)
+        const lkk = load<f64>(lValuesPtr + ((<usize>lkkIdx) << 3))
+        store<f64>(lValuesPtr + ((<usize>nnzL) << 3), xi / lkk)
         store<i32>(lIndexPtr + (<usize>nnzL) << 2, i)
         nnzL++
-        store<f64>(xPtr + (<usize>i) << 3, 0.0)
+        store<f64>(xPtr + ((<usize>i) << 3), 0.0)
       }
     }
 
@@ -421,7 +421,7 @@ export function sparseLU(
 ): i64 {
   // workPtr layout: x (n f64s), pinv (n i32s), xi (2n i32s)
   const xPtr: usize = workPtr
-  const pinvPtr: usize = workPtr + (<usize>n) << 3
+  const pinvPtr: usize = workPtr + ((<usize>n) << 3)
   const xiPtr: usize = pinvPtr + (<usize>n) << 2
 
   // Initialize permutations
@@ -439,7 +439,7 @@ export function sparseLU(
   for (let k: i32 = 0; k < n; k++) {
     // Scatter A(:, k) into x
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(xPtr + (<usize>i) << 3, 0.0)
+      store<f64>(xPtr + ((<usize>i) << 3), 0.0)
     }
 
     const ptrK = load<i32>(ptrPtr + (<usize>k) << 2)
@@ -447,35 +447,35 @@ export function sparseLU(
     for (let p: i32 = ptrK; p < ptrK1; p++) {
       const origIdx = load<i32>(indexPtr + (<usize>p) << 2)
       const i: i32 = load<i32>(pinvPtr + (<usize>origIdx) << 2)
-      store<f64>(xPtr + (<usize>i) << 3, load<f64>(valuesPtr + (<usize>p) << 3))
+      store<f64>(xPtr + ((<usize>i) << 3), load<f64>(valuesPtr + ((<usize>p) << 3)))
     }
 
     // Solve L(:, 0:k-1) \ A(:, k) for the k-th column
     for (let j: i32 = 0; j < k; j++) {
-      const xj = load<f64>(xPtr + (<usize>j) << 3)
+      const xj = load<f64>(xPtr + ((<usize>j) << 3))
       if (xj === 0.0) continue
 
       const lPtrJ = load<i32>(lPtrPtr + (<usize>j) << 2)
-      const ljj = load<f64>(lValuesPtr + (<usize>lPtrJ) << 3)
+      const ljj = load<f64>(lValuesPtr + ((<usize>lPtrJ) << 3))
       const xjDiv: f64 = xj / ljj
-      store<f64>(xPtr + (<usize>j) << 3, xjDiv)
+      store<f64>(xPtr + ((<usize>j) << 3), xjDiv)
 
       const lPtrJ1 = load<i32>(lPtrPtr + (<usize>(j + 1)) << 2)
       for (let p: i32 = lPtrJ + 1; p < lPtrJ1; p++) {
         const i = load<i32>(lIndexPtr + (<usize>p) << 2)
-        const xi = load<f64>(xPtr + (<usize>i) << 3)
-        const lVal = load<f64>(lValuesPtr + (<usize>p) << 3)
-        store<f64>(xPtr + (<usize>i) << 3, xi - lVal * xjDiv)
+        const xi = load<f64>(xPtr + ((<usize>i) << 3))
+        const lVal = load<f64>(lValuesPtr + ((<usize>p) << 3))
+        store<f64>(xPtr + ((<usize>i) << 3), xi - lVal * xjDiv)
       }
     }
 
     // Find pivot
     let pivotRow: i32 = k
-    let pivotVal: f64 = Math.abs(load<f64>(xPtr + (<usize>k) << 3))
+    let pivotVal: f64 = Math.abs(load<f64>(xPtr + ((<usize>k) << 3)))
 
     if (tol < 1.0) {
       for (let i: i32 = k + 1; i < n; i++) {
-        const absXi: f64 = Math.abs(load<f64>(xPtr + (<usize>i) << 3))
+        const absXi: f64 = Math.abs(load<f64>(xPtr + ((<usize>i) << 3)))
         if (absXi > pivotVal) {
           pivotVal = absXi
           pivotRow = i
@@ -494,9 +494,9 @@ export function sparseLU(
       store<i32>(pinvPtr + (<usize>pp) << 2, k)
 
       // Swap in x
-      const tempX: f64 = load<f64>(xPtr + (<usize>k) << 3)
-      store<f64>(xPtr + (<usize>k) << 3, load<f64>(xPtr + (<usize>pivotRow) << 3))
-      store<f64>(xPtr + (<usize>pivotRow) << 3, tempX)
+      const tempX: f64 = load<f64>(xPtr + ((<usize>k) << 3))
+      store<f64>(xPtr + ((<usize>k) << 3), load<f64>(xPtr + ((<usize>pivotRow) << 3)))
+      store<f64>(xPtr + ((<usize>pivotRow) << 3), tempX)
 
       // Swap rows in L
       for (let j: i32 = 0; j < k; j++) {
@@ -515,9 +515,9 @@ export function sparseLU(
 
     // Store U(:, k)
     for (let i: i32 = 0; i <= k; i++) {
-      const xi = load<f64>(xPtr + (<usize>i) << 3)
+      const xi = load<f64>(xPtr + ((<usize>i) << 3))
       if (xi !== 0.0) {
-        store<f64>(uValuesPtr + (<usize>nnzU) << 3, xi)
+        store<f64>(uValuesPtr + ((<usize>nnzU) << 3), xi)
         store<i32>(uIndexPtr + (<usize>nnzU) << 2, i)
         nnzU++
       }
@@ -525,21 +525,21 @@ export function sparseLU(
     store<i32>(uPtrPtr + (<usize>(k + 1)) << 2, nnzU)
 
     // Check for singularity
-    const xk = load<f64>(xPtr + (<usize>k) << 3)
+    const xk = load<f64>(xPtr + ((<usize>k) << 3))
     if (xk === 0.0) {
       return -1 // Singular matrix
     }
 
     // Store L(:, k)
-    store<f64>(lValuesPtr + (<usize>nnzL) << 3, 1.0) // Diagonal of L is 1
+    store<f64>(lValuesPtr + ((<usize>nnzL) << 3), 1.0) // Diagonal of L is 1
     store<i32>(lIndexPtr + (<usize>nnzL) << 2, k)
     nnzL++
 
     const ukk: f64 = xk
     for (let i: i32 = k + 1; i < n; i++) {
-      const xi = load<f64>(xPtr + (<usize>i) << 3)
+      const xi = load<f64>(xPtr + ((<usize>i) << 3))
       if (xi !== 0.0) {
-        store<f64>(lValuesPtr + (<usize>nnzL) << 3, xi / ukk)
+        store<f64>(lValuesPtr + ((<usize>nnzL) << 3), xi / ukk)
         store<i32>(lIndexPtr + (<usize>nnzL) << 2, i)
         nnzL++
       }
@@ -575,28 +575,28 @@ export function sparseLsolve(
 ): void {
   // Copy b to x
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(xPtr + (<usize>i) << 3, load<f64>(bPtr + (<usize>i) << 3))
+    store<f64>(xPtr + ((<usize>i) << 3), load<f64>(bPtr + ((<usize>i) << 3)))
   }
 
   // Forward substitution
   for (let j: i32 = 0; j < n; j++) {
-    const xj = load<f64>(xPtr + (<usize>j) << 3)
+    const xj = load<f64>(xPtr + ((<usize>j) << 3))
     if (xj === 0.0) continue
 
     const p1: i32 = load<i32>(lPtrPtr + (<usize>j) << 2)
     const p2: i32 = load<i32>(lPtrPtr + (<usize>(j + 1)) << 2)
 
     // Divide by diagonal (first entry in column)
-    const ljj = load<f64>(lValuesPtr + (<usize>p1) << 3)
-    store<f64>(xPtr + (<usize>j) << 3, xj / ljj)
-    const xjNew = load<f64>(xPtr + (<usize>j) << 3)
+    const ljj = load<f64>(lValuesPtr + ((<usize>p1) << 3))
+    store<f64>(xPtr + ((<usize>j) << 3), xj / ljj)
+    const xjNew = load<f64>(xPtr + ((<usize>j) << 3))
 
     // Update remaining entries
     for (let p: i32 = p1 + 1; p < p2; p++) {
       const i = load<i32>(lIndexPtr + (<usize>p) << 2)
-      const xi = load<f64>(xPtr + (<usize>i) << 3)
-      const lVal = load<f64>(lValuesPtr + (<usize>p) << 3)
-      store<f64>(xPtr + (<usize>i) << 3, xi - lVal * xjNew)
+      const xi = load<f64>(xPtr + ((<usize>i) << 3))
+      const lVal = load<f64>(lValuesPtr + ((<usize>p) << 3))
+      store<f64>(xPtr + ((<usize>i) << 3), xi - lVal * xjNew)
     }
   }
 }
@@ -621,7 +621,7 @@ export function sparseUsolve(
 ): void {
   // Copy b to x
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(xPtr + (<usize>i) << 3, load<f64>(bPtr + (<usize>i) << 3))
+    store<f64>(xPtr + ((<usize>i) << 3), load<f64>(bPtr + ((<usize>i) << 3)))
   }
 
   // Backward substitution
@@ -641,19 +641,19 @@ export function sparseUsolve(
     }
 
     if (diagIdx < 0) continue
-    const ujj = load<f64>(uValuesPtr + (<usize>diagIdx) << 3)
+    const ujj = load<f64>(uValuesPtr + ((<usize>diagIdx) << 3))
     if (ujj === 0.0) continue
 
-    const xj = load<f64>(xPtr + (<usize>j) << 3)
-    store<f64>(xPtr + (<usize>j) << 3, xj / ujj)
-    const xjNew = load<f64>(xPtr + (<usize>j) << 3)
+    const xj = load<f64>(xPtr + ((<usize>j) << 3))
+    store<f64>(xPtr + ((<usize>j) << 3), xj / ujj)
+    const xjNew = load<f64>(xPtr + ((<usize>j) << 3))
 
     // Update entries above diagonal
     for (let p: i32 = p1; p < diagIdx; p++) {
       const i = load<i32>(uIndexPtr + (<usize>p) << 2)
-      const xi = load<f64>(xPtr + (<usize>i) << 3)
-      const uVal = load<f64>(uValuesPtr + (<usize>p) << 3)
-      store<f64>(xPtr + (<usize>i) << 3, xi - uVal * xjNew)
+      const xi = load<f64>(xPtr + ((<usize>i) << 3))
+      const uVal = load<f64>(uValuesPtr + ((<usize>p) << 3))
+      store<f64>(xPtr + ((<usize>i) << 3), xi - uVal * xjNew)
     }
   }
 }
@@ -699,11 +699,11 @@ export function sparseQR(
 
   // workPtr layout: A (m*n f64s), tau (n f64s)
   const APtr: usize = workPtr
-  const tauPtr: usize = workPtr + (<usize>(m * n)) << 3
+  const tauPtr: usize = workPtr + ((<usize>(m * n)) << 3)
 
   // Initialize dense A to zero
   for (let i: i32 = 0; i < m * n; i++) {
-    store<f64>(APtr + (<usize>i) << 3, 0.0)
+    store<f64>(APtr + ((<usize>i) << 3), 0.0)
   }
 
   // Scatter sparse A into dense
@@ -712,8 +712,8 @@ export function sparseQR(
     const ptrJ1 = load<i32>(ptrPtr + (<usize>(j + 1)) << 2)
     for (let p: i32 = ptrJ; p < ptrJ1; p++) {
       const i = load<i32>(indexPtr + (<usize>p) << 2)
-      const val = load<f64>(valuesPtr + (<usize>p) << 3)
-      store<f64>(APtr + (<usize>(i * n + j)) << 3, val)
+      const val = load<f64>(valuesPtr + ((<usize>p) << 3))
+      store<f64>(APtr + ((<usize>(i * n + j)) << 3), val)
     }
   }
 
@@ -722,54 +722,54 @@ export function sparseQR(
     // Compute Householder vector for column k
     let normx: f64 = 0.0
     for (let i: i32 = k; i < m; i++) {
-      const aik = load<f64>(APtr + (<usize>(i * n + k)) << 3)
+      const aik = load<f64>(APtr + ((<usize>(i * n + k)) << 3))
       normx += aik * aik
     }
     normx = Math.sqrt(normx)
 
     if (normx === 0.0) continue
 
-    const akk = load<f64>(APtr + (<usize>(k * n + k)) << 3)
+    const akk = load<f64>(APtr + ((<usize>(k * n + k)) << 3))
     const alpha: f64 = akk >= 0 ? -normx : normx
     const u0: f64 = akk - alpha
-    store<f64>(APtr + (<usize>(k * n + k)) << 3, alpha)
+    store<f64>(APtr + ((<usize>(k * n + k)) << 3), alpha)
 
     // Normalize Householder vector
     let normU: f64 = u0 * u0
     for (let i: i32 = k + 1; i < m; i++) {
-      const aik = load<f64>(APtr + (<usize>(i * n + k)) << 3)
+      const aik = load<f64>(APtr + ((<usize>(i * n + k)) << 3))
       normU += aik * aik
     }
     normU = Math.sqrt(normU)
 
     if (normU === 0.0) continue
 
-    store<f64>(tauPtr + (<usize>k) << 3, 2.0 / normU / normU)
-    const tauK = load<f64>(tauPtr + (<usize>k) << 3)
+    store<f64>(tauPtr + ((<usize>k) << 3), 2.0 / normU / normU)
+    const tauK = load<f64>(tauPtr + ((<usize>k) << 3))
 
     // Apply Householder to remaining columns
     for (let j: i32 = k + 1; j < n; j++) {
       // Compute v^T * A(:,j)
-      let dot: f64 = u0 * load<f64>(APtr + (<usize>(k * n + j)) << 3)
+      let dot: f64 = u0 * load<f64>(APtr + ((<usize>(k * n + j)) << 3))
       for (let i: i32 = k + 1; i < m; i++) {
-        dot += load<f64>(APtr + (<usize>(i * n + k)) << 3) * load<f64>(APtr + (<usize>(i * n + j)) << 3)
+        dot += load<f64>(APtr + ((<usize>(i * n + k)) << 3)) * load<f64>(APtr + ((<usize>(i * n + j)) << 3))
       }
 
       // A(:,j) = A(:,j) - tau * dot * v
       dot *= tauK
-      const akj = load<f64>(APtr + (<usize>(k * n + j)) << 3)
-      store<f64>(APtr + (<usize>(k * n + j)) << 3, akj - dot * u0)
+      const akj = load<f64>(APtr + ((<usize>(k * n + j)) << 3))
+      store<f64>(APtr + ((<usize>(k * n + j)) << 3), akj - dot * u0)
       for (let i: i32 = k + 1; i < m; i++) {
-        const aij = load<f64>(APtr + (<usize>(i * n + j)) << 3)
-        const aik = load<f64>(APtr + (<usize>(i * n + k)) << 3)
-        store<f64>(APtr + (<usize>(i * n + j)) << 3, aij - dot * aik)
+        const aij = load<f64>(APtr + ((<usize>(i * n + j)) << 3))
+        const aik = load<f64>(APtr + ((<usize>(i * n + k)) << 3))
+        store<f64>(APtr + ((<usize>(i * n + j)) << 3), aij - dot * aik)
       }
     }
 
     // Store Householder vector below diagonal
-    store<f64>(APtr + (<usize>(k * n + k)) << 3, alpha)
+    store<f64>(APtr + ((<usize>(k * n + k)) << 3), alpha)
     for (let i: i32 = k + 1; i < m; i++) {
-      store<f64>(APtr + (<usize>(i * n + k)) << 3, 0.0) // Zero out below diagonal in R
+      store<f64>(APtr + ((<usize>(i * n + k)) << 3), 0.0) // Zero out below diagonal in R
     }
   }
 
@@ -778,9 +778,9 @@ export function sparseQR(
   for (let j: i32 = 0; j < n; j++) {
     store<i32>(rPtrPtr + (<usize>j) << 2, nnzR)
     for (let i: i32 = 0; i <= j && i < m; i++) {
-      const val = load<f64>(APtr + (<usize>(i * n + j)) << 3)
+      const val = load<f64>(APtr + ((<usize>(i * n + j)) << 3))
       if (Math.abs(val) > 1e-14) {
-        store<f64>(rValuesPtr + (<usize>nnzR) << 3, val)
+        store<f64>(rValuesPtr + ((<usize>nnzR) << 3), val)
         store<i32>(rIndexPtr + (<usize>nnzR) << 2, i)
         nnzR++
       }
@@ -823,15 +823,15 @@ export function sparseSolve(
   // uValues (maxNnz f64s), uIndex (maxNnz i32s), uPtr ((n+1) i32s)
   // perm (n i32s), pb (n f64s), y (n f64s), luWork (enough for LU)
   const lValuesPtr: usize = workPtr
-  const lIndexPtr: usize = lValuesPtr + (<usize>maxNnz) << 3
+  const lIndexPtr: usize = lValuesPtr + ((<usize>maxNnz) << 3)
   const lPtrPtr: usize = lIndexPtr + (<usize>maxNnz) << 2
   const uValuesPtr: usize = lPtrPtr + (<usize>(n + 1)) << 2
-  const uIndexPtr: usize = uValuesPtr + (<usize>maxNnz) << 3
+  const uIndexPtr: usize = uValuesPtr + ((<usize>maxNnz) << 3)
   const uPtrPtr: usize = uIndexPtr + (<usize>maxNnz) << 2
   const permPtr: usize = uPtrPtr + (<usize>(n + 1)) << 2
   const pbPtr: usize = permPtr + (<usize>n) << 2
-  const yPtr: usize = pbPtr + (<usize>n) << 3
-  const luWorkPtr: usize = yPtr + (<usize>n) << 3
+  const yPtr: usize = pbPtr + ((<usize>n) << 3)
+  const luWorkPtr: usize = yPtr + ((<usize>n) << 3)
 
   // LU factorization
   const luResult = sparseLU(
@@ -848,7 +848,7 @@ export function sparseSolve(
   // Apply permutation to b
   for (let i: i32 = 0; i < n; i++) {
     const permI = load<i32>(permPtr + (<usize>i) << 2)
-    store<f64>(pbPtr + (<usize>i) << 3, load<f64>(bPtr + (<usize>permI) << 3))
+    store<f64>(pbPtr + ((<usize>i) << 3), load<f64>(bPtr + ((<usize>permI) << 3)))
   }
 
   // Solve L * y = pb

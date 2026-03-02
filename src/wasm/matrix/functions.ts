@@ -55,11 +55,11 @@ function matMulInternal(
     for (let j: i32 = 0; j < bCols; j++) {
       let sum: f64 = 0.0
       for (let k: i32 = 0; k < aCols; k++) {
-        const aVal = load<f64>(aPtr + (<usize>(i * aCols + k)) << 3)
-        const bVal = load<f64>(bPtr + (<usize>(k * bCols + j)) << 3)
+        const aVal = load<f64>(aPtr + ((<usize>(i * aCols + k)) << 3))
+        const bVal = load<f64>(bPtr + ((<usize>(k * bCols + j)) << 3))
         sum += aVal * bVal
       }
-      store<f64>(resultPtr + (<usize>(i * bCols + j)) << 3, sum)
+      store<f64>(resultPtr + ((<usize>(i * bCols + j)) << 3), sum)
     }
   }
 }
@@ -130,11 +130,11 @@ function eyeInternal(n: i32, resultPtr: usize): void {
   const n2: i32 = n * n
   // Zero out first
   for (let i: i32 = 0; i < n2; i++) {
-    store<f64>(resultPtr + (<usize>i) << 3, 0.0)
+    store<f64>(resultPtr + ((<usize>i) << 3), 0.0)
   }
   // Set diagonal
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(resultPtr + (<usize>(i * n + i)) << 3, 1.0)
+    store<f64>(resultPtr + ((<usize>(i * n + i)) << 3), 1.0)
   }
 }
 
@@ -173,16 +173,16 @@ function invInternal(
       const srcOffset: usize = <usize>(i * n + j) << 3
       const dstOffset: usize = <usize>(i * width + j) << 3
       store<f64>(augPtr + dstOffset, load<f64>(aPtr + srcOffset))
-      store<f64>(augPtr + (<usize>(i * width + n + j)) << 3, i === j ? 1.0 : 0.0)
+      store<f64>(augPtr + ((<usize>(i * width + n + j)) << 3), i === j ? 1.0 : 0.0)
     }
   }
 
   for (let k: i32 = 0; k < n; k++) {
-    let maxVal: f64 = Math.abs(load<f64>(augPtr + (<usize>(k * width + k)) << 3))
+    let maxVal: f64 = Math.abs(load<f64>(augPtr + ((<usize>(k * width + k)) << 3)))
     let pivotRow: i32 = k
 
     for (let i: i32 = k + 1; i < n; i++) {
-      const val: f64 = Math.abs(load<f64>(augPtr + (<usize>(i * width + k)) << 3))
+      const val: f64 = Math.abs(load<f64>(augPtr + ((<usize>(i * width + k)) << 3)))
       if (val > maxVal) {
         maxVal = val
         pivotRow = i
@@ -203,7 +203,7 @@ function invInternal(
       }
     }
 
-    const pivot: f64 = load<f64>(augPtr + (<usize>(k * width + k)) << 3)
+    const pivot: f64 = load<f64>(augPtr + ((<usize>(k * width + k)) << 3))
     for (let j: i32 = 0; j < width; j++) {
       const idx: usize = <usize>(k * width + j) << 3
       store<f64>(augPtr + idx, load<f64>(augPtr + idx) / pivot)
@@ -211,7 +211,7 @@ function invInternal(
 
     for (let i: i32 = 0; i < n; i++) {
       if (i !== k) {
-        const factor: f64 = load<f64>(augPtr + (<usize>(i * width + k)) << 3)
+        const factor: f64 = load<f64>(augPtr + ((<usize>(i * width + k)) << 3))
         for (let j: i32 = 0; j < width; j++) {
           const iIdx: usize = <usize>(i * width + j) << 3
           const kIdx: usize = <usize>(k * width + j) << 3
@@ -242,7 +242,7 @@ function invInternal(
 function normFroInternal(aPtr: usize, size: i32): f64 {
   let sum: f64 = 0.0
   for (let i: i32 = 0; i < size; i++) {
-    const val: f64 = load<f64>(aPtr + (<usize>i) << 3)
+    const val: f64 = load<f64>(aPtr + ((<usize>i) << 3))
     sum += val * val
   }
   return Math.sqrt(sum)
@@ -259,7 +259,7 @@ function norm1Internal(aPtr: usize, n: i32): f64 {
   for (let j: i32 = 0; j < n; j++) {
     let colSum: f64 = 0.0
     for (let i: i32 = 0; i < n; i++) {
-      colSum += Math.abs(load<f64>(aPtr + (<usize>(i * n + j)) << 3))
+      colSum += Math.abs(load<f64>(aPtr + ((<usize>(i * n + j)) << 3)))
     }
     if (colSum > maxColSum) {
       maxColSum = colSum
@@ -300,10 +300,10 @@ export function pinv(
 
   // Layout work memory
   const aTPtr: usize = workPtr
-  const prodPtr: usize = aTPtr + (<usize>(cols * rows)) << 3
-  const prodInvPtr: usize = prodPtr + (<usize>(maxDim * maxDim)) << 3
-  const regPtr: usize = prodInvPtr + (<usize>(maxDim * maxDim)) << 3
-  const augPtr: usize = regPtr + (<usize>(maxDim * maxDim)) << 3
+  const prodPtr: usize = aTPtr + ((<usize>(cols * rows)) << 3)
+  const prodInvPtr: usize = prodPtr + ((<usize>(maxDim * maxDim)) << 3)
+  const regPtr: usize = prodInvPtr + ((<usize>(maxDim * maxDim)) << 3)
+  const augPtr: usize = regPtr + ((<usize>(maxDim * maxDim)) << 3)
 
   // Compute transpose
   transposeInternal(aPtr, rows, cols, aTPtr)
@@ -597,17 +597,17 @@ export function powerIteration(
   tol: f64 = 1e-10
 ): i32 {
   const vPtr: usize = workPtr
-  const wPtr: usize = vPtr + (<usize>n) << 3
+  const wPtr: usize = vPtr + ((<usize>n) << 3)
 
   // Initialize vector
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(vPtr + (<usize>i) << 3, 1.0 / f64(n) + 0.1 * f64(i))
+    store<f64>(vPtr + ((<usize>i) << 3), 1.0 / f64(n) + 0.1 * f64(i))
   }
 
   // Normalize
   let norm: f64 = 0.0
   for (let i: i32 = 0; i < n; i++) {
-    const val: f64 = load<f64>(vPtr + (<usize>i) << 3)
+    const val: f64 = load<f64>(vPtr + ((<usize>i) << 3))
     norm += val * val
   }
   norm = Math.sqrt(norm)
@@ -623,21 +623,21 @@ export function powerIteration(
     for (let i: i32 = 0; i < n; i++) {
       let sum: f64 = 0.0
       for (let j: i32 = 0; j < n; j++) {
-        sum += load<f64>(aPtr + (<usize>(i * n + j)) << 3) * load<f64>(vPtr + (<usize>j) << 3)
+        sum += load<f64>(aPtr + ((<usize>(i * n + j)) << 3)) * load<f64>(vPtr + ((<usize>j) << 3))
       }
-      store<f64>(wPtr + (<usize>i) << 3, sum)
+      store<f64>(wPtr + ((<usize>i) << 3), sum)
     }
 
     // Compute Rayleigh quotient: lambda = v^T * w
     let newEigenvalue: f64 = 0.0
     for (let i: i32 = 0; i < n; i++) {
-      newEigenvalue += load<f64>(vPtr + (<usize>i) << 3) * load<f64>(wPtr + (<usize>i) << 3)
+      newEigenvalue += load<f64>(vPtr + ((<usize>i) << 3)) * load<f64>(wPtr + ((<usize>i) << 3))
     }
 
     // Normalize w
     norm = 0.0
     for (let i: i32 = 0; i < n; i++) {
-      const val: f64 = load<f64>(wPtr + (<usize>i) << 3)
+      const val: f64 = load<f64>(wPtr + ((<usize>i) << 3))
       norm += val * val
     }
     norm = Math.sqrt(norm)
@@ -655,7 +655,7 @@ export function powerIteration(
     if (Math.abs(newEigenvalue - eigenvalue) < tol) {
       store<f64>(eigenvaluePtr, newEigenvalue)
       for (let i: i32 = 0; i < n; i++) {
-        store<f64>(eigenvectorPtr + (<usize>i) << 3, load<f64>(vPtr + (<usize>i) << 3))
+        store<f64>(eigenvectorPtr + ((<usize>i) << 3), load<f64>(vPtr + ((<usize>i) << 3)))
       }
       return 1
     }
@@ -666,7 +666,7 @@ export function powerIteration(
   // Return last result even if not fully converged
   store<f64>(eigenvaluePtr, eigenvalue)
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(eigenvectorPtr + (<usize>i) << 3, load<f64>(vPtr + (<usize>i) << 3))
+    store<f64>(eigenvectorPtr + ((<usize>i) << 3), load<f64>(vPtr + ((<usize>i) << 3)))
   }
   return 1
 }
@@ -704,7 +704,7 @@ export function eigsSymmetric(
 
     for (let i: i32 = 0; i < n; i++) {
       for (let j: i32 = i + 1; j < n; j++) {
-        const val: f64 = Math.abs(load<f64>(workPtr + (<usize>(i * n + j)) << 3))
+        const val: f64 = Math.abs(load<f64>(workPtr + ((<usize>(i * n + j)) << 3)))
         if (val > maxOff) {
           maxOff = val
           p = i
@@ -719,9 +719,9 @@ export function eigsSymmetric(
     }
 
     // Jacobi rotation to zero out (p,q) and (q,p)
-    const app: f64 = load<f64>(workPtr + (<usize>(p * n + p)) << 3)
-    const aqq: f64 = load<f64>(workPtr + (<usize>(q * n + q)) << 3)
-    const apq: f64 = load<f64>(workPtr + (<usize>(p * n + q)) << 3)
+    const app: f64 = load<f64>(workPtr + ((<usize>(p * n + p)) << 3))
+    const aqq: f64 = load<f64>(workPtr + ((<usize>(q * n + q)) << 3))
+    const apq: f64 = load<f64>(workPtr + ((<usize>(p * n + q)) << 3))
 
     let theta: f64
     if (Math.abs(app - aqq) < 1e-14) {
@@ -736,36 +736,36 @@ export function eigsSymmetric(
     // Apply Jacobi rotation: A' = J^T * A * J
     for (let i: i32 = 0; i < n; i++) {
       if (i !== p && i !== q) {
-        const aip: f64 = load<f64>(workPtr + (<usize>(i * n + p)) << 3)
-        const aiq: f64 = load<f64>(workPtr + (<usize>(i * n + q)) << 3)
+        const aip: f64 = load<f64>(workPtr + ((<usize>(i * n + p)) << 3))
+        const aiq: f64 = load<f64>(workPtr + ((<usize>(i * n + q)) << 3))
         const newAip: f64 = c * aip - s * aiq
         const newAiq: f64 = s * aip + c * aiq
-        store<f64>(workPtr + (<usize>(i * n + p)) << 3, newAip)
-        store<f64>(workPtr + (<usize>(p * n + i)) << 3, newAip)
-        store<f64>(workPtr + (<usize>(i * n + q)) << 3, newAiq)
-        store<f64>(workPtr + (<usize>(q * n + i)) << 3, newAiq)
+        store<f64>(workPtr + ((<usize>(i * n + p)) << 3), newAip)
+        store<f64>(workPtr + ((<usize>(p * n + i)) << 3), newAip)
+        store<f64>(workPtr + ((<usize>(i * n + q)) << 3), newAiq)
+        store<f64>(workPtr + ((<usize>(q * n + i)) << 3), newAiq)
       }
     }
 
-    store<f64>(workPtr + (<usize>(p * n + p)) << 3, c * c * app - 2.0 * c * s * apq + s * s * aqq)
-    store<f64>(workPtr + (<usize>(q * n + q)) << 3, s * s * app + 2.0 * c * s * apq + c * c * aqq)
-    store<f64>(workPtr + (<usize>(p * n + q)) << 3, 0.0)
-    store<f64>(workPtr + (<usize>(q * n + p)) << 3, 0.0)
+    store<f64>(workPtr + ((<usize>(p * n + p)) << 3), c * c * app - 2.0 * c * s * apq + s * s * aqq)
+    store<f64>(workPtr + ((<usize>(q * n + q)) << 3), s * s * app + 2.0 * c * s * apq + c * c * aqq)
+    store<f64>(workPtr + ((<usize>(p * n + q)) << 3), 0.0)
+    store<f64>(workPtr + ((<usize>(q * n + p)) << 3), 0.0)
   }
 
   // Extract diagonal as eigenvalues
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(eigenvaluesPtr + (<usize>i) << 3, load<f64>(workPtr + (<usize>(i * n + i)) << 3))
+    store<f64>(eigenvaluesPtr + ((<usize>i) << 3), load<f64>(workPtr + ((<usize>(i * n + i)) << 3)))
   }
 
   // Sort descending
   for (let i: i32 = 0; i < n - 1; i++) {
     for (let j: i32 = i + 1; j < n; j++) {
-      const ei: f64 = load<f64>(eigenvaluesPtr + (<usize>i) << 3)
-      const ej: f64 = load<f64>(eigenvaluesPtr + (<usize>j) << 3)
+      const ei: f64 = load<f64>(eigenvaluesPtr + ((<usize>i) << 3))
+      const ej: f64 = load<f64>(eigenvaluesPtr + ((<usize>j) << 3))
       if (ej > ei) {
-        store<f64>(eigenvaluesPtr + (<usize>i) << 3, ej)
-        store<f64>(eigenvaluesPtr + (<usize>j) << 3, ei)
+        store<f64>(eigenvaluesPtr + ((<usize>i) << 3), ej)
+        store<f64>(eigenvaluesPtr + ((<usize>j) << 3), ei)
       }
     }
   }
@@ -797,8 +797,8 @@ export function eigs(
   let isSymmetric: bool = true
   for (let i: i32 = 0; i < n && isSymmetric; i++) {
     for (let j: i32 = i + 1; j < n && isSymmetric; j++) {
-      const aij: f64 = load<f64>(aPtr + (<usize>(i * n + j)) << 3)
-      const aji: f64 = load<f64>(aPtr + (<usize>(j * n + i)) << 3)
+      const aij: f64 = load<f64>(aPtr + ((<usize>(i * n + j)) << 3))
+      const aji: f64 = load<f64>(aPtr + ((<usize>(j * n + i)) << 3))
       if (Math.abs(aij - aji) > 1e-14) {
         isSymmetric = false
       }
@@ -811,7 +811,7 @@ export function eigs(
 
   // General case: reduce to upper Hessenberg form and apply QR
   const HPtr: usize = workPtr
-  const uPtr: usize = HPtr + (<usize>(n * n)) << 3
+  const uPtr: usize = HPtr + ((<usize>(n * n)) << 3)
 
   // Copy to H
   copyMatrixInternal(aPtr, n * n, HPtr)
@@ -821,7 +821,7 @@ export function eigs(
     // Form Householder vector for column k below diagonal
     let normx: f64 = 0.0
     for (let i: i32 = k + 1; i < n; i++) {
-      const val: f64 = load<f64>(HPtr + (<usize>(i * n + k)) << 3)
+      const val: f64 = load<f64>(HPtr + ((<usize>(i * n + k)) << 3))
       normx += val * val
     }
     normx = Math.sqrt(normx)
@@ -834,12 +834,12 @@ export function eigs(
     const uLen: i32 = n - k - 1
     store<f64>(uPtr, hk1k - alpha)
     for (let i: i32 = 1; i < uLen; i++) {
-      store<f64>(uPtr + (<usize>i) << 3, load<f64>(HPtr + (<usize>((k + 1 + i) * n + k) << 3)))
+      store<f64>(uPtr + ((<usize>i) << 3), load<f64>(HPtr + (<usize>((k + 1 + i) * n + k) << 3)))
     }
 
     let normU: f64 = 0.0
     for (let i: i32 = 0; i < uLen; i++) {
-      const val: f64 = load<f64>(uPtr + (<usize>i) << 3)
+      const val: f64 = load<f64>(uPtr + ((<usize>i) << 3))
       normU += val * val
     }
     normU = Math.sqrt(normU)
@@ -856,12 +856,12 @@ export function eigs(
     for (let j: i32 = k; j < n; j++) {
       let dot: f64 = 0.0
       for (let i: i32 = 0; i < uLen; i++) {
-        dot += load<f64>(uPtr + (<usize>i) << 3) * load<f64>(HPtr + (<usize>((k + 1 + i) * n + j) << 3))
+        dot += load<f64>(uPtr + ((<usize>i) << 3)) * load<f64>(HPtr + (<usize>((k + 1 + i) * n + j) << 3))
       }
       dot *= 2.0
       for (let i: i32 = 0; i < uLen; i++) {
         const idx: usize = <usize>((k + 1 + i) * n + j) << 3
-        store<f64>(HPtr + idx, load<f64>(HPtr + idx) - dot * load<f64>(uPtr + (<usize>i) << 3))
+        store<f64>(HPtr + idx, load<f64>(HPtr + idx) - dot * load<f64>(uPtr + ((<usize>i) << 3)))
       }
     }
 
@@ -869,12 +869,12 @@ export function eigs(
     for (let i: i32 = 0; i < n; i++) {
       let dot: f64 = 0.0
       for (let j: i32 = 0; j < uLen; j++) {
-        dot += load<f64>(HPtr + (<usize>(i * n + (k + 1 + j)) << 3)) * load<f64>(uPtr + (<usize>j) << 3)
+        dot += load<f64>(HPtr + ((<usize>(i * n + (k + 1 + j)) << 3))) * load<f64>(uPtr + ((<usize>j) << 3))
       }
       dot *= 2.0
       for (let j: i32 = 0; j < uLen; j++) {
         const idx: usize = <usize>(i * n + (k + 1 + j)) << 3
-        store<f64>(HPtr + idx, load<f64>(HPtr + idx) - dot * load<f64>(uPtr + (<usize>j) << 3))
+        store<f64>(HPtr + idx, load<f64>(HPtr + idx) - dot * load<f64>(uPtr + ((<usize>j) << 3)))
       }
     }
   }
@@ -885,14 +885,14 @@ export function eigs(
     // Check for deflation
     let deflate: bool = false
     for (let i: i32 = m - 1; i > 0; i--) {
-      const subdiag: f64 = Math.abs(load<f64>(HPtr + (<usize>(i * n + (i - 1)) << 3)))
-      const diag1: f64 = Math.abs(load<f64>(HPtr + (<usize>((i - 1) * n + (i - 1)) << 3)))
-      const diag2: f64 = Math.abs(load<f64>(HPtr + (<usize>(i * n + i)) << 3))
+      const subdiag: f64 = Math.abs(load<f64>(HPtr + ((<usize>(i * n + (i - 1)) << 3))))
+      const diag1: f64 = Math.abs(load<f64>(HPtr + ((<usize>((i - 1) * n + (i - 1)) << 3))))
+      const diag2: f64 = Math.abs(load<f64>(HPtr + ((<usize>(i * n + i)) << 3)))
 
       if (subdiag < tol * (diag1 + diag2)) {
-        store<f64>(HPtr + (<usize>(i * n + (i - 1)) << 3), 0.0)
+        store<f64>(HPtr + ((<usize>(i * n + (i - 1)) << 3)), 0.0)
         if (i === m - 1) {
-          store<f64>(eigenvaluesPtr + (<usize>(m - 1)) << 3, load<f64>(HPtr + (<usize>((m - 1) * n + (m - 1)) << 3)))
+          store<f64>(eigenvaluesPtr + ((<usize>(m - 1)) << 3), load<f64>(HPtr + ((<usize>((m - 1) * n + (m - 1)) << 3))))
           m--
           deflate = true
           break
@@ -904,10 +904,10 @@ export function eigs(
     if (m <= 1) break
 
     // Wilkinson shift
-    const a11: f64 = load<f64>(HPtr + (<usize>((m - 2) * n + (m - 2)) << 3))
-    const a12: f64 = load<f64>(HPtr + (<usize>((m - 2) * n + (m - 1)) << 3))
-    const a21: f64 = load<f64>(HPtr + (<usize>((m - 1) * n + (m - 2)) << 3))
-    const a22: f64 = load<f64>(HPtr + (<usize>((m - 1) * n + (m - 1)) << 3))
+    const a11: f64 = load<f64>(HPtr + ((<usize>((m - 2) * n + (m - 2)) << 3)))
+    const a12: f64 = load<f64>(HPtr + ((<usize>((m - 2) * n + (m - 1)) << 3)))
+    const a21: f64 = load<f64>(HPtr + ((<usize>((m - 1) * n + (m - 2)) << 3)))
+    const a22: f64 = load<f64>(HPtr + ((<usize>((m - 1) * n + (m - 1)) << 3)))
 
     const tr: f64 = a11 + a22
     const det: f64 = a11 * a22 - a12 * a21
@@ -931,7 +931,7 @@ export function eigs(
 
     // QR step using Givens rotations
     for (let i: i32 = 0; i < m - 1; i++) {
-      const a_val: f64 = load<f64>(HPtr + (<usize>(i * n + i)) << 3)
+      const a_val: f64 = load<f64>(HPtr + ((<usize>(i * n + i)) << 3))
       const b_val: f64 = load<f64>(HPtr + (<usize>((i + 1) * n + i) << 3))
       const r: f64 = Math.sqrt(a_val * a_val + b_val * b_val)
 
@@ -942,19 +942,19 @@ export function eigs(
 
       // Apply Givens rotation to H from left
       for (let j: i32 = i; j < n; j++) {
-        const temp1: f64 = load<f64>(HPtr + (<usize>(i * n + j)) << 3)
+        const temp1: f64 = load<f64>(HPtr + ((<usize>(i * n + j)) << 3))
         const temp2: f64 = load<f64>(HPtr + (<usize>((i + 1) * n + j) << 3))
-        store<f64>(HPtr + (<usize>(i * n + j)) << 3, c * temp1 + s * temp2)
+        store<f64>(HPtr + ((<usize>(i * n + j)) << 3), c * temp1 + s * temp2)
         store<f64>(HPtr + (<usize>((i + 1) * n + j) << 3), -s * temp1 + c * temp2)
       }
 
       // Apply from right
       const maxJ: i32 = i + 2 < m - 1 ? i + 2 : m - 1
       for (let j: i32 = 0; j <= maxJ; j++) {
-        const temp1: f64 = load<f64>(HPtr + (<usize>(j * n + i)) << 3)
-        const temp2: f64 = load<f64>(HPtr + (<usize>(j * n + (i + 1)) << 3))
-        store<f64>(HPtr + (<usize>(j * n + i)) << 3, c * temp1 + s * temp2)
-        store<f64>(HPtr + (<usize>(j * n + (i + 1)) << 3), -s * temp1 + c * temp2)
+        const temp1: f64 = load<f64>(HPtr + ((<usize>(j * n + i)) << 3))
+        const temp2: f64 = load<f64>(HPtr + ((<usize>(j * n + (i + 1)) << 3)))
+        store<f64>(HPtr + ((<usize>(j * n + i)) << 3), c * temp1 + s * temp2)
+        store<f64>(HPtr + ((<usize>(j * n + (i + 1)) << 3)), -s * temp1 + c * temp2)
       }
     }
 
@@ -967,17 +967,17 @@ export function eigs(
 
   // Extract remaining eigenvalues from diagonal
   for (let i: i32 = 0; i < m; i++) {
-    store<f64>(eigenvaluesPtr + (<usize>i) << 3, load<f64>(HPtr + (<usize>(i * n + i)) << 3))
+    store<f64>(eigenvaluesPtr + ((<usize>i) << 3), load<f64>(HPtr + ((<usize>(i * n + i)) << 3)))
   }
 
   // Sort by absolute value descending
   for (let i: i32 = 0; i < n - 1; i++) {
     for (let j: i32 = i + 1; j < n; j++) {
-      const ei: f64 = load<f64>(eigenvaluesPtr + (<usize>i) << 3)
-      const ej: f64 = load<f64>(eigenvaluesPtr + (<usize>j) << 3)
+      const ei: f64 = load<f64>(eigenvaluesPtr + ((<usize>i) << 3))
+      const ej: f64 = load<f64>(eigenvaluesPtr + ((<usize>j) << 3))
       if (Math.abs(ej) > Math.abs(ei)) {
-        store<f64>(eigenvaluesPtr + (<usize>i) << 3, ej)
-        store<f64>(eigenvaluesPtr + (<usize>j) << 3, ei)
+        store<f64>(eigenvaluesPtr + ((<usize>i) << 3), ej)
+        store<f64>(eigenvaluesPtr + ((<usize>j) << 3), ei)
       }
     }
   }
@@ -994,7 +994,7 @@ export function eigs(
 export function trace(aPtr: usize, n: i32): f64 {
   let sum: f64 = 0.0
   for (let i: i32 = 0; i < n; i++) {
-    sum += load<f64>(aPtr + (<usize>(i * n + i)) << 3)
+    sum += load<f64>(aPtr + ((<usize>(i * n + i)) << 3))
   }
   return sum
 }
@@ -1012,13 +1012,13 @@ export function spectralRadius(
   workPtr: usize
 ): f64 {
   const eigenvaluesPtr: usize = workPtr
-  const eigsWorkPtr: usize = eigenvaluesPtr + (<usize>n) << 3
+  const eigsWorkPtr: usize = eigenvaluesPtr + ((<usize>n) << 3)
 
   eigs(aPtr, n, eigenvaluesPtr, eigsWorkPtr, 200, 1e-10)
 
   let maxAbs: f64 = 0.0
   for (let i: i32 = 0; i < n; i++) {
-    const absVal: f64 = Math.abs(load<f64>(eigenvaluesPtr + (<usize>i) << 3))
+    const absVal: f64 = Math.abs(load<f64>(eigenvaluesPtr + ((<usize>i) << 3)))
     if (absVal > maxAbs) {
       maxAbs = absVal
     }

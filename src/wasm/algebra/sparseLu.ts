@@ -52,11 +52,11 @@ export function sparseLu(
   // workPtr + 0: x array (f64, size n)
   // workPtr + n*8: xi array (i32, size 2*n)
   const xPtr: usize = workPtr
-  const xiPtr: usize = workPtr + (<usize>n) << 3
+  const xiPtr: usize = workPtr + ((<usize>n) << 3)
 
   // Initialize workspace
   for (let i: i32 = 0; i < n; i++) {
-    store<f64>(xPtr + (<usize>i) << 3, 0.0)
+    store<f64>(xPtr + ((<usize>i) << 3), 0.0)
     store<i32>(pinvPtr + (<usize>i) << 2, -1) // No rows pivotal yet
   }
 
@@ -89,7 +89,7 @@ export function sparseLu(
 
       if (pinv_i < 0) {
         // Row i is not yet pivotal - check as pivot candidate
-        const xabs: f64 = Math.abs(load<f64>(xPtr + (<usize>i) << 3))
+        const xabs: f64 = Math.abs(load<f64>(xPtr + ((<usize>i) << 3)))
         if (xabs > maxAbs) {
           maxAbs = xabs
           ipiv = i
@@ -97,7 +97,7 @@ export function sparseLu(
       } else {
         // x[i] goes to U(pinv[i], k)
         store<i32>(uindexPtr + (<usize>unz) << 2, pinv_i)
-        store<f64>(uvaluesPtr + (<usize>unz) << 3, load<f64>(xPtr + (<usize>i) << 3))
+        store<f64>(uvaluesPtr + ((<usize>unz) << 3), load<f64>(xPtr + ((<usize>i) << 3)))
         unz++
       }
     }
@@ -110,17 +110,17 @@ export function sparseLu(
     // Prefer diagonal pivot if it's large enough
     const pinv_col: i32 = load<i32>(pinvPtr + (<usize>col) << 2)
     if (pinv_col < 0) {
-      const x_col: f64 = Math.abs(load<f64>(xPtr + (<usize>col) << 3))
+      const x_col: f64 = Math.abs(load<f64>(xPtr + ((<usize>col) << 3)))
       if (x_col >= maxAbs * tol) {
         ipiv = col
       }
     }
 
-    const pivot: f64 = load<f64>(xPtr + (<usize>ipiv) << 3)
+    const pivot: f64 = load<f64>(xPtr + ((<usize>ipiv) << 3))
 
     // U(k, k) = pivot (last entry in U(:,k))
     store<i32>(uindexPtr + (<usize>unz) << 2, k)
-    store<f64>(uvaluesPtr + (<usize>unz) << 3, pivot)
+    store<f64>(uvaluesPtr + ((<usize>unz) << 3), pivot)
     unz++
 
     // Mark ipiv as the k-th pivot row
@@ -128,7 +128,7 @@ export function sparseLu(
 
     // L(k, k) = 1 (first entry in L(:,k))
     store<i32>(lindexPtr + (<usize>lnz) << 2, ipiv)
-    store<f64>(lvaluesPtr + (<usize>lnz) << 3, 1.0)
+    store<f64>(lvaluesPtr + ((<usize>lnz) << 3), 1.0)
     lnz++
 
     // L(k+1:n, k) = x / pivot
@@ -137,11 +137,11 @@ export function sparseLu(
       if (load<i32>(pinvPtr + (<usize>i) << 2) < 0) {
         // Save unpermuted row in L
         store<i32>(lindexPtr + (<usize>lnz) << 2, i)
-        store<f64>(lvaluesPtr + (<usize>lnz) << 3, load<f64>(xPtr + (<usize>i) << 3) / pivot)
+        store<f64>(lvaluesPtr + ((<usize>lnz) << 3), load<f64>(xPtr + ((<usize>i) << 3)) / pivot)
         lnz++
       }
       // Clear x[i] for next iteration
-      store<f64>(xPtr + (<usize>i) << 3, 0.0)
+      store<f64>(xPtr + ((<usize>i) << 3), 0.0)
     }
   }
 
@@ -188,7 +188,7 @@ function sparseReachAndSolve(
   for (let p: i32 = bStart; p < bEnd; p++) {
     const i: i32 = load<i32>(bindexPtr + (<usize>p) << 2)
     // Load value into x
-    store<f64>(xPtr + (<usize>i) << 3, load<f64>(bvaluesPtr + (<usize>p) << 3))
+    store<f64>(xPtr + ((<usize>i) << 3), load<f64>(bvaluesPtr + ((<usize>p) << 3)))
 
     // DFS from node i
     top = dfs(i, lindexPtr, lptrPtr, pinvPtr, xiPtr, top, n)
@@ -206,15 +206,15 @@ function sparseReachAndSolve(
 
       // L(pinv_j, pinv_j) = 1, so x[j] stays the same
       // For k > pinv_j: x[L_index[k]] -= L_value[k] * x[j]
-      const xj: f64 = load<f64>(xPtr + (<usize>j) << 3)
+      const xj: f64 = load<f64>(xPtr + ((<usize>j) << 3))
 
       for (let k: i32 = lStart + 1; k < lEnd; k++) {
         const i: i32 = load<i32>(lindexPtr + (<usize>k) << 2)
         // Find original row index (inverse of pinv)
         for (let r: i32 = 0; r < n; r++) {
           if (load<i32>(pinvPtr + (<usize>r) << 2) === i) {
-            const xr: f64 = load<f64>(xPtr + (<usize>r) << 3)
-            store<f64>(xPtr + (<usize>r) << 3, xr - load<f64>(lvaluesPtr + (<usize>k) << 3) * xj)
+            const xr: f64 = load<f64>(xPtr + ((<usize>r) << 3))
+            store<f64>(xPtr + ((<usize>r) << 3), xr - load<f64>(lvaluesPtr + ((<usize>k) << 3)) * xj)
             break
           }
         }
@@ -298,8 +298,8 @@ export function sparseForwardSolve(
     // Update remaining entries in column
     for (let p: i32 = lStart + 1; p < lEnd; p++) {
       const i: i32 = load<i32>(lindexPtr + (<usize>p) << 2)
-      const bi: f64 = load<f64>(bPtr + (<usize>i) << 3)
-      store<f64>(bPtr + (<usize>i) << 3, bi - load<f64>(lvaluesPtr + (<usize>p) << 3) * bj)
+      const bi: f64 = load<f64>(bPtr + ((<usize>i) << 3))
+      store<f64>(bPtr + ((<usize>i) << 3), bi - load<f64>(lvaluesPtr + ((<usize>p) << 3)) * bj)
     }
   }
 }
@@ -337,8 +337,8 @@ export function sparseBackwardSolve(
     // Update entries above diagonal
     for (let p: i32 = uStart; p < uEnd - 1; p++) {
       const i: i32 = load<i32>(uindexPtr + (<usize>p) << 2)
-      const bi: f64 = load<f64>(bPtr + (<usize>i) << 3)
-      store<f64>(bPtr + (<usize>i) << 3, bi - load<f64>(uvaluesPtr + (<usize>p) << 3) * bj)
+      const bi: f64 = load<f64>(bPtr + ((<usize>i) << 3))
+      store<f64>(bPtr + ((<usize>i) << 3), bi - load<f64>(uvaluesPtr + ((<usize>p) << 3)) * bj)
     }
   }
 }
@@ -370,7 +370,7 @@ export function sparseLuSolve(
   // Apply row permutation: work = P * b
   for (let i: i32 = 0; i < n; i++) {
     const pi: i32 = load<i32>(pinvPtr + (<usize>i) << 2)
-    store<f64>(workPtr + (<usize>pi) << 3, load<f64>(bPtr + (<usize>i) << 3))
+    store<f64>(workPtr + ((<usize>pi) << 3), load<f64>(bPtr + ((<usize>i) << 3)))
   }
 
   // Solve L * y = P * b
@@ -383,11 +383,11 @@ export function sparseLuSolve(
   if (qPtr !== 0) {
     for (let i: i32 = 0; i < n; i++) {
       const qi: i32 = load<i32>(qPtr + (<usize>i) << 2)
-      store<f64>(bPtr + (<usize>qi) << 3, load<f64>(workPtr + (<usize>i) << 3))
+      store<f64>(bPtr + ((<usize>qi) << 3), load<f64>(workPtr + ((<usize>i) << 3)))
     }
   } else {
     for (let i: i32 = 0; i < n; i++) {
-      store<f64>(bPtr + (<usize>i) << 3, load<f64>(workPtr + (<usize>i) << 3))
+      store<f64>(bPtr + ((<usize>i) << 3), load<f64>(workPtr + ((<usize>i) << 3)))
     }
   }
 }
