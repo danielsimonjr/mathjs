@@ -1,7 +1,7 @@
 // test simplifyCore
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 
 describe('simplifyCore', function () {
   const testSimplifyCore = function (expr, expected, opts = {}, simpOpts = {}) {

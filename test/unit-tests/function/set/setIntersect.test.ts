@@ -2,7 +2,7 @@
 // test setIntersect
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('setIntersect', function () {
   it('should return the intersection of two sets', function () {

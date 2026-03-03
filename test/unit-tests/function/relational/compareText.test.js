@@ -1,7 +1,7 @@
 // test compareText
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 const bignumber = math.bignumber
 const matrix = math.matrix
 const sparse = math.sparse

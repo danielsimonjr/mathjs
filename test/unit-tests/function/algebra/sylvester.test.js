@@ -1,6 +1,6 @@
 // test schur decomposition
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 import sinon from 'sinon'
 
 describe('sylvester', function () {

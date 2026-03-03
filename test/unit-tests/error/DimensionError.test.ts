@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import { DimensionError } from '../../../src/error/DimensionError.js'
+import { DimensionError } from '../../../src/error/DimensionError.ts'
 
 describe('DimensionError', function () {
   it('should construct a DimensionError with numbers', function () {

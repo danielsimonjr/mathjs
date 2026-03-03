@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../src/defaultInstance.ts'
+import math from '../../../src/defaultInstance.js'
 import {
   arraySize,
   flatten,
@@ -19,7 +19,7 @@ import {
   stretch,
   broadcastArrays,
   get
-} from '../../../src/utils/array.ts'
+} from '../../../src/utils/array.js'
 
 describe('util.array', function () {
   describe('size', function () {

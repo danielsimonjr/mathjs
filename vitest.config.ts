@@ -10,11 +10,11 @@ const wasmBuilt = fs.existsSync(wasmPath)
 export default defineConfig({
   test: {
     // Include TypeScript test files from test/wasm
-    include: ['test/wasm/unit-tests/**/*.test.ts'],
-    // Exclude node_modules and direct-wasm tests if WASM not built
+    include: ['test/wasm/unit-tests/**/*.test.ts', 'test/unit-tests/**/*.test.ts'],
+    // Exclude node_modules, WASM AS tests under unit-tests, and direct-wasm if not built
     exclude: wasmBuilt
-      ? ['node_modules']
-      : ['node_modules', 'test/wasm/unit-tests/wasm/direct-wasm.test.ts'],
+      ? ['node_modules', 'test/unit-tests/wasm/**']
+      : ['node_modules', 'test/unit-tests/wasm/**', 'test/wasm/unit-tests/wasm/direct-wasm.test.ts'],
     // Use globals for describe, it, expect (Mocha-style)
     globals: true,
     // Environment

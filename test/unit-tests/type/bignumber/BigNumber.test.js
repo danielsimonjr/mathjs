@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 import Decimal from 'decimal.js'
 
 describe('BigNumber', function () {

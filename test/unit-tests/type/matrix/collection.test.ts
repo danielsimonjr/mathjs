@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
-import { isCollection } from '../../../../src/utils/is.js'
-import math from '../../../../src/defaultInstance.js'
+import { isCollection } from '../../../../src/utils/is.ts'
+import math from '../../../../src/defaultInstance.ts'
 const DenseMatrix = math.DenseMatrix
 const SparseMatrix = math.SparseMatrix
 

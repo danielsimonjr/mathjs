@@ -1,6 +1,6 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
-import { DimensionError } from '../../../../src/error/DimensionError.ts'
+import math from '../../../../src/defaultInstance.js'
+import { DimensionError } from '../../../../src/error/DimensionError.js'
 import sinon from 'sinon'
 
 const subset = math.subset

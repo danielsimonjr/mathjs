@@ -2,7 +2,7 @@
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 const bignumber = math.bignumber
 const fraction = math.fraction
 const complex = math.complex

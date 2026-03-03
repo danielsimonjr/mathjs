@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('filter', function () {
   it('should filter an array with a filter function', function () {

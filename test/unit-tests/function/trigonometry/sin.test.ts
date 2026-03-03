@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 const EPSILON = 1e-13
 const pi = math.pi

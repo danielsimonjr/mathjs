@@ -1,5 +1,5 @@
 import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 
 const zpk2tf = math.zpk2tf
 

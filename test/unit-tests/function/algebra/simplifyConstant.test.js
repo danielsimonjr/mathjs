@@ -1,7 +1,7 @@
 // test simplifyConstant
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 
 describe('simplifyConstant', function () {
   const testSimplifyConstant = function (expr, expected, opts = {}, simpOpts = {}) {

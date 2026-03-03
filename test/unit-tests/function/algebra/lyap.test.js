@@ -1,7 +1,7 @@
 // test lyapunov equation solver
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 
 describe('lyap', function () {
   it('should solve lyapunov equation of order 5 with Matrices', function () {

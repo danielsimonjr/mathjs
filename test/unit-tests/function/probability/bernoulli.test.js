@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 const bernoulli = math.bernoulli
 
 const EPSILON = 1e-14

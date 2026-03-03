@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('sort', function () {
   it('should sort an array with numbers', function () {

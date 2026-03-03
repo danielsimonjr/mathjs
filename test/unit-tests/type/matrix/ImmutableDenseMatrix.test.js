@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 const Matrix = math.Matrix
 const DenseMatrix = math.DenseMatrix
 const ImmutableDenseMatrix = math.ImmutableDenseMatrix

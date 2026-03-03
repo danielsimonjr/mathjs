@@ -1,7 +1,7 @@
 // test ifft
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 const ifft = math.ifft
 
 describe('ifft', function () {

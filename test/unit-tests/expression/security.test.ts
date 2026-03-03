@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../src/defaultInstance.js'
+import math from '../../../src/defaultInstance.ts'
 
 describe('security', function () {
   it('should not allow calling Function via constructor', function () {

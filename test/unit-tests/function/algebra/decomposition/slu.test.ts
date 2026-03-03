@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { approxDeepEqual } from '../../../../../tools/approx.js'
-import math from '../../../../../src/defaultInstance.js'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('slu', function () {
   it('should decompose matrix, 4 x 4, natural ordering (order=0), partial pivoting', function () {

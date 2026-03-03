@@ -1,6 +1,6 @@
 import assert from 'assert'
-import math from '../../../../../src/defaultInstance.ts'
-import { lastDimToZeroBase } from '../../../../../src/expression/transform/utils/lastDimToZeroBase.ts'
+import math from '../../../../../src/defaultInstance.js'
+import { lastDimToZeroBase } from '../../../../../src/expression/transform/utils/lastDimToZeroBase.js'
 
 describe('lastDimToZeroBase', function () {
   it('should not alter args with length !== 2', function () {

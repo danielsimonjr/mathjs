@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const bignumber = math.bignumber
 const quantileSeq = math.quantileSeq
 

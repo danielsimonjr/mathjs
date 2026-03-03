@@ -1,10 +1,10 @@
 // @ts-nocheck
 import assert from 'assert'
 import { approxDeepEqual } from '../../../../../tools/approx.js'
-import math from '../../../../../src/defaultInstance.js'
-import { csPermute } from '../../../../../src/function/algebra/sparse/csPermute.js'
-import { createCsLu } from '../../../../../src/function/algebra/sparse/csLu.js'
-import { createCsSqr } from '../../../../../src/function/algebra/sparse/csSqr.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { csPermute } from '../../../../../src/function/algebra/sparse/csPermute.ts'
+import { createCsLu } from '../../../../../src/function/algebra/sparse/csLu.ts'
+import { createCsSqr } from '../../../../../src/function/algebra/sparse/csSqr.ts'
 
 const {
   abs,

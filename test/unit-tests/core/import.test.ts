@@ -1,10 +1,10 @@
 // @ts-nocheck
 import assert from 'assert'
-import mathjs from '../../../src/defaultInstance.js'
+import mathjs from '../../../src/defaultInstance.ts'
 import { approxEqual } from '../../../tools/approx.js'
-import { factory } from '../../../src/utils/factory.js'
-import { create } from '../../../src/core/create.js'
-import { hasOwnProperty } from '../../../src/utils/object.js'
+import { factory } from '../../../src/utils/factory.ts'
+import { create } from '../../../src/core/create.ts'
+import { hasOwnProperty } from '../../../src/utils/object.ts'
 
 const multiplyTestFactory = factory('multiplyTest', [], () => {
   return function multiply(a, b) {

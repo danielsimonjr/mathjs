@@ -1,8 +1,8 @@
 // test format
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
-import { format } from '../../../../src/utils/number.ts'
+import math from '../../../../src/defaultInstance.js'
+import { format } from '../../../../src/utils/number.js'
 
 describe('format', function () {
   it('should format numbers', function () {

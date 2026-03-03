@@ -2,7 +2,7 @@
 import assert from 'assert'
 
 import { approxDeepEqual } from '../../../../../tools/approx.js'
-import math from '../../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.js'
 
 describe('lusolve', function () {
   it('should solve linear system 4 x 4, arrays', function () {

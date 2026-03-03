@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 const isNaN = math.isNaN
 const bignumber = math.bignumber
 const fraction = math.fraction

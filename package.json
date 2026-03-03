@@ -159,7 +159,7 @@
     "format": "npm run lint -- --fix",
     "validate:ascii": "gulp validate:ascii",
     "test": "npm run test:src && npm run lint",
-    "test:src": "mocha test/unit-tests",
+    "test:src": "mocha --config .mocharc.js.json test/unit-tests",
     "test:wasm": "npm run validate:wasm && npm run build:wasm:debug && vitest run test/wasm/unit-tests/wasm/",
     "test:wasm:pre": "vitest run test/wasm/unit-tests/wasm/pre-compile.test.ts",
     "test:ts": "vitest run test/unit-tests",

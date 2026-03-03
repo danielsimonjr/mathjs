@@ -1,5 +1,5 @@
 import assert from 'assert'
-import math from '../../../src/defaultInstance.ts'
+import math from '../../../src/defaultInstance.js'
 import { approxEqual } from '../../../tools/approx.js'
 
 const number = math.number

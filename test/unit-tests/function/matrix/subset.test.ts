@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
-import { DimensionError } from '../../../../src/error/DimensionError.js'
+import math from '../../../../src/defaultInstance.ts'
+import { DimensionError } from '../../../../src/error/DimensionError.ts'
 import sinon from 'sinon'
 
 const subset = math.subset

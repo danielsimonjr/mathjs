@@ -3,7 +3,7 @@
 
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const Unit = math.Unit
 const Complex = math.Complex
 

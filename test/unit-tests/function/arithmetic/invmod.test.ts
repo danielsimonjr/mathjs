@@ -2,7 +2,7 @@
 // test invmod
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const { invmod, complex, bignumber } = math
 
 describe('invmod', function () {

@@ -1,7 +1,7 @@
 // test compile
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 
 describe('compile', function () {
   it('should compile an expression', function () {

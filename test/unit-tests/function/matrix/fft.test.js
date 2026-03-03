@@ -1,7 +1,7 @@
 // test fft
 
 import { approxDeepEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 const fft = math.fft
 
 describe('fft', function () {

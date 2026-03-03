@@ -1,7 +1,7 @@
 // test nthRoots
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 import { approxDeepEqual } from '../../../../tools/approx.js'
 
 const complex = math.complex

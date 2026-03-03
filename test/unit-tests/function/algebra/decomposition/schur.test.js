@@ -1,7 +1,7 @@
 // test schur decomposition
 import assert from 'assert'
 
-import math from '../../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.js'
 
 describe('schur', function () {
   it('should calculate schur decomposition of order 5 Array with numbers', function () {

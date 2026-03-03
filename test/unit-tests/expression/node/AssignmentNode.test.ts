@@ -2,7 +2,7 @@
 // test AssignmentNode
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const Node = math.Node
 const AccessorNode = math.AccessorNode
 const ConstantNode = math.ConstantNode

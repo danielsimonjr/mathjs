@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { approxDeepEqual } from '../../../../tools/approx.js'
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 const freqz = math.freqz
 

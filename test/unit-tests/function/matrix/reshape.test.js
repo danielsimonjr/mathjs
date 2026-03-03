@@ -1,6 +1,6 @@
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
-import { DimensionError } from '../../../../src/error/DimensionError.ts'
+import math from '../../../../src/defaultInstance.js'
+import { DimensionError } from '../../../../src/error/DimensionError.js'
 
 describe('reshape', function () {
   it('should reshape an array', function () {

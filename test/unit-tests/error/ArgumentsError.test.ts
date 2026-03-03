@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import { ArgumentsError } from '../../../src/error/ArgumentsError.js'
+import { ArgumentsError } from '../../../src/error/ArgumentsError.ts'
 
 describe('ArgumentsError', function () {
   it('should construct an ArgumentsError without max', function () {

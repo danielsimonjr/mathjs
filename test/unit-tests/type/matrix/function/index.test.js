@@ -1,7 +1,7 @@
 // test index construction
 import assert from 'assert'
 
-import math from '../../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.js'
 const Range = math.Range
 
 describe('index', function () {

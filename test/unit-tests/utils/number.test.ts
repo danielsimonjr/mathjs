@@ -13,7 +13,7 @@ import {
   toExponential,
   toFixed,
   toPrecision
-} from '../../../src/utils/number.js'
+} from '../../../src/utils/number.ts'
 
 describe('number', function () {
   it('isInteger', function () {

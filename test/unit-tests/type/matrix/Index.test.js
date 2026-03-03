@@ -1,7 +1,7 @@
 // test data type Index
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 const Index = math.Index
 const Range = math.Range
 const ImmutableDenseMatrix = math.ImmutableDenseMatrix

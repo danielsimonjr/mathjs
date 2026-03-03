@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
-import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDocs.js'
+import math from '../../../../src/defaultInstance.ts'
+import { embeddedDocs } from '../../../../src/expression/embeddedDocs/embeddedDocs.ts'
 
 let mathDocs = math.create()
 const originalConfig = mathDocs.config()

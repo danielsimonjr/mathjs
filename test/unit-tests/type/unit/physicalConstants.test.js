@@ -53,8 +53,8 @@ import {
   createVacuumImpedance,
   createWeakMixingAngle,
   createWienDisplacement
-} from '../../../../src/type/unit/physicalConstants.ts'
-import math from '../../../../src/defaultInstance.ts'
+} from '../../../../src/type/unit/physicalConstants.js'
+import math from '../../../../src/defaultInstance.js'
 
 const { BigNumber, Unit } = math
 

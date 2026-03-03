@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import { toSymbol } from '../../../src/utils/latex.js'
+import { toSymbol } from '../../../src/utils/latex.ts'
 
 describe('util.latex', function () {
   it('should convert symbols with underscores', function () {

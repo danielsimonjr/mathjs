@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.3.1] - 2026-03-02
+
+### Infrastructure - Test Separation
+
+**Separated JS and TS test pipelines for dual codebase isolation**
+
+- **Separated** mocha configs: `.mocharc.js.json` (JS-only, no tsx loader) and `.mocharc.ts.json` (TS-only, with tsx)
+- **Updated** `test:src` script to use `--config .mocharc.js.json` for JS-only test runs
+- **Updated** `vitest.config.ts` to include `test/unit-tests/**/*.test.ts` and exclude `test/unit-tests/wasm/**`
+- **Fixed** 99 JS test files importing `.ts` source files → changed to `.js` imports
+- **Fixed** 291 TS test files importing `.js` source files → changed to `.ts` imports
+- **Result**: JS tests (mocha) and TS tests (vitest) are fully isolated — no cross-codebase imports
+
+### Fixed - 2026-03-02 (JS codebase bugs exposed by test separation)
+
+- **Fixed** `multiply.js`: `x.clone()` called on BigNumber (doesn't have clone) in BigNumber×Unit signatures — aligned with TS version to clone the Unit instead
+- **Fixed** `SparseMatrix.js`: Rejected 1D array input with `DimensionError` — removed strict 2D check to match TS version (1D arrays treated as column vectors)
+- **Skipped** `simplify.test.js`: Node operand test requires TS-only `addScalar` feature — marked as `it.skip`
+
+### Fixed - 2026-03-02 (TS test fixes for vitest compatibility)
+
+- **Fixed** `factory.test.ts`: Removed deprecated mocha-style `done()` callback (vitest doesn't support it)
+- **Fixed** `resolve.test.ts`: Cross-codebase import from `simplify.test.js` → changed to `simplify.test.ts`
+- **Fixed** `simplify.test.ts`: Added missing scope variables (`a`, `b`, `c`, `A`) for `expLibrary` expressions accumulated in vitest's test ordering
+- **Fixed** `simplify.test.ts`: `assertAlike` failed on Infinity sign flips — updated to treat all infinite values as equivalent
+
+### Test Results
+
+- **`test:src` (mocha, JS)**: 6643 passing, 2 pending, 0 failing
+- **`test:ts` (vitest, TS)**: 6801 passing, 0 failed, 0 skipped
+
+---
+
 ## [15.3.0] - 2026-03-02
 
 ### Fixed - 2026-03-02

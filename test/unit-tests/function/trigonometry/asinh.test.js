@@ -1,7 +1,7 @@
 /* eslint-disable no-loss-of-precision */
 
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 import { approxEqual, approxDeepEqual } from '../../../../tools/approx.js'
 const pi = math.pi
 const asinh = math.asinh

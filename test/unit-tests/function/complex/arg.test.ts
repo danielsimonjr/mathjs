@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const arg = math.arg
 
 describe('arg', function () {

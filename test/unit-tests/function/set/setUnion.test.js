@@ -1,7 +1,7 @@
 // test setUnion
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../../src/defaultInstance.js'
 
 describe('setUnion', function () {
   it('should return the union of two sets', function () {

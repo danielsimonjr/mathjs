@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 const isInteger = math.isInteger
 const bignumber = math.bignumber
 const fraction = math.fraction

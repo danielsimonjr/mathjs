@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
 import Fraction from 'fraction.js'
-import math from '../../../../../src/defaultInstance.js'
+import math from '../../../../../src/defaultInstance.ts'
 
 describe('fraction', function () {
   it('should create a fraction', function () {

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../../src/defaultInstance.js'
-import { deepForEach } from '../../../../../src/utils/collection.js'
+import math from '../../../../../src/defaultInstance.ts'
+import { deepForEach } from '../../../../../src/utils/collection.ts'
 
 const DenseMatrix = math.DenseMatrix
 

@@ -2,7 +2,7 @@
 // test resize
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 describe('resize', function () {
   it('should resize an array', function () {

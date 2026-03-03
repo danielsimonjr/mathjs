@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { nearlyEqual } from '../../../../src/utils/bignumber/nearlyEqual.js'
+import { nearlyEqual } from '../../../../src/utils/bignumber/nearlyEqual.ts'
 
 import assert from 'assert'
 import BigNumber from 'decimal.js'

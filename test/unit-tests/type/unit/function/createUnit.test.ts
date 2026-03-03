@@ -1,6 +1,6 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../../src/defaultInstance.js'
+import math from '../../../../../src/defaultInstance.ts'
 
 // Use unique suffix to avoid conflicts when running both JS and TS tests
 const suffix = 'Ts' + Date.now()

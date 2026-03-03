@@ -4,7 +4,7 @@ import {
   sortFactories,
   factory,
   isFactory
-} from '../../../src/utils/factory.js'
+} from '../../../src/utils/factory.ts'
 
 describe('factory', function () {
   it('should test whether something is a factory', function () {
@@ -25,11 +25,9 @@ describe('factory', function () {
     assert.strictEqual(isFactory(factory3), true)
   })
 
-  it('should only pass the dependencies, not the whole scope', function (done) {
+  it('should only pass the dependencies, not the whole scope', function () {
     const f = factory('fn1', ['a', 'c'], (scope) => {
       assert.deepStrictEqual(scope, { a: 1, c: 3 })
-
-      done()
     })
 
     f({ a: 1, b: 2, c: 3 })

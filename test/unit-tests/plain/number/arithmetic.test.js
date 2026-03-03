@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { approxEqual } from '../../../../tools/approx.js'
-import { modNumber } from '../../../../src/plain/number/arithmetic.ts'
+import { modNumber } from '../../../../src/plain/number/arithmetic.js'
 
 describe('mod', function () {
   it('should calculate the modulus of two numbers', function () {

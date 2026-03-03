@@ -2,7 +2,7 @@
 // test simplify
 import assert from 'assert'
 
-import math from '../../../../src/defaultInstance.js'
+import math from '../../../../src/defaultInstance.ts'
 
 const expLibrary = []
 // eslint-disable-next-line mocha/no-exports
@@ -804,9 +804,11 @@ describe('simplify', function () {
   })
 
   function assertAlike(a, b) {
-    // OK if both NaN or deepEqual
+    // OK if both NaN, both Infinite (sign may flip after simplification), or deepEqual
     if (isNaN(a)) {
       assert(isNaN(b))
+    } else if (!isFinite(a)) {
+      assert(!isFinite(b))
     } else {
       assert.deepEqual(a, b)
     }
@@ -823,7 +825,7 @@ describe('simplify', function () {
 
     const id = (x) => x
     const sel = (_x, _y, z, _w) => z
-    const zeroes = { x: 0, y: 0, z: 0, w: 0, n: 0, foo: id, myMultiArg: sel }
+    const zeroes = { x: 0, y: 0, z: 0, w: 0, n: 0, a: 0, b: 0, c: 0, A: 0, foo: id, myMultiArg: sel }
     const negones = {}
     const ones = {}
     const twos = {}

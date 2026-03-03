@@ -1,6 +1,6 @@
 import assert from 'assert'
 import BigNumber from 'decimal.js'
-import { format, toExponential, toFixed } from '../../../../src/utils/bignumber/formatter.ts'
+import { format, toExponential, toFixed } from '../../../../src/utils/bignumber/formatter.js'
 
 describe('format', function () {
   describe('format', function () {
