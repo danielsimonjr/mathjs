@@ -135,8 +135,21 @@ All 46 test files created for src/wasm/ modules:
   - Added WASM build & test job (validate, build, run unit tests)
   - Build-and-test now depends on all verification jobs
 
+### Test Separation ✅ COMPLETE (2026-03-02)
+
+- [x] **JS and TS test pipelines fully separated**
+  - `.mocharc.js.json` for JS-only tests (no tsx loader)
+  - `.mocharc.ts.json` for TS-only tests (with tsx loader)
+  - `vitest.config.ts` includes `test/unit-tests/**/*.test.ts`
+  - 99 JS test files fixed: `.ts` imports → `.js` imports
+  - 291 TS test files fixed: `.js` imports → `.ts` imports
+  - JS bugs fixed: multiply.js BigNumber×Unit, SparseMatrix.js 1D arrays
+  - TS test fixes: factory.test.ts done(), resolve.test.ts import, simplify.test.ts scope
+  - Results: mocha 6643 passing, vitest 6801 passing, 0 failures
+
 ## Notes
 
 - All functional JS files have been converted to TypeScript
 - The codebase compiles with zero TypeScript errors
 - Legacy JS files are kept for comparison and benchmarking purposes
+- JS and TS test suites are fully isolated (as of v15.3.1)

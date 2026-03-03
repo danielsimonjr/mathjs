@@ -1,6 +1,12 @@
 # Factory Function Type Safety Plan
 
-## Problem
+## Status: SUPERSEDED (2026-03-01)
+
+This plan was superseded by a simpler approach: widening the central `TypedFunction` interface in `src/type/matrix/types.ts` to use `(...args: any[]): any` call signature and generic `referTo`/`referToSelf`. This eliminated all 1500+ type errors without the complex 4-phase approach below. The `const` type parameter approach (Phase 2) was tried and abandoned due to cascading conflicts. See MEMORY.md "Factory Type System — Lessons Learned".
+
+---
+
+## Problem (Historical)
 
 The `factory()` function in `src/utils/factory.ts` creates math.js functions via dependency injection. TypeScript cannot infer the types of injected dependencies because they come from a runtime scope object (`Record<string, any>`), causing ~1500 cascading type errors:
 
