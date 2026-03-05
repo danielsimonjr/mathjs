@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.3.2] - 2026-03-05
+
+### Added - ISE Workbench (demo/mathjs-calc)
+
+**Transformed the calculator demo into a full Integrated Scientific Environment (ISE) workbench**
+
+- **Three-zone resizable layout** using allotment: calculator panel (left), graph canvas (right), expression bar (bottom) with all panes draggable
+- **Icon toolbar ribbon** with 7 groups (Algebra, Calculus, Matrix, Trig, Stats, Plot, Settings) and template insertion into expression bar
+- **Symbolic computing** with KaTeX LaTeX rendering for simplify, derivative, expand, rationalize, solve
+- **Variable explorer** with live type badges (number, Matrix, Complex, etc.) and click-to-insert
+- **Enhanced 8x6 button grid** with symbolic, trig, function, constant, and numeric keys
+- **2D/3D interactive graphing** via Plotly.js with plot(), plot3d(), plotParametric(), plotPolar(), multi-function overlay, function list, zoom/pan/trace
+- **Expression bar** with live LaTeX preview, scrollable evaluation history with click-to-reuse, history navigation (Up/Down arrows)
+- **Resizable symbolic output** pane with full scrollback of all past symbolic computations
+- **Graph toolbar** with 2D/3D mode toggle, clear, and collapse controls
+- **Keyboard shortcuts**: Ctrl+E (focus expression), Ctrl+G (toggle graph), Ctrl+L (clear plots), Escape (focus expression)
+- **Dark theme** with custom scrollbars, Plotly/KaTeX styling overrides
+- **State persistence** across sessions (config, history, layout, symbolic history, plot expressions)
+
+### Added - Design Documentation
+
+- ISE Workbench Design (docs/plans/2026-03-05-ise-workbench-design.md) -- full architecture spec
+- ISE Implementation Plan (docs/plans/2026-03-05-ise-workbench-plan.md) -- 16-task plan across 7 phases
+- Gap Analysis (docs/plans/2026-03-05-ise-gap-analysis.md) -- benchmarks vs Mathcad, Mathematica, MATLAB, Desmos
+- Guided Discovery Design (docs/plans/2026-03-05-ise-guided-discovery-design.md) -- three-level user education strategy
+
+### Dependencies Added (demo/mathjs-calc)
+
+- plotly.js-dist-min, react-plotly.js -- 2D/3D interactive graphing
+- katex -- LaTeX math rendering
+- allotment -- resizable split panes
+
+---
+
 ## [15.3.1] - 2026-03-02
 
 ### Infrastructure - Test Separation
