@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useRef } from 'react'
-import { create, all, type MathJsInstance } from 'mathjs'
+import math from 'mathjs'
 
 export type WaveformType = 'sine' | 'square' | 'triangle' | 'sawtooth'
 
@@ -17,7 +17,7 @@ interface SignalResult {
 }
 
 export function useSignal() {
-  const mathRef = useRef<MathJsInstance>(create(all))
+  const mathRef = useRef(math)
 
   const generate = useCallback((params: SignalParams): SignalResult => {
     const { waveform, frequency, amplitude, sampleCount } = params

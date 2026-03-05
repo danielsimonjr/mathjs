@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { create, all, type MathJsInstance } from 'mathjs'
+import math from 'mathjs'
 
 interface EvalResult {
   expression: string
@@ -11,7 +11,7 @@ interface EvalResult {
 }
 
 export function useMathParser() {
-  const mathRef = useRef<MathJsInstance>(create(all))
+  const mathRef = useRef(math)
   const parserRef = useRef(mathRef.current.parser())
   const [history, setHistory] = useState<EvalResult[]>([])
 
