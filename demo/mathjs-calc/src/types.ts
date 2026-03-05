@@ -37,3 +37,23 @@ export interface AppConfig {
   precision: number
   engine: EngineMode
 }
+
+export type ViewMode = 'ise' | 'performance' | 'statistics'
+
+export interface PlotTrace {
+  id: string
+  expression: string
+  type: '2d' | '3d' | 'parametric' | 'polar'
+  color: string
+  visible: boolean
+  data: { x: number[]; y: number[]; z?: number[] }
+}
+
+export interface SymbolicResult {
+  id: string
+  input: string
+  output: string
+  latexIn: string
+  latexOut: string
+  timestamp: number
+}

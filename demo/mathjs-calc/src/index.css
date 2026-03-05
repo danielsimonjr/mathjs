@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Allotment sash styling */
+.sash-container .sash {
+  background-color: #1f2937 !important;
+}
+.sash-container .sash:hover {
+  background-color: #3b82f6 !important;
+}
+
+/* KaTeX overrides for dark theme */
+.katex { color: inherit; }
+.katex .mord { color: inherit; }
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Plotly dark theme overrides */
+.js-plotly-plot .plotly .modebar {
+  background: transparent !important;
+}
+.js-plotly-plot .plotly .modebar-btn path {
+  fill: #6b7280 !important;
+}
+.js-plotly-plot .plotly .modebar-btn:hover path {
+  fill: #d1d5db !important;
+}

@@ -11,13 +11,18 @@
     "electron:build": "npm run build && electron-builder"
   },
   "dependencies": {
+    "allotment": "^1.20.5",
+    "katex": "^0.16.33",
     "mathjs": "file:../../",
+    "plotly.js-dist-min": "^3.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-plotly.js": "^2.6.0",
     "recharts": "^2.15.0",
     "zustand": "^5.0.0"
   },
   "devDependencies": {
+    "@types/katex": "^0.16.8",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
