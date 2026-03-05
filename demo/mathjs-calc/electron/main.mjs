@@ -14,7 +14,7 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.mjs')
     }
   })
 
@@ -31,7 +31,7 @@ app.whenReady().then(createWindow)
 ipcMain.handle('wasm:init', async () => {
   try {
     // Attempt to load WASM bridge
-    const { MatrixWasmBridge } = await import('mathjs/src/wasm/MatrixWasmBridge.ts')
+    const { MatrixWasmBridge } = await import('mathjs/src/wasm/MatrixWasmBridge.js')
     await MatrixWasmBridge.init()
     const caps = MatrixWasmBridge.getCapabilities()
     return { success: true, capabilities: caps }
@@ -43,19 +43,19 @@ ipcMain.handle('wasm:init', async () => {
   }
 })
 
-ipcMain.handle('wasm:run', async (_event, operation: string, data: unknown) => {
+ipcMain.handle('wasm:run', async (_event, operation, data) => {
   const start = performance.now()
   try {
     const math = (await import('mathjs')).default
-    let result: unknown
+    let result
     switch (operation) {
-      case 'multiply': { const { a, b } = data as any; result = math.multiply(a, b); break }
-      case 'det': { const { matrix } = data as any; result = math.det(matrix); break }
-      case 'fft': { const { signal } = data as any; result = math.fft(signal.map((v: number) => math.complex(v, 0))); break }
+      case 'multiply': { const { a, b } = data; result = math.multiply(a, b); break }
+      case 'det': { const { matrix } = data; result = math.det(matrix); break }
+      case 'fft': { const { signal } = data; result = math.fft(signal.map((v) => math.complex(v, 0))); break }
       default: throw new Error(`Unknown: ${operation}`)
     }
     return { success: true, result: JSON.parse(JSON.stringify(result)), executionTime: performance.now() - start }
-  } catch (err: any) {
+  } catch (err) {
     return { success: false, error: err.message, executionTime: performance.now() - start }
   }
 })
