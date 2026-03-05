@@ -35,8 +35,8 @@ export function SymbolicOutput() {
   }
 
   return (
-    <div className="overflow-y-auto max-h-48 space-y-2 p-2">
-      {symbolicHistory.slice(0, 20).map((entry) => (
+    <div className="overflow-y-auto h-full space-y-2 p-2">
+      {symbolicHistory.map((entry) => (
         <div key={entry.id} className="bg-gray-900 border border-gray-800 rounded p-2">
           <KaTeXBlock latex={entry.latexIn} className="text-gray-300 text-sm" />
           <div className="text-center text-gray-600 text-xs my-1">=</div>

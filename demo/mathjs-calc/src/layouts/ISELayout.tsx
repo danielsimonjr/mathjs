@@ -38,27 +38,32 @@ export function ISELayout() {
   useKeyboardShortcuts(shortcutHandlers)
 
   return (
-    <div className="h-screen flex flex-col bg-gray-950">
-      <div className="flex-1 min-h-0">
-        <Allotment>
-          <Allotment.Pane minSize={320} preferredSize="40%">
-            <ISECalculatorPanel
-              onInsertToExpression={(text, offset) => expressionBarRef.current?.insert(text, offset)}
-              onDeleteFromExpression={() => expressionBarRef.current?.deleteChar()}
-              onClearExpression={() => expressionBarRef.current?.clear()}
-              onEvaluateExpression={() => expressionBarRef.current?.evaluate()}
-            />
-          </Allotment.Pane>
-          {!graphCollapsed && (
-            <Allotment.Pane minSize={300} preferredSize="60%">
-              <GraphCanvas />
+    <div className="h-screen bg-gray-950">
+      <Allotment vertical>
+        {/* Top: calculator + graph (horizontal split) */}
+        <Allotment.Pane minSize={200}>
+          <Allotment>
+            <Allotment.Pane minSize={320} preferredSize="40%">
+              <ISECalculatorPanel
+                onInsertToExpression={(text, offset) => expressionBarRef.current?.insert(text, offset)}
+                onDeleteFromExpression={() => expressionBarRef.current?.deleteChar()}
+                onClearExpression={() => expressionBarRef.current?.clear()}
+                onEvaluateExpression={() => expressionBarRef.current?.evaluate()}
+              />
             </Allotment.Pane>
-          )}
-        </Allotment>
-      </div>
-      <div className="border-t border-gray-800" style={{ minHeight: 100, height: 140 }}>
-        <ISEExpressionBar ref={expressionBarRef} onPlotCommand={handlePlotCommand} />
-      </div>
+            {!graphCollapsed && (
+              <Allotment.Pane minSize={300} preferredSize="60%">
+                <GraphCanvas />
+              </Allotment.Pane>
+            )}
+          </Allotment>
+        </Allotment.Pane>
+
+        {/* Bottom: expression bar (resizable) */}
+        <Allotment.Pane minSize={80} preferredSize={140} maxSize={400}>
+          <ISEExpressionBar ref={expressionBarRef} onPlotCommand={handlePlotCommand} />
+        </Allotment.Pane>
+      </Allotment>
     </div>
   )
 }
