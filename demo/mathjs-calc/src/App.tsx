@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { useStore } from './store/useStore'
+import { usePersistence } from './hooks/usePersistence'
 import ExpressionBar from './components/ExpressionBar'
 import TabBar from './components/TabBar'
 import CalculatorPanel from './panels/CalculatorPanel'
@@ -18,6 +20,17 @@ const panels = {
 export default function App() {
   const activePanel = useStore((s) => s.activePanel)
   const ActivePanel = panels[activePanel]
+  const setWasmCapabilities = useStore((s) => s.setWasmCapabilities)
+
+  usePersistence()
+
+  useEffect(() => {
+    if (window.electronAPI) {
+      window.electronAPI.initWasm().then((result) => {
+        setWasmCapabilities(result.capabilities)
+      })
+    }
+  }, [setWasmCapabilities])
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
