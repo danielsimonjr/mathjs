@@ -1,7 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  runWasmOperation: (operation: string, args: unknown[]) =>
-    ipcRenderer.invoke('run-wasm-operation', operation, args),
-  getSystemInfo: () => ipcRenderer.invoke('get-system-info')
+  initWasm: () => ipcRenderer.invoke('wasm:init'),
+  runWasmOperation: (operation: string, data: unknown) =>
+    ipcRenderer.invoke('wasm:run', operation, data),
+  getSystemInfo: () => ipcRenderer.invoke('system:info')
 })
