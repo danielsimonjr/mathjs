@@ -336,6 +336,32 @@ export interface WasmModule {
     workPtr: number
   ) => void
 
+  // Sparse AMD ordering
+  amd: (
+    colPtrPtr: number,
+    rowIdxPtr: number,
+    n: number,
+    permPtr: number,
+    workPtr: number
+  ) => void
+  amdAggressive: (
+    colPtrPtr: number,
+    rowIdxPtr: number,
+    n: number,
+    permPtr: number,
+    workPtr: number
+  ) => void
+  // Symbolic Cholesky (combines elimination tree + column counts)
+  symbolicCholesky: (
+    indexPtr: number,
+    ptrPtr: number,
+    n: number,
+    parentPtr: number,
+    postPtr: number,
+    colCountPtr: number,
+    workPtr: number
+  ) => void
+
   // SIMD operations
   simdDotF64: (aPtr: number, bPtr: number, length: number) => number
   simdSumF64: (aPtr: number, length: number) => number
