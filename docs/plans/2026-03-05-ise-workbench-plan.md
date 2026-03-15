@@ -2151,3 +2151,644 @@ git commit -m "docs(ise): update README with ISE workbench features and keyboard
 | 7: Polish | 13-16 | Dark theme styling, keyboard shortcuts, persistence, README |
 
 **Total: 16 tasks across 7 phases. Each task produces a working commit.**
+
+---
+---
+
+# Iteration 2: Heavy Numerics Showcase
+
+> **Goal:** Add WASM benchmark visualization, matrix lab, contour/vector field plots, and unit expression support. This iteration directly stress-tests the TS+AS+WASM pipeline with visual feedback.
+
+**Prerequisites:** Iteration 1 complete (v15.3.2), WASM modules built
+
+---
+
+## Phase 8: Matrix Lab Panel
+
+### Task 17: Build visual matrix editor modal
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/MatrixEditorModal.tsx`
+- Create: `demo/mathjs-calc/src/hooks/useMatrixEditor.ts`
+- Modify: `demo/mathjs-calc/src/store/useStore.ts`
+
+**Description:**
+
+Build a modal dialog with:
+- Grid input for NxN matrices (editable cells)
+- Row/column add/remove buttons
+- Import from expression (e.g., `[[1,2],[3,4]]`)
+- Export to expression bar or variable
+- Apply operations: determinant, inverse, transpose, eigenvalues
+- Display results inline with KaTeX rendering
+
+The modal opens from the Matrix toolbar group icon or a `matrix()` command.
+
+**Store additions:**
+```typescript
+matrixEditorOpen: boolean
+matrixEditorData: number[][] | null
+setMatrixEditorOpen: (open: boolean) => void
+setMatrixEditorData: (data: number[][] | null) => void
+```
+
+---
+
+### Task 18: Build matrix display component
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/MatrixDisplay.tsx`
+
+**Description:**
+
+Renders matrices as formatted grids in results and symbolic output:
+- Bracket notation with proper sizing
+- Alternating row shading for readability
+- Truncation for large matrices (>10x10) with "..." and expand button
+- Click cell to highlight row/column
+- Type badge showing dimensions: `[3x3 matrix]`
+
+---
+
+## Phase 9: WASM Benchmark Overlay
+
+### Task 19: Build WASM engine toggle with timing display
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/BenchmarkOverlay.tsx`
+- Create: `demo/mathjs-calc/src/hooks/useBenchmarkTiming.ts`
+- Modify: `demo/mathjs-calc/src/components/ISEExpressionBar.tsx`
+
+**Description:**
+
+Add a benchmark overlay to the expression bar result display:
+- Toggle between JS / WASM / Auto engine modes (from toolbar Settings group)
+- After each evaluation, show execution time badge: `JS: 2.3ms` or `WASM: 0.4ms`
+- In Auto mode, show both timings: `JS: 2.3ms | WASM: 0.4ms (5.7x faster)`
+- Color-code: green if WASM is faster, yellow if similar, red if slower
+- Option to run both engines and show comparison for every expression
+
+The `useBenchmarkTiming` hook wraps `math.evaluate()` with `performance.now()` calls and optionally runs the expression twice (once with WASM disabled via config override).
+
+---
+
+### Task 20: Add benchmark comparison panel
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/BenchmarkComparison.tsx`
+- Modify: `demo/mathjs-calc/src/store/useStore.ts`
+
+**Description:**
+
+A collapsible panel (accessible from toolbar or Ctrl+B) that:
+- Runs a predefined benchmark suite (matrix multiply, FFT, eigenvalues, etc.)
+- Shows JS vs WASM timing table with speedup ratios
+- Bar chart visualization (using Recharts, already available)
+- Highlights operations where WASM provides >2x speedup
+- "Run Custom" button: benchmark the current expression at increasing sizes
+
+---
+
+## Phase 10: Advanced Plot Types
+
+### Task 21: Add contour plots
+
+**Files:**
+- Modify: `demo/mathjs-calc/src/hooks/usePlot.ts`
+- Modify: `demo/mathjs-calc/src/components/GraphCanvas.tsx`
+
+**Description:**
+
+Add `plotContour(expr)` command:
+- Evaluates z=f(x,y) on a grid (default 50x50)
+- Renders as Plotly contour plot with colorscale
+- Supports explicit ranges: `plotContour(expr, x, xmin, xmax, y, ymin, ymax)`
+- Color scale selector in graph toolbar (viridis, plasma, inferno)
+- Contour line labels showing z-values
+
+**Implementation in usePlot:**
+```typescript
+plotContour(expr: string, options?: { xRange?: [number, number], yRange?: [number, number], gridSize?: number }) {
+  // Generate x,y grid
+  // Evaluate expr for each (x,y) pair
+  // Create Plotly contour trace
+  // Add to store
+}
+```
+
+---
+
+### Task 22: Add vector field plots
+
+**Files:**
+- Modify: `demo/mathjs-calc/src/hooks/usePlot.ts`
+- Modify: `demo/mathjs-calc/src/components/GraphCanvas.tsx`
+- Create: `demo/mathjs-calc/src/utils/vectorField.ts`
+
+**Description:**
+
+Add `plotVector(fx, fy)` command for 2D vector fields:
+- `fx` and `fy` are expressions in x,y giving the vector components
+- Renders as arrow/quiver plot using Plotly scatter with arrow annotations
+- Grid density control (default 20x20 arrows)
+- Arrow scaling (auto-normalized to grid spacing)
+- Color by magnitude (optional)
+- Example: `plotVector("y", "-x")` shows circular flow field
+
+---
+
+### Task 23: Add log/semilog scale support
+
+**Files:**
+- Modify: `demo/mathjs-calc/src/components/GraphCanvas.tsx`
+- Modify: `demo/mathjs-calc/src/components/GraphToolbar.tsx`
+
+**Description:**
+
+Add scale mode buttons to the graph toolbar:
+- Linear (default)
+- Log-log
+- Semilog-x (log x, linear y)
+- Semilog-y (linear x, log y)
+
+Implementation: set `layout.xaxis.type` and `layout.yaxis.type` to `'log'` or `'linear'` in the Plotly config.
+
+---
+
+## Phase 11: Unit Expression Support
+
+### Task 24: Surface unit expressions in the UI
+
+**Files:**
+- Modify: `demo/mathjs-calc/src/components/ISEExpressionBar.tsx`
+- Modify: `demo/mathjs-calc/src/components/ResultDisplay.tsx`
+- Create: `demo/mathjs-calc/src/utils/unitFormatting.ts`
+
+**Description:**
+
+- Detect unit results and display with proper formatting: `9.8 m/s²` instead of `9.8 m / s ^ 2`
+- Unit conversion helper: typing `5 kg in lb` shows result in pounds
+- Type badge for units: `[unit: force]`, `[unit: length]`, etc.
+- Tooltip showing SI equivalent
+- KaTeX rendering for unit expressions: proper superscripts, fractions
+
+---
+
+## Iteration 2 Summary
+
+| Phase | Tasks | What It Delivers |
+|-------|-------|-----------------|
+| 8: Matrix Lab | 17-18 | Visual matrix editor modal, formatted matrix display |
+| 9: WASM Benchmark | 19-20 | Engine toggle with timing, JS vs WASM comparison panel |
+| 10: Advanced Plots | 21-23 | Contour plots, vector fields, log/semilog scales |
+| 11: Unit Support | 24 | Unit formatting, conversion, KaTeX rendering |
+
+**Total: 8 tasks (17-24) across 4 phases. WASM stress-test value: HIGH.**
+
+---
+---
+
+# Iteration 3: Live Document Model
+
+> **Goal:** Transform the ISE from a calculator into a document-based environment where expressions are persistent, reorderable cells with dependency tracking. This is the Mathcad-like "live document" model.
+
+**Prerequisites:** Iteration 2 complete
+**Reference:** `docs/plans/2026-03-05-deno-notebook-option.md` (Deno export option)
+
+---
+
+## Phase 12: Cell-Based Evaluation Engine
+
+### Task 25: Design cell data model and dependency tracker
+
+**Files:**
+- Create: `demo/mathjs-calc/src/types/cell.ts`
+- Create: `demo/mathjs-calc/src/engine/DependencyGraph.ts`
+- Create: `demo/mathjs-calc/src/engine/CellEvaluator.ts`
+
+**Description:**
+
+Define the cell data model:
+```typescript
+interface Cell {
+  id: string
+  type: 'code' | 'markdown' | 'plot'
+  content: string           // raw expression or markdown
+  result: CellResult | null // evaluated result
+  dependencies: string[]    // variable names this cell reads
+  definitions: string[]     // variable names this cell defines
+  status: 'idle' | 'evaluating' | 'error' | 'stale'
+  order: number             // position in document
+}
+
+interface CellResult {
+  value: unknown
+  type: string
+  latex?: string
+  timing: { js: number; wasm?: number }
+  error?: string
+}
+```
+
+Build `DependencyGraph`:
+- Tracks which cells define which variables
+- Tracks which cells depend on which variables
+- `getDownstream(cellId)`: returns all cells that need re-evaluation when this cell changes
+- `getEvaluationOrder()`: topological sort for full re-evaluation
+- `detectCycles()`: warns on circular dependencies
+
+Build `CellEvaluator`:
+- Evaluates cells in dependency order
+- Marks downstream cells as 'stale' when upstream changes
+- Supports incremental re-evaluation (only dirty cells)
+- Shares a single math.js scope across all cells
+
+---
+
+### Task 26: Build cell component
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/CellEditor.tsx`
+- Create: `demo/mathjs-calc/src/components/CellResult.tsx`
+- Create: `demo/mathjs-calc/src/components/CellToolbar.tsx`
+
+**Description:**
+
+Each cell renders as:
+```
+┌─ [▸ Run] [↑] [↓] [×] ─ cell #3 ─ status: ✓ (0.2ms) ──────────┐
+│ x = matrix([[1,2],[3,4]])                                        │
+├──────────────────────────────────────────────────────────────────┤
+│ Result: [[1, 2], [3, 4]]  [matrix 2x2]                          │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+- Code cells: expression input with syntax highlighting, result below
+- Markdown cells: editable markdown that renders to formatted text
+- Plot cells: code input + inline graph rendering
+- Drag handle for reordering (or arrow buttons)
+- Run button (▸) evaluates this cell only
+- Status indicator: checkmark (ok), spinner (running), X (error), ⚠ (stale)
+- Cell toolbar: add cell above/below, change type, delete
+
+---
+
+### Task 27: Build document view mode
+
+**Files:**
+- Create: `demo/mathjs-calc/src/layouts/DocumentLayout.tsx`
+- Modify: `demo/mathjs-calc/src/store/useStore.ts`
+- Modify: `demo/mathjs-calc/src/App.tsx`
+
+**Description:**
+
+New layout mode ("Document Mode") alongside existing ISE calculator mode:
+- Scrollable vertical list of cells
+- Right sidebar: variable explorer + dependency graph visualization
+- Bottom bar: "Run All" button, cell count, total evaluation time
+- Auto-evaluate: toggle to re-evaluate all stale cells automatically on change
+- Add to `viewMode` type: `'ise' | 'document' | 'performance' | 'statistics'`
+- Mode toggle in toolbar Settings group
+
+---
+
+## Phase 13: Document Persistence & Export
+
+### Task 28: Implement document save/load (JSON format)
+
+**Files:**
+- Create: `demo/mathjs-calc/src/engine/DocumentSerializer.ts`
+- Modify: `demo/mathjs-calc/src/hooks/usePersistence.ts`
+
+**Description:**
+
+Document format (`.mjdoc` JSON):
+```json
+{
+  "version": "1.0",
+  "title": "My Calculation",
+  "created": "2026-03-14T...",
+  "cells": [
+    { "id": "cell-1", "type": "markdown", "content": "# My Calculation" },
+    { "id": "cell-2", "type": "code", "content": "A = [[1,2],[3,4]]" },
+    { "id": "cell-3", "type": "code", "content": "det(A)" }
+  ],
+  "config": { "engine": "auto", "precision": 64 }
+}
+```
+
+- Save to localStorage (auto-save on change, debounced 2s)
+- Export to `.mjdoc` file (File > Export)
+- Import from `.mjdoc` file (File > Import)
+- Recent documents list
+
+---
+
+### Task 29: Add markdown cell rendering
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/MarkdownCell.tsx`
+
+**Description:**
+
+Markdown cells support:
+- Headers, bold, italic, lists
+- Inline LaTeX: `$x^2$` renders via KaTeX
+- Display LaTeX: `$$\int_0^1 x^2 dx$$` renders as block
+- Code blocks with syntax highlighting
+- Edit mode (click to edit) / Display mode (rendered)
+
+Use a lightweight markdown parser (e.g., `marked` or `markdown-it`) with KaTeX integration.
+
+---
+
+### Task 30: Export to PDF/HTML
+
+**Files:**
+- Create: `demo/mathjs-calc/src/engine/DocumentExporter.ts`
+
+**Description:**
+
+Export the document with evaluated results:
+- **HTML export**: Generates self-contained HTML with inline KaTeX CSS, evaluated results, and plot images (as base64 SVG)
+- **PDF export**: Uses the HTML export + `window.print()` with print-optimized CSS (white background, page breaks between sections)
+- Plots export as static SVG via `Plotly.toImage()`
+- Results show both the expression and its evaluated value
+
+---
+
+## Phase 14: Deno Notebook Interop
+
+### Task 31: Export to Jupyter notebook (.ipynb)
+
+**Files:**
+- Create: `demo/mathjs-calc/src/engine/JupyterExporter.ts`
+
+**Description:**
+
+Convert document cells to Jupyter notebook format with Deno kernel metadata:
+- Code cells → `"cell_type": "code"` with `"source": ["import { create, all } from 'npm:mathjs'\n", "const math = create(all)\n", ...]`
+- Markdown cells → `"cell_type": "markdown"` (passthrough)
+- Plot cells → code cell with Plotly rendering via `Deno.jupyter.html()`
+- Kernel spec: `{"name": "deno", "display_name": "Deno", "language": "typescript"}`
+- First cell auto-generates math.js import and setup
+
+**Reference:** `docs/plans/2026-03-05-deno-notebook-option.md`
+
+---
+
+## Iteration 3 Summary
+
+| Phase | Tasks | What It Delivers |
+|-------|-------|-----------------|
+| 12: Cell Engine | 25-27 | Cell data model, dependency graph, cell components, document layout |
+| 13: Persistence | 28-30 | Save/load JSON, markdown cells, PDF/HTML export |
+| 14: Deno Interop | 31 | Export to Jupyter .ipynb with Deno kernel |
+
+**Total: 7 tasks (25-31) across 3 phases. WASM stress-test value: HIGH (100+ cell dependency chains with matrix ops).**
+
+---
+---
+
+# Iteration 4: Advanced Symbolic
+
+> **Goal:** Extend the symbolic engine with integration, limits, series expansion, step-by-step display, and an assumption system.
+
+**Prerequisites:** Iteration 3 complete
+**Note:** Some features depend on math.js core additions (symbolic integration, limits). Where math.js lacks a feature, the plan calls for a WASM CAS module stub or delegates to the Rust migration.
+
+---
+
+## Phase 15: Symbolic Integration & Limits
+
+### Task 32: Add symbolic integration UI
+
+**Files:**
+- Modify: `demo/mathjs-calc/src/hooks/useSymbolic.ts`
+- Modify: `demo/mathjs-calc/src/components/ToolbarRibbon.tsx`
+- Modify: `demo/mathjs-calc/src/components/SymbolicOutput.tsx`
+
+**Description:**
+
+Wire integration to the UI:
+- If math.js adds `integrate()`: wire directly
+- If not: implement basic integration rules (power rule, trig, exponential, sum/difference) as a client-side module that operates on the AST
+- Toolbar Calculus group ∫ icon inserts `integrate("expr", "x")`
+- KaTeX rendering shows proper integral notation: `∫ f(x) dx = F(x) + C`
+- Definite integrals: `integrate("x^2", "x", 0, 1)` shows `∫₀¹ x² dx = 1/3`
+
+---
+
+### Task 33: Add limits and series expansion
+
+**Files:**
+- Create: `demo/mathjs-calc/src/engine/SymbolicExtensions.ts`
+- Modify: `demo/mathjs-calc/src/hooks/useSymbolic.ts`
+
+**Description:**
+
+Implement:
+- `limit(expr, x, a)` — evaluate limit of expr as x approaches a
+  - Direct substitution, L'Hopital's rule for 0/0 and ∞/∞ forms
+  - One-sided limits: `limit(expr, x, a, "left")`, `limit(expr, x, a, "right")`
+- `taylor(expr, x, a, n)` — Taylor series expansion around x=a to order n
+  - Uses repeated symbolic differentiation
+  - Renders as: `f(x) ≈ f(a) + f'(a)(x-a) + f''(a)(x-a)²/2! + ...`
+- KaTeX rendering for both with proper mathematical notation
+
+---
+
+## Phase 16: Step-by-Step Solve Display
+
+### Task 34: Build step-by-step solver
+
+**Files:**
+- Create: `demo/mathjs-calc/src/engine/StepSolver.ts`
+- Create: `demo/mathjs-calc/src/components/StepByStep.tsx`
+
+**Description:**
+
+Show intermediate steps for algebraic operations:
+- `solve("x^2 - 4 = 0", "x")` shows:
+  ```
+  x² - 4 = 0
+  x² = 4
+  x = ±√4
+  x = ±2
+  Solution: x ∈ {-2, 2}
+  ```
+- `simplify("2x + 3x + x^2 - x^2")` shows:
+  ```
+  2x + 3x + x² - x²
+  = (2+3)x + (1-1)x²
+  = 5x + 0
+  = 5x
+  ```
+- Each step rendered in KaTeX with annotations
+- Collapsible step list (show/hide intermediate steps)
+- Step explanations in text (e.g., "Combine like terms", "Apply zero property")
+
+Implementation approach: instrument the simplify/solve/derivative functions to record intermediate AST states.
+
+---
+
+### Task 35: Add assumption system UI
+
+**Files:**
+- Create: `demo/mathjs-calc/src/engine/Assumptions.ts`
+- Modify: `demo/mathjs-calc/src/components/VariableExplorer.tsx`
+
+**Description:**
+
+Allow users to declare variable assumptions:
+- In variable explorer: right-click variable → "Set assumptions"
+- Options: real, positive, negative, integer, nonzero
+- Example: `assume(x, "positive")` then `simplify("sqrt(x^2)")` → `x` (not `|x|`)
+- Stored per-variable in the document
+- Visual indicator in variable explorer: `x [real, positive]`
+- Affects simplify, solve, and limit behavior
+
+---
+
+## Iteration 4 Summary
+
+| Phase | Tasks | What It Delivers |
+|-------|-------|-----------------|
+| 15: Integration & Limits | 32-33 | Symbolic integration UI, limits, Taylor series |
+| 16: Step Solver | 34-35 | Step-by-step algebraic display, assumption system |
+
+**Total: 4 tasks (32-35) across 2 phases. WASM stress-test value: MEDIUM (symbolic operations are AST-based, but integration/series evaluation can be compute-heavy).**
+
+---
+---
+
+# Iteration 5: Real-Time & Scale
+
+> **Goal:** Add animated plots with parameter sliders, large-scale matrix operations with progress indicators, parallel computation visualization, and WebGPU exploration.
+
+**Prerequisites:** Iteration 4 complete, Rust WASM migration Phase 1+ (for maximum performance benefit)
+
+---
+
+## Phase 17: Animated Plots
+
+### Task 36: Add parameter sliders for animated plots
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/PlotSlider.tsx`
+- Modify: `demo/mathjs-calc/src/hooks/usePlot.ts`
+- Modify: `demo/mathjs-calc/src/components/GraphCanvas.tsx`
+
+**Description:**
+
+Allow parameters in plot expressions to be controlled by sliders:
+- `plot(sin(a*x), {a: {min: 0.1, max: 10, step: 0.1}})` creates a slider for `a`
+- Slider appears below the graph canvas
+- Moving the slider re-evaluates and re-renders the plot in real-time
+- Multiple sliders for multiple parameters
+- Play button for auto-animation (slider sweeps through range at configurable speed)
+- Frame rate display showing re-render performance
+
+This is a key WASM stress-test: real-time re-evaluation of 1000+ points at 30-60fps requires WASM-speed computation.
+
+---
+
+### Task 37: Add plot animation recording
+
+**Files:**
+- Create: `demo/mathjs-calc/src/utils/animationRecorder.ts`
+
+**Description:**
+
+Record parameter sweep as animated GIF or MP4:
+- "Record" button in graph toolbar starts capture
+- Uses canvas `toBlob()` at each frame
+- Assembles frames into GIF using a client-side library (e.g., `gif.js`)
+- Or exports as series of PNG frames for external assembly
+- Useful for sharing mathematical visualizations
+
+---
+
+## Phase 18: Large-Scale Operations
+
+### Task 38: Add progress indicators for long operations
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/ProgressOverlay.tsx`
+- Create: `demo/mathjs-calc/src/hooks/useProgressTracking.ts`
+
+**Description:**
+
+For operations that take >500ms:
+- Show progress bar overlay on the expression bar
+- Estimated time remaining based on operation type and size
+- Cancel button (terminates the Web Worker)
+- Operation description: "Computing eigenvalues of 500x500 matrix..."
+- After completion: show timing breakdown (parse: 1ms, compute: 234ms, render: 5ms)
+
+Implementation: wrap math.evaluate() in a Web Worker with progress messaging.
+
+---
+
+### Task 39: Add parallel computation visualization
+
+**Files:**
+- Create: `demo/mathjs-calc/src/components/ParallelViz.tsx`
+- Modify: `demo/mathjs-calc/src/panels/PerformancePanel.tsx`
+
+**Description:**
+
+Visualize multi-core utilization in the Performance panel:
+- Core utilization bars (one per logical core)
+- Timeline showing task distribution across workers
+- Speedup chart: 1 core vs 2 vs 4 vs N for the current operation
+- Memory usage per worker
+- Uses `@danielsimonjr/workerpool` metrics API
+
+---
+
+## Phase 19: WebGPU Exploration
+
+### Task 40: WebGPU acceleration spike
+
+**Files:**
+- Create: `demo/mathjs-calc/src/engine/WebGPUCompute.ts`
+- Create: `demo/mathjs-calc/src/engine/webgpu-shaders/matmul.wgsl`
+
+**Description:**
+
+Proof-of-concept WebGPU acceleration for matrix multiplication:
+- Detect WebGPU availability (`navigator.gpu`)
+- Implement a WGSL compute shader for dense matrix multiply
+- Benchmark against JS, WASM, and WASM+parallel for matrices from 100x100 to 5000x5000
+- Display results in the benchmark comparison panel
+- Graceful fallback when WebGPU unavailable
+
+This is exploratory — the goal is to determine if WebGPU provides meaningful speedup over WASM for math.js operations. If successful, expand to FFT, eigenvalue decomposition, etc.
+
+---
+
+## Iteration 5 Summary
+
+| Phase | Tasks | What It Delivers |
+|-------|-------|-----------------|
+| 17: Animated Plots | 36-37 | Parameter sliders, real-time re-render, animation recording |
+| 18: Large-Scale Ops | 38-39 | Progress indicators, parallel computation visualization |
+| 19: WebGPU | 40 | Matrix multiply spike, benchmark vs WASM |
+
+**Total: 5 tasks (36-40) across 3 phases. WASM stress-test value: VERY HIGH (real-time computation, large matrices, multi-core, GPU comparison).**
+
+---
+---
+
+# Complete Iteration Summary
+
+| Iteration | Tasks | Phases | Status | WASM Stress-Test Value |
+|-----------|-------|--------|--------|----------------------|
+| 1: ISE MVP | 1-16 | 1-7 | **Complete** (v15.3.2) | Medium |
+| 2: Heavy Numerics | 17-24 | 8-11 | Planned | High |
+| 3: Live Document | 25-31 | 12-14 | Planned | High |
+| 4: Advanced Symbolic | 32-35 | 15-16 | Planned | Medium |
+| 5: Real-Time & Scale | 36-40 | 17-19 | Planned | Very High |
+
+**Grand total: 40 tasks across 19 phases.**
