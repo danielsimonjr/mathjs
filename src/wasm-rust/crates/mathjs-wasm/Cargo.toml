@@ -1,0 +1,17 @@
+[package]
+name = "mathjs-wasm"
+version = "0.1.0"
+edition = "2021"
+description = "Rust WASM backend for math.js"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+faer = { version = "0.24", default-features = false }
+rustfft = { version = "6.4", default-features = false }
+statrs = { version = "0.18", default-features = false }
+
+[profile.release]
+opt-level = 3
+lto = true
