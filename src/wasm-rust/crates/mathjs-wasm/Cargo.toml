@@ -9,9 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 faer = { version = "0.24", default-features = false }
+libm = "0.2"
 rustfft = { version = "6.4", default-features = false }
 statrs = { version = "0.18", default-features = false }
 
-[profile.release]
-opt-level = 3
-lto = true

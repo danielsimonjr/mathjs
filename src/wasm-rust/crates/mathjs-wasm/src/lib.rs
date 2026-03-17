@@ -11,10 +11,17 @@ extern crate alloc;
 pub mod matrix;
 
 // Re-export all public functions from modules
+pub use matrix::algorithms::*;
 pub use matrix::basic::*;
+pub use matrix::broadcast::*;
+pub use matrix::complex_eigs::*;
 pub use matrix::eigs::*;
+pub use matrix::expm::*;
 pub use matrix::linalg::*;
 pub use matrix::multiply::*;
+pub use matrix::rotation::*;
+pub use matrix::sparse::*;
+pub use matrix::sqrtm::*;
 
 // ============================================================
 // Spike probes (temporary — kept for compatibility)
