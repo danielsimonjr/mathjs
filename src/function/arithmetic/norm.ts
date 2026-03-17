@@ -1,5 +1,9 @@
 import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
+
+// Minimum vector length for WASM to be beneficial
+const WASM_NORM_THRESHOLD = 100
 
 // Type definitions for norm
 interface ComplexType {
@@ -157,6 +161,50 @@ export const createNorm = /* #__PURE__ */ factory(
     })
 
     /**
+     * Try WASM-accelerated vector norm for plain number vectors
+     */
+    function _tryWasmVectorNorm(
+      x: MatrixType,
+      p: number | BigNumberType | string
+    ): number | null {
+      const size = x.size()
+      if (size.length !== 1 || size[0] < WASM_NORM_THRESHOLD) return null
+
+      const wasm = wasmLoader.getModule()
+      if (!wasm) return null
+
+      // Extract flat array and verify all numbers
+      const arr = x.toArray()
+      const n = arr.length
+      const data = new Float64Array(n)
+      for (let i = 0; i < n; i++) {
+        if (typeof arr[i] !== 'number') return null
+        data[i] = arr[i] as number
+      }
+
+      const alloc = wasmLoader.allocateFloat64Array(data)
+      try {
+        if (p === 1) {
+          return wasm.norm1(alloc.ptr, n)
+        }
+        if (p === 2) {
+          return wasm.norm2(alloc.ptr, n)
+        }
+        if (p === Number.POSITIVE_INFINITY || p === 'inf') {
+          return wasm.normInf(alloc.ptr, n)
+        }
+        if (typeof p === 'number' && !isNaN(p) && p !== 0) {
+          return wasm.normP(alloc.ptr, n, p)
+        }
+        return null
+      } catch {
+        return null
+      } finally {
+        wasmLoader.free(alloc.ptr)
+      }
+    }
+
+    /**
      * Calculate the plus infinity norm for a vector
      * @param {Matrix} x
      * @returns {number | BigNumberType} Returns the norm
@@ -205,6 +253,10 @@ export const createNorm = /* #__PURE__ */ factory(
       x: MatrixType,
       p: number | BigNumberType | string
     ): number | BigNumberType {
+      // Try WASM path for large plain number vectors
+      const wasmResult = _tryWasmVectorNorm(x, p)
+      if (wasmResult !== null) return wasmResult
+
       // check p
       if (p === Number.POSITIVE_INFINITY || p === 'inf') {
         return _vectorNormPlusInfinity(x)

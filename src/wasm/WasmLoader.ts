@@ -406,6 +406,20 @@ export interface WasmModule {
     n: number
   ) => void
 
+  // Arithmetic operations (array-oriented)
+  gcdArray: (aPtr: number, n: number) => number
+  hypotArray: (aPtr: number, n: number) => number
+  norm1: (aPtr: number, n: number) => number
+  norm2: (aPtr: number, n: number) => number
+  normInf: (aPtr: number, n: number) => number
+  normP: (aPtr: number, n: number, p: number) => number
+
+  // Special functions (array-accelerated)
+  erfArray: (aPtr: number, n: number, resultPtr: number) => void
+  zetaArray: (aPtr: number, n: number, resultPtr: number) => void
+  gammaArray: (aPtr: number, n: number, resultPtr: number) => void
+  lgammaArray: (aPtr: number, n: number, resultPtr: number) => void
+
   // Selection algorithms
   partitionSelect: (
     dataPtr: number,
@@ -434,6 +448,16 @@ export interface WasmModule {
   ) => number
 
   // Signal processing
+  freqz: (
+    bPtr: number,
+    bLen: number,
+    aPtr: number,
+    aLen: number,
+    wPtr: number,
+    wLen: number,
+    hRealPtr: number,
+    hImagPtr: number
+  ) => void
   fft: (dataPtr: number, n: number, inverse: number) => void
   fft2d: (dataPtr: number, rows: number, cols: number, inverse: number) => void
   convolve: (

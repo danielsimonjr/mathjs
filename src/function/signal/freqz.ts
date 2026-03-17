@@ -1,5 +1,9 @@
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type { Matrix, Complex } from '../../types.ts'
+
+// Minimum number of frequency points for WASM to be beneficial
+const WASM_FREQZ_THRESHOLD = 32
 
 const name = 'freqz'
 
@@ -110,6 +114,52 @@ export const createFreqz = /* #__PURE__ */ factory(
     })
 
     /**
+     * Try WASM-accelerated frequency response computation
+     */
+    function _tryWasmFreqz(
+      b: number[],
+      a: number[],
+      w: number[]
+    ): { h: Complex[]; w: number[] } | null {
+      const wasm = wasmLoader.getModule()
+      if (!wasm || w.length < WASM_FREQZ_THRESHOLD) return null
+
+      try {
+        const bAlloc = wasmLoader.allocateFloat64Array(b)
+        const aAlloc = wasmLoader.allocateFloat64Array(a)
+        const wAlloc = wasmLoader.allocateFloat64Array(w)
+        const hRealAlloc = wasmLoader.allocateFloat64ArrayEmpty(w.length)
+        const hImagAlloc = wasmLoader.allocateFloat64ArrayEmpty(w.length)
+
+        try {
+          wasm.freqz(
+            bAlloc.ptr, b.length,
+            aAlloc.ptr, a.length,
+            wAlloc.ptr, w.length,
+            hRealAlloc.ptr, hImagAlloc.ptr
+          )
+
+          // Read results back as Complex[]
+          const h: Complex[] = []
+          for (let i = 0; i < w.length; i++) {
+            h.push(Complex(hRealAlloc.array[i], hImagAlloc.array[i]) as Complex)
+          }
+
+          return { h, w }
+        } finally {
+          wasmLoader.free(bAlloc.ptr)
+          wasmLoader.free(aAlloc.ptr)
+          wasmLoader.free(wAlloc.ptr)
+          wasmLoader.free(hRealAlloc.ptr)
+          wasmLoader.free(hImagAlloc.ptr)
+        }
+      } catch {
+        // Fall through to JS implementation
+      }
+      return null
+    }
+
+    /**
      * Internal frequency response calculation
      * @param b - Numerator coefficients
      * @param a - Denominator coefficients
@@ -121,6 +171,12 @@ export const createFreqz = /* #__PURE__ */ factory(
       a: number[],
       w: number[]
     ): { h: Complex[]; w: number[] } {
+      // Try WASM-accelerated path for large frequency arrays
+      const wasmResult = _tryWasmFreqz(b, a, w)
+      if (wasmResult !== null) {
+        return wasmResult
+      }
+
       const num: Complex[] = []
       const den: Complex[] = []
 

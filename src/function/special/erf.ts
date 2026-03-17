@@ -3,6 +3,7 @@
 import { deepMap } from '../../utils/collection.ts'
 import { sign } from '../../utils/number.ts'
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
 // Type definitions for erf
@@ -48,21 +49,50 @@ export const createErf = /* #__PURE__ */ factory(
      * @param {number | Array | Matrix} x   A real number
      * @return {number | Array | Matrix}    The erf of `x`
      */
-    return typed('name', {
-      number: function (x: number): number {
-        const y = Math.abs(x)
+    function erfNumber(x: number): number {
+      const y = Math.abs(x)
 
-        if (y >= MAX_NUM) {
-          return sign(x)
+      if (y >= MAX_NUM) {
+        return sign(x)
+      }
+      if (y <= THRESH) {
+        return sign(x) * erf1(y)
+      }
+      if (y <= 4.0) {
+        return sign(x) * (1 - erfc2(y))
+      }
+      return sign(x) * (1 - erfc3(y))
+    }
+
+    return typed('name', {
+      Array: function (arr: unknown[]): unknown[] {
+        // WASM-accelerated path for plain number arrays of sufficient size
+        const wasm = wasmLoader.getModule()
+        if (
+          wasm &&
+          arr.length >= 100 &&
+          arr.every((x) => typeof x === 'number')
+        ) {
+          try {
+            const input = new Float64Array(arr as number[])
+            const inputAlloc = wasmLoader.allocateFloat64Array(input)
+            const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(arr.length)
+            try {
+              wasm.erfArray(inputAlloc.ptr, arr.length, resultAlloc.ptr)
+              return Array.from(resultAlloc.array)
+            } finally {
+              wasmLoader.free(inputAlloc.ptr)
+              wasmLoader.free(resultAlloc.ptr)
+            }
+          } catch {
+            // Fall through to element-wise JS
+          }
         }
-        if (y <= THRESH) {
-          return sign(x) * erf1(y)
-        }
-        if (y <= 4.0) {
-          return sign(x) * (1 - erfc2(y))
-        }
-        return sign(x) * (1 - erfc3(y))
+        // Element-wise fallback
+        return arr.map((x) => erfNumber(x as number))
       },
+
+      number: erfNumber,
 
       'Array | Matrix': typed.referToSelf(
         (self: TypedFunction) =>

@@ -7,6 +7,7 @@
 
 import { lgammaNumber, lnSqrt2PI } from '../../plain/number/index.ts'
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import { copysign } from '../../utils/number.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
@@ -89,6 +90,33 @@ export const createLgamma = /* #__PURE__ */ factory(
      * @return {number | Complex}    The log gamma of `n`
      */
     return typed(name, {
+      Array: function (arr: unknown[]): unknown[] {
+        // WASM-accelerated path for plain number arrays of sufficient size
+        const wasm = wasmLoader.getModule()
+        if (
+          wasm &&
+          arr.length >= 100 &&
+          arr.every((x) => typeof x === 'number')
+        ) {
+          try {
+            const input = new Float64Array(arr as number[])
+            const inputAlloc = wasmLoader.allocateFloat64Array(input)
+            const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(arr.length)
+            try {
+              wasm.lgammaArray(inputAlloc.ptr, arr.length, resultAlloc.ptr)
+              return Array.from(resultAlloc.array)
+            } finally {
+              wasmLoader.free(inputAlloc.ptr)
+              wasmLoader.free(resultAlloc.ptr)
+            }
+          } catch {
+            // Fall through to element-wise JS
+          }
+        }
+        // Element-wise fallback
+        return arr.map((x) => lgammaNumber(x as number))
+      },
+
       number: lgammaNumber,
       Complex: lgammaComplex,
       BigNumber: function () {

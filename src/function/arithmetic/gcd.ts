@@ -8,6 +8,10 @@ import { createMatAlgo04xSidSid } from '../../type/matrix/utils/matAlgo04xSidSid
 import { createMatAlgo10xSids } from '../../type/matrix/utils/matAlgo10xSids.ts'
 import { createMatrixAlgorithmSuite } from '../../type/matrix/utils/matrixAlgorithmSuite.ts'
 import { ArgumentsError } from '../../error/ArgumentsError.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
+
+// Minimum array length for WASM to be beneficial
+const WASM_GCD_ARRAY_THRESHOLD = 50
 
 // Type definitions for gcd
 interface BigNumberType {
@@ -152,12 +156,19 @@ export const createGcd = /* #__PURE__ */ factory(
               Array.isArray(array[0]) &&
               is1d(array[0])
             ) {
-              return self(...array[0])
+              // Try WASM for flat number arrays
+              const flat = array[0]
+              const wasmResult = _tryWasmGcdArray(flat)
+              if (wasmResult !== null) return wasmResult
+              return self(...flat)
             }
             if (is1d(array)) {
+              // Try WASM for flat number arrays
+              const wasmResult = _tryWasmGcdArray(array)
+              if (wasmResult !== null) return wasmResult
               return self(...array)
             }
-            throw new ArgumentsError('gcd', 1, 1)
+            throw new ArgumentsError('gcd() supports only 1d matrices!')
           }
         ),
         Matrix: typed.referToSelf(
@@ -167,6 +178,35 @@ export const createGcd = /* #__PURE__ */ factory(
         )
       }
     )
+
+    /**
+     * Try WASM-accelerated GCD for plain number arrays
+     */
+    function _tryWasmGcdArray(array: unknown[]): number | null {
+      if (array.length < WASM_GCD_ARRAY_THRESHOLD) return null
+
+      const wasm = wasmLoader.getModule()
+      if (!wasm) return null
+
+      // Check all elements are integer numbers
+      const n = array.length
+      const data = new Float64Array(n)
+      for (let i = 0; i < n; i++) {
+        if (typeof array[i] !== 'number' || !isInteger(array[i] as number)) {
+          return null
+        }
+        data[i] = array[i] as number
+      }
+
+      const alloc = wasmLoader.allocateFloat64Array(data)
+      try {
+        return wasm.gcdArray(alloc.ptr, n)
+      } catch {
+        return null
+      } finally {
+        wasmLoader.free(alloc.ptr)
+      }
+    }
 
     /**
      * Calculate gcd for numbers

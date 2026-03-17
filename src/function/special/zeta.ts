@@ -1,4 +1,5 @@
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { ConfigOptions } from '../../core/config.ts'
 
@@ -114,13 +115,43 @@ export const createZeta = /* #__PURE__ */ factory(
      * @param {number | Complex | BigNumber} s   A Real, Complex or BigNumber parameter to the Riemann Zeta Function
      * @return {number | Complex | BigNumber}    The Riemann Zeta of `s`
      */
+    function zetaNumber(s: number): number {
+      return zetaNumeric(
+        s,
+        (value: number) => value,
+        () => 20
+      )
+    }
+
     return typed(name, {
-      number: (s: number): number =>
-        zetaNumeric(
-          s,
-          (value: number) => value,
-          () => 20
-        ),
+      Array: function (arr: unknown[]): unknown[] {
+        // WASM-accelerated path for plain number arrays of sufficient size
+        const wasm = wasmLoader.getModule()
+        if (
+          wasm &&
+          arr.length >= 100 &&
+          arr.every((x) => typeof x === 'number')
+        ) {
+          try {
+            const input = new Float64Array(arr as number[])
+            const inputAlloc = wasmLoader.allocateFloat64Array(input)
+            const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(arr.length)
+            try {
+              wasm.zetaArray(inputAlloc.ptr, arr.length, resultAlloc.ptr)
+              return Array.from(resultAlloc.array)
+            } finally {
+              wasmLoader.free(inputAlloc.ptr)
+              wasmLoader.free(resultAlloc.ptr)
+            }
+          } catch {
+            // Fall through to element-wise JS
+          }
+        }
+        // Element-wise fallback
+        return arr.map((x) => zetaNumber(x as number))
+      },
+
+      number: zetaNumber,
       BigNumber: (s: BigNumberType): BigNumberType =>
         zetaNumeric(
           s,
@@ -154,7 +185,7 @@ export const createZeta = /* #__PURE__ */ factory(
         return isNegative(s) ? createValue(NaN) : createValue(1)
       }
 
-      return zeta(s, createValue, determineDigits, (s: T) => s as number) as T
+      return zeta(s, createValue, determineDigits, (s: T) => s as number)
     }
 
     /**
@@ -176,11 +207,11 @@ export const createZeta = /* #__PURE__ */ factory(
       }
 
       return zeta(
-        s as any,
+        s,
         (value: number) => value,
         (s: ComplexType) => Math.round(1.3 * 15 + 0.9 * Math.abs(s.im)),
         (s: ComplexType) => s.re
-      ) as unknown as ComplexType
+      )
     }
 
     /**

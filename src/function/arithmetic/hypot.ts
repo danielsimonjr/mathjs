@@ -2,6 +2,10 @@ import { factory } from '../../utils/factory.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import { flatten } from '../../utils/array.ts'
 import { isComplex } from '../../utils/is.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
+
+// Minimum array length for WASM to be beneficial
+const WASM_HYPOT_THRESHOLD = 50
 
 // Type definitions for dependency injection
 interface Matrix {
@@ -88,12 +92,43 @@ export const createHypot = /* #__PURE__ */ factory(
     })
 
     /**
+     * Try WASM-accelerated hypot for plain number arrays
+     */
+    function _tryWasmHypot(args: NumericValue[]): number | null {
+      if (args.length < WASM_HYPOT_THRESHOLD) return null
+
+      const wasm = wasmLoader.getModule()
+      if (!wasm) return null
+
+      // Check all elements are plain numbers (not BigNumber or Complex)
+      const n = args.length
+      const data = new Float64Array(n)
+      for (let i = 0; i < n; i++) {
+        if (typeof args[i] !== 'number') return null
+        data[i] = args[i] as number
+      }
+
+      const alloc = wasmLoader.allocateFloat64Array(data)
+      try {
+        return wasm.hypotArray(alloc.ptr, n)
+      } catch {
+        return null
+      } finally {
+        wasmLoader.free(alloc.ptr)
+      }
+    }
+
+    /**
      * Calculate the hypotenuse for an Array with values
      * @param {Array.<number | BigNumber>} args
      * @return {number | BigNumber} Returns the result
      * @private
      */
     function _hypot(args: NumericValue[]): NumericValue {
+      // Try WASM path for large plain number arrays
+      const wasmResult = _tryWasmHypot(args)
+      if (wasmResult !== null) return wasmResult
+
       // code based on `hypot` from es6-shim:
       // https://github.com/paulmillr/es6-shim/blob/master/es6-shim.js#L1619-L1633
       let result: NumericValue = 0
