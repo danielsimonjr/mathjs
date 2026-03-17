@@ -1,5 +1,6 @@
 import { isUnit, isNumber, isBigNumber } from '../../utils/is.ts'
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type {
   MathNumericType,
   MathArray,
@@ -7,6 +8,9 @@ import type {
   Unit,
   BigNumber
 } from '../../types.ts'
+
+// Minimum y0 vector size for WASM acceleration to be beneficial
+const WASM_ODE_THRESHOLD = 10
 
 const name = 'solveODE'
 const dependencies = [
@@ -140,6 +144,249 @@ export const createSolveODE = /* #__PURE__ */ factory(
      * @return {Object} Return an object with t and y values as arrays
      */
 
+    /**
+     * Check if y0 is a plain number array suitable for WASM acceleration
+     */
+    function _isPlainNumberArray(y0: any[]): boolean {
+      if (!Array.isArray(y0) || y0.length < WASM_ODE_THRESHOLD) return false
+      for (let i = 0; i < y0.length; i++) {
+        if (typeof y0[i] !== 'number') return false
+      }
+      return true
+    }
+
+    /**
+     * WASM-accelerated Runge-Kutta inner loop for plain number vector ODEs.
+     *
+     * Accelerates the vector arithmetic (weighted sums for stage computation,
+     * solution update, and error estimation) while still calling the JS
+     * callback f(t, y) for each stage evaluation.
+     *
+     * Returns null if WASM is unavailable, signaling fallback to JS path.
+     */
+    function _rkWasmLoop(
+      f: ForcingFunction,
+      tspan: any[],
+      y0: number[],
+      options: ODEOptions,
+      butcherTableau: ButcherTableau
+    ): ODESolution | null {
+      const wasm = wasmLoader.getModule()
+      if (!wasm) return null
+
+      const dim = y0.length // dimension of state vector
+      const a = butcherTableau.a as number[][]
+      const c = butcherTableau.c as (number | null)[]
+      const b = butcherTableau.b as number[]
+      const bp = butcherTableau.bp as number[]
+      const numStages = c.length
+
+      const t0 = tspan[0] as number
+      const tf = tspan[1] as number
+      const isForwards = tf > t0
+      const steps = 1
+      const tol = options.tol ? options.tol : 1e-4
+      const minDelta = options.minDelta ? options.minDelta : 0.2
+      const maxDelta = options.maxDelta ? options.maxDelta : 5
+      const maxIter = options.maxIter ? options.maxIter : 10_000
+
+      let h = options.firstStep
+        ? isForwards
+          ? (options.firstStep as number)
+          : -(options.firstStep as number)
+        : (tf - t0) / steps
+
+      const maxStepVal = options.maxStep as number | undefined
+      const minStepVal = options.minStep as number | undefined
+
+      // Compute deltaB = b - bp
+      const deltaB = new Float64Array(numStages)
+      for (let i = 0; i < numStages; i++) {
+        deltaB[i] = b[i] - bp[i]
+      }
+
+      // Allocate WASM buffers:
+      // - yPtr: current state (dim)
+      // - yNewPtr: next state (dim)
+      // - errorPtr: error vector (dim)
+      // - tempPtr: temporary for weighted sums (dim)
+      // - stagePtr: k values for all stages (numStages * dim)
+      const yAlloc = wasmLoader.allocateFloat64Array(y0)
+      const yNewAlloc = wasmLoader.allocateFloat64ArrayEmpty(dim)
+      const errorAlloc = wasmLoader.allocateFloat64ArrayEmpty(dim)
+      const tempAlloc = wasmLoader.allocateFloat64ArrayEmpty(dim)
+      const stageAlloc = wasmLoader.allocateFloat64ArrayEmpty(numStages * dim)
+
+      try {
+        const t: number[] = [t0]
+        const y: number[][] = [y0.slice()]
+
+        let n = 0
+        let iter = 0
+
+        // Helper to read back a vector from WASM memory
+        function readVec(alloc: { ptr: number; array: Float64Array }): number[] {
+          // Re-create view in case memory grew
+          const arr = new Float64Array(wasm!.memory.buffer, alloc.ptr, dim)
+          const result: number[] = new Array(dim)
+          for (let i = 0; i < dim; i++) {
+            result[i] = arr[i]
+          }
+          return result
+        }
+
+        // Helper to write a JS array into a WASM allocation
+        function writeVec(alloc: { ptr: number; array: Float64Array }, data: number[]): void {
+          const arr = new Float64Array(wasm!.memory.buffer, alloc.ptr, dim)
+          for (let i = 0; i < dim; i++) {
+            arr[i] = data[i]
+          }
+        }
+
+        // Helper to write k[stageIdx] into the stage buffer
+        function writeStage(stageIdx: number, data: number[]): void {
+          const offset = stageIdx * dim
+          const arr = new Float64Array(wasm!.memory.buffer, stageAlloc.ptr, numStages * dim)
+          for (let i = 0; i < dim; i++) {
+            arr[offset + i] = data[i]
+          }
+        }
+
+        // Helper to read stage from WASM
+        function readStage(stageIdx: number): number[] {
+          const offset = stageIdx * dim
+          const arr = new Float64Array(wasm!.memory.buffer, stageAlloc.ptr, numStages * dim)
+          const result: number[] = new Array(dim)
+          for (let i = 0; i < dim; i++) {
+            result[i] = arr[offset + i]
+          }
+          return result
+        }
+
+        // Trim step to not overshoot
+        function trimStepNum(tn: number, tfn: number, hn: number): number {
+          const next = tn + hn
+          if (isForwards ? next > tfn : next < tfn) {
+            return tfn - tn
+          }
+          return hn
+        }
+
+        // Ongoing check
+        function ongoing(tn: number, tfn: number): boolean {
+          return isForwards ? tn < tfn : tn > tfn
+        }
+
+        while (ongoing(t[n], tf)) {
+          // Trim step
+          h = trimStepNum(t[n], tf, h)
+
+          // Write current y[n] into WASM
+          writeVec(yAlloc, y[n])
+
+          // Stage 0: k[0] = f(t[n], y[n])
+          const k0 = f(t[n], y[n]) as number[]
+          writeStage(0, k0)
+
+          // Stages 1..numStages-1
+          for (let s = 1; s < numStages; s++) {
+            // Compute y_stage = y[n] + h * sum(a[s][j] * k[j], j=0..s-1)
+            // Start with a copy of y[n]
+            wasm.vectorCopy(yAlloc.ptr, dim, tempAlloc.ptr)
+
+            // Accumulate weighted k contributions using WASM vectorScale + vectorAdd
+            for (let j = 0; j < a[s].length; j++) {
+              const aCoeff = a[s][j]
+              if (aCoeff === 0) continue
+
+              // Get pointer to k[j] within stageAlloc (offset j*dim)
+              const kjPtr = stageAlloc.ptr + j * dim * 8
+
+              // temp = temp + h * a[s][j] * k[j]
+              // Use yNewAlloc as scratch for scaled k
+              wasm.vectorScale(kjPtr, h * aCoeff, dim, yNewAlloc.ptr)
+              wasm.vectorAdd(tempAlloc.ptr, yNewAlloc.ptr, dim, tempAlloc.ptr)
+            }
+
+            // Call JS callback with the computed stage state
+            const tStage = t[n] + (c[s] as number) * h
+            const yStage = readVec(tempAlloc)
+            const ks = f(tStage, yStage) as number[]
+            writeStage(s, ks)
+          }
+
+          // Compute yNew = y[n] + h * sum(b[i] * k[i])
+          // and error = sum(deltaB[i] * k[i]) (then take abs max)
+          wasm.vectorCopy(yAlloc.ptr, dim, yNewAlloc.ptr)
+
+          // Zero out errorAlloc
+          const errArr = new Float64Array(wasm.memory.buffer, errorAlloc.ptr, dim)
+          errArr.fill(0)
+
+          for (let s = 0; s < numStages; s++) {
+            const ksPtr = stageAlloc.ptr + s * dim * 8
+
+            if (b[s] !== 0) {
+              // yNew += h * b[s] * k[s]
+              wasm.vectorScale(ksPtr, h * b[s], dim, tempAlloc.ptr)
+              wasm.vectorAdd(yNewAlloc.ptr, tempAlloc.ptr, dim, yNewAlloc.ptr)
+            }
+
+            if (deltaB[s] !== 0) {
+              // error += deltaB[s] * k[s]  (will take max(abs()) after)
+              wasm.vectorScale(ksPtr, deltaB[s], dim, tempAlloc.ptr)
+              wasm.vectorAdd(errorAlloc.ptr, tempAlloc.ptr, dim, errorAlloc.ptr)
+            }
+          }
+
+          // Compute max absolute error using WASM
+          // First scale error by h (since multiply(deltaB, k) in JS path is then
+          // used as-is, but the JS path computes multiply(deltaB, k) which is
+          // the raw difference, not multiplied by h — let's match JS behavior)
+          // Looking at the JS code: TE = max(abs(map(multiply(deltaB, k), ...)))
+          // multiply(deltaB, k) is a matrix multiply of [numStages] x [numStages, dim]
+          // which gives a [dim] vector. This is exactly what we accumulated above.
+          // So we take abs-max of errorAlloc directly.
+
+          // But we need abs values. Compute maxError via WASM.
+          const TE = wasm.maxError(errorAlloc.ptr, dim)
+
+          if (TE < tol && tol / TE > 1 / 4) {
+            // Accept step
+            t.push(t[n] + h)
+            y.push(readVec(yNewAlloc))
+            n++
+          }
+
+          // Step size adjustment
+          let delta = wasm.computeStepAdjustment(TE, tol, 5, minDelta, maxDelta)
+
+          h = h * delta
+
+          if (maxStepVal !== undefined && Math.abs(h) > maxStepVal) {
+            h = isForwards ? maxStepVal : -maxStepVal
+          } else if (minStepVal !== undefined && Math.abs(h) < minStepVal) {
+            h = isForwards ? minStepVal : -minStepVal
+          }
+
+          iter++
+          if (iter > maxIter) {
+            throw new Error(
+              'Maximum number of iterations reached, try changing options'
+            )
+          }
+        }
+
+        return { t, y }
+      } finally {
+        wasmLoader.free(yAlloc.ptr)
+        wasmLoader.free(yNewAlloc.ptr)
+        wasmLoader.free(errorAlloc.ptr)
+        wasmLoader.free(tempAlloc.ptr)
+        wasmLoader.free(stageAlloc.ptr)
+      }
+    }
+
     function _rk(butcherTableau: ButcherTableau) {
       // generates an adaptive runge kutta method from it's butcher tableau
 
@@ -180,14 +427,30 @@ export const createSolveODE = /* #__PURE__ */ factory(
         if (!(timeVars.every(isNumOrBig) || timeVars.every(isUnit))) {
           throw new Error('Inconsistent type of "t" dependant variables')
         }
+
+        // Try WASM-accelerated path for plain number arrays above threshold
+        const hasBigNumbers = [t0, tf, ...y0, maxStep, minStep].some(
+          isBigNumber
+        )
+        if (
+          !hasBigNumbers &&
+          !tspan.some(isUnit) &&
+          _isPlainNumberArray(y0)
+        ) {
+          try {
+            const wasmResult = _rkWasmLoop(f, tspan, y0 as number[], options, butcherTableau)
+            if (wasmResult !== null) return wasmResult
+          } catch {
+            // Fall through to JS implementation
+          }
+        }
+
+        // --- JS fallback path (original implementation) ---
         const steps = 1 // divide time in this number of steps
         const tol = options.tol ? options.tol : 1e-4 // define a tolerance (must be an option)
         const minDelta = options.minDelta ? options.minDelta : 0.2
         const maxDelta = options.maxDelta ? options.maxDelta : 5
         const maxIter = options.maxIter ? options.maxIter : 10_000 // stop inifite evaluation if something goes wrong
-        const hasBigNumbers = [t0, tf, ...y0, maxStep, minStep].some(
-          isBigNumber
-        )
         const [a, c, b, bp] = hasBigNumbers
           ? [
               bignumber(butcherTableau.a),

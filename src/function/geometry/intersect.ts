@@ -1,4 +1,5 @@
 import { factory } from '../../utils/factory.ts'
+import { wasmLoader } from '../../wasm/WasmLoader.ts'
 import type { MathNumericType } from '../../types.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { ConfigOptions } from '../../core/config.ts'
@@ -297,6 +298,10 @@ export const createIntersect = /* #__PURE__ */ factory(
       p2a: MathNumericType[],
       p2b: MathNumericType[]
     ): MathNumericType[] | null {
+      // WASM fast path for plain number 2D line intersection
+      const wasmResult = _tryWasmIntersect2d(p1a, p1b, p2a, p2b)
+      if (wasmResult !== undefined) return wasmResult
+
       const o1 = p1a
       const o2 = p2a
       const d1 = subtract(o1, p1b) as MathNumericType[]
@@ -324,6 +329,50 @@ export const createIntersect = /* #__PURE__ */ factory(
         det
       )
       return add(multiply(d1, t), o1) as MathNumericType[]
+    }
+
+    /**
+     * Try WASM-accelerated 2D infinite line intersection for plain number arrays.
+     * Returns undefined to fall through to JS, null for no intersection,
+     * or the intersection point array.
+     */
+    function _tryWasmIntersect2d(
+      p1a: MathNumericType[],
+      p1b: MathNumericType[],
+      p2a: MathNumericType[],
+      p2b: MathNumericType[]
+    ): MathNumericType[] | null | undefined {
+      const wasm = wasmLoader.getModule()
+      if (!wasm) return undefined
+
+      // All 8 coordinates must be plain numbers
+      if (
+        typeof p1a[0] !== 'number' || typeof p1a[1] !== 'number' ||
+        typeof p1b[0] !== 'number' || typeof p1b[1] !== 'number' ||
+        typeof p2a[0] !== 'number' || typeof p2a[1] !== 'number' ||
+        typeof p2b[0] !== 'number' || typeof p2b[1] !== 'number'
+      ) {
+        return undefined
+      }
+
+      const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(3)
+      try {
+        wasm.intersect2DInfiniteLines(
+          p1a[0] as number, p1a[1] as number,
+          p1b[0] as number, p1b[1] as number,
+          p2a[0] as number, p2a[1] as number,
+          p2b[0] as number, p2b[1] as number,
+          resultAlloc.ptr
+        )
+
+        const exists = resultAlloc.array[2]
+        if (exists === 0.0) {
+          return null // Lines are parallel
+        }
+        return [resultAlloc.array[0], resultAlloc.array[1]]
+      } finally {
+        wasmLoader.free(resultAlloc.ptr)
+      }
     }
 
     function _intersect3dHelper(

@@ -428,6 +428,48 @@ export interface WasmModule {
     workPtr: number
   ) => number
 
+  // Geometry operations
+  distanceND: (p1Ptr: number, p2Ptr: number, n: number) => number
+  distance2D: (x1: number, y1: number, x2: number, y2: number) => number
+  distance3D: (
+    x1: number,
+    y1: number,
+    z1: number,
+    x2: number,
+    y2: number,
+    z2: number
+  ) => number
+  intersect2DLines: (
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x3: number,
+    y3: number,
+    x4: number,
+    y4: number,
+    resultPtr: number
+  ) => void
+  intersect2DInfiniteLines: (
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    x3: number,
+    y3: number,
+    x4: number,
+    y4: number,
+    resultPtr: number
+  ) => void
+  distancePointToLine2D: (
+    px: number,
+    py: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number
+  ) => number
+
   // Statistics operations
   statsMean: (aPtr: number, n: number) => number
   statsMedian: (aPtr: number, n: number) => number
@@ -470,6 +512,15 @@ export interface WasmModule {
   rfft: (dataPtr: number, n: number, resultPtr: number) => void
   irfft: (dataPtr: number, n: number, resultPtr: number) => void
   isPowerOf2: (n: number) => number
+
+  // ODE solver vector operations
+  vectorAdd: (aPtr: number, bPtr: number, n: number, resultPtr: number) => void
+  vectorScale: (aPtr: number, scalar: number, n: number, resultPtr: number) => void
+  vectorCopy: (srcPtr: number, n: number, dstPtr: number) => void
+  maxError: (errorPtr: number, n: number) => number
+  computeStepAdjustment: (maxErr: number, tol: number, order: number, minDelta: number, maxDelta: number) => number
+  rk45Step: (yPtr: number, t: number, h: number, n: number, kPtr: number, yNextPtr: number, yErrorPtr: number) => void
+  rk23Step: (yPtr: number, t: number, h: number, n: number, kPtr: number, yNextPtr: number, yErrorPtr: number) => void
 
   // Memory management
   __new: (size: number, id: number) => number
