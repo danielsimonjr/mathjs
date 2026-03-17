@@ -179,8 +179,8 @@ export const createExpm = /* #__PURE__ */ factory(
             matrixAlloc.ptr, n, resultAlloc.ptr, workAlloc.ptr
           )
 
-          if (status === 1) {
-            // Read results back into 2D array
+          if (status === 0) {
+            // Read results back into 2D array (AS returns 0 on success)
             const result: number[][] = []
             for (let i = 0; i < n; i++) {
               const row: number[] = []

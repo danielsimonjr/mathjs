@@ -234,10 +234,10 @@ export interface WasmModule {
     matrixPtr: number,
     n: number,
     resultPtr: number,
-    workPtr: number,
+    tolerance: number,
     maxIterations: number,
-    tolerance: number
-  ) => number // returns number of iterations, -1 on failure
+    workPtr: number
+  ) => number // returns 0 on success
   sqrtmNewtonSchulz: (
     matrixPtr: number,
     n: number,

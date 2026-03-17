@@ -115,7 +115,8 @@ export const createSqrtm = /* #__PURE__ */ factory(
             _tolerance, _maxIterations, workAlloc.ptr
           )
 
-          if (status === 1) {
+          if (status > 0) {
+            // AS sqrtm returns iteration count (>0) on success, -1 on failure
             const result: number[][] = []
             for (let i = 0; i < n; i++) {
               const row: number[] = []
