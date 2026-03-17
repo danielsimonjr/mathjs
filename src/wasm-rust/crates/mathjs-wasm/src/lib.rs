@@ -1,38 +1,36 @@
-//! Minimal spike to verify crate compatibility with wasm32-unknown-unknown.
+//! Rust WASM backend for math.js
 //!
-//! Each function tests that a key dependency compiles to WASM.
-//! These are NOT production implementations — just compilation probes.
+//! Provides high-performance matrix operations compiled to WebAssembly.
+//! All exported functions use `#[no_mangle] extern "C"` with camelCase names
+//! to match the JavaScript calling convention.
 
 #![no_std]
 
 extern crate alloc;
 
+pub mod matrix;
+
+// Re-export all public functions from modules
+pub use matrix::basic::*;
+pub use matrix::eigs::*;
+pub use matrix::linalg::*;
+pub use matrix::multiply::*;
+
+// ============================================================
+// Spike probes (temporary — kept for compatibility)
+// ============================================================
+
 use alloc::vec;
 
-// ============================================================
-// Global allocator required for no_std + cdylib WASM
-// ============================================================
-// wee_alloc is tiny but we can use the default allocator approach.
-// For now, we need a minimal allocator. We'll try without one first
-// and add if needed.
-
-// ============================================================
-// faer: 2x2 matrix multiply probe
-// ============================================================
-// Reads two 2x2 matrices (4 f64 each) from input pointers,
-// writes the product to the output pointer.
-// Memory layout: row-major, [a00, a01, a10, a11]
+/// faer: 2x2 matrix multiply probe
 #[no_mangle]
 pub unsafe extern "C" fn rust_mat_mul_2x2(a_ptr: *const f64, b_ptr: *const f64, out_ptr: *mut f64) {
     use faer::Mat;
 
-    // Read 2x2 matrices from raw pointers
     let a = Mat::from_fn(2, 2, |i, j| *a_ptr.add(i * 2 + j));
     let b = Mat::from_fn(2, 2, |i, j| *b_ptr.add(i * 2 + j));
-
     let c = &a * &b;
 
-    // Write result
     for i in 0..2 {
         for j in 0..2 {
             *out_ptr.add(i * 2 + j) = c[(i, j)];
@@ -40,11 +38,7 @@ pub unsafe extern "C" fn rust_mat_mul_2x2(a_ptr: *const f64, b_ptr: *const f64, 
     }
 }
 
-// ============================================================
-// rustfft: FFT of 4 elements probe
-// ============================================================
-// Reads 4 complex numbers (8 f64: [re0, im0, re1, im1, ...]) from input,
-// computes forward FFT in-place, writes result to output pointer.
+/// rustfft: FFT of 4 elements probe
 #[no_mangle]
 pub unsafe extern "C" fn rust_fft_4(in_ptr: *const f64, out_ptr: *mut f64) {
     use rustfft::num_complex::Complex64;
@@ -66,10 +60,7 @@ pub unsafe extern "C" fn rust_fft_4(in_ptr: *const f64, out_ptr: *mut f64) {
     }
 }
 
-// ============================================================
-// statrs: gamma function probe
-// ============================================================
-// Computes gamma(x) and writes result to output pointer.
+/// statrs: gamma function probe
 #[no_mangle]
 pub unsafe extern "C" fn rust_gamma(x: f64, out_ptr: *mut f64) {
     use statrs::function::gamma::gamma;
