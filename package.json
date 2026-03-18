@@ -146,10 +146,11 @@
   "scripts": {
     "build": "tsup && npm run build:browser && npm run build:wasm && npm run update-authors",
     "build:browser": "gulp browser",
-    "build:wasm": "cd src/wasm-rust && cargo build --target wasm32-unknown-unknown --release && echo Rust WASM build complete",
-    "build:wasm:as": "asc src/wasm/index.ts --config asconfig.json --target release",
+    "build:wasm": "npm run build:wasm:rust",
+    "build:wasm:rust": "cd src/wasm-rust && cargo build --target wasm32-unknown-unknown --release && cp target/wasm32-unknown-unknown/release/mathjs_wasm.wasm ../../lib/wasm/mathjs.wasm && echo Rust WASM built: lib/wasm/mathjs.wasm",
+    "build:wasm:as": "asc src/wasm/index.ts --config asconfig.json --target release && cp lib/wasm/index.wasm lib/wasm/mathjs-as.wasm && echo AS WASM built: lib/wasm/mathjs-as.wasm",
     "build:wasm:as:debug": "asc src/wasm/index.ts --config asconfig.json --target debug",
-    "build:wasm:all": "npm run build:wasm && npm run build:wasm:as",
+    "build:wasm:all": "npm run build:wasm:rust && npm run build:wasm:as && echo Both WASM backends built",
     "build-and-test": "npm run build && npm run test:all && npm run lint",
     "build:clean": "rm -rf dist && gulp clean",
     "build:docs": "gulp docs",
@@ -173,6 +174,8 @@
     "test:lambdatest": "karma start test/browser-test-config/lambdatest-karma.js",
     "test:types": " tsc -p ./tsconfig.json && node --loader ts-node/esm ./test/typescript-tests/testTypes.ts",
     "validate:wasm": "asc src/wasm/index.ts --config asconfig.json --noEmit",
+    "bench:wasm": "npx tsx test/benchmark/wasm_rust_vs_as_benchmark.ts",
+    "bench:wasm:compare": "npm run build:wasm:all && npm run bench:wasm",
     "coverage": "c8 --reporter=lcov --reporter=text-summary mocha test/unit-tests && echo \"\nDetailed coverage report is available at ./coverage/lcov-report/index.html\"",
     "prepublishOnly": "npm run test:all && npm run lint",
     "update-authors": "node ./tools/update-authors.js"
