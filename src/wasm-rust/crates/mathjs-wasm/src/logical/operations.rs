@@ -1,6 +1,5 @@
 //! Logical operations (ported from src/wasm/logical/operations.ts)
 
-#[no_mangle]
 #[export_name = "and"]
 pub unsafe extern "C" fn wasm_and(a: i32, b: i32) -> i32 {
     if a != 0 && b != 0 {
@@ -24,7 +23,6 @@ pub unsafe extern "C" fn andArray(
     }
 }
 
-#[no_mangle]
 #[export_name = "or"]
 pub unsafe extern "C" fn wasm_or(a: i32, b: i32) -> i32 {
     if a != 0 || b != 0 {
@@ -48,8 +46,8 @@ pub unsafe extern "C" fn orArray(
     }
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn not(a: i32) -> i32 {
+#[export_name = "not"]
+pub unsafe extern "C" fn wasm_not(a: i32) -> i32 {
     if a == 0 {
         1
     } else {

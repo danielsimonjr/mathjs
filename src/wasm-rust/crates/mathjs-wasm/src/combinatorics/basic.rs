@@ -78,6 +78,8 @@ pub unsafe extern "C" fn permutations(n: i32, k: i32) -> f64 {
     result
 }
 
+/// # Safety
+/// `work_ptr` must point to at least `(n+1) * (k+1)` f64 values (8 bytes each).
 #[no_mangle]
 pub unsafe extern "C" fn stirlingS2(n: i32, k: i32, work_ptr: *mut f64) -> f64 {
     if n < 0 || k < 0 {

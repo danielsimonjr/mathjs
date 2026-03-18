@@ -1,6 +1,6 @@
 //! Rust WASM backend for math.js
 //!
-//! Provides high-performance matrix operations compiled to WebAssembly.
+//! Provides high-performance mathematical operations compiled to WebAssembly.
 //! All exported functions use `#[no_mangle] extern "C"` with camelCase names
 //! to match the JavaScript calling convention.
 
@@ -8,9 +8,12 @@
 
 extern crate alloc;
 
+// ============================================================
+// Existing modules (from prior phases)
+// ============================================================
 pub mod matrix;
 
-// Re-export all public functions from modules
+// Re-export existing matrix functions
 pub use matrix::algorithms::*;
 pub use matrix::basic::*;
 pub use matrix::broadcast::*;
@@ -24,7 +27,90 @@ pub use matrix::sparse::*;
 pub use matrix::sqrtm::*;
 
 // ============================================================
-// Spike probes (temporary — kept for compatibility)
+// Phase 3: Signal + SIMD modules
+// ============================================================
+pub mod signal;
+pub mod simd;
+
+// Re-export Phase 3 functions
+pub use signal::fft::*;
+pub use signal::processing::*;
+pub use simd::operations::*;
+
+// ============================================================
+// Phase 4: Statistics + Numeric + Special modules
+// ============================================================
+pub mod numeric;
+pub mod special;
+pub mod statistics;
+
+// Re-export Phase 4 functions
+pub use numeric::calculus::*;
+pub use numeric::interpolation::*;
+pub use numeric::ode::*;
+pub use numeric::rational::*;
+pub use numeric::rootfinding::*;
+pub use special::functions::*;
+pub use statistics::basic::*;
+pub use statistics::select::*;
+
+// ============================================================
+// Phase 2: Algebra modules
+// ============================================================
+pub mod algebra;
+
+// Re-export algebra functions
+pub use algebra::decomposition::*;
+pub use algebra::equations::*;
+pub use algebra::polynomial::*;
+pub use algebra::schur::*;
+pub use algebra::solver::*;
+pub use algebra::sparse::amd::*;
+pub use algebra::sparse::operations::*;
+pub use algebra::sparse::utilities::*;
+// pub use algebra::sparse_chol::*; // TODO: re-enable once sparse_chol.rs compiles
+pub use algebra::sparse_lu::*;
+
+// ============================================================
+// Phase 5: Pure Rust port modules
+// ============================================================
+pub mod arithmetic;
+pub mod bitwise;
+pub mod combinatorics;
+pub mod complex;
+pub mod geometry;
+pub mod logical;
+pub mod plain;
+pub mod probability;
+pub mod relational;
+pub mod set;
+pub mod string_ops;
+pub mod unit;
+pub mod utils;
+
+// Re-export all Phase 5 functions
+pub use plain::arithmetic::*;
+pub use plain::probability::*;
+pub use plain::trigonometry::*;
+
+pub use arithmetic::advanced::*;
+pub use arithmetic::basic::*;
+pub use arithmetic::logarithmic::*;
+
+pub use bitwise::operations::*;
+pub use combinatorics::basic::*;
+pub use complex::operations::*;
+pub use geometry::operations::*;
+pub use logical::operations::*;
+pub use probability::distributions::*;
+pub use relational::operations::*;
+pub use set::operations::*;
+pub use string_ops::operations::*;
+pub use unit::conversion::*;
+pub use utils::checks::*;
+
+// ============================================================
+// Spike probes (temporary -- kept for compatibility)
 // ============================================================
 
 use alloc::vec;

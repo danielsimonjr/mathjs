@@ -225,7 +225,6 @@ pub unsafe extern "C" fn correlation(x_ptr: *const f64, y_ptr: *const f64, lengt
 }
 
 /// Range: max - min.
-#[no_mangle]
 #[export_name = "range"]
 pub unsafe extern "C" fn stats_range(data_ptr: *const f64, length: i32) -> f64 {
     max(data_ptr, length) - min(data_ptr, length)

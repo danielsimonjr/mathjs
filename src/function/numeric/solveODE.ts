@@ -319,9 +319,8 @@ export const createSolveODE = /* #__PURE__ */ factory(
           // and error = sum(deltaB[i] * k[i]) (then take abs max)
           wasm.vectorCopy(yAlloc.ptr, dim, yNewAlloc.ptr)
 
-          // Zero out errorAlloc
-          const errArr = new Float64Array(wasm.memory.buffer, errorAlloc.ptr, dim)
-          errArr.fill(0)
+          // Zero out errorAlloc (create fresh view each iteration since WASM memory growth can detach)
+          new Float64Array(wasm.memory.buffer, errorAlloc.ptr, dim).fill(0)
 
           for (let s = 0; s < numStages; s++) {
             const ksPtr = stageAlloc.ptr + s * dim * 8

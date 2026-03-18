@@ -240,7 +240,7 @@ pub unsafe extern "C" fn quaternionFromRotationMatrix(r_ptr: i32, result_ptr: i3
     let r8 = ld(m, 8);
 
     let trace = r0 + r4 + r8;
-    let (mut w, mut x, mut y, mut z);
+    let (w, x, y, z);
 
     if trace > 0.0 {
         let s = 0.5 / sqrt(trace + 1.0);

@@ -483,7 +483,7 @@ pub unsafe extern "C" fn rank(
 
 /// Solve a linear system Ax = b using LU decomposition.
 ///
-/// * `work_ptr` - Work buffer (n*n + n for LU and permutation, permutation stored as i32)
+/// * `work_ptr` - Work buffer as *mut f64 (n*n f64 for LU, then n i32 for permutation)
 ///
 /// Returns 1 if successful, 0 if singular.
 #[no_mangle]
@@ -492,12 +492,13 @@ pub unsafe extern "C" fn solve(
     b_ptr: *const f64,
     n: i32,
     result_ptr: *mut f64,
-    work_ptr: *mut u8,
+    work_ptr: *mut f64,
 ) -> i32 {
     let n = n as usize;
-    let lu_ptr = work_ptr as *mut f64;
+    let lu_ptr = work_ptr;
     // Permutation array stored after the n*n f64 LU matrix
-    let perm_ptr = work_ptr.add(n * n * 8) as *mut i32;
+    // f64 alignment (8 bytes) guarantees i32 alignment (4 bytes)
+    let perm_ptr = work_ptr.add(n * n) as *mut i32;
 
     // Copy A to LU
     for i in 0..n * n {
@@ -593,8 +594,8 @@ pub unsafe extern "C" fn solve(
 
 /// Forward substitution: Solve L*x = b where L is lower triangular.
 /// Returns 1 if successful, 0 if singular (zero diagonal).
-#[no_mangle]
-pub unsafe extern "C" fn lsolve(
+#[export_name = "matrixLsolve"]
+pub unsafe extern "C" fn matrix_lsolve(
     l_ptr: *const f64,
     b_ptr: *const f64,
     n: i32,
@@ -617,8 +618,8 @@ pub unsafe extern "C" fn lsolve(
 
 /// Backward substitution: Solve U*x = b where U is upper triangular.
 /// Returns 1 if successful, 0 if singular (zero diagonal).
-#[no_mangle]
-pub unsafe extern "C" fn usolve(
+#[export_name = "matrixUsolve"]
+pub unsafe extern "C" fn matrix_usolve(
     u_ptr: *const f64,
     b_ptr: *const f64,
     n: i32,
@@ -643,8 +644,8 @@ pub unsafe extern "C" fn usolve(
 }
 
 /// Forward substitution for unit lower triangular matrix (diagonal = 1).
-#[no_mangle]
-pub unsafe extern "C" fn lsolveUnit(
+#[export_name = "matrixLsolveUnit"]
+pub unsafe extern "C" fn matrix_lsolve_unit(
     l_ptr: *const f64,
     b_ptr: *const f64,
     n: i32,
@@ -662,8 +663,8 @@ pub unsafe extern "C" fn lsolveUnit(
 
 /// Vectorized forward substitution: Solve L*X = B for multiple right-hand sides.
 /// Returns 1 if successful, 0 if singular.
-#[no_mangle]
-pub unsafe extern "C" fn lsolveMultiple(
+#[export_name = "matrixLsolveMultiple"]
+pub unsafe extern "C" fn matrix_lsolve_multiple(
     l_ptr: *const f64,
     b_ptr: *const f64,
     n: i32,
@@ -690,8 +691,8 @@ pub unsafe extern "C" fn lsolveMultiple(
 
 /// Vectorized backward substitution: Solve U*X = B for multiple right-hand sides.
 /// Returns 1 if successful, 0 if singular.
-#[no_mangle]
-pub unsafe extern "C" fn usolveMultiple(
+#[export_name = "matrixUsolveMultiple"]
+pub unsafe extern "C" fn matrix_usolve_multiple(
     u_ptr: *const f64,
     b_ptr: *const f64,
     n: i32,

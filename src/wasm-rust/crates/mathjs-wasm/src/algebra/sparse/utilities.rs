@@ -67,8 +67,8 @@ pub unsafe extern "C" fn csCumsum(p_ptr: *mut i32, c_ptr: *mut i32, n: i32) -> i
 // ============================================
 
 /// Sparse matrix permutation C = P*A*Q in CSC format.
-#[no_mangle]
-pub unsafe extern "C" fn csPermute(
+#[export_name = "csUtilPermute"]
+pub unsafe extern "C" fn cs_util_permute(
     values_ptr: *const f64,
     index_ptr: *const i32,
     ptr_ptr: *const i32,
@@ -168,8 +168,8 @@ pub unsafe extern "C" fn csLeaf(
 // ============================================
 
 /// Compute elimination tree of A (or A'A if m > n).
-#[no_mangle]
-pub unsafe extern "C" fn csEtree(
+#[export_name = "csUtilEtree"]
+pub unsafe extern "C" fn cs_util_etree(
     index_ptr: *const i32,
     ptr_ptr: *const i32,
     _m: i32,
@@ -211,8 +211,8 @@ pub unsafe extern "C" fn csEtree(
 // ============================================
 
 /// Compute postorder of elimination tree.
-#[no_mangle]
-pub unsafe extern "C" fn csPost(
+#[export_name = "csUtilPost"]
+pub unsafe extern "C" fn cs_util_post(
     parent_ptr: *const i32,
     n: i32,
     post_ptr: *mut i32,
@@ -313,8 +313,8 @@ pub unsafe extern "C" fn csTdfs(
 // ============================================
 
 /// Depth-first search for nonzero pattern in sparse solve.
-#[no_mangle]
-pub unsafe extern "C" fn csDfs(
+#[export_name = "csUtilDfs"]
+pub unsafe extern "C" fn cs_util_dfs(
     j: i32,
     index_ptr: *const i32,
     ptr_ptr: *const i32,

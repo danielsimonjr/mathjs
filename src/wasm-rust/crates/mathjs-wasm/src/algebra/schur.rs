@@ -148,10 +148,6 @@ pub unsafe extern "C" fn schur(
 
         let mut converged = false;
         for _iter in 0..max_iter as usize {
-            if converged {
-                break;
-            }
-
             // Wilkinson shift from bottom 2x2
             let a11 = *t_ptr.add(q_idx * n + q_idx);
             let a12 = *t_ptr.add(q_idx * n + p);
@@ -259,7 +255,12 @@ pub unsafe extern "C" fn schur(
             if libm::fabs(tpq_check) < tol * scale_check || libm::fabs(tpq_check) < 1e-14 {
                 *t_ptr.add(p * n + q_idx) = 0.0;
                 converged = true;
+                break;
             }
+        }
+
+        if !converged {
+            return 0; // max iterations exceeded without convergence
         }
 
         p -= 1;

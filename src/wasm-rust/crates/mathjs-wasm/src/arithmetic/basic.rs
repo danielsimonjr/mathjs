@@ -79,7 +79,6 @@ pub unsafe extern "C" fn roundDecimals(x: f64, n: i32) -> f64 {
     libm::round(x * shift) / shift
 }
 
-#[no_mangle]
 #[export_name = "abs"]
 pub unsafe extern "C" fn wasm_abs(x: f64) -> f64 {
     libm::fabs(x)
@@ -96,13 +95,13 @@ pub unsafe extern "C" fn sign(x: f64) -> f64 {
     }
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn add(x: f64, y: f64) -> f64 {
+#[export_name = "scalarAdd"]
+pub unsafe extern "C" fn scalar_add(x: f64, y: f64) -> f64 {
     x + y
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn subtract(x: f64, y: f64) -> f64 {
+#[export_name = "scalarSubtract"]
+pub unsafe extern "C" fn scalar_subtract(x: f64, y: f64) -> f64 {
     x - y
 }
 

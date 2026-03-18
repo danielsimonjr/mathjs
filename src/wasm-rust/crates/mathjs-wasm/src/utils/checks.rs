@@ -2,7 +2,6 @@
 
 use libm;
 
-#[no_mangle]
 #[export_name = "checks_isNaN"]
 pub unsafe extern "C" fn checks_is_nan(x: f64) -> i32 {
     if x != x {
@@ -12,7 +11,6 @@ pub unsafe extern "C" fn checks_is_nan(x: f64) -> i32 {
     }
 }
 
-#[no_mangle]
 #[export_name = "checks_isFinite"]
 pub unsafe extern "C" fn checks_is_finite(x: f64) -> i32 {
     if x != x {
@@ -24,7 +22,6 @@ pub unsafe extern "C" fn checks_is_finite(x: f64) -> i32 {
     1
 }
 
-#[no_mangle]
 #[export_name = "checks_isInteger"]
 pub unsafe extern "C" fn checks_is_integer(x: f64) -> i32 {
     if x != x {
@@ -37,7 +34,6 @@ pub unsafe extern "C" fn checks_is_integer(x: f64) -> i32 {
     }
 }
 
-#[no_mangle]
 #[export_name = "checks_isPositive"]
 pub unsafe extern "C" fn checks_is_positive(x: f64) -> i32 {
     if x > 0.0 {
@@ -47,7 +43,6 @@ pub unsafe extern "C" fn checks_is_positive(x: f64) -> i32 {
     }
 }
 
-#[no_mangle]
 #[export_name = "checks_isNegative"]
 pub unsafe extern "C" fn checks_is_negative(x: f64) -> i32 {
     if x < 0.0 {
@@ -57,7 +52,6 @@ pub unsafe extern "C" fn checks_is_negative(x: f64) -> i32 {
     }
 }
 
-#[no_mangle]
 #[export_name = "checks_isZero"]
 pub unsafe extern "C" fn checks_is_zero(x: f64) -> i32 {
     if x == 0.0 {
@@ -284,7 +278,6 @@ pub unsafe extern "C" fn allIntegers(arr_ptr: *const f64, length: i32) -> i32 {
     1
 }
 
-#[no_mangle]
 #[export_name = "checks_findFirst"]
 pub unsafe extern "C" fn checks_find_first(
     arr_ptr: *const f64,
@@ -307,7 +300,6 @@ pub unsafe extern "C" fn checks_find_first(
     -1
 }
 
-#[no_mangle]
 #[export_name = "checks_sign"]
 pub unsafe extern "C" fn checks_sign(x: f64) -> f64 {
     if x != x {
@@ -322,7 +314,6 @@ pub unsafe extern "C" fn checks_sign(x: f64) -> f64 {
     }
 }
 
-#[no_mangle]
 #[export_name = "checks_signArray"]
 pub unsafe extern "C" fn checks_sign_array(arr_ptr: *const f64, output_ptr: *mut f64, length: i32) {
     for i in 0..length as usize {
@@ -381,7 +372,6 @@ pub unsafe extern "C" fn nthPrime(n: i32) -> i64 {
     candidate
 }
 
-#[no_mangle]
 #[export_name = "checks_gcd"]
 pub unsafe extern "C" fn checks_gcd(a: i64, b: i64) -> i64 {
     let mut a = if a < 0 { -a } else { a };
@@ -394,7 +384,6 @@ pub unsafe extern "C" fn checks_gcd(a: i64, b: i64) -> i64 {
     a
 }
 
-#[no_mangle]
 #[export_name = "checks_lcm"]
 pub unsafe extern "C" fn checks_lcm(a: i64, b: i64) -> i64 {
     if a == 0 || b == 0 {

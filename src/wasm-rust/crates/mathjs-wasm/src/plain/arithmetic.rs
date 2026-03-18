@@ -115,11 +115,15 @@ pub unsafe extern "C" fn expm1Number(x: f64) -> f64 {
 
 #[no_mangle]
 pub unsafe extern "C" fn logNumber(x: f64, base: f64) -> f64 {
-    if base != 0.0 {
-        libm::log(x) / libm::log(base)
-    } else {
-        libm::log(x)
+    if base.is_nan() || base <= 0.0 || base == 1.0 {
+        return f64::NAN;
     }
+    libm::log(x) / libm::log(base)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn lnNumber(x: f64) -> f64 {
+    libm::log(x)
 }
 
 #[no_mangle]

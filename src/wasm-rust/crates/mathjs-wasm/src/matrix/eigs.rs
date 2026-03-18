@@ -433,7 +433,7 @@ pub unsafe extern "C" fn spectralRadius(
 /// * `max_iterations` - Maximum iterations.
 /// * `tolerance` - Convergence tolerance.
 /// * `eigenvector_ptr` - Output eigenvector (f64, size N).
-/// * `work_ptr` - Workspace (f64, size N*N + 2*N).
+/// * `work_ptr` - Workspace (f64, size 2*N*N + N).
 ///
 /// Returns number of iterations, or -1 if not converged.
 #[no_mangle]
@@ -448,8 +448,8 @@ pub unsafe extern "C" fn inverseIteration(
 ) -> i32 {
     let n = n as usize;
     let shifted_matrix_ptr = work_ptr;
-    let lu_ptr = work_ptr; // Reuse for LU decomposition
-    let temp_ptr = work_ptr.add(n * n);
+    let lu_ptr = work_ptr.add(n * n); // Separate region to avoid aliasing shifted_matrix
+    let temp_ptr = work_ptr.add(2 * n * n);
     let _ = tolerance; // convergence checked via normalization
 
     // Create shifted matrix: A - lambda*I

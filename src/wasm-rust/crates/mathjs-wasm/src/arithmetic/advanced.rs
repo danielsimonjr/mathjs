@@ -20,7 +20,11 @@ pub unsafe extern "C" fn lcm(a: i64, b: i64) -> i64 {
         return 0;
     }
     let g = gcd(a, b);
-    (a / g) * b
+    let a_div_g = a / g;
+    match a_div_g.checked_mul(b) {
+        Some(result) => result,
+        None => i64::MAX, // saturate on overflow
+    }
 }
 
 #[no_mangle]
@@ -84,8 +88,8 @@ pub unsafe extern "C" fn hypotArray(values_ptr: *const f64, length: i32) -> f64 
     libm::sqrt(sum)
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn norm1(values_ptr: *const f64, length: i32) -> f64 {
+#[export_name = "vectorNorm1"]
+pub unsafe extern "C" fn vector_norm1(values_ptr: *const f64, length: i32) -> f64 {
     let mut sum = 0.0;
     for i in 0..length as usize {
         sum += libm::fabs(*values_ptr.add(i));
@@ -93,13 +97,13 @@ pub unsafe extern "C" fn norm1(values_ptr: *const f64, length: i32) -> f64 {
     sum
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn norm2(values_ptr: *const f64, length: i32) -> f64 {
+#[export_name = "vectorNorm2"]
+pub unsafe extern "C" fn vector_norm2(values_ptr: *const f64, length: i32) -> f64 {
     hypotArray(values_ptr, length)
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn normInf(values_ptr: *const f64, length: i32) -> f64 {
+#[export_name = "vectorNormInf"]
+pub unsafe extern "C" fn vector_norm_inf(values_ptr: *const f64, length: i32) -> f64 {
     let mut max = 0.0_f64;
     for i in 0..length as usize {
         let abs_val = libm::fabs(*values_ptr.add(i));
@@ -110,16 +114,16 @@ pub unsafe extern "C" fn normInf(values_ptr: *const f64, length: i32) -> f64 {
     max
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn normP(values_ptr: *const f64, p: f64, length: i32) -> f64 {
+#[export_name = "vectorNormP"]
+pub unsafe extern "C" fn vector_norm_p(values_ptr: *const f64, p: f64, length: i32) -> f64 {
     if p == 1.0 {
-        return norm1(values_ptr, length);
+        return vector_norm1(values_ptr, length);
     }
     if p == 2.0 {
-        return norm2(values_ptr, length);
+        return vector_norm2(values_ptr, length);
     }
     if p == f64::INFINITY {
-        return normInf(values_ptr, length);
+        return vector_norm_inf(values_ptr, length);
     }
     let mut sum = 0.0;
     for i in 0..length as usize {
@@ -129,7 +133,6 @@ pub unsafe extern "C" fn normP(values_ptr: *const f64, p: f64, length: i32) -> f
     libm::pow(sum, 1.0 / p)
 }
 
-#[no_mangle]
 #[export_name = "mod"]
 pub unsafe extern "C" fn wasm_mod(x: f64, y: f64) -> f64 {
     let result = x % y;
@@ -209,9 +212,9 @@ pub unsafe extern "C" fn nthRootsReal(x: f64, n: i32, output_ptr: *mut f64) {
     let abs_x = libm::fabs(x);
     let r = libm::pow(abs_x, 1.0 / n as f64);
     let theta = if x < 0.0 { core::f64::consts::PI } else { 0.0 };
-    let two_pi_over_n = (2.0 * core::f64::consts::PI) / n as f64;
+    let n_f64 = n as f64;
     for k in 0..n as usize {
-        let angle = (theta + two_pi_over_n * k as f64) / n as f64;
+        let angle = theta / n_f64 + 2.0 * core::f64::consts::PI * k as f64 / n_f64;
         *output_ptr.add(k * 2) = r * libm::cos(angle);
         *output_ptr.add(k * 2 + 1) = r * libm::sin(angle);
     }
@@ -234,9 +237,9 @@ pub unsafe extern "C" fn nthRootsComplex(re: f64, im: f64, n: i32, output_ptr: *
     let r = libm::sqrt(re * re + im * im);
     let theta = libm::atan2(im, re);
     let root_r = libm::pow(r, 1.0 / n as f64);
-    let two_pi_over_n = (2.0 * core::f64::consts::PI) / n as f64;
+    let n_f64 = n as f64;
     for k in 0..n as usize {
-        let angle = (theta + two_pi_over_n * k as f64) / n as f64;
+        let angle = theta / n_f64 + 2.0 * core::f64::consts::PI * k as f64 / n_f64;
         *output_ptr.add(k * 2) = root_r * libm::cos(angle);
         *output_ptr.add(k * 2 + 1) = root_r * libm::sin(angle);
     }

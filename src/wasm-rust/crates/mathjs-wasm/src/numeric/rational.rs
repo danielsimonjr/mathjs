@@ -1,8 +1,8 @@
 //! Rational arithmetic using i64 pairs [numerator, denominator].
 
 /// GCD using binary GCD (Stein's algorithm).
-#[no_mangle]
-pub extern "C" fn gcd(mut a: i64, mut b: i64) -> i64 {
+#[export_name = "rationalGcd"]
+pub extern "C" fn rational_gcd(mut a: i64, mut b: i64) -> i64 {
     if a < 0 {
         a = -a;
     }
@@ -39,12 +39,12 @@ pub extern "C" fn gcd(mut a: i64, mut b: i64) -> i64 {
 }
 
 /// Least common multiple.
-#[no_mangle]
-pub extern "C" fn lcm(a: i64, b: i64) -> i64 {
+#[export_name = "rationalLcm"]
+pub extern "C" fn rational_lcm(a: i64, b: i64) -> i64 {
     if a == 0 || b == 0 {
         return 0;
     }
-    let g = gcd(a, b);
+    let g = rational_gcd(a, b);
     (a / g) * b
 }
 
@@ -71,15 +71,21 @@ pub unsafe extern "C" fn reduce(mut num: i64, mut den: i64, result_ptr: *mut i64
         num = -num;
         den = -den;
     }
-    let g = gcd(num, den);
+    let g = rational_gcd(num, den);
     *result_ptr = num / g;
     *result_ptr.add(1) = den / g;
 }
 
 /// Add two rationals.
-#[no_mangle]
-pub unsafe extern "C" fn add(num1: i64, den1: i64, num2: i64, den2: i64, result_ptr: *mut i64) {
-    let g = gcd(den1, den2);
+#[export_name = "rationalAdd"]
+pub unsafe extern "C" fn rational_add(
+    num1: i64,
+    den1: i64,
+    num2: i64,
+    den2: i64,
+    result_ptr: *mut i64,
+) {
+    let g = rational_gcd(den1, den2);
     let d1 = den1 / g;
     let d2 = den2 / g;
     let num = num1 * d2 + num2 * d1;
@@ -88,49 +94,54 @@ pub unsafe extern "C" fn add(num1: i64, den1: i64, num2: i64, den2: i64, result_
 }
 
 /// Subtract two rationals.
-#[no_mangle]
-pub unsafe extern "C" fn subtract(
+#[export_name = "rationalSubtract"]
+pub unsafe extern "C" fn rational_subtract(
     num1: i64,
     den1: i64,
     num2: i64,
     den2: i64,
     result_ptr: *mut i64,
 ) {
-    add(num1, den1, -num2, den2, result_ptr);
+    rational_add(num1, den1, -num2, den2, result_ptr);
 }
 
 /// Multiply two rationals.
-#[no_mangle]
-pub unsafe extern "C" fn multiply(
+#[export_name = "rationalMultiply"]
+pub unsafe extern "C" fn rational_multiply(
     num1: i64,
     den1: i64,
     num2: i64,
     den2: i64,
     result_ptr: *mut i64,
 ) {
-    let g1 = gcd(num1, den2);
-    let g2 = gcd(num2, den1);
+    let g1 = rational_gcd(num1, den2);
+    let g2 = rational_gcd(num2, den1);
     let num = (num1 / g1) * (num2 / g2);
     let den = (den1 / g2) * (den2 / g1);
     reduce(num, den, result_ptr);
 }
 
 /// Divide two rationals.
-#[no_mangle]
-pub unsafe extern "C" fn divide(num1: i64, den1: i64, num2: i64, den2: i64, result_ptr: *mut i64) {
-    multiply(num1, den1, den2, num2, result_ptr);
+#[export_name = "rationalDivide"]
+pub unsafe extern "C" fn rational_divide(
+    num1: i64,
+    den1: i64,
+    num2: i64,
+    den2: i64,
+    result_ptr: *mut i64,
+) {
+    rational_multiply(num1, den1, den2, num2, result_ptr);
 }
 
 /// Negate a rational.
-#[no_mangle]
-pub unsafe extern "C" fn negate(num: i64, den: i64, result_ptr: *mut i64) {
+#[export_name = "rationalNegate"]
+pub unsafe extern "C" fn rational_negate(num: i64, den: i64, result_ptr: *mut i64) {
     *result_ptr = -num;
     *result_ptr.add(1) = den;
 }
 
 /// Absolute value.
-#[no_mangle]
-#[export_name = "abs"]
+#[export_name = "rationalAbs"]
 pub unsafe extern "C" fn rational_abs(num: i64, den: i64, result_ptr: *mut i64) {
     *result_ptr = if num < 0 { -num } else { num };
     *result_ptr.add(1) = if den < 0 { -den } else { den };
@@ -149,8 +160,13 @@ pub unsafe extern "C" fn reciprocal(num: i64, den: i64, result_ptr: *mut i64) {
 }
 
 /// Compare two rationals: -1, 0, or 1.
-#[no_mangle]
-pub extern "C" fn compare(mut num1: i64, mut den1: i64, mut num2: i64, mut den2: i64) -> i32 {
+#[export_name = "rationalCompare"]
+pub extern "C" fn rational_compare(
+    mut num1: i64,
+    mut den1: i64,
+    mut num2: i64,
+    mut den2: i64,
+) -> i32 {
     if den1 == 0 && den2 == 0 {
         return if num1 == num2 {
             0
@@ -186,9 +202,9 @@ pub extern "C" fn compare(mut num1: i64, mut den1: i64, mut num2: i64, mut den2:
 }
 
 /// Check equality.
-#[no_mangle]
-pub extern "C" fn equals(num1: i64, den1: i64, num2: i64, den2: i64) -> i32 {
-    if compare(num1, den1, num2, den2) == 0 {
+#[export_name = "rationalEquals"]
+pub extern "C" fn rational_equals(num1: i64, den1: i64, num2: i64, den2: i64) -> i32 {
+    if rational_compare(num1, den1, num2, den2) == 0 {
         1
     } else {
         0
@@ -196,8 +212,8 @@ pub extern "C" fn equals(num1: i64, den1: i64, num2: i64, den2: i64) -> i32 {
 }
 
 /// Check if zero.
-#[no_mangle]
-pub extern "C" fn isZero(num: i64, den: i64) -> i32 {
+#[export_name = "rationalIsZero"]
+pub extern "C" fn rational_is_zero(num: i64, den: i64) -> i32 {
     if num == 0 && den != 0 {
         1
     } else {
@@ -206,8 +222,8 @@ pub extern "C" fn isZero(num: i64, den: i64) -> i32 {
 }
 
 /// Check if positive.
-#[no_mangle]
-pub extern "C" fn isPositive(num: i64, den: i64) -> i32 {
+#[export_name = "rationalIsPositive"]
+pub extern "C" fn rational_is_positive(num: i64, den: i64) -> i32 {
     if den == 0 {
         return if num > 0 { 1 } else { 0 };
     }
@@ -219,8 +235,8 @@ pub extern "C" fn isPositive(num: i64, den: i64) -> i32 {
 }
 
 /// Check if negative.
-#[no_mangle]
-pub extern "C" fn isNegative(num: i64, den: i64) -> i32 {
+#[export_name = "rationalIsNegative"]
+pub extern "C" fn rational_is_negative(num: i64, den: i64) -> i32 {
     if den == 0 {
         return if num < 0 { 1 } else { 0 };
     }
@@ -232,8 +248,8 @@ pub extern "C" fn isNegative(num: i64, den: i64) -> i32 {
 }
 
 /// Check if integer.
-#[no_mangle]
-pub unsafe extern "C" fn isInteger(num: i64, den: i64, work_ptr: *mut i64) -> i32 {
+#[export_name = "rationalIsInteger"]
+pub unsafe extern "C" fn rational_is_integer(num: i64, den: i64, work_ptr: *mut i64) -> i32 {
     if den == 0 {
         return 0;
     }
@@ -319,8 +335,13 @@ pub unsafe extern "C" fn fromInteger(value: i64, result_ptr: *mut i64) {
 }
 
 /// Raise rational to integer power.
-#[no_mangle]
-pub unsafe extern "C" fn pow(mut num: i64, mut den: i64, mut exp: i32, result_ptr: *mut i64) {
+#[export_name = "rationalPow"]
+pub unsafe extern "C" fn rational_pow(
+    mut num: i64,
+    mut den: i64,
+    mut exp: i32,
+    result_ptr: *mut i64,
+) {
     if exp == 0 {
         *result_ptr = 1;
         *result_ptr.add(1) = 1;
@@ -334,14 +355,47 @@ pub unsafe extern "C" fn pow(mut num: i64, mut den: i64, mut exp: i32, result_pt
     }
     let mut rn: i64 = 1;
     let mut rd: i64 = 1;
+    let mut overflow = false;
     while exp > 0 {
         if (exp & 1) == 1 {
-            rn *= num;
-            rd *= den;
+            rn = match rn.checked_mul(num) {
+                Some(v) => v,
+                None => {
+                    overflow = true;
+                    i64::MAX
+                }
+            };
+            rd = match rd.checked_mul(den) {
+                Some(v) => v,
+                None => {
+                    overflow = true;
+                    i64::MAX
+                }
+            };
         }
-        num *= num;
-        den *= den;
+        if exp > 1 {
+            num = match num.checked_mul(num) {
+                Some(v) => v,
+                None => {
+                    overflow = true;
+                    i64::MAX
+                }
+            };
+            den = match den.checked_mul(den) {
+                Some(v) => v,
+                None => {
+                    overflow = true;
+                    i64::MAX
+                }
+            };
+        }
         exp >>= 1;
+    }
+    if overflow {
+        // Return MAX/1 as a saturated result
+        *result_ptr = rn;
+        *result_ptr.add(1) = rd;
+        return;
     }
     reduce(rn, rd, result_ptr);
 }
@@ -365,8 +419,8 @@ pub extern "C" fn isqrt(n: i64) -> i64 {
 }
 
 /// Check if perfect square.
-#[no_mangle]
-pub extern "C" fn isPerfectSquare(n: i64) -> i32 {
+#[export_name = "rationalIsPerfectSquare"]
+pub extern "C" fn rational_is_perfect_square(n: i64) -> i32 {
     if n < 0 {
         return 0;
     }
@@ -428,8 +482,7 @@ pub extern "C" fn modInverse(a: i64, m: i64) -> i64 {
 }
 
 /// Rational modulo.
-#[no_mangle]
-#[export_name = "mod"]
+#[export_name = "rationalMod"]
 pub unsafe extern "C" fn rational_mod(
     num: i64,
     den: i64,
@@ -451,8 +504,8 @@ pub unsafe extern "C" fn rational_mod(
 }
 
 /// Sum array of rationals (stored as f64 pairs).
-#[no_mangle]
-pub unsafe extern "C" fn sumArray(rationals_ptr: *const f64, count: i32, result_ptr: *mut i64) {
+#[export_name = "rationalSumArray"]
+pub unsafe extern "C" fn rational_sum_array(rationals_ptr: *const f64, count: i32, result_ptr: *mut i64) {
     if count == 0 {
         *result_ptr = 0;
         *result_ptr.add(1) = 1;
@@ -464,7 +517,7 @@ pub unsafe extern "C" fn sumArray(rationals_ptr: *const f64, count: i32, result_
         let off = i * 2;
         let num = *rationals_ptr.add(off) as i64;
         let den = *rationals_ptr.add(off + 1) as i64;
-        let g = gcd(rd, den);
+        let g = rational_gcd(rd, den);
         let d1 = rd / g;
         let d2 = den / g;
         let nn = rn * d2 + num * d1;
@@ -488,7 +541,7 @@ pub unsafe extern "C" fn sumArray(rationals_ptr: *const f64, count: i32, result_
                 n2 = -n2;
                 d3 = -d3;
             }
-            let g2 = gcd(n2, d3);
+            let g2 = rational_gcd(n2, d3);
             rn = n2 / g2;
             rd = d3 / g2;
         }
@@ -511,8 +564,8 @@ pub unsafe extern "C" fn productArray(rationals_ptr: *const f64, count: i32, res
         let off = i * 2;
         let num = *rationals_ptr.add(off) as i64;
         let den = *rationals_ptr.add(off + 1) as i64;
-        let g1 = gcd(rn, den);
-        let g2 = gcd(num, rd);
+        let g1 = rational_gcd(rn, den);
+        let g2 = rational_gcd(num, rd);
         let nn = (rn / g1) * (num / g2);
         let nd = (rd / g2) * (den / g1);
         if nd == 0 {
@@ -534,7 +587,7 @@ pub unsafe extern "C" fn productArray(rationals_ptr: *const f64, count: i32, res
                 n2 = -n2;
                 d3 = -d3;
             }
-            let g3 = gcd(n2, d3);
+            let g3 = rational_gcd(n2, d3);
             rn = n2 / g3;
             rd = d3 / g3;
         }
@@ -657,8 +710,8 @@ pub unsafe extern "C" fn bestApproximation(mut value: f64, max_denom: i64, resul
 // ===== f64 variants =====
 
 /// GCD (f64 version).
-#[no_mangle]
-pub extern "C" fn gcdF64(mut a: f64, mut b: f64) -> f64 {
+#[export_name = "rationalGcdF64"]
+pub extern "C" fn rational_gcd_f64(mut a: f64, mut b: f64) -> f64 {
     a = libm::fabs(libm::floor(a));
     b = libm::fabs(libm::floor(b));
     if a == 0.0 {
@@ -676,20 +729,20 @@ pub extern "C" fn gcdF64(mut a: f64, mut b: f64) -> f64 {
 }
 
 /// LCM (f64 version).
-#[no_mangle]
-pub extern "C" fn lcmF64(a: f64, b: f64) -> f64 {
+#[export_name = "rationalLcmF64"]
+pub extern "C" fn rational_lcm_f64(a: f64, b: f64) -> f64 {
     let a = libm::fabs(libm::floor(a));
     let b = libm::fabs(libm::floor(b));
     if a == 0.0 || b == 0.0 {
         return 0.0;
     }
-    let g = gcdF64(a, b);
+    let g = rational_gcd_f64(a, b);
     (a / g) * b
 }
 
 /// Reduce (f64 version).
-#[no_mangle]
-pub unsafe extern "C" fn reduceF64(mut num: f64, mut den: f64, result_ptr: *mut f64) {
+#[export_name = "rationalReduceF64"]
+pub unsafe extern "C" fn rational_reduce_f64(mut num: f64, mut den: f64, result_ptr: *mut f64) {
     num = libm::floor(num);
     den = libm::floor(den);
     if den == 0.0 {
@@ -712,32 +765,32 @@ pub unsafe extern "C" fn reduceF64(mut num: f64, mut den: f64, result_ptr: *mut 
         num = -num;
         den = -den;
     }
-    let g = gcdF64(if num < 0.0 { -num } else { num }, den);
+    let g = rational_gcd_f64(if num < 0.0 { -num } else { num }, den);
     *result_ptr = num / g;
     *result_ptr.add(1) = den / g;
 }
 
 /// Add (f64 version).
-#[no_mangle]
-pub unsafe extern "C" fn addF64(num1: f64, den1: f64, num2: f64, den2: f64, result_ptr: *mut f64) {
-    let g = gcdF64(den1, den2);
+#[export_name = "rationalAddF64"]
+pub unsafe extern "C" fn rational_add_f64(num1: f64, den1: f64, num2: f64, den2: f64, result_ptr: *mut f64) {
+    let g = rational_gcd_f64(den1, den2);
     let d1 = den1 / g;
     let d2 = den2 / g;
-    reduceF64(num1 * d2 + num2 * d1, den1 * d2, result_ptr);
+    rational_reduce_f64(num1 * d2 + num2 * d1, den1 * d2, result_ptr);
 }
 
 /// Multiply (f64 version).
-#[no_mangle]
-pub unsafe extern "C" fn multiplyF64(
+#[export_name = "rationalMultiplyF64"]
+pub unsafe extern "C" fn rational_multiply_f64(
     num1: f64,
     den1: f64,
     num2: f64,
     den2: f64,
     result_ptr: *mut f64,
 ) {
-    let g1 = gcdF64(libm::fabs(num1), libm::fabs(den2));
-    let g2 = gcdF64(libm::fabs(num2), libm::fabs(den1));
-    reduceF64(
+    let g1 = rational_gcd_f64(libm::fabs(num1), libm::fabs(den2));
+    let g2 = rational_gcd_f64(libm::fabs(num2), libm::fabs(den1));
+    rational_reduce_f64(
         (num1 / g1) * (num2 / g2),
         (den1 / g2) * (den2 / g1),
         result_ptr,
@@ -745,8 +798,8 @@ pub unsafe extern "C" fn multiplyF64(
 }
 
 /// Compare (f64 version).
-#[no_mangle]
-pub extern "C" fn compareF64(mut num1: f64, mut den1: f64, mut num2: f64, mut den2: f64) -> i32 {
+#[export_name = "rationalCompareF64"]
+pub extern "C" fn rational_compare_f64(mut num1: f64, mut den1: f64, mut num2: f64, mut den2: f64) -> i32 {
     if den1 == 0.0 && den2 == 0.0 {
         return if num1 == num2 {
             0
@@ -782,8 +835,8 @@ pub extern "C" fn compareF64(mut num1: f64, mut den1: f64, mut num2: f64, mut de
 }
 
 /// fromFloat (f64 version via Stern-Brocot).
-#[no_mangle]
-pub unsafe extern "C" fn fromFloatF64(mut value: f64, max_denom: f64, result_ptr: *mut f64) {
+#[export_name = "rationalFromFloatF64"]
+pub unsafe extern "C" fn rational_from_float_f64(mut value: f64, max_denom: f64, result_ptr: *mut f64) {
     if !value.is_finite() {
         *result_ptr = if value > 0.0 {
             1.0

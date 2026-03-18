@@ -37,7 +37,14 @@ pub unsafe extern "C" fn random() -> f64 {
 #[no_mangle]
 pub unsafe extern "C" fn randomInt(min: i32, max: i32) -> i32 {
     let range = (max - min + 1) as u32;
-    min + (random_u32() % range) as i32
+    let threshold = u32::MAX - (u32::MAX % range);
+    let r = loop {
+        let r = random_u32();
+        if r < threshold {
+            break r;
+        }
+    };
+    min + (r % range) as i32
 }
 
 #[no_mangle]
@@ -52,7 +59,12 @@ pub unsafe extern "C" fn uniform(a: f64, b: f64) -> f64 {
 
 #[no_mangle]
 pub unsafe extern "C" fn normal(mu: f64, sigma: f64) -> f64 {
-    let u1 = random_f64();
+    let u1_raw = random_f64();
+    let u1 = if u1_raw < f64::EPSILON {
+        f64::EPSILON
+    } else {
+        u1_raw
+    };
     let u2 = random_f64();
     let z0 = libm::sqrt(-2.0 * libm::log(u1)) * libm::cos(2.0 * core::f64::consts::PI * u2);
     mu + sigma * z0

@@ -156,8 +156,8 @@ pub unsafe extern "C" fn transposeSIMD(
 // ---------------------------------------------------------------------------
 
 /// Element-wise addition: C = A + B
-#[no_mangle]
-pub unsafe extern "C" fn add(
+#[export_name = "add"]
+pub unsafe extern "C" fn matrix_add(
     a_ptr: *const f64,
     b_ptr: *const f64,
     size: i32,
@@ -178,7 +178,7 @@ pub unsafe extern "C" fn addSIMD(
     size: i32,
     result_ptr: *mut f64,
 ) {
-    add(a_ptr, b_ptr, size, result_ptr);
+    matrix_add(a_ptr, b_ptr, size, result_ptr);
 }
 
 /// Element-wise subtraction: C = A - B

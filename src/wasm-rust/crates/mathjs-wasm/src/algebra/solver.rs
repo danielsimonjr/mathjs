@@ -348,8 +348,7 @@ pub unsafe extern "C" fn lsolveAll(
     let tol: f64 = 1e-14;
 
     let is_free_ptr = work_ptr as *mut i32;
-    let particular_ptr = (work_ptr as *mut f64).add(n); // after n i32s (but aligned)
-                                                        // Use byte offset: is_free = n*4 bytes, particular starts at work + n*4
+    // is_free uses n*4 bytes, particular starts after that
     let particular_ptr = (work_ptr.add(n * 4)) as *mut f64;
 
     let mut num_free: i32 = 0;

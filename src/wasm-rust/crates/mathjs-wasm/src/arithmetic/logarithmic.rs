@@ -2,7 +2,6 @@
 
 use libm;
 
-#[no_mangle]
 #[export_name = "exp"]
 pub unsafe extern "C" fn wasm_exp(x: f64) -> f64 {
     libm::exp(x)
@@ -13,7 +12,6 @@ pub unsafe extern "C" fn expm1(x: f64) -> f64 {
     libm::expm1(x)
 }
 
-#[no_mangle]
 #[export_name = "log"]
 pub unsafe extern "C" fn wasm_log(x: f64) -> f64 {
     libm::log(x)

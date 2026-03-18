@@ -168,8 +168,8 @@ pub unsafe extern "C" fn smallerEqArray(
     }
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn min(a_ptr: *const f64, n: i32) -> f64 {
+#[export_name = "relationalMin"]
+pub unsafe extern "C" fn relational_min(a_ptr: *const f64, n: i32) -> f64 {
     if n == 0 {
         return f64::NAN;
     }
@@ -183,8 +183,8 @@ pub unsafe extern "C" fn min(a_ptr: *const f64, n: i32) -> f64 {
     min_val
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn max(a_ptr: *const f64, n: i32) -> f64 {
+#[export_name = "relationalMax"]
+pub unsafe extern "C" fn relational_max(a_ptr: *const f64, n: i32) -> f64 {
     if n == 0 {
         return f64::NAN;
     }
@@ -215,8 +215,8 @@ pub unsafe extern "C" fn argmin(a_ptr: *const f64, n: i32) -> i32 {
     min_idx as i32
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn argmax(a_ptr: *const f64, n: i32) -> i32 {
+#[export_name = "relArgmax"]
+pub unsafe extern "C" fn rel_argmax(a_ptr: *const f64, n: i32) -> i32 {
     if n == 0 {
         return -1;
     }
@@ -317,7 +317,6 @@ pub unsafe extern "C" fn isZero(a: f64) -> i32 {
     }
 }
 
-#[no_mangle]
 #[export_name = "isNaN"]
 pub unsafe extern "C" fn wasm_is_nan(a: f64) -> i32 {
     if a != a {
@@ -327,7 +326,6 @@ pub unsafe extern "C" fn wasm_is_nan(a: f64) -> i32 {
     }
 }
 
-#[no_mangle]
 #[export_name = "isFinite"]
 pub unsafe extern "C" fn wasm_is_finite(a: f64) -> i32 {
     if a == a && a != f64::INFINITY && a != f64::NEG_INFINITY {
@@ -346,7 +344,6 @@ pub unsafe extern "C" fn isInteger(a: f64) -> i32 {
     }
 }
 
-#[no_mangle]
 #[export_name = "relational_sign"]
 pub unsafe extern "C" fn relational_sign(a: f64) -> i32 {
     if a > 0.0 {
@@ -358,7 +355,6 @@ pub unsafe extern "C" fn relational_sign(a: f64) -> i32 {
     }
 }
 
-#[no_mangle]
 #[export_name = "relational_signArray"]
 pub unsafe extern "C" fn relational_sign_array(a_ptr: *const f64, n: i32, result_ptr: *mut i32) {
     for i in 0..n as usize {

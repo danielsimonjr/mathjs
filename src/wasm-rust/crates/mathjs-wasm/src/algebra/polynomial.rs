@@ -311,11 +311,46 @@ pub unsafe extern "C" fn quarticRoots(
             *result_ptr.add(6) = *work_ptr.add(2) + shift;
             *result_ptr.add(7) = *work_ptr.add(3);
         } else {
+            // w < 0: alpha + 2*y is negative. Compute complex square root of w
+            // and solve the two quadratics with complex coefficients.
             let sqrt_neg_w = libm::sqrt(-w);
-            for i in 0..4 {
-                *result_ptr.add(i * 2) = shift;
-                *result_ptr.add(i * 2 + 1) = (sqrt_neg_w / 2.0) * if i < 2 { 1.0 } else { -1.0 };
-            }
+            // sqrt(w) = i * sqrt_neg_w
+            // Quadratic 1: z^2 + i*sqrt_neg_w*z + (y + beta/(2*i*sqrt_neg_w)) = 0
+            // beta/(2*i*sqrt_neg_w) = -i*beta/(2*sqrt_neg_w)
+            let half_b_imag = beta / (2.0 * sqrt_neg_w);
+            // Quadratic 1: z^2 + i*sqrt_neg_w*z + (y - i*half_b_imag) = 0
+            // Discriminant: (i*sqrt_neg_w)^2 - 4*(y - i*half_b_imag)
+            //             = -w - 4*y + 4*i*half_b_imag
+            //             = -(alpha + 2*y) - 4*y + 4*i*half_b_imag
+            //             = -alpha - 6*y + 4*i*half_b_imag
+            let disc1_re = -w - 4.0 * y;
+            let disc1_im = 4.0 * half_b_imag;
+            // Complex sqrt of disc1
+            let disc1_mag = libm::sqrt(disc1_re * disc1_re + disc1_im * disc1_im);
+            let disc1_sqrt_mag = libm::sqrt(disc1_mag);
+            let disc1_ang = libm::atan2(disc1_im, disc1_re);
+            let sd1_re = disc1_sqrt_mag * libm::cos(disc1_ang / 2.0);
+            let sd1_im = disc1_sqrt_mag * libm::sin(disc1_ang / 2.0);
+
+            // Roots of quadratic 1: (-i*sqrt_neg_w +/- sqrt(disc1)) / 2
+            *result_ptr = (sd1_re) / 2.0 + shift;
+            *result_ptr.add(1) = (-sqrt_neg_w + sd1_im) / 2.0;
+            *result_ptr.add(2) = (-sd1_re) / 2.0 + shift;
+            *result_ptr.add(3) = (-sqrt_neg_w - sd1_im) / 2.0;
+
+            // Quadratic 2: z^2 - i*sqrt_neg_w*z + (y + i*half_b_imag) = 0
+            let disc2_re = -w - 4.0 * y;
+            let disc2_im = -4.0 * half_b_imag;
+            let disc2_mag = libm::sqrt(disc2_re * disc2_re + disc2_im * disc2_im);
+            let disc2_sqrt_mag = libm::sqrt(disc2_mag);
+            let disc2_ang = libm::atan2(disc2_im, disc2_re);
+            let sd2_re = disc2_sqrt_mag * libm::cos(disc2_ang / 2.0);
+            let sd2_im = disc2_sqrt_mag * libm::sin(disc2_ang / 2.0);
+
+            *result_ptr.add(4) = (sd2_re) / 2.0 + shift;
+            *result_ptr.add(5) = (sqrt_neg_w + sd2_im) / 2.0;
+            *result_ptr.add(6) = (-sd2_re) / 2.0 + shift;
+            *result_ptr.add(7) = (sqrt_neg_w - sd2_im) / 2.0;
         }
     }
 }

@@ -605,8 +605,8 @@ pub unsafe extern "C" fn akimaInterp(
 }
 
 /// Polynomial evaluation using Horner's method.
-#[no_mangle]
-pub unsafe extern "C" fn polyEval(coeffs_ptr: *const f64, x: f64, degree: i32) -> f64 {
+#[export_name = "interpPolyEval"]
+pub unsafe extern "C" fn interp_poly_eval(coeffs_ptr: *const f64, x: f64, degree: i32) -> f64 {
     let degree = degree as usize;
     let mut result = *coeffs_ptr.add(degree);
     if degree >= 1 {
@@ -623,8 +623,12 @@ pub unsafe extern "C" fn polyEval(coeffs_ptr: *const f64, x: f64, degree: i32) -
 }
 
 /// Polynomial derivative evaluation.
-#[no_mangle]
-pub unsafe extern "C" fn polyDerivEval(coeffs_ptr: *const f64, x: f64, degree: i32) -> f64 {
+#[export_name = "interpPolyDerivEval"]
+pub unsafe extern "C" fn interp_poly_deriv_eval(
+    coeffs_ptr: *const f64,
+    x: f64,
+    degree: i32,
+) -> f64 {
     if degree < 1 {
         return 0.0;
     }

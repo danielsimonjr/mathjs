@@ -45,6 +45,11 @@ pub unsafe extern "C" fn freqz(
         }
 
         let den_mag_sq = den_re * den_re + den_im * den_im;
+        if den_mag_sq < 1e-300 {
+            *h_real_ptr.add(i) = f64::INFINITY;
+            *h_imag_ptr.add(i) = 0.0;
+            continue;
+        }
         *h_real_ptr.add(i) = (num_re * den_re + num_im * den_im) / den_mag_sq;
         *h_imag_ptr.add(i) = (num_im * den_re - num_re * den_im) / den_mag_sq;
     }
@@ -100,8 +105,8 @@ pub unsafe extern "C" fn freqzUniform(
 ///
 /// # Safety
 /// Output arrays must have length aLen + bLen - 1.
-#[no_mangle]
-pub unsafe extern "C" fn polyMultiply(
+#[export_name = "complexPolyMultiply"]
+pub unsafe extern "C" fn complex_poly_multiply(
     a_real_ptr: *const f64,
     a_imag_ptr: *const f64,
     a_len: i32,
@@ -350,7 +355,11 @@ pub unsafe extern "C" fn groupDelay(
     for i in 1..(n - 1) {
         let d_phase = *unwrapped_ptr.add(i + 1) - *unwrapped_ptr.add(i - 1);
         let dw = *w_ptr.add(i + 1) - *w_ptr.add(i - 1);
-        *result_ptr.add(i) = -d_phase / dw;
+        if libm::fabs(dw) < 1e-300 {
+            *result_ptr.add(i) = 0.0;
+        } else {
+            *result_ptr.add(i) = -d_phase / dw;
+        }
     }
 
     // Endpoints: one-sided differences
@@ -358,11 +367,21 @@ pub unsafe extern "C" fn groupDelay(
     let p1 = *unwrapped_ptr.add(1);
     let w0 = *w_ptr;
     let w1 = *w_ptr.add(1);
-    *result_ptr = -(p1 - p0) / (w1 - w0);
+    let dw0 = w1 - w0;
+    if libm::fabs(dw0) < 1e-300 {
+        *result_ptr = 0.0;
+    } else {
+        *result_ptr = -(p1 - p0) / dw0;
+    }
 
     let pn1 = *unwrapped_ptr.add(n - 1);
     let pn2 = *unwrapped_ptr.add(n - 2);
     let wn1 = *w_ptr.add(n - 1);
     let wn2 = *w_ptr.add(n - 2);
-    *result_ptr.add(n - 1) = -(pn1 - pn2) / (wn1 - wn2);
+    let dwn = wn1 - wn2;
+    if libm::fabs(dwn) < 1e-300 {
+        *result_ptr.add(n - 1) = 0.0;
+    } else {
+        *result_ptr.add(n - 1) = -(pn1 - pn2) / dwn;
+    }
 }

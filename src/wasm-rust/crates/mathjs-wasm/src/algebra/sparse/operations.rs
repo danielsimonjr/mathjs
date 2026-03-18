@@ -3,7 +3,7 @@
 //! Implements sparseMatVec, sparseTranspose, symbolicCholesky, sparseCholesky,
 //! sparseLU, sparseLsolve, sparseUsolve, sparseQR, sparsePermute (re-export).
 
-use super::utilities::{csCumsum, csEtree};
+use super::utilities::{csCumsum, cs_util_etree};
 
 // ============================================
 // SPARSE MATRIX-VECTOR MULTIPLY
@@ -120,14 +120,14 @@ pub unsafe extern "C" fn symbolicCholesky(
 
     let ancestor_ptr = work_ptr;
     let _stack_ptr = work_ptr.add(nu);
-    let first_ptr = work_ptr.add(2 * nu);
+    let _first_ptr = work_ptr.add(2 * nu);
     let _maxfirst_ptr = work_ptr.add(3 * nu);
     let _prevleaf_ptr = work_ptr.add(4 * nu);
     let delta_ptr = work_ptr.add(5 * nu);
     let etree_work_ptr = work_ptr.add(6 * nu);
 
     // Compute elimination tree
-    csEtree(index_ptr, ptr_ptr, n, n, parent_ptr, etree_work_ptr);
+    cs_util_etree(index_ptr, ptr_ptr, n, n, parent_ptr, etree_work_ptr);
 
     // Simple postorder using child lists
     let first_child = work_ptr.add(2 * nu);
@@ -246,7 +246,7 @@ pub unsafe extern "C" fn sparseCholesky(
     let etree_work_ptr = (work_ptr.add(nu * 8 + 2 * nu * 4)) as *mut i32;
 
     // Build elimination tree
-    csEtree(index_ptr, ptr_ptr, n, n, parent_ptr, etree_work_ptr);
+    cs_util_etree(index_ptr, ptr_ptr, n, n, parent_ptr, etree_work_ptr);
 
     let mut nnz_l: i32 = 0;
     *l_ptr_ptr.add(0) = 0;

@@ -235,8 +235,8 @@ pub unsafe extern "C" fn countNonZero(a_ptr: *const f64, size: i32) -> i32 {
 }
 
 /// Minimum value. Returns NaN for empty arrays.
-#[no_mangle]
-pub unsafe extern "C" fn min(a_ptr: *const f64, size: i32) -> f64 {
+#[export_name = "matrixMin"]
+pub unsafe extern "C" fn matrix_min(a_ptr: *const f64, size: i32) -> f64 {
     let n = size as usize;
     if n == 0 {
         return f64::NAN;
@@ -252,8 +252,8 @@ pub unsafe extern "C" fn min(a_ptr: *const f64, size: i32) -> f64 {
 }
 
 /// Maximum value. Returns NaN for empty arrays.
-#[no_mangle]
-pub unsafe extern "C" fn max(a_ptr: *const f64, size: i32) -> f64 {
+#[export_name = "matrixMax"]
+pub unsafe extern "C" fn matrix_max(a_ptr: *const f64, size: i32) -> f64 {
     let n = size as usize;
     if n == 0 {
         return f64::NAN;
@@ -269,8 +269,8 @@ pub unsafe extern "C" fn max(a_ptr: *const f64, size: i32) -> f64 {
 }
 
 /// Index of minimum value. Returns -1 for empty arrays.
-#[no_mangle]
-pub unsafe extern "C" fn argmin(a_ptr: *const f64, size: i32) -> i32 {
+#[export_name = "matrixArgmin"]
+pub unsafe extern "C" fn matrix_argmin(a_ptr: *const f64, size: i32) -> i32 {
     let n = size as usize;
     if n == 0 {
         return -1;
@@ -288,8 +288,8 @@ pub unsafe extern "C" fn argmin(a_ptr: *const f64, size: i32) -> i32 {
 }
 
 /// Index of maximum value. Returns -1 for empty arrays.
-#[no_mangle]
-pub unsafe extern "C" fn argmax(a_ptr: *const f64, size: i32) -> i32 {
+#[export_name = "matrixArgmax"]
+pub unsafe extern "C" fn matrix_argmax(a_ptr: *const f64, size: i32) -> i32 {
     let n = size as usize;
     if n == 0 {
         return -1;
@@ -436,8 +436,8 @@ pub unsafe extern "C" fn dotPow(
 }
 
 /// Element-wise absolute value.
-#[no_mangle]
-pub unsafe extern "C" fn abs(a_ptr: *const f64, size: i32, result_ptr: *mut f64) {
+#[export_name = "matrixAbs"]
+pub unsafe extern "C" fn matrix_abs(a_ptr: *const f64, size: i32, result_ptr: *mut f64) {
     let n = size as usize;
     for i in 0..n {
         let v = *a_ptr.add(i);
@@ -446,8 +446,8 @@ pub unsafe extern "C" fn abs(a_ptr: *const f64, size: i32, result_ptr: *mut f64)
 }
 
 /// Element-wise square root.
-#[no_mangle]
-pub unsafe extern "C" fn sqrt(a_ptr: *const f64, size: i32, result_ptr: *mut f64) {
+#[export_name = "matrixSqrt"]
+pub unsafe extern "C" fn matrix_sqrt(a_ptr: *const f64, size: i32, result_ptr: *mut f64) {
     let n = size as usize;
     for i in 0..n {
         *result_ptr.add(i) = libm::sqrt(*a_ptr.add(i));
@@ -455,8 +455,8 @@ pub unsafe extern "C" fn sqrt(a_ptr: *const f64, size: i32, result_ptr: *mut f64
 }
 
 /// Element-wise square.
-#[no_mangle]
-pub unsafe extern "C" fn square(a_ptr: *const f64, size: i32, result_ptr: *mut f64) {
+#[export_name = "matrixSquare"]
+pub unsafe extern "C" fn matrix_square(a_ptr: *const f64, size: i32, result_ptr: *mut f64) {
     let n = size as usize;
     for i in 0..n {
         let v = *a_ptr.add(i);
@@ -469,8 +469,8 @@ pub unsafe extern "C" fn square(a_ptr: *const f64, size: i32, result_ptr: *mut f
 // ============================================
 
 /// Sum of all elements.
-#[no_mangle]
-pub unsafe extern "C" fn sum(a_ptr: *const f64, size: i32) -> f64 {
+#[export_name = "matrixSum"]
+pub unsafe extern "C" fn matrix_sum(a_ptr: *const f64, size: i32) -> f64 {
     let n = size as usize;
     let mut total: f64 = 0.0;
     for i in 0..n {
@@ -480,8 +480,8 @@ pub unsafe extern "C" fn sum(a_ptr: *const f64, size: i32) -> f64 {
 }
 
 /// Product of all elements.
-#[no_mangle]
-pub unsafe extern "C" fn prod(a_ptr: *const f64, size: i32) -> f64 {
+#[export_name = "matrixProd"]
+pub unsafe extern "C" fn matrix_prod(a_ptr: *const f64, size: i32) -> f64 {
     let n = size as usize;
     let mut total: f64 = 1.0;
     for i in 0..n {

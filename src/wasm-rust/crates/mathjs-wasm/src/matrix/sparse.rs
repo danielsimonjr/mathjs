@@ -91,8 +91,8 @@ pub unsafe extern "C" fn csDfs(
 
         if !found {
             st_i32(done, i, 1);
+            top -= 1;
             st_i32(xi, top as usize, i as i32);
-            top += 1;
             tail -= 1;
         }
     }
@@ -144,6 +144,12 @@ pub unsafe extern "C" fn csReach(
                 (work_ptr as usize as *mut i32).add(nu),
             );
         }
+    }
+
+    // Clear marks for all visited nodes so mark array is clean for next call
+    for t in top..n {
+        let node = ld_i32(xi, t as usize);
+        st_i32(mark, node as usize, 0);
     }
 
     top

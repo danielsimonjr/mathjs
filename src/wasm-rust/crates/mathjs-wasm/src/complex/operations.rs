@@ -2,7 +2,6 @@
 
 use libm;
 
-#[no_mangle]
 #[export_name = "complex_arg"]
 pub unsafe extern "C" fn complex_arg(re: f64, im: f64) -> f64 {
     libm::atan2(im, re)
@@ -32,7 +31,6 @@ pub unsafe extern "C" fn conjArray(data_ptr: *const f64, len: i32, result_ptr: *
     }
 }
 
-#[no_mangle]
 #[export_name = "complex_re"]
 pub unsafe extern "C" fn complex_re(re: f64, _im: f64) -> f64 {
     re
@@ -45,7 +43,6 @@ pub unsafe extern "C" fn reArray(data_ptr: *const f64, len: i32, result_ptr: *mu
     }
 }
 
-#[no_mangle]
 #[export_name = "complex_im"]
 pub unsafe extern "C" fn complex_im(_re: f64, im: f64) -> f64 {
     im
@@ -58,13 +55,11 @@ pub unsafe extern "C" fn imArray(data_ptr: *const f64, len: i32, result_ptr: *mu
     }
 }
 
-#[no_mangle]
 #[export_name = "complex_abs"]
 pub unsafe extern "C" fn complex_abs(re: f64, im: f64) -> f64 {
     libm::sqrt(re * re + im * im)
 }
 
-#[no_mangle]
 #[export_name = "complex_absArray"]
 pub unsafe extern "C" fn complex_abs_array(data_ptr: *const f64, len: i32, result_ptr: *mut f64) {
     for i in 0..len as usize {

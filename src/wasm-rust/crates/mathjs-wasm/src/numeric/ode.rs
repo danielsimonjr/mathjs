@@ -107,7 +107,6 @@ pub extern "C" fn computeStepAdjustment(
 }
 
 /// Linear interpolation for dense output.
-#[no_mangle]
 #[export_name = "interpolate"]
 pub unsafe extern "C" fn ode_interpolate(
     y0_ptr: *const f64,

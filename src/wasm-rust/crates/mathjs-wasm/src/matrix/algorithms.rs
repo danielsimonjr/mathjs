@@ -94,7 +94,7 @@ pub unsafe extern "C" fn algo01DenseSparseDensity(
 #[no_mangle]
 pub unsafe extern "C" fn algo02DenseSparseZero(
     dense_data_ptr: i32,
-    rows: i32,
+    _rows: i32,
     cols: i32,
     sparse_values_ptr: i32,
     sparse_index_ptr: i32,

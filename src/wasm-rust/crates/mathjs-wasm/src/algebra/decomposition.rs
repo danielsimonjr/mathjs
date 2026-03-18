@@ -209,6 +209,12 @@ pub unsafe extern "C" fn luSolve(
         *x_ptr.add(i) = sum;
     }
 
+    // Check if last diagonal is near-zero (singular)
+    let last_diag = *lu_ptr.add((n - 1) * n + (n - 1));
+    if last_diag.abs() < 1e-14 {
+        return; // singular, cannot solve
+    }
+
     // Backward substitution: Ux = y
     for ii in 0..n {
         let i = n - 1 - ii;
@@ -234,19 +240,26 @@ pub unsafe extern "C" fn luDeterminant(lu_ptr: *const f64, n: i32, perm_ptr: *co
         det *= *lu_ptr.add(i * n + i);
     }
 
-    // Count swaps
-    let mut swaps: i32 = 0;
+    // Compute parity by walking permutation cycles
+    let mut sign = 1.0_f64;
+    let mut visited = alloc::vec![false; n];
     for i in 0..n {
-        if *perm_ptr.add(i) != i as i32 {
-            swaps += 1;
+        if visited[i] {
+            continue;
+        }
+        let mut j = i;
+        let mut cycle_len = 0;
+        while !visited[j] {
+            visited[j] = true;
+            j = *perm_ptr.add(j) as usize;
+            cycle_len += 1;
+        }
+        if cycle_len % 2 == 0 {
+            sign = -sign;
         }
     }
 
-    if swaps % 2 == 0 {
-        det
-    } else {
-        -det
-    }
+    det * sign
 }
 
 // ============================================
