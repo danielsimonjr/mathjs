@@ -1,5 +1,4 @@
 import Decimal from 'decimal.js'
-import type { Decimal as DecimalType } from 'decimal.js'
 import { factory } from '../../utils/factory.ts'
 import { deepMap } from '../../utils/collection.ts'
 import { isInteger, nearlyEqual } from '../../utils/number.ts'
@@ -10,8 +9,12 @@ import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { ConfigOptions } from '../../core/config.ts'
 
-// Use any for Matrix to avoid conflicts with matAlgo types
-type Matrix = any
+// Type definitions for dependency injection
+interface Matrix {
+  size(): number[]
+  storage(): string
+  valueOf(): unknown[] | unknown[][]
+}
 
 interface BigNumberType {
   ceil(): BigNumberType
@@ -62,7 +65,7 @@ const dependencies = [
   'DenseMatrix'
 ]
 
-const bigTen = new (Decimal as any)(10)
+const bigTen = new Decimal(10)
 
 export const createCeilNumber = /* #__PURE__ */ factory(
   name,
@@ -200,7 +203,7 @@ export const createCeil = /* #__PURE__ */ factory(
         x: BigNumberType,
         n: BigNumberType
       ): BigNumberType {
-        const shift = bigTen.pow(n as unknown as DecimalType)
+        const shift = bigTen.pow(n as unknown as Decimal)
         return _bigCeil(x.mul(shift as unknown as BigNumberType)).div(
           shift as unknown as BigNumberType
         )
@@ -272,7 +275,7 @@ export const createCeil = /* #__PURE__ */ factory(
         (self: TypedFunction) =>
           (x: unknown[], n: number | BigNumberType): unknown[] => {
             // deep map collection, skip zeros since ceil(0) = 0
-            return deepMap(x, (i) => self(i, n), true) as unknown[]
+            return deepMap(x, (i) => self(i, n), true)
           }
       ),
 

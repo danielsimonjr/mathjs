@@ -11,9 +11,8 @@ import {
 } from '../../utils/is.ts'
 
 // Type definitions
-import type { Decimal } from 'decimal.js'
-type BigNumber = Decimal
-import type { Complex } from 'complex.js'
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
 
 /** Scalar types supported by eigs */
 type Scalar = number | BigNumber | Complex
@@ -27,7 +26,11 @@ type MatrixData = NestedArray<Scalar>
 /** Supported data types for eigenvalue computation */
 type DataType = 'number' | 'BigNumber' | 'Complex'
 
-import type { TypedFunction } from '../shared/types.js'
+/** Typed function interface for math.js functions */
+interface TypedFunction<R = Scalar> {
+  (...args: unknown[]): R
+  find(func: TypedFunction, signature: string[]): TypedFunction<R>
+}
 
 /** Matrix interface */
 interface Matrix {
@@ -78,38 +81,36 @@ interface Dependencies {
   config: Config
   typed: TypedFunction
   matrix: MatrixConstructor
-  addScalar: TypedFunction
-  equal: TypedFunction
-  subtract: TypedFunction
-  abs: TypedFunction
-  atan: TypedFunction
-  cos: TypedFunction
-  sin: TypedFunction
-  multiplyScalar: TypedFunction
-  divideScalar: TypedFunction
-  inv: TypedFunction
-  bignumber: TypedFunction
-  multiply: TypedFunction
-  add: TypedFunction
-  larger: TypedFunction
-  largerEq: TypedFunction
-  smallerEq: TypedFunction
-  column: TypedFunction
-  flatten: TypedFunction
-  number: TypedFunction
-  complex: TypedFunction
-  sqrt: TypedFunction
-  diag: TypedFunction
-  size: TypedFunction
-  reshape: TypedFunction
-  qr: TypedFunction
-  usolve: TypedFunction
-  usolveAll: TypedFunction
-  im: TypedFunction
-  re: TypedFunction
-  smaller: TypedFunction
-  matrixFromColumns: TypedFunction
-  dot: TypedFunction
+  addScalar: TypedFunction<Scalar>
+  equal: TypedFunction<boolean>
+  subtract: TypedFunction<Scalar>
+  abs: TypedFunction<number | BigNumber>
+  atan: TypedFunction<Scalar>
+  cos: TypedFunction<Scalar>
+  sin: TypedFunction<Scalar>
+  multiplyScalar: TypedFunction<Scalar>
+  divideScalar: TypedFunction<Scalar>
+  inv: TypedFunction<Scalar[][] | Matrix>
+  bignumber: TypedFunction<BigNumber>
+  multiply: TypedFunction<Scalar | Scalar[][] | Matrix>
+  add: TypedFunction<Scalar>
+  larger: TypedFunction<boolean>
+  column: TypedFunction<Scalar[]>
+  flatten: TypedFunction<Scalar[]>
+  number: TypedFunction<number>
+  complex: TypedFunction<Complex>
+  sqrt: TypedFunction<Scalar>
+  diag: TypedFunction<Scalar[][]>
+  size: TypedFunction<number[]>
+  reshape: TypedFunction<Scalar[]>
+  qr: TypedFunction<{ Q: Scalar[][]; R: Scalar[][] }>
+  usolve: TypedFunction<Scalar[]>
+  usolveAll: TypedFunction<Scalar[][]>
+  im: TypedFunction<number | BigNumber>
+  re: TypedFunction<number | BigNumber>
+  smaller: TypedFunction<boolean>
+  matrixFromColumns: TypedFunction<Scalar[][]>
+  dot: TypedFunction<Scalar>
 }
 
 const name = 'eigs'
@@ -133,8 +134,6 @@ const dependencies = [
   'multiply',
   'add',
   'larger',
-  'largerEq',
-  'smallerEq',
   'column',
   'flatten',
   'number',
@@ -174,8 +173,6 @@ export const createEigs = /* #__PURE__ */ factory(
     multiply,
     add,
     larger,
-    largerEq,
-    smallerEq,
     column: _column,
     flatten,
     number,
@@ -206,9 +203,7 @@ export const createEigs = /* #__PURE__ */ factory(
       bignumber,
       complex,
       multiply,
-      add,
-      largerEq,
-      smallerEq
+      add
     } as any)
     const doComplexEigs = createComplexEigs({
       addScalar,
@@ -384,7 +379,7 @@ export const createEigs = /* #__PURE__ */ factory(
 
         if (isSymmetric(arr, N, prec)) {
           const type = coerceTypes(mat, arr, N) // modifies arr by side effect
-          return doRealSymmetric(arr as any, N, prec, type as any, computeVectors)
+          return doRealSymmetric(arr, N, prec, type, computeVectors)
         }
       }
 

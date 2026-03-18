@@ -7,19 +7,21 @@ import { wasmLoader } from '../../wasm/WasmLoader.ts'
 const WASM_PARTITION_SELECT_THRESHOLD = 100
 
 // Type definitions
-import type { TypedFunction } from '../shared/types.js'
-
 interface Matrix {
   size(): number[]
   valueOf(): any[]
+}
+
+interface TypedFunction<T = any> {
+  (...args: any[]): T
 }
 
 type CompareFunction = (a: any, b: any) => number
 
 interface Dependencies {
   typed: TypedFunction
-  isNumeric: TypedFunction
-  isNaN: TypedFunction
+  isNumeric: TypedFunction<boolean>
+  isNaN: TypedFunction<boolean>
   compare: CompareFunction
 }
 

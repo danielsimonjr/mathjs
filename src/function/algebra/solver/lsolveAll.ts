@@ -2,9 +2,11 @@ import { factory } from '../../../utils/factory.ts'
 import { createSolveValidation } from './utils/solveValidation.ts'
 
 // Type definitions
-import type { TypedFunction } from '../../shared/types.js'
-
 type ScalarValue = number | bigint | { re: number; im: number } | unknown
+
+interface TypedFunction {
+  <T>(name: string, signatures: Record<string, (...args: unknown[]) => T>): T
+}
 
 interface MatrixConstructor {
   (data: ScalarValue[] | ScalarValue[][]): DenseMatrix | SparseMatrix
@@ -87,7 +89,7 @@ export const createLsolveAll = /* #__PURE__ */ factory(
     equalScalar,
     DenseMatrix
   }: Dependencies) => {
-    const solveValidation = (createSolveValidation as any)({
+    const solveValidation = createSolveValidation({
       DenseMatrix
     }) as SolveValidationFunction
 

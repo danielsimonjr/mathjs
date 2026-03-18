@@ -617,7 +617,7 @@ export const createRationalize = /* #__PURE__ */ factory(
 
       for (let i = maxExpo; i >= 0; i--) {
         if (coefficients[i] === 0) continue
-        let n1: any = new ConstantNode(
+        let n1 = new ConstantNode(
           first ? coefficients[i] : Math.abs(coefficients[i])
         )
         const op = coefficients[i] < 0 ? '-' : '+'

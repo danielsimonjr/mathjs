@@ -11,7 +11,7 @@ interface ComplexConstructor {
 }
 
 interface BigNumberConstructor {
-  new (value: number): any
+  new (value: number): BigNumber
 }
 
 interface AcscDependencies {

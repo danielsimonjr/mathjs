@@ -3,10 +3,72 @@ import { isMatrix } from '../../utils/is.ts'
 import { arraySize } from '../../utils/array.ts'
 import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
-import type { TypedFunction, MatrixData, DenseMatrix, SparseMatrix, Matrix, MatrixConstructor, NodeOperations } from '../shared/types.ts'
 
 // Type definitions for better WASM integration and type safety
 type ArraySize = number[]
+
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+  find(func: any, signature: string[]): TypedFunction<T>
+  convert(value: any, type: string): any
+  referTo<U>(
+    signature: string,
+    fn: (ref: TypedFunction<U>) => TypedFunction<U>
+  ): TypedFunction<U>
+  referToSelf<U>(
+    fn: (self: TypedFunction<U>) => TypedFunction<U>
+  ): TypedFunction<U>
+}
+
+interface MatrixData {
+  data?: any[] | any[][]
+  values?: any[]
+  index?: number[]
+  ptr?: number[]
+  size: number[]
+  datatype?: string
+}
+
+interface DenseMatrix {
+  _data: any[] | any[][]
+  _size: number[]
+  _datatype?: string
+  storage(): 'dense'
+  size(): number[]
+  getDataType(): string
+  createDenseMatrix(data: MatrixData): DenseMatrix
+  valueOf(): any[] | any[][]
+}
+
+interface SparseMatrix {
+  _values?: any[]
+  _index?: number[]
+  _ptr?: number[]
+  _size: number[]
+  _datatype?: string
+  _data?: any
+  storage(): 'sparse'
+  size(): number[]
+  getDataType(): string
+  createSparseMatrix(data: MatrixData): SparseMatrix
+  valueOf(): any[] | any[][]
+}
+
+type Matrix = DenseMatrix | SparseMatrix
+
+interface MatrixConstructor {
+  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
+}
+
+interface NodeOperations {
+  createBinaryNode: (
+    op: string,
+    fn: string,
+    left: unknown,
+    right: unknown
+  ) => unknown
+  hasNodeArg: (...args: unknown[]) => boolean
+}
 
 interface Dependencies {
   typed: TypedFunction
@@ -1024,7 +1086,7 @@ export const createMultiply = /* #__PURE__ */ factory(
       ),
 
       'SparseMatrix, any': function (x: SparseMatrix, y: any): SparseMatrix {
-        return matAlgo11xS0s(x as any, y, multiplyScalar, false) as unknown as SparseMatrix
+        return matAlgo11xS0s(x as any, y, multiplyScalar, false) as SparseMatrix
       },
 
       'DenseMatrix, any': function (x: DenseMatrix, y: any): DenseMatrix {
@@ -1032,7 +1094,7 @@ export const createMultiply = /* #__PURE__ */ factory(
       },
 
       'any, SparseMatrix': function (x: any, y: SparseMatrix): SparseMatrix {
-        return matAlgo11xS0s(y as any, x, multiplyScalar, true) as unknown as SparseMatrix
+        return matAlgo11xS0s(y as any, x, multiplyScalar, true) as SparseMatrix
       },
 
       'any, DenseMatrix': function (x: any, y: DenseMatrix): DenseMatrix {

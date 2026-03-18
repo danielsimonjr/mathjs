@@ -2,7 +2,18 @@ import { factory } from '../../utils/factory.ts'
 import { isMatrix } from '../../utils/is.ts'
 
 // Type definitions for better WASM integration and type safety
-import type { TypedFunction } from '../shared/types.js'
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+  find(func: any, signature: string[]): TypedFunction<T>
+  convert(value: any, type: string): any
+  referTo<U>(
+    signature: string,
+    fn: (ref: TypedFunction<U>) => TypedFunction<U>
+  ): TypedFunction<U>
+  referToSelf<U>(
+    fn: (self: TypedFunction<U>) => TypedFunction<U>
+  ): TypedFunction<U>
+}
 
 interface DenseMatrix {
   _data: any[] | any[][]
@@ -243,6 +254,7 @@ export const createDot = /* #__PURE__ */ factory(
       return c
     }
 
+    // TODO remove this once #1771 is fixed
     /**
      * Get size of matrix or array
      * @param x - Matrix or array

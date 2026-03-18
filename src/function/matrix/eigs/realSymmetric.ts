@@ -1,7 +1,6 @@
 import { clone } from '../../../utils/object.ts'
 import { wasmLoader } from '../../../wasm/WasmLoader.ts'
-import type { Decimal } from 'decimal.js'
-type BigNumber = Decimal
+import type { BigNumber } from 'bignumber.js'
 
 // Minimum matrix size (n*n elements) for WASM to be beneficial
 const WASM_EIGS_THRESHOLD = 16 // 4x4 matrix
@@ -58,8 +57,6 @@ interface Dependencies {
   bignumber: (x: number | string) => BigNumber
   multiply: (...args: Scalar[]) => Scalar
   add: (...args: Scalar[]) => Scalar
-  largerEq: (a: Scalar, b: Scalar) => boolean
-  smallerEq: (a: Scalar, b: Scalar) => boolean
 }
 
 export function createRealSymmetric({
@@ -74,9 +71,7 @@ export function createRealSymmetric({
   inv,
   bignumber,
   multiply,
-  add,
-  largerEq,
-  smallerEq
+  add
 }: Dependencies) {
   /**
    * Compute eigenvalues and optionally eigenvectors of a real symmetric matrix
@@ -94,11 +89,11 @@ export function createRealSymmetric({
     computeVectors: boolean
   ): EigenResult {
     if (type === 'number') {
-      return diag(arr as any, prec as number, computeVectors)
+      return diag(arr, prec, computeVectors)
     }
 
     if (type === 'BigNumber') {
-      return diagBig(arr as any, prec as any, computeVectors)
+      return diagBig(arr, prec, computeVectors)
     }
 
     throw TypeError('Unsupported data type: ' + type)
@@ -125,7 +120,7 @@ export function createRealSymmetric({
         const workAlloc = wasmLoader.allocateFloat64ArrayEmpty(N * N)
 
         try {
-          const iterations = (wasm as any).eigsSymmetric(
+          const iterations = wasm.eigsSymmetric(
             matrixAlloc.ptr,
             N,
             eigenvaluesAlloc.ptr,
@@ -238,7 +233,7 @@ export function createRealSymmetric({
     }
     // initial error
     let Vab = getAijBig(x)
-    while (largerEq(abs(Vab[1]) as Scalar, abs(e0) as Scalar)) {
+    while ((abs(Vab[1]) as number) >= (abs(e0) as number)) {
       const i = Vab[0][0]
       const j = Vab[0][1]
       psi = getThetaBig(x[i][i], x[j][j], x[i][j])
@@ -260,7 +255,7 @@ export function createRealSymmetric({
   // get angle
   function getTheta(aii: number, ajj: number, aij: number): number {
     const denom = ajj - aii
-    if (Math.abs(denom) <= (config.relTol as number)) {
+    if (Math.abs(denom) <= config.relTol) {
       return Math.PI / 4.0
     } else {
       return 0.5 * Math.atan((2.0 * aij) / (ajj - aii))
@@ -274,7 +269,7 @@ export function createRealSymmetric({
     aij: BigNumber
   ): BigNumber {
     const denom = subtract(ajj, aii) as BigNumber
-    if (smallerEq(abs(denom) as Scalar, config.relTol as Scalar)) {
+    if ((abs(denom) as number) <= (config.relTol as number)) {
       return bignumber(-1).acos().div(4) as unknown as BigNumber
     } else {
       return multiplyScalar(

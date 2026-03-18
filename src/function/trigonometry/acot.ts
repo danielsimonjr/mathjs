@@ -6,7 +6,7 @@ import { acotNumber } from '../../plain/number/index.ts'
 
 // Type definitions for acot
 interface BigNumberConstructor {
-  new (value: number): any
+  new (value: number): BigNumber
 }
 
 interface AcotDependencies {

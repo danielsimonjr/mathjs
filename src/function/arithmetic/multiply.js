@@ -868,23 +868,25 @@ export const createMultiply = /* #__PURE__ */ factory(name, dependencies, ({ typ
     },
 
     'BigNumber, Unit': function (x, y) {
-      const result = y.clone()
+      // Handle valueless unit (e.g., unit('mm'))
       if (y.value === null) {
-        result.value = result._normalize(x)
-      } else {
-        result.value = multiplyScalar(x, y.value)
+        return y.create(x.clone(), y.units)
       }
-      return result
+
+      // Multiply BigNumber by unit's value, preserving BigNumber precision
+      const resultValue = x.times(y.value)
+      return y.create(resultValue, y.units)
     },
 
     'Unit, BigNumber': function (x, y) {
-      const result = x.clone()
+      // Handle valueless unit
       if (x.value === null) {
-        result.value = result._normalize(y)
-      } else {
-        result.value = multiplyScalar(x.value, y)
+        return x.create(y.clone(), x.units)
       }
-      return result
+
+      // Multiply unit's value by BigNumber, preserving BigNumber precision
+      const resultValue = x.value.times(y)
+      return x.create(resultValue, x.units)
     },
 
     'any, any': multiplyScalar,

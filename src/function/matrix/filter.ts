@@ -76,10 +76,10 @@ export const createFilter = /* #__PURE__ */ factory(
 function _filterCallback(x: any[], callback: Function): any[] {
   const fastCallback = optimizeCallback(callback, x, 'filter')
   if (fastCallback.isUnary) {
-    return filter(x, fastCallback.fn as any)
+    return filter(x, fastCallback.fn)
   }
   return filter(x, function (value: any, index: number, array: any[]): boolean {
     // invoke the callback function with the right number of arguments
-    return fastCallback.fn(value, [index], array) as boolean
+    return fastCallback.fn(value, [index], array)
   })
 }

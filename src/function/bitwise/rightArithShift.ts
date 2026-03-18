@@ -12,8 +12,12 @@ import { rightArithShiftNumber } from '../../plain/number/index.ts'
 import type { BigNumber } from '../../type/bignumber/BigNumber.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Use any for Matrix to avoid conflicts with matAlgo types
-type Matrix = any
+// Type definitions for rightArithShift
+interface Matrix {
+  size(): number[]
+  storage(): string
+  clone(): Matrix
+}
 
 interface RightArithShiftDependencies {
   typed: TypedFunction

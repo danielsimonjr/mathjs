@@ -6,7 +6,7 @@ import { sechNumber } from '../../plain/number/index.ts'
 
 // Type definitions for sech
 interface BigNumberConstructor {
-  new (value: number): any
+  new (value: number): BigNumber
 }
 
 interface SechDependencies {

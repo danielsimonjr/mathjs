@@ -4,7 +4,9 @@ import { createCsSqr } from '../sparse/csSqr.ts'
 import { createCsLu } from '../sparse/csLu.ts'
 
 // Type definitions
-import type { TypedFunction } from '../../shared/types.js'
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+}
 
 interface SparseMatrix {
   type: 'SparseMatrix'
@@ -68,8 +70,8 @@ interface Dependencies {
   transpose: TypedFunction
   divideScalar: TypedFunction
   subtract: TypedFunction
-  larger: TypedFunction
-  largerEq: TypedFunction
+  larger: TypedFunction<boolean>
+  largerEq: TypedFunction<boolean>
   SparseMatrix: SparseMatrixConstructor
 }
 
@@ -111,7 +113,7 @@ export const createSlu = /* #__PURE__ */ factory(
       larger,
       largerEq,
       SparseMatrix
-    }) as unknown as CsLuFunction
+    }) as CsLuFunction
 
     /**
      * Calculate the Sparse Matrix LU decomposition with full pivoting. Sparse Matrix `A` is decomposed in two matrices (`L`, `U`) and two permutation vectors (`pinv`, `q`) where

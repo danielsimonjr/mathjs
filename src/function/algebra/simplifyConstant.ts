@@ -32,6 +32,7 @@ const dependencies = [
   'config',
   'mathWithTransform',
   'matrix',
+  'parse',
   'isBounded',
   '?fraction',
   '?bignumber',
@@ -42,8 +43,7 @@ const dependencies = [
   'IndexNode',
   'ObjectNode',
   'OperatorNode',
-  'SymbolNode',
-  'parse'
+  'SymbolNode'
 ]
 
 export const createSimplifyConstant = /* #__PURE__ */ factory(
@@ -54,6 +54,7 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(
     config,
     mathWithTransform,
     matrix,
+    parse,
     isBounded,
     fraction,
     bignumber,
@@ -64,13 +65,13 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(
     IndexNode,
     ObjectNode,
     OperatorNode,
-    SymbolNode,
-    parse
+    SymbolNode
   }: {
     typed: any
     config: any
     mathWithTransform: any
     matrix: any
+    parse: (expr: string) => MathNode
     isBounded: any
     fraction: any
     bignumber: any
@@ -82,7 +83,6 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(
     ObjectNode: any
     OperatorNode: any
     SymbolNode: any
-    parse: (expr: string) => MathNode
   }) => {
     const {
       isCommutative,
@@ -119,18 +119,16 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(
      * @return {Node} Returns expression with constant subexpressions evaluated
      */
     const simplifyConstant = typed('simplifyConstant', {
+      string: (expr: string) => _ensureNode(foldFraction(parse(expr), {})),
+
+      'string, Object': function (expr: string, options: any) {
+        return _ensureNode(foldFraction(parse(expr), options))
+      },
+
       Node: (node: MathNode) => _ensureNode(foldFraction(node, {})),
 
       'Node, Object': function (expr: MathNode, options: any) {
         return _ensureNode(foldFraction(expr, options))
-      },
-
-      string: function (s: string) {
-        return _ensureNode(foldFraction(parse(s), {}))
-      },
-
-      'string, Object': function (s: string, options: any) {
-        return _ensureNode(foldFraction(parse(s), options))
       }
     })
 

@@ -7,11 +7,11 @@ interface BigNumberType {
   lte(n: number): boolean
   gt(n: number): boolean
   lt(n: number | string): boolean
-  mod(n: number | BigNumberType): BigNumberType
-  eq(n: number | BigNumberType): boolean
+  mod(n: number): BigNumberType
+  eq(n: number): boolean
   sub(n: number | BigNumberType): BigNumberType
   div(n: number): BigNumberType
-  add(n: number | BigNumberType): BigNumberType
+  add(n: number): BigNumberType
   mul(n: BigNumberType | number): BigNumberType
   toNumber(): number
   toFixed(n: number): string
@@ -171,7 +171,7 @@ export const createIsPrime = /* #__PURE__ */ factory(
 
       'Array | Matrix': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: any): unknown =>
+          (x: unknown): unknown =>
             deepMap(x, self)
       )
     })

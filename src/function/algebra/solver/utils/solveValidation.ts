@@ -122,7 +122,7 @@ export function createSolveValidation({
             })
           }
 
-          return b as any
+          return b
         }
 
         if (isSparseMatrix(b)) {

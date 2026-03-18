@@ -9,8 +9,12 @@ import { roundNumber } from '../../plain/number/index.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 import type { ConfigOptions } from '../../core/config.ts'
 
-// Use any for Matrix to avoid conflicts with matAlgo types
-type Matrix = any
+// Type definitions for dependency injection
+interface Matrix {
+  size(): number[]
+  storage(): string
+  valueOf(): unknown[] | unknown[][]
+}
 
 interface BigNumberType {
   isInteger(): boolean

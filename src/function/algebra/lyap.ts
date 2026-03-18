@@ -57,7 +57,7 @@ export const createLyap = /* #__PURE__ */ factory(
       'Matrix, Array': function (A: MatrixType, Q: unknown[][]): MatrixType {
         return sylvester(
           A,
-          transpose(matrix(A as any)),
+          transpose(matrix(A)),
           matrix(multiply(-1, Q) as unknown[][])
         )
       },

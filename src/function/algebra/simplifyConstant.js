@@ -10,6 +10,7 @@ const dependencies = [
   'config',
   'mathWithTransform',
   'matrix',
+  'parse',
   'isBounded',
   '?fraction',
   '?bignumber',
@@ -20,8 +21,7 @@ const dependencies = [
   'IndexNode',
   'ObjectNode',
   'OperatorNode',
-  'SymbolNode',
-  'parse'
+  'SymbolNode'
 ]
 
 export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies, ({
@@ -29,6 +29,7 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
   config,
   mathWithTransform,
   matrix,
+  parse,
   isBounded,
   fraction,
   bignumber,
@@ -39,8 +40,7 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
   IndexNode,
   ObjectNode,
   OperatorNode,
-  SymbolNode,
-  parse
+  SymbolNode
 }) => {
   const { isCommutative, isAssociative, allChildren, createMakeNodeFunction } =
     createUtil({ FunctionNode, OperatorNode, SymbolNode })
@@ -73,18 +73,16 @@ export const createSimplifyConstant = /* #__PURE__ */ factory(name, dependencies
    * @return {Node} Returns expression with constant subexpressions evaluated
    */
   const simplifyConstant = typed('simplifyConstant', {
+    string: expr => _ensureNode(foldFraction(parse(expr), {})),
+
+    'string, Object': function (expr, options) {
+      return _ensureNode(foldFraction(parse(expr), options))
+    },
+
     Node: node => _ensureNode(foldFraction(node, {})),
 
     'Node, Object': function (expr, options) {
       return _ensureNode(foldFraction(expr, options))
-    },
-
-    string: function (s) {
-      return _ensureNode(foldFraction(parse(s), {}))
-    },
-
-    'string, Object': function (s, options) {
-      return _ensureNode(foldFraction(parse(s), options))
     }
   })
 

@@ -4,8 +4,12 @@ import { createMatAlgo12xSfs } from '../../type/matrix/utils/matAlgo12xSfs.ts'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
 import type { TypedFunction } from '../../core/function/typed.ts'
 
-// Use any for Matrix to avoid conflicts with matAlgo types
-type Matrix = any
+// Type definitions for dependency injection
+interface Matrix {
+  size(): number[]
+  storage(): string
+  valueOf(): unknown[] | unknown[][]
+}
 
 interface BigNumberType {
   isNegative(): boolean

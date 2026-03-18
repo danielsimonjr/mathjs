@@ -15,8 +15,11 @@ import {
   Unit
 } from '../../types.ts'
 
-// Type alias for DenseMatrix used in typed-function signatures
-type DenseMatrix = any
+// Type definitions for nullish operation
+interface DenseMatrix extends Matrix {
+  type: 'DenseMatrix'
+  valueOf(): unknown[][]
+}
 
 interface NullishDependencies {
   typed: TypedFunction
@@ -117,7 +120,7 @@ export const createNullish = /* #__PURE__ */ factory(
       ),
       'DenseMatrix, SparseMatrix': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: DenseMatrix, y: any): DenseMatrix =>
+          (x: DenseMatrix, y: SparseMatrix): DenseMatrix =>
             matAlgo03xDSf(x, y, self, false)
       ),
       'DenseMatrix, Array': typed.referToSelf(
@@ -135,7 +138,7 @@ export const createNullish = /* #__PURE__ */ factory(
       'Array, Array': typed.referToSelf(
         (self: TypedFunction) =>
           (x: unknown[], y: unknown[]): unknown[][] =>
-            matAlgo13xDD(toMatrix(x), toMatrix(y), self).valueOf() as unknown[][]
+            matAlgo13xDD(toMatrix(x), toMatrix(y), self).valueOf()
       ),
       'Array, DenseMatrix': typed.referToSelf(
         (self: TypedFunction) =>
@@ -144,13 +147,13 @@ export const createNullish = /* #__PURE__ */ factory(
       ),
       'Array, SparseMatrix': typed.referToSelf(
         (self: TypedFunction) =>
-          (x: unknown[], y: any): DenseMatrix =>
+          (x: unknown[], y: SparseMatrix): DenseMatrix =>
             matAlgo03xDSf(toMatrix(x), y, self, false)
       ),
       'Array, any': typed.referToSelf(
         (self: TypedFunction) =>
           (x: unknown[], y: unknown): unknown[][] =>
-            matAlgo14xDs(toMatrix(x), y, self, false).valueOf() as unknown[][]
+            matAlgo14xDs(toMatrix(x), y, self, false).valueOf()
       )
     })
   }

@@ -6,7 +6,9 @@ import { wasmLoader } from '../../../wasm/WasmLoader.ts'
 const WASM_USOLVE_THRESHOLD = 16 // 4x4 matrix
 
 // Type definitions
-import type { TypedFunction } from '../../shared/types.js'
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+}
 
 interface MatrixConstructor {
   (
@@ -139,7 +141,7 @@ export const createUsolve = /* #__PURE__ */ factory(
     equalScalar,
     DenseMatrix
   }: Dependencies) => {
-    const solveValidation = (createSolveValidation as any)({
+    const solveValidation = createSolveValidation({
       DenseMatrix
     }) as SolveValidationFunction
 

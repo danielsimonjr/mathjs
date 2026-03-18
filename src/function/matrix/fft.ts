@@ -64,7 +64,11 @@ type ComplexNumber = { re: number; im: number } | number
 type ComplexArray = ComplexNumber[]
 type ComplexArrayND = ComplexNumber[] | any[]
 
-import type { TypedFunction } from '../shared/types.js'
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+  find(func: any, signature: string[]): TypedFunction<T>
+  convert(value: any, type: string): any
+}
 
 interface _MatrixData {
   data?: any[] | any[][]

@@ -2,7 +2,48 @@ import { factory } from '../../utils/factory.ts'
 import { extend } from '../../utils/object.ts'
 import { createMatAlgo11xS0s } from '../../type/matrix/utils/matAlgo11xS0s.ts'
 import { createMatAlgo14xDs } from '../../type/matrix/utils/matAlgo14xDs.ts'
-import type { TypedFunction, DenseMatrix, SparseMatrix, Matrix, MatrixConstructor, NodeOperations } from '../shared/types.ts'
+
+// Type definitions
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+  signatures?: Record<string, Function>
+}
+
+interface DenseMatrix {
+  _data: any[] | any[][]
+  _size: number[]
+  _datatype?: string
+  storage(): 'dense'
+  size(): number[]
+  valueOf(): any[] | any[][]
+}
+
+interface SparseMatrix {
+  _values?: any[]
+  _index?: number[]
+  _ptr?: number[]
+  _size: number[]
+  _datatype?: string
+  storage(): 'sparse'
+  size(): number[]
+  valueOf(): any[] | any[][]
+}
+
+type Matrix = DenseMatrix | SparseMatrix
+
+interface MatrixConstructor {
+  (data: any[] | any[][], storage?: 'dense' | 'sparse'): Matrix
+}
+
+interface NodeOperations {
+  createBinaryNode: (
+    op: string,
+    fn: string,
+    left: unknown,
+    right: unknown
+  ) => unknown
+  hasNodeArg: (...args: unknown[]) => boolean
+}
 
 interface Dependencies {
   typed: TypedFunction

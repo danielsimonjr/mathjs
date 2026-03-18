@@ -3,10 +3,12 @@ import { factory } from '../../utils/factory.ts'
 import { wasmLoader } from '../../wasm/WasmLoader.ts'
 
 // Type definitions
-import type { TypedFunction } from '../shared/types.js'
-
 interface Matrix {
   toArray(): any[]
+}
+
+interface TypedFunction<T = any> {
+  (...args: any[]): T
 }
 
 interface MatrixConstructor {

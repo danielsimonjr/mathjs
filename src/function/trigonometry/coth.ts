@@ -6,7 +6,7 @@ import { cothNumber } from '../../plain/number/index.ts'
 
 // Type definitions for coth
 interface BigNumberConstructor {
-  new (value: number): any
+  new (value: number): BigNumber
 }
 
 interface CothDependencies {

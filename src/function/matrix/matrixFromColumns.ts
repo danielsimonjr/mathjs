@@ -1,10 +1,13 @@
 import { factory } from '../../utils/factory.ts'
 
 // Type definitions
-import type { TypedFunction } from '../shared/types.js'
-
 type NestedArray<T = any> = T | NestedArray<T>[]
 type MatrixData = NestedArray<any>
+
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+  find(func: any, signature: string[]): TypedFunction<T>
+}
 
 interface Matrix {
   type: string

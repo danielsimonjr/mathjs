@@ -82,7 +82,7 @@ export const createIsNegative = /* #__PURE__ */ factory(
       Unit: typed.referToSelf(
         (self: TypedFunction) =>
           (x: UnitType): boolean =>
-            typed.find(self, x.valueType())(x.value) as boolean
+            typed.find(self, x.valueType())(x.value)
       ),
 
       'Array | Matrix': typed.referToSelf(

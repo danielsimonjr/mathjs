@@ -5,9 +5,8 @@ import { factory } from '../../utils/factory.ts'
 import { wasmLoader } from '../../wasm/WasmLoader.ts'
 
 // Type definitions
-import type { Decimal } from 'decimal.js'
-type BigNumber = Decimal
-import type { Complex } from 'complex.js'
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
 
 /** Scalar types supported by det */
 type Scalar = number | BigNumber | Complex
@@ -32,7 +31,11 @@ interface Matrix {
   _datatype?: string
 }
 
-import type { TypedFunction } from '../shared/types.js'
+/** Typed function interface for math.js functions */
+interface TypedFunction<R = Scalar> {
+  (...args: unknown[]): R
+  find(func: TypedFunction, signature: string[]): TypedFunction<R>
+}
 
 /** Matrix constructor function */
 interface MatrixConstructor {
@@ -43,15 +46,16 @@ interface MatrixConstructor {
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
-  subtractScalar: TypedFunction
-  multiply: TypedFunction
-  divideScalar: TypedFunction
-  isZero: TypedFunction
-  unaryMinus: TypedFunction
+  subtractScalar: TypedFunction<Scalar>
+  multiply: TypedFunction<Scalar>
+  divideScalar: TypedFunction<Scalar>
+  isZero: TypedFunction<boolean>
+  unaryMinus: TypedFunction<Scalar>
 }
 
 // Minimum matrix size (n*n elements) for WASM to be beneficial
-const WASM_DET_THRESHOLD = 16 // 4x4 matrix
+// Explicit formulas handle up to 4x4; WASM kicks in at 5x5
+const WASM_DET_THRESHOLD = 25 // 5x5 matrix
 
 /**
  * Check if a 2D array contains only plain numbers
@@ -156,7 +160,7 @@ export const createDet = /* #__PURE__ */ factory(
         switch (size.length) {
           case 0:
             // scalar
-            return clone(x) as unknown as Scalar
+            return clone(x) as Scalar
 
           case 1:
             // vector
@@ -220,7 +224,7 @@ export const createDet = /* #__PURE__ */ factory(
         isPlainNumberMatrix(matrix)
       ) {
         try {
-          const flat = flattenToFloat64(matrix as any, rows, rows)
+          const flat = flattenToFloat64(matrix, rows, rows)
           const a = wasmLoader.allocateFloat64Array(flat)
           // workPtr needs n*n f64 values for LU decomposition
           const work = wasmLoader.allocateFloat64ArrayEmpty(rows * rows)
@@ -246,6 +250,32 @@ export const createDet = /* #__PURE__ */ factory(
           multiply(matrix[0][0], matrix[1][1]),
           multiply(matrix[1][0], matrix[0][1])
         )
+      } else if (rows === 3 && isPlainNumberMatrix(matrix as number[][])) {
+        // Explicit 3x3 determinant for plain numbers — avoids Bareiss loop overhead
+        // det = a(ei-fh) - b(di-fg) + c(dh-eg)
+        const a = matrix[0][0] as number, b = matrix[0][1] as number, c = matrix[0][2] as number
+        const d = matrix[1][0] as number, e = matrix[1][1] as number, f = matrix[1][2] as number
+        const g = matrix[2][0] as number, h = matrix[2][1] as number, i = matrix[2][2] as number
+        return (a * (e * i - f * h)
+              - b * (d * i - f * g)
+              + c * (d * h - e * g)) as Scalar
+      } else if (rows === 4 && isPlainNumberMatrix(matrix as number[][])) {
+        // Explicit 4x4 determinant for plain numbers via cofactor expansion
+        const a00 = matrix[0][0] as number, a01 = matrix[0][1] as number
+        const a02 = matrix[0][2] as number, a03 = matrix[0][3] as number
+        const a10 = matrix[1][0] as number, a11 = matrix[1][1] as number
+        const a12 = matrix[1][2] as number, a13 = matrix[1][3] as number
+        const a20 = matrix[2][0] as number, a21 = matrix[2][1] as number
+        const a22 = matrix[2][2] as number, a23 = matrix[2][3] as number
+        const a30 = matrix[3][0] as number, a31 = matrix[3][1] as number
+        const a32 = matrix[3][2] as number, a33 = matrix[3][3] as number
+
+        return (
+          a00 * (a11 * (a22 * a33 - a23 * a32) - a12 * (a21 * a33 - a23 * a31) + a13 * (a21 * a32 - a22 * a31))
+        - a01 * (a10 * (a22 * a33 - a23 * a32) - a12 * (a20 * a33 - a23 * a30) + a13 * (a20 * a32 - a22 * a30))
+        + a02 * (a10 * (a21 * a33 - a23 * a31) - a11 * (a20 * a33 - a23 * a30) + a13 * (a20 * a31 - a21 * a30))
+        - a03 * (a10 * (a21 * a32 - a22 * a31) - a11 * (a20 * a32 - a22 * a30) + a12 * (a20 * a31 - a21 * a30))
+        ) as Scalar
       } else {
         // Bareiss algorithm
         // this algorithm have same complexity as LUP decomposition (O(n^3))

@@ -1,8 +1,7 @@
 import { clone } from '../../../utils/object.ts'
 import { wasmLoader } from '../../../wasm/WasmLoader.ts'
-import type { Decimal } from 'decimal.js'
-type BigNumber = Decimal
-import type { Complex } from 'complex.js'
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
 
 // Minimum matrix size (n*n elements) for WASM to be beneficial
 const WASM_EIGS_THRESHOLD = 16 // 4x4 matrix
@@ -55,9 +54,12 @@ interface QRResult {
 /** Dependencies for createComplexEigs */
 interface Dependencies {
   addScalar: (a: Scalar, b: Scalar) => Scalar
-  subtract: (a: any, b: any) => any
-  flatten: (arr: any) => any
-  multiply: (...args: any[]) => any
+  subtract: (a: Scalar | Scalar[], b: Scalar | Scalar[]) => Scalar | Scalar[]
+  flatten: <T>(arr: T[][] | T[]) => T[]
+  multiply: (
+    a: Scalar | Scalar[][],
+    b: Scalar | Scalar[][]
+  ) => Scalar | Scalar[][]
   multiplyScalar: (a: Scalar, b: Scalar) => Scalar
   divideScalar: (a: Scalar, b: Scalar) => Scalar
   sqrt: (x: Scalar) => Scalar
@@ -65,7 +67,7 @@ interface Dependencies {
   bignumber: (x: number | string) => BigNumber
   diag: (arr: Scalar[]) => Scalar[][]
   size: (arr: Scalar[]) => number[]
-  reshape: (arr: any, shape: number[]) => any
+  reshape: (arr: Scalar[], shape: number[]) => Scalar[]
   inv: (x: Scalar[][]) => Scalar[][]
   qr: (x: Scalar[][]) => QRResult
   usolve: (A: Scalar[][], b: Scalar[]) => Scalar[]

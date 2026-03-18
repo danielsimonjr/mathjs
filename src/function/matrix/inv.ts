@@ -8,9 +8,8 @@ import { wasmLoader } from '../../wasm/WasmLoader.ts'
 const WASM_INV_THRESHOLD = 16 // 4x4 matrix
 
 // Type definitions
-import type { Decimal } from 'decimal.js'
-type BigNumber = Decimal
-import type { Complex } from 'complex.js'
+import type { BigNumber } from 'bignumber.js'
+import type Complex from 'complex.js'
 
 /** Scalar types supported by inv */
 type Scalar = number | BigNumber | Complex
@@ -35,7 +34,11 @@ interface Matrix {
   _datatype?: string
 }
 
-import type { TypedFunction } from '../shared/types.js'
+/** Typed function interface for math.js functions */
+interface TypedFunction<R = Scalar> {
+  (...args: unknown[]): R
+  find(func: TypedFunction, signature: string[]): TypedFunction<R>
+}
 
 /** Matrix constructor function */
 interface MatrixConstructor {
@@ -51,13 +54,13 @@ interface IdentityFunction {
 interface Dependencies {
   typed: TypedFunction
   matrix: MatrixConstructor
-  divideScalar: TypedFunction
-  addScalar: TypedFunction
-  multiply: TypedFunction
-  unaryMinus: TypedFunction
-  det: TypedFunction
+  divideScalar: TypedFunction<Scalar>
+  addScalar: TypedFunction<Scalar>
+  multiply: TypedFunction<Scalar>
+  unaryMinus: TypedFunction<Scalar>
+  det: TypedFunction<Scalar>
   identity: IdentityFunction
-  abs: TypedFunction
+  abs: TypedFunction<number | BigNumber>
 }
 
 /**
@@ -176,7 +179,7 @@ export const createInv = /* #__PURE__ */ factory(
                 )
               } else {
                 // return an Array
-                return _inv(x as Scalar[][], rows, cols) as any
+                return _inv(x as Scalar[][], rows, cols)
               }
             } else {
               throw new RangeError(
@@ -222,7 +225,7 @@ export const createInv = /* #__PURE__ */ factory(
         isPlainNumberMatrix(mat)
       ) {
         try {
-          const flat = flattenToFloat64(mat as any, rows, rows)
+          const flat = flattenToFloat64(mat, rows, rows)
           const input = wasmLoader.allocateFloat64Array(flat)
           const result = wasmLoader.allocateFloat64ArrayEmpty(rows * rows)
           // workPtr needs n * 2n f64 values for augmented matrix

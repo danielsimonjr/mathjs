@@ -78,7 +78,7 @@ export const createCsSqr = /* #__PURE__ */ factory(
       // QR symbolic analysis
       if (qr) {
         // apply permutations if needed
-        const c: any = order ? csPermute(a as any, null, s.q, false) : a
+        const c = order ? csPermute(a, null, s.q, false) : a
         // etree of C'*C, where C=A(:,q)
         s.parent = csEtree(c, true)
         // post order elimination tree
@@ -178,7 +178,7 @@ export const createCsSqr = /* #__PURE__ */ factory(
         // associate row i with V(:,k)
         pinv[i] = k
         // skip if V(k+1:m,k) is empty
-        if (--(w[nque + k]) <= 0) {
+        if (--nque[k] <= 0) {
           continue
         }
         // nque[k] is nnz (V(k+1:m,k))

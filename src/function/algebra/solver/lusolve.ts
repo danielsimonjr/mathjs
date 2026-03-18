@@ -8,9 +8,11 @@ import { wasmLoader } from '../../../wasm/WasmLoader.ts'
 const WASM_LUSOLVE_THRESHOLD = 16 // 4x4 matrix
 
 // Type definitions
-import type { TypedFunction } from '../../shared/types.js'
-
 type _MatrixData = any[][] // eslint-disable-line @typescript-eslint/no-unused-vars
+
+interface TypedFunction<T = any> {
+  (...args: any[]): T
+}
 
 interface MatrixConstructor {
   (
@@ -155,7 +157,7 @@ export const createLusolve = /* #__PURE__ */ factory(
   name,
   dependencies,
   ({ typed, matrix, lup, slu, usolve, lsolve, DenseMatrix }: Dependencies) => {
-    const solveValidation = (createSolveValidation as any)({
+    const solveValidation = createSolveValidation({
       DenseMatrix
     }) as SolveValidationFunction
 
