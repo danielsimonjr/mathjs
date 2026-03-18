@@ -103,6 +103,43 @@ function flattenMatrix(m: number[][]): Float64Array {
 }
 
 // ============================================================
+// AssemblyScript managed allocation helpers
+// ============================================================
+
+/** Allocate a Float64Array in AS WASM memory, returning the GC-pinned pointer */
+function asAllocF64(as_: WasmExports, data: Float64Array): number {
+  const byteLen = data.length * 8
+  const ptr = as_.__new(byteLen, 2) // 2 = Float64Array type ID
+  as_.__pin(ptr)
+  new Float64Array(as_.memory.buffer, ptr, data.length).set(data)
+  return ptr
+}
+
+/** Allocate an empty Float64Array in AS WASM memory */
+function asAllocF64Empty(as_: WasmExports, count: number): number {
+  const byteLen = count * 8
+  const ptr = as_.__new(byteLen, 2)
+  as_.__pin(ptr)
+  return ptr
+}
+
+/** Free a pinned AS allocation */
+function asFree(as_: WasmExports, ptr: number): void {
+  as_.__unpin(ptr)
+}
+
+// ============================================================
+// Rust flat-memory allocation helpers
+// ============================================================
+
+/** Ensure Rust WASM has enough memory, return base offset */
+function rustEnsureMemory(rust: WasmExports, neededBytes: number): void {
+  while (rust.memory.buffer.byteLength < neededBytes) {
+    rust.memory.grow(Math.ceil(neededBytes / 65536))
+  }
+}
+
+// ============================================================
 // JS reference implementations
 // ============================================================
 
@@ -225,32 +262,29 @@ async function main() {
 
     const jsMs = bench(() => jsMatMul(a, b))
 
-    // Allocate WASM memory for each backend
+    // Rust WASM (flat memory)
     let rustMs: number | null = null
     if (rust?.multiplyDense && rust.memory) {
-      const baseOffset = 1024 // safe offset past stack
-      const aOff = baseOffset
-      const bOff = aOff + n * n * 8
-      const cOff = bOff + n * n * 8
-      // Ensure enough memory
-      const needed = cOff + n * n * 8
-      const pages = Math.ceil(needed / 65536)
-      while (rust.memory.buffer.byteLength < needed) {
-        rust.memory.grow(pages)
-      }
+      const aOff = 1024, bOff = aOff + n*n*8, cOff = bOff + n*n*8
+      rustEnsureMemory(rust, cOff + n*n*8)
       writeF64(rust.memory, aOff, flatA)
       writeF64(rust.memory, bOff, flatB)
-      rustMs = bench(() => {
-        (rust.multiplyDense as Function)(aOff, n, n, bOff, n, n, cOff)
-      })
+      rustMs = bench(() => { (rust.multiplyDense as Function)(aOff, n, n, bOff, n, n, cOff) })
     }
 
+    // AS WASM (same raw pointer ABI as Rust)
     let asMs: number | null = null
-    // AS uses __new for allocation — skip direct memory write for now
+    if (as_?.multiplyDense && as_.memory) {
+      const asBase = 1024, asA = asBase, asB = asA + n*n*8, asC = asB + n*n*8
+      while (as_.memory.buffer.byteLength < asC + n*n*8) as_.memory.grow(16)
+      writeF64(as_.memory, asA, flatA)
+      writeF64(as_.memory, asB, flatB)
+      asMs = bench(() => { (as_.multiplyDense as Function)(asA, n, n, asB, n, n, asC) })
+    }
 
     console.log(`  JS:   ${jsMs.toFixed(3)} ms`)
     if (rustMs !== null) console.log(`  Rust: ${rustMs.toFixed(3)} ms  (${speedup(jsMs, rustMs)})`)
-    if (asMs !== null) console.log(`  AS:   ${asMs.toFixed(3)} ms`)
+    if (asMs !== null) console.log(`  AS:   ${asMs.toFixed(3)} ms  (${speedup(jsMs, asMs)})`)
 
     rows.push([label, jsMs.toFixed(3), rustMs?.toFixed(3) ?? '-', asMs?.toFixed(3) ?? '-',
       rustMs ? speedup(jsMs, rustMs) : '-', (rustMs && asMs) ? speedup(asMs, rustMs) : '-'])
@@ -270,24 +304,28 @@ async function main() {
 
     let rustMs: number | null = null
     if (rust?.dotProduct && rust.memory) {
-      const aOff = 1024
-      const bOff = aOff + n * 8
-      const needed = bOff + n * 8
-      while (rust.memory.buffer.byteLength < needed) {
-        rust.memory.grow(Math.ceil(needed / 65536))
-      }
+      const aOff = 1024, bOff = aOff + n * 8
+      rustEnsureMemory(rust, bOff + n * 8)
       writeF64(rust.memory, aOff, va)
       writeF64(rust.memory, bOff, vb)
-      rustMs = bench(() => {
-        (rust.dotProduct as Function)(aOff, bOff, n)
-      })
+      rustMs = bench(() => { (rust.dotProduct as Function)(aOff, bOff, n) })
+    }
+
+    let asMs: number | null = null
+    if (as_?.dotProduct && as_.memory) {
+      const asA = 1024, asB = asA + n * 8
+      while (as_.memory.buffer.byteLength < asB + n * 8) as_.memory.grow(16)
+      writeF64(as_.memory, asA, va)
+      writeF64(as_.memory, asB, vb)
+      asMs = bench(() => { (as_.dotProduct as Function)(asA, asB, n) })
     }
 
     console.log(`  JS:   ${jsMs.toFixed(3)} ms`)
     if (rustMs !== null) console.log(`  Rust: ${rustMs.toFixed(3)} ms  (${speedup(jsMs, rustMs)})`)
+    if (asMs !== null) console.log(`  AS:   ${asMs.toFixed(3)} ms  (${speedup(jsMs, asMs)})`)
 
-    rows.push([label, jsMs.toFixed(3), rustMs?.toFixed(3) ?? '-', '-',
-      rustMs ? speedup(jsMs, rustMs) : '-', '-'])
+    rows.push([label, jsMs.toFixed(3), rustMs?.toFixed(3) ?? '-', asMs?.toFixed(3) ?? '-',
+      rustMs ? speedup(jsMs, rustMs) : '-', (rustMs && asMs) ? speedup(asMs, rustMs) : '-'])
   }
 
   // ============================================================
@@ -304,25 +342,28 @@ async function main() {
 
     let rustMs: number | null = null
     if (rust?.add && rust.memory) {
-      const aOff = 1024
-      const bOff = aOff + n * 8
-      const cOff = bOff + n * 8
-      const needed = cOff + n * 8
-      while (rust.memory.buffer.byteLength < needed) {
-        rust.memory.grow(Math.ceil(needed / 65536))
-      }
+      const aOff = 1024, bOff = aOff + n*8, cOff = bOff + n*8
+      rustEnsureMemory(rust, cOff + n*8)
       writeF64(rust.memory, aOff, va)
       writeF64(rust.memory, bOff, vb)
-      rustMs = bench(() => {
-        (rust.add as Function)(aOff, bOff, n, cOff)
-      })
+      rustMs = bench(() => { (rust.add as Function)(aOff, bOff, n, cOff) })
+    }
+
+    let asMs: number | null = null
+    if (as_?.add && as_.memory) {
+      const asA = 1024, asB = asA + n*8, asC = asB + n*8
+      while (as_.memory.buffer.byteLength < asC + n*8) as_.memory.grow(16)
+      writeF64(as_.memory, asA, va)
+      writeF64(as_.memory, asB, vb)
+      asMs = bench(() => { (as_.add as Function)(asA, asB, n, asC) })
     }
 
     console.log(`  JS:   ${jsMs.toFixed(3)} ms`)
     if (rustMs !== null) console.log(`  Rust: ${rustMs.toFixed(3)} ms  (${speedup(jsMs, rustMs)})`)
+    if (asMs !== null) console.log(`  AS:   ${asMs.toFixed(3)} ms  (${speedup(jsMs, asMs)})`)
 
-    rows.push([label, jsMs.toFixed(3), rustMs?.toFixed(3) ?? '-', '-',
-      rustMs ? speedup(jsMs, rustMs) : '-', '-'])
+    rows.push([label, jsMs.toFixed(3), rustMs?.toFixed(3) ?? '-', asMs?.toFixed(3) ?? '-',
+      rustMs ? speedup(jsMs, rustMs) : '-', (rustMs && asMs) ? speedup(asMs, rustMs) : '-'])
   }
 
   // ============================================================
@@ -340,21 +381,25 @@ async function main() {
     let rustMs: number | null = null
     if (rust?.det && rust.memory) {
       const aOff = 1024
-      const needed = aOff + n * n * 8
-      while (rust.memory.buffer.byteLength < needed) {
-        rust.memory.grow(Math.ceil(needed / 65536))
-      }
+      rustEnsureMemory(rust, aOff + n*n*8)
       writeF64(rust.memory, aOff, flat)
-      rustMs = bench(() => {
-        (rust.det as Function)(aOff, n)
-      })
+      rustMs = bench(() => { (rust.det as Function)(aOff, n) })
+    }
+
+    let asMs: number | null = null
+    if (as_?.det && as_.memory) {
+      const asA = 1024
+      while (as_.memory.buffer.byteLength < asA + n*n*8) as_.memory.grow(16)
+      writeF64(as_.memory, asA, flat)
+      asMs = bench(() => { (as_.det as Function)(asA, n) })
     }
 
     console.log(`  JS:   ${jsMs.toFixed(3)} ms`)
     if (rustMs !== null) console.log(`  Rust: ${rustMs.toFixed(3)} ms  (${speedup(jsMs, rustMs)})`)
+    if (asMs !== null) console.log(`  AS:   ${asMs.toFixed(3)} ms  (${speedup(jsMs, asMs)})`)
 
-    rows.push([label, jsMs.toFixed(3), rustMs?.toFixed(3) ?? '-', '-',
-      rustMs ? speedup(jsMs, rustMs) : '-', '-'])
+    rows.push([label, jsMs.toFixed(3), rustMs?.toFixed(3) ?? '-', asMs?.toFixed(3) ?? '-',
+      rustMs ? speedup(jsMs, rustMs) : '-', (rustMs && asMs) ? speedup(asMs, rustMs) : '-'])
   }
 
   // ============================================================
