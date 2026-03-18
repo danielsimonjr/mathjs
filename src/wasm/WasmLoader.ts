@@ -657,11 +657,20 @@ export class WasmLoader {
     }
   }
 
+  /**
+   * Get the WASM binary path based on the selected backend.
+   * Set MATHJS_WASM_BACKEND=assemblyscript to use the AS binary.
+   * Default is Rust (after migration cutover).
+   */
   private getDefaultWasmPath(): string {
+    const useAS = typeof process !== 'undefined' &&
+      process.env?.MATHJS_WASM_BACKEND === 'assemblyscript'
+
     if (this.isNode) {
-      return './lib/wasm/index.wasm'
+      return useAS ? './lib/wasm/mathjs-as.wasm' : './lib/wasm/mathjs.wasm'
     } else {
-      return new URL('../../lib/wasm/index.wasm', import.meta.url).href
+      const wasmFile = useAS ? 'mathjs-as.wasm' : 'mathjs.wasm'
+      return new URL(`../../lib/wasm/${wasmFile}`, import.meta.url).href
     }
   }
 
