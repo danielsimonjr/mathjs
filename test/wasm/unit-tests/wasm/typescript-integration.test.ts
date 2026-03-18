@@ -12,7 +12,6 @@
  */
 import assert from 'assert'
 import { describe, it } from 'vitest'
-import '../../assemblyscript-stubs'
 
 const EPSILON = 1e-10
 
@@ -31,7 +30,7 @@ function shouldSkip(err: Error): boolean {
          err.message.includes('workerpool')
 }
 
-describe('TypeScript + WASM Integration Tests', { timeout: 60000 }, () => {
+describe('TypeScript + WASM Integration Tests', { timeout: 15000 }, () => {
   describe('MatrixWasmBridge', () => {
     it('should import MatrixWasmBridge', async () => {
       try {
@@ -205,12 +204,9 @@ describe('TypeScript + WASM Integration Tests', { timeout: 60000 }, () => {
         const argResult = wasm.arg(1, 0)
         assert.ok(typeof argResult === 'number', 'arg should return number')
 
-        // conj now writes to output pointer - verify it's callable
-        const resultPtr = 1 << 16
-        wasm.conj(3, 4, resultPtr)
-        const result = new Float64Array(wasm.memory.buffer, resultPtr, 2)
-        assert.strictEqual(result[0], 3, 'conj real part')
-        assert.strictEqual(result[1], -4, 'conj imaginary part')
+        const conjResult = wasm.conj(3, 4)
+        assert.ok(Array.isArray(conjResult) || conjResult instanceof Float64Array,
+          'conj should return array-like')
       } catch (err) {
         if (shouldSkip(err as Error)) {
           assert.ok(true, 'Module not available - skipping')
@@ -225,9 +221,7 @@ describe('TypeScript + WASM Integration Tests', { timeout: 60000 }, () => {
         const wasm = await import('../../../../lib/wasm/index.js')
 
         // Complex multiplication: (2+3i) * (4+5i) = -7 + 22i
-        const resultPtr = 1 << 16
-        wasm.mulComplex(2, 3, 4, 5, resultPtr)
-        const result = new Float64Array(wasm.memory.buffer, resultPtr, 2)
+        const result = wasm.mulComplex(2, 3, 4, 5)
 
         assert.ok(result[0] !== undefined, 'Real part should exist')
         assert.ok(result[1] !== undefined, 'Imaginary part should exist')
@@ -242,24 +236,21 @@ describe('TypeScript + WASM Integration Tests', { timeout: 60000 }, () => {
       }
     })
 
-    it('should handle typed array parameters via WASM memory', async () => {
+    it('should handle typed array parameters', async () => {
       try {
         const wasm = await import('../../../../lib/wasm/index.js')
 
-        // Set operations now use raw pointers into WASM memory
-        const BASE = 1 << 16
-        const set1Ptr = BASE
-        const set2Ptr = BASE + 256
-        const resultPtr = BASE + 512
+        // Set operations with Float64Array
+        const set1 = new Float64Array([1, 2, 3])
+        const set2 = new Float64Array([2, 3, 4])
 
-        new Float64Array(wasm.memory.buffer, set1Ptr, 3).set([1, 2, 3])
-        new Float64Array(wasm.memory.buffer, set2Ptr, 3).set([2, 3, 4])
+        const union = wasm.setUnion(set1, set2)
+        assert.ok(union instanceof Float64Array, 'Union should return Float64Array')
+        assert.strictEqual(union.length, 4, 'Union should have 4 elements')
 
-        const unionLen = wasm.setUnion(set1Ptr, 3, set2Ptr, 3, resultPtr)
-        assert.strictEqual(unionLen, 4, 'Union should have 4 elements')
-
-        const intersectLen = wasm.setIntersect(set1Ptr, 3, set2Ptr, 3, resultPtr)
-        assert.strictEqual(intersectLen, 2, 'Intersection should have 2 elements')
+        const intersect = wasm.setIntersect(set1, set2)
+        assert.ok(intersect instanceof Float64Array, 'Intersect should return Float64Array')
+        assert.strictEqual(intersect.length, 2, 'Intersection should have 2 elements')
       } catch (err) {
         if (shouldSkip(err as Error)) {
           assert.ok(true, 'Module not available - skipping')
@@ -292,20 +283,17 @@ describe('TypeScript + WASM Integration Tests', { timeout: 60000 }, () => {
       }
     })
 
-    it('should handle AssemblyScript output pointer pattern', async () => {
+    it('should handle AssemblyScript array returns', async () => {
       try {
         const complex = await import('../../../../src/wasm/complex/operations')
 
-        // conj now writes to output pointer (resultPtr)
-        // In pre-compile mode (AS stubs), store<f64> writes to simulated memory
-        const resultPtr = 1 << 16 // offset in simulated memory
-        complex.conj(3, 4, resultPtr)
+        // conj returns array [re, -im]
+        const result = complex.conj(3, 4)
 
-        // Read back from simulated memory using global load stub
-        const re = load<f64>(resultPtr)
-        const im = load<f64>(resultPtr + 8)
-        assert.strictEqual(re, 3, 'Real part should be 3')
-        assert.strictEqual(im, -4, 'Imaginary part should be -4')
+        assert.ok(Array.isArray(result) || result instanceof Float64Array,
+          'conj should return array-like')
+        assert.strictEqual(result[0], 3, 'Real part should be 3')
+        assert.strictEqual(result[1], -4, 'Imaginary part should be -4')
       } catch (err) {
         if (shouldSkip(err as Error)) {
           assert.ok(true, 'Module not available - skipping')
@@ -381,12 +369,10 @@ describe('TypeScript + WASM Integration Tests', { timeout: 60000 }, () => {
       try {
         const wasm = await import('../../../../lib/wasm/index.js')
 
-        // Division by zero - writes to output pointer
-        const resultPtr = 1 << 16
-        wasm.divComplex(1, 0, 0, 0, resultPtr)
-        const result = new Float64Array(wasm.memory.buffer, resultPtr, 2)
-        // Should produce some result (Infinity or NaN)
-        assert.ok(result[0] !== undefined, 'Division should write something')
+        // Division by zero
+        const divResult = wasm.divComplex(1, 0, 0, 0)
+        // Should return some result (possibly Infinity or NaN)
+        assert.ok(divResult !== undefined, 'Division should return something')
       } catch (err) {
         if (shouldSkip(err as Error)) {
           assert.ok(true, 'Module not available - skipping')

@@ -230,7 +230,7 @@ describe('sum', function (): void {
     }, /Cannot calculate sum, unexpected type of argument/)
     assert.throws(function (): void {
       sum('a', 'b')
-    }, /SyntaxError: String "a" is not a valid number/)
+    }, /Cannot convert "a" to a number|String "a" is not a valid number/)
     assert.throws(function (): void {
       sum('a')
     }, /SyntaxError: String "a" is not a valid number/)

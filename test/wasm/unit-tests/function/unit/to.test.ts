@@ -38,8 +38,7 @@ describe('to', function (): void {
   })
 
   describe('Array', function (): void {
-    // Skipped: source-level typed-function signature issue (also fails in mocha)
-    it.skip('should perform the given unit conversion, array - scalar', function (): void {
+    it('should perform the given unit conversion, array - scalar', function (): void {
       approxDeepEqual(
         math.to([unit('1cm'), unit('2 inch'), unit('2km')], unit('foot')),
         [
@@ -109,8 +108,7 @@ describe('to', function (): void {
   })
 
   describe('DenseMatrix', function (): void {
-    // Skipped: source-level typed-function signature issue (also fails in mocha)
-    it.skip('should perform the given unit conversion, dense matrix - scalar', function (): void {
+    it('should perform the given unit conversion, dense matrix - scalar', function (): void {
       approxDeepEqual(
         math.to(
           matrix([unit('1cm'), unit('2 inch'), unit('2km')]),

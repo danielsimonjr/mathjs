@@ -69,28 +69,28 @@ describe('subset', function (): void {
   it("should throw an error if the array of booleans doesn't have the same size as the array", function (): void {
     assert.throws(function (): void {
       subset(a, index([true], 0))
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(a, index([true, true, false], 1))
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(a, index(0, [true]))
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(a, index(0, [true, true, false]))
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(b, index([true], 0))
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(b, index([true, true, false], 1))
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(b, index(0, [true]))
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(b, index(0, [true, true, false]))
-    }, /Error/)
+    }, DimensionError)
   })
 
   it('should return an empty value with an empty index in the parser', function (): void {
@@ -303,28 +303,28 @@ describe('subset', function (): void {
   it('should throw an error if setting the subset of an array with an invalid array of booleans', function (): void {
     assert.throws(function (): void {
       subset(d, index([true], 0), 123)
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(d, index(0, [true, false, true]), 123)
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(g, index([true], 0), 123)
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(g, index(0, [true, false, true]), 123)
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(d, index([true], 0), 123, 1)
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(d, index(0, [true, false, true]), 123, 1)
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(g, index([true], 0), 123, 1)
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       subset(g, index(0, [true, false, true]), 123, 1)
-    }, /Error/)
+    }, DimensionError)
   })
 
   it('should throw an error if setting the subset of an array with an invalid index', function (): void {

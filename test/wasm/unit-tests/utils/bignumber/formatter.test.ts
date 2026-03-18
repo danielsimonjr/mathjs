@@ -13,7 +13,7 @@ describe('format', function (): void {
   describe('format', function (): void {
     let B = null
 
-    beforeAll(function () {
+    before(function () {
       B = BigNumber.clone({ precision: 20 }) // ensure the precision is 20 digits
     })
 

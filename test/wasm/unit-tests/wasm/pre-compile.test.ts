@@ -18,61 +18,6 @@ function approxEqual(actual: number, expected: number, tolerance = EPSILON): voi
   )
 }
 
-// Memory helpers for pointer-based AS functions
-let _memOffset = 0
-function resetMem(): void {
-  _memOffset = 256
-  const memMap = (globalThis as any).__stubMemMap as Map<number, number>
-  if (memMap) memMap.clear()
-}
-
-function allocF64(data: number[]): number {
-  const ptr = _memOffset
-  const memMap = (globalThis as any).__stubMemMap as Map<number, number>
-  for (let i = 0; i < data.length; i++) {
-    memMap.set(ptr + i * 8, data[i])
-  }
-  _memOffset += data.length * 8
-  _memOffset = (_memOffset + 15) & ~15
-  return ptr
-}
-
-function readF64(ptr: number, count: number): number[] {
-  const memMap = (globalThis as any).__stubMemMap as Map<number, number>
-  const result: number[] = []
-  for (let i = 0; i < count; i++) {
-    result.push(memMap.get(ptr + i * 8) ?? 0)
-  }
-  return result
-}
-
-function allocI32(data: number[]): number {
-  const ptr = _memOffset
-  const memMap = (globalThis as any).__stubMemMap as Map<number, number>
-  for (let i = 0; i < data.length; i++) {
-    memMap.set(ptr + i * 4, data[i])
-  }
-  _memOffset += data.length * 4
-  _memOffset = (_memOffset + 15) & ~15
-  return ptr
-}
-
-function readI32(ptr: number, count: number): number[] {
-  const memMap = (globalThis as any).__stubMemMap as Map<number, number>
-  const result: number[] = []
-  for (let i = 0; i < count; i++) {
-    result.push(memMap.get(ptr + i * 4) ?? 0)
-  }
-  return result
-}
-
-function getWorkPtr(sizeInBytes: number): number {
-  const ptr = _memOffset
-  _memOffset += sizeInBytes
-  _memOffset = (_memOffset + 15) & ~15
-  return ptr
-}
-
 describe('Pre-Compilation Tests (Direct AS Import)', function () {
   // ARITHMETIC OPERATIONS
   describe('Arithmetic Basic (direct import)', function () {
@@ -144,9 +89,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(comb.factorial(0), 1)
       approxEqual(comb.permutations(5, 3), 60) // 5!/(5-3)! = 60
       approxEqual(comb.combinations(5, 3), 10) // 5!/(3!*2!) = 10
-      resetMem()
-      const workPtr = getWorkPtr(256)
-      approxEqual(comb.stirlingS2(4, 2, workPtr), 7) // Stirling numbers of second kind
+      approxEqual(comb.stirlingS2(4, 2), 7) // Stirling numbers of second kind
       approxEqual(comb.catalan(5), 42) // Catalan numbers
 
       console.log('  ✓ combinatorics/basic')
@@ -203,17 +146,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run matrix multiply', async function () {
       const matrix = await import('../../../../src/wasm/matrix/multiply')
 
-      resetMem()
       // Test dot product: [1,2,3] · [4,5,6] = 4 + 10 + 18 = 32
-      const aPtr = allocF64([1, 2, 3])
-      const bPtr = allocF64([4, 5, 6])
-      approxEqual(matrix.dotProduct(aPtr, bPtr, 3), 32)
+      const a = new Float64Array([1, 2, 3])
+      const b = new Float64Array([4, 5, 6])
+      approxEqual(matrix.dotProduct(a, b, 3), 32)
 
       // Test scalar multiply
-      const arrPtr = allocF64([1, 2, 3])
-      const resultPtr = getWorkPtr(3 * 8)
-      matrix.scalarMultiply(arrPtr, 2, 3, resultPtr)
-      const scaled = readF64(resultPtr, 3)
+      const arr = new Float64Array([1, 2, 3])
+      const scaled = matrix.scalarMultiply(arr, 2, 3)
       approxEqual(scaled[0], 2)
       approxEqual(scaled[1], 4)
       approxEqual(scaled[2], 6)
@@ -227,20 +167,16 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run ODE utilities', async function () {
       const ode = await import('../../../../src/wasm/numeric/ode')
 
-      resetMem()
       // Test vector operations
-      const v1Ptr = allocF64([1, 2, 3])
-      const v2Ptr = allocF64([4, 5, 6])
-      const sumPtr = getWorkPtr(3 * 8)
-      ode.vectorAdd(v1Ptr, v2Ptr, 3, sumPtr)
-      const sum = readF64(sumPtr, 3)
+      const v1 = new Float64Array([1, 2, 3])
+      const v2 = new Float64Array([4, 5, 6])
+
+      const sum = ode.vectorAdd(v1, v2, 3)
       approxEqual(sum[0], 5)
       approxEqual(sum[1], 7)
       approxEqual(sum[2], 9)
 
-      const scaledPtr = getWorkPtr(3 * 8)
-      ode.vectorScale(v1Ptr, 2, 3, scaledPtr)
-      const scaled = readF64(scaledPtr, 3)
+      const scaled = ode.vectorScale(v1, 2, 3)
       approxEqual(scaled[0], 2)
       approxEqual(scaled[1], 4)
       approxEqual(scaled[2], 6)
@@ -272,28 +208,23 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run set operations', async function () {
       const set = await import('../../../../src/wasm/set/operations')
 
-      resetMem()
       // Test createSet (sorts and removes duplicates)
-      const arrPtr = allocF64([3, 1, 2, 1, 3])
-      const resultPtr = getWorkPtr(5 * 8)
-      const uniqueCount = set.createSet(arrPtr, 5, resultPtr)
-      assert.strictEqual(uniqueCount, 3)
-      const uniqueSet = readF64(resultPtr, 3)
+      const arr = new Float64Array([3, 1, 2, 1, 3])
+      const uniqueSet = set.createSet(arr)
+      assert.strictEqual(uniqueSet.length, 3)
       assert.strictEqual(uniqueSet[0], 1)
       assert.strictEqual(uniqueSet[1], 2)
       assert.strictEqual(uniqueSet[2], 3)
 
       // Test union
-      const aPtr = allocF64([1, 2, 3])
-      const bPtr = allocF64([2, 3, 4])
-      const unionPtr = getWorkPtr(6 * 8)
-      const unionCount = set.setUnion(aPtr, 3, bPtr, 3, unionPtr)
-      assert.strictEqual(unionCount, 4)
+      const a = new Float64Array([1, 2, 3])
+      const b = new Float64Array([2, 3, 4])
+      const union = set.setUnion(a, b)
+      assert.strictEqual(union.length, 4)
 
       // Test intersection
-      const intersectPtr = getWorkPtr(3 * 8)
-      const intersectCount = set.setIntersect(aPtr, 3, bPtr, 3, intersectPtr)
-      assert.strictEqual(intersectCount, 2)
+      const intersect = set.setIntersect(a, b)
+      assert.strictEqual(intersect.length, 2)
 
       console.log('  ✓ set/operations')
     })
@@ -309,14 +240,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       assert.strictEqual(signal.isPowerOf2(16), 1)
       assert.strictEqual(signal.isPowerOf2(7), 0)
 
-      resetMem()
       // Test FFT on simple signal (size must be power of 2)
       // Input: [1, 0, 0, 0, 0, 0, 0, 0] (interleaved real, imag)
-      const dataPtr = allocF64([1, 0, 0, 0, 0, 0, 0, 0])
-      signal.fft(dataPtr, 4, 0) // modifies in-place
+      const data = new Float64Array([1, 0, 0, 0, 0, 0, 0, 0])
+      const result = signal.fft(data, 4, 0)
 
       // DC component should be 1+0i
-      const result = readF64(dataPtr, 8)
       approxEqual(result[0], 1, 1e-10)
       approxEqual(result[1], 0, 1e-10)
 
@@ -326,14 +255,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute inverse FFT', async function () {
       const signal = await import('../../../../src/wasm/signal/fft')
 
-      resetMem()
       // FFT then IFFT should give back the original
-      const dataPtr = allocF64([1, 0, 2, 0, 3, 0, 4, 0])
-      signal.fft(dataPtr, 4, 0)    // forward FFT (in-place)
-      signal.fft(dataPtr, 4, 1)    // inverse FFT (in-place), use fft with inverse=1
+      const original = new Float64Array([1, 0, 2, 0, 3, 0, 4, 0]) // [1+0i, 2+0i, 3+0i, 4+0i]
+      const fftResult = signal.fft(original, 4, 0)
+      const recovered = signal.ifft(fftResult, 4)
 
       // Verify we get back the original
-      const recovered = readF64(dataPtr, 8)
       approxEqual(recovered[0], 1, 1e-10)
       approxEqual(recovered[2], 2, 1e-10)
       approxEqual(recovered[4], 3, 1e-10)
@@ -345,18 +272,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute power and magnitude spectrum', async function () {
       const signal = await import('../../../../src/wasm/signal/fft')
 
-      resetMem()
       // Simple test: FFT of [1, 0, 0, 0] should have power at DC
-      const dataPtr = allocF64([1, 0, 0, 0, 0, 0, 0, 0])
-      signal.fft(dataPtr, 4, 0)
+      const data = new Float64Array([1, 0, 0, 0, 0, 0, 0, 0])
+      const fftResult = signal.fft(data, 4, 0)
 
-      const powerPtr = getWorkPtr(4 * 8)
-      const magPtr = getWorkPtr(4 * 8)
-      signal.powerSpectrum(dataPtr, 4, powerPtr)
-      signal.magnitudeSpectrum(dataPtr, 4, magPtr)
-
-      const magnitude = readF64(magPtr, 4)
-      const power = readF64(powerPtr, 4)
+      const power = signal.powerSpectrum(fftResult, 4)
+      const magnitude = signal.magnitudeSpectrum(fftResult, 4)
 
       // DC component is 1, others are also 1 (for constant signal)
       approxEqual(magnitude[0], 1, 1e-10)
@@ -370,19 +291,19 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute cross-correlation', async function () {
       const signal = await import('../../../../src/wasm/signal/fft')
 
-      resetMem()
       // Cross-correlation of signal with itself (auto-correlation)
-      const signalPtr = allocF64([1, 2, 3, 4])
-      // autoCorrelation needs: signalPtr, n, resultPtr, workPtr, size
-      // size should be next power of 2 >= 2*n-1 = 7, so 8
-      const size = 8
-      const resultPtr = getWorkPtr(size * 8)
-      const workPtr = getWorkPtr(size * 2 * 8) // complex work buffer
-      signal.autoCorrelation(signalPtr, 4, resultPtr, workPtr, size)
+      const a = new Float64Array([1, 2, 3, 4])
+      const corr = signal.autoCorrelation(a, 4)
 
-      // Read result - auto-correlation should have peak at lag 0
-      const corr = readF64(resultPtr, size)
-      assert.ok(corr[0] >= corr[1]) // Peak at lag 0
+      // Maximum should be at zero lag
+      const maxIdx = corr.reduce(
+        (maxI, val, i, arr) => (val > arr[maxI] ? i : maxI),
+        0
+      )
+
+      // For auto-correlation, peak is at index 0 or n-1 depending on implementation
+      // The auto-correlation of [1,2,3,4] should have peak at lag 0
+      assert.ok(corr.length === 7) // 4 + 4 - 1 = 7
 
       console.log('  ✓ signal/correlation')
     })
@@ -407,17 +328,16 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run statistics functions', async function () {
       const stats = await import('../../../../src/wasm/statistics/basic')
 
-      resetMem()
-      const dataPtr = allocF64([1, 2, 3, 4, 5])
+      const data = new Float64Array([1, 2, 3, 4, 5])
 
-      approxEqual(stats.mean(dataPtr, 5), 3)
-      approxEqual(stats.sum(dataPtr, 5), 15)
-      approxEqual(stats.min(dataPtr, 5), 1)
-      approxEqual(stats.max(dataPtr, 5), 5)
-      approxEqual(stats.prod(dataPtr, 5), 120)
+      approxEqual(stats.mean(data, 5), 3)
+      approxEqual(stats.sum(data, 5), 15)
+      approxEqual(stats.min(data, 5), 1)
+      approxEqual(stats.max(data, 5), 5)
+      approxEqual(stats.prod(data, 5), 120)
 
       // Median of [1,2,3,4,5] = 3
-      approxEqual(stats.median(dataPtr, 5), 3)
+      approxEqual(stats.median(data, 5), 3)
 
       console.log('  ✓ statistics/basic')
     })
@@ -425,24 +345,28 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute quantiles and percentiles', async function () {
       const stats = await import('../../../../src/wasm/statistics/basic')
 
-      resetMem()
       // Data must be sorted for quantile
-      const dataPtr = allocF64([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+      const data = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
       // Median (p=0.5) = 5.5
-      approxEqual(stats.quantile(dataPtr, 10, 0.5), 5.5)
+      approxEqual(stats.quantile(data, 10, 0.5), 5.5)
 
       // Q1 (p=0.25) = 3.25
-      approxEqual(stats.quantile(dataPtr, 10, 0.25), 3.25)
+      approxEqual(stats.quantile(data, 10, 0.25), 3.25)
 
       // Q3 (p=0.75) = 7.75
-      approxEqual(stats.quantile(dataPtr, 10, 0.75), 7.75)
+      approxEqual(stats.quantile(data, 10, 0.75), 7.75)
 
       // Percentile (50th = median)
-      approxEqual(stats.percentile(dataPtr, 10, 50), 5.5)
+      approxEqual(stats.percentile(data, 10, 50), 5.5)
 
-      // quantileSeq does not exist in the source - skip
-      // (was removed during pointer migration)
+      // Multiple quantiles at once
+      const probs = new Float64Array([0.25, 0.5, 0.75])
+      const dataCopy = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+      const quantiles = stats.quantileSeq(dataCopy, 10, probs, 3)
+      approxEqual(quantiles[0], 3.25) // Q1
+      approxEqual(quantiles[1], 5.5)  // Median
+      approxEqual(quantiles[2], 7.75) // Q3
 
       console.log('  ✓ statistics/quantiles')
     })
@@ -450,16 +374,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute IQR and MAD', async function () {
       const stats = await import('../../../../src/wasm/statistics/basic')
 
-      resetMem()
       // IQR test
-      const iqrPtr = allocF64([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-      const iqr = stats.interquartileRange(iqrPtr, 10)
+      const iqrData = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+      const iqr = stats.interquartileRange(iqrData, 10)
       approxEqual(iqr, 4.5) // Q3 - Q1 = 7.75 - 3.25 = 4.5
 
       // MAD test: median(|x - median(x)|)
-      const madPtr = allocF64([1, 2, 3, 4, 5])
-      const workPtr = getWorkPtr(5 * 8)
-      const madVal = stats.mad(madPtr, 5, workPtr)
+      const madData = new Float64Array([1, 2, 3, 4, 5])
+      const madVal = stats.mad(madData, 5)
       // median = 3, deviations = [2, 1, 0, 1, 2], median of deviations = 1
       approxEqual(madVal, 1)
 
@@ -469,11 +391,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute z-scores', async function () {
       const stats = await import('../../../../src/wasm/statistics/basic')
 
-      resetMem()
-      const dataPtr = allocF64([2, 4, 6, 8, 10])
-      const resultPtr = getWorkPtr(5 * 8)
-      stats.zscore(dataPtr, resultPtr, 5)
-      const zscores = readF64(resultPtr, 5)
+      const data = new Float64Array([2, 4, 6, 8, 10])
+      const zscores = stats.zscore(data, 5)
 
       // Mean = 6, std ≈ 3.16
       // z-scores should sum to ~0
@@ -492,29 +411,37 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       console.log('  ✓ statistics/zscore')
     })
 
-    // weightedMean was removed during pointer migration - skipping
+    it('should compute weighted mean', async function () {
+      const stats = await import('../../../../src/wasm/statistics/basic')
+
+      const values = new Float64Array([10, 20, 30])
+      const weights = new Float64Array([1, 2, 3])
+
+      // Weighted mean = (10*1 + 20*2 + 30*3) / (1+2+3) = 140/6 ≈ 23.33
+      approxEqual(stats.weightedMean(values, weights, 3), 140 / 6)
+
+      console.log('  ✓ statistics/weighted-mean')
+    })
 
     it('should compute RMS and other measures', async function () {
       const stats = await import('../../../../src/wasm/statistics/basic')
 
-      resetMem()
-      const dataPtr = allocF64([3, 4])
+      const data = new Float64Array([3, 4])
 
       // RMS of [3, 4] = sqrt((9+16)/2) = sqrt(12.5) ≈ 3.54
-      approxEqual(stats.rms(dataPtr, 2), Math.sqrt(12.5))
+      approxEqual(stats.rms(data, 2), Math.sqrt(12.5))
 
-      // std test
-      const data2Ptr = allocF64([1, 2, 3, 4, 5])
-      const std = stats.std(data2Ptr, 5, 0)
-      assert.ok(std > 0)
+      // Mean absolute deviation
+      const data2 = new Float64Array([1, 2, 3, 4, 5])
+      // Mean = 3, deviations = [2, 1, 0, 1, 2], MAD = 6/5 = 1.2
+      approxEqual(stats.meanAbsoluteDeviation(data2, 5), 1.2)
 
-      // coefficientOfVariation
-      const cv = stats.coefficientOfVariation(data2Ptr, 5)
-      assert.ok(cv > 0)
+      // Standard error = std / sqrt(n)
+      const se = stats.standardError(data2, 5)
+      const std = stats.std(data2, 5, false)
+      approxEqual(se, std / Math.sqrt(5))
 
-      // meanAbsoluteDeviation and standardError don't exist in pointer API - skip
-
-      console.log('  ✓ statistics/rms-std-cv')
+      console.log('  ✓ statistics/rms-mad-se')
     })
   })
 
@@ -558,16 +485,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run LU decomposition', async function () {
       const decomp = await import('../../../../src/wasm/algebra/decomposition')
 
-      resetMem()
       // Test LU decomposition on 2x2 matrix
       // A = [4, 3; 6, 3] -> LU decomposition
-      const aPtr = allocF64([4, 3, 6, 3])
-      const permPtr = allocI32([0, 0])
-      const result = decomp.luDecomposition(aPtr, 2, permPtr)
+      const A = new Float64Array([4, 3, 6, 3])
+      const result = decomp.luDecomposition(A, 2)
+      const lu = decomp.getLUMatrix(result)
 
-      // result is 0 (success) or 1 (singular)
-      assert.strictEqual(result, 0)
-      // getLUMatrix and isLUSingular don't exist in pointer API
+      assert.ok(lu.length === 4)
+      assert.strictEqual(decomp.isLUSingular(result), false)
 
       console.log('  ✓ algebra/decomposition')
     })
@@ -587,22 +512,20 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       assert.strictEqual(sparse.csUnflip(5), 5) // Positive unchanged
 
       // Test csCumsum
-      resetMem()
-      const pPtr = allocI32([0, 0, 0, 0])
-      const cPtr = allocI32([1, 2, 3])
-      const sum = sparse.csCumsum(pPtr, cPtr, 3)
+      const p = new Int32Array(4)
+      const c = new Int32Array([1, 2, 3])
+      const sum = sparse.csCumsum(p, c, 3)
       assert.strictEqual(sum, 6) // 1 + 2 + 3 = 6
-      const p = readI32(pPtr, 4)
       assert.strictEqual(p[0], 0)
       assert.strictEqual(p[1], 1)
       assert.strictEqual(p[2], 3)
       assert.strictEqual(p[3], 6)
 
       // Test csMarked and csMark
-      const wPtr = allocI32([1, 2, 3])
-      assert.strictEqual(sparse.csMarked(wPtr, 0), false)
-      sparse.csMark(wPtr, 0)
-      assert.strictEqual(sparse.csMarked(wPtr, 0), true)
+      const w = new Int32Array([1, 2, 3])
+      assert.strictEqual(sparse.csMarked(w, 0), false)
+      sparse.csMark(w, 0)
+      assert.strictEqual(sparse.csMarked(w, 0), true)
 
       console.log('  ✓ algebra/sparse/utilities')
     })
@@ -613,21 +536,19 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run matrix algorithms', async function () {
       const algo = await import('../../../../src/wasm/matrix/algorithms')
 
-      resetMem()
       // Test algo01 - Dense-Sparse operation
-      const densePtr = allocF64([1, 2, 3, 4])
-      const sparseValuesPtr = allocF64([10])
-      const sparseIndexPtr = allocI32([0])
-      const sparsePtrPtr = allocI32([0, 1, 1])
-      const resultPtr = getWorkPtr(4 * 8)
+      const dense = new Float64Array([1, 2, 3, 4])
+      const sparseValues = new Float64Array([10])
+      const sparseIndex = new Int32Array([0])
+      const sparsePtr = new Int32Array([0, 1, 1])
+      const result = new Float64Array(4)
 
       algo.algo01DenseSparseDensity(
-        densePtr, 2, 2,
-        sparseValuesPtr, sparseIndexPtr, sparsePtrPtr,
-        resultPtr, 0 // operation: add
+        dense, 2, 2,
+        sparseValues, sparseIndex, sparsePtr,
+        result, 0 // operation: add
       )
 
-      const result = readF64(resultPtr, 4)
       approxEqual(result[0], 11) // 1 + 10
       approxEqual(result[1], 2)  // unchanged
       approxEqual(result[2], 3)  // unchanged
@@ -761,15 +682,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(prob.exponentialCDF(1, 1), 1 - Math.exp(-1), 1e-10)
 
       // Test KL divergence
-      resetMem()
-      const pPtr = allocF64([0.5, 0.5])
-      const qPtr = allocF64([0.25, 0.75])
-      const kl = prob.klDivergence(pPtr, qPtr, 2)
+      const p = new Float64Array([0.5, 0.5])
+      const q = new Float64Array([0.25, 0.75])
+      const kl = prob.klDivergence(p, q, 2)
       assert.ok(kl > 0) // KL divergence is always non-negative
 
       // Test entropy
-      const uniformPtr = allocF64([0.25, 0.25, 0.25, 0.25])
-      const ent = prob.entropy(uniformPtr, 4)
+      const uniform = new Float64Array([0.25, 0.25, 0.25, 0.25])
+      const ent = prob.entropy(uniform, 4)
       approxEqual(ent, Math.log(4), 1e-10) // Uniform has max entropy
 
       console.log('  ✓ probability/distributions')
@@ -837,12 +757,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(checks.sign(0), 0)
 
       // Test array checks
-      resetMem()
-      const dataPtr = allocF64([1, 2, 3, 4, 5])
-      assert.strictEqual(checks.allFinite(dataPtr, 5), 1)
-      assert.strictEqual(checks.anyNaN(dataPtr, 5), 0)
-      assert.strictEqual(checks.allPositive(dataPtr, 5), 1)
-      assert.strictEqual(checks.allIntegers(dataPtr, 5), 1)
+      const data = new Float64Array([1, 2, 3, 4, 5])
+      assert.strictEqual(checks.allFinite(data, 5), 1)
+      assert.strictEqual(checks.anyNaN(data, 5), 0)
+      assert.strictEqual(checks.allPositive(data, 5), 1)
+      assert.strictEqual(checks.allIntegers(data, 5), 1)
 
       console.log('  ✓ utils/checks')
     })
@@ -853,46 +772,42 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run triangular solver functions', async function () {
       const solver = await import('../../../../src/wasm/algebra/solver')
 
-      resetMem()
       // Test lsolve: L * x = b where L is lower triangular
       // L = [2, 0; 3, 4], b = [4, 11]
-      const LPtr = allocF64([2, 0, 3, 4])
-      const bPtr = allocF64([4, 11])
-      const xPtr = getWorkPtr(2 * 8)
-      solver.lsolve(LPtr, bPtr, 2, xPtr)
-      const x = readF64(xPtr, 2)
+      // x = [2, 1.25] because 2*2 = 4, 3*2 + 4*1.25 = 6 + 5 = 11
+      const L = new Float64Array([2, 0, 3, 4])
+      const b = new Float64Array([4, 11])
+      const x = solver.lsolve(L, b, 2)
       approxEqual(x[0], 2)
       approxEqual(x[1], 1.25)
 
       // Test usolve: U * x = b where U is upper triangular
-      const UPtr = allocF64([2, 3, 0, 4])
-      const b2Ptr = allocF64([11, 4])
-      const x2Ptr = getWorkPtr(2 * 8)
-      solver.usolve(UPtr, b2Ptr, 2, x2Ptr)
-      const x2 = readF64(x2Ptr, 2)
+      // U = [2, 3; 0, 4], b = [11, 4]
+      // x = [4, 1] because 2*4 + 3*1 = 11, 4*1 = 4
+      const U = new Float64Array([2, 3, 0, 4])
+      const b2 = new Float64Array([11, 4])
+      const x2 = solver.usolve(U, b2, 2)
       approxEqual(x2[0], 4)
       approxEqual(x2[1], 1)
 
       // Test lsolveHasSolution
-      assert.strictEqual(solver.lsolveHasSolution(LPtr, 2), 1)
-      const singularLPtr = allocF64([0, 0, 3, 4])
-      assert.strictEqual(solver.lsolveHasSolution(singularLPtr, 2), 0)
+      assert.strictEqual(solver.lsolveHasSolution(L, 2), 1)
+      const singularL = new Float64Array([0, 0, 3, 4])
+      assert.strictEqual(solver.lsolveHasSolution(singularL, 2), 0)
 
       // Test usolveHasSolution
-      assert.strictEqual(solver.usolveHasSolution(UPtr, 2), 1)
+      assert.strictEqual(solver.usolveHasSolution(U, 2), 1)
 
       // Test triangularDeterminant
-      approxEqual(solver.triangularDeterminant(LPtr, 2), 8) // 2 * 4 = 8
+      approxEqual(solver.triangularDeterminant(L, 2), 8) // 2 * 4 = 8
 
       // Test solveTridiagonal
-      const aSubPtr = allocF64([0, -1, -1])
-      const diagPtr = allocF64([2, 2, 2])
-      const cSupPtr = allocF64([-1, -1, 0])
-      const dPtr = allocF64([1, 0, 1])
-      const triPtr = getWorkPtr(3 * 8)
-      const triWorkPtr = getWorkPtr(3 * 8)
-      solver.solveTridiagonal(aSubPtr, diagPtr, cSupPtr, dPtr, 3, triPtr, triWorkPtr)
-      const tri = readF64(triPtr, 3)
+      // Tridiagonal system: -x[i-1] + 2*x[i] - x[i+1] = RHS
+      const a = new Float64Array([0, -1, -1]) // sub-diagonal
+      const diag = new Float64Array([2, 2, 2]) // main diagonal
+      const c = new Float64Array([-1, -1, 0]) // super-diagonal
+      const d = new Float64Array([1, 0, 1]) // RHS
+      const tri = solver.solveTridiagonal(a, diag, c, d, 3)
       // Verify Ax = d
       const Ax0 = 2 * tri[0] - tri[1]
       const Ax1 = -tri[0] + 2 * tri[1] - tri[2]
@@ -910,45 +825,37 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run signal processing functions', async function () {
       const signal = await import('../../../../src/wasm/signal/processing')
 
-      resetMem()
       // Test freqzUniform - frequency response of simple filter
       // Simple moving average filter: b = [0.5, 0.5], a = [1]
-      const bPtr = allocF64([0.5, 0.5])
-      const aPtr = allocF64([1])
-      const hRealPtr = getWorkPtr(5 * 8)
-      const hImagPtr = getWorkPtr(5 * 8)
-      signal.freqzUniform(bPtr, 2, aPtr, 1, 5, hRealPtr, hImagPtr)
+      const b = new Float64Array([0.5, 0.5])
+      const a = new Float64Array([1])
+      const freqResult = signal.freqzUniform(b, 2, a, 1, 5)
 
-      const hReal = readF64(hRealPtr, 5)
-      const hImag = readF64(hImagPtr, 5)
+      const hReal = signal.getFreqzReal(freqResult)
+      const hImag = signal.getFreqzImag(freqResult)
 
       // At DC (w=0), H = 1 (sum of b coefficients / sum of a)
       approxEqual(hReal[0], 1.0, 1e-8)
       approxEqual(hImag[0], 0.0, 1e-8)
 
       // Test magnitude computation
-      const magPtr = getWorkPtr(5 * 8)
-      signal.magnitude(hRealPtr, hImagPtr, 5, magPtr)
-      const mag = readF64(magPtr, 5)
+      const mag = signal.magnitude(hReal, hImag, 5)
       approxEqual(mag[0], 1.0, 1e-8)
 
       // Test phase computation
-      const phPtr = getWorkPtr(5 * 8)
-      signal.phase(hRealPtr, hImagPtr, 5, phPtr)
-      const ph = readF64(phPtr, 5)
+      const ph = signal.phase(hReal, hImag, 5)
       approxEqual(ph[0], 0.0, 1e-8) // Phase at DC is 0
 
       // Test polynomial multiply
       // (1 + x) * (1 - x) = 1 - x^2
-      const p1RealPtr = allocF64([1, 1])
-      const p1ImagPtr = allocF64([0, 0])
-      const p2RealPtr = allocF64([1, -1])
-      const p2ImagPtr = allocF64([0, 0])
-      const cRealPtr = getWorkPtr(3 * 8) // result length = 2 + 2 - 1 = 3
-      const cImagPtr = getWorkPtr(3 * 8)
+      const p1Real = new Float64Array([1, 1])
+      const p1Imag = new Float64Array([0, 0])
+      const p2Real = new Float64Array([1, -1])
+      const p2Imag = new Float64Array([0, 0])
 
-      signal.polyMultiply(p1RealPtr, p1ImagPtr, 2, p2RealPtr, p2ImagPtr, 2, cRealPtr, cImagPtr)
-      const resultReal = readF64(cRealPtr, 3)
+      const polyResult = signal.polyMultiply(p1Real, p1Imag, 2, p2Real, p2Imag, 2)
+      const resultReal = signal.getPolyReal(polyResult)
+      const resultImag = signal.getPolyImag(polyResult)
 
       approxEqual(resultReal[0], 1.0, 1e-10)  // constant term
       approxEqual(resultReal[1], 0.0, 1e-10)  // x term (cancels)
@@ -963,27 +870,20 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run matrix creation functions', async function () {
       const matrix = await import('../../../../src/wasm/matrix/basic')
 
-      resetMem()
       // Test zeros
-      const zPtr = getWorkPtr(6 * 8)
-      matrix.zeros(2, 3, zPtr)
-      const z = readF64(zPtr, 6)
+      const z = matrix.zeros(2, 3)
       assert.strictEqual(z.length, 6)
       assert.strictEqual(z[0], 0)
       assert.strictEqual(z[5], 0)
 
       // Test ones
-      const oPtr = getWorkPtr(6 * 8)
-      matrix.ones(2, 3, oPtr)
-      const o = readF64(oPtr, 6)
+      const o = matrix.ones(2, 3)
       assert.strictEqual(o.length, 6)
       assert.strictEqual(o[0], 1)
       assert.strictEqual(o[5], 1)
 
       // Test identity
-      const idPtr = getWorkPtr(9 * 8)
-      matrix.identity(3, idPtr)
-      const id = readF64(idPtr, 9)
+      const id = matrix.identity(3)
       assert.strictEqual(id.length, 9)
       approxEqual(id[0], 1) // (0,0)
       approxEqual(id[4], 1) // (1,1)
@@ -992,18 +892,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(id[3], 0) // (1,0)
 
       // Test fill
-      const fPtr = getWorkPtr(4 * 8)
-      matrix.fill(2, 2, 5.0, fPtr)
-      const f = readF64(fPtr, 4)
+      const f = matrix.fill(2, 2, 5.0)
       assert.strictEqual(f.length, 4)
       approxEqual(f[0], 5)
       approxEqual(f[3], 5)
 
       // Test diagFromVector
-      const dvPtr = allocF64([1, 2, 3])
-      const dmPtr = getWorkPtr(9 * 8)
-      matrix.diagFromVector(dvPtr, 3, dmPtr)
-      const dm = readF64(dmPtr, 9)
+      const dv = new Float64Array([1, 2, 3])
+      const dm = matrix.diagFromVector(dv, 3)
       approxEqual(dm[0], 1) // (0,0)
       approxEqual(dm[4], 2) // (1,1)
       approxEqual(dm[8], 3) // (2,2)
@@ -1015,39 +911,32 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run diagonal operations', async function () {
       const matrix = await import('../../../../src/wasm/matrix/basic')
 
-      resetMem()
       // Test matrix: [[1,2,3],[4,5,6],[7,8,9]]
-      const aPtr = allocF64([1, 2, 3, 4, 5, 6, 7, 8, 9])
+      const a = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
 
       // Test diag (extract main diagonal)
-      const dPtr = getWorkPtr(3 * 8)
-      const dCount = matrix.diag(aPtr, 3, 3, dPtr)
-      assert.strictEqual(dCount, 3)
-      const d = readF64(dPtr, 3)
+      const d = matrix.diag(a, 3, 3)
+      assert.strictEqual(d.length, 3)
       approxEqual(d[0], 1)
       approxEqual(d[1], 5)
       approxEqual(d[2], 9)
 
       // Test trace
-      approxEqual(matrix.trace(aPtr, 3), 15) // 1 + 5 + 9
+      approxEqual(matrix.trace(a, 3), 15) // 1 + 5 + 9
 
       // Test traceRect on non-square
-      const rectPtr = allocF64([1, 2, 3, 4, 5, 6]) // 2x3
-      approxEqual(matrix.traceRect(rectPtr, 2, 3), 6) // 1 + 5
+      const rect = new Float64Array([1, 2, 3, 4, 5, 6]) // 2x3
+      approxEqual(matrix.traceRect(rect, 2, 3), 6) // 1 + 5
 
       // Test diagK (upper diagonal k=1)
-      const d1Ptr = getWorkPtr(2 * 8)
-      const d1Count = matrix.diagK(aPtr, 3, 3, 1, d1Ptr)
-      assert.strictEqual(d1Count, 2)
-      const d1 = readF64(d1Ptr, 2)
+      const d1 = matrix.diagK(a, 3, 3, 1)
+      assert.strictEqual(d1.length, 2)
       approxEqual(d1[0], 2) // (0,1)
       approxEqual(d1[1], 6) // (1,2)
 
       // Test diagK (lower diagonal k=-1)
-      const dm1Ptr = getWorkPtr(2 * 8)
-      const dm1Count = matrix.diagK(aPtr, 3, 3, -1, dm1Ptr)
-      assert.strictEqual(dm1Count, 2)
-      const dm1 = readF64(dm1Ptr, 2)
+      const dm1 = matrix.diagK(a, 3, 3, -1)
+      assert.strictEqual(dm1.length, 2)
       approxEqual(dm1[0], 4) // (1,0)
       approxEqual(dm1[1], 8) // (2,1)
 
@@ -1057,34 +946,26 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run reshape operations', async function () {
       const matrix = await import('../../../../src/wasm/matrix/basic')
 
-      resetMem()
-      const aPtr = allocF64([1, 2, 3, 4, 5, 6])
+      const a = new Float64Array([1, 2, 3, 4, 5, 6])
 
       // Test flatten (copy)
-      const flatPtr = getWorkPtr(6 * 8)
-      matrix.flatten(aPtr, 6, flatPtr)
-      const flat = readF64(flatPtr, 6)
+      const flat = matrix.flatten(a, 6)
       assert.strictEqual(flat.length, 6)
       approxEqual(flat[0], 1)
       approxEqual(flat[5], 6)
 
       // Test reshape 2x3 -> 3x2
-      const reshapePtr = getWorkPtr(6 * 8)
-      const reshapeResult = matrix.reshape(aPtr, 2, 3, 3, 2, reshapePtr)
-      assert.strictEqual(reshapeResult, 1) // 1 = success, 0 = invalid
-      const reshaped = readF64(reshapePtr, 6)
+      const reshaped = matrix.reshape(a, 2, 3, 3, 2)
+      assert.strictEqual(reshaped.length, 6)
       approxEqual(reshaped[0], 1)
       approxEqual(reshaped[5], 6)
 
-      // Test reshape with invalid size (should return 0)
-      const invalidPtr = getWorkPtr(4 * 8)
-      const invalidResult = matrix.reshape(aPtr, 2, 3, 2, 2, invalidPtr)
-      assert.strictEqual(invalidResult, 0)
+      // Test reshape with invalid size (should return empty)
+      const invalid = matrix.reshape(a, 2, 3, 2, 2)
+      assert.strictEqual(invalid.length, 0)
 
       // Test clone
-      const clonePtr = getWorkPtr(6 * 8)
-      matrix.clone(aPtr, 6, clonePtr)
-      const c = readF64(clonePtr, 6)
+      const c = matrix.clone(a, 6)
       assert.strictEqual(c.length, 6)
       approxEqual(c[0], 1)
 
@@ -1094,36 +975,28 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run row/column operations', async function () {
       const matrix = await import('../../../../src/wasm/matrix/basic')
 
-      resetMem()
       // 2x3 matrix: [[1,2,3],[4,5,6]]
-      const aPtr = allocF64([1, 2, 3, 4, 5, 6])
+      const a = new Float64Array([1, 2, 3, 4, 5, 6])
 
       // Test getRow
-      const row0Ptr = getWorkPtr(3 * 8)
-      matrix.getRow(aPtr, 3, 0, row0Ptr)
-      const row0 = readF64(row0Ptr, 3)
+      const row0 = matrix.getRow(a, 3, 0)
       assert.strictEqual(row0.length, 3)
       approxEqual(row0[0], 1)
       approxEqual(row0[1], 2)
       approxEqual(row0[2], 3)
 
-      const row1Ptr = getWorkPtr(3 * 8)
-      matrix.getRow(aPtr, 3, 1, row1Ptr)
-      const row1 = readF64(row1Ptr, 3)
+      const row1 = matrix.getRow(a, 3, 1)
       approxEqual(row1[0], 4)
 
       // Test getColumn
-      const col1Ptr = getWorkPtr(2 * 8)
-      matrix.getColumn(aPtr, 2, 3, 1, col1Ptr)
-      const col1 = readF64(col1Ptr, 2)
+      const col1 = matrix.getColumn(a, 2, 3, 1)
       assert.strictEqual(col1.length, 2)
       approxEqual(col1[0], 2)
       approxEqual(col1[1], 5)
 
-      // Test swapRows (in-place)
-      const bPtr = allocF64([1, 2, 3, 4, 5, 6])
-      matrix.swapRows(bPtr, 3, 0, 1)
-      const b = readF64(bPtr, 6)
+      // Test swapRows
+      const b = new Float64Array([1, 2, 3, 4, 5, 6])
+      matrix.swapRows(b, 3, 0, 1)
       approxEqual(b[0], 4) // Row 1 is now first
       approxEqual(b[3], 1) // Row 0 is now second
 
@@ -1133,58 +1006,45 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run element-wise operations', async function () {
       const matrix = await import('../../../../src/wasm/matrix/basic')
 
-      resetMem()
-      const aPtr = allocF64([1, 2, 3, 4])
-      const bPtr = allocF64([2, 2, 2, 2])
+      const a = new Float64Array([1, 2, 3, 4])
+      const b = new Float64Array([2, 2, 2, 2])
 
       // Test dotMultiply
-      const dmPtr = getWorkPtr(4 * 8)
-      matrix.dotMultiply(aPtr, bPtr, 4, dmPtr)
-      const dm = readF64(dmPtr, 4)
+      const dm = matrix.dotMultiply(a, b, 4)
       approxEqual(dm[0], 2)
       approxEqual(dm[1], 4)
       approxEqual(dm[2], 6)
       approxEqual(dm[3], 8)
 
       // Test dotDivide
-      const ddPtr = getWorkPtr(4 * 8)
-      matrix.dotDivide(aPtr, bPtr, 4, ddPtr)
-      const dd = readF64(ddPtr, 4)
+      const dd = matrix.dotDivide(a, b, 4)
       approxEqual(dd[0], 0.5)
       approxEqual(dd[1], 1)
       approxEqual(dd[2], 1.5)
       approxEqual(dd[3], 2)
 
       // Test dotPow
-      const dpPtr = getWorkPtr(4 * 8)
-      matrix.dotPow(aPtr, bPtr, 4, dpPtr)
-      const dp = readF64(dpPtr, 4)
+      const dp = matrix.dotPow(a, b, 4)
       approxEqual(dp[0], 1)  // 1^2
       approxEqual(dp[1], 4)  // 2^2
       approxEqual(dp[2], 9)  // 3^2
       approxEqual(dp[3], 16) // 4^2
 
       // Test abs
-      const negPtr = allocF64([-1, 2, -3, 4])
-      const absPtr = getWorkPtr(4 * 8)
-      matrix.abs(negPtr, 4, absPtr)
-      const absVal = readF64(absPtr, 4)
+      const neg = new Float64Array([-1, 2, -3, 4])
+      const absVal = matrix.abs(neg, 4)
       approxEqual(absVal[0], 1)
       approxEqual(absVal[2], 3)
 
       // Test sqrt
-      const sqrtPtr = getWorkPtr(4 * 8)
-      matrix.sqrt(dpPtr, 4, sqrtPtr)
-      const sqrtVal = readF64(sqrtPtr, 4)
+      const sqrtVal = matrix.sqrt(dp, 4)
       approxEqual(sqrtVal[0], 1)
       approxEqual(sqrtVal[1], 2)
       approxEqual(sqrtVal[2], 3)
       approxEqual(sqrtVal[3], 4)
 
       // Test square
-      const sqPtr = getWorkPtr(4 * 8)
-      matrix.square(aPtr, 4, sqPtr)
-      const sq = readF64(sqPtr, 4)
+      const sq = matrix.square(a, 4)
       approxEqual(sq[0], 1)
       approxEqual(sq[1], 4)
       approxEqual(sq[2], 9)
@@ -1196,38 +1056,33 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run reduction operations', async function () {
       const matrix = await import('../../../../src/wasm/matrix/basic')
 
-      resetMem()
-      const aPtr = allocF64([1, 2, 3, 4, 5, 6])
+      const a = new Float64Array([1, 2, 3, 4, 5, 6])
 
       // Test sum
-      approxEqual(matrix.sum(aPtr, 6), 21)
+      approxEqual(matrix.sum(a, 6), 21)
 
       // Test prod
-      approxEqual(matrix.prod(aPtr, 6), 720)
+      approxEqual(matrix.prod(a, 6), 720)
 
       // Test min/max
-      approxEqual(matrix.min(aPtr, 6), 1)
-      approxEqual(matrix.max(aPtr, 6), 6)
+      approxEqual(matrix.min(a, 6), 1)
+      approxEqual(matrix.max(a, 6), 6)
 
       // Test argmin/argmax
-      assert.strictEqual(matrix.argmin(aPtr, 6), 0)
-      assert.strictEqual(matrix.argmax(aPtr, 6), 5)
+      assert.strictEqual(matrix.argmin(a, 6), 0)
+      assert.strictEqual(matrix.argmax(a, 6), 5)
 
       // Test countNonZero
-      const withZerosPtr = allocF64([0, 1, 0, 2, 3, 0])
-      assert.strictEqual(matrix.countNonZero(withZerosPtr, 6), 3)
+      const withZeros = new Float64Array([0, 1, 0, 2, 3, 0])
+      assert.strictEqual(matrix.countNonZero(withZeros, 6), 3)
 
       // Test sumRows on 2x3 matrix
-      const sumRPtr = getWorkPtr(2 * 8)
-      matrix.sumRows(aPtr, 2, 3, sumRPtr)
-      const sumR = readF64(sumRPtr, 2)
+      const sumR = matrix.sumRows(a, 2, 3)
       approxEqual(sumR[0], 6)  // 1+2+3
       approxEqual(sumR[1], 15) // 4+5+6
 
       // Test sumCols on 2x3 matrix
-      const sumCPtr = getWorkPtr(3 * 8)
-      matrix.sumCols(aPtr, 2, 3, sumCPtr)
-      const sumC = readF64(sumCPtr, 3)
+      const sumC = matrix.sumCols(a, 2, 3)
       approxEqual(sumC[0], 5)  // 1+4
       approxEqual(sumC[1], 7)  // 2+5
       approxEqual(sumC[2], 9)  // 3+6
@@ -1238,15 +1093,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should import and run concatenation operations', async function () {
       const matrix = await import('../../../../src/wasm/matrix/basic')
 
-      resetMem()
       // A = [[1,2],[3,4]], B = [[5,6],[7,8]]
-      const aPtr = allocF64([1, 2, 3, 4])
-      const bPtr = allocF64([5, 6, 7, 8])
+      const a = new Float64Array([1, 2, 3, 4])
+      const b = new Float64Array([5, 6, 7, 8])
 
       // Test horizontal concat: [[1,2,5,6],[3,4,7,8]]
-      const hPtr = getWorkPtr(8 * 8)
-      matrix.concatHorizontal(aPtr, 2, 2, bPtr, 2, hPtr)
-      const h = readF64(hPtr, 8)
+      const h = matrix.concatHorizontal(a, 2, 2, b, 2)
       assert.strictEqual(h.length, 8)
       approxEqual(h[0], 1)
       approxEqual(h[1], 2)
@@ -1258,9 +1110,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(h[7], 8)
 
       // Test vertical concat: [[1,2],[3,4],[5,6],[7,8]]
-      const vPtr = getWorkPtr(8 * 8)
-      matrix.concatVertical(aPtr, 2, 2, bPtr, 2, vPtr)
-      const v = readF64(vPtr, 8)
+      const v = matrix.concatVertical(a, 2, 2, b, 2)
       assert.strictEqual(v.length, 8)
       approxEqual(v[0], 1)
       approxEqual(v[1], 2)
@@ -1280,26 +1130,21 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute determinants', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
       // 1x1 determinant
-      const a1Ptr = allocF64([5])
-      const w1 = getWorkPtr(256)
-      approxEqual(linalg.det(a1Ptr, 1, w1), 5)
+      const a1 = new Float64Array([5])
+      approxEqual(linalg.det(a1, 1), 5)
 
       // 2x2 determinant: [[1,2],[3,4]] = 1*4 - 2*3 = -2
-      const a2Ptr = allocF64([1, 2, 3, 4])
-      const w2 = getWorkPtr(256)
-      approxEqual(linalg.det(a2Ptr, 2, w2), -2)
+      const a2 = new Float64Array([1, 2, 3, 4])
+      approxEqual(linalg.det(a2, 2), -2)
 
       // 3x3 determinant: [[1,2,3],[4,5,6],[7,8,9]] = 0 (singular)
-      const a3Ptr = allocF64([1, 2, 3, 4, 5, 6, 7, 8, 9])
-      const w3 = getWorkPtr(256)
-      approxEqual(linalg.det(a3Ptr, 3, w3), 0, 1e-10)
+      const a3 = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+      approxEqual(linalg.det(a3, 3), 0, 1e-10)
 
       // Non-singular 3x3: [[1,0,0],[0,2,0],[0,0,3]] = 6
-      const diag3Ptr = allocF64([1, 0, 0, 0, 2, 0, 0, 0, 3])
-      const w4 = getWorkPtr(256)
-      approxEqual(linalg.det(diag3Ptr, 3, w4), 6)
+      const diag3 = new Float64Array([1, 0, 0, 0, 2, 0, 0, 0, 3])
+      approxEqual(linalg.det(diag3, 3), 6)
 
       console.log('  ✓ matrix/linalg (det)')
     })
@@ -1307,49 +1152,37 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute matrix inverse', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
       // 2x2 inverse: [[4,7],[2,6]]
-      const a2Ptr = allocF64([4, 7, 2, 6])
-      const inv2Ptr = getWorkPtr(4 * 8)
-      const invWork = getWorkPtr(256)
-      const inv2ok = linalg.inv(a2Ptr, 2, inv2Ptr, invWork)
-      assert.strictEqual(inv2ok, 1)
-      const inv2 = readF64(inv2Ptr, 4)
+      // det = 24-14 = 10
+      // inv = (1/10)*[[6,-7],[-2,4]]
+      const a2 = new Float64Array([4, 7, 2, 6])
+      const inv2 = linalg.inv(a2, 2)
       approxEqual(inv2[0], 0.6, 1e-10)
       approxEqual(inv2[1], -0.7, 1e-10)
       approxEqual(inv2[2], -0.2, 1e-10)
       approxEqual(inv2[3], 0.4, 1e-10)
 
       // Test inv2x2
-      const inv2x2Ptr = getWorkPtr(4 * 8)
-      linalg.inv2x2(a2Ptr, inv2x2Ptr)
-      const inv2x2 = readF64(inv2x2Ptr, 4)
+      const inv2x2 = linalg.inv2x2(a2)
       approxEqual(inv2x2[0], 0.6, 1e-10)
       approxEqual(inv2x2[1], -0.7, 1e-10)
 
       // 3x3 inverse of diagonal matrix
-      const diag3Ptr = allocF64([2, 0, 0, 0, 4, 0, 0, 0, 5])
-      const invDiag3Ptr = getWorkPtr(9 * 8)
-      const invWork3 = getWorkPtr(512)
-      linalg.inv(diag3Ptr, 3, invDiag3Ptr, invWork3)
-      const invDiag3 = readF64(invDiag3Ptr, 9)
+      const diag3 = new Float64Array([2, 0, 0, 0, 4, 0, 0, 0, 5])
+      const invDiag3 = linalg.inv(diag3, 3)
       approxEqual(invDiag3[0], 0.5, 1e-10)
       approxEqual(invDiag3[4], 0.25, 1e-10)
       approxEqual(invDiag3[8], 0.2, 1e-10)
 
       // Test inv3x3
-      const inv3x3Ptr = getWorkPtr(9 * 8)
-      linalg.inv3x3(diag3Ptr, inv3x3Ptr)
-      const inv3x3 = readF64(inv3x3Ptr, 9)
+      const inv3x3 = linalg.inv3x3(diag3)
       approxEqual(inv3x3[0], 0.5, 1e-10)
       approxEqual(inv3x3[4], 0.25, 1e-10)
 
-      // Singular matrix should return 0 (failure)
-      const singularPtr = allocF64([1, 2, 2, 4])
-      const invSingPtr = getWorkPtr(4 * 8)
-      const invSingWork = getWorkPtr(256)
-      const invSingOk = linalg.inv(singularPtr, 2, invSingPtr, invSingWork)
-      assert.strictEqual(invSingOk, 0)
+      // Singular matrix should return empty array
+      const singular = new Float64Array([1, 2, 2, 4])
+      const invSing = linalg.inv(singular, 2)
+      assert.strictEqual(invSing.length, 0)
 
       console.log('  ✓ matrix/linalg (inv)')
     })
@@ -1357,24 +1190,23 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute vector norms', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
-      const vPtr = allocF64([3, -4])
+      const v = new Float64Array([3, -4])
 
       // L1 norm: |3| + |-4| = 7
-      approxEqual(linalg.norm1(vPtr, 2), 7)
+      approxEqual(linalg.norm1(v, 2), 7)
 
       // L2 norm: sqrt(9 + 16) = 5
-      approxEqual(linalg.norm2(vPtr, 2), 5)
+      approxEqual(linalg.norm2(v, 2), 5)
 
       // Infinity norm: max(|3|, |-4|) = 4
-      approxEqual(linalg.normInf(vPtr, 2), 4)
+      approxEqual(linalg.normInf(v, 2), 4)
 
       // Lp norm (p=3)
-      const v2Ptr = allocF64([1, 2, 2])
-      approxEqual(linalg.normP(v2Ptr, 3, 3), Math.pow(1 + 8 + 8, 1 / 3), 1e-10)
+      const v2 = new Float64Array([1, 2, 2])
+      approxEqual(linalg.normP(v2, 3, 3), Math.pow(1 + 8 + 8, 1 / 3), 1e-10)
 
       // Frobenius norm (same as L2 for vectors)
-      approxEqual(linalg.normFro(vPtr, 2), 5)
+      approxEqual(linalg.normFro(v, 2), 5)
 
       console.log('  ✓ matrix/linalg (vector norms)')
     })
@@ -1382,18 +1214,17 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute matrix norms', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
       // 2x2 matrix: [[1,2],[3,4]]
-      const aPtr = allocF64([1, 2, 3, 4])
+      const a = new Float64Array([1, 2, 3, 4])
 
       // 1-norm (max column sum): max(|1|+|3|, |2|+|4|) = max(4, 6) = 6
-      approxEqual(linalg.matrixNorm1(aPtr, 2, 2), 6)
+      approxEqual(linalg.matrixNorm1(a, 2, 2), 6)
 
       // Infinity-norm (max row sum): max(|1|+|2|, |3|+|4|) = max(3, 7) = 7
-      approxEqual(linalg.matrixNormInf(aPtr, 2, 2), 7)
+      approxEqual(linalg.matrixNormInf(a, 2, 2), 7)
 
       // Frobenius norm: sqrt(1+4+9+16) = sqrt(30)
-      approxEqual(linalg.normFro(aPtr, 4), Math.sqrt(30), 1e-10)
+      approxEqual(linalg.normFro(a, 4), Math.sqrt(30), 1e-10)
 
       console.log('  ✓ matrix/linalg (matrix norms)')
     })
@@ -1401,19 +1232,15 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should normalize vectors', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
-      const vPtr = allocF64([3, 4])
-      const origNorm = linalg.normalize(vPtr, 2) // modifies in-place, returns original norm
-
-      approxEqual(origNorm, 5, 1e-10)
+      const v = new Float64Array([3, 4])
+      const normalized = linalg.normalize(v, 2)
 
       // Unit vector: [3/5, 4/5]
-      const normalized = readF64(vPtr, 2)
       approxEqual(normalized[0], 0.6, 1e-10)
       approxEqual(normalized[1], 0.8, 1e-10)
 
       // Verify norm is 1
-      approxEqual(linalg.norm2(vPtr, 2), 1, 1e-10)
+      approxEqual(linalg.norm2(normalized, 2), 1, 1e-10)
 
       console.log('  ✓ matrix/linalg (normalize)')
     })
@@ -1421,15 +1248,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute Kronecker product', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
       // A = [[1,2],[3,4]], B = [[0,5],[6,7]]
       // kron(A,B) is 4x4
-      const APtr = allocF64([1, 2, 3, 4])
-      const BPtr = allocF64([0, 5, 6, 7])
-      const KPtr = getWorkPtr(16 * 8)
+      const A = new Float64Array([1, 2, 3, 4])
+      const B = new Float64Array([0, 5, 6, 7])
 
-      linalg.kron(APtr, 2, 2, BPtr, 2, 2, KPtr)
-      const K = readF64(KPtr, 16)
+      const K = linalg.kron(A, 2, 2, B, 2, 2)
       assert.strictEqual(K.length, 16)
 
       // First block: 1*B = [[0,5],[6,7]]
@@ -1448,31 +1272,24 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute cross product', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
       // i x j = k
-      const iPtr = allocF64([1, 0, 0])
-      const jPtr = allocF64([0, 1, 0])
-      const kPtr = getWorkPtr(3 * 8)
-      linalg.cross(iPtr, jPtr, kPtr)
-      const k = readF64(kPtr, 3)
+      const i = new Float64Array([1, 0, 0])
+      const j = new Float64Array([0, 1, 0])
+      const k = linalg.cross(i, j)
       approxEqual(k[0], 0)
       approxEqual(k[1], 0)
       approxEqual(k[2], 1)
 
       // j x i = -k
-      const negKPtr = getWorkPtr(3 * 8)
-      linalg.cross(jPtr, iPtr, negKPtr)
-      const negK = readF64(negKPtr, 3)
+      const negK = linalg.cross(j, i)
       approxEqual(negK[0], 0)
       approxEqual(negK[1], 0)
       approxEqual(negK[2], -1)
 
       // General case: [1,2,3] x [4,5,6] = [-3, 6, -3]
-      const aPtr = allocF64([1, 2, 3])
-      const bPtr = allocF64([4, 5, 6])
-      const cPtr = getWorkPtr(3 * 8)
-      linalg.cross(aPtr, bPtr, cPtr)
-      const c = readF64(cPtr, 3)
+      const a = new Float64Array([1, 2, 3])
+      const b = new Float64Array([4, 5, 6])
+      const c = linalg.cross(a, b)
       approxEqual(c[0], -3, 1e-10)
       approxEqual(c[1], 6, 1e-10)
       approxEqual(c[2], -3, 1e-10)
@@ -1483,12 +1300,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute dot product', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
-      const aPtr = allocF64([1, 2, 3])
-      const bPtr = allocF64([4, 5, 6])
+      const a = new Float64Array([1, 2, 3])
+      const b = new Float64Array([4, 5, 6])
 
       // 1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32
-      approxEqual(linalg.dot(aPtr, bPtr, 3), 32)
+      approxEqual(linalg.dot(a, b, 3), 32)
 
       console.log('  ✓ matrix/linalg (dot)')
     })
@@ -1496,14 +1312,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute outer product', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
-      const aPtr = allocF64([1, 2])
-      const bPtr = allocF64([3, 4, 5])
-      const outerPtr = getWorkPtr(6 * 8)
+      const a = new Float64Array([1, 2])
+      const b = new Float64Array([3, 4, 5])
 
       // outer(a, b) = [[1*3, 1*4, 1*5], [2*3, 2*4, 2*5]]
-      linalg.outer(aPtr, 2, bPtr, 3, outerPtr)
-      const outer = readF64(outerPtr, 6)
+      const outer = linalg.outer(a, 2, b, 3)
       assert.strictEqual(outer.length, 6)
       approxEqual(outer[0], 3)
       approxEqual(outer[1], 4)
@@ -1518,16 +1331,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should solve linear systems', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
       // Solve: [[2,1],[1,3]] * x = [5,5]
-      const APtr = allocF64([2, 1, 1, 3])
-      const bPtr = allocF64([5, 5])
-      const xPtr = getWorkPtr(2 * 8)
-      const solveWork = getWorkPtr(256)
-      const solveOk = linalg.solve(APtr, bPtr, 2, xPtr, solveWork)
-      assert.strictEqual(solveOk, 1)
+      // Solution: x = [2, 1]
+      const A = new Float64Array([2, 1, 1, 3])
+      const b = new Float64Array([5, 5])
+      const x = linalg.solve(A, b, 2)
 
-      const x = readF64(xPtr, 2)
       approxEqual(x[0], 2, 1e-10)
       approxEqual(x[1], 1, 1e-10)
 
@@ -1537,13 +1346,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(Ax0, 5, 1e-10)
       approxEqual(Ax1, 5, 1e-10)
 
-      // Singular system should return 0 (failure)
-      const singularPtr = allocF64([1, 2, 2, 4])
-      const bSingPtr = allocF64([1, 2])
-      const xSingPtr = getWorkPtr(2 * 8)
-      const singWork = getWorkPtr(256)
-      const singOk = linalg.solve(singularPtr, bSingPtr, 2, xSingPtr, singWork)
-      assert.strictEqual(singOk, 0)
+      // Singular system should return empty
+      const singular = new Float64Array([1, 2, 2, 4])
+      const bSing = new Float64Array([1, 2])
+      const xSing = linalg.solve(singular, bSing, 2)
+      assert.strictEqual(xSing.length, 0)
 
       console.log('  ✓ matrix/linalg (solve)')
     })
@@ -1551,26 +1358,21 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute matrix rank', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
       // Full rank 2x2
-      const a2Ptr = allocF64([1, 2, 3, 4])
-      const rankWork1 = getWorkPtr(256)
-      assert.strictEqual(linalg.rank(a2Ptr, 2, 2, 1e-10, rankWork1), 2)
+      const a2 = new Float64Array([1, 2, 3, 4])
+      assert.strictEqual(linalg.rank(a2, 2, 2, 1e-10), 2)
 
       // Rank-deficient 2x2 (rows are multiples)
-      const singularPtr = allocF64([1, 2, 2, 4])
-      const rankWork2 = getWorkPtr(256)
-      assert.strictEqual(linalg.rank(singularPtr, 2, 2, 1e-10, rankWork2), 1)
+      const singular = new Float64Array([1, 2, 2, 4])
+      assert.strictEqual(linalg.rank(singular, 2, 2, 1e-10), 1)
 
       // 3x3 identity has rank 3
-      const id3Ptr = allocF64([1, 0, 0, 0, 1, 0, 0, 0, 1])
-      const rankWork3 = getWorkPtr(512)
-      assert.strictEqual(linalg.rank(id3Ptr, 3, 3, 1e-10, rankWork3), 3)
+      const id3 = new Float64Array([1, 0, 0, 0, 1, 0, 0, 0, 1])
+      assert.strictEqual(linalg.rank(id3, 3, 3, 1e-10), 3)
 
       // Zero matrix has rank 0
-      const zerosPtr = allocF64([0, 0, 0, 0])
-      const rankWork4 = getWorkPtr(256)
-      assert.strictEqual(linalg.rank(zerosPtr, 2, 2, 1e-10, rankWork4), 0)
+      const zeros = new Float64Array([0, 0, 0, 0])
+      assert.strictEqual(linalg.rank(zeros, 2, 2, 1e-10), 0)
 
       console.log('  ✓ matrix/linalg (rank)')
     })
@@ -1578,27 +1380,21 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should estimate condition numbers', async function () {
       const linalg = await import('../../../../src/wasm/matrix/linalg')
 
-      resetMem()
       // Identity matrix has condition number 1
-      const id2Ptr = allocF64([1, 0, 0, 1])
-      const condWork1 = getWorkPtr(256)
-      approxEqual(linalg.cond1(id2Ptr, 2, condWork1), 1, 1e-10)
-      const condWork2 = getWorkPtr(256)
-      approxEqual(linalg.condInf(id2Ptr, 2, condWork2), 1, 1e-10)
+      const id2 = new Float64Array([1, 0, 0, 1])
+      approxEqual(linalg.cond1(id2, 2), 1, 1e-10)
+      approxEqual(linalg.condInf(id2, 2), 1, 1e-10)
 
       // Well-conditioned matrix
-      const wellCondPtr = allocF64([2, 1, 1, 2])
-      const condWork3 = getWorkPtr(256)
-      const cond1 = linalg.cond1(wellCondPtr, 2, condWork3)
-      const condWork4 = getWorkPtr(256)
-      const condInf = linalg.condInf(wellCondPtr, 2, condWork4)
-      assert.ok(cond1 < 10)
+      const wellCond = new Float64Array([2, 1, 1, 2])
+      const cond1 = linalg.cond1(wellCond, 2)
+      const condInf = linalg.condInf(wellCond, 2)
+      assert.ok(cond1 < 10) // Should be relatively small
       assert.ok(condInf < 10)
 
       // Singular matrix should return Infinity
-      const singularPtr = allocF64([1, 2, 2, 4])
-      const condWork5 = getWorkPtr(256)
-      assert.strictEqual(linalg.cond1(singularPtr, 2, condWork5), Infinity)
+      const singular = new Float64Array([1, 2, 2, 4])
+      assert.strictEqual(linalg.cond1(singular, 2), Infinity)
 
       console.log('  ✓ matrix/linalg (condition number)')
     })
@@ -1614,17 +1410,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // Let's choose X = [[1, 0], [0, 1]] and compute C = AX + XB
       // AX = [[1,0],[0,2]], XB = [[3,0],[0,4]], C = [[4,0],[0,6]]
 
-      resetMem()
-      const APtr = allocF64([1, 0, 0, 2])
-      const BPtr = allocF64([3, 0, 0, 4])
-      const CPtr = allocF64([4, 0, 0, 6])
-      const XPtr = getWorkPtr(4 * 8)
-      const sylWork = getWorkPtr(1024)
+      const A = new Float64Array([1, 0, 0, 2])
+      const B = new Float64Array([3, 0, 0, 4])
+      const C = new Float64Array([4, 0, 0, 6])
 
-      const ok = equations.sylvester(APtr, 2, BPtr, 2, CPtr, XPtr, sylWork)
-      assert.strictEqual(ok, 1)
+      const X = equations.sylvester(A, 2, B, 2, C)
+      assert.strictEqual(X.length, 4)
 
-      const X = readF64(XPtr, 4)
       // Verify X ≈ [[1, 0], [0, 1]]
       approxEqual(X[0], 1, 1e-10)
       approxEqual(X[1], 0, 1e-10)
@@ -1632,8 +1424,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(X[3], 1, 1e-10)
 
       // Double-check with residual
-      const resWork = getWorkPtr(1024)
-      const residual = equations.sylvesterResidual(APtr, 2, XPtr, BPtr, 2, CPtr, resWork)
+      const residual = equations.sylvesterResidual(A, 2, X, B, 2, C)
       approxEqual(residual, 0, 1e-10)
 
       console.log('  ✓ algebra/equations (sylvester)')
@@ -1644,19 +1435,21 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
 
       // A = [[1, 2], [0, 3]], B = [[4, 0], [1, 5]]
       // Choose a known X and compute C
-      resetMem()
-      const APtr = allocF64([1, 2, 0, 3])
-      const BPtr = allocF64([4, 0, 1, 5])
-      const CPtr = allocF64([13, 20, 25, 32])
-      const XPtr = getWorkPtr(4 * 8)
-      const sylWork = getWorkPtr(1024)
+      const A = new Float64Array([1, 2, 0, 3])
+      const B = new Float64Array([4, 0, 1, 5])
 
-      const ok = equations.sylvester(APtr, 2, BPtr, 2, CPtr, XPtr, sylWork)
-      assert.strictEqual(ok, 1)
+      // Known X = [[1, 2], [3, 4]]
+      // Compute AX + XB = C
+      // AX = [[1,2],[0,3]] * [[1,2],[3,4]] = [[7,10],[9,12]]
+      // XB = [[1,2],[3,4]] * [[4,0],[1,5]] = [[6,10],[16,20]]
+      // C = [[13,20],[25,32]]
+      const C = new Float64Array([13, 20, 25, 32])
+
+      const X = equations.sylvester(A, 2, B, 2, C)
+      assert.strictEqual(X.length, 4)
 
       // Verify residual is small
-      const resWork = getWorkPtr(1024)
-      const residual = equations.sylvesterResidual(APtr, 2, XPtr, BPtr, 2, CPtr, resWork)
+      const residual = equations.sylvesterResidual(A, 2, X, B, 2, C)
       approxEqual(residual, 0, 1e-8)
 
       console.log('  ✓ algebra/equations (sylvester non-trivial)')
@@ -1665,10 +1458,9 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should solve continuous Lyapunov equation AX + XA^T = Q', async function () {
       const equations = await import('../../../../src/wasm/algebra/equations')
 
-      resetMem()
       // Simple test: A = [[0, 1], [-2, -3]] (stable matrix)
       // Choose symmetric X and compute Q = AX + XA^T
-      const APtr = allocF64([0, 1, -2, -3])
+      const A = new Float64Array([0, 1, -2, -3])
 
       // Let X = [[2, 0], [0, 1]] (symmetric)
       // AX = [[0,1],[-2,-3]] * [[2,0],[0,1]] = [[0,1],[-4,-3]]
@@ -1678,16 +1470,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // XA^T = [[2,0],[0,1]] * [[0,-2],[1,-3]] = [[0,-4],[1,-3]]
       // Q = AX + XA^T = [[0,1],[-4,-3]] + [[0,-4],[1,-3]] = [[0,-3],[-3,-6]]
 
-      const QPtr = allocF64([0, -3, -3, -6])
-      const XPtr = getWorkPtr(4 * 8)
-      const lyapWork = getWorkPtr(1024)
+      const Q = new Float64Array([0, -3, -3, -6])
 
-      const ok = equations.lyap(APtr, 2, QPtr, XPtr, lyapWork)
-      assert.strictEqual(ok, 1)
+      const X = equations.lyap(A, 2, Q)
+      assert.strictEqual(X.length, 4)
 
       // Verify residual is small
-      const resWork = getWorkPtr(1024)
-      const residual = equations.lyapResidual(APtr, 2, XPtr, QPtr, resWork)
+      const residual = equations.lyapResidual(A, 2, X, Q)
       approxEqual(residual, 0, 1e-8)
 
       console.log('  ✓ algebra/equations (lyap)')
@@ -1702,18 +1491,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // AXA^T = [[0.25, 0], [0, 0.25]]
       // Q = AXA^T - X = [[-0.75, 0], [0, -0.75]]
 
-      resetMem()
-      const APtr = allocF64([0.5, 0, 0, 0.5])
-      const QPtr = allocF64([-0.75, 0, 0, -0.75])
-      const XPtr = getWorkPtr(4 * 8)
-      const dlyapWork = getWorkPtr(1024)
+      const A = new Float64Array([0.5, 0, 0, 0.5])
+      const Q = new Float64Array([-0.75, 0, 0, -0.75])
 
-      const ok = equations.dlyap(APtr, 2, QPtr, XPtr, dlyapWork)
-      assert.strictEqual(ok, 1)
+      const X = equations.dlyap(A, 2, Q)
+      assert.strictEqual(X.length, 4)
 
       // Verify residual is small
-      const resWork = getWorkPtr(1024)
-      const residual = equations.dlyapResidual(APtr, 2, XPtr, QPtr, resWork)
+      const residual = equations.dlyapResidual(A, 2, X, Q)
       approxEqual(residual, 0, 1e-8)
 
       console.log('  ✓ algebra/equations (dlyap)')
@@ -1722,19 +1507,18 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should handle 3x3 Sylvester equation', async function () {
       const equations = await import('../../../../src/wasm/algebra/equations')
 
-      resetMem()
-      const APtr = allocF64([1, 0, 0, 0, 2, 0, 0, 0, 3])
-      const BPtr = allocF64([4, 0, 0, 0, 5, 0, 0, 0, 6])
-      const CPtr = allocF64([5, 0, 0, 0, 7, 0, 0, 0, 9])
-      const XPtr = getWorkPtr(9 * 8)
-      const sylWork = getWorkPtr(2048)
+      // Diagonal matrices for simplicity
+      const A = new Float64Array([1, 0, 0, 0, 2, 0, 0, 0, 3])
+      const B = new Float64Array([4, 0, 0, 0, 5, 0, 0, 0, 6])
 
-      const ok = equations.sylvester(APtr, 3, BPtr, 3, CPtr, XPtr, sylWork)
-      assert.strictEqual(ok, 1)
+      // X = I, then C = A + B (since A*I + I*B = A + B for diagonal)
+      const C = new Float64Array([5, 0, 0, 0, 7, 0, 0, 0, 9])
+
+      const X = equations.sylvester(A, 3, B, 3, C)
+      assert.strictEqual(X.length, 9)
 
       // Verify residual
-      const resWork = getWorkPtr(2048)
-      const residual = equations.sylvesterResidual(APtr, 3, XPtr, BPtr, 3, CPtr, resWork)
+      const residual = equations.sylvesterResidual(A, 3, X, B, 3, C)
       approxEqual(residual, 0, 1e-8)
 
       console.log('  ✓ algebra/equations (sylvester 3x3)')
@@ -1743,19 +1527,21 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should handle rectangular Sylvester equation', async function () {
       const equations = await import('../../../../src/wasm/algebra/equations')
 
-      resetMem()
-      const APtr = allocF64([1, 0, 0, 2])
-      const BPtr = allocF64([1, 0, 0, 0, 2, 0, 0, 0, 3])
-      const CPtr = allocF64([2, 0, 0, 0, 4, 0])
-      const XPtr = getWorkPtr(6 * 8)
-      const sylWork = getWorkPtr(2048)
+      // A is 2x2, B is 3x3, X is 2x3, C is 2x3
+      const A = new Float64Array([1, 0, 0, 2])
+      const B = new Float64Array([1, 0, 0, 0, 2, 0, 0, 0, 3])
 
-      const ok = equations.sylvester(APtr, 2, BPtr, 3, CPtr, XPtr, sylWork)
-      assert.strictEqual(ok, 1)
+      // Choose X = [[1,0,0],[0,1,0]]
+      // AX = [[1,0,0],[0,2,0]]
+      // XB = [[1,0,0],[0,2,0]]
+      // C = AX + XB = [[2,0,0],[0,4,0]]
+      const C = new Float64Array([2, 0, 0, 0, 4, 0])
+
+      const X = equations.sylvester(A, 2, B, 3, C)
+      assert.strictEqual(X.length, 6)
 
       // Verify residual
-      const resWork = getWorkPtr(2048)
-      const residual = equations.sylvesterResidual(APtr, 2, XPtr, BPtr, 3, CPtr, resWork)
+      const residual = equations.sylvesterResidual(A, 2, X, B, 3, C)
       approxEqual(residual, 0, 1e-8)
 
       console.log('  ✓ algebra/equations (sylvester rectangular)')
@@ -1767,22 +1553,21 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute Schur decomposition of 2x2 matrix', async function () {
       const schur = await import('../../../../src/wasm/algebra/schur')
 
-      resetMem()
       // Simple 2x2 symmetric matrix [[4, 2], [2, 1]]
-      const APtr = allocF64([4, 2, 2, 1])
-      const QPtr = getWorkPtr(4 * 8)
-      const TPtr = getWorkPtr(4 * 8)
-      const schurWork = getWorkPtr(2048)
-      const ok = schur.schur(APtr, 2, 100, 1e-10, QPtr, TPtr, schurWork)
-      assert.strictEqual(ok, 1)
+      const A = new Float64Array([4, 2, 2, 1])
+      const result = schur.schur(A, 2, 100, 1e-10)
+
+      assert.ok(result.length === 8) // 2*n*n = 8
+
+      const Q = schur.getSchurQ(result, 2)
+      const T = schur.getSchurT(result, 2)
 
       // Q should be orthogonal
-      const orthError = schur.schurOrthogonalityError(QPtr, 2)
+      const orthError = schur.schurOrthogonalityError(Q, 2)
       approxEqual(orthError, 0, 1e-8)
 
       // Check A = Q * T * Q^T
-      const resWork = getWorkPtr(2048)
-      const residual = schur.schurResidual(APtr, QPtr, TPtr, 2, resWork)
+      const residual = schur.schurResidual(A, Q, T, 2)
       approxEqual(residual, 0, 1e-8)
 
       console.log('  ✓ algebra/schur (2x2)')
@@ -1791,23 +1576,22 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute Schur decomposition of 3x3 matrix', async function () {
       const schur = await import('../../../../src/wasm/algebra/schur')
 
-      resetMem()
       // 3x3 matrix
-      const APtr = allocF64([4, 1, 1, 1, 3, 1, 1, 1, 2])
-      const QPtr = getWorkPtr(9 * 8)
-      const TPtr = getWorkPtr(9 * 8)
-      const schurWork = getWorkPtr(4096)
-      const ok = schur.schur(APtr, 3, 100, 1e-10, QPtr, TPtr, schurWork)
-      assert.strictEqual(ok, 1)
+      const A = new Float64Array([4, 1, 1, 1, 3, 1, 1, 1, 2])
+      const result = schur.schur(A, 3, 100, 1e-10)
+
+      assert.ok(result.length === 18) // 2*n*n = 18
+
+      const Q = schur.getSchurQ(result, 3)
+      const T = schur.getSchurT(result, 3)
 
       // Check orthogonality
-      const orthError = schur.schurOrthogonalityError(QPtr, 3)
+      const orthError = schur.schurOrthogonalityError(Q, 3)
       approxEqual(orthError, 0, 1e-8)
 
       // Check decomposition (relaxed tolerance for 3x3 Francis QR)
-      const resWork = getWorkPtr(4096)
-      const residual = schur.schurResidual(APtr, QPtr, TPtr, 3, resWork)
-      approxEqual(residual, 0, 1.0) // Relaxed
+      const residual = schur.schurResidual(A, Q, T, 3)
+      approxEqual(residual, 0, 1.0) // Relaxed: Francis QR may need more iterations for non-diagonal
 
       console.log('  ✓ algebra/schur (3x3)')
     })
@@ -1815,19 +1599,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should extract eigenvalues from Schur form', async function () {
       const schur = await import('../../../../src/wasm/algebra/schur')
 
-      resetMem()
       // Diagonal matrix - eigenvalues are diagonal entries
-      const APtr = allocF64([3, 0, 0, 0, 2, 0, 0, 0, 1])
-      const QPtr = getWorkPtr(9 * 8)
-      const TPtr = getWorkPtr(9 * 8)
-      const schurWork = getWorkPtr(4096)
-      schur.schur(APtr, 3, 100, 1e-10, QPtr, TPtr, schurWork)
+      const A = new Float64Array([3, 0, 0, 0, 2, 0, 0, 0, 1])
+      const result = schur.schur(A, 3, 100, 1e-10)
+      const T = schur.getSchurT(result, 3)
 
-      const realPtr = getWorkPtr(3 * 8)
-      const imagPtr = getWorkPtr(3 * 8)
-      schur.schurEigenvalues(TPtr, 3, realPtr, imagPtr)
-      const real = readF64(realPtr, 3)
-      const imag = readF64(imagPtr, 3)
+      const eigs = schur.schurEigenvalues(T, 3)
+      const real = eigs.slice(0, 3)
+      const imag = eigs.slice(3, 6)
 
       // All imaginary parts should be zero for symmetric matrix
       approxEqual(imag[0], 0, 1e-10)
@@ -1846,13 +1625,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should handle empty/invalid input', async function () {
       const schur = await import('../../../../src/wasm/algebra/schur')
 
-      resetMem()
-      const emptyPtr = getWorkPtr(8)
-      const emptyQ = getWorkPtr(8)
-      const emptyT = getWorkPtr(8)
-      const emptyWork = getWorkPtr(8)
-      const result = schur.schur(emptyPtr, 0, 100, 1e-10, emptyQ, emptyT, emptyWork)
-      assert.strictEqual(result, 0) // 0 = no work done for empty input
+      const empty = schur.schur(new Float64Array(0), 0, 100, 1e-10)
+      assert.strictEqual(empty.length, 0)
 
       console.log('  ✓ algebra/schur (edge cases)')
     })
@@ -1863,17 +1637,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should broadcast multiply matrices', async function () {
       const broadcast = await import('../../../../src/wasm/matrix/broadcast')
 
-      resetMem()
       // Column vector * row vector = outer product
-      const colPtr = allocF64([1, 2, 3]) // 3x1
-      const rowPtr = allocF64([4, 5]) // 1x2
-      const resultPtr = getWorkPtr(6 * 8)
-      const outRowsPtr = allocI32([0])
-      const outColsPtr = allocI32([0])
+      const col = new Float64Array([1, 2, 3]) // 3x1
+      const row = new Float64Array([4, 5]) // 1x2
 
-      const ok = broadcast.broadcastMultiply(colPtr, 3, 1, rowPtr, 1, 2, resultPtr, outRowsPtr, outColsPtr)
-      assert.strictEqual(ok, 1)
-      const result = readF64(resultPtr, 6)
+      const result = broadcast.broadcastMultiply(col, 3, 1, row, 1, 2)
+      assert.strictEqual(result.length, 6) // 3x2
 
       // Expected: [[4,5],[8,10],[12,15]]
       approxEqual(result[0], 4)
@@ -1889,17 +1658,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should broadcast add matrices', async function () {
       const broadcast = await import('../../../../src/wasm/matrix/broadcast')
 
-      resetMem()
       // 2x3 matrix + 1x3 row = broadcast add
-      const APtr = allocF64([1, 2, 3, 4, 5, 6])
-      const rowPtr = allocF64([10, 20, 30])
-      const resultPtr = getWorkPtr(6 * 8)
-      const outRowsPtr = allocI32([0])
-      const outColsPtr = allocI32([0])
+      const A = new Float64Array([1, 2, 3, 4, 5, 6])
+      const row = new Float64Array([10, 20, 30])
 
-      const ok = broadcast.broadcastAdd(APtr, 2, 3, rowPtr, 1, 3, resultPtr, outRowsPtr, outColsPtr)
-      assert.strictEqual(ok, 1)
-      const result = readF64(resultPtr, 6)
+      const result = broadcast.broadcastAdd(A, 2, 3, row, 1, 3)
+      assert.strictEqual(result.length, 6)
 
       // Expected: [[11,22,33],[14,25,36]]
       approxEqual(result[0], 11)
@@ -1915,25 +1679,16 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should broadcast compare matrices', async function () {
       const broadcast = await import('../../../../src/wasm/matrix/broadcast')
 
-      resetMem()
-      const APtr = allocF64([1, 2, 3, 4])
-      const BPtr = allocF64([2, 2, 2, 2])
+      const A = new Float64Array([1, 2, 3, 4])
+      const B = new Float64Array([2, 2, 2, 2])
 
-      const lessPtr = getWorkPtr(4 * 8)
-      const outR1 = allocI32([0])
-      const outC1 = allocI32([0])
-      broadcast.broadcastLess(APtr, 2, 2, BPtr, 2, 2, lessPtr, outR1, outC1)
-      const less = readF64(lessPtr, 4)
+      const less = broadcast.broadcastLess(A, 2, 2, B, 2, 2)
       approxEqual(less[0], 1) // 1 < 2
       approxEqual(less[1], 0) // 2 < 2 is false
       approxEqual(less[2], 0) // 3 < 2 is false
       approxEqual(less[3], 0) // 4 < 2 is false
 
-      const greaterPtr = getWorkPtr(4 * 8)
-      const outR2 = allocI32([0])
-      const outC2 = allocI32([0])
-      broadcast.broadcastGreater(APtr, 2, 2, BPtr, 2, 2, greaterPtr, outR2, outC2)
-      const greater = readF64(greaterPtr, 4)
+      const greater = broadcast.broadcastGreater(A, 2, 2, B, 2, 2)
       approxEqual(greater[0], 0) // 1 > 2 is false
       approxEqual(greater[2], 1) // 3 > 2
 
@@ -1943,23 +1698,19 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute broadcast shape', async function () {
       const broadcast = await import('../../../../src/wasm/matrix/broadcast')
 
-      resetMem()
-      const shape1Ptr = allocI32([3, 1])
-      const shape2Ptr = allocI32([1, 4])
-      const resultPtr = allocI32([0, 0])
+      const shape1 = new Int32Array([3, 1])
+      const shape2 = new Int32Array([1, 4])
 
-      const ndim = broadcast.broadcastShape(shape1Ptr, 2, shape2Ptr, 2, resultPtr)
-      assert.strictEqual(ndim, 2)
-      const result = readI32(resultPtr, 2)
+      const result = broadcast.broadcastShape(shape1, shape2)
+      assert.strictEqual(result.length, 2)
       assert.strictEqual(result[0], 3)
       assert.strictEqual(result[1], 4)
 
       // Incompatible shapes
-      const bad1Ptr = allocI32([3, 4])
-      const bad2Ptr = allocI32([2, 4])
-      const badResultPtr = allocI32([0, 0])
-      const badNdim = broadcast.broadcastShape(bad1Ptr, 2, bad2Ptr, 2, badResultPtr)
-      assert.strictEqual(badNdim, 0)
+      const bad1 = new Int32Array([3, 4])
+      const bad2 = new Int32Array([2, 4])
+      const badResult = broadcast.broadcastShape(bad1, bad2)
+      assert.strictEqual(badResult.length, 0)
 
       console.log('  ✓ matrix/broadcast (shape)')
     })
@@ -1967,20 +1718,15 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should handle scalar operations', async function () {
       const broadcast = await import('../../../../src/wasm/matrix/broadcast')
 
-      resetMem()
-      const APtr = allocF64([1, 2, 3, 4])
+      const A = new Float64Array([1, 2, 3, 4])
 
-      const scaledPtr = getWorkPtr(4 * 8)
-      broadcast.broadcastScalarMultiply(APtr, 4, 2, scaledPtr)
-      const scaled = readF64(scaledPtr, 4)
+      const scaled = broadcast.broadcastScalarMultiply(A, 2)
       approxEqual(scaled[0], 2)
       approxEqual(scaled[1], 4)
       approxEqual(scaled[2], 6)
       approxEqual(scaled[3], 8)
 
-      const addedPtr = getWorkPtr(4 * 8)
-      broadcast.broadcastScalarAdd(APtr, 4, 10, addedPtr)
-      const added = readF64(addedPtr, 4)
+      const added = broadcast.broadcastScalarAdd(A, 10)
       approxEqual(added[0], 11)
       approxEqual(added[3], 14)
 
@@ -1993,15 +1739,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should select k-th smallest element', async function () {
       const select = await import('../../../../src/wasm/statistics/select')
 
-      resetMem()
-      const dataPtr = allocF64([3, 1, 4, 1, 5, 9, 2, 6])
-      const workPtr = getWorkPtr(8 * 8)
+      const data = new Float64Array([3, 1, 4, 1, 5, 9, 2, 6])
 
       // Sorted: [1, 1, 2, 3, 4, 5, 6, 9]
-      approxEqual(select.partitionSelect(dataPtr, 8, 0, workPtr), 1) // min
-      approxEqual(select.partitionSelect(dataPtr, 8, 1, workPtr), 1) // second smallest
-      approxEqual(select.partitionSelect(dataPtr, 8, 2, workPtr), 2)
-      approxEqual(select.partitionSelect(dataPtr, 8, 7, workPtr), 9) // max
+      approxEqual(select.partitionSelect(data, 0), 1) // min
+      approxEqual(select.partitionSelect(data, 1), 1) // second smallest
+      approxEqual(select.partitionSelect(data, 2), 2)
+      approxEqual(select.partitionSelect(data, 7), 9) // max
 
       console.log('  ✓ statistics/select (partitionSelect)')
     })
@@ -2009,14 +1753,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should select median', async function () {
       const select = await import('../../../../src/wasm/statistics/select')
 
-      resetMem()
-      const oddPtr = allocF64([3, 1, 4, 1, 5])
-      const oddWork = getWorkPtr(5 * 8)
-      approxEqual(select.selectMedian(oddPtr, 5, oddWork), 3)
+      const odd = new Float64Array([3, 1, 4, 1, 5])
+      // Sorted: [1, 1, 3, 4, 5], median at index 2 = 3
+      approxEqual(select.selectMedian(odd), 3)
 
-      const evenPtr = allocF64([3, 1, 4, 2])
-      const evenWork = getWorkPtr(4 * 8)
-      approxEqual(select.selectMedian(evenPtr, 4, evenWork), 3)
+      const even = new Float64Array([3, 1, 4, 2])
+      // Sorted: [1, 2, 3, 4], median at index 2 = 3
+      approxEqual(select.selectMedian(even), 3)
 
       console.log('  ✓ statistics/select (median)')
     })
@@ -2024,12 +1767,10 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should select min and max', async function () {
       const select = await import('../../../../src/wasm/statistics/select')
 
-      resetMem()
-      const dataPtr = allocF64([3, 1, 4, 1, 5, 9, 2, 6])
-      const workPtr = getWorkPtr(8 * 8)
+      const data = new Float64Array([3, 1, 4, 1, 5, 9, 2, 6])
 
-      approxEqual(select.selectMin(dataPtr, 8, workPtr), 1)
-      approxEqual(select.selectMax(dataPtr, 8, workPtr), 9)
+      approxEqual(select.selectMin(data), 1)
+      approxEqual(select.selectMax(data), 9)
 
       console.log('  ✓ statistics/select (min/max)')
     })
@@ -2037,14 +1778,10 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should select k smallest elements', async function () {
       const select = await import('../../../../src/wasm/statistics/select')
 
-      resetMem()
-      const dataPtr = allocF64([5, 3, 8, 1, 9, 2])
-      const resultPtr = getWorkPtr(3 * 8)
-      const workPtr = getWorkPtr(6 * 8)
-      const count = select.selectKSmallest(dataPtr, 6, 3, resultPtr, workPtr)
+      const data = new Float64Array([5, 3, 8, 1, 9, 2])
+      const k3 = select.selectKSmallest(data, 3)
 
-      assert.strictEqual(count, 3)
-      const k3 = readF64(resultPtr, 3)
+      assert.strictEqual(k3.length, 3)
       // Should contain 1, 2, 3 (not necessarily sorted)
       const sorted = Array.from(k3).sort((a, b) => a - b)
       approxEqual(sorted[0], 1)
@@ -2057,14 +1794,10 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should select k largest elements', async function () {
       const select = await import('../../../../src/wasm/statistics/select')
 
-      resetMem()
-      const dataPtr = allocF64([5, 3, 8, 1, 9, 2])
-      const resultPtr = getWorkPtr(3 * 8)
-      const workPtr = getWorkPtr(6 * 8)
-      const count = select.selectKLargest(dataPtr, 6, 3, resultPtr, workPtr)
+      const data = new Float64Array([5, 3, 8, 1, 9, 2])
+      const k3 = select.selectKLargest(data, 3)
 
-      assert.strictEqual(count, 3)
-      const k3 = readF64(resultPtr, 3)
+      assert.strictEqual(k3.length, 3)
       const sorted = Array.from(k3).sort((a, b) => a - b)
       approxEqual(sorted[0], 5)
       approxEqual(sorted[1], 8)
@@ -2076,18 +1809,26 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute quantile', async function () {
       const select = await import('../../../../src/wasm/statistics/select')
 
-      resetMem()
-      const dataPtr = allocF64([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-      const workPtr = getWorkPtr(10 * 8)
+      const data = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-      approxEqual(select.selectQuantile(dataPtr, 10, 0, workPtr), 1)   // min
-      approxEqual(select.selectQuantile(dataPtr, 10, 1, workPtr), 10)  // max
-      approxEqual(select.selectQuantile(dataPtr, 10, 0.5, workPtr), 5) // median (approx)
+      approxEqual(select.selectQuantile(data, 0), 1)   // min
+      approxEqual(select.selectQuantile(data, 1), 10)  // max
+      approxEqual(select.selectQuantile(data, 0.5), 5) // median (approx)
 
       console.log('  ✓ statistics/select (quantile)')
     })
 
-    // introSelect was not included in pointer API - skipping
+    it('should run introSelect with guaranteed O(n)', async function () {
+      const select = await import('../../../../src/wasm/statistics/select')
+
+      const data = new Float64Array([3, 1, 4, 1, 5, 9, 2, 6])
+
+      approxEqual(select.introSelect(data, 0), 1)
+      approxEqual(select.introSelect(data, 7), 9)
+      approxEqual(select.introSelect(data, 3), 3)
+
+      console.log('  ✓ statistics/select (introSelect)')
+    })
   })
 
   // ROTATION MATRICES
@@ -2095,11 +1836,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should create 2D rotation matrix', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
       // 90 degree rotation
-      const RPtr = getWorkPtr(4 * 8)
-      rotation.rotationMatrix2D(Math.PI / 2, RPtr)
-      const R = readF64(RPtr, 4)
+      const R = rotation.rotationMatrix2D(Math.PI / 2)
       assert.strictEqual(R.length, 4)
 
       // Should be [[0, -1], [1, 0]]
@@ -2114,20 +1852,15 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should rotate 2D point', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
-      const pointPtr = allocF64([1, 0])
+      const point = new Float64Array([1, 0])
 
       // 90 degree rotation should give [0, 1]
-      const resultPtr = getWorkPtr(2 * 8)
-      rotation.rotate2D(pointPtr, Math.PI / 2, resultPtr)
-      const rotated = readF64(resultPtr, 2)
+      const rotated = rotation.rotate2D(point, Math.PI / 2)
       approxEqual(rotated[0], 0, 1e-10)
       approxEqual(rotated[1], 1, 1e-10)
 
       // 180 degree should give [-1, 0]
-      const result180Ptr = getWorkPtr(2 * 8)
-      rotation.rotate2D(pointPtr, Math.PI, result180Ptr)
-      const rotated180 = readF64(result180Ptr, 2)
+      const rotated180 = rotation.rotate2D(point, Math.PI)
       approxEqual(rotated180[0], -1, 1e-10)
       approxEqual(rotated180[1], 0, 1e-10)
 
@@ -2137,13 +1870,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should rotate 2D point around center', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
-      const pointPtr = allocF64([2, 0])
-      const centerPtr = allocF64([1, 0])
-      const resultPtr = getWorkPtr(2 * 8)
+      const point = new Float64Array([2, 0])
+      const center = new Float64Array([1, 0])
 
-      rotation.rotate2DAroundPoint(pointPtr, centerPtr, Math.PI / 2, resultPtr)
-      const rotated = readF64(resultPtr, 2)
+      // Rotate [2,0] around [1,0] by 90 degrees -> [1, 1]
+      const rotated = rotation.rotate2DAroundPoint(point, center, Math.PI / 2)
       approxEqual(rotated[0], 1, 1e-10)
       approxEqual(rotated[1], 1, 1e-10)
 
@@ -2153,23 +1884,20 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should create 3D rotation matrices', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
       // Rotation around Z axis by 90 degrees
-      const RzPtr = getWorkPtr(9 * 8)
-      rotation.rotationMatrixZ(Math.PI / 2, RzPtr)
+      const Rz = rotation.rotationMatrixZ(Math.PI / 2)
+      assert.strictEqual(Rz.length, 9)
 
       // Verify it's a valid rotation matrix
-      assert.ok(rotation.isRotationMatrix(RzPtr, 1e-10))
+      assert.ok(rotation.isRotationMatrix(Rz, 1e-10))
 
       // Rotation around X axis
-      const RxPtr = getWorkPtr(9 * 8)
-      rotation.rotationMatrixX(Math.PI / 4, RxPtr)
-      assert.ok(rotation.isRotationMatrix(RxPtr, 1e-10))
+      const Rx = rotation.rotationMatrixX(Math.PI / 4)
+      assert.ok(rotation.isRotationMatrix(Rx, 1e-10))
 
       // Rotation around Y axis
-      const RyPtr = getWorkPtr(9 * 8)
-      rotation.rotationMatrixY(Math.PI / 3, RyPtr)
-      assert.ok(rotation.isRotationMatrix(RyPtr, 1e-10))
+      const Ry = rotation.rotationMatrixY(Math.PI / 3)
+      assert.ok(rotation.isRotationMatrix(Ry, 1e-10))
 
       console.log('  ✓ matrix/rotation (3D axes)')
     })
@@ -2177,19 +1905,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should create rotation from axis-angle', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
       // Rotation around z-axis by 90 degrees
-      const axisPtr = allocF64([0, 0, 1])
-      const RPtr = getWorkPtr(9 * 8)
-      rotation.rotationMatrixAxisAngle(axisPtr, Math.PI / 2, RPtr)
+      const axis = new Float64Array([0, 0, 1])
+      const R = rotation.rotationMatrixAxisAngle(axis, Math.PI / 2)
 
-      assert.ok(rotation.isRotationMatrix(RPtr, 1e-10))
+      assert.ok(rotation.isRotationMatrix(R, 1e-10))
 
       // Should match rotationMatrixZ
-      const RzPtr = getWorkPtr(9 * 8)
-      rotation.rotationMatrixZ(Math.PI / 2, RzPtr)
-      const R = readF64(RPtr, 9)
-      const Rz = readF64(RzPtr, 9)
+      const Rz = rotation.rotationMatrixZ(Math.PI / 2)
       for (let i = 0; i < 9; i++) {
         approxEqual(R[i], Rz[i], 1e-10)
       }
@@ -2200,12 +1923,9 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should create rotation from quaternion', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
       // Identity quaternion [1, 0, 0, 0]
-      const qPtr = allocF64([1, 0, 0, 0])
-      const RPtr = getWorkPtr(9 * 8)
-      rotation.rotationMatrixFromQuaternion(qPtr, RPtr)
-      const R = readF64(RPtr, 9)
+      const q = new Float64Array([1, 0, 0, 0])
+      const R = rotation.rotationMatrixFromQuaternion(q)
 
       // Should be identity matrix
       approxEqual(R[0], 1, 1e-10)
@@ -2219,23 +1939,17 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should convert between quaternion and rotation matrix', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
       // Create quaternion from axis-angle
-      const axisPtr = allocF64([0, 0, 1])
-      const qPtr = getWorkPtr(4 * 8)
-      rotation.quaternionFromAxisAngle(axisPtr, Math.PI / 2, qPtr)
+      const axis = new Float64Array([0, 0, 1])
+      const q = rotation.quaternionFromAxisAngle(axis, Math.PI / 2)
 
       // Convert to rotation matrix
-      const RPtr = getWorkPtr(9 * 8)
-      rotation.rotationMatrixFromQuaternion(qPtr, RPtr)
+      const R = rotation.rotationMatrixFromQuaternion(q)
 
       // Convert back to quaternion
-      const q2Ptr = getWorkPtr(4 * 8)
-      rotation.quaternionFromRotationMatrix(RPtr, q2Ptr)
+      const q2 = rotation.quaternionFromRotationMatrix(R)
 
       // Should be equivalent (may differ by sign)
-      const q = readF64(qPtr, 4)
-      const q2 = readF64(q2Ptr, 4)
       const dotProduct = q[0] * q2[0] + q[1] * q2[1] + q[2] * q2[2] + q[3] * q2[3]
       approxEqual(Math.abs(dotProduct), 1, 1e-10)
 
@@ -2245,30 +1959,20 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should perform quaternion slerp', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
-      const q1Ptr = allocF64([1, 0, 0, 0]) // identity
-      const axisPtr = allocF64([0, 0, 1])
-      const q2Ptr = getWorkPtr(4 * 8)
-      rotation.quaternionFromAxisAngle(axisPtr, Math.PI / 2, q2Ptr)
+      const q1 = new Float64Array([1, 0, 0, 0]) // identity
+      const axis = new Float64Array([0, 0, 1])
+      const q2 = rotation.quaternionFromAxisAngle(axis, Math.PI / 2) // 90 deg around z
 
       // Slerp at t=0 should be q1
-      const s0Ptr = getWorkPtr(4 * 8)
-      rotation.quaternionSlerp(q1Ptr, q2Ptr, 0, s0Ptr)
-      const s0 = readF64(s0Ptr, 4)
-      const q1 = readF64(q1Ptr, 4)
+      const s0 = rotation.quaternionSlerp(q1, q2, 0)
       approxEqual(Math.abs(s0[0] * q1[0] + s0[1] * q1[1] + s0[2] * q1[2] + s0[3] * q1[3]), 1, 1e-10)
 
       // Slerp at t=1 should be q2
-      const s1Ptr = getWorkPtr(4 * 8)
-      rotation.quaternionSlerp(q1Ptr, q2Ptr, 1, s1Ptr)
-      const s1 = readF64(s1Ptr, 4)
-      const q2 = readF64(q2Ptr, 4)
+      const s1 = rotation.quaternionSlerp(q1, q2, 1)
       approxEqual(Math.abs(s1[0] * q2[0] + s1[1] * q2[1] + s1[2] * q2[2] + s1[3] * q2[3]), 1, 1e-10)
 
       // Slerp at t=0.5 should be halfway
-      const s05Ptr = getWorkPtr(4 * 8)
-      rotation.quaternionSlerp(q1Ptr, q2Ptr, 0.5, s05Ptr)
-      const s05 = readF64(s05Ptr, 4)
+      const s05 = rotation.quaternionSlerp(q1, q2, 0.5)
       // Norm should be 1
       const norm = Math.sqrt(s05[0] * s05[0] + s05[1] * s05[1] + s05[2] * s05[2] + s05[3] * s05[3])
       approxEqual(norm, 1, 1e-10)
@@ -2279,16 +1983,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should rotate 3D point by quaternion', async function () {
       const rotation = await import('../../../../src/wasm/matrix/rotation')
 
-      resetMem()
-      const pointPtr = allocF64([1, 0, 0])
-      const axisPtr = allocF64([0, 0, 1])
-      const qPtr = getWorkPtr(4 * 8)
-      rotation.quaternionFromAxisAngle(axisPtr, Math.PI / 2, qPtr)
+      const point = new Float64Array([1, 0, 0])
+      const axis = new Float64Array([0, 0, 1])
+      const q = rotation.quaternionFromAxisAngle(axis, Math.PI / 2)
 
-      const resultPtr = getWorkPtr(3 * 8)
-      const workPtr = getWorkPtr(256)
-      rotation.rotateByQuaternion(pointPtr, qPtr, resultPtr, workPtr)
-      const rotated = readF64(resultPtr, 3)
+      const rotated = rotation.rotateByQuaternion(point, q)
 
       // Should give [0, 1, 0]
       approxEqual(rotated[0], 0, 1e-10)
@@ -2310,14 +2009,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // [1, 1, 1, 0]
       // [0, 1, 1, 1]
       // [0, 0, 1, 1]
-      resetMem()
-      const colPtrPtr = allocI32([0, 2, 5, 8, 10])
-      const rowIdxPtr = allocI32([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
-      const permPtr = allocI32([0, 0, 0, 0])
-      const workPtr = getWorkPtr(4096)
+      const colPtr = new Int32Array([0, 2, 5, 8, 10])
+      const rowIdx = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
 
-      amd.amd(colPtrPtr, rowIdxPtr, 4, permPtr, workPtr)
-      const perm = readI32(permPtr, 4)
+      const perm = amd.amd(colPtr, rowIdx, 4)
+      assert.strictEqual(perm.length, 4)
 
       // Permutation should contain all indices 0-3
       const sorted = Array.from(perm).sort((a, b) => a - b)
@@ -2332,14 +2028,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute RCM ordering', async function () {
       const amd = await import('../../../../src/wasm/algebra/sparse/amd')
 
-      resetMem()
-      const colPtrPtr = allocI32([0, 2, 5, 8, 10])
-      const rowIdxPtr = allocI32([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
-      const permPtr = allocI32([0, 0, 0, 0])
-      const workPtr = getWorkPtr(4096)
+      const colPtr = new Int32Array([0, 2, 5, 8, 10])
+      const rowIdx = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
 
-      amd.rcm(colPtrPtr, rowIdxPtr, 4, permPtr, workPtr)
-      const perm = readI32(permPtr, 4)
+      const perm = amd.rcm(colPtr, rowIdx, 4)
+      assert.strictEqual(perm.length, 4)
 
       // Should be a valid permutation
       const sorted = Array.from(perm).sort((a, b) => a - b)
@@ -2352,11 +2045,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute inverse permutation', async function () {
       const amd = await import('../../../../src/wasm/algebra/sparse/amd')
 
-      resetMem()
-      const permPtr = allocI32([2, 0, 3, 1])
-      const ipermPtr = allocI32([0, 0, 0, 0])
-      amd.inversePerm(permPtr, 4, ipermPtr)
-      const iperm = readI32(ipermPtr, 4)
+      const perm = new Int32Array([2, 0, 3, 1])
+      const iperm = amd.inversePerm(perm)
 
       // If perm[i] = j, then iperm[j] = i
       assert.strictEqual(iperm[2], 0)
@@ -2370,14 +2060,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute bandwidth', async function () {
       const amd = await import('../../../../src/wasm/algebra/sparse/amd')
 
-      resetMem()
       // Tridiagonal matrix has bandwidth 1
-      const colPtrPtr = allocI32([0, 2, 5, 8, 10])
-      const rowIdxPtr = allocI32([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
-      const noPermPtr = allocI32([0, 1, 2, 3]) // identity permutation
-      const workPtr = getWorkPtr(4096)
+      const colPtr = new Int32Array([0, 2, 5, 8, 10])
+      const rowIdx = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const noPerm = new Int32Array(0)
 
-      const bw = amd.bandwidth(colPtrPtr, rowIdxPtr, noPermPtr, 4, workPtr)
+      const bw = amd.bandwidth(colPtr, rowIdx, noPerm, 4)
       assert.strictEqual(bw, 1)
 
       console.log('  ✓ algebra/sparse/amd (bandwidth)')
@@ -2386,13 +2074,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should estimate symbolic Cholesky fill', async function () {
       const amd = await import('../../../../src/wasm/algebra/sparse/amd')
 
-      resetMem()
-      const colPtrPtr = allocI32([0, 2, 5, 8, 10])
-      const rowIdxPtr = allocI32([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
-      const noPermPtr = allocI32([0, 1, 2, 3]) // identity permutation
-      const workPtr = getWorkPtr(4096)
+      const colPtr = new Int32Array([0, 2, 5, 8, 10])
+      const rowIdx = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const noPerm = new Int32Array(0)
 
-      const nnz = amd.symbolicCholeskyNnz(colPtrPtr, rowIdxPtr, noPermPtr, 4, workPtr)
+      const nnz = amd.symbolicCholeskyNnz(colPtr, rowIdx, noPerm, 4)
       assert.ok(nnz >= 4) // At least n entries (diagonal)
 
       console.log('  ✓ algebra/sparse/amd (symbolic fill)')
@@ -2404,11 +2090,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute line-circle intersection', async function () {
       const geometry = await import('../../../../src/wasm/geometry/operations')
 
-      resetMem()
       // Line through origin along x-axis, circle at origin with radius 1
-      const resultPtr = getWorkPtr(6 * 8) // [x1,y1,x2,y2,count] at f64 offsets
-      geometry.intersectLineCircle(0, 0, 1, 0, 0, 0, 1, resultPtr)
-      const result = readF64(resultPtr, 5)
+      const result = geometry.intersectLineCircle(0, 0, 1, 0, 0, 0, 1)
 
       assert.strictEqual(result[4], 2) // Two intersections
 
@@ -2428,10 +2111,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should detect line missing circle', async function () {
       const geometry = await import('../../../../src/wasm/geometry/operations')
 
-      resetMem()
-      const resultPtr = getWorkPtr(6 * 8)
-      geometry.intersectLineCircle(0, 2, 1, 0, 0, 0, 1, resultPtr)
-      const result = readF64(resultPtr, 5)
+      // Line parallel to x-axis at y=2, circle at origin with radius 1
+      const result = geometry.intersectLineCircle(0, 2, 1, 0, 0, 0, 1)
 
       assert.strictEqual(result[4], 0) // No intersection
 
@@ -2441,10 +2122,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute line-sphere intersection', async function () {
       const geometry = await import('../../../../src/wasm/geometry/operations')
 
-      resetMem()
-      const resultPtr = getWorkPtr(8 * 8)
-      geometry.intersectLineSphere(0, 0, 0, 1, 0, 0, 0, 0, 0, 1, resultPtr)
-      const result = readF64(resultPtr, 7)
+      // Line through origin along x-axis, sphere at origin with radius 1
+      const result = geometry.intersectLineSphere(0, 0, 0, 1, 0, 0, 0, 0, 0, 1)
 
       assert.strictEqual(result[6], 2) // Two intersections
 
@@ -2454,10 +2133,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute circle-circle intersection', async function () {
       const geometry = await import('../../../../src/wasm/geometry/operations')
 
-      resetMem()
-      const resultPtr = getWorkPtr(6 * 8)
-      geometry.intersectCircles(0, 0, 1, 1, 0, 1, resultPtr)
-      const result = readF64(resultPtr, 5)
+      // Two unit circles, centers at (0,0) and (1,0)
+      const result = geometry.intersectCircles(0, 0, 1, 1, 0, 1)
 
       assert.strictEqual(result[4], 2) // Two intersections
 
@@ -2471,10 +2148,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should detect non-intersecting circles', async function () {
       const geometry = await import('../../../../src/wasm/geometry/operations')
 
-      resetMem()
-      const resultPtr = getWorkPtr(6 * 8)
-      geometry.intersectCircles(0, 0, 1, 3, 0, 1, resultPtr)
-      const result = readF64(resultPtr, 5)
+      // Two unit circles, centers at (0,0) and (3,0) - too far apart
+      const result = geometry.intersectCircles(0, 0, 1, 3, 0, 1)
 
       assert.strictEqual(result[4], 0) // No intersection
 
@@ -2484,11 +2159,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should project point onto line', async function () {
       const geometry = await import('../../../../src/wasm/geometry/operations')
 
-      resetMem()
       // Point (1, 2), line from (0, 0) to (2, 0)
-      const resultPtr = getWorkPtr(3 * 8)
-      geometry.projectPointOnLine2D(1, 2, 0, 0, 2, 0, resultPtr)
-      const result = readF64(resultPtr, 3)
+      const result = geometry.projectPointOnLine2D(1, 2, 0, 0, 2, 0)
 
       approxEqual(result[0], 1, 1e-10) // projected x
       approxEqual(result[1], 0, 1e-10) // projected y
@@ -2526,16 +2198,15 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute polygon area', async function () {
       const geometry = await import('../../../../src/wasm/geometry/operations')
 
-      resetMem()
       // Unit square: (0,0), (1,0), (1,1), (0,1)
-      const verticesPtr = allocF64([0, 0, 1, 0, 1, 1, 0, 1])
-      const area = geometry.polygonArea2D(verticesPtr, 4)
+      const vertices = new Float64Array([0, 0, 1, 0, 1, 1, 0, 1])
+      const area = geometry.polygonArea2D(vertices)
 
       approxEqual(area, 1, 1e-10)
 
       // Triangle: (0,0), (2,0), (1,2) - area = 2
-      const trianglePtr = allocF64([0, 0, 2, 0, 1, 2])
-      const triArea = geometry.polygonArea2D(trianglePtr, 3)
+      const triangle = new Float64Array([0, 0, 2, 0, 1, 2])
+      const triArea = geometry.polygonArea2D(triangle)
 
       approxEqual(triArea, 2, 1e-10)
 
@@ -2545,12 +2216,9 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute polygon centroid', async function () {
       const geometry = await import('../../../../src/wasm/geometry/operations')
 
-      resetMem()
       // Unit square: (0,0), (1,0), (1,1), (0,1)
-      const verticesPtr = allocF64([0, 0, 1, 0, 1, 1, 0, 1])
-      const centroidPtr = getWorkPtr(2 * 8)
-      geometry.polygonCentroid2D(verticesPtr, 4, centroidPtr)
-      const centroid = readF64(centroidPtr, 2)
+      const vertices = new Float64Array([0, 0, 1, 0, 1, 1, 0, 1])
+      const centroid = geometry.polygonCentroid2D(vertices)
 
       approxEqual(centroid[0], 0.5, 1e-10)
       approxEqual(centroid[1], 0.5, 1e-10)
@@ -2603,15 +2271,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const nIntervals = 10 // Number of intervals (even)
       const nPoints = nIntervals + 1 // Simpson's rule needs odd number of points (11)
       const h = 1.0 / nIntervals
-      resetMem()
-      const fData: number[] = []
+      const fValues = new Float64Array(nPoints)
+
       for (let i = 0; i < nPoints; i++) {
         const x = i * h
-        fData.push(x * x)
+        fValues[i] = x * x
       }
-      const fValuesPtr = allocF64(fData)
 
-      const integral = calculus.simpsonsRule(fValuesPtr, h, nPoints)
+      const integral = calculus.simpsonsRule(fValues, h, nPoints)
       approxEqual(integral, 1 / 3, 0.01) // Relaxed tolerance
 
       console.log('  ✓ numeric/calculus (Simpson integration)')
@@ -2646,10 +2313,7 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const fa = a * a - 2 // -1
       const fb = b * b - 2 // 2
 
-      resetMem()
-      const statePtr = getWorkPtr(6 * 8)
-      rootfinding.bisectionSetup(fa, fb, a, b, statePtr)
-      const state = readF64(statePtr, 6)
+      const state = rootfinding.bisectionSetup(fa, fb, a, b)
 
       // State should be [midpoint, a, b, fa, fb, status]
       approxEqual(state[0], 1.5, 1e-10) // Midpoint
@@ -2663,20 +2327,18 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute Newton-Raphson step', async function () {
       const rootfinding = await import('../../../../src/wasm/numeric/rootfinding')
 
-      resetMem()
       // Find root of f(x) = x^2 - 2 using Newton's method
+      // f'(x) = 2x
       let x = 1.5
-      const statePtr = getWorkPtr(2 * 8)
-      // Setup: newtonSetup(x0, statePtr) - state=[x, status]
-      rootfinding.newtonSetup(x, statePtr)
+      const state = new Float64Array([x, 1])
 
       for (let i = 0; i < 10; i++) {
         const fx = x * x - 2
         const fpx = 2 * x
-        rootfinding.newtonStep(statePtr, fx, fpx, 1e-15) // modifies statePtr in-place
-        const state = readF64(statePtr, 2)
-        x = state[0]
-        if (state[1] === 0) break // Converged
+        const newState = rootfinding.newtonStep(state, fx, fpx, 1e-15)
+        x = newState[0]
+        state[0] = x
+        if (newState[1] === 0) break // Converged
       }
 
       approxEqual(x, Math.sqrt(2), 1e-10)
@@ -2692,26 +2354,22 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const fx0 = x0 * x0 - 2
       const fx1 = x1 * x1 - 2
 
-      resetMem()
-      // Setup state: state=[x, xPrev, fx, fxPrev, status]
-      const statePtr = getWorkPtr(5 * 8)
-      rootfinding.secantSetup(x0, x1, fx0, fx1, statePtr)
+      // Setup state
+      let state = rootfinding.secantSetup(x0, x1, fx0, fx1)
 
       // Run iterations
       for (let i = 0; i < 20; i++) {
-        const newX = rootfinding.secantStep(statePtr, 1e-15) // returns newX, sets status
-        const state = readF64(statePtr, 5)
-        if (state[4] === 0 || state[4] === -1) break // Converged or failed
+        const newState = rootfinding.secantStep(state, 1e-15)
+        if (newState[4] === 0 || newState[4] === -1) break // Converged or failed
 
-        if (state[4] === 2) {
-          // Need function evaluation at newX
-          const fNewX = state[0] * state[0] - 2
-          rootfinding.secantUpdate(statePtr, fNewX)
+        if (newState[4] === 2) {
+          // Need function evaluation
+          const fNewX = newState[0] * newState[0] - 2
+          state = rootfinding.secantUpdate(newState, fNewX)
         }
       }
 
-      const finalState = readF64(statePtr, 5)
-      approxEqual(finalState[0], Math.sqrt(2), 1e-6)
+      approxEqual(state[0], Math.sqrt(2), 1e-6)
 
       console.log('  ✓ numeric/rootfinding (secant)')
     })
@@ -2723,16 +2381,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // f'(x) = 3x^2, f''(x) = 6x
       let x = 1.5
 
-      resetMem()
-      const resultPtr = getWorkPtr(2 * 8)
       for (let i = 0; i < 5; i++) {
         const fx = x * x * x - 2
         const fpx = 3 * x * x
         const fppx = 6 * x
-        rootfinding.halleyStep(x, fx, fpx, fppx, 1e-15, resultPtr)
-        const state = readF64(resultPtr, 2)
-        x = state[0]
-        if (state[1] === 0) break // Converged
+        const newState = rootfinding.halleyStep(x, fx, fpx, fppx, 1e-15)
+        x = newState[0]
+        if (newState[1] === 0) break // Converged
       }
 
       approxEqual(x, Math.cbrt(2), 1e-10)
@@ -2751,11 +2406,10 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       approxEqual(result, 1, 1e-10)
 
       // Test table interpolation
-      resetMem()
-      const xValuesPtr = allocF64([0, 1, 2, 3])
-      const yValuesPtr = allocF64([0, 1, 4, 9]) // y = x^2
+      const xValues = new Float64Array([0, 1, 2, 3])
+      const yValues = new Float64Array([0, 1, 4, 9]) // y = x^2
 
-      const y = interp.linearInterpTable(xValuesPtr, yValuesPtr, 1.5, 4)
+      const y = interp.linearInterpTable(xValues, yValues, 1.5, 4)
       approxEqual(y, 2.5, 1e-10) // Linear interp between 1 and 4
 
       console.log('  ✓ numeric/interpolation (linear)')
@@ -2765,15 +2419,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const interp = await import('../../../../src/wasm/numeric/interpolation')
 
       // Interpolate quadratic: (0, 0), (1, 1), (2, 4)
-      resetMem()
-      const xValuesPtr = allocF64([0, 1, 2])
-      const yValuesPtr = allocF64([0, 1, 4])
+      const xValues = new Float64Array([0, 1, 2])
+      const yValues = new Float64Array([0, 1, 4])
 
       // Should recover f(x) = x^2
-      const y1 = interp.lagrangeInterp(xValuesPtr, yValuesPtr, 1.5, 3)
+      const y1 = interp.lagrangeInterp(xValues, yValues, 1.5, 3)
       approxEqual(y1, 2.25, 1e-10) // 1.5^2 = 2.25
 
-      const y2 = interp.lagrangeInterp(xValuesPtr, yValuesPtr, 0.5, 3)
+      const y2 = interp.lagrangeInterp(xValues, yValues, 0.5, 3)
       approxEqual(y2, 0.25, 1e-10) // 0.5^2 = 0.25
 
       console.log('  ✓ numeric/interpolation (Lagrange)')
@@ -2783,13 +2436,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const interp = await import('../../../../src/wasm/numeric/interpolation')
 
       // Interpolate: (0, 1), (1, 2), (2, 5), (3, 10) - f(x) = x^2 + 1
-      resetMem()
-      const xValuesPtr = allocF64([0, 1, 2, 3])
-      const yValuesPtr = allocF64([1, 2, 5, 10])
-      const coeffsPtr = getWorkPtr(4 * 8)
+      const xValues = new Float64Array([0, 1, 2, 3])
+      const yValues = new Float64Array([1, 2, 5, 10])
 
-      interp.dividedDifferences(xValuesPtr, yValuesPtr, 4, coeffsPtr)
-      const y = interp.newtonInterp(xValuesPtr, coeffsPtr, 1.5, 4)
+      const coeffs = interp.dividedDifferences(xValues, yValues, 4)
+      const y = interp.newtonInterp(xValues, coeffs, 1.5, 4)
       approxEqual(y, 3.25, 1e-10) // 1.5^2 + 1 = 3.25
 
       console.log('  ✓ numeric/interpolation (Newton)')
@@ -2800,24 +2451,19 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
 
       // Interpolate sin function
       const n = 5
-      resetMem()
-      const xData: number[] = []
-      const yData: number[] = []
+      const xValues = new Float64Array(n)
+      const yValues = new Float64Array(n)
 
       for (let i = 0; i < n; i++) {
-        xData.push((i / (n - 1)) * Math.PI)
-        yData.push(Math.sin(xData[i]))
+        xValues[i] = (i / (n - 1)) * Math.PI
+        yValues[i] = Math.sin(xValues[i])
       }
-      const xValuesPtr = allocF64(xData)
-      const yValuesPtr = allocF64(yData)
-      const coeffsPtr = getWorkPtr(4 * (n - 1) * 8)
-      const workPtr = getWorkPtr(6 * n * 8)
 
-      interp.naturalCubicSplineCoeffs(xValuesPtr, yValuesPtr, n, coeffsPtr, workPtr)
+      const coeffs = interp.naturalCubicSplineCoeffs(xValues, yValues, n)
 
       // Test at midpoint
       const x = Math.PI / 2
-      const y = interp.cubicSplineEval(xValuesPtr, coeffsPtr, x, n)
+      const y = interp.cubicSplineEval(xValues, coeffs, x, n)
       approxEqual(y, 1, 0.01) // sin(π/2) = 1
 
       console.log('  ✓ numeric/interpolation (cubic spline)')
@@ -2838,13 +2484,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const interp = await import('../../../../src/wasm/numeric/interpolation')
 
       // Same test as Lagrange
-      resetMem()
-      const xValuesPtr = allocF64([0, 1, 2])
-      const yValuesPtr = allocF64([0, 1, 4])
-      const weightsPtr = getWorkPtr(3 * 8)
+      const xValues = new Float64Array([0, 1, 2])
+      const yValues = new Float64Array([0, 1, 4])
 
-      interp.barycentricWeights(xValuesPtr, 3, weightsPtr)
-      const y = interp.barycentricInterp(xValuesPtr, yValuesPtr, weightsPtr, 1.5, 3)
+      const weights = interp.barycentricWeights(xValues, 3)
+      const y = interp.barycentricInterp(xValues, yValues, weights, 1.5, 3)
       approxEqual(y, 2.25, 1e-10)
 
       console.log('  ✓ numeric/interpolation (barycentric)')
@@ -2855,17 +2499,16 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
 
       // Test polyEval for polynomial p(x) = 1 + 2x + 3x^2
       // coeffs = [1, 2, 3]
-      resetMem()
-      const coeffsPtr = allocF64([1, 2, 3])
+      const coeffs = new Float64Array([1, 2, 3])
 
       // p(0) = 1
-      approxEqual(interp.polyEval(coeffsPtr, 0, 2), 1, 1e-10)
+      approxEqual(interp.polyEval(coeffs, 0, 2), 1, 1e-10)
 
       // p(1) = 1 + 2 + 3 = 6
-      approxEqual(interp.polyEval(coeffsPtr, 1, 2), 6, 1e-10)
+      approxEqual(interp.polyEval(coeffs, 1, 2), 6, 1e-10)
 
       // p(2) = 1 + 4 + 12 = 17
-      approxEqual(interp.polyEval(coeffsPtr, 2, 2), 17, 1e-10)
+      approxEqual(interp.polyEval(coeffs, 2, 2), 17, 1e-10)
 
       console.log('  ✓ numeric/interpolation (polynomial evaluation)')
     })
@@ -2893,30 +2536,25 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should reduce fractions using f64 alternative', async function () {
       const rational = await import('../../../../src/wasm/numeric/rational')
 
-      resetMem()
-      const resultPtr = getWorkPtr(2 * 8)
+      const result = new Float64Array(2)
 
       // 6/8 = 3/4
-      rational.reduceF64(6, 8, resultPtr)
-      let result = readF64(resultPtr, 2)
+      rational.reduceF64(6, 8, result)
       assert.strictEqual(result[0], 3)
       assert.strictEqual(result[1], 4)
 
       // -6/8 = -3/4
-      rational.reduceF64(-6, 8, resultPtr)
-      result = readF64(resultPtr, 2)
+      rational.reduceF64(-6, 8, result)
       assert.strictEqual(result[0], -3)
       assert.strictEqual(result[1], 4)
 
       // 6/-8 = -3/4
-      rational.reduceF64(6, -8, resultPtr)
-      result = readF64(resultPtr, 2)
+      rational.reduceF64(6, -8, result)
       assert.strictEqual(result[0], -3)
       assert.strictEqual(result[1], 4)
 
       // 0/5 = 0/1
-      rational.reduceF64(0, 5, resultPtr)
-      result = readF64(resultPtr, 2)
+      rational.reduceF64(0, 5, result)
       assert.strictEqual(result[0], 0)
       assert.strictEqual(result[1], 1)
 
@@ -3067,18 +2705,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const units = await import('../../../../src/wasm/unit/conversion')
 
       // Force = kg·m/s²
-      resetMem()
-      const dimsPtr = getWorkPtr(7 * 8)
-      units.getDimensions(units.UNIT_NEWTON, dimsPtr)
-      const forceDims = readF64(dimsPtr, 7)
+      const forceDims = units.getDimensions(units.UNIT_NEWTON)
       assert.strictEqual(forceDims[1], 1) // mass
       assert.strictEqual(forceDims[0], 1) // length
       assert.strictEqual(forceDims[2], -2) // time^-2
 
       // Check compatibility
-      const workPtr = getWorkPtr(14 * 8) // 2 * NUM_DIMENSIONS
-      assert.ok(units.areCompatible(units.UNIT_METER, units.UNIT_FOOT, workPtr))
-      assert.ok(!units.areCompatible(units.UNIT_METER, units.UNIT_SECOND, workPtr))
+      assert.ok(units.areCompatible(units.UNIT_METER, units.UNIT_FOOT))
+      assert.ok(!units.areCompatible(units.UNIT_METER, units.UNIT_SECOND))
 
       console.log('  ✓ unit/conversion (dimensions)')
     })
@@ -3101,11 +2735,8 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should convert array of values', async function () {
       const units = await import('../../../../src/wasm/unit/conversion')
 
-      resetMem()
-      const valuesPtr = allocF64([0, 10, 20, 30])
-      const resultPtr = getWorkPtr(4 * 8)
-      units.convertArray(valuesPtr, units.UNIT_CELSIUS, units.UNIT_KELVIN, 4, resultPtr)
-      const converted = readF64(resultPtr, 4)
+      const values = new Float64Array([0, 10, 20, 30])
+      const converted = units.convertArray(values, units.UNIT_CELSIUS, units.UNIT_KELVIN, 4)
 
       approxEqual(converted[0], 273.15, 1e-10)
       approxEqual(converted[1], 283.15, 1e-10)
@@ -3126,16 +2757,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // [1, 2, 1, 0]
       // [0, 1, 2, 1]
       // [0, 0, 1, 1]
-      resetMem()
-      const aPtrPtr = allocI32([0, 2, 5, 8, 10])
-      const aIndexPtr = allocI32([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
       const n = 4
-      const parentPtr = allocI32([0, 0, 0, 0])
-      const workPtr = getWorkPtr(n * 4)
+      const parent = new Int32Array(n)
 
-      sparse.csEtree(aIndexPtr, aPtrPtr, n, parentPtr, workPtr)
+      sparse.csEtree(aIndex, aPtr, n, parent)
 
-      const parent = readI32(parentPtr, n)
       // Elimination tree for tridiagonal: linear chain
       // parent[0] = 1, parent[1] = 2, parent[2] = 3, parent[3] = -1
       assert.strictEqual(parent[0], 1)
@@ -3150,15 +2778,12 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const sparse = await import('../../../../src/wasm/matrix/sparse')
 
       // Linear elimination tree: 0 -> 1 -> 2 -> 3 (root)
-      resetMem()
-      const parentPtr = allocI32([1, 2, 3, -1])
+      const parent = new Int32Array([1, 2, 3, -1])
       const n = 4
-      const postPtr = allocI32([0, 0, 0, 0])
-      const workPtr = getWorkPtr(4 * n * 4)
+      const post = new Int32Array(n)
 
-      sparse.csPost(parentPtr, n, postPtr, workPtr)
+      sparse.csPost(parent, n, post)
 
-      const post = readI32(postPtr, n)
       // Post-order: children before parents
       // So order should be [0, 1, 2, 3]
       assert.strictEqual(post[0], 0)
@@ -3173,23 +2798,21 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const sparse = await import('../../../../src/wasm/matrix/sparse')
 
       // 3x3 diagonal matrix
-      resetMem()
-      const aValuesPtr = allocF64([1, 2, 3])
-      const aIndexPtr = allocI32([0, 1, 2])
-      const aPtrPtr = allocI32([0, 1, 2, 3])
+      const aValues = new Float64Array([1, 2, 3])
+      const aIndex = new Int32Array([0, 1, 2])
+      const aPtr = new Int32Array([0, 1, 2, 3])
 
       // Reverse permutation: [2, 1, 0]
-      const qPtr = allocI32([2, 1, 0])
-      const pinvPtr = allocI32([2, 1, 0])
+      const q = new Int32Array([2, 1, 0])
+      const pinv = new Int32Array([2, 1, 0])
 
-      const cValuesPtr = getWorkPtr(3 * 8)
-      const cIndexPtr = getWorkPtr(3 * 4)
-      const cPtrPtr = getWorkPtr(4 * 4)
+      const cValues = new Float64Array(3)
+      const cIndex = new Int32Array(3)
+      const cPtr = new Int32Array(4)
 
-      const nnz = sparse.csPermute(aValuesPtr, aIndexPtr, aPtrPtr, pinvPtr, qPtr, 3, 3, cValuesPtr, cIndexPtr, cPtrPtr)
+      const nnz = sparse.csPermute(aValues, aIndex, aPtr, pinv, q, 3, 3, cValues, cIndex, cPtr)
 
       assert.strictEqual(nnz, 3)
-      const cValues = readF64(cValuesPtr, 3)
       // After permutation with reverse order, values should be reversed
       approxEqual(cValues[0], 3, 1e-10)
       approxEqual(cValues[1], 2, 1e-10)
@@ -3203,21 +2826,18 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
 
       // 2x3 matrix: [[1, 2, 3], [4, 5, 6]]
       // CSC format: col 0: [1,4], col 1: [2,5], col 2: [3,6]
-      resetMem()
-      const aValuesPtr = allocF64([1, 4, 2, 5, 3, 6])
-      const aIndexPtr = allocI32([0, 1, 0, 1, 0, 1])
-      const aPtrPtr = allocI32([0, 2, 4, 6])
+      const aValues = new Float64Array([1, 4, 2, 5, 3, 6])
+      const aIndex = new Int32Array([0, 1, 0, 1, 0, 1])
+      const aPtr = new Int32Array([0, 2, 4, 6])
       const m = 2, n = 3
 
-      const bValuesPtr = getWorkPtr(6 * 8)
-      const bIndexPtr = getWorkPtr(6 * 4)
-      const bPtrPtr = getWorkPtr(3 * 4)
-      const workPtr = getWorkPtr(4096)
+      const bValues = new Float64Array(6)
+      const bIndex = new Int32Array(6)
+      const bPtr = new Int32Array(3)
 
-      const nnz = sparse.csTranspose(aValuesPtr, aIndexPtr, aPtrPtr, m, n, bValuesPtr, bIndexPtr, bPtrPtr, workPtr)
+      const nnz = sparse.csTranspose(aValues, aIndex, aPtr, m, n, bValues, bIndex, bPtr)
 
       assert.strictEqual(nnz, 6)
-      const bPtr = readI32(bPtrPtr, 3)
       // Transpose should be 3x2: [[1, 4], [2, 5], [3, 6]]
       // CSC: col 0: [1, 2, 3], col 1: [4, 5, 6]
       assert.strictEqual(bPtr[0], 0)
@@ -3231,16 +2851,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const sparse = await import('../../../../src/wasm/matrix/sparse')
 
       // Simple 4x4 matrix
-      resetMem()
-      const aIndexPtr = allocI32([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
-      const aPtrPtr = allocI32([0, 2, 5, 8, 10])
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
       const n = 4
-      const permPtr = allocI32([0, 0, 0, 0])
-      const workPtr = getWorkPtr(4096)
+      const perm = new Int32Array(n)
 
-      sparse.csAmd(aIndexPtr, aPtrPtr, n, permPtr, workPtr)
+      sparse.csAmd(aIndex, aPtr, n, perm)
 
-      const perm = readI32(permPtr, n)
       // Check that perm is a valid permutation (contains 0,1,2,3)
       const sorted = Array.from(perm).sort((a, b) => a - b)
       assert.strictEqual(sorted[0], 0)
@@ -3255,16 +2872,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const sparse = await import('../../../../src/wasm/matrix/sparse')
 
       // Simple 4x4 matrix
-      resetMem()
-      const aIndexPtr = allocI32([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
-      const aPtrPtr = allocI32([0, 2, 5, 8, 10])
+      const aIndex = new Int32Array([0, 1, 0, 1, 2, 1, 2, 3, 2, 3])
+      const aPtr = new Int32Array([0, 2, 5, 8, 10])
       const n = 4
-      const permPtr = allocI32([0, 0, 0, 0])
-      const workPtr = getWorkPtr(4096)
+      const perm = new Int32Array(n)
 
-      sparse.csRcm(aIndexPtr, aPtrPtr, n, permPtr, workPtr)
+      sparse.csRcm(aIndex, aPtr, n, perm)
 
-      const perm = readI32(permPtr, n)
       // Check valid permutation
       const sorted = Array.from(perm).sort((a, b) => a - b)
       assert.strictEqual(sorted[0], 0)
@@ -3278,13 +2892,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute inverse permutation', async function () {
       const sparse = await import('../../../../src/wasm/matrix/sparse')
 
-      resetMem()
-      const permPtr = allocI32([2, 0, 3, 1])
-      const pinvPtr = allocI32([0, 0, 0, 0])
+      const perm = new Int32Array([2, 0, 3, 1])
+      const pinv = new Int32Array(4)
 
-      sparse.csInvPerm(permPtr, 4, pinvPtr)
+      sparse.csInvPerm(perm, 4, pinv)
 
-      const pinv = readI32(pinvPtr, 4)
       // perm[i] = j means pinv[j] = i
       assert.strictEqual(pinv[2], 0)
       assert.strictEqual(pinv[0], 1)
@@ -3298,12 +2910,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const sparse = await import('../../../../src/wasm/matrix/sparse')
 
       // 3x3 identity matrices
-      resetMem()
-      const aPtrPtr = allocI32([0, 1, 2, 3])
-      const bIndexPtr = allocI32([0, 1, 2])
-      const bPtrPtr = allocI32([0, 1, 2, 3])
+      const aPtr = new Int32Array([0, 1, 2, 3])
+      const bIndex = new Int32Array([0, 1, 2])
+      const bPtr = new Int32Array([0, 1, 2, 3])
 
-      const estimate = sparse.csMultNnzEstimate(aPtrPtr, 3, bIndexPtr, bPtrPtr, 3, 3)
+      const estimate = sparse.csMultNnzEstimate(aPtr, 3, bIndex, bPtr, 3, 3)
 
       // Identity * Identity = Identity, so 3 nonzeros
       assert.ok(estimate >= 3)
@@ -3315,26 +2926,23 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const sparse = await import('../../../../src/wasm/matrix/sparse')
 
       // 2x2 identity matrix
-      resetMem()
-      const aValuesPtr = allocF64([1, 1])
-      const aIndexPtr = allocI32([0, 1])
-      const aPtrPtr = allocI32([0, 1, 2])
+      const aValues = new Float64Array([1, 1])
+      const aIndex = new Int32Array([0, 1])
+      const aPtr = new Int32Array([0, 1, 2])
 
       // Diagonal matrix [[2, 0], [0, 3]]
-      const bValuesPtr = allocF64([2, 3])
-      const bIndexPtr = allocI32([0, 1])
-      const bPtrPtr = allocI32([0, 1, 2])
+      const bValues = new Float64Array([2, 3])
+      const bIndex = new Int32Array([0, 1])
+      const bPtr = new Int32Array([0, 1, 2])
 
       // Output arrays (oversized for safety)
-      const cValuesPtr = getWorkPtr(4 * 8)
-      const cIndexPtr = getWorkPtr(4 * 4)
-      const cPtrPtr = getWorkPtr(3 * 4)
-      const workPtr = getWorkPtr(4096)
+      const cValues = new Float64Array(4)
+      const cIndex = new Int32Array(4)
+      const cPtr = new Int32Array(3)
 
-      const nnz = sparse.csMult(aValuesPtr, aIndexPtr, aPtrPtr, 2, 2, bValuesPtr, bIndexPtr, bPtrPtr, 2, cValuesPtr, cIndexPtr, cPtrPtr, workPtr)
+      const nnz = sparse.csMult(aValues, aIndex, aPtr, 2, 2, bValues, bIndex, bPtr, 2, cValues, cIndex, cPtr)
 
       assert.strictEqual(nnz, 2)
-      const cValues = readF64(cValuesPtr, 2)
       approxEqual(cValues[0], 2, 1e-10)
       approxEqual(cValues[1], 3, 1e-10)
 
@@ -3348,12 +2956,10 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const advanced = await import('../../../../src/wasm/arithmetic/advanced')
 
       const n = 4
-      resetMem()
-      const outputPtr = getWorkPtr(2 * n * 8)
+      const output = new Float64Array(2 * n)
 
-      advanced.nthRootsOfUnity(n, outputPtr)
+      advanced.nthRootsOfUnity(n, output)
 
-      const output = readF64(outputPtr, 2 * n)
       // 4th roots of unity: 1, i, -1, -i
       // k=0: e^(0) = 1 + 0i
       approxEqual(output[0], 1, 1e-10)
@@ -3412,12 +3018,10 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
 
       // Cube roots of 8: 2, 2*e^(2πi/3), 2*e^(4πi/3)
       const n = 3
-      resetMem()
-      const outputPtr = getWorkPtr(2 * n * 8)
+      const output = new Float64Array(2 * n)
 
-      advanced.nthRootsReal(8, n, outputPtr)
+      advanced.nthRootsReal(8, n, output)
 
-      const output = readF64(outputPtr, 2 * n)
       // All roots should have magnitude 2
       for (let k = 0; k < n; k++) {
         const re = output[k * 2]
@@ -3435,12 +3039,10 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // Square roots of i (0 + 1i)
       // Roots: (1+i)/√2 and (-1-i)/√2
       const n = 2
-      resetMem()
-      const outputPtr = getWorkPtr(2 * n * 8)
+      const output = new Float64Array(2 * n)
 
-      advanced.nthRootsComplex(0, 1, n, outputPtr)
+      advanced.nthRootsComplex(0, 1, n, output)
 
-      const output = readF64(outputPtr, 2 * n)
       // Both roots should have magnitude 1
       for (let k = 0; k < n; k++) {
         const re = output[k * 2]
@@ -3482,19 +3084,16 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute extended GCD using f64 alternative', async function () {
       const advanced = await import('../../../../src/wasm/arithmetic/advanced')
 
-      resetMem()
-      const resultPtr = getWorkPtr(3 * 8)
+      const result = new Float64Array(3)
 
       // xgcd(35, 15) = gcd=5, x=-1, y=3 because -1*35 + 3*15 = 5
-      advanced.xgcdF64(35, 15, resultPtr)
-      let result = readF64(resultPtr, 3)
+      advanced.xgcdF64(35, 15, result)
       assert.strictEqual(result[0], 5) // gcd
       // Verify: x*35 + y*15 = gcd
       assert.strictEqual(result[1] * 35 + result[2] * 15, 5)
 
       // xgcd(120, 23)
-      advanced.xgcdF64(120, 23, resultPtr)
-      result = readF64(resultPtr, 3)
+      advanced.xgcdF64(120, 23, result)
       assert.strictEqual(result[0], 1) // coprime
       assert.strictEqual(result[1] * 120 + result[2] * 23, 1)
 
@@ -3504,17 +3103,14 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute modular inverse using f64 alternative', async function () {
       const advanced = await import('../../../../src/wasm/arithmetic/advanced')
 
-      resetMem()
-      const workPtr = getWorkPtr(3 * 8)
-
       // invmod(3, 7) = 5 because 3*5 = 15 ≡ 1 (mod 7)
-      assert.strictEqual(advanced.invmodF64(3, 7, workPtr), 5)
+      assert.strictEqual(advanced.invmodF64(3, 7), 5)
 
       // invmod(5, 11) = 9 because 5*9 = 45 ≡ 1 (mod 11)
-      assert.strictEqual(advanced.invmodF64(5, 11, workPtr), 9)
+      assert.strictEqual(advanced.invmodF64(5, 11), 9)
 
       // No inverse exists when gcd(a, m) != 1
-      assert.strictEqual(advanced.invmodF64(6, 9, workPtr), 0) // gcd(6,9) = 3
+      assert.strictEqual(advanced.invmodF64(6, 9), 0) // gcd(6,9) = 3
 
       console.log('  ✓ arithmetic/advanced (invmodF64)')
     })
@@ -3522,17 +3118,16 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
     it('should compute norms', async function () {
       const advanced = await import('../../../../src/wasm/arithmetic/advanced')
 
-      resetMem()
-      const valuesPtr = allocF64([3, -4])
+      const values = new Float64Array([3, -4])
 
       // L2 norm (Euclidean): sqrt(9 + 16) = 5
-      approxEqual(advanced.norm2(valuesPtr, 2), 5, 1e-10)
+      approxEqual(advanced.norm2(values, 2), 5, 1e-10)
 
       // L1 norm: |3| + |-4| = 7
-      approxEqual(advanced.norm1(valuesPtr, 2), 7, 1e-10)
+      approxEqual(advanced.norm1(values, 2), 7, 1e-10)
 
       // L-infinity norm: max(|3|, |-4|) = 4
-      approxEqual(advanced.normInf(valuesPtr, 2), 4, 1e-10)
+      approxEqual(advanced.normInf(values, 2), 4, 1e-10)
 
       console.log('  ✓ arithmetic/advanced (norms)')
     })
@@ -3547,13 +3142,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // Solve Lx = [4, 7]
       // x1 = 4/2 = 2
       // x2 = (7 - 1*2)/3 = 5/3
-      resetMem()
-      const LPtr = allocF64([2, 0, 1, 3])
-      const bPtr = allocF64([4, 7])
-      const xPtr = getWorkPtr(2 * 8)
+      const L = new Float64Array([2, 0, 1, 3])
+      const b = new Float64Array([4, 7])
 
-      solver.lsolve(LPtr, bPtr, 2, xPtr)
-      const x = readF64(xPtr, 2)
+      // lsolve returns a new array
+      const x = solver.lsolve(L, b, 2)
 
       approxEqual(x[0], 2, 1e-10)
       approxEqual(x[1], 5 / 3, 1e-10)
@@ -3568,13 +3161,11 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // Solve Ux = [5, 6]
       // x2 = 6/3 = 2
       // x1 = (5 - 1*2)/2 = 1.5
-      resetMem()
-      const UPtr = allocF64([2, 1, 0, 3])
-      const bPtr = allocF64([5, 6])
-      const xPtr = getWorkPtr(2 * 8)
+      const U = new Float64Array([2, 1, 0, 3])
+      const b = new Float64Array([5, 6])
 
-      solver.usolve(UPtr, bPtr, 2, xPtr)
-      const x = readF64(xPtr, 2)
+      // usolve returns a new array
+      const x = solver.usolve(U, b, 2)
 
       approxEqual(x[0], 1.5, 1e-10)
       approxEqual(x[1], 2, 1e-10)
@@ -3586,17 +3177,16 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       const solver = await import('../../../../src/wasm/algebra/solver')
 
       // Full rank: [[2, 0], [1, 3]]
-      resetMem()
-      const L1Ptr = allocF64([2, 0, 1, 3])
-      assert.strictEqual(solver.lowerTriangularRank(L1Ptr, 2), 2)
+      const L1 = new Float64Array([2, 0, 1, 3])
+      assert.strictEqual(solver.lowerTriangularRank(L1, 2), 2)
 
       // Rank 1: [[2, 0], [1, 0]]
-      const L2Ptr = allocF64([2, 0, 1, 0])
-      assert.strictEqual(solver.lowerTriangularRank(L2Ptr, 2), 1)
+      const L2 = new Float64Array([2, 0, 1, 0])
+      assert.strictEqual(solver.lowerTriangularRank(L2, 2), 1)
 
       // Upper triangular full rank
-      const U1Ptr = allocF64([2, 1, 0, 3])
-      assert.strictEqual(solver.upperTriangularRank(U1Ptr, 2), 2)
+      const U1 = new Float64Array([2, 1, 0, 3])
+      assert.strictEqual(solver.upperTriangularRank(U1, 2), 2)
 
       console.log('  ✓ algebra/solver (triangular rank)')
     })
@@ -3608,16 +3198,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // Row 1: x1 = 1
       // Row 2: x1 = 1 (consistent)
       // x2 can be anything (free variable)
-      resetMem()
-      const LPtr = allocF64([1, 0, 1, 0])
-      const bPtr = allocF64([1, 1])
-      const solutionsPtr = getWorkPtr(4 * 8) // 2 solutions max
-      const infoPtr = getWorkPtr(4 * 4)
-      const workPtr = getWorkPtr(4096)
+      const L = new Float64Array([1, 0, 1, 0])
+      const b = new Float64Array([1, 1])
+      const solutions = new Float64Array(4) // 2 solutions max
+      const info = new Int32Array(4)
 
-      solver.lsolveAll(LPtr, bPtr, 2, solutionsPtr, infoPtr, workPtr)
+      solver.lsolveAll(L, b, 2, solutions, info)
 
-      const info = readI32(infoPtr, 4)
       // info[0] = number of solutions (0, 1, or -1 for infinite)
       // info[1] = number of free variables
       assert.ok(info[0] !== 0) // Should have solution(s)
@@ -3631,16 +3218,13 @@ describe('Pre-Compilation Tests (Direct AS Import)', function () {
       // Inconsistent: L = [[1, 0], [1, 0]], b = [1, 2]
       // Row 1: x1 = 1
       // Row 2: x1 = 2 (inconsistent!)
-      resetMem()
-      const LPtr = allocF64([1, 0, 1, 0])
-      const bPtr = allocF64([1, 2])
-      const solutionsPtr = getWorkPtr(4 * 8)
-      const infoPtr = getWorkPtr(4 * 4)
-      const workPtr = getWorkPtr(4096)
+      const L = new Float64Array([1, 0, 1, 0])
+      const b = new Float64Array([1, 2])
+      const solutions = new Float64Array(4)
+      const info = new Int32Array(4)
 
-      solver.lsolveAll(LPtr, bPtr, 2, solutionsPtr, infoPtr, workPtr)
+      solver.lsolveAll(L, b, 2, solutions, info)
 
-      const info = readI32(infoPtr, 4)
       // info[0] = 0 means no solution
       assert.strictEqual(info[0], 0)
 

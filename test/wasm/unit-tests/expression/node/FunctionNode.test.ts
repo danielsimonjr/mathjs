@@ -808,7 +808,7 @@ describe('FunctionNode', function (): void {
   })
 
   // FIXME: custom instances should have there own function, not return the same function?
-  afterAll(function () {
+  after(function () {
     const customMath = math.create()
     delete customMath.add.toTex
     delete customMath.sum.toTex

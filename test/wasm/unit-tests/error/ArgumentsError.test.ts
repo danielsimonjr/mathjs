@@ -2,7 +2,7 @@
  * Test for error/ArgumentsError - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { ArgumentsError } from '../../../../src/error/ArgumentsError.js'
+import { ArgumentsError } from '../../../src/error/ArgumentsError.js'
 
 describe('ArgumentsError', function (): void {
   it('should construct an ArgumentsError without max', function (): void {

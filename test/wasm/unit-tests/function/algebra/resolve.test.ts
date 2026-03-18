@@ -5,7 +5,7 @@ import assert from 'assert'
 
 import math from '../../../../../src/defaultInstance.ts'
 
-import { simplifyAndCompare } from './simplify.test.js'
+import { simplifyAndCompare } from './simplifyTestHelper.ts'
 
 interface MathNode {
   type: string

@@ -3,8 +3,8 @@
  */
 import assert from 'assert'
 
-import { approxEqual } from '../../../../tools/approx.js'
-import math from '../../../../src/defaultInstance.ts'
+import { approxEqual } from '../../../tools/approx.js'
+import math from '../../../src/defaultInstance.ts'
 const Parser = math.Parser
 
 describe('parser', function (): void {
@@ -197,6 +197,6 @@ describe('parser', function (): void {
   it('should throw an exception when creating a parser without new', function (): void {
     assert.throws(function (): void {
       Parser()
-    }, /Constructor must be called with the new operator|cannot be invoked without/)
+    }, /Constructor must be called with the new operator/)
   })
 })

@@ -139,33 +139,6 @@ export const createGamma = /* #__PURE__ */ factory(
     }
 
     return typed(name, {
-      Array: function (arr: unknown[]): unknown[] {
-        // WASM-accelerated path for plain number arrays of sufficient size
-        const wasm = wasmLoader.getModule()
-        if (
-          wasm &&
-          arr.length >= 100 &&
-          arr.every((x) => typeof x === 'number')
-        ) {
-          try {
-            const input = new Float64Array(arr as number[])
-            const inputAlloc = wasmLoader.allocateFloat64Array(input)
-            const resultAlloc = wasmLoader.allocateFloat64ArrayEmpty(arr.length)
-            try {
-              wasm.gammaArray(inputAlloc.ptr, arr.length, resultAlloc.ptr)
-              return Array.from(resultAlloc.array)
-            } finally {
-              wasmLoader.free(inputAlloc.ptr)
-              wasmLoader.free(resultAlloc.ptr)
-            }
-          } catch {
-            // Fall through to element-wise JS
-          }
-        }
-        // Element-wise fallback
-        return arr.map((x) => gammaNumber(x as number))
-      },
-
       number: gammaNumber,
       Complex: gammaComplex,
       BigNumber: function (n: BigNumberType): BigNumberType {

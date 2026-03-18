@@ -7,11 +7,11 @@ interface MathNode {
   type: string
   toTex(): string
 }
-import mathjs from '../../../../src/defaultInstance.ts'
-import { approxEqual } from '../../../../tools/approx.js'
-import { factory } from '../../../../src/utils/factory.js'
-import { create } from '../../../../src/core/create.js'
-import { hasOwnProperty } from '../../../../src/utils/object.js'
+import mathjs from '../../../src/defaultInstance.ts'
+import { approxEqual } from '../../../tools/approx.js'
+import { factory } from '../../../src/utils/factory.js'
+import { create } from '../../../src/core/create.js'
+import { hasOwnProperty } from '../../../src/utils/object.js'
 
 const multiplyTestFactory = factory('multiplyTest', [], () => {
   return function multiply(a, b) {

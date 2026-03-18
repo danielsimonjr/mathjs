@@ -16,7 +16,7 @@ import {
   traverse,
   deepFlatten,
   hasOwnProperty
-} from '../../../../src/utils/object.js'
+} from '../../../src/utils/object.js'
 
 describe('object', function (): void {
   describe('clone', function (): void {

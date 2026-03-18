@@ -125,16 +125,16 @@ describe('reshape', function (): void {
 
     assert.throws(function (): void {
       math.reshape([1, 2], [])
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       math.reshape([1, 2], [0])
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       math.reshape([1, 2], [0, 0])
-    }, /Error/)
+    }, DimensionError)
     assert.throws(function (): void {
       math.reshape([[1, 2]], [0])
-    }, /Error/)
+    }, DimensionError)
     assert.doesNotThrow(function () {
       math.reshape([[1, 2]], [2, 1])
     })

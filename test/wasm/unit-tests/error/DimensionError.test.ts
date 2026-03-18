@@ -2,7 +2,7 @@
  * Test for error/DimensionError - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { DimensionError } from '../../../../src/error/DimensionError.js'
+import { DimensionError } from '../../../src/error/DimensionError.js'
 
 describe('DimensionError', function (): void {
   it('should construct a DimensionError with numbers', function (): void {

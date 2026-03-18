@@ -23,14 +23,12 @@ const skipDocs = new Set([
   'apply',
   'replacer',
   'reviver',
-  // Skipped: source-level bug - parseNumberWithConfig missing dependency (also fails in mocha)
   'nodeOperations',
   'parseNumberWithConfig'
 ])
 
 // Add names to skipExamples if their examples in the embedded docs contain acceptable errors
-// Skipped: source-level bug - parseNumberWithConfig breaks sum/mapSlices examples (also fails in mocha)
-const skipExamples = new Set(['mapSlices', 'sum', 'nodeOperations', 'parseNumberWithConfig'])
+const skipExamples = new Set([])
 
 const testDocs = new Set(
   [
@@ -132,8 +130,7 @@ describe('help', function () {
     assert.strictEqual(help.doc.name, 'pi')
   })
 
-  // Skipped: source-level bug - lazy resolution triggers missing parseNumberWithConfig (also fails in mocha)
-  it.skip('should find help from a constant', function () {
+  it('should find help from a constant', function () {
     const help = math.help(math.pi)
     assert(help instanceof math.Help)
     assert.strictEqual(help.doc.name, 'pi')
@@ -145,8 +142,7 @@ describe('help', function () {
     }, /No access/)
   })
 
-  // Skipped: source-level bug - lazy resolution triggers missing parseNumberWithConfig (also fails in mocha)
-  it.skip('should throw an error when no help is found', function () {
+  it('should throw an error when no help is found', function () {
     // assert.throws(function (): void {math.help(undefined)}, /No documentation found/);
     assert.throws(function (): void {
       math.help(new Date())

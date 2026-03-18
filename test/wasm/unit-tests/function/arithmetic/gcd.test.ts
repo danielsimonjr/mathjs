@@ -36,7 +36,7 @@ describe('gcd', function (): void {
   })
 
   it('should throw exception on multi dimensional array argument', function (): void {
-    assert.throws(() => gcd([[1], [2]]), /Error/)
+    assert.throws(() => gcd([[1], [2]]), ArgumentsError)
   })
 
   it('should find the greatest common divisor of two or more numbers with 1d matrix argument', function (): void {
@@ -50,7 +50,7 @@ describe('gcd', function (): void {
   })
 
   it('should throw exception on multi dimensional matrix argument', function (): void {
-    assert.throws(() => gcd(matrix([[1], [2]])), /Error/)
+    assert.throws(() => gcd(matrix([[1], [2]])), ArgumentsError)
   })
 
   it('should calculate gcd for edge cases around zero', function (): void {

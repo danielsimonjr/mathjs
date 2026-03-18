@@ -2,15 +2,15 @@
  * Test for parse - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../src/defaultInstance.ts'
 import {
   isMap,
   isObjectWrappingMap,
   isPartitionedMap
-} from '../../../../src/utils/is.js'
-import { PartitionedMap } from '../../../../src/utils/map.js'
+} from '../../../src/utils/is.js'
+import { PartitionedMap } from '../../../src/utils/map.js'
 
-import { approxDeepEqual, approxEqual } from '../../../../tools/approx.js'
+import { approxDeepEqual, approxEqual } from '../../../tools/approx.js'
 
 interface MathNode {
   type: string

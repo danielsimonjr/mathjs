@@ -2,7 +2,7 @@
  * Test for array - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import math from '../../../src/defaultInstance.ts'
 import {
   arraySize,
   flatten,
@@ -22,7 +22,7 @@ import {
   stretch,
   broadcastArrays,
   get
-} from '../../../../src/utils/array.js'
+} from '../../../src/utils/array.js'
 
 describe('util.array', function (): void {
   describe('size', function (): void {

@@ -10,45 +10,7 @@ interface MathNode {
   toTex(): string
 }
 
-const expLibrary: string[] = []
-// eslint-disable-next-line mocha/no-exports
-export function simplifyAndCompare(left: string, right: string, rules?: any, scope?: any, opt?: any, stringOpt?: any): void {
-  expLibrary.push(left)
-  let simpLeft
-  try {
-    if (Array.isArray(rules)) {
-      if (opt) {
-        simpLeft = math.simplify(left, rules, scope, opt)
-      } else if (scope) {
-        simpLeft = math.simplify(left, rules, scope)
-      } else {
-        simpLeft = math.simplify(left, rules)
-      }
-    } else {
-      if (opt) stringOpt = opt
-      if (scope) opt = scope
-      if (rules) scope = rules
-      if (opt) {
-        simpLeft = math.simplify(left, scope, opt)
-      } else if (scope) {
-        simpLeft = math.simplify(left, scope)
-      } else {
-        simpLeft = math.simplify(left)
-      }
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      console.log(err.stack)
-    } else {
-      console.log(new Error(err))
-    }
-    throw err
-  }
-  assert.strictEqual(
-    simpLeft.toString(stringOpt),
-    math.parse(right).toString(stringOpt)
-  )
-}
+import { simplifyAndCompare, expLibrary } from './simplifyTestHelper.ts'
 
 describe('simplify', function (): void {
   function simplifyAndCompareEval(left: string, right: string, scope?: any): void {
@@ -811,8 +773,7 @@ describe('simplify', function (): void {
     }
   }
 
-  // Skipped: expLibrary includes variables not in zeroes scope, causes 'Undefined symbol' in vitest
-  it.skip('should preserve values according to context', function (): void {
+  it('should preserve values according to context', function (): void {
     const realContext = { context: math.simplify.realContext }
     const positiveContext = { context: math.simplify.positiveContext }
     simplifyAndCompare('x/x', 'x/x', {}, realContext)

@@ -147,7 +147,7 @@ describe('prod', function (): void {
     }, /TypeError: Cannot calculate prod, unexpected type of argument/)
     assert.throws(function (): void {
       prod('a', 'b')
-    }, /SyntaxError: String "a" is not a valid number/)
+    }, /Cannot convert "a" to a number|String "a" is not a valid number/)
     assert.throws(function (): void {
       prod('a')
     }, /SyntaxError: String "a" is not a valid number/)

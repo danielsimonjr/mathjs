@@ -405,8 +405,7 @@ describe('eigs', function (): void {
     assert.ok(!('eigenvectors' in stillbad))
   })
 
-  // Skipped: source-level BigNumber eigs bug (also fails in mocha)
-  it.skip('diagonalizes matrix with bigNumber', function (): void {
+  it('diagonalizes matrix with bigNumber', function (): void {
     const x = [
       [bignum(1), bignum(0)],
       [bignum(0), bignum(1)]
@@ -442,8 +441,7 @@ describe('eigs', function (): void {
     approxDeepEqual(Ei, E)
   })
 
-  // Skipped: source-level BigNumber eigs bug (also fails in mocha)
-  it.skip('actually calculates BigNumbers input with BigNumber precision', function (): void {
+  it('actually calculates BigNumbers input with BigNumber precision', function (): void {
     const B = bignum([
       [0, 1],
       [1, 0]

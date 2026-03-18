@@ -2,7 +2,7 @@
  * Test for getMatrixDataType - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import math from '../../../../../../src/defaultInstance.ts'
+import math from '../../../../../src/defaultInstance.ts'
 const DenseMatrix = math.DenseMatrix
 const SparseMatrix = math.SparseMatrix
 const getMatrixDataType = math.getMatrixDataType

@@ -2,7 +2,7 @@
  * Test for error/IndexError - AssemblyScript-friendly TypeScript
  */
 import assert from 'assert'
-import { IndexError } from '../../../../src/error/IndexError.js'
+import { IndexError } from '../../../src/error/IndexError.js'
 
 describe('IndexError', function (): void {
   it('should construct an IndexError without min and max', function (): void {

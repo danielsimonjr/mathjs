@@ -166,7 +166,7 @@ describe('DenseMatrix', function (): void {
     it('should throw an error when called without new keyword', function (): void {
       assert.throws(function (): void {
         DenseMatrix()
-      }, /Constructor must be called with the new operator|cannot be invoked without/)
+      }, /Constructor must be called with the new operator|cannot be invoked without 'new'/)
     })
 
     it('should throw an error when called with invalid datatype', function (): void {
