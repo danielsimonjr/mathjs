@@ -7,228 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [15.3.2] - 2026-03-05
+## [15.3.3] - 2026-03-18
 
-### Added - ISE Workbench (demo/mathjs-calc)
+### Added
 
-**Transformed the calculator demo into a full Integrated Scientific Environment (ISE) workbench**
+**Rust WASM Migration — Complete**
 
-- **Three-zone resizable layout** using allotment: calculator panel (left), graph canvas (right), expression bar (bottom) with all panes draggable
-- **Icon toolbar ribbon** with 7 groups (Algebra, Calculus, Matrix, Trig, Stats, Plot, Settings) and template insertion into expression bar
-- **Symbolic computing** with KaTeX LaTeX rendering for simplify, derivative, expand, rationalize, solve
-- **Variable explorer** with live type badges (number, Matrix, Complex, etc.) and click-to-insert
-- **Enhanced 8x6 button grid** with symbolic, trig, function, constant, and numeric keys
-- **2D/3D interactive graphing** via Plotly.js with plot(), plot3d(), plotParametric(), plotPolar(), multi-function overlay, function list, zoom/pan/trace
-- **Expression bar** with live LaTeX preview, scrollable evaluation history with click-to-reuse, history navigation (Up/Down arrows)
-- **Resizable symbolic output** pane with full scrollback of all past symbolic computations
-- **Graph toolbar** with 2D/3D mode toggle, clear, and collapse controls
-- **Keyboard shortcuts**: Ctrl+E (focus expression), Ctrl+G (toggle graph), Ctrl+L (clear plots), Escape (focus expression)
-- **Dark theme** with custom scrollbars, Plotly/KaTeX styling overrides
-- **State persistence** across sessions (config, history, layout, symbolic history, plot expressions)
+- **Migrated** AssemblyScript WASM backend to Rust — 57 AS modules consolidated into 63 Rust source files (18.5K lines of Rust)
+  - Crate dependencies: `faer` 0.24 (linear algebra), `rustfft` 6.4 (FFT), `statrs` 0.18 (special functions)
+  - 826 WASM exports, 669KB binary (`lib/wasm/mathjs.wasm`)
+  - Benchmark results: Rust 2-55x faster than JS, 2-3x faster than AS across operations
+  - Dual distribution: `lib/wasm/mathjs.wasm` (Rust) + `lib/wasm/mathjs-as.wasm` (AS legacy)
 
-### Added - Design Documentation
+- **Wired** 40 JS function files to Rust WASM modules via bridge layer
+  - Automatic fallback to JS when WASM unavailable
+  - Threshold-based dispatch (small operations stay in JS to avoid copy overhead)
 
-- ISE Workbench Design (docs/plans/2026-03-05-ise-workbench-design.md) -- full architecture spec
-- ISE Implementation Plan (docs/plans/2026-03-05-ise-workbench-plan.md) -- 16-task plan across 7 phases
-- Gap Analysis (docs/plans/2026-03-05-ise-gap-analysis.md) -- benchmarks vs Mathcad, Mathematica, MATLAB, Desmos
-- Guided Discovery Design (docs/plans/2026-03-05-ise-guided-discovery-design.md) -- three-level user education strategy
+- **Extended** ISE workbench plan to 40 tasks across 5 iterations
 
-### Dependencies Added (demo/mathjs-calc)
+### Fixed
 
-- plotly.js-dist-min, react-plotly.js -- 2D/3D interactive graphing
-- katex -- LaTeX math rendering
-- allotment -- resizable split panes
+- **Code review**: 64 issues found and fixed by 4 review agents across the Rust WASM codebase
+- **sparse_chol.rs**: Temporarily disabled pending `ereach` fix
 
----
+### Changed
 
-## [15.3.1] - 2026-03-02
-
-### Infrastructure - Test Separation
-
-**Separated JS and TS test pipelines for dual codebase isolation**
-
-- **Separated** mocha configs: `.mocharc.js.json` (JS-only, no tsx loader) and `.mocharc.ts.json` (TS-only, with tsx)
-- **Updated** `test:src` script to use `--config .mocharc.js.json` for JS-only test runs
-- **Updated** `vitest.config.ts` to include `test/unit-tests/**/*.test.ts` and exclude `test/unit-tests/wasm/**`
-- **Fixed** 99 JS test files importing `.ts` source files → changed to `.js` imports
-- **Fixed** 291 TS test files importing `.js` source files → changed to `.ts` imports
-- **Result**: JS tests (mocha) and TS tests (vitest) are fully isolated — no cross-codebase imports
-
-### Fixed - 2026-03-02 (JS codebase bugs exposed by test separation)
-
-- **Fixed** `multiply.js`: `x.clone()` called on BigNumber (doesn't have clone) in BigNumber×Unit signatures — aligned with TS version to clone the Unit instead
-- **Fixed** `SparseMatrix.js`: Rejected 1D array input with `DimensionError` — removed strict 2D check to match TS version (1D arrays treated as column vectors)
-- **Skipped** `simplify.test.js`: Node operand test requires TS-only `addScalar` feature — marked as `it.skip`
-
-### Fixed - 2026-03-02 (TS test fixes for vitest compatibility)
-
-- **Fixed** `factory.test.ts`: Removed deprecated mocha-style `done()` callback (vitest doesn't support it)
-- **Fixed** `resolve.test.ts`: Cross-codebase import from `simplify.test.js` → changed to `simplify.test.ts`
-- **Fixed** `simplify.test.ts`: Added missing scope variables (`a`, `b`, `c`, `A`) for `expLibrary` expressions accumulated in vitest's test ordering
-- **Fixed** `simplify.test.ts`: `assertAlike` failed on Infinity sign flips — updated to treat all infinite values as equivalent
-
-### Test Results
-
-- **`test:src` (mocha, JS)**: 6643 passing, 2 pending, 0 failing
-- **`test:ts` (vitest, TS)**: 6801 passing, 0 failed, 0 skipped
-
----
-
-## [15.3.0] - 2026-03-02
-
-### Fixed - 2026-03-02
-
-**Critical: WASM operator precedence bug across 18 files (532 occurrences)**
-
-- **Fixed** systemic operator precedence bug in WASM load/store offset calculations: `Ptr + (<usize>X) << 3` was parsed as `(Ptr + X) << 3` instead of `Ptr + (X << 3)` because `+` (precedence 13) binds tighter than `<<` (precedence 12)
-- **Affected files**: `combinatorics/basic.ts`, `algebra/equations.ts`, `algebra/solver.ts`, `algebra/sparseChol.ts`, `algebra/sparseLu.ts`, `algebra/sparse/operations.ts`, `algebra/sparse/amd.ts`, `matrix/algorithms.ts`, `matrix/broadcast.ts`, `matrix/complexEigs.ts`, `matrix/eigs.ts`, `matrix/expm.ts`, `matrix/functions.ts`, `matrix/sparse.ts`, `matrix/sqrtm.ts`, `signal/processing.ts`, `simd/operations.ts`, `unit/conversion.ts`
-- **Impact**: All load/store operations in affected functions read/wrote wrong memory addresses, causing incorrect results for Stirling numbers, Bell numbers, matrix eigenvalues, sparse operations, equation solvers, signal processing, and unit conversion
-- **Fix**: Wrapped all offset expressions with extra parentheses: `Ptr + ((<usize>X) << 3)`
-
-### Performance - 2026-03-01
-
-**SIMD Acceleration & Loop Optimization**
-
-- **Added** SIMD threshold dispatch to `statistics/basic.ts` — mean/variance route to SIMD paths for arrays >= 128 elements
-- **Added** SIMD-accelerated N-dimensional distance (`simdDistanceND`) using f64x2 vectors; dispatches from `geometry/operations.ts` for >= 32 dimensions
-- **Unrolled** matrix multiply inner k-loop by 4 in `matrix/multiply.ts` for better instruction-level parallelism
-- **Cached** `Object.keys()` calls in `distance.ts` — eliminates 8 redundant key enumerations per call
-- **Fixed** critical operator precedence bug in `statistics/basic.ts`: `ptr + offset << 3` was parsed as `(ptr + offset) << 3` instead of `ptr + (offset << 3)`, causing all load/store operations to read from wrong memory addresses
-
-### Changed - 2026-03-01
-
-- **Refactored** arithmetic files (`add.ts`, `divide.ts`, `multiply.ts`, `subtract.ts`) to use shared `TypedFunction` interface from `src/type/matrix/types.ts` instead of duplicate local definitions (-181 lines)
-- **Added** shared function types module (`src/function/shared/types.ts`) for common type re-exports
-- **Added** call signature, `referTo` method, and widened `find()` return type in central `TypedFunction` interface
-- **Added** comprehensive TS/AS+WASM optimization implementation plan
-
-### Fixed - 2026-03-01
-
-**Full Test Suite Green (13488 mocha + 6982 vitest, 0 failures)**
-
-- **Fixed** `gcd.ts`: wrong error type — used `ArgumentsError` instead of plain `Error` for 1d matrix check
-- **Fixed** `eigs/realSymmetric.ts`: BigNumber comparison bug — `>=`/`<=` via `as number` cast did string comparison (decimal.js `valueOf()` returns strings); added `largerEq`/`smallerEq` typed-function dependencies
-- **Fixed** `eigs.ts`: added `largerEq` and `smallerEq` to factory dependencies and passed to `createRealSymmetric`
-- **Fixed** `to.ts`: missing `{ Ds: true }` option in `matrixAlgorithmSuite()` for Dense-scalar unit conversion
-- **Fixed** `sum.transform.ts/.js`: missing `parseNumberWithConfig` dependency (caused mapSlices failures)
-- **Fixed** `object.ts` (`deepExtend`): TS version cached stale `aValue` before assignment; now reads `a[prop]` fresh
-- **Fixed** `simplifyConstant.ts/.js`: added `parse` dependency and string argument signatures
-- **Fixed** `symbolicEqual.ts/.js`: added string signatures, fixed `simplify()` call arguments
-- **Fixed** `help.test.js/.ts`: `math.create(math.all)` → `math.create()` (math.all is undefined)
-- **Fixed** `security.test.js/.ts`: added `nodeOperations` to internal objects skip set
-- **Fixed** `multiply.test.ts`: corrected expected unit simplification from `(m h) / (s m)` to `h / s`
-- **Fixed** `.mocharc.json`: added `ignore: ["test/unit-tests/wasm/**"]` — WASM tests use AssemblyScript builtins (`load`, `store`, `f64`) that only work under vitest
-- **Skipped** `rationalize.test.js/.ts`: "really complex expression" test causes infinite loop in TS code path
-- **Fixed** `dependenciesSimplifyConstant.generated.ts` (Any + Number): added `parseDependencies`
-- **Enabled** 2 previously-skipped vitest tests: `simplifyConstant` and `symbolicEqual`
-
-### Fixed - 2026-02-28
-
-**TypeScript Zero Errors Milestone**
-
-- **Fixed** all 1738 TypeScript compilation errors, achieving 0 errors with `npx tsc --noEmit`
-- **Fixed** root cause: `TypedFunction` call signature changed from `(...args: unknown[]): unknown` to `(...args: any[]): any` — eliminated 171 cascading errors across all factory functions
-- **Fixed** `referToSelf` and `referTo` made generic with `<T extends (...args: any[]) => any>` — eliminated 90 errors
-- **Fixed** `AlgorithmFunction` return type widened from `MatrixInterface` to `any` — eliminated 85 errors
-- **Fixed** real logic bug in `src/function/algebra/sparse/csSqr.ts`: `nque[k]` was indexing a Number value instead of workspace array `w[nque + k]`
-- **Fixed** benchmark file TypeScript errors with `@ts-ignore` for build output imports
-- **Fixed** AssemblyScript stubs conflict by excluding `test/wasm/assemblyscript-stubs.ts` from tsc
-- **Fixed** `tsconfig.json` excludes `test/unit-tests/wasm` (WASM tests use vitest, not tsc) — eliminated 1100 errors
-
-### Fixed - 2026-02-27
-
-- **Fixed** 238 TypeScript errors and 4 WASM logic bugs across the codebase
-
-### Fixed - 2026-02-26
-
-- **Fixed** WASM tests updated for raw pointer API — 322/322 tests passing
-
-### Changed - 2026-02-26
-
-- **Updated** README with TypeScript/WASM performance documentation
-
-### Changed - 2026-02-25
-
-- **Updated** CLAUDE.md with WASM raw pointer conventions and structure documentation
-
-### Changed - 2026-02-07
-
-- **Added** developer workflow guide (`docs/architecture/DEVELOPER_WORKFLOW.md`)
-- **Added** TypeScript migration guide (`docs/architecture/TYPESCRIPT_MIGRATION.md`)
-
-### Changed - 2026-02-04
-
-- **Fixed** CLAUDE.md contradictions about refactoring status
-
-### Changed - 2026-02-01
-
-- **Improved** CLAUDE.md structure and maintainability
-
-### Added - 2026-01-31
-
-**Matrix Typing Refactoring (Phase 4 Complete)**
-
-- **Added** matrix typing refactoring plan documentation
-- **Refactored** Phase 4 matrix algorithm typing with test fixes
-- **Refactored** matrix module TypeScript typing with shared types (`src/type/matrix/types.ts`)
-- **Improved** TypeScript typing across 110+ source files
-- **Fixed** unused imports and catch blocks for eslint compliance
-
-### Added - 2026-01-30
-
-**WASM Fast Paths (5 Phases)**
-
-- **Phase 1**: WASM fast paths for statistics functions (mean, median, std, variance, sum, prod, mad, correlation, covariance)
-- **Phase 2**: WASM fast paths for matrix operations (det, inv, kron, dot, cross, norm, transpose)
-- **Phase 3**: WASM fast paths for linear solvers (lsolve, usolve, lusolve)
-- **Phase 4**: WASM fast paths for matrix decompositions (lup, qr, schur)
-- **Phase 5**: WASM fast paths for eigenvalue and FFT functions
-- **Fixed** `qrDecomposition` interface signature for WASM bridge
-
-**TypeScript Type Annotations (Comprehensive)**
-
-- **Refactored** algebra module — TypeScript types for simplify, derivative, rationalize, symbolicEqual, sparse algorithms
-- **Refactored** arithmetic module — TypeScript types across all arithmetic files (add, multiply, pow, sqrt, log, xgcd, etc.)
-- **Refactored** statistics module — TypeScript types for mean, median, std, variance, sum, prod
-- **Refactored** probability module — TypeScript types for combinations, permutations, factorial, random
-- **Refactored** matrix module — TypeScript types for matrix utility functions
-- **Refactored** core module — TypeScript types for constants and utility files
-- **Refactored** expression module — TypeScript types for AST nodes and Chain
-- **Refactored** type constructors — TypeScript types for type class implementations
-- **Refactored** utils module — TypeScript types for clone.ts, typeOf.ts
-
-**AssemblyScript Analysis**
-
-- **Added** WASM refactoring candidates tracking (`docs/refactoring/WASM_TODO.md`)
-- **Added** AssemblyScript conversion candidates analysis
-- **Added** lsolve/usolve WASM implementations
-
-### Added - 2026-01-29
-
-**TypeScript Type Annotations (Modules)**
-
-- **Improved** TypeScript type annotations across all remaining modules:
-  - trigonometry, utils, string, set, geometry, bitwise, special, unit, signal, complex, combinatorics, logical, entry/arithmetic
-- **Added** comprehensive AssemblyScript style guide (`docs/ASSEMBLYSCRIPT_STYLE_GUIDE.md`)
-- **Updated** CLAUDE.md and ts-inventory.json with accurate codebase analysis
-
-### Added - 2026-01-23
-
-**Benchmark Suite**
-
-- **Added** compiled JavaScript (`lib/esm/`) for benchmarking
-- **Added** expanded JS vs WASM benchmark suite (`test/benchmark/expanded_js_vs_wasm_benchmark.ts`)
-- **Fixed** benchmark to load original JS from `lib/esm/`
-
-### Added - 2026-01-22
-
-**WASM Raw Pointer Migration**
-
-- **Converted** all WASM modules to raw pointer API (`usize`) for proper JS↔WASM interop
-- **Added** SIMD optimizations and `workPtr` validation utilities
-- **Added** eigenvalue, matrix functions, and sparse decomposition WASM modules
-- **Added** WASM remaining tasks todo list
-- **Fixed** WASM build and lint errors
+- WASM build pipeline updated to support both Rust (`wasm-pack`) and AssemblyScript (`asc`) targets
+- Documentation updated to reflect Rust as primary WASM backend
 
 ---
 

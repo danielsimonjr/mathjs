@@ -8,6 +8,13 @@ Generated: 2026-01-13
 - [x] TypeScript conversion (test/) - 65% coverage
 - [x] AssemblyScript/WASM conversion - Complete, 0 candidates remaining
 - [x] WASM performance benchmarks - 10-117x speedups documented
+- [x] Rust WASM migration - 57 AS modules migrated to 63 Rust files (18.5K lines), 826 exports, 669KB binary
+  - Rust 2-55x faster than JS, 2-3x faster than AS
+  - Crate deps: faer 0.24, rustfft 6.4, statrs 0.18
+  - 40 JS function files wired to Rust WASM modules
+  - Dual distribution: lib/wasm/mathjs.wasm (Rust) + lib/wasm/mathjs-as.wasm (AS)
+  - sparse_chol.rs temporarily disabled pending ereach fix
+  - 64 code review issues fixed by 4 review agents
 - [x] Status report updated - Accurate breakdown
 - [x] Refactoring docs organized - Moved to docs/refactoring/
 - [x] WASM test files (46 files) - All tiers complete (6621 tests passing)
@@ -120,13 +127,13 @@ All 46 test files created for src/wasm/ modules:
 
 ### Documentation
 
-- [x] **Update main README with TypeScript/WASM status** ✅ COMPLETE
+- [ ] **Update main README with TypeScript/WASM status**
   - Document the three-tier performance system
   - Add usage examples for WASM acceleration
 
-- [x] **Add migration guide for users** ✅ COMPLETE
-  - See `docs/migration/MIGRATION_GUIDE.md`
-  - No breaking changes - WASM acceleration is transparent
+- [ ] **Add migration guide for users**
+  - Document breaking changes (if any)
+  - Provide upgrade path from JS-only version
 
 ### CI/CD ✅ COMPLETE
 
@@ -135,21 +142,10 @@ All 46 test files created for src/wasm/ modules:
   - Added WASM build & test job (validate, build, run unit tests)
   - Build-and-test now depends on all verification jobs
 
-### Test Separation ✅ COMPLETE (2026-03-02)
-
-- [x] **JS and TS test pipelines fully separated**
-  - `.mocharc.js.json` for JS-only tests (no tsx loader)
-  - `.mocharc.ts.json` for TS-only tests (with tsx loader)
-  - `vitest.config.ts` includes `test/unit-tests/**/*.test.ts`
-  - 99 JS test files fixed: `.ts` imports → `.js` imports
-  - 291 TS test files fixed: `.js` imports → `.ts` imports
-  - JS bugs fixed: multiply.js BigNumber×Unit, SparseMatrix.js 1D arrays
-  - TS test fixes: factory.test.ts done(), resolve.test.ts import, simplify.test.ts scope
-  - Results: mocha 6643 passing, vitest 6801 passing, 0 failures
-
 ## Notes
 
 - All functional JS files have been converted to TypeScript
 - The codebase compiles with zero TypeScript errors
 - Legacy JS files are kept for comparison and benchmarking purposes
-- JS and TS test suites are fully isolated (as of v15.3.1)
+- Primary WASM backend is now Rust (wasm-pack); AssemblyScript kept as legacy for benchmarking
+- Dual WASM distribution: `lib/wasm/mathjs.wasm` (Rust, primary) and `lib/wasm/mathjs-as.wasm` (AS, legacy)

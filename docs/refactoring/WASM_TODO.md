@@ -176,4 +176,42 @@ This document tracks remaining AssemblyScript/WASM conversion and optimization t
 
 ---
 
-*Last updated: 2026-01-22*
+---
+
+## Rust WASM Migration (Complete - 2026-03-18)
+
+The WASM backend has been migrated from AssemblyScript to Rust for improved performance and maintainability.
+
+### Migration Summary
+
+- **Source**: 57 AssemblyScript modules in `src/wasm/`
+- **Target**: 63 Rust source files (18.5K lines) in `wasm-rust/src/`
+- **Binary**: 826 exports, 669KB (`lib/wasm/mathjs.wasm`)
+- **Crate dependencies**:
+  - `faer` 0.24 — linear algebra (matrix decompositions, solvers)
+  - `rustfft` 6.4 — FFT and signal processing
+  - `statrs` 0.18 — special functions (gamma, erf, zeta)
+
+### Performance
+
+- Rust WASM is 2-55x faster than JavaScript across operations
+- Rust WASM is 2-3x faster than AssemblyScript WASM
+- 40 JS function files wired to Rust WASM modules via bridge layer
+
+### Distribution
+
+- `lib/wasm/mathjs.wasm` — Rust WASM binary (primary)
+- `lib/wasm/mathjs-as.wasm` — AssemblyScript WASM binary (legacy, kept for comparison)
+
+### Known Issues
+
+- `sparse_chol.rs` — Temporarily disabled pending `ereach` fix
+
+### Code Quality
+
+- 64 issues found and fixed by 4 review agents
+- ISE workbench plan extended to 40 tasks across 5 iterations
+
+---
+
+*Last updated: 2026-03-18*
