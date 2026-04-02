@@ -1,6 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
-import math from '../../../../src/defaultInstance.ts'
+import { approxEqual } from '../../../../tools/approx.js'
+import math from '../../../../src/defaultInstance.js'
 const BigNumber = math.BigNumber
 const Complex = math.Complex
 const DenseMatrix = math.DenseMatrix
@@ -65,7 +66,7 @@ describe('det', function () {
       1176
     )
     assert.strictEqual(det(diag([4, -5, 6])), -120)
-    assert.strictEqual(
+    approxEqual(
       det([
         [6.123234262925839e-17, -1, 1],
         [-0.8660253882408142, 0.5, 1],

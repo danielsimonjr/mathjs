@@ -73,6 +73,22 @@ export function createRealSymmetric({
   multiply,
   add
 }: Dependencies) {
+  // BigNumber comparison helpers — JavaScript's >=/</<= operators don't work
+  // with Decimal.js objects because valueOf() returns strings, causing
+  // lexicographic comparison instead of numeric (e.g., "1" < "5e-13").
+  function bigGte(a: Scalar, b: Scalar): boolean {
+    if (typeof a === 'number' && typeof b === 'number') return a >= b
+    return (a as BigNumber).gte(b as BigNumber)
+  }
+  function bigLt(a: Scalar, b: Scalar): boolean {
+    if (typeof a === 'number' && typeof b === 'number') return a < b
+    return (a as BigNumber).lt(b as BigNumber)
+  }
+  function bigLte(a: Scalar, b: Scalar): boolean {
+    if (typeof a === 'number' && typeof b === 'number') return a <= b
+    return (a as BigNumber).lte(b as BigNumber)
+  }
+
   /**
    * Compute eigenvalues and optionally eigenvectors of a real symmetric matrix
    * @param arr the matrix
@@ -233,7 +249,7 @@ export function createRealSymmetric({
     }
     // initial error
     let Vab = getAijBig(x)
-    while ((abs(Vab[1]) as number) >= (abs(e0) as number)) {
+    while (bigGte(abs(Vab[1]), abs(e0))) {
       const i = Vab[0][0]
       const j = Vab[0][1]
       psi = getThetaBig(x[i][i], x[j][j], x[i][j])
@@ -269,12 +285,12 @@ export function createRealSymmetric({
     aij: BigNumber
   ): BigNumber {
     const denom = subtract(ajj, aii) as BigNumber
-    if ((abs(denom) as number) <= (config.relTol as number)) {
+    if (bigLte(abs(denom), bignumber(config.relTol as number))) {
       return bignumber(-1).acos().div(4) as unknown as BigNumber
     } else {
       return multiplyScalar(
-        0.5 as unknown as BigNumber,
-        atan(multiply(bignumber(2.0), aij, inv(denom)))
+        bignumber(0.5),
+        atan(multiply(bignumber(2), aij, inv(denom)))
       ) as BigNumber
     }
   }
@@ -447,7 +463,7 @@ export function createRealSymmetric({
     let maxIJ: [number, number] = [0, 1]
     for (let i = 0; i < N; i++) {
       for (let j = i + 1; j < N; j++) {
-        if ((abs(maxMij) as number) < (abs(Mij[i][j]) as number)) {
+        if (bigLt(abs(maxMij), abs(Mij[i][j]))) {
           maxMij = abs(Mij[i][j]) as BigNumber
           maxIJ = [i, j]
         }
@@ -475,7 +491,7 @@ export function createRealSymmetric({
       let minID = 0
       let minE = E[0]
       for (let j = 0; j < E.length; j++) {
-        if ((abs(E[j]) as number) < (abs(minE) as number)) {
+        if (bigLt(abs(E[j]), abs(minE))) {
           minID = j
           minE = E[minID]
         }
