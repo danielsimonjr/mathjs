@@ -1,6 +1,23 @@
 import { clone } from '../../../utils/object.js'
 
 export function createRealSymmetric ({ config, addScalar, subtract, abs, atan, cos, sin, multiplyScalar, inv, bignumber, multiply, add }) {
+  // BigNumber comparison helpers — Decimal.js valueOf() returns strings,
+  // so JavaScript >=/</<= operators do lexicographic comparison instead of
+  // numeric (e.g., "1" < "5e-13" because '1' < '5' in ASCII). Use Decimal's
+  // native .gte()/.lt()/.lte() methods for correct numeric comparison.
+  function bigGte (a, b) {
+    if (typeof a === 'number' && typeof b === 'number') return a >= b
+    return a.gte ? a.gte(b) : a >= b
+  }
+  function bigLt (a, b) {
+    if (typeof a === 'number' && typeof b === 'number') return a < b
+    return a.lt ? a.lt(b) : a < b
+  }
+  function bigLte (a, b) {
+    if (typeof a === 'number' && typeof b === 'number') return a <= b
+    return a.lte ? a.lte(b) : a <= b
+  }
+
   /**
    * @param {number[] | BigNumber[]} arr
    * @param {number} N
@@ -53,20 +70,22 @@ export function createRealSymmetric ({ config, addScalar, subtract, abs, atan, c
   // diagonalization implementation for bigNumber
   function diagBig (x, precision, computeVectors) {
     const N = x.length
-    const e0 = abs(precision / N)
+    const e0 = abs(bignumber(precision) / N)
     let psi
     let Sij
     if (computeVectors) {
       Sij = new Array(N)
-      // Sij is Identity Matrix
+      // Sij is Identity Matrix — use BigNumber values for type consistency
       for (let i = 0; i < N; i++) {
-        Sij[i] = Array(N).fill(0)
-        Sij[i][i] = 1.0
+        Sij[i] = new Array(N)
+        for (let j = 0; j < N; j++) {
+          Sij[i][j] = bignumber(i === j ? 1 : 0)
+        }
       }
     }
     // initial error
     let Vab = getAijBig(x)
-    while (abs(Vab[1]) >= abs(e0)) {
+    while (bigGte(abs(Vab[1]), abs(e0))) {
       const i = Vab[0][0]
       const j = Vab[0][1]
       psi = getThetaBig(x[i][i], x[j][j], x[i][j])
@@ -74,11 +93,10 @@ export function createRealSymmetric ({ config, addScalar, subtract, abs, atan, c
       if (computeVectors) Sij = Sij1Big(Sij, psi, i, j)
       Vab = getAijBig(x)
     }
-    const Ei = Array(N).fill(0) // eigenvalues
+    const Ei = new Array(N)
     for (let i = 0; i < N; i++) {
       Ei[i] = x[i][i]
     }
-    // return [clone(Ei), clone(Sij)]
     return sorting(clone(Ei), Sij, computeVectors)
   }
 
@@ -95,7 +113,7 @@ export function createRealSymmetric ({ config, addScalar, subtract, abs, atan, c
   // get angle
   function getThetaBig (aii, ajj, aij) {
     const denom = subtract(ajj, aii)
-    if (abs(denom) <= config.relTol) {
+    if (bigLte(abs(denom), bignumber(config.relTol))) {
       return bignumber(-1).acos().div(4)
     } else {
       return multiplyScalar(0.5, atan(multiply(2.0, aij, inv(denom))))
@@ -226,11 +244,11 @@ export function createRealSymmetric ({ config, addScalar, subtract, abs, atan, c
   // get max off-diagonal value from Upper Diagonal
   function getAijBig (Mij) {
     const N = Mij.length
-    let maxMij = 0
+    let maxMij = bignumber(0)
     let maxIJ = [0, 1]
     for (let i = 0; i < N; i++) {
       for (let j = i + 1; j < N; j++) {
-        if (abs(maxMij) < abs(Mij[i][j])) {
+        if (bigLt(abs(maxMij), abs(Mij[i][j]))) {
           maxMij = abs(Mij[i][j])
           maxIJ = [i, j]
         }
@@ -254,7 +272,7 @@ export function createRealSymmetric ({ config, addScalar, subtract, abs, atan, c
       let minID = 0
       let minE = E[0]
       for (let j = 0; j < E.length; j++) {
-        if (abs(E[j]) < abs(minE)) {
+        if (bigLt(abs(E[j]), abs(minE))) {
           minID = j
           minE = E[minID]
         }
