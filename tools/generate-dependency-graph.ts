@@ -13,6 +13,8 @@
  * - dependency-graph.json (machine-readable)
  * - dependency-graph.md (human-readable markdown)
  * - dependency-graph.mermaid (visualization diagram)
+ *
+ * Scans: .js, .ts (source), .rs (Rust WASM)
  */
 
 import fs from 'fs';
@@ -24,6 +26,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const SRC_DIR = path.join(__dirname, '..', 'src');
+const WASM_RUST_DIR = path.join(__dirname, '..', 'src', 'wasm-rust', 'crates', 'mathjs-wasm', 'src');
 const OUTPUT_DIR = __dirname; // Output to tools/ folder
 
 // Graph data structure
@@ -31,9 +34,14 @@ const graph = {
   files: {},
   folders: {},
   functions: {},
+  rustExports: {},
   stats: {
     totalFiles: 0,
+    jsFiles: 0,
+    tsFiles: 0,
+    rsFiles: 0,
     totalFunctions: 0,
+    totalRustExports: 0,
     totalDependencies: 0,
     avgDependenciesPerFile: 0,
     mostDependedOn: [],
@@ -58,8 +66,12 @@ function parseFile(filePath) {
   };
 
   try {
+    const isTS = filePath.endsWith('.ts');
     const ast = parseSync(code, {
-      sourceType: 'module'
+      sourceType: 'module',
+      filename: filePath,
+      presets: isTS ? [['@babel/preset-typescript', { allExtensions: true }]] : [],
+      plugins: isTS ? [] : []
     });
 
     // Extract imports
@@ -130,9 +142,10 @@ function parseFile(filePath) {
 }
 
 /**
- * Recursively find all .js files in a directory
+ * Recursively find all source files (.js, .ts) in a directory
+ * Excludes: node_modules, conflicted copies, wasm-rust (scanned separately)
  */
-function findJSFiles(dir) {
+function findSourceFiles(dir) {
   const files = [];
 
   function walk(currentDir) {
@@ -142,8 +155,36 @@ function findJSFiles(dir) {
       const fullPath = path.join(currentDir, entry.name);
 
       if (entry.isDirectory()) {
+        if (entry.name === 'node_modules' || entry.name === 'wasm-rust' || entry.name === 'target') continue;
         walk(fullPath);
-      } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      } else if (entry.isFile()) {
+        if (entry.name.includes('conflicted')) continue;
+        if (entry.name.endsWith('.d.ts')) continue;
+        if (entry.name.endsWith('.js') || entry.name.endsWith('.ts')) {
+          files.push(fullPath);
+        }
+      }
+    }
+  }
+
+  walk(dir);
+  return files;
+}
+
+/**
+ * Find all Rust source files in the wasm-rust crate
+ */
+function findRustFiles(dir) {
+  const files = [];
+  if (!fs.existsSync(dir)) return files;
+
+  function walk(currentDir) {
+    const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(currentDir, entry.name);
+      if (entry.isDirectory() && entry.name !== 'target') {
+        walk(fullPath);
+      } else if (entry.isFile() && entry.name.endsWith('.rs') && !entry.name.includes('conflicted')) {
         files.push(fullPath);
       }
     }
@@ -154,18 +195,44 @@ function findJSFiles(dir) {
 }
 
 /**
+ * Parse a Rust file and extract extern "C" fn exports
+ */
+function parseRustFile(filePath) {
+  const code = fs.readFileSync(filePath, 'utf-8');
+  const relativePath = path.relative(
+    path.join(SRC_DIR, 'wasm-rust', 'crates', 'mathjs-wasm', 'src'), filePath
+  ).replace(/\\/g, '/');
+
+  const exports = [];
+  const fnPattern = /(?:#\[export_name\s*=\s*"(\w+)"\]|#\[no_mangle\])\s*pub\s+unsafe\s+extern\s+"C"\s+fn\s+(\w+)\s*\(/g;
+  let match;
+  while ((match = fnPattern.exec(code)) !== null) {
+    const exportName = match[1] || match[2];
+    exports.push(exportName);
+  }
+
+  return { path: 'wasm-rust/' + relativePath, exports, lines: code.split('\n').length };
+}
+
+/**
  * Build the dependency graph
  */
 function buildGraph() {
-  console.log('🔍 Scanning JavaScript files...');
-  const files = findJSFiles(SRC_DIR);
+  // Scan JS/TS source files
+  console.log('Scanning source files (.js + .ts)...');
+  const files = findSourceFiles(SRC_DIR);
 
-  console.log(`📊 Found ${files.length} JavaScript files`);
+  const jsCount = files.filter(f => f.endsWith('.js')).length;
+  const tsCount = files.filter(f => f.endsWith('.ts')).length;
+  console.log(`Found ${files.length} source files (${jsCount} JS, ${tsCount} TS)`);
+
   graph.stats.totalFiles = files.length;
+  graph.stats.jsFiles = jsCount;
+  graph.stats.tsFiles = tsCount;
 
-  // Parse all files
+  // Parse all JS/TS files
   files.forEach((filePath, index) => {
-    if ((index + 1) % 50 === 0) {
+    if ((index + 1) % 100 === 0) {
       console.log(`   Parsed ${index + 1}/${files.length} files...`);
     }
 
@@ -181,8 +248,21 @@ function buildGraph() {
     }
   });
 
-  console.log(`✅ Parsed ${files.length} files`);
-  console.log(`📦 Found ${graph.stats.totalFunctions} factory functions`);
+  console.log(`Parsed ${files.length} source files`);
+  console.log(`Found ${graph.stats.totalFunctions} factory functions`);
+
+  // Scan Rust WASM files
+  console.log('\nScanning Rust WASM files (.rs)...');
+  const rustFiles = findRustFiles(WASM_RUST_DIR);
+  graph.stats.rsFiles = rustFiles.length;
+
+  rustFiles.forEach(filePath => {
+    const info = parseRustFile(filePath);
+    graph.rustExports[info.path] = info;
+    graph.stats.totalRustExports += info.exports.length;
+  });
+
+  console.log(`Found ${rustFiles.length} Rust files with ${graph.stats.totalRustExports} exports`);
 
   // Build folder-level dependencies
   buildFolderDependencies();
@@ -230,10 +310,23 @@ function resolveImport(fromFile, importPath) {
     const fromDir = path.dirname(fromFile);
     const resolved = path.join(fromDir, importPath).replace(/\\/g, '/');
 
-    // Remove .js extension if present, then add it back
-    const normalized = resolved.replace(/\.js$/, '') + '.js';
+    // Try multiple extension resolutions:
+    // 1. As-is (exact path)
+    // 2. .js → .js (original behavior)
+    // 3. .ts → .ts (TS files importing .ts)
+    // 4. .js → .ts (math.js convention: TS files import with .js extension)
+    const base = resolved.replace(/\.(js|ts)$/, '');
+    const candidates = [
+      resolved,
+      base + '.js',
+      base + '.ts',
+    ];
 
-    return graph.files[normalized] ? normalized : null;
+    for (const candidate of candidates) {
+      if (graph.files[candidate]) return candidate;
+    }
+
+    return null;
   }
   return null; // External import
 }
@@ -282,10 +375,24 @@ function generateMarkdown() {
   let md = '# Math.js Dependency Graph\n\n';
   md += `Generated: ${new Date().toISOString()}\n\n`;
   md += '## Statistics\n\n';
-  md += `- **Total Files**: ${graph.stats.totalFiles}\n`;
+  md += `- **Total Source Files**: ${graph.stats.totalFiles} (${graph.stats.jsFiles} JS, ${graph.stats.tsFiles} TS)\n`;
+  md += `- **Rust WASM Files**: ${graph.stats.rsFiles} (.rs files, ${graph.stats.totalRustExports} exports)\n`;
   md += `- **Total Factory Functions**: ${graph.stats.totalFunctions}\n`;
   md += `- **Total Dependencies**: ${graph.stats.totalDependencies}\n`;
   md += `- **Average Dependencies per File**: ${graph.stats.avgDependenciesPerFile}\n\n`;
+
+  // Rust WASM exports summary
+  if (Object.keys(graph.rustExports).length > 0) {
+    md += '## Rust WASM Exports\n\n';
+    md += '| Module | Exports | Lines |\n';
+    md += '|--------|---------|-------|\n';
+    Object.entries(graph.rustExports)
+      .sort((a, b) => b[1].exports.length - a[1].exports.length)
+      .forEach(([, info]) => {
+        md += `| ${info.path} | ${info.exports.length} | ${info.lines} |\n`;
+      });
+    md += '\n';
+  }
 
   md += '## Most Depended-On Files\n\n';
   md += '| Rank | File | Dependents |\n';
