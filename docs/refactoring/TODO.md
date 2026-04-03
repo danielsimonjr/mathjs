@@ -88,9 +88,10 @@ All 46 test files created for src/wasm/ modules:
 
 ### Low Priority
 
-- [ ] **Convert embeddedDocs to TypeScript** (255 files)
-  - Simple string exports, low complexity
-  - Skipped per user request
+- [x] **Convert embeddedDocs to TypeScript** (255 files) ✅ ALREADY COMPLETE
+  - All 255 JS files have .ts equivalents (content identical, formatting differs)
+  - TS index file (embeddedDocs.ts) imports from .ts extensions
+  - Simple string exports — no type annotations needed
 
 ### Keeping for Benchmarking
 
