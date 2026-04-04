@@ -12,9 +12,14 @@ node_modules
 /coverage
 .eslintcache
 
-# Ignore lib subdirectories except esm (original JS build)
+# Build artifacts (regeneratable, don't commit)
+/dist/
 /lib/*
-!/lib/esm/
+!/lib/wasm/
+*.map
+*.wat
+.dropboxignore
+
 test-results
 *.generated.js
 .note.txt
