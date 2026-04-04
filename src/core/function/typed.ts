@@ -196,11 +196,11 @@ export type TypeDefinition = {
 }
 
 // returns a new instance of typed-function
-let _createTyped: () => TypedFunction = function (): TypedFunction {
-  // initially, return the original instance of typed-function
-  // consecutively, return a new instance from typed.create.
-  _createTyped = typedFunction.create as unknown as () => TypedFunction
-  return typedFunction as unknown as TypedFunction
+// Always create a new instance to avoid conflicts when both .js and .ts
+// modules coexist (e.g., during testing). The .js version uses the singleton;
+// the .ts version always creates a fresh instance.
+const _createTyped: () => TypedFunction = function (): TypedFunction {
+  return (typedFunction.create as unknown as () => TypedFunction)()
 }
 
 const dependencies = ['?BigNumber', '?Complex', '?DenseMatrix', '?Fraction']
