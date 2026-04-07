@@ -7,6 +7,128 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.4.0] - 2026-04-07
+
+### Added — 106 new mathematical functions across 10 domains
+
+**Special Functions (24):**
+- `besselJ`, `besselY`, `besselI`, `besselK` — Bessel functions (Abramowitz & Stegun rational approximations, Miller's backward recurrence)
+- `beta`, `betainc` — Beta function and regularized incomplete beta (Lentz continued fraction)
+- `gammainc`, `gammaincp` — Regularized lower/upper incomplete gamma (series + continued fraction)
+- `digamma` — Psi function (asymptotic series with Bernoulli numbers)
+- `erfc`, `erfi` — Complementary and imaginary error functions
+- `fresnelS`, `fresnelC` — Fresnel sine and cosine integrals (Kahan compensated summation)
+- `lambertW` — Lambert W function (Halley's iteration)
+- `ellipticK`, `ellipticE` — Complete elliptic integrals (arithmetic-geometric mean)
+- `expIntegralEi` — Exponential integral (power series + asymptotic)
+- `sinIntegral`, `cosIntegral` — Sine and cosine integrals (Kahan compensated Taylor series)
+- `logIntegral` — Logarithmic integral via Ei(ln x)
+- `legendreP`, `chebyshevT`, `hermiteH`, `laguerreL` — Orthogonal polynomials (three-term recurrence)
+
+**Numerical Methods (20):**
+- `nintegrate` — Adaptive Gauss-Kronrod 7-15 point quadrature
+- `trapz`, `simpsons` — Trapezoidal and Simpson's rule integration
+- `findRoot` — Newton's method + Brent's method root finding
+- `interpolate` — Linear, Lagrange, and cubic spline interpolation
+- `curvefit` — Levenberg-Marquardt nonlinear curve fitting
+- `linsolve` — Gaussian elimination with partial pivoting
+- `rank`, `nullspace` — Matrix rank and null space via row reduction
+- `cond` — Matrix condition number (1-norm, 2-norm, infinity-norm)
+- `polyfit` — Polynomial least-squares fitting (Vandermonde + normal equations)
+- `cspline` — Natural cubic spline with O(log n) binary search evaluation
+- `bezierCurve` — De Casteljau's algorithm for Bézier curves
+- `expfit`, `powerfit`, `logfit` — Exponential, power-law, and logarithmic curve fitting
+- `gradient`, `hessian` — Numerical gradient and Hessian via central differences
+- `loess` — Locally weighted scatterplot smoothing (two-pointer neighbor search)
+- `residue` — Partial fraction residues via companion matrix QR iteration
+
+**Linear Algebra (4):**
+- `svd` — Singular Value Decomposition via eigendecomposition of A^T A
+- `matrixRank` — Numerical rank from SVD singular values
+- `nullSpace` — Null space basis from SVD
+- `matrixLog` — Matrix logarithm via eigendecomposition
+
+**Statistics & Probability (20):**
+- `normalDist`, `tDist`, `chiSquaredDist`, `poissonDist`, `binomialDist` — Distribution objects with pdf/cdf/icdf
+- `exponentialDist`, `weibullDist`, `uniformDist`, `gammaDist`, `betaDist`, `logNormalDist`, `fDist` — Extended distribution family
+- `skewness`, `kurtosis` — Sample skewness and excess kurtosis
+- `covariance` — Sample covariance
+- `linreg` — Simple linear regression with slope, intercept, R², predict()
+- `movingAverage` — Simple moving average with sliding window
+- `histogram` — Frequency distribution with bin counts and edges
+- `studentTTest` — Welch's two-sample t-test with p-value
+
+**Number Theory & Combinatorics (10):**
+- `fibonacci` — Fast doubling O(log n), supports BigInt for n > 70
+- `primeFactors` — Trial division prime factorization
+- `nextPrime` — Next prime via trial division
+- `divisors` — All positive divisors via sqrt iteration
+- `eulerPhi` — Euler's totient function via product formula
+- `harmonicNumber` — Harmonic numbers (direct sum + asymptotic)
+- `moebiusMu` — Möbius function
+- `lucasL` — Lucas numbers
+- `partitions` — Integer partition count (Euler pentagonal theorem)
+- `chineseRemainder` — Chinese Remainder Theorem via extended Euclidean
+
+**Graph Theory (8):**
+- `adjacencyMatrix` — Edge list to adjacency matrix (directed/undirected)
+- `shortestPath` — Dijkstra's algorithm with binary min-heap O((V+E) log V)
+- `connectedComponents` — BFS component labeling
+- `minimumSpanningTree` — Kruskal's with path-compressed union-find
+- `topologicalSort` — Kahn's algorithm with cycle detection
+- `stronglyConnectedComponents` — Tarjan's algorithm
+- `isConnected` — Graph connectivity check
+- `graphDistance` — Shortest path distance (convenience wrapper)
+
+**Geometry (6):**
+- `manhattanDistance`, `chebyshevDistance`, `minkowskiDistance` — L1, L∞, and Lp distance metrics
+- `area` — Polygon area via shoelace formula
+- `convexHull` — Andrew's monotone chain O(n log n)
+- `coordinateTransform` — Cartesian/polar/spherical/cylindrical conversions
+
+**Signal Processing (8):**
+- `convolve`, `correlate` — Discrete convolution and cross-correlation
+- `windowFunction` — Hamming, Hanning, Blackman, Kaiser window generators
+- `lowpassFilter`, `highpassFilter`, `bandpassFilter` — 2nd-order Butterworth IIR filters
+- `fourier`, `invFourier` — High-level FFT wrapper with frequency/amplitude/phase output
+
+**Symbolic Algebra (7):**
+- `coefficientList` — Extract polynomial coefficients from expression
+- `expand` — Expand algebraic products and powers
+- `apart` — Partial fraction decomposition
+- `polyval` — Horner's method polynomial evaluation
+- `polyder`, `polymul`, `polyadd` — Polynomial derivative, multiplication, addition
+
+### Added — TypeScript definitions
+
+- Added method signatures for all 106 new functions to `MathJsInstance` interface
+- Added chain method signatures for chainable functions to `MathJsChain` interface
+- Added dependency exports for all new functions
+- New interfaces: `StatDistribution`, `ContinuousDistribution`, `DiscreteDistribution` for distribution objects
+
+### Fixed — Edge case hardening (from RLM + Opus review)
+
+- `windowFunction`: Return `[1]` for n=1 to avoid division by (n-1)=0
+- `convolve`/`correlate`: Guard empty arrays to prevent `Array(-1)` RangeError
+- `fourier`/`invFourier`: Guard empty signal arrays
+- `adjacencyMatrix`: Validate edge indices within [0, size) bounds
+- `studentTTest`: Fixed zero-variance bug — returns `Infinity`/`-Infinity` t-statistic when means differ but both samples have zero variance (was incorrectly returning t=0, p=1)
+- `findRoot`: Added `isFinite` check to prevent NaN propagation in Newton iteration
+- `lowpassFilter`: Validate cutoff within (0, sampleRate/2) Nyquist range
+- `residue`: Added iteration limit (1000) to `_balanceMatrix` convergence loop
+
+### Optimized
+
+- `shortestPath`: Replaced sorted-array priority queue with binary min-heap — O((V+E) log V) vs O(V·E log E)
+- `loess`: Replaced O(n² log n) sort-based neighbor search with O(nk) two-pointer expansion
+- `convolve`: Tightened inner loop bounds to eliminate branch check
+- `cspline.evaluate`: Replaced O(n) linear scan with O(log n) binary search
+
+### Test Results
+
+- **8,006 passing** (+1,363 new tests), **0 failing**, 2 pending
+- All 106 new functions have dedicated test files with known-value verification, edge cases, and error conditions
+
 ## [15.3.4] - 2026-04-02
 
 ### Fixed
