@@ -510,6 +510,24 @@ export interface FractionDefinition {
   b: number
 }
 
+export interface StatDistribution {
+  pdf(x: number): number
+  cdf(x: number): number
+  mean: number
+  variance: number
+}
+
+export interface ContinuousDistribution extends StatDistribution {
+  icdf(p: number): number
+}
+
+export interface DiscreteDistribution {
+  pmf(k: number): number
+  cdf(k: number): number
+  mean: number
+  variance: number
+}
+
 export interface MathJsInstance extends MathJsFactory {
   e: number
   pi: number
@@ -1170,6 +1188,21 @@ export interface MathJsInstance extends MathJsFactory {
   usolve(U: Matrix, b: MathCollection): Matrix
   usolve(U: MathArray, b: MathCollection): MathArray
 
+  /** Return the list of polynomial coefficients of expr in variable. */
+  coefficientList(expr: MathNode | string, variable: MathNode | string): MathType[]
+  /** Expand a polynomial expression fully. */
+  expand(expr: MathNode | string): MathNode
+  /** Perform partial fraction decomposition of expr. */
+  apart(expr: MathNode | string, variable?: MathNode | string): MathNode
+  /** Evaluate a polynomial at x given its coefficient array. */
+  polyval(coeffs: number[], x: number): number
+  /** Differentiate a polynomial given as coefficient array. */
+  polyder(coeffs: number[]): number[]
+  /** Multiply two polynomials given as coefficient arrays. */
+  polymul(a: number[], b: number[]): number[]
+  /** Add two polynomials given as coefficient arrays. */
+  polyadd(a: number[], b: number[]): number[]
+
   /*************************************************************************
    * Arithmetic functions
    ************************************************************************/
@@ -1792,6 +1825,27 @@ export interface MathJsInstance extends MathJsFactory {
     n: T,
     k: number | BigNumber
   ): NoLiteralType<T>
+
+  /** Compute the nth Fibonacci number. */
+  fibonacci<T extends number | BigNumber>(n: T): T
+  /** Return the prime factors of a positive integer. */
+  primeFactors(n: number): number[]
+  /** Return the smallest prime greater than n. */
+  nextPrime(n: number): number
+  /** Return all divisors of a positive integer. */
+  divisors(n: number): number[]
+  /** Compute Euler's totient phi(n). */
+  eulerPhi(n: number): number
+  /** Compute the nth harmonic number H_n. */
+  harmonicNumber(n: number): number
+  /** Compute the Möbius mu function mu(n). */
+  moebiusMu(n: number): -1 | 0 | 1
+  /** Compute the nth Lucas number. */
+  lucasL(n: number): number
+  /** Count integer partitions of n. */
+  partitions(n: number): number
+  /** Solve a system of congruences via Chinese Remainder Theorem. */
+  chineseRemainder(remainders: number[], moduli: number[]): number
 
   /*************************************************************************
    * Complex functions
@@ -2820,6 +2874,53 @@ export interface MathJsInstance extends MathJsFactory {
    */
   unequal(x: MathType | string, y: MathType | string): boolean | MathCollection
 
+  /** Compute the singular value decomposition of a matrix. */
+  svd(A: MathCollection): { U: MathCollection; S: MathCollection; V: MathCollection }
+  /** Compute the rank of a matrix. */
+  matrixRank(A: MathCollection): number
+  /** Compute the null space of a matrix. */
+  nullSpace(A: MathCollection): MathCollection
+  /** Compute the matrix logarithm of a square matrix. */
+  matrixLog(A: MathCollection): MathCollection
+
+  /*************************************************************************
+   * Geometry functions
+   ************************************************************************/
+
+  /** Compute the Manhattan (L1) distance between two points. */
+  manhattanDistance(a: number[], b: number[]): number
+  /** Compute the Chebyshev (L-infinity) distance between two points. */
+  chebyshevDistance(a: number[], b: number[]): number
+  /** Compute the Minkowski distance between two points. */
+  minkowskiDistance(a: number[], b: number[], p: number): number
+  /** Compute the area of a polygon given its vertices. */
+  area(vertices: number[][]): number
+  /** Compute the convex hull of a set of 2D points. */
+  convexHull(points: number[][]): number[][]
+  /** Transform coordinates between coordinate systems. */
+  coordinateTransform(point: number[], from: string, to: string): number[]
+
+  /*************************************************************************
+   * Graph functions
+   ************************************************************************/
+
+  /** Build an adjacency matrix from an edge list. */
+  adjacencyMatrix(edges: [number, number][], n: number): MathCollection
+  /** Find shortest path between two nodes (Dijkstra). */
+  shortestPath(graph: MathCollection | number[][], source: number, target: number): { path: number[]; distance: number }
+  /** Find all connected components of an undirected graph. */
+  connectedComponents(graph: MathCollection | number[][]): number[][]
+  /** Compute the minimum spanning tree (Kruskal/Prim). */
+  minimumSpanningTree(graph: MathCollection | number[][]): { edges: [number, number][]; weight: number }
+  /** Topologically sort a directed acyclic graph. */
+  topologicalSort(graph: MathCollection | number[][]): number[]
+  /** Find strongly connected components (Tarjan/Kosaraju). */
+  stronglyConnectedComponents(graph: MathCollection | number[][]): number[][]
+  /** Test whether a graph is connected. */
+  isConnected(graph: MathCollection | number[][]): boolean
+  /** Compute graph distance (shortest path length) between all pairs. */
+  graphDistance(graph: MathCollection | number[][]): MathCollection
+
   /*************************************************************************
    * Set functions
    ************************************************************************/
@@ -2941,6 +3042,23 @@ export interface MathJsInstance extends MathJsFactory {
    */
   freqz<T extends MathCollection>(b: T, a: T, w?: number | T): { w: T; h: T }
 
+  /** Compute the convolution of two signals. */
+  convolve(a: MathCollection, b: MathCollection): MathCollection
+  /** Compute the cross-correlation of two signals. */
+  correlate(a: MathCollection, b: MathCollection): MathCollection
+  /** Apply a named window function (hann, hamming, etc.) to a signal. */
+  windowFunction(signal: MathCollection, name: string): MathCollection
+  /** Apply a lowpass FIR filter to a signal. */
+  lowpassFilter(signal: MathCollection, cutoff: number, order?: number): MathCollection
+  /** Apply a highpass FIR filter to a signal. */
+  highpassFilter(signal: MathCollection, cutoff: number, order?: number): MathCollection
+  /** Apply a bandpass FIR filter to a signal. */
+  bandpassFilter(signal: MathCollection, low: number, high: number, order?: number): MathCollection
+  /** Compute the discrete Fourier transform of a signal. */
+  fourier(signal: MathCollection): MathCollection
+  /** Compute the inverse discrete Fourier transform. */
+  invFourier(spectrum: MathCollection): MathCollection
+
   /*************************************************************************
    * Special functions
    ************************************************************************/
@@ -2960,6 +3078,86 @@ export interface MathJsInstance extends MathJsFactory {
    * @returns The Riemann Zeta of s
    */
   zeta<T extends number | Complex | BigNumber>(s: T): T
+
+  /** Compute the Bessel function of the first kind J_n(x). */
+  besselJ(n: number, x: number): number
+  /** Compute the Bessel function of the second kind Y_n(x). */
+  besselY(n: number, x: number): number
+  /** Compute the digamma (psi) function of x. */
+  digamma(x: number): number
+  /** Compute the upper incomplete gamma function. */
+  gammaInc(a: number, x: number): number
+  /** Compute the lower incomplete gamma function. */
+  gammaIncLower(a: number, x: number): number
+  /** Compute the regularized incomplete beta function. */
+  betaInc(x: number, a: number, b: number): number
+  /** Compute the beta function B(a, b). */
+  betaFunc(a: number, b: number): number
+  /** Compute the Lambert W function (principal branch). */
+  lambertW(x: number): number
+  /** Compute the Clausen function Cl2(x). */
+  clausen(x: number): number
+  /** Compute the Hurwitz zeta function zeta(s, a). */
+  hurwitzZeta(s: number, a: number): number
+  /** Compute the polylogarithm Li_n(z). */
+  polylog(n: number, z: number | Complex): number | Complex
+  /** Compute the sine integral Si(x). */
+  sineIntegral(x: number): number
+  /** Compute the cosine integral Ci(x). */
+  cosineIntegral(x: number): number
+  /** Compute the exponential integral Ei(x). */
+  expIntegral(x: number): number
+  /** Compute the Fresnel sine integral S(x). */
+  fresnelS(x: number): number
+  /** Compute the Fresnel cosine integral C(x). */
+  fresnelC(x: number): number
+  /** Compute the hyperbolic sine integral Shi(x). */
+  sinhIntegral(x: number): number
+  /** Compute the hyperbolic cosine integral Chi(x). */
+  coshIntegral(x: number): number
+  /** Compute the logarithmic integral li(x). */
+  logIntegral(x: number): number
+
+  /*************************************************************************
+   * Numeric functions
+   ************************************************************************/
+
+  /** Numerically integrate f(x) over [a, b]. */
+  nintegrate(f: (x: number) => number, a: number, b: number, tol?: number): number
+  /** Numerically differentiate f(x) at x. */
+  ndiff(f: (x: number) => number, x: number, h?: number): number
+  /** Find a root of f(x) near x0 using Newton-Raphson. */
+  findRoot(f: (x: number) => number, x0: number, tol?: number): number
+  /** Solve ODE y'=f(t,y) with initial condition y0. */
+  odesolve(f: (t: number, y: number[]) => number[], y0: number[], tspan: number[], opts?: object): { t: number[]; y: number[][] }
+  /** Fit a cubic spline through data points. */
+  cspline(x: number[], y: number[]): (t: number) => number
+  /** Fit an exponential model y = a*exp(b*x) to data. */
+  expfit(x: number[], y: number[]): { a: number; b: number }
+  /** Fit a general model to data using nonlinear least squares. */
+  curvefit(f: (x: number, params: number[]) => number, x: number[], y: number[], p0: number[]): number[]
+  /** Evaluate a Bezier curve at parameter t. */
+  bezierCurve(points: number[][], t: number): number[]
+  /** Compute a condition number of a matrix. */
+  cond(A: MathCollection): number
+  /** Compute the Jacobian of f at x. */
+  jacobian(f: (x: number[]) => number[], x: number[]): number[][]
+  /** Compute the Hessian of f at x. */
+  hessian(f: (x: number[]) => number, x: number[]): number[][]
+  /** Minimize f(x) starting from x0. */
+  minimize(f: (x: number[]) => number, x0: number[], opts?: object): { x: number[]; fx: number }
+  /** Interpolate a value using Lagrange interpolation. */
+  lagrangeInterp(xpts: number[], ypts: number[], x: number): number
+  /** Interpolate using Newton's divided differences. */
+  newtonInterp(xpts: number[], ypts: number[], x: number): number
+  /** Compute the padé approximant of a function. */
+  padeApprox(coeffs: number[], m: number, n: number): (x: number) => number
+  /** Find a zero of f(x) in [a, b] using bisection. */
+  bisection(f: (x: number) => number, a: number, b: number, tol?: number): number
+  /** Find a zero of f(x) using the secant method. */
+  secantMethod(f: (x: number) => number, x0: number, x1: number, tol?: number): number
+  /** Compute the residue of a complex function at a pole. */
+  residue(f: (z: Complex) => Complex, z0: Complex): Complex
 
   /*************************************************************************
    * Statistics functions
@@ -3343,6 +3541,39 @@ export interface MathJsInstance extends MathJsFactory {
    * @returns correlation coefficient
    */
   corr(x: MathCollection, y: MathCollection): MathType
+
+  /** Compute the skewness of a dataset. */
+  skewness(x: MathCollection): number
+  /** Compute the excess kurtosis of a dataset. */
+  kurtosis(x: MathCollection): number
+  /** Compute the covariance matrix of a dataset. */
+  covariance(x: MathCollection, y?: MathCollection): MathCollection
+  /** Fit a simple linear regression y = a + bx and return { a, b, r2 }. */
+  linreg(x: number[], y: number[]): { a: number; b: number; r2: number }
+  /** Compute a moving (rolling) average with given window size. */
+  movingAverage(x: number[], window: number): number[]
+  /** Compute a frequency histogram of data with given bins. */
+  histogram(x: number[], bins: number | number[]): { counts: number[]; edges: number[] }
+  /** Perform a one-sample or two-sample Student's t-test. */
+  studentTTest(x: number[], muOrY: number | number[], alpha?: number): { tstat: number; pvalue: number; reject: boolean }
+  /** Construct a Normal (Gaussian) distribution object. */
+  normalDist(mu: number, sigma: number): ContinuousDistribution
+  /** Construct a Uniform distribution object. */
+  uniformDist(a: number, b: number): ContinuousDistribution
+  /** Construct an Exponential distribution object. */
+  exponentialDist(lambda: number): ContinuousDistribution
+  /** Construct a Poisson distribution object. */
+  poissonDist(lambda: number): DiscreteDistribution
+  /** Construct a Binomial distribution object. */
+  binomialDist(n: number, p: number): DiscreteDistribution
+  /** Construct a Gamma distribution object. */
+  gammaDist(alpha: number, beta: number): ContinuousDistribution
+  /** Construct a Beta distribution object. */
+  betaDist(alpha: number, beta: number): ContinuousDistribution
+  /** Construct a Chi-squared distribution object. */
+  chiSquaredDist(k: number): ContinuousDistribution
+  /** Construct a Student's t-distribution object. */
+  tDist(nu: number): ContinuousDistribution
 
   /*************************************************************************
    * String functions
@@ -6843,6 +7074,35 @@ export interface MathJsChain<TValue> {
     this: MathJsChain<T>
   ): MathJsChain<T>
 
+  /** Compute the Bessel function J_n for given order. */
+  besselJ(this: MathJsChain<number>, n: number): MathJsChain<number>
+  /** Compute the Bessel function Y_n for given order. */
+  besselY(this: MathJsChain<number>, n: number): MathJsChain<number>
+  /** Compute the digamma (psi) function. */
+  digamma(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the upper incomplete gamma function. */
+  gammaInc(this: MathJsChain<number>, x: number): MathJsChain<number>
+  /** Compute the lower incomplete gamma function. */
+  gammaIncLower(this: MathJsChain<number>, x: number): MathJsChain<number>
+  /** Compute the Lambert W function. */
+  lambertW(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the sine integral Si(x). */
+  sineIntegral(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the cosine integral Ci(x). */
+  cosineIntegral(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the exponential integral Ei(x). */
+  expIntegral(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the Fresnel sine integral S(x). */
+  fresnelS(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the Fresnel cosine integral C(x). */
+  fresnelC(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the hyperbolic sine integral Shi(x). */
+  sinhIntegral(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the hyperbolic cosine integral Chi(x). */
+  coshIntegral(this: MathJsChain<number>): MathJsChain<number>
+  /** Compute the logarithmic integral li(x). */
+  logIntegral(this: MathJsChain<number>): MathJsChain<number>
+
   /*************************************************************************
    * Statistics functions
    ************************************************************************/
@@ -7610,6 +7870,13 @@ export const {
   resolve,
   slu,
   usolve,
+  coefficientList,
+  expand,
+  apart,
+  polyval,
+  polyder,
+  polymul,
+  polyadd,
 
   // arithmetic functions
   abs,
@@ -7664,6 +7931,16 @@ export const {
   catalan,
   composition,
   stirlingS2,
+  fibonacci,
+  primeFactors,
+  nextPrime,
+  divisors,
+  eulerPhi,
+  harmonicNumber,
+  moebiusMu,
+  lucasL,
+  partitions,
+  chineseRemainder,
 
   // complex
   arg,
@@ -7674,6 +7951,22 @@ export const {
   // geometry
   distance,
   intersect,
+  manhattanDistance,
+  chebyshevDistance,
+  minkowskiDistance,
+  area,
+  convexHull,
+  coordinateTransform,
+
+  // graph
+  adjacencyMatrix,
+  shortestPath,
+  connectedComponents,
+  minimumSpanningTree,
+  topologicalSort,
+  stronglyConnectedComponents,
+  isConnected,
+  graphDistance,
 
   // logical
   and,
@@ -7724,6 +8017,10 @@ export const {
   zeros,
   fft,
   ifft,
+  svd,
+  matrixRank,
+  nullSpace,
+  matrixLog,
 
   // probability
   bernoulli,
@@ -7766,10 +8063,57 @@ export const {
   // signal functions
   zpk2tf,
   freqz,
+  convolve,
+  correlate,
+  windowFunction,
+  lowpassFilter,
+  highpassFilter,
+  bandpassFilter,
+  fourier,
+  invFourier,
 
   // special functions
   erf,
   zeta,
+  besselJ,
+  besselY,
+  digamma,
+  gammaInc,
+  gammaIncLower,
+  betaInc,
+  betaFunc,
+  lambertW,
+  clausen,
+  hurwitzZeta,
+  polylog,
+  sineIntegral,
+  cosineIntegral,
+  expIntegral,
+  fresnelS,
+  fresnelC,
+  sinhIntegral,
+  coshIntegral,
+  logIntegral,
+
+  // numeric functions
+  nintegrate,
+  ndiff,
+  findRoot,
+  odesolve,
+  cspline,
+  expfit,
+  curvefit,
+  bezierCurve,
+  cond,
+  jacobian,
+  hessian,
+  minimize,
+  lagrangeInterp,
+  newtonInterp,
+  padeApprox,
+  bisection,
+  secantMethod,
+  residue,
 
   // Statistics functions
   mad,
@@ -7786,6 +8130,22 @@ export const {
   cumsum,
   variance,
   corr,
+  skewness,
+  kurtosis,
+  covariance,
+  linreg,
+  movingAverage,
+  histogram,
+  studentTTest,
+  normalDist,
+  uniformDist,
+  exponentialDist,
+  poissonDist,
+  binomialDist,
+  gammaDist,
+  betaDist,
+  chiSquaredDist,
+  tDist,
 
   // String functions
   format,
