@@ -47,6 +47,8 @@ export const createWindowFunction = /* #__PURE__ */ factory(name, dependencies, 
     if (!Number.isInteger(n) || n <= 0) {
       throw new Error('windowFunction: n must be a positive integer')
     }
+    // A single-sample window is always 1 regardless of window type
+    if (n === 1) return [1]
     const w = new Array(n)
     const TWO_PI = 2 * Math.PI
     switch (type) {

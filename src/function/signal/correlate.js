@@ -54,6 +54,7 @@ export const createCorrelate = /* #__PURE__ */ factory(name, dependencies, ({ ty
   function _convolve (a, b) {
     const lenA = a.length
     const lenB = b.length
+    if (lenA === 0 || lenB === 0) return []
     const outLen = lenA + lenB - 1
     const out = new Array(outLen).fill(0)
     for (let n = 0; n < outLen; n++) {

@@ -45,6 +45,7 @@ export const createInvFourier = /* #__PURE__ */ factory(name, dependencies, ({ t
    * ifft expects un-scaled DFT, so we multiply back by N first.
    */
   function _invFourierFromComplex (spectrum) {
+    if (spectrum.length === 0) return []
     const n = spectrum.length
     // Scale back up by N (undo the 1/N scaling from fourier())
     const unscaled = spectrum.map(c => {

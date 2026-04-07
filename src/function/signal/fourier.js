@@ -43,6 +43,9 @@ export const createFourier = /* #__PURE__ */ factory(name, dependencies, ({ type
   })
 
   function _fourier (signal, options) {
+    if (signal.length === 0) {
+      return { frequencies: [], amplitudes: [], phases: [] }
+    }
     const n = signal.length
     const sampleRate = (options && options.sampleRate) ? options.sampleRate : 1
     const outputType = (options && options.output) ? options.output : 'spectrum'

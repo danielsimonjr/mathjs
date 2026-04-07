@@ -85,6 +85,13 @@ export const createAdjacencyMatrix = /* #__PURE__ */ factory(
         const to = edge[1]
         const weight = edge.length >= 3 ? edge[2] : 1
 
+        if (from < 0 || from >= size || to < 0 || to >= size) {
+          throw new Error(
+            'adjacencyMatrix: node index ' + (from < 0 || from >= size ? from : to) +
+            ' is out of bounds [0, ' + size + ')'
+          )
+        }
+
         matrix[from][to] = weight
         if (undirected) {
           matrix[to][from] = weight
