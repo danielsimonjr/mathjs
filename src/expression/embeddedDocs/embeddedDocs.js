@@ -191,6 +191,29 @@ import { studentTTestDocs } from './function/statistics/studentTTest.js'
 import { coefficientListDocs } from './function/algebra/coefficientList.js'
 import { expandDocs } from './function/algebra/expand.js'
 import { apartDocs } from './function/algebra/apart.js'
+import { polyvalDocs } from './function/algebra/polyval.js'
+import { polyderDocs } from './function/algebra/polyder.js'
+import { polymulDocs } from './function/algebra/polymul.js'
+import { polyaddDocs } from './function/algebra/polyadd.js'
+import { fresnelCDocs } from './function/special/fresnelC.js'
+import { sinIntegralDocs } from './function/special/sinIntegral.js'
+import { cosIntegralDocs } from './function/special/cosIntegral.js'
+import { logIntegralDocs } from './function/special/logIntegral.js'
+import { chebyshevTDocs } from './function/special/chebyshevT.js'
+import { hermiteHDocs } from './function/special/hermiteH.js'
+import { laguerreLDocs } from './function/special/laguerreL.js'
+import { harmonicNumberDocs } from './function/combinatorics/harmonicNumber.js'
+import { moebiusMuDocs } from './function/combinatorics/moebiusMu.js'
+import { lucasLDocs } from './function/combinatorics/lucasL.js'
+import { partitionsDocs } from './function/combinatorics/partitions.js'
+import { chineseRemainderDocs } from './function/combinatorics/chineseRemainder.js'
+import { uniformDistDocs } from './function/statistics/uniformDist.js'
+import { gammaDistDocs } from './function/statistics/gammaDist.js'
+import { betaDistDocs } from './function/statistics/betaDist.js'
+import { logNormalDistDocs } from './function/statistics/logNormalDist.js'
+import { fDistDocs } from './function/statistics/fDist.js'
+import { isConnectedDocs } from './function/graph/isConnected.js'
+import { graphDistanceDocs } from './function/graph/graphDistance.js'
 import { bernoulliDocs } from './function/probability/bernoulli.js'
 import { combinationsDocs } from './function/probability/combinations.js'
 import { combinationsWithRepDocs } from './function/probability/combinationsWithRep.js'
@@ -452,6 +475,10 @@ export const embeddedDocs = {
   coefficientList: coefficientListDocs,
   expand: expandDocs,
   apart: apartDocs,
+  polyval: polyvalDocs,
+  polyder: polyderDocs,
+  polymul: polymulDocs,
+  polyadd: polyaddDocs,
   usolve: usolveDocs,
   usolveAll: usolveAllDocs,
   qr: qrDocs,
@@ -514,6 +541,11 @@ export const embeddedDocs = {
   nextPrime: nextPrimeDocs,
   divisors: divisorsDocs,
   eulerPhi: eulerPhiDocs,
+  harmonicNumber: harmonicNumberDocs,
+  moebiusMu: moebiusMuDocs,
+  lucasL: lucasLDocs,
+  partitions: partitionsDocs,
+  chineseRemainder: chineseRemainderDocs,
 
   // functions - core
   config: configDocs,
@@ -601,6 +633,8 @@ export const embeddedDocs = {
   minimumSpanningTree: minimumSpanningTreeDocs,
   topologicalSort: topologicalSortDocs,
   stronglyConnectedComponents: stronglyConnectedComponentsDocs,
+  isConnected: isConnectedDocs,
+  graphDistance: graphDistanceDocs,
   sylvester: sylvesterDocs,
   schur: schurDocs,
   lyap: lyapDocs,
@@ -700,6 +734,13 @@ export const embeddedDocs = {
   ellipticE: ellipticEDocs,
   expIntegralEi: expIntegralEiDocs,
   legendreP: legendrePDocs,
+  fresnelC: fresnelCDocs,
+  sinIntegral: sinIntegralDocs,
+  cosIntegral: cosIntegralDocs,
+  logIntegral: logIntegralDocs,
+  chebyshevT: chebyshevTDocs,
+  hermiteH: hermiteHDocs,
+  laguerreL: laguerreLDocs,
 
   // functions - statistics
   cumsum: cumSumDocs,
@@ -729,6 +770,11 @@ export const embeddedDocs = {
   weibullDist: weibullDistDocs,
   histogram: histogramDocs,
   studentTTest: studentTTestDocs,
+  uniformDist: uniformDistDocs,
+  gammaDist: gammaDistDocs,
+  betaDist: betaDistDocs,
+  logNormalDist: logNormalDistDocs,
+  fDist: fDistDocs,
 
   // functions - trigonometry
   acos: acosDocs,

@@ -460,6 +460,41 @@ export { createCoefficientList } from './function/algebra/coefficientList.js'
 export { createExpand } from './function/algebra/expand.js'
 export { createApart } from './function/algebra/apart.js'
 
+// --- Gap Fill: 23 companion/utility functions ---
+
+// Special functions (companions + integrals)
+export { createFresnelC } from './function/special/fresnelC.js'
+export { createSinIntegral } from './function/special/sinIntegral.js'
+export { createCosIntegral } from './function/special/cosIntegral.js'
+export { createLogIntegral } from './function/special/logIntegral.js'
+export { createChebyshevT } from './function/special/chebyshevT.js'
+export { createHermiteH } from './function/special/hermiteH.js'
+export { createLaguerreL } from './function/special/laguerreL.js'
+
+// Number theory (companions)
+export { createHarmonicNumber } from './function/combinatorics/harmonicNumber.js'
+export { createMoebiusMu } from './function/combinatorics/moebiusMu.js'
+export { createLucasL } from './function/combinatorics/lucasL.js'
+export { createPartitions } from './function/combinatorics/partitions.js'
+export { createChineseRemainder } from './function/combinatorics/chineseRemainder.js'
+
+// Distributions (companions)
+export { createUniformDist } from './function/statistics/uniformDist.js'
+export { createGammaDist } from './function/statistics/gammaDist.js'
+export { createBetaDist } from './function/statistics/betaDist.js'
+export { createLogNormalDist } from './function/statistics/logNormalDist.js'
+export { createFDist } from './function/statistics/fDist.js'
+
+// Polynomial utilities
+export { createPolyval } from './function/algebra/polyval.js'
+export { createPolyder } from './function/algebra/polyder.js'
+export { createPolymul } from './function/algebra/polymul.js'
+export { createPolyadd } from './function/algebra/polyadd.js'
+
+// Graph utilities
+export { createIsConnected } from './function/graph/isConnected.js'
+export { createGraphDistance } from './function/graph/graphDistance.js'
+
 export { createMapSlicesTransform } from './expression/transform/mapSlices.transform.js'
 export { createColumnTransform } from './expression/transform/column.transform.js'
 export { createFilterTransform } from './expression/transform/filter.transform.js'
