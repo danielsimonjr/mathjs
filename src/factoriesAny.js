@@ -347,6 +347,119 @@ export {
   createWeakMixingAngle,
   createWienDisplacement
 } from './type/unit/physicalConstants.js'
+// --- Phase 1: Function Expansion (36 new functions) ---
+
+// Special functions
+export { createBesselJ } from './function/special/besselJ.js'
+export { createBesselY } from './function/special/besselY.js'
+export { createBesselI } from './function/special/besselI.js'
+export { createBesselK } from './function/special/besselK.js'
+export { createBeta } from './function/special/beta.js'
+export { createBetainc } from './function/special/betainc.js'
+export { createGammainc } from './function/special/gammainc.js'
+export { createGammaincp } from './function/special/gammaincp.js'
+export { createDigamma } from './function/special/digamma.js'
+export { createErfc } from './function/special/erfc.js'
+export { createErfi } from './function/special/erfi.js'
+export { createFresnelS } from './function/special/fresnelS.js'
+
+// Numerical methods
+export { createNintegrate } from './function/numeric/nintegrate.js'
+export { createTrapz } from './function/numeric/trapz.js'
+export { createSimpsons } from './function/numeric/simpsons.js'
+export { createFindRoot } from './function/numeric/findRoot.js'
+export { createInterpolate } from './function/numeric/interpolate.js'
+export { createCurvefit } from './function/numeric/curvefit.js'
+export { createLinsolve } from './function/numeric/linsolve.js'
+export { createRank } from './function/numeric/rank.js'
+export { createNullspace } from './function/numeric/nullspace.js'
+export { createCond } from './function/numeric/cond.js'
+
+// Linear algebra
+export { createSvd } from './function/matrix/svd.js'
+export { createMatrixRank } from './function/matrix/matrixRank.js'
+export { createNullSpace } from './function/matrix/nullSpace.js'
+export { createMatrixLog } from './function/matrix/matrixLog.js'
+
+// Statistics & probability
+export { createNormalDist } from './function/statistics/normalDist.js'
+export { createTDist } from './function/statistics/tDist.js'
+export { createChiSquaredDist } from './function/statistics/chiSquaredDist.js'
+export { createPoissonDist } from './function/statistics/poissonDist.js'
+export { createBinomialDist } from './function/statistics/binomialDist.js'
+export { createSkewness } from './function/statistics/skewness.js'
+export { createKurtosis } from './function/statistics/kurtosis.js'
+export { createCovariance } from './function/statistics/covariance.js'
+export { createLinreg } from './function/statistics/linreg.js'
+export { createMovingAverage } from './function/statistics/movingAverage.js'
+
+// --- Phase 2: Function Expansion (47 new functions) ---
+
+// Number theory
+export { createFibonacci } from './function/combinatorics/fibonacci.js'
+export { createPrimeFactors } from './function/combinatorics/primeFactors.js'
+export { createNextPrime } from './function/combinatorics/nextPrime.js'
+export { createDivisors } from './function/combinatorics/divisors.js'
+export { createEulerPhi } from './function/combinatorics/eulerPhi.js'
+
+// Special functions (extended)
+export { createLambertW } from './function/special/lambertW.js'
+export { createEllipticK } from './function/special/ellipticK.js'
+export { createEllipticE } from './function/special/ellipticE.js'
+export { createExpIntegralEi } from './function/special/expIntegralEi.js'
+export { createLegendreP } from './function/special/legendreP.js'
+
+// Signal processing (extended)
+export { createConvolve } from './function/signal/convolve.js'
+export { createCorrelate } from './function/signal/correlate.js'
+export { createWindowFunction } from './function/signal/windowFunction.js'
+export { createLowpassFilter } from './function/signal/lowpassFilter.js'
+export { createHighpassFilter } from './function/signal/highpassFilter.js'
+export { createBandpassFilter } from './function/signal/bandpassFilter.js'
+export { createFourier } from './function/signal/fourier.js'
+export { createInvFourier } from './function/signal/invFourier.js'
+
+// Graph theory
+export { createAdjacencyMatrix } from './function/graph/adjacencyMatrix.js'
+export { createShortestPath } from './function/graph/shortestPath.js'
+export { createConnectedComponents } from './function/graph/connectedComponents.js'
+export { createMinimumSpanningTree } from './function/graph/minimumSpanningTree.js'
+export { createTopologicalSort } from './function/graph/topologicalSort.js'
+export { createStronglyConnectedComponents } from './function/graph/stronglyConnectedComponents.js'
+
+// Geometry (extended)
+export { createManhattanDistance } from './function/geometry/manhattanDistance.js'
+export { createChebyshevDistance } from './function/geometry/chebyshevDistance.js'
+export { createMinkowskiDistance } from './function/geometry/minkowskiDistance.js'
+export { createArea } from './function/geometry/area.js'
+export { createConvexHull } from './function/geometry/convexHull.js'
+export { createCoordinateTransform } from './function/geometry/coordinateTransform.js'
+
+// Interpolation & fitting
+export { createPolyfit } from './function/numeric/polyfit.js'
+export { createCspline } from './function/numeric/cspline.js'
+export { createBezierCurve } from './function/numeric/bezierCurve.js'
+export { createExpfit } from './function/numeric/expfit.js'
+export { createPowerfit } from './function/numeric/powerfit.js'
+export { createLogfit } from './function/numeric/logfit.js'
+
+// Optimization & transforms
+export { createGradient } from './function/numeric/gradient.js'
+export { createHessian } from './function/numeric/hessian.js'
+export { createLoess } from './function/numeric/loess.js'
+export { createResidue } from './function/numeric/residue.js'
+
+// Statistics (extended)
+export { createExponentialDist } from './function/statistics/exponentialDist.js'
+export { createWeibullDist } from './function/statistics/weibullDist.js'
+export { createHistogram } from './function/statistics/histogram.js'
+export { createStudentTTest } from './function/statistics/studentTTest.js'
+
+// Symbolic algebra
+export { createCoefficientList } from './function/algebra/coefficientList.js'
+export { createExpand } from './function/algebra/expand.js'
+export { createApart } from './function/algebra/apart.js'
+
 export { createMapSlicesTransform } from './expression/transform/mapSlices.transform.js'
 export { createColumnTransform } from './expression/transform/column.transform.js'
 export { createFilterTransform } from './expression/transform/filter.transform.js'

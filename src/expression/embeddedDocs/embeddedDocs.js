@@ -155,6 +155,42 @@ import { transposeDocs } from './function/matrix/transpose.js'
 import { zerosDocs } from './function/matrix/zeros.js'
 import { fftDocs } from './function/matrix/fft.js'
 import { ifftDocs } from './function/matrix/ifft.js'
+import { svdDocs } from './function/matrix/svd.js'
+import { matrixRankDocs } from './function/matrix/matrixRank.js'
+import { nullSpaceDocs } from './function/matrix/nullSpace.js'
+import { matrixLogDocs } from './function/matrix/matrixLog.js'
+import { fibonacciDocs } from './function/combinatorics/fibonacci.js'
+import { primeFactorsDocs } from './function/combinatorics/primeFactors.js'
+import { nextPrimeDocs } from './function/combinatorics/nextPrime.js'
+import { divisorsDocs } from './function/combinatorics/divisors.js'
+import { eulerPhiDocs } from './function/combinatorics/eulerPhi.js'
+import { convolveDocs } from './function/signal/convolve.js'
+import { correlateDocs } from './function/signal/correlate.js'
+import { windowFunctionDocs } from './function/signal/windowFunction.js'
+import { lowpassFilterDocs } from './function/signal/lowpassFilter.js'
+import { highpassFilterDocs } from './function/signal/highpassFilter.js'
+import { bandpassFilterDocs } from './function/signal/bandpassFilter.js'
+import { fourierDocs } from './function/signal/fourier.js'
+import { invFourierDocs } from './function/signal/invFourier.js'
+import { adjacencyMatrixDocs } from './function/graph/adjacencyMatrix.js'
+import { shortestPathDocs } from './function/graph/shortestPath.js'
+import { connectedComponentsDocs } from './function/graph/connectedComponents.js'
+import { minimumSpanningTreeDocs } from './function/graph/minimumSpanningTree.js'
+import { topologicalSortDocs } from './function/graph/topologicalSort.js'
+import { stronglyConnectedComponentsDocs } from './function/graph/stronglyConnectedComponents.js'
+import { manhattanDistanceDocs } from './function/geometry/manhattanDistance.js'
+import { chebyshevDistanceDocs } from './function/geometry/chebyshevDistance.js'
+import { minkowskiDistanceDocs } from './function/geometry/minkowskiDistance.js'
+import { areaDocs } from './function/geometry/area.js'
+import { convexHullDocs } from './function/geometry/convexHull.js'
+import { coordinateTransformDocs } from './function/geometry/coordinateTransform.js'
+import { exponentialDistDocs } from './function/statistics/exponentialDist.js'
+import { weibullDistDocs } from './function/statistics/weibullDist.js'
+import { histogramDocs } from './function/statistics/histogram.js'
+import { studentTTestDocs } from './function/statistics/studentTTest.js'
+import { coefficientListDocs } from './function/algebra/coefficientList.js'
+import { expandDocs } from './function/algebra/expand.js'
+import { apartDocs } from './function/algebra/apart.js'
 import { bernoulliDocs } from './function/probability/bernoulli.js'
 import { combinationsDocs } from './function/probability/combinations.js'
 import { combinationsWithRepDocs } from './function/probability/combinationsWithRep.js'
@@ -192,6 +228,23 @@ import { zpk2tfDocs } from './function/signal/zpk2tf.js'
 import { freqzDocs } from './function/signal/freqz.js'
 import { erfDocs } from './function/special/erf.js'
 import { zetaDocs } from './function/special/zeta.js'
+import { besselJDocs } from './function/special/besselJ.js'
+import { besselYDocs } from './function/special/besselY.js'
+import { besselIDocs } from './function/special/besselI.js'
+import { besselKDocs } from './function/special/besselK.js'
+import { betaDocs } from './function/special/beta.js'
+import { betaincDocs } from './function/special/betainc.js'
+import { gammaincDocs } from './function/special/gammainc.js'
+import { gammaincpDocs } from './function/special/gammaincp.js'
+import { digammaDocs } from './function/special/digamma.js'
+import { erfcDocs } from './function/special/erfc.js'
+import { erfiDocs } from './function/special/erfi.js'
+import { fresnelSDocs } from './function/special/fresnelS.js'
+import { lambertWDocs } from './function/special/lambertW.js'
+import { ellipticKDocs } from './function/special/ellipticK.js'
+import { ellipticEDocs } from './function/special/ellipticE.js'
+import { expIntegralEiDocs } from './function/special/expIntegralEi.js'
+import { legendrePDocs } from './function/special/legendreP.js'
 import { madDocs } from './function/statistics/mad.js'
 import { maxDocs } from './function/statistics/max.js'
 import { meanDocs } from './function/statistics/mean.js'
@@ -205,6 +258,16 @@ import { cumSumDocs } from './function/statistics/cumsum.js'
 import { sumDocs } from './function/statistics/sum.js'
 import { varianceDocs } from './function/statistics/variance.js'
 import { corrDocs } from './function/statistics/corr.js'
+import { normalDistDocs } from './function/statistics/normalDist.js'
+import { tDistDocs } from './function/statistics/tDist.js'
+import { chiSquaredDistDocs } from './function/statistics/chiSquaredDist.js'
+import { poissonDistDocs } from './function/statistics/poissonDist.js'
+import { binomialDistDocs } from './function/statistics/binomialDist.js'
+import { skewnessDocs } from './function/statistics/skewness.js'
+import { kurtosisDocs } from './function/statistics/kurtosis.js'
+import { covarianceDocs } from './function/statistics/covariance.js'
+import { linregDocs } from './function/statistics/linreg.js'
+import { movingAverageDocs } from './function/statistics/movingAverage.js'
 import { acosDocs } from './function/trigonometry/acos.js'
 import { acoshDocs } from './function/trigonometry/acosh.js'
 import { acotDocs } from './function/trigonometry/acot.js'
@@ -251,6 +314,26 @@ import { octDocs } from './function/utils/oct.js'
 import { printDocs } from './function/utils/print.js'
 import { typeOfDocs } from './function/utils/typeOf.js'
 import { solveODEDocs } from './function/numeric/solveODE.js'
+import { nintegrateDocs } from './function/numeric/nintegrate.js'
+import { trapzDocs } from './function/numeric/trapz.js'
+import { simpsonsDocs } from './function/numeric/simpsons.js'
+import { findRootDocs } from './function/numeric/findRoot.js'
+import { interpolateDocs } from './function/numeric/interpolate.js'
+import { curvefitDocs } from './function/numeric/curvefit.js'
+import { linsolveDocs } from './function/numeric/linsolve.js'
+import { rankDocs } from './function/numeric/rank.js'
+import { nullspaceDocs } from './function/numeric/nullspace.js'
+import { condDocs } from './function/numeric/cond.js'
+import { polyfitDocs } from './function/numeric/polyfit.js'
+import { csplineDocs } from './function/numeric/cspline.js'
+import { bezierCurveDocs } from './function/numeric/bezierCurve.js'
+import { expfitDocs } from './function/numeric/expfit.js'
+import { powerfitDocs } from './function/numeric/powerfit.js'
+import { logfitDocs } from './function/numeric/logfit.js'
+import { gradientDocs } from './function/numeric/gradient.js'
+import { hessianDocs } from './function/numeric/hessian.js'
+import { loessDocs } from './function/numeric/loess.js'
+import { residueDocs } from './function/numeric/residue.js'
 
 export const embeddedDocs = {
 
@@ -366,6 +449,9 @@ export const embeddedDocs = {
   symbolicEqual: symbolicEqualDocs,
   rationalize: rationalizeDocs,
   slu: sluDocs,
+  coefficientList: coefficientListDocs,
+  expand: expandDocs,
+  apart: apartDocs,
   usolve: usolveDocs,
   usolveAll: usolveAllDocs,
   qr: qrDocs,
@@ -423,6 +509,11 @@ export const embeddedDocs = {
   catalan: catalanDocs,
   composition: compositionDocs,
   stirlingS2: stirlingS2Docs,
+  fibonacci: fibonacciDocs,
+  primeFactors: primeFactorsDocs,
+  nextPrime: nextPrimeDocs,
+  divisors: divisorsDocs,
+  eulerPhi: eulerPhiDocs,
 
   // functions - core
   config: configDocs,
@@ -445,6 +536,12 @@ export const embeddedDocs = {
   // functions - geometry
   distance: distanceDocs,
   intersect: intersectDocs,
+  manhattanDistance: manhattanDistanceDocs,
+  chebyshevDistance: chebyshevDistanceDocs,
+  minkowskiDistance: minkowskiDistanceDocs,
+  area: areaDocs,
+  convexHull: convexHullDocs,
+  coordinateTransform: coordinateTransformDocs,
 
   // functions - logical
   and: andDocs,
@@ -494,12 +591,42 @@ export const embeddedDocs = {
   zeros: zerosDocs,
   fft: fftDocs,
   ifft: ifftDocs,
+  svd: svdDocs,
+  matrixRank: matrixRankDocs,
+  nullSpace: nullSpaceDocs,
+  matrixLog: matrixLogDocs,
+  adjacencyMatrix: adjacencyMatrixDocs,
+  shortestPath: shortestPathDocs,
+  connectedComponents: connectedComponentsDocs,
+  minimumSpanningTree: minimumSpanningTreeDocs,
+  topologicalSort: topologicalSortDocs,
+  stronglyConnectedComponents: stronglyConnectedComponentsDocs,
   sylvester: sylvesterDocs,
   schur: schurDocs,
   lyap: lyapDocs,
 
   // functions - numeric
   solveODE: solveODEDocs,
+  nintegrate: nintegrateDocs,
+  trapz: trapzDocs,
+  simpsons: simpsonsDocs,
+  findRoot: findRootDocs,
+  interpolate: interpolateDocs,
+  curvefit: curvefitDocs,
+  linsolve: linsolveDocs,
+  rank: rankDocs,
+  nullspace: nullspaceDocs,
+  cond: condDocs,
+  polyfit: polyfitDocs,
+  cspline: csplineDocs,
+  bezierCurve: bezierCurveDocs,
+  expfit: expfitDocs,
+  powerfit: powerfitDocs,
+  logfit: logfitDocs,
+  gradient: gradientDocs,
+  hessian: hessianDocs,
+  loess: loessDocs,
+  residue: residueDocs,
 
   // functions - probability
   bernoulli: bernoulliDocs,
@@ -544,10 +671,35 @@ export const embeddedDocs = {
   // functions - signal
   zpk2tf: zpk2tfDocs,
   freqz: freqzDocs,
+  convolve: convolveDocs,
+  correlate: correlateDocs,
+  windowFunction: windowFunctionDocs,
+  lowpassFilter: lowpassFilterDocs,
+  highpassFilter: highpassFilterDocs,
+  bandpassFilter: bandpassFilterDocs,
+  fourier: fourierDocs,
+  invFourier: invFourierDocs,
 
   // functions - special
   erf: erfDocs,
   zeta: zetaDocs,
+  besselJ: besselJDocs,
+  besselY: besselYDocs,
+  besselI: besselIDocs,
+  besselK: besselKDocs,
+  beta: betaDocs,
+  betainc: betaincDocs,
+  gammainc: gammaincDocs,
+  gammaincp: gammaincpDocs,
+  digamma: digammaDocs,
+  erfc: erfcDocs,
+  erfi: erfiDocs,
+  fresnelS: fresnelSDocs,
+  lambertW: lambertWDocs,
+  ellipticK: ellipticKDocs,
+  ellipticE: ellipticEDocs,
+  expIntegralEi: expIntegralEiDocs,
+  legendreP: legendrePDocs,
 
   // functions - statistics
   cumsum: cumSumDocs,
@@ -563,6 +715,20 @@ export const embeddedDocs = {
   sum: sumDocs,
   variance: varianceDocs,
   corr: corrDocs,
+  normalDist: normalDistDocs,
+  tDist: tDistDocs,
+  chiSquaredDist: chiSquaredDistDocs,
+  poissonDist: poissonDistDocs,
+  binomialDist: binomialDistDocs,
+  skewness: skewnessDocs,
+  kurtosis: kurtosisDocs,
+  covariance: covarianceDocs,
+  linreg: linregDocs,
+  movingAverage: movingAverageDocs,
+  exponentialDist: exponentialDistDocs,
+  weibullDist: weibullDistDocs,
+  histogram: histogramDocs,
+  studentTTest: studentTTestDocs,
 
   // functions - trigonometry
   acos: acosDocs,
