@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.5.0] - 2026-04-07
+
+### Added — 59 advanced functions (Phase 3)
+
+**Symbolic CAS (7):** `integrate`, `limit`, `solve`, `series`, `factor`, `laplace`, `inverseLaplaceTransform` — rule-based symbolic engine operating on MathNode AST, supports power rule integration, L'Hopital limits, quadratic/rational-root solving, Taylor series via repeated derivative, and table-based Laplace transforms
+
+**Optimization (6):** `minimize` (Nelder-Mead simplex), `maximize`, `linprog` (two-phase simplex), `quadprog` (active-set), `leastSquares` (Gauss-Newton + Levenberg-Marquardt), `globalMinimize` (differential evolution)
+
+**Differential Equations (6):** `solveODESystem` (RK4/RK45 for coupled systems), `solveBVP` (shooting method), `odeAdaptiveStep` (Dormand-Prince with error control), `solvePDE` (method of lines), `eventDetection` (bisection zero-crossing), `stiffODESolver` (BDF1/BDF2 implicit)
+
+**Linear Algebra (6):** `cholesky`, `jordanForm`, `matrixPower` (binary exponentiation), `hessenbergForm` (Householder reduction), `characteristicPolynomial` (Faddeev-LeVerrier), `polarDecomposition` (via SVD)
+
+**Hypothesis Testing & ML (6):** `anova` (one-way F-test), `chiSquareTest`, `kolmogorovSmirnovTest`, `principalComponentAnalysis`, `mannWhitneyTest`, `shapiroWilkTest`
+
+**Signal Processing (10):** `dct`, `dst`, `idst`, `spectrogram` (STFT), `dwt` (Haar + Daubechies-2), `medfilt`, `resample`, `periodogram`, `hilbertTransform`, `fft2d`
+
+**Interpolation & Approximation (6):** `bspline` (De Boor's algorithm), `pchip` (Fritsch-Carlson monotone), `rbfInterpolate` (Gaussian/multiquadric/thin-plate-spline), `griddata` (IDW/nearest), `padeApproximant`, `chebyshevApprox` (Clenshaw evaluation)
+
+**Number Theory (6):** `primePi` (sieve), `prime` (nth prime), `jacobiSymbol`, `divisorSigma`, `carmichaelLambda`, `integerDigits`
+
+**Computational Geometry (6):** `delaunayTriangulation` (Bowyer-Watson), `voronoiDiagram`, `pointInPolygon` (ray casting), `kdTree` (nearest neighbor + range search), `polygonPerimeter`, `centroid`
+
+### Test Results
+- **8,806 passing** (+800 new tests), **0 failing**, 2 pending
+
 ## [15.4.0] - 2026-04-07
 
 ### Added — 106 new mathematical functions across 10 domains
