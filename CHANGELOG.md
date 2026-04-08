@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.5.0] - 2026-04-07
 
+### Added — Demo app: Tab autocomplete with auto-parentheses
+
+- Expression bar now supports **Tab-completion** for all 393+ math.js functions
+- Type 2+ letters and a dropdown appears with matching functions, sorted by name length
+- Press **Tab** or **Enter** to complete; **↑↓** to navigate; **Esc** to dismiss
+- Functions auto-insert `()` with cursor placed between the parentheses
+- Typing `(` auto-inserts matching `)`, typing `)` skips if already present
+- Dropdown shows category labels: `fn` (function), `const` (constant), `dist` (distribution), `test` (hypothesis test)
+- New component: `demo/mathjs-calc/src/components/Autocomplete.tsx`
+
+### Fixed — Build pipeline
+
+- Switched `tsup.config.ts` entry points from `.ts` to `.js` so all 165 new functions are included in the `dist/` bundle (previously only the original ~228 functions were bundled)
+
 ### Added — 59 advanced functions (Phase 3)
 
 **Symbolic CAS (7):** `integrate`, `limit`, `solve`, `series`, `factor`, `laplace`, `inverseLaplaceTransform` — rule-based symbolic engine operating on MathNode AST, supports power rule integration, L'Hopital limits, quadratic/rational-root solving, Taylor series via repeated derivative, and table-based Laplace transforms
