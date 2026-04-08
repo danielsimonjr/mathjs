@@ -495,6 +495,85 @@ export { createPolyadd } from './function/algebra/polyadd.js'
 export { createIsConnected } from './function/graph/isConnected.js'
 export { createGraphDistance } from './function/graph/graphDistance.js'
 
+// --- Phase 3: 59 advanced functions ---
+
+// Symbolic CAS
+export { createIntegrate } from './function/algebra/integrate.js'
+export { createLimit } from './function/algebra/limit.js'
+export { createSolve } from './function/algebra/solve.js'
+export { createSeries } from './function/algebra/series.js'
+export { createFactor } from './function/algebra/factor.js'
+export { createLaplace } from './function/algebra/laplace.js'
+export { createInverseLaplaceTransform } from './function/algebra/inverseLaplaceTransform.js'
+
+// Optimization
+export { createMinimize } from './function/numeric/minimize.js'
+export { createMaximize } from './function/numeric/maximize.js'
+export { createLinprog } from './function/numeric/linprog.js'
+export { createQuadprog } from './function/numeric/quadprog.js'
+export { createLeastSquares } from './function/numeric/leastSquares.js'
+export { createGlobalMinimize } from './function/numeric/globalMinimize.js'
+
+// Differential equations (extended)
+export { createSolveODESystem } from './function/numeric/solveODESystem.js'
+export { createSolveBVP } from './function/numeric/solveBVP.js'
+export { createOdeAdaptiveStep } from './function/numeric/odeAdaptiveStep.js'
+export { createSolvePDE } from './function/numeric/solvePDE.js'
+export { createEventDetection } from './function/numeric/eventDetection.js'
+export { createStiffODESolver } from './function/numeric/stiffODESolver.js'
+
+// Advanced interpolation
+export { createBspline } from './function/numeric/bspline.js'
+export { createPchip } from './function/numeric/pchip.js'
+export { createRbfInterpolate } from './function/numeric/rbfInterpolate.js'
+export { createGriddata } from './function/numeric/griddata.js'
+export { createPadeApproximant } from './function/numeric/padeApproximant.js'
+export { createChebyshevApprox } from './function/numeric/chebyshevApprox.js'
+
+// Advanced linear algebra
+export { createCholesky } from './function/matrix/cholesky.js'
+export { createJordanForm } from './function/matrix/jordanForm.js'
+export { createMatrixPower } from './function/matrix/matrixPower.js'
+export { createHessenbergForm } from './function/matrix/hessenbergForm.js'
+export { createCharacteristicPolynomial } from './function/matrix/characteristicPolynomial.js'
+export { createPolarDecomposition } from './function/matrix/polarDecomposition.js'
+
+// Hypothesis testing & ML
+export { createAnova } from './function/statistics/anova.js'
+export { createChiSquareTest } from './function/statistics/chiSquareTest.js'
+export { createKolmogorovSmirnovTest } from './function/statistics/kolmogorovSmirnovTest.js'
+export { createPrincipalComponentAnalysis } from './function/statistics/principalComponentAnalysis.js'
+export { createMannWhitneyTest } from './function/statistics/mannWhitneyTest.js'
+export { createShapiroWilkTest } from './function/statistics/shapiroWilkTest.js'
+
+// Advanced signal processing
+export { createDct } from './function/signal/dct.js'
+export { createSpectrogram } from './function/signal/spectrogram.js'
+export { createDwt } from './function/signal/dwt.js'
+export { createMedfilt } from './function/signal/medfilt.js'
+export { createResample } from './function/signal/resample.js'
+export { createPeriodogram } from './function/signal/periodogram.js'
+export { createHilbertTransform } from './function/signal/hilbertTransform.js'
+export { createDst } from './function/signal/dst.js'
+export { createFft2d } from './function/signal/fft2d.js'
+export { createIdst } from './function/signal/idst.js'
+
+// Advanced number theory
+export { createPrimePi } from './function/combinatorics/primePi.js'
+export { createPrime } from './function/combinatorics/prime.js'
+export { createJacobiSymbol } from './function/combinatorics/jacobiSymbol.js'
+export { createDivisorSigma } from './function/combinatorics/divisorSigma.js'
+export { createCarmichaelLambda } from './function/combinatorics/carmichaelLambda.js'
+export { createIntegerDigits } from './function/combinatorics/integerDigits.js'
+
+// Computational geometry
+export { createDelaunayTriangulation } from './function/geometry/delaunayTriangulation.js'
+export { createVoronoiDiagram } from './function/geometry/voronoiDiagram.js'
+export { createPointInPolygon } from './function/geometry/pointInPolygon.js'
+export { createKdTree } from './function/geometry/kdTree.js'
+export { createPolygonPerimeter } from './function/geometry/polygonPerimeter.js'
+export { createCentroid } from './function/geometry/centroid.js'
+
 export { createMapSlicesTransform } from './expression/transform/mapSlices.transform.js'
 export { createColumnTransform } from './expression/transform/column.transform.js'
 export { createFilterTransform } from './expression/transform/filter.transform.js'

@@ -195,6 +195,65 @@ import { polyvalDocs } from './function/algebra/polyval.js'
 import { polyderDocs } from './function/algebra/polyder.js'
 import { polymulDocs } from './function/algebra/polymul.js'
 import { polyaddDocs } from './function/algebra/polyadd.js'
+import { integrateDocs } from './function/algebra/integrate.js'
+import { limitDocs } from './function/algebra/limit.js'
+import { solveDocs } from './function/algebra/solve.js'
+import { seriesDocs } from './function/algebra/series.js'
+import { factorDocs } from './function/algebra/factor.js'
+import { laplaceDocs } from './function/algebra/laplace.js'
+import { inverseLaplaceTransformDocs } from './function/algebra/inverseLaplaceTransform.js'
+import { minimizeDocs } from './function/numeric/minimize.js'
+import { maximizeDocs } from './function/numeric/maximize.js'
+import { linprogDocs } from './function/numeric/linprog.js'
+import { quadprogDocs } from './function/numeric/quadprog.js'
+import { leastSquaresDocs } from './function/numeric/leastSquares.js'
+import { globalMinimizeDocs } from './function/numeric/globalMinimize.js'
+import { solveODESystemDocs } from './function/numeric/solveODESystem.js'
+import { solveBVPDocs } from './function/numeric/solveBVP.js'
+import { odeAdaptiveStepDocs } from './function/numeric/odeAdaptiveStep.js'
+import { solvePDEDocs } from './function/numeric/solvePDE.js'
+import { eventDetectionDocs } from './function/numeric/eventDetection.js'
+import { stiffODESolverDocs } from './function/numeric/stiffODESolver.js'
+import { bsplineDocs } from './function/numeric/bspline.js'
+import { pchipDocs } from './function/numeric/pchip.js'
+import { rbfInterpolateDocs } from './function/numeric/rbfInterpolate.js'
+import { griddataDocs } from './function/numeric/griddata.js'
+import { padeApproximantDocs } from './function/numeric/padeApproximant.js'
+import { chebyshevApproxDocs } from './function/numeric/chebyshevApprox.js'
+import { choleskyDocs } from './function/matrix/cholesky.js'
+import { jordanFormDocs } from './function/matrix/jordanForm.js'
+import { matrixPowerDocs } from './function/matrix/matrixPower.js'
+import { hessenbergFormDocs } from './function/matrix/hessenbergForm.js'
+import { characteristicPolynomialDocs } from './function/matrix/characteristicPolynomial.js'
+import { polarDecompositionDocs } from './function/matrix/polarDecomposition.js'
+import { anovaDocs } from './function/statistics/anova.js'
+import { chiSquareTestDocs } from './function/statistics/chiSquareTest.js'
+import { kolmogorovSmirnovTestDocs } from './function/statistics/kolmogorovSmirnovTest.js'
+import { principalComponentAnalysisDocs } from './function/statistics/principalComponentAnalysis.js'
+import { mannWhitneyTestDocs } from './function/statistics/mannWhitneyTest.js'
+import { shapiroWilkTestDocs } from './function/statistics/shapiroWilkTest.js'
+import { dctDocs } from './function/signal/dct.js'
+import { spectrogramDocs } from './function/signal/spectrogram.js'
+import { dwtDocs } from './function/signal/dwt.js'
+import { medfiltDocs } from './function/signal/medfilt.js'
+import { resampleDocs } from './function/signal/resample.js'
+import { periodogramDocs } from './function/signal/periodogram.js'
+import { hilbertTransformDocs } from './function/signal/hilbertTransform.js'
+import { dstDocs } from './function/signal/dst.js'
+import { fft2dDocs } from './function/signal/fft2d.js'
+import { idstDocs } from './function/signal/idst.js'
+import { primePiDocs } from './function/combinatorics/primePi.js'
+import { primeDocs } from './function/combinatorics/prime.js'
+import { jacobiSymbolDocs } from './function/combinatorics/jacobiSymbol.js'
+import { divisorSigmaDocs } from './function/combinatorics/divisorSigma.js'
+import { carmichaelLambdaDocs } from './function/combinatorics/carmichaelLambda.js'
+import { integerDigitsDocs } from './function/combinatorics/integerDigits.js'
+import { delaunayTriangulationDocs } from './function/geometry/delaunayTriangulation.js'
+import { voronoiDiagramDocs } from './function/geometry/voronoiDiagram.js'
+import { pointInPolygonDocs } from './function/geometry/pointInPolygon.js'
+import { kdTreeDocs } from './function/geometry/kdTree.js'
+import { polygonPerimeterDocs } from './function/geometry/polygonPerimeter.js'
+import { centroidDocs } from './function/geometry/centroid.js'
 import { fresnelCDocs } from './function/special/fresnelC.js'
 import { sinIntegralDocs } from './function/special/sinIntegral.js'
 import { cosIntegralDocs } from './function/special/cosIntegral.js'
@@ -479,6 +538,13 @@ export const embeddedDocs = {
   polyder: polyderDocs,
   polymul: polymulDocs,
   polyadd: polyaddDocs,
+  integrate: integrateDocs,
+  limit: limitDocs,
+  solve: solveDocs,
+  series: seriesDocs,
+  factor: factorDocs,
+  laplace: laplaceDocs,
+  inverseLaplaceTransform: inverseLaplaceTransformDocs,
   usolve: usolveDocs,
   usolveAll: usolveAllDocs,
   qr: qrDocs,
@@ -546,6 +612,12 @@ export const embeddedDocs = {
   lucasL: lucasLDocs,
   partitions: partitionsDocs,
   chineseRemainder: chineseRemainderDocs,
+  primePi: primePiDocs,
+  prime: primeDocs,
+  jacobiSymbol: jacobiSymbolDocs,
+  divisorSigma: divisorSigmaDocs,
+  carmichaelLambda: carmichaelLambdaDocs,
+  integerDigits: integerDigitsDocs,
 
   // functions - core
   config: configDocs,
@@ -627,6 +699,12 @@ export const embeddedDocs = {
   matrixRank: matrixRankDocs,
   nullSpace: nullSpaceDocs,
   matrixLog: matrixLogDocs,
+  cholesky: choleskyDocs,
+  jordanForm: jordanFormDocs,
+  matrixPower: matrixPowerDocs,
+  hessenbergForm: hessenbergFormDocs,
+  characteristicPolynomial: characteristicPolynomialDocs,
+  polarDecomposition: polarDecompositionDocs,
   adjacencyMatrix: adjacencyMatrixDocs,
   shortestPath: shortestPathDocs,
   connectedComponents: connectedComponentsDocs,
@@ -635,6 +713,12 @@ export const embeddedDocs = {
   stronglyConnectedComponents: stronglyConnectedComponentsDocs,
   isConnected: isConnectedDocs,
   graphDistance: graphDistanceDocs,
+  delaunayTriangulation: delaunayTriangulationDocs,
+  voronoiDiagram: voronoiDiagramDocs,
+  pointInPolygon: pointInPolygonDocs,
+  kdTree: kdTreeDocs,
+  polygonPerimeter: polygonPerimeterDocs,
+  centroid: centroidDocs,
   sylvester: sylvesterDocs,
   schur: schurDocs,
   lyap: lyapDocs,
@@ -661,6 +745,24 @@ export const embeddedDocs = {
   hessian: hessianDocs,
   loess: loessDocs,
   residue: residueDocs,
+  minimize: minimizeDocs,
+  maximize: maximizeDocs,
+  linprog: linprogDocs,
+  quadprog: quadprogDocs,
+  leastSquares: leastSquaresDocs,
+  globalMinimize: globalMinimizeDocs,
+  solveODESystem: solveODESystemDocs,
+  solveBVP: solveBVPDocs,
+  odeAdaptiveStep: odeAdaptiveStepDocs,
+  solvePDE: solvePDEDocs,
+  eventDetection: eventDetectionDocs,
+  stiffODESolver: stiffODESolverDocs,
+  bspline: bsplineDocs,
+  pchip: pchipDocs,
+  rbfInterpolate: rbfInterpolateDocs,
+  griddata: griddataDocs,
+  padeApproximant: padeApproximantDocs,
+  chebyshevApprox: chebyshevApproxDocs,
 
   // functions - probability
   bernoulli: bernoulliDocs,
@@ -713,6 +815,16 @@ export const embeddedDocs = {
   bandpassFilter: bandpassFilterDocs,
   fourier: fourierDocs,
   invFourier: invFourierDocs,
+  dct: dctDocs,
+  spectrogram: spectrogramDocs,
+  dwt: dwtDocs,
+  medfilt: medfiltDocs,
+  resample: resampleDocs,
+  periodogram: periodogramDocs,
+  hilbertTransform: hilbertTransformDocs,
+  dst: dstDocs,
+  fft2d: fft2dDocs,
+  idst: idstDocs,
 
   // functions - special
   erf: erfDocs,
@@ -775,6 +887,12 @@ export const embeddedDocs = {
   betaDist: betaDistDocs,
   logNormalDist: logNormalDistDocs,
   fDist: fDistDocs,
+  anova: anovaDocs,
+  chiSquareTest: chiSquareTestDocs,
+  kolmogorovSmirnovTest: kolmogorovSmirnovTestDocs,
+  principalComponentAnalysis: principalComponentAnalysisDocs,
+  mannWhitneyTest: mannWhitneyTestDocs,
+  shapiroWilkTest: shapiroWilkTestDocs,
 
   // functions - trigonometry
   acos: acosDocs,
