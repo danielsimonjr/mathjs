@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { LaTeXPreview } from './LaTeXPreview'
 import { ResultDisplay } from './ResultDisplay'
+import { Autocomplete } from './Autocomplete'
 import { useMathParser } from '../hooks/useMathParser'
 import { useSymbolic } from '../hooks/useSymbolic'
 import { useStore } from '../store/useStore'
@@ -39,6 +40,9 @@ export const ISEExpressionBar = forwardRef<ExpressionBarHandle, { onPlotCommand?
   const [historyStack, setHistoryStack] = useState<string[]>([])
   const [historyIdx, setHistoryIdx] = useState(-1)
   const [evalHistory, setEvalHistory] = useState<HistoryEntry[]>([])
+  const [showAutocomplete, setShowAutocomplete] = useState(false)
+  const [cursorPos, setCursorPos] = useState(0)
+  const autocompleteRef = useRef<{ handleKey: (e: React.KeyboardEvent) => boolean } | null>(null)
 
   const addToEvalHistory = useCallback((expression: string, res: string | null, type: string | null, err: string | null, time: number | null) => {
     setEvalHistory((prev) => [...prev, {
@@ -156,18 +160,87 @@ export const ISEExpressionBar = forwardRef<ExpressionBarHandle, { onPlotCommand?
     syncVariables()
   }, [input, mathEval, isSymbolic, evaluateSymbolic, syncVariables, onPlotCommand, addToEvalHistory])
 
+  const handleAutocompleteComplete = useCallback((completed: string, newCursorPos: number) => {
+    setInput(completed)
+    setCursorPos(newCursorPos)
+    setShowAutocomplete(false)
+    requestAnimationFrame(() => {
+      const textarea = inputRef.current
+      if (textarea) {
+        textarea.setSelectionRange(newCursorPos, newCursorPos)
+        textarea.focus()
+      }
+    })
+  }, [])
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      // Tab triggers autocomplete
+      if (e.key === 'Tab') {
+        e.preventDefault()
+        if (showAutocomplete && autocompleteRef.current) {
+          autocompleteRef.current.handleKey(e)
+        } else {
+          // Open autocomplete
+          const textarea = inputRef.current
+          if (textarea) {
+            setCursorPos(textarea.selectionStart)
+          }
+          setShowAutocomplete(true)
+        }
+        return
+      }
+
+      // Let autocomplete handle keys when visible
+      if (showAutocomplete && autocompleteRef.current) {
+        if (autocompleteRef.current.handleKey(e)) return
+      }
+
+      // Auto-close brackets
+      if (e.key === '(' ) {
+        const textarea = inputRef.current
+        if (textarea) {
+          const start = textarea.selectionStart
+          const end = textarea.selectionEnd
+          const before = input.slice(0, start)
+          const selected = input.slice(start, end)
+          const after = input.slice(end)
+          e.preventDefault()
+          const newValue = before + '(' + selected + ')' + after
+          setInput(newValue)
+          requestAnimationFrame(() => {
+            const pos = start + 1 + selected.length
+            textarea.setSelectionRange(pos, pos)
+          })
+          return
+        }
+      }
+
+      // Skip closing ) if already there
+      if (e.key === ')') {
+        const textarea = inputRef.current
+        if (textarea && input[textarea.selectionStart] === ')') {
+          e.preventDefault()
+          const pos = textarea.selectionStart + 1
+          textarea.setSelectionRange(pos, pos)
+          return
+        }
+      }
+
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault()
+        setShowAutocomplete(false)
         handleEvaluate()
       }
-      if (e.key === 'ArrowUp' && historyStack.length > 0) {
+      if (e.key === 'Escape') {
+        setShowAutocomplete(false)
+      }
+      if (e.key === 'ArrowUp' && !showAutocomplete && historyStack.length > 0) {
         const newIdx = Math.min(historyIdx + 1, historyStack.length - 1)
         setHistoryIdx(newIdx)
         setInput(historyStack[newIdx])
       }
-      if (e.key === 'ArrowDown') {
+      if (e.key === 'ArrowDown' && !showAutocomplete) {
         if (historyIdx > 0) {
           setHistoryIdx(historyIdx - 1)
           setInput(historyStack[historyIdx - 1])
@@ -177,7 +250,7 @@ export const ISEExpressionBar = forwardRef<ExpressionBarHandle, { onPlotCommand?
         }
       }
     },
-    [handleEvaluate, historyStack, historyIdx]
+    [handleEvaluate, historyStack, historyIdx, showAutocomplete, input]
   )
 
   useImperativeHandle(ref, () => ({
@@ -269,13 +342,34 @@ export const ISEExpressionBar = forwardRef<ExpressionBarHandle, { onPlotCommand?
       <LaTeXPreview expression={input} />
 
       {/* Input row */}
-      <div className="flex shrink-0" style={{ minHeight: 40 }}>
+      <div className="relative flex shrink-0" style={{ minHeight: 40 }}>
+        <Autocomplete
+          input={input}
+          cursorPosition={cursorPos}
+          mathInstance={math}
+          onComplete={handleAutocompleteComplete}
+          visible={showAutocomplete}
+          onDismiss={() => setShowAutocomplete(false)}
+          anchorRef={inputRef}
+          ref={autocompleteRef}
+        />
         <textarea
           ref={inputRef}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value
+            setInput(val)
+            setCursorPos(e.target.selectionStart || val.length)
+            // Show autocomplete when input ends with 2+ letters
+            if (/[a-zA-Z]{2,}$/.test(val)) {
+              setShowAutocomplete(true)
+            } else {
+              setShowAutocomplete(false)
+            }
+          }}
           onKeyDown={handleKeyDown}
-          placeholder="Enter expression... (Enter to evaluate, Shift+Enter for new line)"
+          onClick={(e) => setCursorPos((e.target as HTMLTextAreaElement).selectionStart)}
+          placeholder="Enter expression... (Tab for autocomplete, Enter to evaluate)"
           className="flex-1 bg-transparent px-3 py-2 font-mono text-sm text-gray-100 resize-none focus:outline-none placeholder-gray-600"
           rows={1}
         />

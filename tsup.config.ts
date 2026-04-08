@@ -2,10 +2,10 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: {
-    'index': 'src/defaultInstance.ts',
-    'number': 'src/number.ts',
-    'factoriesAny': 'src/factoriesAny.ts',
-    'factoriesNumber': 'src/factoriesNumber.ts'
+    'index': 'src/defaultInstance.js',
+    'number': 'src/number.js',
+    'factoriesAny': 'src/factoriesAny.js',
+    'factoriesNumber': 'src/factoriesNumber.js'
   },
   format: ['esm', 'cjs'],
   dts: false, // Disable for now - existing types/index.d.ts is used
