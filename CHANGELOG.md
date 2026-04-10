@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.6.0] - 2026-04-09
+
+### Added — 30 symbolic CAS functions (Phase 4: Mathematica/Maple gap closure)
+
+**Simplification & Transformation (10):** `fullSimplify` (multi-strategy with leafCount), `combine` (log/power combination), `trigExpand` (angle addition formulas), `trigReduce` (product-to-sum), `complexExpand` (real/imaginary separation), `expToTrig`/`trigToExp` (Euler's formula conversions), `powerExpand` (assumes positive real), `functionExpand` (special function identities), `normalForm` (canonical polynomial/rational form)
+
+**Assumptions & Polynomial Algebra (10):** `assume`/`element` (variable domain assumptions registry — positive, integer, real, etc.), `piecewise` (conditional expressions), `discriminant` (polynomial discriminant), `polynomialLCM`, `resultant` (Sylvester matrix determinant), `variables` (symbol extraction from expressions), `groebnerBasis` (Buchberger's algorithm for ≤2 variables), `eliminate` (variable elimination), `reduce` (solve with domain constraints)
+
+**Calculus, Series & Linear Algebra (10):** `laplacian` (scalar Laplacian), `asymptotic` (leading-term analysis), `seriesCoefficient` (nth Taylor coefficient), `directionalDerivative`, `minimalPolynomial` (for algebraic numbers), `toRadicals` (algebraic → radical form), `rowReduce` (Gauss-Jordan RREF), `degree` (polynomial degree), `differences` (finite differences), `multivariateTaylor`
+
+### Test Results
+- **9,263 passing** (+1,257 new tests), **0 failing**, 2 pending
+
 ## [15.5.0] - 2026-04-07
 
 ### Added — Demo app: Tab autocomplete with auto-parentheses
