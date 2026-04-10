@@ -1,13 +1,17 @@
 ================================================================================
 MATH.JS TYPESCRIPT CONVERSION STATUS REPORT
-Generated: 2026-01-12
-Updated: 2026-04-10 (v15.6.0)
 
-CURRENT STATE (v15.6.0, 2026-04-10):
+HISTORICAL DOCUMENT: TypeScript and WASM features described here have been
+extracted to MathTS (https://github.com/danielsimonjr/MathTS).
+This repo is now a pure JavaScript library.
+
+Generated: 2026-01-12
+Updated: 2026-04-10 (v15.6.0 — state at time of MathTS extraction)
+
+STATE AT TIME OF MATTS EXTRACTION (v15.6.0, 2026-04-10):
 - 444+ functions, 545 factory functions, 21 categories
 - 9,263 tests passing, 0 failing
-- 100% TypeScript (all test files also converted)
-- WASM: Rust primary backend complete (826 exports, 669KB)
+- Pure JavaScript library
 - Full function reference: https://danielsimonjr.github.io/mathjs/
 ================================================================================
 

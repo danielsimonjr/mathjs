@@ -1,5 +1,7 @@
 # Math.js Architecture Deep Dive and Parallel Computing Integration Analysis
 
+> **Historical Document:** Parallel computing (WASM, WebGPU, Workers) was part of a refactoring effort that has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. This document is preserved for architectural reference.
+
 ## Comprehensive Guide to Web Workers, WebAssembly, and WebGPU Integration
 
 Math.js implements a sophisticated factory-based architecture with immutable functions and comprehensive type support, offering significant opportunities for parallel processing integration. This extensively updated report provides actionable insights for enhancing Math.js performance through parallelization using Web Workers for CPU-based threading, WebAssembly with SIMD for near-native computational speed, and WebGPU for massively parallel GPU acceleration. Based on extensive analysis of the GitHub repository and current parallel computing best practices as of late 2025, this document serves as the definitive technical reference for the Math.js parallel computing refactoring initiative.

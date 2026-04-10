@@ -1,8 +1,10 @@
 # WASM Opportunity Audit — Codebase Scan Results
 
+> **Historical Document:** This audit was conducted before WASM support was extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. This document is preserved for historical reference.
+
 **Date:** 2026-03-11
 **Method:** Pattern-based scan of `src/function/` (156 files, ~1M chars) and `src/type/` (42 files, ~481K chars) for compute-heavy code not yet WASM-accelerated.
-**Current WASM coverage:** 828 exported functions across 59 AssemblyScript modules (~957K chars)
+**Current WASM coverage (at time of audit):** 828 exported functions across 59 AssemblyScript modules (~957K chars)
 
 ---
 

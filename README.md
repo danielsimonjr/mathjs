@@ -32,6 +32,7 @@ Math.js is an extensive math library for JavaScript and Node.js. It features a f
 - Runs on any JavaScript engine.
 - Is easily extensible.
 - Open source.
+
 For TypeScript and WASM-accelerated math, see [MathTS](https://github.com/danielsimonjr/MathTS).
 
 ## Usage
@@ -172,7 +173,6 @@ A common case is to implement a new function. This involves the following steps:
 - Write documentation on the function in the source code comment of `myNewFunction.js`. This documentation is used to auto generate documentation on the website.
 - Write embedded documentation for the new function in `./src/expression/embeddedDocs/function/arithmetic/myNewFunction.js`. Add the new documentation to the index file `./src/expression/embeddedDocs/embeddedDocs.js`.
 - Write unit tests for the function in `./test/unit-tests/function/arithmetic/myNewFunction.test.js`.
-- Write the necessary TypeScript definitions for the new function in `./types/index.d.ts`, and write tests for it in `./test/typescript-tests/testTypes.ts`. This is described in [./types/EXPLANATION.md](./types/EXPLANATION.md) -- make sure to read that page, as Typescript definitions must be added in _multiple_ places in the code.
 - Ensure the code style is ok by running `npm run lint` (run `npm run format` to fix the code style automatically).
 
 
@@ -195,10 +195,6 @@ To execute tests for the library, install the project dependencies once:
 Then, the tests can be executed:
 
     npm test
-
-To test the type definitions:
-
-    npm run test:types
 
 Additionally, the tests can be run on FireFox using [headless mode](https://developer.mozilla.org/en-US/Firefox/Headless_mode):
 

@@ -3,6 +3,8 @@
 **Date:** 2026-03-05
 **Purpose:** Close the novice-to-expert gap by embedding learning directly inside the ISE workbench. Users shouldn't need external docs to exploit the full capabilities of the tool.
 
+> **Note:** References to WASM stress-testing in this document are historical. TypeScript/WASM acceleration lives in [MathTS](https://github.com/danielsimonjr/MathTS). This document focuses on UX/education design for the math.js demo application.
+
 ---
 
 ## The Problem

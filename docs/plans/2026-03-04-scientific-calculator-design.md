@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-04
 **App name:** mathjs-calc (working title)
-**Purpose:** Demo/proof of concept to test the feasibility of the math.js TS+AS+WASM library in a production-quality Electron application. Showcases performance gains, feature completeness, and production readiness.
+**Purpose:** Demo/proof of concept for a math.js-based Electron application. The demo (`demo/mathjs-calc/`) is a pure JavaScript React app. References to TypeScript/WASM below are historical — see [MathTS](https://github.com/danielsimonjr/MathTS) for TypeScript/WASM.
 
 ---
 

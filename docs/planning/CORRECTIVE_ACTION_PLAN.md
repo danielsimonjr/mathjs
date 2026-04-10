@@ -1,8 +1,10 @@
 # Corrective Action Plan: Math.js TypeScript + WASM Dual Build System
 
+> **Historical Document:** This plan addressed a TypeScript + WASM build system issue from December 2025. The TypeScript and WASM work has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library with a working build system.
+
 **Date:** December 14, 2025
 **Branch:** `claude/fix-mathjs-build-system-d2DXI`
-**Status:** Critical - Build System Non-Functional
+**Status:** Resolved — Historical Reference Only
 
 ---
 

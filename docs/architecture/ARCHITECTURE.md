@@ -219,7 +219,7 @@ typed('sum', {
 
 ### The create() Function
 
-Located in `src/core/create.ts`, this is the main entry point:
+Located in `src/core/create.js`, this is the main entry point:
 
 ```javascript
 export function create(factories, config) {
@@ -261,44 +261,14 @@ export function create(factories, config) {
 
 ### Instance Structure
 
-```typescript
-interface MathJsInstance {
-  // Type checking (30+ functions)
-  isNumber: (x: any) => boolean
-  isComplex: (x: any) => boolean
-  isMatrix: (x: any) => boolean
-  // ...
-
-  // Configuration
-  config: (options?: ConfigOptions) => ConfigOptions
-
-  // Import/Export
-  import: (factories: object, options?: ImportOptions) => void
-  create: typeof create
-
-  // Event system
-  on: (event: string, callback: Function) => void
-  off: (event: string, callback: Function) => void
-  emit: (event: string, ...args: any[]) => void
-
-  // Error types
-  ArgumentsError: typeof ArgumentsError
-  DimensionError: typeof DimensionError
-  IndexError: typeof IndexError
-
-  // Expression namespace
-  expression: {
-    transform: object
-    mathWithTransform: object
-  }
-
-  // All math functions dynamically added
-  add: Function
-  multiply: Function
-  parse: Function
-  // ... 444+ functions (545 factory functions)
-}
-```
+The math.js instance exposes:
+- **Type checking functions** (30+): `isNumber`, `isComplex`, `isMatrix`, etc.
+- **Configuration**: `config(options)` — reads/sets precision, matrix type, number type, etc.
+- **Import/Export**: `math.import(factories, options)`
+- **Event system**: `math.on`, `math.off`, `math.emit`
+- **Error types**: `ArgumentsError`, `DimensionError`, `IndexError`
+- **Expression namespace**: `math.expression.transform`, `math.expression.mathWithTransform`
+- **All math functions** dynamically added: 444+ user-facing functions from 545 factory functions
 
 ### Lazy Loading
 
@@ -323,27 +293,27 @@ Object.defineProperty(math, 'add', {
 
 ### Configuration Options
 
-```typescript
+```javascript
 // src/core/config.js
 export const DEFAULT_CONFIG = {
   // Comparison tolerances
-  relTol: number           // Default: 1e-12 (relative tolerance)
-  absTol: number           // Default: 1e-15 (absolute tolerance)
+  relTol: 1e-12,         // Relative tolerance
+  absTol: 1e-15,         // Absolute tolerance
 
   // Default output types
-  matrix: 'Matrix' | 'Array'        // Default: 'Matrix'
-  number: 'number' | 'BigNumber' | 'bigint' | 'Fraction'  // Default: 'number'
-  numberFallback: 'number' | 'BigNumber'  // Fallback for bigint overflow
+  matrix: 'Matrix',      // 'Matrix' | 'Array'
+  number: 'number',      // 'number' | 'BigNumber' | 'bigint' | 'Fraction'
+  numberFallback: 'number',  // Fallback for bigint overflow
 
   // Precision
-  precision: number        // Default: 64 (BigNumber significant digits)
+  precision: 64,         // BigNumber significant digits
 
   // Behavior
-  predictable: boolean     // Default: false (deterministic output types)
-  randomSeed: string | null  // Default: null (seeded RNG)
+  predictable: false,    // Deterministic output types
+  randomSeed: null,      // Seeded RNG
 
   // Legacy
-  legacySubset: boolean    // Default: false (matrix subset behavior)
+  legacySubset: false    // Matrix subset behavior
 }
 ```
 
@@ -726,7 +696,7 @@ math.multiply([[1,2]], [[1,2]])
 The build uses **tsup** as the primary bundler (from `.js` entry points) plus Gulp for secondary formats:
 
 ```javascript
-// tsup.config.ts — primary build (dist/)
+// tsup.config.ts — tsup configuration for primary build (dist/)
 // gulpfile.js — secondary formats (lib/)
 
 const tasks = {
@@ -754,7 +724,7 @@ const tasks = {
 }
 ```
 
-**Note**: tsup uses `.js` entry points. Generated `.d.ts` type definitions are maintained separately in `types/index.d.ts`.
+**Note**: tsup uses `.js` entry points. For TypeScript type definitions maintained in `types/index.d.ts`, see [MathTS](https://github.com/danielsimonjr/MathTS).
 
 ### Output Structure
 

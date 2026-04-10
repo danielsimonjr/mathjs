@@ -1,5 +1,7 @@
 # Math.js Performance Benchmark Results
 
+> **Historical Document:** These benchmark results compared JavaScript vs. WASM implementations from when this project included WASM support. That work has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. These benchmarks are preserved for historical reference.
+
 ## Overview
 
 This document presents the performance comparison between JavaScript, WebAssembly (WASM), and WASM+SIMD implementations of various mathematical operations in Math.js.

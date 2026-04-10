@@ -1,5 +1,7 @@
 # MathJS Scientific Computing Improvement Plan
 
+> **Historical Document:** References to TypeScript, WASM, and parallel computing below reflect the state before those features were extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library with 444+ functions and 9,263 tests.
+
 ## Executive Summary
 
 This document outlines a comprehensive plan to transform mathjs into a full-featured scientific computing library comparable to NumPy/SciPy, MATLAB, and Mathematica. The plan is organized into 15 sprints with 5-10 tasks each, designed for parallel agent implementation.

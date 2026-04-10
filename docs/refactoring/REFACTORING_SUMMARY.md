@@ -1,5 +1,7 @@
 # TypeScript + WASM + Parallel Computing Refactoring Summary
 
+> **Historical Document:** The TypeScript, WASM, and parallel computing features described here have been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. This document is preserved for historical reference.
+
 ## Overview
 
 This refactoring transforms mathjs into a high-performance computing library by adding:

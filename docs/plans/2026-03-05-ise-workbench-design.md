@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-05
 **App name:** mathjs-calc (evolution from calculator demo to ISE)
-**Purpose:** Transform the calculator demo into a full advanced integrated scientific environment/workbench in the style of a highly advanced virtual TI graphing scientific calculator with Mathcad-inspired modern dashboard aesthetics. Proof of concept for the math.js TS+AS+WASM library.
+**Purpose:** Transform the calculator demo into a full advanced integrated scientific environment/workbench in the style of a highly advanced virtual TI graphing scientific calculator with Mathcad-inspired modern dashboard aesthetics. Demo application for the math.js library. Note: TypeScript/WASM references are historical — see [MathTS](https://github.com/danielsimonjr/MathTS).
 
 **Key references:** TI-89/Nspire (interaction model), Mathcad (symbolic rendering), Desmos (graphing UX), MATLAB (power features)
 

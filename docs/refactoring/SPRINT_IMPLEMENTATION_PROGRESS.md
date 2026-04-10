@@ -1,5 +1,7 @@
 # Sprint Implementation Progress
 
+> **Historical Document:** References to `.ts` files and TypeScript-specific notes reflect the state before TypeScript/WASM was extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library.
+
 ## Summary
 
 Successfully implemented **10 sprints** from the skipped tests resolution plan, fixing **20 skipped tests** and improving codebase quality.

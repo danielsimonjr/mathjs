@@ -1,5 +1,7 @@
 # MathJS Dual Build System: Consolidated Corrective Action Plan
 
+> **Historical Document:** This corrective action plan addressed TypeScript + WASM build system issues from December 2025. That work has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library.
+
 **Version:** 2.0 (Consolidated)  
 **Date:** December 14, 2025  
 **Target:** Claude Code Implementation  

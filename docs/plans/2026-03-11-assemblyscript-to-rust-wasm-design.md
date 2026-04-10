@@ -1,7 +1,9 @@
 # AssemblyScript to Rust WASM Migration — Design Spec
 
+> **Historical Document:** This migration was completed before WASM support was extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. This document is preserved for historical reference.
+
 **Date:** 2026-03-11
-**Status:** Approved
+**Status:** Completed — Subsequently extracted to MathTS
 **Purpose:** Migrate the math.js WASM modules from AssemblyScript to Rust for better performance (LLVM backend), long-term maintainability, and Rust crate ecosystem leverage.
 
 ---

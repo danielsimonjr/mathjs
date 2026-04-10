@@ -1,8 +1,10 @@
 # TypeScript + WASM Refactoring Plan
 
+> **Historical Document:** The TypeScript and WASM refactoring described here has been completed and then extracted to a separate project: [MathTS](https://github.com/danielsimonjr/MathTS). This repo (`danielsimonjr/mathjs`) is now a **pure JavaScript** library. This document is preserved for historical reference.
+
 ## Executive Summary
 
-> **Current State (v15.6.0, 2026-04-10):** TypeScript conversion is 100% complete (1,331 TS source files). WASM integration is complete with 57 AssemblyScript modules and a Rust WASM backend (63 files, 826 exports). 444+ functions, 545 factory functions, 21 categories. 9,263 tests passing.
+> **State at time of extraction:** TypeScript conversion was 100% complete (1,331 TS source files). WASM integration was complete with 57 AssemblyScript modules and a Rust WASM backend (63 files, 826 exports). 444+ functions, 545 factory functions, 21 categories. 9,263 tests passing.
 
 This document records the comprehensive plan that was executed to convert JavaScript files to TypeScript with WASM compilation support.
 

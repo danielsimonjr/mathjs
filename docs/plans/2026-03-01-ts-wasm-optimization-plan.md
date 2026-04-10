@@ -1,6 +1,8 @@
 # TS/AS+WASM Comprehensive Optimization — Implementation Plan
 
-## Status: ✅ COMPLETED (2026-03-02)
+> **Historical Document:** This plan was completed before TypeScript and WASM were extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. This document is preserved for historical reference.
+
+## Status: ✅ COMPLETED (2026-03-02) — Subsequently extracted to MathTS
 
 All 14 tasks completed successfully. Additional follow-up work (test separation) also completed in v15.3.1.
 

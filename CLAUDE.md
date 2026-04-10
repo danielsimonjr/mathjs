@@ -55,7 +55,7 @@ Math.js is an extensive math library for JavaScript and Node.js featuring:
 - Support for multiple data types: numbers, big numbers, complex numbers, fractions, units, matrices
 - 15 type classes: BigNumber, Complex, Fraction, Range, Matrix (Dense/Sparse/Immutable), Index, Unit, Parser, Help, Chain, FibonacciHeap, Spa
 - ES modules codebase requiring all files to have real `.js` extensions
-- Uses forked packages: `@danielsimonjr/typed-function` and `@danielsimonjr/workerpool`
+- Uses forked package: `@danielsimonjr/typed-function`
 
 For TypeScript and WASM-accelerated math, see [MathTS](https://github.com/danielsimonjr/MathTS).
 
@@ -204,13 +204,8 @@ test/
 │   └── type/                # Type tests
 ├── generated-code-tests/    # Tests for generated entry files
 ├── node-tests/              # Node.js integration tests
-├── typescript-tests/        # TypeScript type definition tests
 ├── browser-test-config/     # Browser test configurations
 └── benchmark/               # Performance benchmarks
-
-types/
-├── index.d.ts               # TypeScript type definitions
-└── EXPLANATION.md           # Guide for maintaining type definitions
 ```
 
 ### Build System
@@ -252,15 +247,7 @@ Follow these steps when adding a new function:
    - Create: `test/unit-tests/function/<category>/<functionName>.test.js`
    - Use Mocha test framework
 
-5. **Add TypeScript definitions** (in `types/index.d.ts`):
-   - Add to `interface MathJsInstance` (instance method)
-   - Add to `interface MathJsChain` (chained method)
-   - Add to static exports section
-   - Add to dependencies section (`<functionName>Dependencies`)
-   - Write type tests in `test/typescript-tests/testTypes.ts`
-   - See `types/EXPLANATION.md` for detailed guidance
-
-6. **Verify**:
+5. **Verify**:
    ```bash
    npm run lint        # Check code style
    npm run format      # Auto-fix style issues
@@ -432,15 +419,13 @@ npm run lint
 ### Common Gotchas
 
 1. **File extensions in imports**: Always use `.js` - enforced by ESLint
-2. **TypeScript definitions**: Must be added in **multiple** places (instance method, chain method, static export, dependencies) - see `types/EXPLANATION.md`
-3. **Factory function dependencies**: Declared dependencies must match the destructured parameters
-4. **Generated files**: Don't commit `*.generated.js` or any changes to `dist/` and `lib/`
+2. **Factory function dependencies**: Declared dependencies must match the destructured parameters
+3. **Generated files**: Don't commit `*.generated.js` or any changes to `dist/` and `lib/`
 
 ### Key Dependencies
 
 **Runtime** (notably):
 - `@danielsimonjr/typed-function` (v5.0.0-alpha.1) - Type dispatch system (used by ~545 factory functions)
-- `@danielsimonjr/workerpool` (v10.1.0) - Worker pool
 - `decimal.js`, `complex.js`, `fraction.js` - Number type implementations
 
 **Build tools**:
@@ -462,9 +447,6 @@ npm run lint
 
 ### Developer Workflows (day-to-day development)
 - **Developer Workflow**: `docs/architecture/DEVELOPER_WORKFLOW.md` - Build, test, debug workflows
-
-### Type Definitions
-- **Type Definitions**: `types/EXPLANATION.md` - Maintaining TypeScript type system
 
 ### General Resources
 - **Main README**: `README.md` - Project overview, getting started

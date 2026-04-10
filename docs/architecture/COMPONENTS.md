@@ -15,9 +15,9 @@ This document provides a comprehensive reference for all major components in the
 
 ## Core Components
 
-### `create.ts`
+### `create.js`
 
-**Location:** `src/core/create.ts`
+**Location:** `src/core/create.js`
 
 **Purpose:** Main entry point for creating math.js instances with dependency injection.
 
@@ -54,9 +54,9 @@ const math = create({ createAdd, createMultiply })
 
 ---
 
-### `config.ts`
+### `config.js`
 
-**Location:** `src/core/config.ts`
+**Location:** `src/core/config.js`
 
 **Purpose:** Configuration management and defaults.
 
@@ -84,9 +84,9 @@ const math = create({ createAdd, createMultiply })
 
 ---
 
-### `typed.ts`
+### `typed.js`
 
-**Location:** `src/core/function/typed.ts`
+**Location:** `src/core/function/typed.js`
 
 **Purpose:** Integration with typed-function library for multi-type dispatch.
 
@@ -210,14 +210,14 @@ math.import({ add: myAdd }, { override: true })
 
 ## Data Type Components
 
-### `Complex.ts`
+### `Complex.js`
 
-**Location:** `src/type/complex/Complex.ts`
+**Location:** `src/type/complex/Complex.js`
 
 **Purpose:** Complex number representation and operations.
 
 **Structure:**
-```typescript
+```javascript
 class Complex {
   re: number      // Real part
   im: number      // Imaginary part
@@ -259,9 +259,9 @@ Complex.prototype.isComplex = true
 
 ---
 
-### `BigNumber.ts`
+### `BigNumber.js`
 
-**Location:** `src/type/bignumber/BigNumber.ts`
+**Location:** `src/type/bignumber/BigNumber.js`
 
 **Purpose:** Arbitrary precision decimal numbers.
 
@@ -285,14 +285,14 @@ const c = math.add(a, b)  // Exactly 0.3, no floating-point error
 
 ---
 
-### `Fraction.ts`
+### `Fraction.js`
 
-**Location:** `src/type/fraction/Fraction.ts`
+**Location:** `src/type/fraction/Fraction.js`
 
 **Purpose:** Exact rational number representation.
 
 **Structure:**
-```typescript
+```javascript
 class Fraction {
   n: bigint     // Numerator
   d: bigint     // Denominator (always positive)
@@ -320,14 +320,14 @@ const sum = math.add(half, third)  // 5/6 (exact)
 
 ---
 
-### `Unit.ts`
+### `Unit.js`
 
-**Location:** `src/type/unit/Unit.ts`
+**Location:** `src/type/unit/Unit.js`
 
 **Purpose:** Physical quantities with units.
 
 **Structure:**
-```typescript
+```javascript
 class Unit {
   value: number | BigNumber | Fraction | Complex | null
   units: UnitComponent[]
@@ -446,14 +446,14 @@ _ptr:    [0, 1, 2, 3]  // Row i starts at _ptr[i]
 
 ---
 
-### `Chain.ts`
+### `Chain.js`
 
-**Location:** `src/type/chain/Chain.ts`
+**Location:** `src/type/chain/Chain.js`
 
 **Purpose:** Fluent chaining API.
 
 **Interface:**
-```typescript
+```javascript
 class Chain<T> {
   private value: T
 

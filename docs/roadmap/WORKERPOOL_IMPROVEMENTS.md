@@ -1,6 +1,6 @@
 # Suggestions and Improvements for @danielsimonjr/workerpool
 
-> **Status (v15.6.0):** This document is preserved for historical reference. The parallel computing architecture described here is operational as of v15.6.0 (9,263 tests passing, 0 failures).
+> **Historical Document:** The parallel computing architecture described here has been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. This document is preserved for historical reference.
 
 This document outlines issues encountered while integrating workerpool with math.js for parallel computation, along with suggested improvements to maximize performance for numerical computing workloads.
 

@@ -1,7 +1,7 @@
 # ISE Workbench Gap Analysis — v1.0
 
 **Date:** 2026-03-05
-**Purpose:** Benchmark our ISE workbench against industry tools (Mathcad, Mathematica, Desmos, MATLAB) to guide future iterations that stress-test the math.js TS+AS+WASM refactor.
+**Purpose:** Benchmark our ISE workbench against industry tools (Mathcad, Mathematica, Desmos, MATLAB) to guide future iterations of the math.js library. Note: TypeScript and WASM references are historical — see [MathTS](https://github.com/danielsimonjr/MathTS).
 
 ---
 

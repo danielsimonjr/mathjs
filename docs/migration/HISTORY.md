@@ -8,7 +8,7 @@ See the [full function reference](https://danielsimonjr.github.io/mathjs/) for c
 
 - Feat: add 30 symbolic CAS functions (Phase 4) — `fullSimplify`, `combine`, `trigExpand`, `trigReduce`, `complexExpand`, `expToTrig`, `trigToExp`, `powerExpand`, `functionExpand`, `normalForm`, `assume`, `element`, `piecewise`, `discriminant`, `polynomialLCM`, `resultant`, `variables`, `groebnerBasis`, `eliminate`, `reduce`, `laplacian`, `asymptotic`, `seriesCoefficient`, `directionalDerivative`, `minimalPolynomial`, `toRadicals`, `rowReduce`, `degree`, `differences`, `multivariateTaylor`
 - Docs: publish full function reference site at https://danielsimonjr.github.io/mathjs/ (21 per-category pages, 444 functions, dark theme, real-time search)
-- Build: switch `tsup.config.ts` entry points from `.ts` to `.js` so all 444 functions are included in `dist/` bundle
+- Build: switch `tsup.config.ts` entry points to `.js` so all 444 functions are included in `dist/` bundle
 - Test: 9,263 passing, 0 failing (up from 8,006 in v15.5.0)
 
 # unreleased changes since 15.1.0
@@ -46,16 +46,10 @@ See the [full function reference](https://danielsimonjr.github.io/mathjs/) for c
 
 # 2025-12-13, 15.1.1 (fork: @danielsimonjr/mathjs)
 
-- Build: change WASM runtime from "stub" to "incremental" for proper garbage
-  collection support, fixing memory leak issues with repeated WASM function calls.
-- Build: update asconfig.json with noAssert=false and shrinkLevel=1 for better
-  debugging and stability.
-- Test: add comprehensive benchmark suite (full_comparison_benchmark.js) comparing
-  JavaScript vs WASM vs Parallel (JS) vs Hybrid WASM performance.
-- Test: add WASM diagnostic scripts (wasm_test.mjs, wasm_test2.mjs) for debugging
-  AssemblyScript loader integration.
-- Deps: integrate @danielsimonjr/typed-function and @danielsimonjr/workerpool
-  packages for enhanced WASM acceleration and parallel computing support.
+- Deps: integrate `@danielsimonjr/typed-function` package for type dispatch system.
+- Test: add comprehensive benchmark suite (full_comparison_benchmark.js) for performance testing.
+
+> **Note:** TypeScript and WASM acceleration work from this period was later extracted into the separate [MathTS](https://github.com/danielsimonjr/MathTS) project. This repo is now a pure JavaScript library.
 
 # 2025-11-05, 15.1.0
 

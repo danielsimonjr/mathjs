@@ -3,6 +3,8 @@
 **Date:** 2026-03-05
 **Purpose:** Evaluate Deno's built-in Jupyter kernel as a development option for the ISE's live document/notebook model (Iteration 3 on the gap analysis roadmap).
 
+> **Note:** TypeScript references in this document are about Deno's TypeScript runtime (not math.js's internals). References to WASM limitations are historical. Math.js is now a pure JavaScript library — see [MathTS](https://github.com/danielsimonjr/MathTS) for TypeScript/WASM.
+
 ---
 
 ## What Is Deno Jupyter?

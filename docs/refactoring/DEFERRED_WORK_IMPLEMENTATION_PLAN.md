@@ -1,5 +1,7 @@
 # Deferred Work Implementation Plan
 
+> **Historical Document:** The features described here (unit cancellation algebra, config propagation) have since been implemented. References to `.ts` files and TypeScript-specific tasks are historical — this repo is now a pure JavaScript library. See [MathTS](https://github.com/danielsimonjr/MathTS) for TypeScript/WASM.
+
 This document provides detailed implementation plans for the two deferred work items from the skipped tests resolution effort.
 
 ## Overview

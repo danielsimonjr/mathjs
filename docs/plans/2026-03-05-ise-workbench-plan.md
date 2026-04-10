@@ -6,7 +6,7 @@
 
 **Architecture:** Replace the current tabbed panel layout with a resizable three-zone split: calculator panel (left ~40%), graph canvas (right ~60%), expression bar (bottom full-width). The calculator panel gets an icon toolbar ribbon, symbolic output area, variable explorer, and enhanced button grid. The graph canvas uses Plotly.js for 2D/3D interactive plotting. KaTeX renders all symbolic output. The existing Zustand store is expanded with plot traces, symbolic history, and layout state. Performance/Statistics dashboards move to a secondary menu accessible from the toolbar.
 
-**Tech Stack:** React 19, TypeScript, Vite, Electron, Plotly.js (graphing), KaTeX (LaTeX rendering), allotment (split panes), Zustand (state), Tailwind CSS, math.js TS+AS+WASM
+**Tech Stack:** React 19, Vite, Electron, Plotly.js (graphing), KaTeX (LaTeX rendering), allotment (split panes), Zustand (state), Tailwind CSS, math.js library
 
 **Design doc:** `docs/plans/2026-03-05-ise-workbench-design.md`
 

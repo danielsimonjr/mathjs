@@ -3,6 +3,8 @@
 **Date:** 2026-04-03
 **Purpose:** Gap analysis of math.js vs Mathematica/Wolfram and Mathcad, with a phased implementation roadmap for expanding the function library.
 
+> **Historical Note:** This roadmap was written when the project included WASM/Rust support. TypeScript and WASM acceleration has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This is now a pure JavaScript library. References to WASM, Rust, and `src/wasm-rust/` below are historical only.
+
 ---
 
 ## Current State

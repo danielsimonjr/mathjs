@@ -1,6 +1,8 @@
 # TS/AS+WASM Codebase Optimization Design
 
-## Status: ✅ COMPLETED (2026-03-02)
+> **Historical Document:** This design was completed before TypeScript and WASM were extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. This document is preserved for historical reference.
+
+## Status: ✅ COMPLETED (2026-03-02) — Subsequently extracted to MathTS
 
 All phases implemented. See `2026-03-01-ts-wasm-optimization-plan.md` for task-level details and CHANGELOG entries [15.3.0] and [15.3.1].
 

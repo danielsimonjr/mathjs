@@ -115,7 +115,6 @@ test/unit-tests/
 test/
 ├── generated-code-tests/    # Generated entry file tests
 ├── node-tests/              # Node.js integration tests
-├── typescript-tests/        # TypeScript type definition tests
 └── benchmark/               # Performance benchmarks
 ```
 
@@ -230,8 +229,7 @@ console.log(matrix.type)  // "DenseMatrix" or "SparseMatrix"
 3. Add embedded docs: `src/expression/embeddedDocs/function/<category>/<name>.js`
 4. Register docs in: `src/expression/embeddedDocs/embeddedDocs.js`
 5. Write tests: `test/unit-tests/function/<category>/<name>.test.js`
-6. Add TypeScript definitions: See `types/EXPLANATION.md`
-7. Verify: `npm test`
+6. Verify: `npm test`
 
 ### Extend with Custom Type
 
@@ -278,4 +276,3 @@ npm publish
 - [OVERVIEW.md](./OVERVIEW.md) - High-level architecture
 - [Function Reference](https://danielsimonjr.github.io/mathjs/) - Full online function reference
 - ../CLAUDE.md - Quick reference guide for Claude Code
-- `types/EXPLANATION.md` - TypeScript definitions guide

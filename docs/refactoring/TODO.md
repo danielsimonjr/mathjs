@@ -1,5 +1,7 @@
 # Math.js Refactoring TODO
 
+> **Historical Document:** This TODO was part of the TypeScript + WASM refactoring project that has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library. All items listed are historical.
+
 Generated: 2026-01-13
 Updated: 2026-04-10 (v15.6.0)
 

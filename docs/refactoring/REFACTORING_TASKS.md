@@ -1,5 +1,7 @@
 # TypeScript + WASM Refactoring Tasks
 
+> **Historical Document:** This task list was part of the TypeScript + WASM refactoring project that has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This repo is now a pure JavaScript library.
+
 ## Document Purpose
 
 This document tracks the TypeScript + WASM refactoring progress. **All JavaScript files have been converted to TypeScript.** The original JS files are retained for benchmarking purposes.

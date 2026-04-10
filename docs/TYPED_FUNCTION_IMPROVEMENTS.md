@@ -1,6 +1,6 @@
 # Suggestions and Improvements for @danielsimonjr/typed-function
 
-> **Status (v15.6.0):** The issues described in this document have been resolved. The test suite now passes **9,263 tests with 0 failures** (as of 2026-04-10). This document is preserved for historical reference.
+> **Status (v15.6.0):** The issues described in this document have been resolved. The test suite now passes **9,263 tests with 0 failures** (as of 2026-04-10). This document is preserved for historical reference. The TypeScript/WASM refactoring effort has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS); this repo is now a pure JavaScript library.
 
 This document outlines issues encountered while integrating typed-function with math.js during the TypeScript/WASM refactoring effort, along with suggested improvements.
 

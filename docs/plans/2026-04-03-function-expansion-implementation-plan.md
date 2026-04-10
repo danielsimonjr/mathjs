@@ -4,9 +4,11 @@
 
 **Goal:** Double math.js's function count from 228 to ~430 core mathematical functions across 9 domains, using the established factory pattern with full test coverage.
 
-**Architecture:** Each function is a factory function using `typed-function` for multi-type dispatch. Functions are registered in `src/factoriesAny.js`, embedded docs in `src/expression/embeddedDocs/`, tests in `test/unit-tests/`. WASM-intensive functions get Rust implementations in `src/wasm-rust/` with JS bridges.
+> **Historical Note:** This plan was written when the project included WASM/Rust support. TypeScript and WASM acceleration has since been extracted to [MathTS](https://github.com/danielsimonjr/MathTS). This is now a pure JavaScript library. References to WASM, Rust, `src/wasm-rust/`, and `types/index.d.ts` below are historical only.
 
-**Tech Stack:** JavaScript (ES modules), typed-function dispatch, mocha test framework, Rust WASM (faer, statrs), math.js factory pattern
+**Architecture:** Each function is a factory function using `typed-function` for multi-type dispatch. Functions are registered in `src/factoriesAny.js`, embedded docs in `src/expression/embeddedDocs/`, tests in `test/unit-tests/`.
+
+**Tech Stack:** JavaScript (ES modules), typed-function dispatch, mocha test framework, math.js factory pattern
 
 **Design doc:** `docs/plans/2026-04-03-mathematical-function-expansion-roadmap.md`
 
