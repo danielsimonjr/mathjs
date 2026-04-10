@@ -116,13 +116,13 @@ export const createToRadicals = /* #__PURE__ */ factory(name, dependencies, ({
       }
     }
 
-    // Compute base^p part
+    // Compute base^|p| part (the radicand), then invert if p < 0
     const baseStr = base.toString()
     let radicandStr
-    if (p === 1) {
+    if (p === 1 || p === -1) {
+      // For p=1 or p=-1, the radicand is just the base itself;
+      // the sign of p is handled by the inversion block below.
       radicandStr = baseStr
-    } else if (p === -1) {
-      radicandStr = '1 / (' + baseStr + ')'
     } else {
       radicandStr = '(' + baseStr + ') ^ ' + Math.abs(p)
     }

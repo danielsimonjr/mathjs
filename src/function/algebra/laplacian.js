@@ -33,6 +33,15 @@ export const createLaplacian = /* #__PURE__ */ factory(name, dependencies, ({
    */
   return typed(name, {
     'string | Node, Array': function (expr, variables) {
+      if (!Array.isArray(variables) || variables.length === 0) {
+        throw new Error('laplacian: variables must be a non-empty array')
+      }
+      for (let i = 0; i < variables.length; i++) {
+        if (typeof variables[i] !== 'string') {
+          throw new Error('laplacian: each variable must be a string, got ' + typeof variables[i] + ' at index ' + i)
+        }
+      }
+
       const exprNode = typeof expr === 'string' ? parse(expr) : expr
 
       const secondDerivatives = variables.map(function (variable) {

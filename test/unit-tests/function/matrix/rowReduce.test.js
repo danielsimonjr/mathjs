@@ -80,4 +80,38 @@ describe('rowReduce', function () {
       math.rowReduce([1, 2, 3])
     }, /2D array/)
   })
+
+  it('should handle Matrix input', function () {
+    const M = math.matrix([[1, 2], [3, 4]])
+    const result = math.rowReduce(M)
+    assert.ok(Array.isArray(result), 'should return an array')
+    assert.strictEqual(result.length, 2)
+    assert.strictEqual(result[0].length, 2)
+    // RREF of [[1,2],[3,4]] is [[1,0],[0,1]]
+    approxEqual(result[0][0], 1, 1e-10)
+    approxEqual(result[0][1], 0, 1e-10)
+    approxEqual(result[1][0], 0, 1e-10)
+    approxEqual(result[1][1], 1, 1e-10)
+  })
+
+  it('should handle tall matrix (more rows than columns)', function () {
+    // 3x2 matrix: [[1,2],[3,6],[2,4]] — rank 1
+    const result = math.rowReduce([[1, 2], [3, 6], [2, 4]])
+    assert.ok(Array.isArray(result), 'should return an array')
+    assert.strictEqual(result.length, 3)
+    assert.strictEqual(result[0].length, 2)
+    // First row should be [1, 2], others should be [0, 0]
+    approxEqual(result[0][0], 1, 1e-10)
+    approxEqual(result[0][1], 2, 1e-10)
+    approxEqual(result[1][0], 0, 1e-10)
+    approxEqual(result[1][1], 0, 1e-10)
+    approxEqual(result[2][0], 0, 1e-10)
+    approxEqual(result[2][1], 0, 1e-10)
+  })
+
+  it('should throw for non-numeric entries', function () {
+    assert.throws(function () {
+      math.rowReduce([['a', 'b'], ['c', 'd']])
+    }, /non-numeric|number|rowReduce/)
+  })
 })

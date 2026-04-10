@@ -9,6 +9,7 @@ const DOMAIN_FILTERS = {
   positive: x => x > 0,
   negative: x => x < 0,
   nonnegative: x => x >= 0,
+  nonpositive: x => x <= 0,
   nonzero: x => Math.abs(x) > 1e-12,
   integer: x => Math.abs(x - Math.round(x)) < 1e-9,
   real: x => isFinite(x),
@@ -20,7 +21,7 @@ const DOMAIN_ALIASES = {
   positive: 'positive',
   negative: 'negative',
   nonnegative: 'nonnegative',
-  nonpositive: 'negative', // approximate alias
+  nonpositive: 'nonpositive',
   nonzero: 'nonzero',
   integer: 'integer',
   real: 'real',

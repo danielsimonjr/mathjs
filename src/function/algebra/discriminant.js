@@ -1,13 +1,12 @@
 import { factory } from '../../utils/factory.js'
 
 const name = 'discriminant'
-const dependencies = ['typed', 'parse', 'coefficientList', 'polyder']
+const dependencies = ['typed', 'parse', 'coefficientList']
 
 export const createDiscriminant = /* #__PURE__ */ factory(name, dependencies, ({
   typed,
   parse,
-  coefficientList,
-  polyder
+  coefficientList
 }) => {
   /**
    * Compute the discriminant of a polynomial.
@@ -49,8 +48,8 @@ export const createDiscriminant = /* #__PURE__ */ factory(name, dependencies, ({
     const deg = coeffs.length - 1
 
     if (deg === 0) {
-      // Constant: no roots
-      return null
+      // Constant polynomial: discriminant is not defined
+      throw new Error('discriminant: not defined for constant polynomials')
     }
 
     if (deg === 1) {
@@ -70,11 +69,14 @@ export const createDiscriminant = /* #__PURE__ */ factory(name, dependencies, ({
 
     // For degree >= 4, use resultant(p, p')
     // p' = polyder(coeffs)
+    const leadCoeff = coeffs[deg]
+    if (leadCoeff === 0) {
+      throw new Error('discriminant: leading coefficient is zero')
+    }
     const derivCoeffs = _polyDeriv(coeffs)
     const res = _sylvesterResultant(coeffs, derivCoeffs)
     const n = deg
     const sign = Math.pow(-1, (n * (n - 1)) / 2)
-    const leadCoeff = coeffs[deg]
     return sign * res / leadCoeff
   }
 

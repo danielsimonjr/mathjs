@@ -1,12 +1,10 @@
 import { factory } from '../../utils/factory.js'
 
 const name = 'rowReduce'
-const dependencies = ['typed', 'matrix', 'simplify']
+const dependencies = ['typed']
 
 export const createRowReduce = /* #__PURE__ */ factory(name, dependencies, ({
-  typed,
-  matrix,
-  simplify
+  typed
 }) => {
   /**
    * Compute the Reduced Row Echelon Form (RREF) of a matrix using Gauss-Jordan elimination.

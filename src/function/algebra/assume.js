@@ -29,6 +29,12 @@ export const createAssume = /* #__PURE__ */ factory(name, dependencies, ({ typed
    * Stores the assumption in a module-level registry. Valid properties:
    * 'positive', 'negative', 'integer', 'real', 'complex', 'nonnegative', 'nonzero'.
    *
+   * **WARNING: Assumptions are stored in a module-level (global) registry.**
+   * This means assumptions are shared across all math.js instances created in
+   * the same JavaScript module context. If you create multiple math instances
+   * (e.g. via `math.create()`), they will all share the same assumption state.
+   * Call `clearAssumptions()` to reset the registry when switching contexts.
+   *
    * Syntax:
    *
    *     math.assume(variable, property)

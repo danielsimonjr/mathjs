@@ -78,14 +78,9 @@ export const createEliminate = /* #__PURE__ */ factory(name, dependencies, ({
 
     // For each pair (eqs[0], eqs[i]), compute resultant as a polynomial
     for (let i = 1; i < eqs.length; i++) {
-      try {
-        const polyRes = resultantAsPolynomial(eqs[0], eqs[i], elimVar)
-        if (polyRes !== null && polyRes !== '0') {
-          result.push(polyRes)
-        }
-      } catch (e) {
-        // If resultant computation fails, include original equation
-        result.push(eqs[i])
+      const polyRes = resultantAsPolynomial(eqs[0], eqs[i], elimVar)
+      if (polyRes !== null && polyRes !== '0') {
+        result.push(polyRes)
       }
     }
 
@@ -172,7 +167,7 @@ export const createEliminate = /* #__PURE__ */ factory(name, dependencies, ({
         const val = node.evaluate(scope)
         values.push(typeof val === 'number' ? val : Number(val))
       } catch (e) {
-        values.push(0)
+        throw new Error('eliminate: could not evaluate polynomial at ' + variable + '=' + i + ': ' + e.message)
       }
     }
     const diffs = [values.slice()]

@@ -82,4 +82,27 @@ describe('assume', function () {
   it('should return undefined for variables with no assumption', function () {
     assert.strictEqual(getAssumption('unknownVar'), undefined)
   })
+
+  it('should share assumptions across math instances (known limitation)', function () {
+    // The assumption registry is module-level, so all math instances share it.
+    // This is a documented limitation: assumptions are global, not per-instance.
+    const math2 = create({ ...all, createAssume })
+
+    // Set assumption via math (original instance)
+    math.assume('sharedVar', 'positive')
+    // Read it back via math2 (different instance)
+    assert.strictEqual(
+      getAssumption('sharedVar'),
+      'positive',
+      'assumptions stored via one instance are visible globally'
+    )
+
+    // Set via math2, read via original registry
+    math2.assume('sharedVar2', 'integer')
+    assert.strictEqual(
+      getAssumption('sharedVar2'),
+      'integer',
+      'assumptions stored via second instance are visible globally'
+    )
+  })
 })

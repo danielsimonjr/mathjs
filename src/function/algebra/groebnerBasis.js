@@ -92,8 +92,8 @@ export const createGroebnerBasis = /* #__PURE__ */ factory(name, dependencies, (
       return basis
     }
 
-    // For more polynomials, just return the input (no full Buchberger here)
-    return polys.slice()
+    // For more than 2 polynomials, full Buchberger is not implemented
+    throw new Error('groebnerBasis: only 1 or 2 polynomials are supported for bivariate systems')
   }
 
   /**
@@ -101,8 +101,10 @@ export const createGroebnerBasis = /* #__PURE__ */ factory(name, dependencies, (
    */
   function computeResultantNumerically (pNode, qNode, elimVar, keepVar) {
     try {
-      // Sample at multiple values of keepVar to get resultant polynomial
-      const samplePoints = [1, 2, 3, 4, 5]
+      // Sample at multiple values of keepVar to get resultant polynomial.
+      // Start from 0 so that Vandermonde fitting (which uses x=0,1,2,...) produces
+      // coefficients of a polynomial in keepVar directly.
+      const samplePoints = [0, 1, 2, 3, 4]
       const resultantValues = samplePoints.map(kv => {
         // For each value of keepVar, compute resultant(p(elimVar,kv), q(elimVar,kv))
         const scope = {}
@@ -123,7 +125,7 @@ export const createGroebnerBasis = /* #__PURE__ */ factory(name, dependencies, (
       const monic = makeMonic(trimmed)
       return coeffsToString(monic, keepVar)
     } catch (e) {
-      return null
+      throw new Error('groebnerBasis: resultant computation failed for variable "' + keepVar + '": ' + e.message)
     }
   }
 
@@ -210,7 +212,7 @@ export const createGroebnerBasis = /* #__PURE__ */ factory(name, dependencies, (
         const val = node.evaluate(scope)
         values.push(typeof val === 'number' ? val : Number(val))
       } catch (e) {
-        values.push(i === 0 ? 0 : i)
+        throw new Error('groebnerBasis: could not evaluate polynomial at ' + variable + '=' + i + ': ' + e.message)
       }
     }
     const diffs = [values.slice()]
@@ -236,7 +238,12 @@ export const createGroebnerBasis = /* #__PURE__ */ factory(name, dependencies, (
   function polyGCD (p, q) {
     p = trimCoeffs(p)
     q = trimCoeffs(q)
+    const maxIter = 1000
+    let iter = 0
     while (q.length > 1 || Math.abs(q[0]) > 1e-9) {
+      if (++iter > maxIter) {
+        throw new Error('groebnerBasis: polyGCD did not converge after ' + maxIter + ' iterations')
+      }
       const r = trimCoeffs(polyRem(p, q))
       if (r.length === 1 && Math.abs(r[0]) < 1e-9) return makeMonic(trimCoeffs(q))
       p = q; q = r

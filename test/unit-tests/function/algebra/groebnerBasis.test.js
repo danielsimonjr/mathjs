@@ -45,4 +45,34 @@ describe('groebnerBasis', function () {
     const result = math.groebnerBasis([], ['x'])
     assert.deepStrictEqual(result, [])
   })
+
+  it('should verify bivariate basis polynomials each have real roots (sign change)', function () {
+    // For ['x^2 + y^2 - 1', 'x - y'], the implementation computes univariate resultants
+    // for each variable. Each returned polynomial encodes real solutions and must
+    // have at least one real root, verifiable by a sign change over a broad range.
+    const result = math.groebnerBasis(['x^2 + y^2 - 1', 'x - y'], ['x', 'y'])
+    assert.ok(Array.isArray(result), 'should return an array')
+    assert.ok(result.length > 0, 'should return at least one polynomial')
+
+    // Verify each basis polynomial is evaluable and has at least one real root
+    // (detectable by a sign change over a range)
+    for (const poly of result) {
+      // Determine which variable the poly uses
+      const usesX = poly.includes('x') && !poly.includes('y')
+      const varName = usesX ? 'x' : 'y'
+
+      // Check for sign change over [-2, 2], indicating at least one real root
+      const testPoints = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2]
+      const vals = testPoints.map((v) => {
+        const scope = {}
+        scope[varName] = v
+        return Number(math.evaluate(poly, scope))
+      })
+      const hasSignChange = vals.some((v, i) => i > 0 && v * vals[i - 1] < 0)
+      assert.ok(
+        hasSignChange,
+        `Basis polynomial '${poly}' should have at least one real root (sign change over [-2,2])`
+      )
+    }
+  })
 })

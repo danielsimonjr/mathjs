@@ -62,4 +62,26 @@ describe('multivariateTaylor', function () {
     const exact = Math.sin(x + y)
     approxEqual(Number(approx), exact, 1e-4)
   })
+
+  it('should expand around non-zero point', function () {
+    // Expand x + y around (1, 1): f(1,1) = 2, derivatives are all 1 w.r.t. both vars
+    // Taylor expansion: 2 + (x-1)*1 + (y-1)*1 = x + y (exact for linear function)
+    const result = math.multivariateTaylor('x + y', ['x', 'y'], [1, 1], 2)
+    assert.strictEqual(typeof result, 'string')
+    // At (2, 3): should evaluate to 5
+    const val = math.evaluate(result, { x: 2, y: 3 })
+    approxEqual(Number(val), 5, 1e-6)
+    // At (0.5, 0.5): should evaluate to 1
+    const val2 = math.evaluate(result, { x: 0.5, y: 0.5 })
+    approxEqual(Number(val2), 1, 1e-6)
+  })
+
+  it('should work with single variable', function () {
+    // Expand x^2 around (0,) to order 2 using single-variable array
+    const result = math.multivariateTaylor('x^2', ['x'], [0], 2)
+    assert.strictEqual(typeof result, 'string')
+    // Should evaluate to x^2 at x=3: 9
+    const val = math.evaluate(result, { x: 3 })
+    approxEqual(Number(val), 9, 1e-8)
+  })
 })

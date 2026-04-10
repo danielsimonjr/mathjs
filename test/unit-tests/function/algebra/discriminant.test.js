@@ -46,4 +46,19 @@ describe('discriminant', function () {
     const result = math.discriminant('x^3 - 3*x + 2', 'x')
     assert.ok(Math.abs(result) < 1e-3, `Expected 0 (repeated root), got ${result}`)
   })
+
+  it('should compute discriminant for degree 4', function () {
+    // x^4 - 1 has discriminant -256
+    const result = math.discriminant('x^4 - 1', 'x')
+    assert.ok(typeof result === 'number', `Expected a number, got ${typeof result}`)
+    assert.ok(Math.abs(result - (-256)) < 1e-3, `Expected -256, got ${result}`)
+  })
+
+  it('should throw for constant polynomial', function () {
+    // Discriminant is not defined for constant polynomials
+    assert.throws(
+      () => math.discriminant('5', 'x'),
+      /discriminant: not defined for constant polynomials/
+    )
+  })
 })

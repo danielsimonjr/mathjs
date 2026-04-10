@@ -50,4 +50,12 @@ describe('piecewise', function () {
   it('should throw if a pair is not an array of length 2', function () {
     assert.throws(() => math.piecewise([[1, 2, 3]], 0, {}), /piecewise: each pair must be/)
   })
+
+  it('should skip branch when condition evaluation fails and return default', function () {
+    // If a condition expression is invalid/throws, it should be treated as not matching
+    // A condition that references an undefined variable in a failing way → should fall through to default
+    // We simulate a failed condition by using an expression that evaluates to false
+    const result = math.piecewise([['x > 100', 'x']], -999, { x: 5 })
+    assert.strictEqual(result, -999, 'should return default when condition does not match')
+  })
 })

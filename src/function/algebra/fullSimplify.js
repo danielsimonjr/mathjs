@@ -86,39 +86,40 @@ export const createFullSimplify = /* #__PURE__ */ factory(name, dependencies, ({
     const simplifyOpts = Object.assign({ exactFractions: false }, opts)
 
     const candidates = []
+    const strategyErrors = []
 
     // Strategy 1: basic simplify
     try {
       const s1 = simplify(node, [], {}, simplifyOpts)
       candidates.push(s1)
-    } catch (e) { /* ignore */ }
+    } catch (e) { strategyErrors.push('strategy1(simplify): ' + e.message) }
 
     // Strategy 2: trig identities then simplify
     try {
       const allRules = [...trigRules]
       const s2 = simplify(node, allRules, {}, simplifyOpts)
       candidates.push(s2)
-    } catch (e) { /* ignore */ }
+    } catch (e) { strategyErrors.push('strategy2(trig+simplify): ' + e.message) }
 
     // Strategy 3: expand then simplify
     try {
       const expanded = expand(node)
       const s3 = simplify(expanded, [], {}, simplifyOpts)
       candidates.push(s3)
-    } catch (e) { /* ignore */ }
+    } catch (e) { strategyErrors.push('strategy3(expand+simplify): ' + e.message) }
 
     // Strategy 4: cancel/rationalize then simplify
     try {
       const s4 = simplify(node, cancelRules, {}, simplifyOpts)
       candidates.push(s4)
-    } catch (e) { /* ignore */ }
+    } catch (e) { strategyErrors.push('strategy4(cancel+simplify): ' + e.message) }
 
     // Strategy 5: expand + trig + simplify
     try {
       const expanded2 = expand(node)
       const s5 = simplify(expanded2, trigRules, {}, simplifyOpts)
       candidates.push(s5)
-    } catch (e) { /* ignore */ }
+    } catch (e) { strategyErrors.push('strategy5(expand+trig+simplify): ' + e.message) }
 
     // Strategy 6: rationalize
     try {
@@ -128,9 +129,11 @@ export const createFullSimplify = /* #__PURE__ */ factory(name, dependencies, ({
         const s6 = simplify(ratNode, [], {}, simplifyOpts)
         candidates.push(s6)
       }
-    } catch (e) { /* ignore */ }
+    } catch (e) { strategyErrors.push('strategy6(rationalize+simplify): ' + e.message) }
 
-    if (candidates.length === 0) return node
+    if (candidates.length === 0) {
+      throw new Error('fullSimplify: all strategies failed. Errors: ' + strategyErrors.join('; '))
+    }
 
     // Pick the candidate with fewest leaves
     let best = candidates[0]
@@ -155,6 +158,7 @@ export const createFullSimplify = /* #__PURE__ */ factory(name, dependencies, ({
     try {
       return leafCount(node)
     } catch (e) {
+      console.warn('fullSimplify: leafCount failed for node, using Infinity as fallback. Error: ' + e.message)
       return Infinity
     }
   }

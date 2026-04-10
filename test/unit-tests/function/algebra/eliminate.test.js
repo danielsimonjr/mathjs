@@ -51,4 +51,11 @@ describe('eliminate', function () {
     const evalPlus = math.evaluate(result[0], { y: 1 / Math.sqrt(2) })
     assert.ok(Math.abs(evalPlus) < 1e-3, `Expected ~0, got ${evalPlus}`)
   })
+
+  it('should throw for invalid equation with multiple = signs', function () {
+    assert.throws(
+      () => math.eliminate(['x = y = z', 'x + y - 1'], ['x']),
+      /eliminate: invalid equation/
+    )
+  })
 })

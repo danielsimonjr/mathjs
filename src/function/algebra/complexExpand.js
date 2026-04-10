@@ -57,8 +57,10 @@ export const createComplexExpand = /* #__PURE__ */ factory(name, dependencies, (
 
     // For each variable, replace symbol with (v_re + i * v_im)
     for (const v of variables) {
+      // Escape regex special characters in variable names before using in RegExp
+      const escapedV = v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       // Use word boundaries to only replace whole variable names
-      const re = new RegExp(`\\b${v}\\b`, 'g')
+      const re = new RegExp(`\\b${escapedV}\\b`, 'g')
       exprStr = exprStr.replace(re, `(${v}_re + i * ${v}_im)`)
     }
 
@@ -67,7 +69,7 @@ export const createComplexExpand = /* #__PURE__ */ factory(name, dependencies, (
     try {
       expanded = expand(exprStr)
     } catch (e) {
-      expanded = exprStr
+      throw new Error('complexExpand: failed to expand substituted expression "' + exprStr + '": ' + e.message)
     }
 
     // Now separate into real and imaginary parts by evaluating with i=sqrt(-1)
@@ -109,7 +111,7 @@ export const createComplexExpand = /* #__PURE__ */ factory(name, dependencies, (
       // Attempt to separate: find terms without i
       return _collectTermsWithoutI(str)
     } catch (e) {
-      return `Re(${expr})`
+      throw new Error('complexExpand: failed to extract real part of "' + expr + '": ' + e.message)
     }
   }
 
@@ -134,7 +136,7 @@ export const createComplexExpand = /* #__PURE__ */ factory(name, dependencies, (
 
       return _collectTermsWithI(str)
     } catch (e) {
-      return `Im(${expr})`
+      throw new Error('complexExpand: failed to extract imaginary part of "' + expr + '": ' + e.message)
     }
   }
 

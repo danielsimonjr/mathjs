@@ -55,4 +55,20 @@ describe('minimalPolynomial', function () {
     const val = math.evaluate(result, { x: 2 })
     approxEqual(Number(val), 0, 1e-10)
   })
+
+  it('should handle zero constant', function () {
+    // minimalPolynomial('0', 'x') should give a polynomial whose root is 0, i.e. 'x'
+    const result = math.minimalPolynomial('0', 'x')
+    assert.strictEqual(typeof result, 'string')
+    const val = math.evaluate(result, { x: 0 })
+    approxEqual(Number(val), 0, 1e-10)
+  })
+
+  it('should handle fraction input', function () {
+    // minimalPolynomial('3/4', 'x') — 3/4 is rational, so minimal poly is x - 3/4
+    const result = math.minimalPolynomial('3/4', 'x')
+    assert.strictEqual(typeof result, 'string')
+    const val = math.evaluate(result, { x: 0.75 })
+    approxEqual(Number(val), 0, 1e-8)
+  })
 })

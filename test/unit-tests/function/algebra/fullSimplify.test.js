@@ -65,4 +65,19 @@ describe('fullSimplify', function () {
       )
     }
   })
+
+  it('should handle rational expressions via rationalize strategy', function () {
+    // (x^2 - 1) / (x + 1) should simplify to x - 1
+    const result = math.fullSimplify('(x^2 - 1) / (x + 1)')
+    // Verify numerical equivalence at a test point (not x=-1 which is the pole)
+    const scope = { x: 3 }
+    const original = math.evaluate('(x^2 - 1) / (x + 1)', scope)
+    const simplified_val = math.evaluate(result, scope)
+    assert(
+      Math.abs(original - simplified_val) < 1e-6,
+      `Expected numerical equivalence, got original=${original}, simplified="${result}" => ${simplified_val}`
+    )
+    // original = (9-1)/(3+1) = 8/4 = 2
+    assert(Math.abs(simplified_val - 2) < 1e-6, `Expected 2, got ${simplified_val}`)
+  })
 })

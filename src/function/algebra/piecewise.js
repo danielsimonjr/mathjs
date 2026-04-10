@@ -53,12 +53,34 @@ export const createPiecewise = /* #__PURE__ */ factory(name, dependencies, ({
         throw new Error('piecewise: each pair must be [condition, value]')
       }
       const [condition, value] = pair
-      const condResult = _evalExpr(condition, scope)
+      const condResult = _evalCondition(condition, scope)
       if (condResult) {
         return _evalExpr(value, scope)
       }
     }
     return _evalExpr(defaultValue, scope)
+  }
+
+  /**
+   * Evaluate a condition expression. Returns boolean, defaulting to false on error
+   * so that a failed condition causes the branch to be skipped rather than taken.
+   * @param {string|number|boolean} expr
+   * @param {Object} scope
+   * @return {boolean}
+   */
+  function _evalCondition (expr, scope) {
+    if (typeof expr === 'boolean') return expr
+    if (typeof expr === 'number') return expr !== 0
+    if (typeof expr === 'string') {
+      try {
+        const result = evaluate(expr, scope)
+        return Boolean(result)
+      } catch (e) {
+        // If condition evaluation fails (e.g. unbound symbolic), skip this branch
+        return false
+      }
+    }
+    return Boolean(expr)
   }
 
   function _evalExpr (expr, scope) {
@@ -67,7 +89,7 @@ export const createPiecewise = /* #__PURE__ */ factory(name, dependencies, ({
       try {
         return evaluate(expr, scope)
       } catch (e) {
-        // If evaluation fails (e.g. symbolic), return as string
+        // If value evaluation fails (e.g. symbolic), return as string
         return expr
       }
     }
