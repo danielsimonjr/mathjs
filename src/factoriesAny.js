@@ -574,6 +574,62 @@ export { createKdTree } from './function/geometry/kdTree.js'
 export { createPolygonPerimeter } from './function/geometry/polygonPerimeter.js'
 export { createCentroid } from './function/geometry/centroid.js'
 
+// --- Phase 4: 30 symbolic CAS functions ---
+
+// Simplification & transformation
+export { createFullSimplify } from './function/algebra/fullSimplify.js'
+export { createCombine } from './function/algebra/combine.js'
+export { createTrigExpand } from './function/algebra/trigExpand.js'
+export { createTrigReduce } from './function/algebra/trigReduce.js'
+export { createComplexExpand } from './function/algebra/complexExpand.js'
+export { createExpToTrig } from './function/algebra/expToTrig.js'
+export { createTrigToExp } from './function/algebra/trigToExp.js'
+export { createPowerExpand } from './function/algebra/powerExpand.js'
+export { createFunctionExpand } from './function/algebra/functionExpand.js'
+export { createNormalForm } from './function/algebra/normalForm.js'
+
+// Assumptions & polynomial algebra
+export { createAssume } from './function/algebra/assume.js'
+export { createElement } from './function/algebra/element.js'
+export { createPiecewise } from './function/algebra/piecewise.js'
+export { createDiscriminant } from './function/algebra/discriminant.js'
+export { createTogether } from './function/algebra/together.js'
+export { createCancel } from './function/algebra/cancel.js'
+export { createPolynomialGCD } from './function/algebra/polynomialGCD.js'
+export { createPolynomialQuotient } from './function/algebra/polynomialQuotient.js'
+export { createPolynomialRemainder } from './function/algebra/polynomialRemainder.js'
+export { createPolynomialLCM } from './function/algebra/polynomialLCM.js'
+export { createResultant } from './function/algebra/resultant.js'
+export { createVariables } from './function/algebra/variables.js'
+export { createGroebnerBasis } from './function/algebra/groebnerBasis.js'
+export { createEliminate } from './function/algebra/eliminate.js'
+export { createReduce } from './function/algebra/reduce.js'
+
+export { createTaylor } from './function/algebra/taylor.js'
+
+// Vector calculus & implicit differentiation
+export { createCurl } from './function/algebra/curl.js'
+export { createDivergence } from './function/algebra/divergence.js'
+export { createGradientSymbolic } from './function/algebra/gradientSymbolic.js'
+export { createJacobian } from './function/algebra/jacobian.js'
+export { createPartialDerivative } from './function/algebra/partialDerivative.js'
+export { createTangentLine } from './function/algebra/tangentLine.js'
+export { createImplicitDiff } from './function/algebra/implicitDiff.js'
+
+// Calculus & series
+export { createLaplacian } from './function/algebra/laplacian.js'
+export { createAsymptotic } from './function/algebra/asymptotic.js'
+export { createSeriesCoefficient } from './function/algebra/seriesCoefficient.js'
+export { createDirectionalDerivative } from './function/algebra/directionalDerivative.js'
+export { createMinimalPolynomial } from './function/algebra/minimalPolynomial.js'
+export { createToRadicals } from './function/algebra/toRadicals.js'
+export { createDegree } from './function/algebra/degree.js'
+export { createDifferences } from './function/algebra/differences.js'
+export { createMultivariateTaylor } from './function/algebra/multivariateTaylor.js'
+
+// Symbolic linear algebra
+export { createRowReduce } from './function/matrix/rowReduce.js'
+
 export { createMapSlicesTransform } from './expression/transform/mapSlices.transform.js'
 export { createColumnTransform } from './expression/transform/column.transform.js'
 export { createFilterTransform } from './expression/transform/filter.transform.js'

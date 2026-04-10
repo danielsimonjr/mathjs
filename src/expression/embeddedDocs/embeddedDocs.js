@@ -202,6 +202,49 @@ import { seriesDocs } from './function/algebra/series.js'
 import { factorDocs } from './function/algebra/factor.js'
 import { laplaceDocs } from './function/algebra/laplace.js'
 import { inverseLaplaceTransformDocs } from './function/algebra/inverseLaplaceTransform.js'
+import { fullSimplifyDocs } from './function/algebra/fullSimplify.js'
+import { combineDocs } from './function/algebra/combine.js'
+import { trigExpandDocs } from './function/algebra/trigExpand.js'
+import { trigReduceDocs } from './function/algebra/trigReduce.js'
+import { complexExpandDocs } from './function/algebra/complexExpand.js'
+import { expToTrigDocs } from './function/algebra/expToTrig.js'
+import { trigToExpDocs } from './function/algebra/trigToExp.js'
+import { powerExpandDocs } from './function/algebra/powerExpand.js'
+import { functionExpandDocs } from './function/algebra/functionExpand.js'
+import { normalFormDocs } from './function/algebra/normalForm.js'
+import { assumeDocs } from './function/algebra/assume.js'
+import { elementDocs } from './function/algebra/element.js'
+import { piecewiseDocs } from './function/algebra/piecewise.js'
+import { discriminantDocs } from './function/algebra/discriminant.js'
+import { togetherDocs } from './function/algebra/together.js'
+import { cancelDocs } from './function/algebra/cancel.js'
+import { polynomialGCDDocs } from './function/algebra/polynomialGCD.js'
+import { polynomialQuotientDocs } from './function/algebra/polynomialQuotient.js'
+import { polynomialRemainderDocs } from './function/algebra/polynomialRemainder.js'
+import { polynomialLCMDocs } from './function/algebra/polynomialLCM.js'
+import { taylorDocs } from './function/algebra/taylor.js'
+import { curlDocs } from './function/algebra/curl.js'
+import { divergenceDocs } from './function/algebra/divergence.js'
+import { gradientSymbolicDocs } from './function/algebra/gradientSymbolic.js'
+import { jacobianDocs } from './function/algebra/jacobian.js'
+import { partialDerivativeDocs } from './function/algebra/partialDerivative.js'
+import { tangentLineDocs } from './function/algebra/tangentLine.js'
+import { implicitDiffDocs } from './function/algebra/implicitDiff.js'
+import { resultantDocs } from './function/algebra/resultant.js'
+import { variablesDocs } from './function/algebra/variables.js'
+import { groebnerBasisDocs } from './function/algebra/groebnerBasis.js'
+import { eliminateDocs } from './function/algebra/eliminate.js'
+import { reduceDocs } from './function/algebra/reduce.js'
+import { laplacianDocs } from './function/algebra/laplacian.js'
+import { asymptoticDocs } from './function/algebra/asymptotic.js'
+import { seriesCoefficientDocs } from './function/algebra/seriesCoefficient.js'
+import { directionalDerivativeDocs } from './function/algebra/directionalDerivative.js'
+import { minimalPolynomialDocs } from './function/algebra/minimalPolynomial.js'
+import { toRadicalsDocs } from './function/algebra/toRadicals.js'
+import { degreeDocs } from './function/algebra/degree.js'
+import { differencesDocs } from './function/algebra/differences.js'
+import { multivariateTaylorDocs } from './function/algebra/multivariateTaylor.js'
+import { rowReduceDocs } from './function/matrix/rowReduce.js'
 import { minimizeDocs } from './function/numeric/minimize.js'
 import { maximizeDocs } from './function/numeric/maximize.js'
 import { linprogDocs } from './function/numeric/linprog.js'
@@ -545,6 +588,48 @@ export const embeddedDocs = {
   factor: factorDocs,
   laplace: laplaceDocs,
   inverseLaplaceTransform: inverseLaplaceTransformDocs,
+  fullSimplify: fullSimplifyDocs,
+  combine: combineDocs,
+  trigExpand: trigExpandDocs,
+  trigReduce: trigReduceDocs,
+  complexExpand: complexExpandDocs,
+  expToTrig: expToTrigDocs,
+  trigToExp: trigToExpDocs,
+  powerExpand: powerExpandDocs,
+  functionExpand: functionExpandDocs,
+  normalForm: normalFormDocs,
+  assume: assumeDocs,
+  element: elementDocs,
+  piecewise: piecewiseDocs,
+  discriminant: discriminantDocs,
+  together: togetherDocs,
+  cancel: cancelDocs,
+  polynomialGCD: polynomialGCDDocs,
+  polynomialQuotient: polynomialQuotientDocs,
+  polynomialRemainder: polynomialRemainderDocs,
+  polynomialLCM: polynomialLCMDocs,
+  taylor: taylorDocs,
+  curl: curlDocs,
+  divergence: divergenceDocs,
+  gradientSymbolic: gradientSymbolicDocs,
+  jacobian: jacobianDocs,
+  partialDerivative: partialDerivativeDocs,
+  tangentLine: tangentLineDocs,
+  implicitDiff: implicitDiffDocs,
+  resultant: resultantDocs,
+  variables: variablesDocs,
+  groebnerBasis: groebnerBasisDocs,
+  eliminate: eliminateDocs,
+  reduce: reduceDocs,
+  laplacian: laplacianDocs,
+  asymptotic: asymptoticDocs,
+  seriesCoefficient: seriesCoefficientDocs,
+  directionalDerivative: directionalDerivativeDocs,
+  minimalPolynomial: minimalPolynomialDocs,
+  toRadicals: toRadicalsDocs,
+  degree: degreeDocs,
+  differences: differencesDocs,
+  multivariateTaylor: multivariateTaylorDocs,
   usolve: usolveDocs,
   usolveAll: usolveAllDocs,
   qr: qrDocs,
@@ -705,6 +790,7 @@ export const embeddedDocs = {
   hessenbergForm: hessenbergFormDocs,
   characteristicPolynomial: characteristicPolynomialDocs,
   polarDecomposition: polarDecompositionDocs,
+  rowReduce: rowReduceDocs,
   adjacencyMatrix: adjacencyMatrixDocs,
   shortestPath: shortestPathDocs,
   connectedComponents: connectedComponentsDocs,
