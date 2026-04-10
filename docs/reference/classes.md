@@ -3,11 +3,14 @@
 
 This page lists all the various class types in Math.js. Every top-level function is listed here and links to its detailed reference to other parts of the documentation.
 
+For a complete listing of all **444+ functions** across 21 categories, see the [Full Function Reference](https://danielsimonjr.github.io/mathjs/).
+
 ## math
 
-The "math" namespace contains the entire math.js functionality. All of the mathematical functions are available in the "math" namespace, and allow for inputs of various types.
+The "math" namespace contains the entire math.js functionality. All 444+ mathematical functions are available in the "math" namespace, and allow for inputs of various types.
 
 - [Function reference](functions.md)
+- [Full Function Reference (444+ functions)](https://danielsimonjr.github.io/mathjs/)
 - [Constant reference](constants.md)
 
 

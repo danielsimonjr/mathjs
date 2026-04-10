@@ -1,7 +1,8 @@
 # Expressions
 
 Math.js contains a flexible and easy to use expression parser.
-The parser supports all data types, functions and constants available in math.js.
+The parser supports all data types, functions and constants available in math.js,
+including **92 symbolic CAS functions** for algebra, calculus, transforms, and more.
 
 Whilst the math.js library is aimed at JavaScript developers, the expression
 parser is aimed at end users: mathematicians, engineers, students, pupils.
@@ -15,7 +16,12 @@ This section is divided in the following pages:
 - [Syntax](syntax.md) describes how to write expressions.
 - [Expression trees](expression_trees.md) explains how to parse an expression into an
   expression tree, and use this to analyse and manipulate the expression.
-- [Algebra](algebra.md) describing symbolic computation in math.js.
+- [Algebra](algebra.md) describing symbolic computation in math.js — 92 CAS functions
+  including `integrate`, `solve`, `factor`, `fullSimplify`, `groebnerBasis`, `laplace`,
+  `trigExpand`, `limit`, and more.
 - [Customization](customization.md) describes how to customize processing and
   evaluation of expressions.
 - [Security](security.md) about security risks of executing arbitrary expressions.
+
+For the complete list of 444+ functions across 21 categories, see the
+[Full Function Reference](https://danielsimonjr.github.io/mathjs/).

@@ -1,7 +1,0 @@
-[workspace]
-members = ["crates/mathjs-wasm"]
-resolver = "2"
-
-[profile.release]
-opt-level = 3
-lto = true

@@ -2,7 +2,7 @@
 
 ## Usage
 
-The core of math.js is the `math` namespace containing all functions and constants. There are three ways to do calculations in math.js:
+The core of math.js is the `math` namespace containing **444+ functions and constants** across 21 categories. There are three ways to do calculations in math.js:
 
 - Doing regular function calls like `math.add(math.sqrt(4), 2)`.
 - Evaluating expressions like `math.evaluate('sqrt(4) + 2')`

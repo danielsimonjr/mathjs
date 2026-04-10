@@ -122,3 +122,4 @@ To learn more about math.js, check out the available documentation and examples:
 
 - [Documentation](index.md)
 - [Examples](https://mathjs.org/examples/index.html)
+- [Full Function Reference (444+ functions)](https://danielsimonjr.github.io/mathjs/) — complete API docs for all functions across 21 categories including symbolic CAS, optimization, signal processing, and more

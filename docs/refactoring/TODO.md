@@ -1,6 +1,9 @@
 # Math.js Refactoring TODO
 
 Generated: 2026-01-13
+Updated: 2026-04-10 (v15.6.0)
+
+> **Current State:** 444+ functions, 545 factory functions, 21 categories. 9,263 tests passing, 0 failing. Full function reference: https://danielsimonjr.github.io/mathjs/
 
 ## ✅ Completed
 

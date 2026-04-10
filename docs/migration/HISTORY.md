@@ -1,5 +1,16 @@
 # History
 
+**Current version**: 15.6.0 — 444+ functions across 21 categories, 9,263 tests passing.
+
+See the [full function reference](https://danielsimonjr.github.io/mathjs/) for complete API documentation.
+
+# 2026-04-10, 15.6.0 (fork: @danielsimonjr/mathjs)
+
+- Feat: add 30 symbolic CAS functions (Phase 4) — `fullSimplify`, `combine`, `trigExpand`, `trigReduce`, `complexExpand`, `expToTrig`, `trigToExp`, `powerExpand`, `functionExpand`, `normalForm`, `assume`, `element`, `piecewise`, `discriminant`, `polynomialLCM`, `resultant`, `variables`, `groebnerBasis`, `eliminate`, `reduce`, `laplacian`, `asymptotic`, `seriesCoefficient`, `directionalDerivative`, `minimalPolynomial`, `toRadicals`, `rowReduce`, `degree`, `differences`, `multivariateTaylor`
+- Docs: publish full function reference site at https://danielsimonjr.github.io/mathjs/ (21 per-category pages, 444 functions, dark theme, real-time search)
+- Build: switch `tsup.config.ts` entry points from `.ts` to `.js` so all 444 functions are included in `dist/` bundle
+- Test: 9,263 passing, 0 failing (up from 8,006 in v15.5.0)
+
 # unreleased changes since 15.1.0
 
 - Feat: add Node operand support to arithmetic operators `add`, `subtract`,

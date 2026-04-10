@@ -10,10 +10,10 @@ This document describes how data flows through the math.js library, from user in
 4. [Expression Evaluation Flow](#expression-evaluation-flow)
 5. [Type Conversion Flow](#type-conversion-flow)
 6. [Matrix Operation Flow](#matrix-operation-flow)
-7. [WASM Acceleration Flow](#wasm-acceleration-flow)
-8. [Parallel Execution Flow](#parallel-execution-flow)
-9. [Configuration Change Flow](#configuration-change-flow)
-10. [Chain API Flow](#chain-api-flow)
+7. [Configuration Change Flow](#configuration-change-flow)
+8. [Chain API Flow](#chain-api-flow)
+9. [Graph Theory Function Flow](#graph-theory-function-flow)
+10. [Symbolic CAS / Algebra Flow](#symbolic-cas--algebra-flow)
 
 ---
 
@@ -61,16 +61,6 @@ This document describes how data flows through the math.js library, from user in
 │  SCALAR OPERATION   │  │  MATRIX OPERATION   │  │  COMPLEX OPERATION  │
 │  (plain JS)         │  │  (algorithm suite)  │  │  (Complex.js)       │
 └─────────────────────┘  └─────────┬───────────┘  └─────────────────────┘
-                                   │
-                    ┌──────────────┼──────────────┐
-                    │              │              │
-                    ▼              ▼              ▼
-          ┌───────────────┐ ┌───────────┐ ┌───────────────┐
-          │   JAVASCRIPT  │ │   WASM    │ │   PARALLEL    │
-          │   (default)   │ │ (>1K els) │ │  (>10K els)   │
-          └───────────────┘ └───────────┘ └───────────────┘
-                    │              │              │
-                    └──────────────┼──────────────┘
                                    │
                                    ▼
                     ┌───────────────────────────────┐
@@ -203,7 +193,7 @@ When `create()` is called, the following sequence occurs:
 │     │    // Error types                                                    │ │
 │     │    ArgumentsError, DimensionError, IndexError,                       │ │
 │     │                                                                       │ │
-│     │    // All math functions (350+)                                      │ │
+│     │    // All math functions (545 factories, 444+ user-facing)           │ │
 │     │    add, subtract, multiply, divide, ...                              │ │
 │     │    sin, cos, tan, ...                                                │ │
 │     │    matrix, det, inv, ...                                             │ │
@@ -509,23 +499,14 @@ When performing matrix operations like `math.multiply(A, B)`:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  BACKEND SELECTION (MatrixWasmBridge)                                        │
+│  ALGORITHM SELECTION                                                         │
 │  ┌─────────────────────────────────────────────────────────────────────────┐│
 │  │  totalElements = 100 * 100 = 10,000                                     ││
 │  │                                                                          ││
-│  │  if (totalElements >= 10,000 && ParallelMatrix.isAvailable())           ││
-│  │    → Use PARALLEL                                                       ││
-│  │  else if (totalElements >= 1,000 && WasmLoader.isLoaded())              ││
-│  │    → Use WASM                                                           ││
-│  │  else                                                                    ││
-│  │    → Use JAVASCRIPT                                                     ││
-│  │                                                                          ││
-│  │  Selected: PARALLEL (10,000 >= 10,000)                                  ││
+│  │  Selects appropriate matrix algorithm based on operand types:            ││
+│  │  DenseMatrix × DenseMatrix → standard dense multiplication               ││
 │  └─────────────────────────────────────────────────────────────────────────┘│
 └─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-                    (See Parallel Execution Flow below)
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -543,252 +524,6 @@ When performing matrix operations like `math.multiply(A, B)`:
 
 ---
 
-## WASM Acceleration Flow
-
-When WASM is selected for acceleration:
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  Matrix multiply with WASM (1000+ elements)                                  │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  1. WASM MODULE CHECK                                                        │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  if (!WasmLoader.isLoaded()) {                                          ││
-│  │    await WasmLoader.load('/lib/wasm/matrix.wasm')                       ││
-│  │  }                                                                       ││
-│  │                                                                          ││
-│  │  // WASM module now available                                           ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  2. DATA MARSHALING (JS → WASM)                                              │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  // Flatten matrices to 1D arrays                                       ││
-│  │  aFlat = A._data.flat()    // [a00, a01, a02, ..., a99_99]             ││
-│  │  bFlat = B._data.flat()    // [b00, b01, b02, ..., b99_99]             ││
-│  │                                                                          ││
-│  │  // Allocate WASM memory                                                ││
-│  │  const { ptr: aPtr, array: aWasm } =                                    ││
-│  │    WasmLoader.allocateFloat64Array(aFlat)                               ││
-│  │  const { ptr: bPtr, array: bWasm } =                                    ││
-│  │    WasmLoader.allocateFloat64Array(bFlat)                               ││
-│  │                                                                          ││
-│  │  // Copy data into WASM memory                                          ││
-│  │  aWasm.set(aFlat)                                                       ││
-│  │  bWasm.set(bFlat)                                                       ││
-│  │                                                                          ││
-│  │  Memory layout:                                                          ││
-│  │  ┌────────────────────────────────────────────────────────────────────┐ ││
-│  │  │ WASM Linear Memory                                                  │ ││
-│  │  │ ┌─────────────┬─────────────┬─────────────┬──────────────────────┐ │ ││
-│  │  │ │   aPtr      │   bPtr      │  resultPtr  │    (free space)      │ │ ││
-│  │  │ │  80KB       │  80KB       │  80KB       │                      │ │ ││
-│  │  │ └─────────────┴─────────────┴─────────────┴──────────────────────┘ │ ││
-│  │  └────────────────────────────────────────────────────────────────────┘ ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  3. WASM EXECUTION                                                           │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  // Call WASM function                                                  ││
-│  │  const resultPtr = WasmModule.multiplyDenseSIMD(                        ││
-│  │    aPtr, 100, 100,   // A data, rows, cols                              ││
-│  │    bPtr, 100, 100    // B data, rows, cols                              ││
-│  │  )                                                                       ││
-│  │                                                                          ││
-│  │  // WASM internally uses:                                               ││
-│  │  //  - Block multiplication (64x64 blocks for cache efficiency)        ││
-│  │  //  - SIMD operations (2x f64 per instruction)                         ││
-│  │  //  - Loop unrolling                                                   ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  4. DATA UNMARSHALING (WASM → JS)                                            │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  // Read result from WASM memory                                        ││
-│  │  const resultArray = new Float64Array(                                  ││
-│  │    WasmModule.memory.buffer,                                            ││
-│  │    resultPtr,                                                           ││
-│  │    100 * 100  // 10,000 elements                                        ││
-│  │  )                                                                       ││
-│  │                                                                          ││
-│  │  // Copy to JavaScript (WASM memory may relocate on GC)                 ││
-│  │  const resultData = Array.from(resultArray)                             ││
-│  │                                                                          ││
-│  │  // Free WASM memory                                                    ││
-│  │  WasmLoader.free(aPtr)                                                  ││
-│  │  WasmLoader.free(bPtr)                                                  ││
-│  │  WasmLoader.free(resultPtr)                                             ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  5. RESULT CONSTRUCTION                                                      │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  return new DenseMatrix({                                               ││
-│  │    data: reshape(resultData, [100, 100]),                               ││
-│  │    size: [100, 100]                                                     ││
-│  │  })                                                                      ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Parallel Execution Flow
-
-When parallel execution is selected:
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  Matrix multiply with Parallel (10,000+ elements)                            │
-│  A: 1000x1000, B: 1000x1000                                                 │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  1. WORKER POOL INITIALIZATION                                               │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  if (!ParallelMatrix.pool) {                                            ││
-│  │    const numCores = navigator.hardwareConcurrency || 4                  ││
-│  │    ParallelMatrix.pool = new WorkerPool(                                ││
-│  │      'lib/workers/matrix-worker.js',                                    ││
-│  │      numCores  // e.g., 8 workers                                       ││
-│  │    )                                                                     ││
-│  │  }                                                                       ││
-│  │                                                                          ││
-│  │  Pool state:                                                             ││
-│  │  ┌─────────────────────────────────────────────────────────────────────┐││
-│  │  │  workers: [W1, W2, W3, W4, W5, W6, W7, W8]                          │││
-│  │  │  available: [W1, W2, W3, W4, W5, W6, W7, W8]                        │││
-│  │  │  taskQueue: []                                                       │││
-│  │  └─────────────────────────────────────────────────────────────────────┘││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  2. WORK PARTITIONING                                                        │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  totalRows = 1000                                                       ││
-│  │  numWorkers = 8                                                          ││
-│  │  rowsPerWorker = ceil(1000 / 8) = 125                                   ││
-│  │                                                                          ││
-│  │  Partitions:                                                             ││
-│  │  ┌────────┬────────────────────────────────────────────────────────────┐││
-│  │  │ Worker │ Rows                                                        │││
-│  │  ├────────┼────────────────────────────────────────────────────────────┤││
-│  │  │   W1   │ 0-124     (125 rows of A × all of B)                       │││
-│  │  │   W2   │ 125-249   (125 rows of A × all of B)                       │││
-│  │  │   W3   │ 250-374   (125 rows of A × all of B)                       │││
-│  │  │   W4   │ 375-499   (125 rows of A × all of B)                       │││
-│  │  │   W5   │ 500-624   (125 rows of A × all of B)                       │││
-│  │  │   W6   │ 625-749   (125 rows of A × all of B)                       │││
-│  │  │   W7   │ 750-874   (125 rows of A × all of B)                       │││
-│  │  │   W8   │ 875-999   (125 rows of A × all of B)                       │││
-│  │  └────────┴────────────────────────────────────────────────────────────┘││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  3. DATA PREPARATION                                                         │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  // Use SharedArrayBuffer for zero-copy (if available)                  ││
-│  │  if (typeof SharedArrayBuffer !== 'undefined') {                        ││
-│  │    sharedA = new SharedArrayBuffer(1000 * 1000 * 8)                     ││
-│  │    sharedB = new SharedArrayBuffer(1000 * 1000 * 8)                     ││
-│  │    sharedResult = new SharedArrayBuffer(1000 * 1000 * 8)                ││
-│  │                                                                          ││
-│  │    // Copy data once                                                    ││
-│  │    new Float64Array(sharedA).set(A.flat())                              ││
-│  │    new Float64Array(sharedB).set(B.flat())                              ││
-│  │  }                                                                       ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  4. PARALLEL DISPATCH                                                        │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  const tasks = []                                                       ││
-│  │                                                                          ││
-│  │  for (let i = 0; i < numWorkers; i++) {                                 ││
-│  │    const startRow = i * rowsPerWorker                                   ││
-│  │    const endRow = min((i + 1) * rowsPerWorker, totalRows)               ││
-│  │                                                                          ││
-│  │    tasks.push(pool.execute({                                            ││
-│  │      type: 'multiply',                                                  ││
-│  │      sharedA,           // SharedArrayBuffer reference                  ││
-│  │      sharedB,           // SharedArrayBuffer reference                  ││
-│  │      sharedResult,      // SharedArrayBuffer reference                  ││
-│  │      aCols: 1000,                                                       ││
-│  │      bCols: 1000,                                                       ││
-│  │      startRow,                                                           ││
-│  │      endRow                                                              ││
-│  │    }))                                                                   ││
-│  │  }                                                                       ││
-│  │                                                                          ││
-│  │  // All tasks dispatched simultaneously                                 ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  5. PARALLEL EXECUTION                                                       │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                          ││
-│  │  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐ ││
-│  │  │  W1  │  │  W2  │  │  W3  │  │  W4  │  │  W5  │  │  W6  │  │  W7  │ ││
-│  │  │rows  │  │rows  │  │rows  │  │rows  │  │rows  │  │rows  │  │rows  │ ││
-│  │  │0-124 │  │125-  │  │250-  │  │375-  │  │500-  │  │625-  │  │750-  │ ││
-│  │  │      │  │249   │  │374   │  │499   │  │624   │  │749   │  │874   │ ││
-│  │  └──┬───┘  └──┬───┘  └──┬───┘  └──┬───┘  └──┬───┘  └──┬───┘  └──┬───┘ ││
-│  │     │         │         │         │         │         │         │      ││
-│  │     │         │         │         │         │         │         │      ││
-│  │     ▼         ▼         ▼         ▼         ▼         ▼         ▼      ││
-│  │  Writes to sharedResult (different row ranges, no conflicts)           ││
-│  │                                                                          ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  6. SYNCHRONIZATION                                                          │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  // Wait for all workers to complete                                    ││
-│  │  await Promise.all(tasks)                                               ││
-│  │                                                                          ││
-│  │  // All workers have written their portions to sharedResult            ││
-│  │  // No explicit merge needed with SharedArrayBuffer                     ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  7. RESULT CONSTRUCTION                                                      │
-│  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  const resultArray = new Float64Array(sharedResult)                     ││
-│  │                                                                          ││
-│  │  return new DenseMatrix({                                               ││
-│  │    data: reshape(Array.from(resultArray), [1000, 1000]),                ││
-│  │    size: [1000, 1000]                                                   ││
-│  │  })                                                                      ││
-│  └─────────────────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
----
 
 ## Configuration Change Flow
 
@@ -976,7 +711,7 @@ Chain Object Structure:
 │    toString(): math.format(value)                                           │
 │    toJSON(): { mathjs: 'Chain', value: value }                              │
 │                                                                              │
-│    // Proxy methods for all 350+ math functions                             │
+│    // Proxy methods for all 545+ factory functions                          │
 │    add(...args): new Chain(math.add(value, ...args))                        │
 │    subtract(...args): new Chain(math.subtract(value, ...args))              │
 │    multiply(...args): new Chain(math.multiply(value, ...args))              │
@@ -987,8 +722,59 @@ Chain Object Structure:
 
 ---
 
+## Graph Theory Function Flow
+
+Graph functions (`src/function/graph/`) accept adjacency representations and return structured results:
+
+```
+Input: adjacency matrix (Matrix) or edge list (Array of [from, to, weight])
+  ↓
+typed-function dispatch → graph algorithm implementation
+  ↓
+Result: Array (path/ordering) or number (distance/count)
+
+Examples:
+  math.shortestPath(adjacencyMatrix, 0, 5)  → Array of node indices
+  math.mst(edgeList, numNodes)              → Array of edges
+  math.topologicalSort(adjacencyMatrix)     → Array of node indices
+```
+
+## Symbolic CAS / Algebra Flow
+
+Symbolic algebra functions operate on **expression AST nodes** rather than numeric values:
+
+```
+Input: Node (from math.parse()) or string expression
+  ↓
+parse() → AST (SymbolNode, OperatorNode, FunctionNode, ...)
+  ↓
+CAS function (simplify / derivative / collect / taylor / integrate / ...)
+  ↓
+AST transformation (rule matching, substitution, expansion)
+  ↓
+Output: Node (new/modified AST)
+  ↓
+Optional: .toString() → string expression
+          .evaluate(scope) → numeric result
+
+Key CAS functions and their transformations:
+  simplify(node)           → algebraically equivalent simplified node
+  fullSimplify(node)       → exhaustive simplification
+  derivative(node, var)    → differentiated node
+  integrate(node, var)     → integrated node (symbolic)
+  collect(node, var)       → node with like terms combined
+  factor(node)             → factored polynomial node
+  solve(node, var)         → solution nodes
+  groebnerBasis(polys)     → Gröbner basis (ideal membership)
+  taylor(node, var, n)     → Taylor polynomial node
+  substitute(node, {x: val}) → node with variable replaced
+```
+
+---
+
 ## Related Documentation
 
 - [OVERVIEW.md](./OVERVIEW.md) - High-level architecture
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Detailed design patterns
 - [COMPONENTS.md](./COMPONENTS.md) - Component reference
+- [Function Reference](https://danielsimonjr.github.io/mathjs/) - Full online documentation and function reference

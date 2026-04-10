@@ -10,10 +10,8 @@ This document provides an in-depth technical description of the math.js architec
 4. [Configuration System](#configuration-system)
 5. [Matrix Architecture](#matrix-architecture)
 6. [Expression Parser Architecture](#expression-parser-architecture)
-7. [WASM Integration Architecture](#wasm-integration-architecture)
-8. [Parallel Computing Architecture](#parallel-computing-architecture)
-9. [Error Handling Strategy](#error-handling-strategy)
-10. [Build System Architecture](#build-system-architecture)
+7. [Error Handling Strategy](#error-handling-strategy)
+8. [Build System Architecture](#build-system-architecture)
 
 ---
 
@@ -143,7 +141,7 @@ Math.js uses the `typed-function` library to enable functions that work with mul
 The typed-function instance is configured with all math.js types:
 
 ```javascript
-// src/core/function/typed.ts
+// src/core/function/typed.js
 typed.types = [
   { name: 'number', test: isNumber },
   { name: 'Complex', test: isComplex },
@@ -298,7 +296,7 @@ interface MathJsInstance {
   add: Function
   multiply: Function
   parse: Function
-  // ... 350+ functions
+  // ... 444+ functions (545 factory functions)
 }
 ```
 
@@ -326,8 +324,8 @@ Object.defineProperty(math, 'add', {
 ### Configuration Options
 
 ```typescript
-// src/core/config.ts
-export interface ConfigOptions {
+// src/core/config.js
+export const DEFAULT_CONFIG = {
   // Comparison tolerances
   relTol: number           // Default: 1e-12 (relative tolerance)
   absTol: number           // Default: 1e-15 (absolute tolerance)
@@ -645,7 +643,7 @@ Transforms modify AST during compilation for optimization:
 
 ```javascript
 // src/expression/transform/
-// 50+ transforms for compile-time optimization
+// 25+ transforms for compile-time optimization
 
 // Example: range transform
 // Converts range syntax to Range objects
@@ -665,282 +663,6 @@ math.expression.transform.map = function(x, callback) {
 
 ---
 
-## WASM Integration Architecture
-
-### Bridge Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    JavaScript Application                        │
-└─────────────────────────────────┬───────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   MatrixWasmBridge.ts                            │
-│  • Size threshold checking                                       │
-│  • Strategy selection (JS/WASM/Parallel)                        │
-│  • Data marshaling                                               │
-└─────────────────────────────────┬───────────────────────────────┘
-                                  │
-              ┌───────────────────┼───────────────────┐
-              ▼                   ▼                   ▼
-    ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐
-    │  JavaScript      │ │   WASM Module    │ │  Parallel        │
-    │  Implementation  │ │   (fast path)    │ │  Workers         │
-    └──────────────────┘ └────────┬─────────┘ └──────────────────┘
-                                  │
-                                  ▼
-                        ┌──────────────────┐
-                        │   WasmLoader.ts  │
-                        │  • Module loading │
-                        │  • Memory mgmt    │
-                        │  • GC             │
-                        └────────┬─────────┘
-                                  │
-                                  ▼
-                        ┌──────────────────┐
-                        │  WASM Binary     │
-                        │ (AssemblyScript) │
-                        └──────────────────┘
-```
-
-### WasmLoader
-
-```typescript
-// src/wasm/WasmLoader.ts
-class WasmLoader {
-  private wasmModule: WasmModule | null = null
-
-  async load(wasmPath?: string): Promise<WasmModule> {
-    if (this.wasmModule) return this.wasmModule
-
-    const wasmBytes = await fetch(wasmPath || defaultPath)
-    const { instance } = await WebAssembly.instantiate(wasmBytes, imports)
-
-    this.wasmModule = instance.exports
-    return this.wasmModule
-  }
-
-  // Memory allocation helpers
-  allocateFloat64Array(data: number[]): { ptr: number, array: Float64Array } {
-    const ptr = this.wasmModule.__new(data.length * 8, Float64Array_ID)
-    const array = new Float64Array(this.wasmModule.memory.buffer, ptr, data.length)
-    array.set(data)
-    return { ptr, array }
-  }
-
-  free(ptr: number): void {
-    this.wasmModule.__unpin(ptr)
-  }
-
-  collect(): void {
-    this.wasmModule.__collect()
-  }
-}
-```
-
-### Strategy Selection
-
-```typescript
-// src/wasm/MatrixWasmBridge.ts
-class MatrixWasmBridge {
-  private static readonly MIN_SIZE_FOR_WASM = 1000
-  private static readonly MIN_SIZE_FOR_PARALLEL = 10000
-
-  static async multiply(a: Matrix, b: Matrix): Promise<Matrix> {
-    const totalSize = a.size()[0] * b.size()[1]
-
-    if (totalSize >= this.MIN_SIZE_FOR_PARALLEL && ParallelMatrix.isAvailable()) {
-      return ParallelMatrix.multiply(a, b)
-    }
-
-    if (totalSize >= this.MIN_SIZE_FOR_WASM && WasmLoader.isLoaded()) {
-      return this.multiplyWasm(a, b)
-    }
-
-    return this.multiplyJS(a, b)
-  }
-}
-```
-
-### WASM Module Structure (AssemblyScript)
-
-```typescript
-// src/wasm/matrix/multiply.ts
-export function multiplyDense(
-  a: Float64Array, aRows: i32, aCols: i32,
-  b: Float64Array, bRows: i32, bCols: i32
-): Float64Array {
-  const result = new Float64Array(aRows * bCols)
-
-  // Block multiplication for cache efficiency (64x64 blocks)
-  const blockSize = 64
-
-  for (let i0 = 0; i0 < aRows; i0 += blockSize) {
-    for (let j0 = 0; j0 < bCols; j0 += blockSize) {
-      for (let k0 = 0; k0 < aCols; k0 += blockSize) {
-        // Process block
-        const iMax = min(i0 + blockSize, aRows)
-        const jMax = min(j0 + blockSize, bCols)
-        const kMax = min(k0 + blockSize, aCols)
-
-        for (let i = i0; i < iMax; i++) {
-          for (let k = k0; k < kMax; k++) {
-            const aik = a[i * aCols + k]
-            for (let j = j0; j < jMax; j++) {
-              result[i * bCols + j] += aik * b[k * bCols + j]
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return result
-}
-
-// SIMD-optimized version
-export function multiplyDenseSIMD(/* ... */): Float64Array {
-  // Uses v128 operations for 2x f64 at a time
-}
-```
-
----
-
-## Parallel Computing Architecture
-
-### WorkerPool
-
-```typescript
-// src/parallel/WorkerPool.ts
-class WorkerPool {
-  private workers: Worker[] = []
-  private availableWorkers: Worker[] = []
-  private taskQueue: WorkerTask[] = []
-  private activeTasks: Map<string, WorkerTask> = new Map()
-  private maxWorkers: number
-
-  constructor(workerScript: string, maxWorkers?: number) {
-    this.maxWorkers = maxWorkers || navigator.hardwareConcurrency || 4
-    this.initializeWorkers()
-  }
-
-  private initializeWorkers(): void {
-    for (let i = 0; i < this.maxWorkers; i++) {
-      const worker = new Worker(this.workerScript)
-      worker.onmessage = this.handleWorkerMessage.bind(this)
-      this.workers.push(worker)
-      this.availableWorkers.push(worker)
-    }
-  }
-
-  async execute<T, R>(data: T, transferables?: Transferable[]): Promise<R> {
-    return new Promise((resolve, reject) => {
-      const task: WorkerTask = {
-        id: generateId(),
-        data,
-        transferables,
-        resolve,
-        reject
-      }
-
-      if (this.availableWorkers.length > 0) {
-        this.runTask(task, this.availableWorkers.pop()!)
-      } else {
-        this.taskQueue.push(task)
-      }
-    })
-  }
-
-  async terminate(): Promise<void> {
-    await Promise.all(this.workers.map(w => w.terminate()))
-  }
-}
-```
-
-### ParallelMatrix
-
-```typescript
-// src/parallel/ParallelMatrix.ts
-class ParallelMatrix {
-  private static pool: WorkerPool | null = null
-  private static readonly CHUNK_SIZE = 1000
-
-  static async multiply(
-    aData: number[], aRows: number, aCols: number,
-    bData: number[], bRows: number, bCols: number
-  ): Promise<number[]> {
-    const pool = await this.getPool()
-    const numWorkers = pool.size
-
-    // Divide rows among workers
-    const rowsPerWorker = Math.ceil(aRows / numWorkers)
-    const tasks: Promise<number[]>[] = []
-
-    for (let i = 0; i < numWorkers; i++) {
-      const startRow = i * rowsPerWorker
-      const endRow = Math.min(startRow + rowsPerWorker, aRows)
-
-      if (startRow >= aRows) break
-
-      tasks.push(pool.execute({
-        type: 'multiply',
-        aData: aData.slice(startRow * aCols, endRow * aCols),
-        aCols,
-        bData,
-        bCols,
-        startRow,
-        endRow
-      }))
-    }
-
-    const results = await Promise.all(tasks)
-    return this.mergeResults(results, aRows, bCols)
-  }
-
-  static async add(aData: number[], bData: number[]): Promise<number[]> {
-    // Divide elements into chunks
-    const chunks = Math.ceil(aData.length / this.CHUNK_SIZE)
-    // ... parallel execution
-  }
-}
-```
-
-### Worker Script
-
-```javascript
-// Worker receives tasks and executes operations
-self.onmessage = function(e) {
-  const { type, ...data } = e.data
-
-  switch (type) {
-    case 'multiply':
-      const result = multiplyChunk(data)
-      self.postMessage({ result }, [result.buffer])  // Transfer ownership
-      break
-    case 'add':
-      // ...
-      break
-  }
-}
-
-function multiplyChunk({ aData, aCols, bData, bCols, startRow, endRow }) {
-  const rows = endRow - startRow
-  const result = new Float64Array(rows * bCols)
-
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < bCols; j++) {
-      let sum = 0
-      for (let k = 0; k < aCols; k++) {
-        sum += aData[i * aCols + k] * bData[k * bCols + j]
-      }
-      result[i * bCols + j] = sum
-    }
-  }
-
-  return result
-}
-```
 
 ---
 
@@ -999,16 +721,22 @@ math.multiply([[1,2]], [[1,2]])
 
 ## Build System Architecture
 
-### Gulp Pipeline
+### Build Pipeline
+
+The build uses **tsup** as the primary bundler (from `.js` entry points) plus Gulp for secondary formats:
 
 ```javascript
-// gulpfile.js
+// tsup.config.ts — primary build (dist/)
+// gulpfile.js — secondary formats (lib/)
+
 const tasks = {
-  // Compile ES modules to different formats
+  // tsup bundles .js entry points to dist/
+  tsup: bundle('src/entry/*.js', { outDir: 'dist/' }),
+
+  // Gulp compiles dist/ to CommonJS/ESM variants
   compile: parallel(
     compileESM,      // ES modules → lib/esm/
     compileCJS,      // CommonJS → lib/cjs/
-    compileTS        // TypeScript → lib/typescript/
   ),
 
   // Build browser bundle
@@ -1017,50 +745,34 @@ const tasks = {
     webpackBundle    // → lib/browser/math.js
   ),
 
-  // Build WASM modules
-  wasm: series(
-    compileAssemblyScript,  // → lib/wasm/
-    optimizeWasm
-  ),
-
-  // Generate documentation
-  docs: series(
-    extractJSDoc,
-    generateMarkdown
-  ),
-
   // Full build
   build: series(
     clean,
-    parallel(compile, bundle, wasm),
-    docs,
+    parallel(tsup, compile, bundle),
     generateEntries
   )
 }
 ```
 
+**Note**: tsup uses `.js` entry points. Generated `.d.ts` type definitions are maintained separately in `types/index.d.ts`.
+
 ### Output Structure
 
 ```
-lib/
-├── esm/                    # ES Modules
-│   ├── index.js
-│   ├── core/
-│   ├── function/
-│   └── ...
-├── cjs/                    # CommonJS
-│   ├── index.js
-│   ├── package.json        # { "type": "commonjs" }
-│   └── ...
-├── browser/                # Browser bundle
-│   ├── math.js             # UMD bundle
-│   └── math.min.js
-├── typescript/             # Compiled TypeScript
-│   └── ...
-└── wasm/                   # WASM modules
-    ├── matrix.wasm
-    ├── algebra.wasm
-    └── ...
+dist/                   # Primary output (tsup)
+├── index.js            # Full library (ESM)
+├── index.cjs           # Full library (CommonJS)
+├── number.js           # Number-only (ESM)
+├── factoriesAny.js     # All 545 factory functions
+└── factoriesNumber.js  # Number-only factories
+
+lib/                     # Secondary formats (gulp)
+├── esm/                # ES Modules
+├── cjs/                # CommonJS
+│   └── package.json    # { "type": "commonjs" }
+└── browser/            # Browser bundle
+    ├── math.js         # UMD bundle
+    └── math.min.js
 ```
 
 ### Entry Point Generation
@@ -1089,3 +801,4 @@ function generateEntry(factories) {
 - [OVERVIEW.md](./OVERVIEW.md) - High-level system overview
 - [COMPONENTS.md](./COMPONENTS.md) - Component deep dive
 - [DATAFLOW.md](./DATAFLOW.md) - Data flow documentation
+- [Function Reference](https://danielsimonjr.github.io/mathjs/) - Full online documentation and function reference

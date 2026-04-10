@@ -4,16 +4,16 @@ This document bridges the gap between **architecture** and **practical developme
 
 For conceptual architecture, see [ARCHITECTURE.md](./ARCHITECTURE.md). For high-level overview, see [OVERVIEW.md](./OVERVIEW.md).
 
+For TypeScript and WASM-accelerated math, see [MathTS](https://github.com/danielsimonjr/MathTS).
+
 ## Table of Contents
 
 1. [Local Development Setup](#local-development-setup)
 2. [Build & Compilation Workflow](#build--compilation-workflow)
 3. [Testing Strategy](#testing-strategy)
-4. [TypeScript Migration Workflow](#typescript-migration-workflow)
-5. [WASM Development](#wasm-development)
-6. [Debugging Techniques](#debugging-techniques)
-7. [Performance Profiling](#performance-profiling)
-8. [Common Development Tasks](#common-development-tasks)
+4. [Debugging Techniques](#debugging-techniques)
+5. [Performance Profiling](#performance-profiling)
+6. [Common Development Tasks](#common-development-tasks)
 
 ---
 
@@ -29,23 +29,17 @@ For conceptual architecture, see [ARCHITECTURE.md](./ARCHITECTURE.md). For high-
 git clone https://github.com/danielsimonjr/mathjs.git
 cd mathjs
 npm install
-npm run build    # Full build (dist + lib + browser + WASM)
+npm run build    # Full build (dist + lib + browser)
 npm test         # Verify setup with tests
 ```
 
 ### Watch Mode for Active Development
 ```bash
-# TypeScript only (fastest for development)
-npm run watch:ts
-
-# Or full build with watch
 npm run watch
 ```
 
-This compiles TypeScript to `dist/` automatically when files change, enabling rapid iteration.
-
 ### Typical Development Session
-1. Start watch mode in one terminal: `npm run watch:ts`
+1. Start watch mode in one terminal: `npm run watch`
 2. Run tests in another: `npm test` or `npx mocha test/unit-tests/function/<category>/<name>.test.js`
 3. Check linting: `npm run lint` or auto-fix with `npm run format`
 
@@ -59,10 +53,11 @@ Math.js uses multiple build tools to produce different output formats:
 
 | Tool | Input | Output | Purpose |
 |------|-------|--------|---------|
-| **tsup** | `src/**/*.ts` | `dist/` | Main distribution bundle |
+| **tsup** | `src/entry/*.js` | `dist/` | Main distribution bundle |
 | **Gulp** | `dist/` | `lib/esm/`, `lib/cjs/` | CommonJS & ESM variants |
 | **Webpack** | `lib/` | `lib/browser/` | Browser bundle (UMD) |
-| **AssemblyScript** | `src/wasm/**/*.ts` | `lib/wasm/` | WebAssembly modules |
+
+**Important**: tsup bundles from `.js` entry points. Do not change entry points to `.ts`.
 
 ### Build Commands by Use Case
 
@@ -70,11 +65,8 @@ Math.js uses multiple build tools to produce different output formats:
 # Full build (everything)
 npm run build
 
-# Just recompile TypeScript to dist/
-npm run compile:ts
-
-# Watch TypeScript (recommended during dev)
-npm run watch:ts
+# Watch for changes (recommended during dev)
+npm run watch
 
 # Clean and rebuild
 npm run build:clean && npm run build
@@ -82,10 +74,8 @@ npm run build:clean && npm run build
 # Build only browser bundle
 npx gulp bundle
 
-# Build only WASM
-npm run build:wasm           # Production build
-npm run build:wasm:debug     # Debug symbols
-npm run validate:wasm        # Check syntax without building
+# Generate documentation site
+npx gulp docs
 ```
 
 ### Build Output Structure
@@ -96,14 +86,13 @@ dist/                    # Primary output (tsup)
 ├── index.cjs           # Full library (CommonJS)
 ├── number.js           # Number-only (ESM)
 ├── number.cjs          # Number-only (CommonJS)
-├── factoriesAny.js     # All 396 factories
-└── factoriesNumber.js  # 280 number-only factories
+├── factoriesAny.js     # All 545 factories
+└── factoriesNumber.js  # 300+ number-only factories
 
 lib/                     # Secondary formats (gulp)
 ├── esm/                # ES modules
 ├── cjs/                # CommonJS
-├── browser/            # Browser bundle (UMD)
-└── wasm/               # WASM modules
+└── browser/            # Browser bundle (UMD)
 ```
 
 **Important:** Only commit changes in `src/`. Generated files in `dist/` and `lib/` are auto-built.
@@ -122,7 +111,6 @@ test/unit-tests/
 │   └── ...
 ├── expression/         # Parser & evaluator tests
 ├── type/              # Data type tests
-└── wasm/              # WASM unit tests (vitest)
 
 test/
 ├── generated-code-tests/    # Generated entry file tests
@@ -151,177 +139,9 @@ npm run coverage
 # View at: ./coverage/lcov-report/index.html
 ```
 
-### JavaScript vs TypeScript Test Isolation
-
-**Critical Pattern:** TypeScript tests must create isolated math instances to avoid polluting global state:
-
-```javascript
-// WRONG - uses global state
-import math from 'mathjs'
-math.config({ number: 'BigNumber' })  // Affects other tests!
-
-// RIGHT - create isolated instance
-import { create } from 'mathjs'
-const math = create()
-math.config({ number: 'BigNumber' })  // Only affects this test
-```
-
-Add unique unit names to prevent conflicts:
-```javascript
-const uniqueUnitName = 'myUnit' + 'Ts' + Date.now()
-math.createUnit(uniqueUnitName, { ... })
-```
-
-### WASM Testing
-
-```bash
-# Validate WASM syntax (no build)
-npm run validate:wasm
-
-# Build debug version with symbols
-npm run build:wasm:debug
-
-# Run WASM-specific tests
-npm run test:wasm
-```
-
----
-
-## TypeScript Migration Workflow
-
-### Tracking Progress with ts-inventory.json
-
-The `ts-inventory.json` file tracks conversion status of all source files:
-
-```json
-[
-  { "path": "src/function/arithmetic/add.ts", "converted": true },
-  { "path": "src/function/arithmetic/subtract.js", "converted": false },
-  ...
-]
-```
-
-Check migration progress:
-```bash
-# Count converted files
-node -e "const inv=require('./ts-inventory.json'); const conv=inv.filter(f=>f.converted).length; console.log(conv + '/' + inv.length + ' files converted');"
-
-# Or with grep
-grep -c '"converted": true' ts-inventory.json
-```
-
-### Converting a File to TypeScript
-
-1. **Use the migration tool** (basic conversion):
-   ```bash
-   node tools/migrate-to-ts.js --file src/path/to/file.js
-   ```
-
-2. **Manually improve**:
-   - Add proper type annotations
-   - Replace `.js` imports with appropriate types
-   - Update any dynamic imports
-
-3. **Test thoroughly**:
-   ```bash
-   npm run compile:ts  # Verify compilation
-   npm test           # Run tests
-   npm run test:types # Verify type definitions
-   ```
-
-4. **Update TypeScript definitions** in `types/index.d.ts`:
-   - Add instance method signature
-   - Add chain method signature
-   - Add static export signature
-   - Add dependencies section
-   - Write type tests in `test/typescript-tests/testTypes.ts`
-   See `types/EXPLANATION.md` for detailed guidance.
-
-5. **Update ts-inventory.json**:
-   ```json
-   { "path": "src/path/to/file.ts", "converted": true }
-   ```
-
-### Priority Conversion Order
-
-Focus on high-impact conversions first:
-1. **Plain number implementations** (largest speedup potential)
-2. **Sparse matrix algorithms** (performance-critical)
-3. **Combinatorics functions** (isolation from side effects)
-4. **Numeric solvers** (complex algorithms benefit most from typing)
-
-See `docs/refactoring/REFACTORING_TASKS.md` for the full task list.
-
----
-
-## WASM Development
-
-### When to Use WASM Acceleration
-
-The library automatically uses WASM for:
-- Matrix operations with >1000 elements
-- Large array operations
-- Repeated numerical computations
-
-Performance gains: **2-10x speedup** for large operations.
-
-### Building WASM Modules
-
-WASM modules are in `src/wasm/` organized by category:
-
-```
-src/wasm/
-├── algebra/          # Polynomial operations
-├── arithmetic/       # Basic arithmetic
-├── matrix/          # Matrix algorithms
-├── statistics/      # Statistical functions
-└── index.ts         # Main WASM entry point
-```
-
-```bash
-# Development (with debug symbols)
-npm run build:wasm:debug
-
-# Production build
-npm run build:wasm
-
-# Check for syntax errors without building
-npm run validate:wasm
-```
-
-### Writing WASM Modules
-
-WASM modules use **AssemblyScript** syntax (TypeScript-like). Example:
-
-```typescript
-// src/wasm/arithmetic/multiply.ts
-export function multiply(a: f64, b: f64): f64 {
-  return a * b
-}
-```
-
-**Key constraints:**
-- Limited to numeric types (f64, i32, i64, etc.)
-- No complex objects or inheritance
-- Manual memory management for arrays
-- See `docs/ASSEMBLYSCRIPT_STYLE_GUIDE.md` for conventions
-
 ---
 
 ## Debugging Techniques
-
-### Debug TypeScript Compilation
-
-```bash
-# Check for TypeScript errors
-npx tsc --noEmit
-
-# Count errors
-npx tsc --noEmit 2>&1 | grep -c "error TS"
-
-# See all errors with context
-npx tsc --noEmit --pretty false
-```
 
 ### Debug ESLint Issues
 
@@ -333,7 +153,7 @@ npm run lint
 npm run format
 
 # Check specific file
-npx eslint src/function/arithmetic/add.ts
+npx eslint src/function/arithmetic/add.js
 ```
 
 ### Debug Test Failures
@@ -395,7 +215,6 @@ const start = performance.now()
 const elapsed = performance.now() - start
 console.log(`Operation took ${elapsed.toFixed(3)}ms`)
 
-// For matrices, check if WASM is being used
 const matrix = math.matrix([[1,2],[3,4]])
 console.log(matrix.type)  // "DenseMatrix" or "SparseMatrix"
 ```
@@ -406,13 +225,13 @@ console.log(matrix.type)  // "DenseMatrix" or "SparseMatrix"
 
 ### Add a New Function
 
-1. Create function file: `src/function/<category>/<name>.ts`
-2. Register in: `src/factoriesAny.ts` and `src/factoriesNumber.ts`
+1. Create function file: `src/function/<category>/<name>.js`
+2. Register in: `src/factoriesAny.js` and `src/factoriesNumber.js`
 3. Add embedded docs: `src/expression/embeddedDocs/function/<category>/<name>.js`
 4. Register docs in: `src/expression/embeddedDocs/embeddedDocs.js`
 5. Write tests: `test/unit-tests/function/<category>/<name>.test.js`
 6. Add TypeScript definitions: See `types/EXPLANATION.md`
-7. Verify: `npm test && npm run test:types`
+7. Verify: `npm test`
 
 ### Extend with Custom Type
 
@@ -438,7 +257,6 @@ typed.addType({
 2. Run `npm install`
 3. Check `npm run test:all`
 4. Update code if needed
-5. Verify types: `npm run test:types`
 
 ### Deploy to npm
 
@@ -458,9 +276,6 @@ npm publish
 - [COMPONENTS.md](./COMPONENTS.md) - Component reference
 - [DATAFLOW.md](./DATAFLOW.md) - Data flow through system
 - [OVERVIEW.md](./OVERVIEW.md) - High-level architecture
+- [Function Reference](https://danielsimonjr.github.io/mathjs/) - Full online function reference
 - ../CLAUDE.md - Quick reference guide for Claude Code
-
-For TypeScript migration details, see:
-- `docs/refactoring/REFACTORING_PLAN.md`
-- `docs/refactoring/REFACTORING_TASKS.md`
 - `types/EXPLANATION.md` - TypeScript definitions guide

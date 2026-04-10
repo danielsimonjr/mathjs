@@ -153,6 +153,8 @@ console.log(ans)                                 // outputs 'MyType:5'
 Detailed information on typed functions is available here:
 [https://github.com/josdejong/typed-function](https://github.com/josdejong/typed-function)
 
+Math.js includes **545 factory functions** implementing 444+ mathematical operations across 21 categories. All of them follow the typed-function pattern described above. For a complete function listing, see the [Full Function Reference](https://danielsimonjr.github.io/mathjs/).
+
 
 
 

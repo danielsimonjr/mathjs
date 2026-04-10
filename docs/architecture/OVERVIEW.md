@@ -14,12 +14,7 @@ Math.js is an extensive mathematics library for JavaScript and Node.js that prov
 
 3. **Immutability**: Operations never mutate inputs; they always return new values, making the library predictable and safe for functional programming.
 
-4. **Progressive Enhancement**: The library provides three performance tiers:
-   - JavaScript fallback (always available)
-   - WebAssembly acceleration (2-10x faster for large operations)
-   - Parallel/multicore execution (additional 2-4x speedup)
-
-5. **Backward Compatibility**: New features and optimizations maintain full API compatibility with existing code.
+4. **Backward Compatibility**: New features and optimizations maintain full API compatibility with existing code.
 
 ## High-Level Architecture
 
@@ -76,16 +71,9 @@ Math.js is an extensive mathematics library for JavaScript and Node.js that prov
 │                                  │                                       │
 │           ┌──────────────────────┼──────────────────────┐               │
 │           ▼                      ▼                      ▼               │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────┐ │
-│  │  PLAIN JS       │  │  WASM BRIDGE    │  │  PARALLEL WORKERS       │ │
-│  │  Implementations│  │  (Large ops)    │  │  (Multi-core)           │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────────────┘ │
-│                                  │                      │               │
-│                                  ▼                      ▼               │
-│                       ┌─────────────────┐  ┌─────────────────────────┐ │
-│                       │  WASM MODULES   │  │     WORKER POOL         │ │
-│                       │  (AssemblyScript)│  │  (WorkerPool.ts)       │ │
-│                       └─────────────────┘  └─────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────────────────┐ │
+│  │  PLAIN JS Implementations                                           │ │
+│  └─────────────────────────────────────────────────────────────────────┘ │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -98,14 +86,14 @@ The foundation that bootstraps the entire library:
 
 | Component | Purpose |
 |-----------|---------|
-| `create.ts` | Main entry point; creates math.js instances with dependency injection |
-| `config.ts` | Configuration management (precision, matrix type, number type) |
-| `function/typed.ts` | Integration with typed-function for multi-type dispatch |
-| `function/import.ts` | Runtime function loading and registration |
+| `create.js` | Main entry point; creates math.js instances with dependency injection |
+| `config.js` | Configuration management (precision, matrix type, number type) |
+| `function/typed.js` | Integration with typed-function for multi-type dispatch |
+| `function/import.js` | Runtime function loading and registration |
 
 ### 2. Data Types (`src/type/`)
 
-Twelve data types with consistent interfaces:
+Fifteen data type classes with consistent interfaces:
 
 | Type | Description | Use Case |
 |------|-------------|----------|
@@ -120,16 +108,31 @@ Twelve data types with consistent interfaces:
 
 ### 3. Function Library (`src/function/`)
 
-350+ functions organized into 19 categories:
+545 factory functions implementing 444+ user-facing functions organized into 21 categories:
 
 | Category | Examples | Count |
 |----------|----------|-------|
-| Arithmetic | add, multiply, pow, sqrt | 81 |
-| Matrix | det, inv, eigs, transpose | 50+ |
-| Trigonometry | sin, cos, atan2 | 25+ |
-| Statistics | mean, std, median | 30+ |
-| Algebra | derivative, simplify, rationalize | 20+ |
-| Special | gamma, erf, bessel | 15+ |
+| Algebra / CAS | derivative, simplify, integrate, solve, groebnerBasis, taylor | 92 |
+| Matrix | det, inv, eigs, transpose, sqrtm, schur | 50 |
+| Numeric | ode, rootFind, interpolate, fit | 39 |
+| Statistics | mean, std, median, regression, corr | 38 |
+| Special | gamma, erf, bessel, airyAi, zeta | 26 |
+| Trigonometry | sin, cos, atan2, sinh, acot | 25 |
+| Signal | fft, ifft, dct, dst, dwt, spectrogram, hilbert | 20 |
+| Combinatorics | combinations, partitions, stirling, bell, catalan | 20 |
+| Utils | format, clone, typeOf, isNaN | 18 |
+| Geometry | distance, area, convexHull, voronoi, delaunay | 14 |
+| Probability | random, factorial, gamma, distributions | 12 |
+| Relational | equal, larger, compare, deepEqual | 12 |
+| Operators | add, subtract, multiply, divide, pow | 11 |
+| Arithmetic | abs, ceil, floor, gcd, lcm, mod | 11 |
+| Set | setUnion, setIntersect, setDiff | 10 |
+| Graph | dijkstra, kruskal, tarjan, bfs, dfs | 8 |
+| Bitwise | bitAnd, bitOr, bitXor, leftShift | 7 |
+| Logical | and, or, not, xor | 5 |
+| Complex | arg, conj, im, re | 4 |
+| Units | unit, createUnit | 2 |
+| Type | type | 1 |
 
 ### 4. Expression System (`src/expression/`)
 
@@ -141,26 +144,16 @@ A complete expression language with:
 - **Evaluator**: Direct evaluation with scope binding
 - **Transforms**: 50+ compile-time optimizations
 
-### 5. Performance Layer (`src/wasm/`, `src/parallel/`)
-
-Automatic performance optimization:
-
-| Layer | Threshold | Speedup | Technology |
-|-------|-----------|---------|------------|
-| JavaScript | Default | 1x | Native JS |
-| WASM | 1000+ elements | 2-10x | AssemblyScript/SIMD |
-| Parallel | 10000+ elements | 2-4x additional | Web Workers |
-
 ## Library Variants
 
 ### Full Library (`factoriesAny.js`)
-- 350+ factories
+- 545 factory functions (444+ user-facing)
 - All data types
 - Complete functionality
 - ~500KB minified
 
 ### Lightweight (`factoriesNumber.js`)
-- 280+ factories
+- 300+ factories
 - Numbers only (no BigNumber, Complex, Fraction, Unit)
 - ~200KB minified
 - Ideal for embedded/constrained environments
@@ -220,13 +213,15 @@ const customMath = create({
 |-----------|---------------|------------------|--------------|
 | Scalar arithmetic | <1μs | N/A | N/A |
 | Vector operations | <10μs | <1ms | 10-100ms |
-| Matrix multiply | <100μs | 1-100ms | WASM/Parallel |
+| Matrix multiply | <100μs | 1-100ms | >100ms |
 | Expression parse | <100μs | N/A | N/A |
 | Expression evaluate | <10μs | N/A | N/A |
+
+For TypeScript and WASM-accelerated math, see [MathTS](https://github.com/danielsimonjr/MathTS).
 
 ## Related Documentation
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Detailed architectural patterns and design decisions
 - [COMPONENTS.md](./COMPONENTS.md) - Deep dive into each component
 - [DATAFLOW.md](./DATAFLOW.md) - How data flows through the system
-- [TYPESCRIPT_WASM_ARCHITECTURE.md](./TYPESCRIPT_WASM_ARCHITECTURE.md) - TypeScript/WASM refactoring details
+- [Function Reference](https://danielsimonjr.github.io/mathjs/) - Full online documentation and function reference

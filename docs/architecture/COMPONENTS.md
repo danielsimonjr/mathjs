@@ -9,9 +9,7 @@ This document provides a comprehensive reference for all major components in the
 3. [Function Categories](#function-categories)
 4. [Expression System Components](#expression-system-components)
 5. [Matrix Components](#matrix-components)
-6. [WASM Components](#wasm-components)
-7. [Parallel Computing Components](#parallel-computing-components)
-8. [Utility Components](#utility-components)
+6. [Utility Components](#utility-components)
 
 ---
 
@@ -24,11 +22,8 @@ This document provides a comprehensive reference for all major components in the
 **Purpose:** Main entry point for creating math.js instances with dependency injection.
 
 **Exports:**
-```typescript
-export function create(
-  factories: FactoryFunctionMap,
-  config?: ConfigOptions
-): MathJsInstance
+```javascript
+export function create(factories, config)
 ```
 
 **Key Responsibilities:**
@@ -65,22 +60,17 @@ const math = create({ createAdd, createMultiply })
 
 **Purpose:** Configuration management and defaults.
 
-**Exports:**
-```typescript
-export interface ConfigOptions {
-  relTol: number           // Relative tolerance (default: 1e-12)
-  absTol: number           // Absolute tolerance (default: 1e-15)
-  matrix: 'Matrix' | 'Array'
-  number: 'number' | 'BigNumber' | 'bigint' | 'Fraction'
-  numberFallback: 'number' | 'BigNumber'
-  precision: number        // BigNumber precision (default: 64)
-  predictable: boolean     // Deterministic output (default: false)
-  randomSeed: string | null
-  legacySubset: boolean
-}
+**Key Options:**
 
-export const DEFAULT_CONFIG: ConfigOptions
-```
+| Option | Default |
+|--------|---------|
+| `relTol` | 1e-12 |
+| `absTol` | 1e-15 |
+| `matrix` | `'Matrix'` |
+| `number` | `'number'` |
+| `precision` | 64 |
+| `predictable` | false |
+| `randomSeed` | null |
 
 **Configuration Effects:**
 
@@ -473,7 +463,7 @@ class Chain<T> {
   add(y: any): Chain<T>
   multiply(y: any): Chain<T>
   sqrt(): Chain<T>
-  // ... 350+ methods
+  // ... 545+ methods (one per factory function)
 
   // Extraction
   done(): T
@@ -500,7 +490,7 @@ math.sqrt(math.multiply(math.add(3, 4), 2))
 
 ### Arithmetic (`src/function/arithmetic/`)
 
-**81 functions** for basic mathematical operations.
+**45 core arithmetic functions** for basic mathematical operations.
 
 | Function | Description | Signatures |
 |----------|-------------|------------|
@@ -529,9 +519,9 @@ math.sqrt(math.multiply(math.add(3, 4), 2))
 
 ---
 
-### Algebra (`src/function/algebra/`)
+### Algebra / CAS (`src/function/algebra/`)
 
-**20+ functions** for symbolic and algebraic operations.
+**92 functions** for symbolic and algebraic operations, including a full symbolic CAS engine.
 
 | Function | Description |
 |----------|-------------|
@@ -541,6 +531,21 @@ math.sqrt(math.multiply(math.add(3, 4), 2))
 | `simplifyConstant` | Constant folding |
 | `rationalize` | Rationalize expression |
 | `resolve` | Resolve symbolic references |
+| `collect` | Collect like terms |
+| `cancel` | Cancel common factors |
+| `expand` | Expand expressions |
+| `taylor` | Taylor series expansion |
+| `substitute` | Variable substitution |
+| `together` | Combine fractions |
+| `partialFraction` | Partial fraction decomposition |
+| `summation` | Symbolic summation |
+| `integrate` | Symbolic integration |
+| `implicitDiff` | Implicit differentiation |
+| `fourierSeries` | Fourier series |
+| `groebnerBasis` | Gröbner basis computation |
+| `factor` | Polynomial factoring |
+| `fullSimplify` | Complete simplification |
+| `solve` | Algebraic equation solving |
 | `lup` | LU decomposition with pivoting |
 | `qr` | QR decomposition |
 | `slu` | Sparse LU decomposition |
@@ -569,7 +574,7 @@ math.simplify('x + x', [
 
 ### Matrix (`src/function/matrix/`)
 
-**50+ functions** for matrix and array operations.
+**50 functions** for matrix and array operations.
 
 | Function | Description |
 |----------|-------------|
@@ -606,7 +611,7 @@ math.simplify('x + x', [
 
 ### Trigonometry (`src/function/trigonometry/`)
 
-**25+ functions** for trigonometric operations.
+**25 functions** for trigonometric operations.
 
 | Function | Description |
 |----------|-------------|
@@ -629,7 +634,7 @@ math.sin(math.pi / 2)           // 1
 
 ### Statistics (`src/function/statistics/`)
 
-**30+ functions** for statistical analysis.
+**38 functions** for statistical analysis.
 
 | Function | Description |
 |----------|-------------|
@@ -685,7 +690,7 @@ math.random()  // Reproducible
 
 ### Special Functions (`src/function/special/`)
 
-**15+ special mathematical functions.**
+**26 special mathematical functions.**
 
 | Function | Description |
 |----------|-------------|
@@ -700,6 +705,79 @@ math.random()  // Reproducible
 | `besselK` | Modified Bessel K |
 | `airyAi` | Airy Ai |
 | `airyBi` | Airy Bi |
+
+---
+
+### Signal Processing (`src/function/signal/`)
+
+**20 functions** for signal and frequency-domain analysis.
+
+| Function | Description |
+|----------|-------------|
+| `fft` | Fast Fourier Transform |
+| `ifft` | Inverse FFT |
+| `stft` | Short-time Fourier Transform |
+| `convolve` | Convolution |
+| `correlate` | Cross-correlation |
+| `dct` | Discrete Cosine Transform |
+| `dst` | Discrete Sine Transform |
+| `dwt` | Discrete Wavelet Transform |
+| `hilbert` | Hilbert transform |
+| `spectrogram` | Time-frequency spectrogram |
+| `psd` | Power spectral density |
+| `filter` | Digital filtering (FIR/IIR) |
+
+---
+
+### Geometry (`src/function/geometry/`)
+
+**14 functions** for geometric computations.
+
+| Function | Description |
+|----------|-------------|
+| `distance` | Distance between points/lines |
+| `intersect` | Line/plane intersections |
+| `area` | Polygon area |
+| `perimeter` | Polygon perimeter |
+| `convexHull` | Convex hull |
+| `centroid` | Centroid of polygon |
+| `triangulate` | Triangulation |
+| `voronoi` | Voronoi diagram |
+| `delaunay` | Delaunay triangulation |
+| `kdTree` | k-d tree spatial index |
+
+---
+
+### Combinatorics (`src/function/combinatorics/`)
+
+**20 functions** for combinatorial mathematics.
+
+| Function | Description |
+|----------|-------------|
+| `combinations` | C(n,k) |
+| `permutations` | P(n,k) |
+| `partitions` | Integer partitions |
+| `stirling` | Stirling numbers |
+| `bell` | Bell numbers |
+| `catalan` | Catalan numbers |
+| `derangements` | Subfactorial |
+
+---
+
+### Graph Theory (`src/function/graph/`)
+
+**8 functions** for graph algorithms.
+
+| Function | Description |
+|----------|-------------|
+| `shortestPath` | Dijkstra / Bellman-Ford |
+| `mst` | Kruskal minimum spanning tree |
+| `topologicalSort` | Tarjan topological ordering |
+| `bfs` | Breadth-first search |
+| `dfs` | Depth-first search |
+| `connectedComponents` | Connected components |
+| `isBipartite` | Bipartiteness check |
+| `scc` | Strongly connected components |
 
 ---
 
@@ -920,150 +998,6 @@ class RangeNode extends Node {
 
 ---
 
-## WASM Components
-
-### `WasmLoader.ts`
-
-**Location:** `src/wasm/WasmLoader.ts`
-
-**Purpose:** WASM module loading and memory management.
-
-**Interface:**
-```typescript
-class WasmLoader {
-  // Loading
-  async load(path?: string): Promise<WasmModule>
-  isLoaded(): boolean
-
-  // Memory management
-  allocateFloat64Array(data: number[]): { ptr: number, array: Float64Array }
-  allocateInt32Array(data: number[]): { ptr: number, array: Int32Array }
-  free(ptr: number): void
-  collect(): void
-
-  // Available operations
-  multiplyDense(...): Float64Array
-  multiplyDenseSIMD(...): Float64Array
-  transpose(...): Float64Array
-  add(...): Float64Array
-  luDecomposition(...): object
-  qrDecomposition(...): object
-  fft(...): Float64Array
-  // ...
-}
-```
-
----
-
-### `MatrixWasmBridge.ts`
-
-**Location:** `src/wasm/MatrixWasmBridge.ts`
-
-**Purpose:** Strategy selection for matrix operations.
-
-**Interface:**
-```typescript
-class MatrixWasmBridge {
-  static readonly MIN_SIZE_FOR_WASM: number
-  static readonly MIN_SIZE_FOR_PARALLEL: number
-
-  // Operations with automatic strategy selection
-  static async multiply(a: Matrix, b: Matrix): Promise<Matrix>
-  static async add(a: Matrix, b: Matrix): Promise<Matrix>
-  static async transpose(a: Matrix): Promise<Matrix>
-  static async lu(a: Matrix): Promise<LUResult>
-  static async qr(a: Matrix): Promise<QRResult>
-
-  // Force specific backend
-  static multiplyJS(a: Matrix, b: Matrix): Matrix
-  static multiplyWasm(a: Matrix, b: Matrix): Matrix
-  static multiplyParallel(a: Matrix, b: Matrix): Promise<Matrix>
-}
-```
-
----
-
-### WASM Modules (`src/wasm/`)
-
-**Built with AssemblyScript, compiled to WebAssembly.**
-
-| Module | Operations |
-|--------|------------|
-| `matrix/multiply.ts` | Dense multiply, SIMD multiply, transpose |
-| `algebra/decomposition.ts` | LU, QR, Cholesky, determinant |
-| `signal/fft.ts` | FFT, IFFT, 2D FFT, convolution |
-| `numeric/ode.ts` | RK45, RK23 ODE solvers |
-| `arithmetic/basic.ts` | Add, subtract, multiply, divide |
-| `arithmetic/advanced.ts` | Pow, sqrt, cbrt, nthRoot |
-| `arithmetic/logarithmic.ts` | Log, log10, log2, exp |
-| `trigonometry/basic.ts` | Sin, cos, tan, atan2 |
-| `statistics/basic.ts` | Mean, std, variance, sum |
-| `bitwise/operations.ts` | AND, OR, XOR, shifts |
-| `combinatorics/basic.ts` | Factorial, permutations |
-
----
-
-## Parallel Computing Components
-
-### `WorkerPool.ts`
-
-**Location:** `src/parallel/WorkerPool.ts`
-
-**Purpose:** Web Worker pool management.
-
-**Interface:**
-```typescript
-class WorkerPool {
-  constructor(workerScript: string, maxWorkers?: number)
-
-  // Task execution
-  async execute<T, R>(data: T, transferables?: Transferable[]): Promise<R>
-
-  // Pool management
-  get size(): number
-  get busy(): number
-  get idle(): number
-  async terminate(): Promise<void>
-  async resize(newSize: number): Promise<void>
-}
-```
-
----
-
-### `ParallelMatrix.ts`
-
-**Location:** `src/parallel/ParallelMatrix.ts`
-
-**Purpose:** Parallel matrix operations.
-
-**Interface:**
-```typescript
-class ParallelMatrix {
-  static isAvailable(): boolean
-
-  // Parallel operations
-  static async multiply(
-    aData: number[], aRows: number, aCols: number,
-    bData: number[], bRows: number, bCols: number
-  ): Promise<number[]>
-
-  static async add(
-    aData: number[],
-    bData: number[],
-    size: number
-  ): Promise<number[]>
-
-  static async transpose(
-    data: number[],
-    rows: number,
-    cols: number
-  ): Promise<number[]>
-
-  // Configuration
-  static setWorkerCount(count: number): void
-  static getWorkerCount(): number
-}
-```
 
 ---
 
@@ -1210,3 +1144,4 @@ export function formatNumberToBase(value, base, size): string
 - [OVERVIEW.md](./OVERVIEW.md) - High-level architecture
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Detailed design patterns
 - [DATAFLOW.md](./DATAFLOW.md) - Data flow through the system
+- [Function Reference](https://danielsimonjr.github.io/mathjs/) - Full online documentation and function reference

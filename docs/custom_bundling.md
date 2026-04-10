@@ -111,7 +111,7 @@ mathjs:
 - About 30% of the bundle size comes from the data classes `Complex`, `BigNumber`, `Fraction`, `Unit`, `SparseMatrix`, `DenseMatrix`.
 - About 25%  of the bundle size comes from the expression parser.
   Half of this comes from the embedded docs.
-- About 40% comes from the about 200 built-in functions and some constants.
+- About 40% comes from the 444+ built-in functions and some constants. Note that tree-shaking will only include the functions you actually import — unused functions are excluded from the bundle.
 
 To get a better insight in what is in your JavaScript bundle, you can use
 a tool like [source-map-explorer](https://github.com/danvk/source-map-explorer).
