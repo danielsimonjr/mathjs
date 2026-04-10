@@ -1,0 +1,3007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algebra — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Algebra</div>
+  <h1><span>Algebra</span> Functions (92)</h1>
+  <p class="cat-desc">Symbolic algebra, CAS operations, polynomial manipulation, equation solving, simplification</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter algebra functions..." oninput="filterFuncs()">
+<div class="func-card" id="apart" data-name="apart">
+  <div class="func-name">apart</div>
+  <div class="func-desc">Perform partial fraction decomposition on a rational expression. Decomposes p(x)/q(x) into a sum of simpler fractions when the denominator factors into distinct linear terms.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">apart(expr | variable) | apart(expr</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, string, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The rational expression to decompose</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — Partial fraction decomposition as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">apart(&quot;1 / (x^2 - 1)<br>x&quot;)<br>apart(&quot;(x + 1) / (x^2 - 1)<br>x&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#rationalize">rationalize</a>
+  </div>
+</div>
+
+<div class="func-card" id="assume" data-name="assume">
+  <div class="func-name">assume</div>
+  <div class="func-desc">Declare an assumption about a symbolic variable. Valid properties: positive, negative, integer, real, complex, nonnegative, nonzero. Assumptions are stored globally and can be used by reduce().</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">assume(variable | property)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string|undefined — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">assume(&quot;x<br>positive&quot;)<br>assume(&quot;n<br>integer&quot;)<br>assume(&quot;z</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#element">element</a>
+    <a href="#reduce">reduce</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="asymptotic" data-name="asymptotic">
+  <div class="func-name">asymptotic</div>
+  <div class="func-desc">Find the asymptotic (leading) behavior of an expression as a variable approaches a point. For rational functions, returns the leading term ratio. For polynomials, returns the leading monomial. For other expressions, falls back to computing the limit.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">asymptotic(expr | variable | point)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, string, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The expression</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+      <tr><td class="param-name">point</td><td class="param-type">number</td><td>The point to approach (use Infinity for infinity)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string | number — The leading behavior as a string or number</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">asymptotic(&quot;3*x^4 + 2*x^2 + 1<br>x<br>Infinity)<br>asymptotic(&quot;x + 1<br>x</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#limit">limit</a>
+    <a href="#simplify">simplify</a>
+    <a href="#derivative">derivative</a>
+  </div>
+</div>
+
+<div class="func-card" id="cancel" data-name="cancel">
+  <div class="func-name">cancel</div>
+  <div class="func-desc">Cancel common factors in a rational expression. Simplifies a fraction by cancelling common factors between the numerator and denominator.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cancel(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The rational expression to cancel</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The cancelled expression as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cancel(&quot;(x^2 - 1) / (x - 1)&quot;)<br>cancel(&quot;(2*x^2 + 2*x) / (2*x)&quot;)<br>cancel(&quot;(x^3 - x) / x&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#rationalize">rationalize</a>
+  </div>
+</div>
+
+<div class="func-card" id="coefficientList" data-name="coefficientlist">
+  <div class="func-name">coefficientList</div>
+  <div class="func-desc">Extract polynomial coefficients of an expression with respect to a variable. Returns an array [c0, c1, c2, ...] where expr = c0 + c1*x + c2*x^2 + ...</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">coefficientList(expr | variable) | coefficientList(expr</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, string, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The polynomial expression</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of coefficients [c0, c1, ..., cn]</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">coefficientList(&quot;3*x^2 + 2*x + 1<br>x&quot;)<br>coefficientList(&quot;x^3 - x<br>x&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#rationalize">rationalize</a>
+    <a href="#derivative">derivative</a>
+  </div>
+</div>
+
+<div class="func-card" id="collect" data-name="collect">
+  <div class="func-name">collect</div>
+  <div class="func-desc">Collect terms of a polynomial expression by powers of a variable. Groups like powers and combines their coefficients.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">collect(expr | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, string, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to collect</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable to collect by</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The collected expression as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">collect(&quot;3*x + 2*x^2 + x + 5<br>x&quot;)<br>collect(&quot;x^2 + x^2<br>x&quot;)<br>collect(&quot;2*x + x</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#expand">expand</a>
+  </div>
+</div>
+
+<div class="func-card" id="combine" data-name="combine">
+  <div class="func-name">combine</div>
+  <div class="func-desc">Combine like terms and apply logarithm/power product rules. Inverse of expand for patterns like log(a)+log(b)-&gt;log(a*b), a^n*a^m-&gt;a^(n+m).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">combine(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to combine</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The combined expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">combine(&quot;log(a) + log(b)&quot;)<br>combine(&quot;log(a) - log(b)&quot;)<br>combine(&quot;x^2 * x^3&quot;)<br>combine(&quot;2 * log(x)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#expand">expand</a>
+    <a href="#simplify">simplify</a>
+    <a href="#powerExpand">powerExpand</a>
+  </div>
+</div>
+
+<div class="func-card" id="complexExpand" data-name="complexexpand">
+  <div class="func-name">complexExpand</div>
+  <div class="func-desc">Expand an expression treating the listed variables as complex numbers. Substitutes each variable x with x_re + i*x_im, expands, and separates into real and imaginary parts.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">complexExpand(expr | variables)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, Array, Node, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to expand</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">string[]</td><td>List of variable names to treat as complex</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with 're' and 'im' string properties</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">complexExpand(&quot;z^2<br>[&quot;z</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#expand">expand</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="csAmd" data-name="csamd">
+  <div class="func-name">csAmd</div>
+  <div class="func-desc">Approximate minimum degree ordering. The minimum degree algorithm is a widely used heuristic for finding a permutation P so that P*A*P' has fewer nonzeros in its factorization than A. It is a gready method that selects the sparsest pivot row and column during the course of a right looking sparse Cho</div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">order</td><td class="param-type">Number</td><td>0: Natural, 1: Cholesky, 2: LU, 3: QR</td></tr>
+      <tr><td class="param-name">m</td><td class="param-type">Matrix</td><td>Sparse Matrix</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="func-card" id="csChol" data-name="cschol">
+  <div class="func-name">csChol</div>
+  <div class="func-desc">Computes the Cholesky factorization of matrix A. It computes L and P so L * L' = P * A * P'</div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">m</td><td class="param-type">Matrix</td><td>The A Matrix to factorize, only upper triangular part used</td></tr>
+      <tr><td class="param-name">s</td><td class="param-type">Object</td><td>The symbolic analysis from cs_schol()</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number — The numeric Cholesky factorization of A or null</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="csCounts" data-name="cscounts">
+  <div class="func-name">csCounts</div>
+  <div class="func-desc">Computes the column counts using the upper triangular part of A. It transposes A internally, none of the input parameters are modified.</div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Matrix</td><td>The sparse matrix A</td></tr>
+      <tr><td class="param-name">ata</td><td class="param-type">Matrix</td><td>Count the columns of A'A instead</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="func-card" id="csLu" data-name="cslu">
+  <div class="func-name">csLu</div>
+  <div class="func-desc">Computes the numeric LU factorization of the sparse matrix A. Implements a Left-looking LU factorization algorithm that computes L and U one column at a tume. At the kth step, it access columns 1 to k-1 of L and column k of A. Given the fill-reducing column ordering q (see parameter s) computes L, U</div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">m</td><td class="param-type">Matrix</td><td>The A Matrix to factorize</td></tr>
+      <tr><td class="param-name">s</td><td class="param-type">Object</td><td>The symbolic analysis from csSqr(). Provides the fill-reducing</td></tr>
+      <tr><td class="param-name">tol</td><td class="param-type">Number</td><td>Partial pivoting threshold (1 for partial pivoting)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number — The numeric LU factorization of A or null</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="csSpsolve" data-name="csspsolve">
+  <div class="func-name">csSpsolve</div>
+  <div class="func-desc">The function csSpsolve() computes the solution to G * x = bk, where bk is the kth column of B. When lo is true, the function assumes G = L is lower triangular with the diagonal entry as the first entry in each column. When lo is true, the function assumes G = U is upper triangular with the diagonal </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">g</td><td class="param-type">Matrix</td><td>The G matrix</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Matrix</td><td>The B matrix</td></tr>
+      <tr><td class="param-name">k</td><td class="param-type">Number</td><td>The kth column in B</td></tr>
+      <tr><td class="param-name">xi</td><td class="param-type">Array</td><td>The nonzero pattern xi[top] .. xi[n - 1], an array of size = 2 * n</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>The soluton to the linear system G * x = b</td></tr>
+      <tr><td class="param-name">pinv</td><td class="param-type">Array</td><td>The inverse row permutation vector, must be null for L * x = b</td></tr>
+      <tr><td class="param-name">lo</td><td class="param-type">boolean</td><td>The lower (true) upper triangular (false) flag</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number — The index for the nonzero pattern</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="csSqr" data-name="cssqr">
+  <div class="func-name">csSqr</div>
+  <div class="func-desc">Symbolic ordering and analysis for QR and LU decompositions. symbolic ordering and analysis for LU decomposition (false)</div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">order</td><td class="param-type">Number</td><td>The ordering strategy (see csAmd for more details)</td></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Matrix</td><td>The A matrix</td></tr>
+      <tr><td class="param-name">qr</td><td class="param-type">boolean</td><td>Symbolic ordering and analysis for QR decomposition (true) or</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — The Symbolic ordering and analysis for matrix A</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="csSymperm" data-name="cssymperm">
+  <div class="func-name">csSymperm</div>
+  <div class="func-desc">Computes the symmetric permutation of matrix A accessing only the upper triangular part of A. C = P * A * P'</div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Matrix</td><td>The A matrix</td></tr>
+      <tr><td class="param-name">pinv</td><td class="param-type">Array</td><td>The inverse of permutation vector</td></tr>
+      <tr><td class="param-name">values</td><td class="param-type">boolean</td><td>Process matrix values (true)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix — The C matrix, C = P * A * P'</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="curl" data-name="curl">
+  <div class="func-name">curl</div>
+  <div class="func-desc">Compute the symbolic curl of a 3D vector field. The curl is defined as [dF3/dy - dF2/dz, dF1/dz - dF3/dx, dF2/dx - dF1/dy]. Both field and variables must have exactly 3 elements.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">curl(field | variables)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">field</td><td class="param-type">Array.&lt;string | Node&gt;</td><td>Array of 3 component expressions [F1, F2, F3]</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">Array.&lt;string&gt;</td><td>Array of 3 variable names [x, y, z]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array.&lt;string&gt; — The curl as an array of 3 strings</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#divergence">divergence</a>
+    <a href="#gradientSymbolic">gradientSymbolic</a>
+    <a href="#derivative">derivative</a>
+  </div>
+</div>
+
+<div class="func-card" id="degree" data-name="degree">
+  <div class="func-name">degree</div>
+  <div class="func-desc">Find the degree of a polynomial expression in a specified variable. Walks the expression tree to find the highest power of the given variable. Returns 0 for constant expressions and -Infinity for non-polynomial expressions.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">degree(polynomial | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">polynomial</td><td class="param-type">string | Node</td><td>The polynomial expression</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The degree (highest power) of the variable</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">degree(&quot;3*x^5 + 2*x^3 + 1<br>x&quot;)<br>degree(&quot;x^2 + x + 1<br>x&quot;)<br>degree(&quot;7</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#parse">parse</a>
+    <a href="#derivative">derivative</a>
+  </div>
+</div>
+
+<div class="func-card" id="derivative" data-name="derivative">
+  <div class="func-name">derivative</div>
+  <div class="func-desc">Takes the derivative of an expression expressed in parser Nodes. The derivative will be taken over the supplied variable in the second parameter. If there are multiple variables in the expression, it will return a partial derivative.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">derivative(expr | variable) | derivative(expr</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, SymbolNode, ConstantNode, Node, SymbolNode, Node, ConstantNode, Node, SymbolNode, ConstantNode, string, string, number, function, ConstantNode, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node | string</td><td>The expression to differentiate</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">SymbolNode | string</td><td>The variable over which to differentiate</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>ConstantNode | SymbolNode | ParenthesisNode | FunctionNode | OperatorNode — The derivative of `expr`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">derivative(&quot;2x^3<br>x&quot;)<br>derivative(&quot;2x^3<br>x<br>{simplify: false})</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#parse">parse</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="differences" data-name="differences">
+  <div class="func-name">differences</div>
+  <div class="func-desc">Compute finite differences of a numeric sequence. First differences give the discrete analog of the derivative: Δa[i] = a[i+1] - a[i]. Higher-order differences are computed by applying the operator repeatedly.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">differences(sequence) | differences(sequence | order)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">sequence</td><td class="param-type">Array.&lt;number&gt;</td><td>The input sequence (array of numbers)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array.&lt;number&gt; — The finite differences</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">differences([1<br>4<br>9<br>16<br>25</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#taylor">taylor</a>
+    <a href="#cumsum">cumsum</a>
+  </div>
+</div>
+
+<div class="func-card" id="directionalDerivative" data-name="directionalderivative">
+  <div class="func-name">directionalDerivative</div>
+  <div class="func-desc">Compute the directional derivative of a scalar expression in the given direction. D_v f = gradient(f) · (v / |v|). The direction vector is normalized before computing the dot product with the gradient.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">directionalDerivative(expr | variables | direction)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The scalar expression</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">Array.&lt;string&gt;</td><td>Array of variable names</td></tr>
+      <tr><td class="param-name">direction</td><td class="param-type">Array.&lt;number&gt;</td><td>Direction vector components</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The directional derivative as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">directionalDerivative(&quot;x * y<br>[&quot;x<br>y</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#gradientSymbolic">gradientSymbolic</a>
+    <a href="#divergence">divergence</a>
+  </div>
+</div>
+
+<div class="func-card" id="discriminant" data-name="discriminant">
+  <div class="func-name">discriminant</div>
+  <div class="func-desc">Compute the discriminant of a polynomial. For quadratic ax^2+bx+c: disc = b^2-4ac. For cubic: disc = 18abcd-4b^3d+b^2c^2-4ac^3-27a^2d^2. For higher degrees, uses the resultant of p and its derivative.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">discriminant(polynomial | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, Node, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">polynomial</td><td class="param-type">Node|string</td><td>The polynomial expression</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The discriminant value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">discriminant(&quot;x^2 + 2*x + 1<br>x&quot;)<br>discriminant(&quot;x^2 - 4<br>x&quot;)<br>discriminant(&quot;x^2 - x - 6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#coefficientList">coefficientList</a>
+    <a href="#solve">solve</a>
+    <a href="#resultant">resultant</a>
+  </div>
+</div>
+
+<div class="func-card" id="divergence" data-name="divergence">
+  <div class="func-name">divergence</div>
+  <div class="func-desc">Compute the symbolic divergence of a vector field. The divergence is the sum of partial derivatives: div F = dF1/dx1 + dF2/dx2 + ... The field and variables arrays must have the same length.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">divergence(field | variables)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">field</td><td class="param-type">Array.&lt;string | Node&gt;</td><td>Array of component expressions</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">Array.&lt;string&gt;</td><td>Array of variable names (same length as field)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The divergence as a string</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#curl">curl</a>
+    <a href="#gradientSymbolic">gradientSymbolic</a>
+    <a href="#derivative">derivative</a>
+    <a href="#jacobian">jacobian</a>
+  </div>
+</div>
+
+<div class="func-card" id="element" data-name="element">
+  <div class="func-name">element</div>
+  <div class="func-desc">Assert that a variable belongs to a mathematical domain and record the assumption. Valid domains: Integer, Real, Rational, Complex, Positive, Negative. Returns true when the assumption is stored.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">element(variable | domain)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+      <tr><td class="param-name">domain</td><td class="param-type">string</td><td>The domain name (case-insensitive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — true when the assumption is recorded</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">element(&quot;x<br>Integer&quot;)<br>element(&quot;y<br>Real&quot;)<br>element(&quot;z</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#assume">assume</a>
+    <a href="#reduce">reduce</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="eliminate" data-name="eliminate">
+  <div class="func-name">eliminate</div>
+  <div class="func-desc">Eliminate specified variables from a system of polynomial equations using resultants. For each variable to eliminate, computes resultants between pairs of equations to produce equations in the remaining variables.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">eliminate(equations | variablesToEliminate)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">equations</td><td class="param-type">string[]</td><td>Array of polynomial equations/expressions</td></tr>
+      <tr><td class="param-name">variablesToEliminate</td><td class="param-type">string[]</td><td>Variables to eliminate</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string[] — Remaining equations</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">eliminate([&quot;x + y - 1<br>x - y</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#resultant">resultant</a>
+    <a href="#groebnerBasis">groebnerBasis</a>
+    <a href="#solve">solve</a>
+  </div>
+</div>
+
+<div class="func-card" id="expToTrig" data-name="exptotrig">
+  <div class="func-name">expToTrig</div>
+  <div class="func-desc">Convert exponential expressions to trigonometric or hyperbolic form using Euler\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">expToTrig(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to convert</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The converted expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">expToTrig(&quot;exp(i * x)&quot;)<br>expToTrig(&quot;(exp(x) + exp(-x)) / 2&quot;)<br>expToTrig(&quot;(exp(x) - exp(-x)) / 2&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#trigToExp">trigToExp</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="expand" data-name="expand">
+  <div class="func-name">expand</div>
+  <div class="func-desc">Expand an algebraic expression by distributing multiplication over addition and expanding integer powers. Returns the expanded form of the expression.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">expand(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to expand</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The expanded expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">expand(&quot;(x + 1)^2&quot;)<br>expand(&quot;(x + 1) * (x - 1)&quot;)<br>expand(&quot;2 * (x + y)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#rationalize">rationalize</a>
+  </div>
+</div>
+
+<div class="func-card" id="factor" data-name="factor">
+  <div class="func-name">factor</div>
+  <div class="func-desc">Factor a polynomial expression into its irreducible factors. Uses the rational roots theorem to find rational roots, then performs synthetic division. Handles linear, quadratic, cubic, and higher-degree polynomials with rational roots.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">factor(expr) | factor(expr | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, Node, string, string, Node, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The polynomial to factor</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable (auto-detected if omitted)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The factored expression</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">factor(&quot;x^2 - 4&quot;)<br>factor(&quot;x^2 + 2*x + 1&quot;)<br>factor(&quot;x^3 - x&quot;)<br>factor(&quot;x^2 - 5*x + 6&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#solve">solve</a>
+    <a href="#rationalize">rationalize</a>
+  </div>
+</div>
+
+<div class="func-card" id="fourierSeries" data-name="fourierseries">
+  <div class="func-name">fourierSeries</div>
+  <div class="func-desc">Compute the Fourier series coefficients of a periodic function using numeric integration (Simpson\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fourierSeries(expr | variable | period)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The periodic function expression</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The function variable</td></tr>
+      <tr><td class="param-name">period</td><td class="param-type">number</td><td>The period T</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — { a0: number, an: number[], bn: number[] }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fourierSeries(&quot;x<br>x<br>2 * pi<br>3)<br>fourierSeries(&quot;x^2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#evaluate">evaluate</a>
+    <a href="#integrate">integrate</a>
+  </div>
+</div>
+
+<div class="func-card" id="fullSimplify" data-name="fullsimplify">
+  <div class="func-name">fullSimplify</div>
+  <div class="func-desc">Aggressively simplify an expression by applying multiple strategies (basic simplify, trig identities, expand, rationalize) and returning the result with the fewest nodes.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fullSimplify(expr) | fullSimplify(expr | options)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, Object, Node, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to simplify</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options passed through to simplify</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The simplified expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fullSimplify(&quot;sin(x)^2 + cos(x)^2&quot;)<br>fullSimplify(&quot;(x^2 - 1) / (x - 1)&quot;)<br>fullSimplify(&quot;2*x + 3*x&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#expand">expand</a>
+    <a href="#rationalize">rationalize</a>
+  </div>
+</div>
+
+<div class="func-card" id="functionExpand" data-name="functionexpand">
+  <div class="func-name">functionExpand</div>
+  <div class="func-desc">Expand special function identities: gamma recurrence gamma(n+1)-&gt;n*gamma(n), beta(a,b)-&gt;gamma(a)*gamma(b)/gamma(a+b), binomial coefficients, and evaluates gamma/factorial at integer arguments.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">functionExpand(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to expand</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The expanded expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">functionExpand(&quot;gamma(n + 1)&quot;)<br>functionExpand(&quot;beta(a<br>b)&quot;)<br>functionExpand(&quot;combinations(n<br>k)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="gradientSymbolic" data-name="gradientsymbolic">
+  <div class="func-name">gradientSymbolic</div>
+  <div class="func-desc">Compute the symbolic gradient of a scalar expression with respect to a list of variables. Returns an array of strings, where each element is the partial derivative with respect to the corresponding variable.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">gradientSymbolic(expr | variables)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The scalar expression</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">Array.&lt;string&gt;</td><td>The variable names</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array.&lt;string&gt; — Array of partial derivative strings</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#partialDerivative">partialDerivative</a>
+    <a href="#jacobian">jacobian</a>
+    <a href="#divergence">divergence</a>
+    <a href="#curl">curl</a>
+  </div>
+</div>
+
+<div class="func-card" id="groebnerBasis" data-name="groebnerbasis">
+  <div class="func-name">groebnerBasis</div>
+  <div class="func-desc">Compute a Gröbner basis for a polynomial ideal. Supports 1-variable systems (via GCD) and 2-variable systems (via resultant-based reduction) with lexicographic ordering.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">groebnerBasis(polynomials | variables)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">polynomials</td><td class="param-type">string[]</td><td>Array of polynomial strings</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">string[]</td><td>Array of variable names (lex order)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string[] — Gröbner basis polynomials</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">groebnerBasis([&quot;x^2 + y^2 - 1<br>x - y</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#eliminate">eliminate</a>
+    <a href="#resultant">resultant</a>
+    <a href="#polynomialGCD">polynomialGCD</a>
+  </div>
+</div>
+
+<div class="func-card" id="implicitDiff" data-name="implicitdiff">
+  <div class="func-name">implicitDiff</div>
+  <div class="func-desc">Compute the implicit derivative dy/dx of an equation F(x, y) = 0 using the formula dy/dx = -(dF/dx) / (dF/dy).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">implicitDiff(expr | y | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The expression F(x,y) where F = 0</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">string</td><td>The dependent variable name</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">string</td><td>The independent variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The derivative dy/dx as a string</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#partialDerivative">partialDerivative</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="integrate" data-name="integrate">
+  <div class="func-name">integrate</div>
+  <div class="func-desc">Compute the symbolic indefinite integral of an expression with respect to a variable. Handles polynomials (power rule), basic trigonometric functions (sin, cos), exponentials (exp), and 1/x. Uses linearity of integration for sums and constant multiples. Returns the integral without the constant of i</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">integrate(expr | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, string, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node | string</td><td>The expression to integrate</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable of integration</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The integral (without +C)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">integrate(&quot;x^2<br>x&quot;)<br>integrate(&quot;sin(x)<br>x&quot;)<br>integrate(&quot;exp(x)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="inverseLaplace" data-name="inverselaplace">
+  <div class="func-name">inverseLaplace</div>
+  <div class="func-desc">Convenience alias for inverseLaplaceTransform. Compute the inverse Laplace transform using a lookup table of known transform pairs. Supported: 1/s → 1, 1/s^2 → t, c/s^n → c*t^(n-1)/(n-1)!, 1/(s-a) → e^(at), s/(s^2+b^2) → cos(bt), b/(s^2+b^2) → sin(bt), and more.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">inverseLaplace(expr | sVar | tVar)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string|Node</td><td>Expression in the s-domain</td></tr>
+      <tr><td class="param-name">sVar</td><td class="param-type">string</td><td>The s-domain variable (e.g. 's')</td></tr>
+      <tr><td class="param-name">tVar</td><td class="param-type">string</td><td>The time variable (e.g. 't')</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — Time-domain expression as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">inverseLaplace(&quot;1/s<br>s<br>t&quot;)<br>inverseLaplace(&quot;1/s^2<br>s</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#inverseLaplaceTransform">inverseLaplaceTransform</a>
+    <a href="#laplace">laplace</a>
+    <a href="#apart">apart</a>
+  </div>
+</div>
+
+<div class="func-card" id="inverseLaplaceTransform" data-name="inverselaplacetransform">
+  <div class="func-name">inverseLaplaceTransform</div>
+  <div class="func-desc">Compute the inverse Laplace transform using a lookup table of known transform pairs. Supported patterns include: 1/s → 1, 1/s^2 → t, c/s^n → c*t^(n-1)/(n-1)!, 1/(s-a) → e^(at), s/(s^2+b^2) → cos(bt), b/(s^2+b^2) → sin(bt), s/(s^2-a^2) → cosh(at), a/(s^2-a^2) → sinh(at). Sums are handled term by term</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">inverseLaplaceTransform(expr | sVar | tVar)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, string, Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string|Node</td><td>Expression in the s-domain</td></tr>
+      <tr><td class="param-name">sVar</td><td class="param-type">string</td><td>Name of the s-domain variable (e.g., 's')</td></tr>
+      <tr><td class="param-name">tVar</td><td class="param-type">string</td><td>Name of the time variable (e.g., 't')</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — Time-domain expression as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">inverseLaplaceTransform(&quot;1/s<br>s<br>t&quot;)<br>inverseLaplaceTransform(&quot;1/s^2<br>s</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#apart">apart</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="jacobian" data-name="jacobian">
+  <div class="func-name">jacobian</div>
+  <div class="func-desc">Compute the symbolic Jacobian matrix of a vector of expressions with respect to a list of variables. J[i][j] = d(exprs[i]) / d(variables[j]). Returns a 2D array of strings.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">jacobian(exprs | variables)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">exprs</td><td class="param-type">Array.&lt;string | Node&gt;</td><td>Array of expressions</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">Array.&lt;string&gt;</td><td>Array of variable names</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array.&lt;Array.&lt;string&gt;&gt; — 2D array of partial derivatives</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gradientSymbolic">gradientSymbolic</a>
+    <a href="#divergence">divergence</a>
+    <a href="#derivative">derivative</a>
+    <a href="#partialDerivative">partialDerivative</a>
+  </div>
+</div>
+
+<div class="func-card" id="laplace" data-name="laplace">
+  <div class="func-name">laplace</div>
+  <div class="func-desc">Compute the Laplace transform of an expression using a table-based approach. Supports: constants (1 -&gt; 1/s), powers (t^n -&gt; n!/s^(n+1)), exponentials (e^(at) -&gt; 1/(s-a)), sine (sin(bt) -&gt; b/(s^2+b^2)), cosine (cos(bt) -&gt; s/(s^2+b^2)), and linearity for sums and scalar multiples.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">laplace(expr | tVar | sVar)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, string, Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The time-domain expression</td></tr>
+      <tr><td class="param-name">tVar</td><td class="param-type">string</td><td>The time variable name</td></tr>
+      <tr><td class="param-name">sVar</td><td class="param-type">string</td><td>The frequency variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The Laplace transform in s</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">laplace(&quot;1<br>t<br>s&quot;)<br>laplace(&quot;t^2<br>t</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="laplacian" data-name="laplacian">
+  <div class="func-name">laplacian</div>
+  <div class="func-desc">Compute the scalar Laplacian of an expression with respect to a list of variables. The Laplacian is the sum of second partial derivatives: Δf = ∂²f/∂x² + ∂²f/∂y² + ...</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">laplacian(expr | variables)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The scalar expression</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">Array.&lt;string&gt;</td><td>The variable names</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The Laplacian as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">laplacian(&quot;x^2 + y^2<br>[&quot;x<br>y</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#gradientSymbolic">gradientSymbolic</a>
+    <a href="#divergence">divergence</a>
+    <a href="#curl">curl</a>
+  </div>
+</div>
+
+<div class="func-card" id="leafCount" data-name="leafcount">
+  <div class="func-name">leafCount</div>
+  <div class="func-desc">Computes the number of leaves in the parse tree of the given expression</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">leafCount(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to count the leaves of</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The number of leaves of `expr`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">leafCount(&quot;e^(i*pi)-1&quot;)<br>leafCount(parse(&quot;{a: 22/7<br>b: 10^(1/2)}&quot;))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="limit" data-name="limit">
+  <div class="func-name">limit</div>
+  <div class="func-desc">Compute the limit of an expression as a variable approaches a value. Uses direct substitution first; for indeterminate 0/0 forms, applies L\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">limit(expr | variable | value)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, number, Node, string, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string</td><td>The expression to evaluate the limit of</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable approaching the value</td></tr>
+      <tr><td class="param-name">value</td><td class="param-type">number</td><td>The value the variable approaches</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The limit value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">limit(&quot;sin(x) / x<br>x<br>0)<br>limit(&quot;(x^2 - 1) / (x - 1)<br>x</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#evaluate">evaluate</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="lsolve" data-name="lsolve">
+  <div class="func-name">lsolve</div>
+  <div class="func-desc">Finds one solution of the linear system L * x = b where L is an [n x n] lower triangular matrix and b is a [n] column vector.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x=lsolve(L | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">SparseMatrix, Array | Matrix, DenseMatrix, Array | Matrix, Array, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">L</td><td class="param-type">Matrix, Array</td><td>A N x N matrix or array (L)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Matrix, Array</td><td>A column vector with the b values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>DenseMatrix | Array — A column vector with the linear system solution (x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [-2<br>3; 2<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lsolveAll">lsolveAll</a>
+    <a href="#lup">lup</a>
+    <a href="#lusolve">lusolve</a>
+    <a href="#usolve">usolve</a>
+    <a href="#matrix">matrix</a>
+    <a href="#sparse">sparse</a>
+  </div>
+</div>
+
+<div class="func-card" id="lsolveAll" data-name="lsolveall">
+  <div class="func-name">lsolveAll</div>
+  <div class="func-desc">Finds all solutions of the linear system L * x = b where L is an [n x n] lower triangular matrix and b is a [n] column vector.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x=lsolveAll(L | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">SparseMatrix, Array | Matrix, DenseMatrix, Array | Matrix, Array, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">L</td><td class="param-type">Matrix, Array</td><td>A N x N matrix or array (L)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Matrix, Array</td><td>A column vector with the b values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>DenseMatrix[] | Array[] — An array of affine-independent column vectors (x) that solve the linear system</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [-2<br>3; 2<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lsolve">lsolve</a>
+    <a href="#lup">lup</a>
+    <a href="#lusolve">lusolve</a>
+    <a href="#usolve">usolve</a>
+    <a href="#matrix">matrix</a>
+    <a href="#sparse">sparse</a>
+  </div>
+</div>
+
+<div class="func-card" id="lup" data-name="lup">
+  <div class="func-name">lup</div>
+  <div class="func-desc">Calculate the Matrix LU decomposition with partial pivoting. Matrix A is decomposed in three matrices (L, U, P) where P * A = L * U</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">lup(m)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Matrix | Array</td><td>A two dimensional matrix or array for which to get the LUP decomposition.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>{L: Array | Matrix, U: Array | Matrix, P: Array.&lt;number&gt; — } The lower triangular matrix, the upper triangular matrix and the permutation matrix.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">lup([[2<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lusolve">lusolve</a>
+    <a href="#lsolve">lsolve</a>
+    <a href="#usolve">usolve</a>
+    <a href="#matrix">matrix</a>
+    <a href="#sparse">sparse</a>
+    <a href="#slu">slu</a>
+    <a href="#qr">qr</a>
+  </div>
+</div>
+
+<div class="func-card" id="lusolve" data-name="lusolve">
+  <div class="func-name">lusolve</div>
+  <div class="func-desc">Solves the linear system A * x = b where A is an [n x n] matrix and b is a [n] column vector.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x=lusolve(A | b) | x=lusolve(lu</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array | Matrix, DenseMatrix, Array | Matrix, SparseMatrix, Array | Matrix, SparseMatrix, Array | Matrix, number, number, Object, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Matrix | Array | Object</td><td>Invertible Matrix or the Matrix LU decomposition</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Matrix | Array</td><td>Column Vector</td></tr>
+      <tr><td class="param-name">order</td><td class="param-type">number</td><td>The Symbolic Ordering and Analysis order, see slu for details. Matrix must be a SparseMatrix</td></tr>
+      <tr><td class="param-name">threshold</td><td class="param-type">Number</td><td>Partial pivoting threshold (1 for partial pivoting), see slu for details. Matrix must be a SparseMatrix.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>DenseMatrix | Array — Column vector with the solution to the linear system A * x = b</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [-2<br>3; 2<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lup">lup</a>
+    <a href="#slu">slu</a>
+    <a href="#lsolve">lsolve</a>
+    <a href="#usolve">usolve</a>
+    <a href="#matrix">matrix</a>
+    <a href="#sparse">sparse</a>
+  </div>
+</div>
+
+<div class="func-card" id="lyap" data-name="lyap">
+  <div class="func-name">lyap</div>
+  <div class="func-desc">Solves the Continuous-time Lyapunov equation AP+PA\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">lyap(A | Q)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, Matrix, Array, Matrix, Matrix, Array, Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Matrix | Array</td><td>Matrix A</td></tr>
+      <tr><td class="param-name">Q</td><td class="param-type">Matrix | Array</td><td>Matrix Q</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix | Array — Matrix P solution to the Continuous-time Lyapunov equation AP+PA'=Q</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">lyap([[-2<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#schur">schur</a>
+    <a href="#sylvester">sylvester</a>
+  </div>
+</div>
+
+<div class="func-card" id="minimalPolynomial" data-name="minimalpolynomial">
+  <div class="func-name">minimalPolynomial</div>
+  <div class="func-desc">Find the minimal polynomial of a simple algebraic expression. The minimal polynomial is the monic polynomial with rational coefficients of lowest degree for which the expression is a root. Supports: sqrt(n), cbrt(n), nthRoot(n, k), sqrt(a) + sqrt(b), and rational constants.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">minimalPolynomial(expr | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The algebraic expression (a numeric constant)</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The polynomial variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The minimal polynomial as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">minimalPolynomial(&quot;sqrt(2)<br>x&quot;)<br>minimalPolynomial(&quot;cbrt(3)<br>x&quot;)<br>minimalPolynomial(&quot;sqrt(2) + sqrt(3)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#parse">parse</a>
+    <a href="#toRadicals">toRadicals</a>
+  </div>
+</div>
+
+<div class="func-card" id="multivariateTaylor" data-name="multivariatetaylor">
+  <div class="func-name">multivariateTaylor</div>
+  <div class="func-desc">Compute the multivariate Taylor series expansion of a scalar expression around a point. Uses mixed partial derivatives to build the polynomial: f + sum_alpha (partial^|alpha| f / alpha!) * prod (xi - ai)^ki, where the sum is over all multi-indices of total degree &lt;= order.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">multivariateTaylor(expr | variables | points</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, Array, Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The scalar expression to expand</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">Array.&lt;string&gt;</td><td>Array of variable names</td></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array.&lt;number&gt;</td><td>Array of expansion points (same length as variables)</td></tr>
+      <tr><td class="param-name">order</td><td class="param-type">number</td><td>The order of the expansion</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The Taylor polynomial as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">multivariateTaylor(&quot;x * y<br>[&quot;x<br>y</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#taylor">taylor</a>
+    <a href="#series">series</a>
+    <a href="#derivative">derivative</a>
+    <a href="#factorial">factorial</a>
+  </div>
+</div>
+
+<div class="func-card" id="normalForm" data-name="normalform">
+  <div class="func-name">normalForm</div>
+  <div class="func-desc">Convert an expression to canonical polynomial or rational normal form by expanding, combining fractions, cancelling common factors, and simplifying.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">normalForm(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to normalize</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The normalized expression as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">normalForm(&quot;(x + 1)^2 / (x + 1)&quot;)<br>normalForm(&quot;1/2 + 1/3&quot;)<br>normalForm(&quot;(x^2 - 1) / (x - 1)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#rationalize">rationalize</a>
+    <a href="#together">together</a>
+    <a href="#cancel">cancel</a>
+  </div>
+</div>
+
+<div class="func-card" id="odeGeneral" data-name="odegeneral">
+  <div class="func-name">odeGeneral</div>
+  <div class="func-desc">Solve first-order ordinary differential equations (ODEs) symbolically. The expression is the right-hand side of dy/dx = expr. Handles separable ODEs (dy/dx = g(x)*h(y)) and linear first-order ODEs (dy/dx + P*y = Q(x)) using integrating factors. Returns the general solution with constant C.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">odeGeneral(expr | y | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>Right-hand side of dy/dx = expr</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">string</td><td>The dependent variable name</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">string</td><td>The independent variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — General solution as a string (with constant C)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">odeGeneral(&quot;y<br>y<br>x&quot;)<br>odeGeneral(&quot;-y<br>y</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#integrate">integrate</a>
+    <a href="#derivative">derivative</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="partialDerivative" data-name="partialderivative">
+  <div class="func-name">partialDerivative</div>
+  <div class="func-desc">Compute higher-order and mixed partial derivatives of an expression. The variables argument specifies the differentiation order: a single string for first-order, or an array of strings for higher-order mixed partials.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">partialDerivative(expr | variable) | partialDerivative(expr</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, string, string | Node, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The expression to differentiate</td></tr>
+      <tr><td class="param-name">variables</td><td class="param-type">string | Array.&lt;string&gt;</td><td>Variable(s) to differentiate with respect to (in order)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The partial derivative as a string</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#gradientSymbolic">gradientSymbolic</a>
+    <a href="#jacobian">jacobian</a>
+    <a href="#implicitDiff">implicitDiff</a>
+  </div>
+</div>
+
+<div class="func-card" id="piecewise" data-name="piecewise">
+  <div class="func-name">piecewise</div>
+  <div class="func-desc">Build and evaluate a piecewise-defined expression. Given an array of [condition, value] pairs and a default value, evaluates each condition in order and returns the value of the first matching condition, or the default if none match.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">piecewise(pairs | defaultValue) | piecewise(pairs</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, any, Array, any, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">pairs</td><td class="param-type">Array</td><td>Array of [condition, value] pairs</td></tr>
+      <tr><td class="param-name">defaultValue</td><td class="param-type">string|number</td><td>Value when no condition matches</td></tr>
+      <tr><td class="param-name">scope</td><td class="param-type">Object</td><td>Variable scope for evaluation</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number|string — The matched value or defaultValue</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">piecewise([[&quot;x &gt; 0<br>x</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#evaluate">evaluate</a>
+    <a href="#parse">parse</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="polyadd" data-name="polyadd">
+  <div class="func-name">polyadd</div>
+  <div class="func-desc">Add two polynomials element-wise. The shorter array is padded with zeros.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polyadd(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number[]</td><td>First polynomial coefficients [a0, a1, ..., am] (ascending degree)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number[]</td><td>Second polynomial coefficients [b0, b1, ..., bn] (ascending degree)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Sum polynomial coefficients</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polyadd([1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polyval">polyval</a>
+    <a href="#polyder">polyder</a>
+    <a href="#polymul">polymul</a>
+  </div>
+</div>
+
+<div class="func-card" id="polyder" data-name="polyder">
+  <div class="func-name">polyder</div>
+  <div class="func-desc">Compute the derivative of a polynomial given its coefficient array.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polyder(coeffs)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">coeffs</td><td class="param-type">number[]</td><td>Coefficient array [c0, c1, ..., cn] (ascending degree)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Derivative coefficients [c1, 2*c2, ..., n*cn]</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polyder([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polyval">polyval</a>
+    <a href="#polymul">polymul</a>
+    <a href="#polyadd">polyadd</a>
+  </div>
+</div>
+
+<div class="func-card" id="polymul" data-name="polymul">
+  <div class="func-name">polymul</div>
+  <div class="func-desc">Multiply two polynomials by convolving their coefficient arrays.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polymul(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number[]</td><td>First polynomial coefficients [a0, a1, ..., am] (ascending degree)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number[]</td><td>Second polynomial coefficients [b0, b1, ..., bn] (ascending degree)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Product polynomial coefficients (degree m+n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polymul([1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polyval">polyval</a>
+    <a href="#polyder">polyder</a>
+    <a href="#polyadd">polyadd</a>
+  </div>
+</div>
+
+<div class="func-card" id="polynomialGCD" data-name="polynomialgcd">
+  <div class="func-name">polynomialGCD</div>
+  <div class="func-desc">Compute the Greatest Common Divisor (GCD) of two polynomials using the Euclidean algorithm. The result is normalized to be monic.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polynomialGCD(p | q | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, Node, string, string, string, string, string, Node, string, Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">p</td><td class="param-type">Node|string</td><td>First polynomial</td></tr>
+      <tr><td class="param-name">q</td><td class="param-type">Node|string</td><td>Second polynomial</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The GCD polynomial as a string (monic)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polynomialGCD(&quot;x^2 - 1<br>x^2 - 2*x + 1<br>x&quot;)<br>polynomialGCD(&quot;x^2 - 1<br>x + 1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polynomialQuotient">polynomialQuotient</a>
+    <a href="#polynomialRemainder">polynomialRemainder</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="polynomialLCM" data-name="polynomiallcm">
+  <div class="func-name">polynomialLCM</div>
+  <div class="func-desc">Compute the Least Common Multiple (LCM) of two polynomials. Computed as p*q/GCD(p,q). The result is normalized to be monic (leading coefficient 1).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polynomialLCM(p | q | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, string, Node, Node, string, string, Node, string, Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">p</td><td class="param-type">Node|string</td><td>First polynomial</td></tr>
+      <tr><td class="param-name">q</td><td class="param-type">Node|string</td><td>Second polynomial</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The LCM polynomial as a string (monic)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polynomialLCM(&quot;x^2 - 1<br>x^2 - 2*x + 1<br>x&quot;)<br>polynomialLCM(&quot;x^2 - 1<br>x + 1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polynomialGCD">polynomialGCD</a>
+    <a href="#polynomialQuotient">polynomialQuotient</a>
+    <a href="#polynomialRemainder">polynomialRemainder</a>
+  </div>
+</div>
+
+<div class="func-card" id="polynomialQuotient" data-name="polynomialquotient">
+  <div class="func-name">polynomialQuotient</div>
+  <div class="func-desc">Compute the quotient of polynomial long division p / q. Returns the quotient polynomial.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polynomialQuotient(p | q | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, Node, string, string, string, string, string, Node, string, Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">p</td><td class="param-type">Node|string</td><td>Dividend polynomial</td></tr>
+      <tr><td class="param-name">q</td><td class="param-type">Node|string</td><td>Divisor polynomial</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The quotient polynomial as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polynomialQuotient(&quot;x^3 - 1<br>x - 1<br>x&quot;)<br>polynomialQuotient(&quot;x^2 + 3*x + 2<br>x + 1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polynomialRemainder">polynomialRemainder</a>
+    <a href="#polynomialGCD">polynomialGCD</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="polynomialRemainder" data-name="polynomialremainder">
+  <div class="func-name">polynomialRemainder</div>
+  <div class="func-desc">Compute the remainder of polynomial long division p / q. Returns the remainder polynomial.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polynomialRemainder(p | q | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, Node, string, string, string, string, string, Node, string, Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">p</td><td class="param-type">Node|string</td><td>Dividend polynomial</td></tr>
+      <tr><td class="param-name">q</td><td class="param-type">Node|string</td><td>Divisor polynomial</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The remainder polynomial as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polynomialRemainder(&quot;x^3 + 2*x + 1<br>x^2 + 1<br>x&quot;)<br>polynomialRemainder(&quot;x^3 - 1<br>x - 1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polynomialQuotient">polynomialQuotient</a>
+    <a href="#polynomialGCD">polynomialGCD</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="polynomialRoot" data-name="polynomialroot">
+  <div class="func-name">polynomialRoot</div>
+  <div class="func-desc">Finds the roots of a univariate polynomial given by its coefficients starting from constant, linear, and so on, increasing in degree.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x=polynomialRoot(-6 | 3) | x=polynomialRoot(4</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">coeffs</td><td class="param-type">... number | Complex</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — The distinct roots of the polynomial</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = polynomialRoot(-6<br>11<br>-6<br>1)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cbrt">cbrt</a>
+    <a href="#sqrt">sqrt</a>
+  </div>
+</div>
+
+<div class="func-card" id="polyval" data-name="polyval">
+  <div class="func-name">polyval</div>
+  <div class="func-desc">Evaluate a polynomial at a value x using Horner\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polyval(coeffs | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">coeffs</td><td class="param-type">number[]</td><td>Coefficient array [c0, c1, ..., cn] (ascending degree)</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>Value at which to evaluate the polynomial</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — p(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polyval([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polyder">polyder</a>
+    <a href="#polymul">polymul</a>
+    <a href="#polyadd">polyadd</a>
+    <a href="#polyfit">polyfit</a>
+  </div>
+</div>
+
+<div class="func-card" id="powerExpand" data-name="powerexpand">
+  <div class="func-name">powerExpand</div>
+  <div class="func-desc">Expand powers and logarithms assuming arguments are positive real numbers. Distributes (a*b)^n-&gt;a^n*b^n, (a^m)^n-&gt;a^(m*n), log(a*b)-&gt;log(a)+log(b), and similar rules.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">powerExpand(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to expand</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The expanded expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">powerExpand(&quot;(x * y)^3&quot;)<br>powerExpand(&quot;(a^2)^3&quot;)<br>powerExpand(&quot;log(x * y)&quot;)<br>powerExpand(&quot;log(x / y)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#expand">expand</a>
+    <a href="#simplify">simplify</a>
+    <a href="#combine">combine</a>
+  </div>
+</div>
+
+<div class="func-card" id="qr" data-name="qr">
+  <div class="func-name">qr</div>
+  <div class="func-desc">Calculates the Matrix QR decomposition. Matrix `A` is decomposed in two matrices (`Q`, `R`) where `Q` is an orthogonal matrix and `R` is an upper triangular matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">qr(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Matrix | Array</td><td>A two dimensional matrix or array</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>{Q: Array | Matrix, R: Array | Matrix — } Q: the orthogonal</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">qr([[1<br>-1<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lup">lup</a>
+    <a href="#slu">slu</a>
+    <a href="#matrix">matrix</a>
+  </div>
+</div>
+
+<div class="func-card" id="rationalize" data-name="rationalize">
+  <div class="func-name">rationalize</div>
+  <div class="func-desc">Transform a rationalizable expression in a rational fraction. If rational fraction is one variable polynomial then converts the numerator and denominator in canonical form, with decreasing exponents, returning the coefficients of numerator.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">rationalize(expr) | rationalize(expr | scope)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to check if is a polynomial expression</td></tr>
+      <tr><td class="param-name">optional</td><td class="param-type">Object|boolean</td><td>scope of expression or true for already evaluated rational expression at input</td></tr>
+      <tr><td class="param-name">detailed</td><td class="param-type">Boolean</td><td>optional True if return an object, false if return expression node (default)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object | Node — The rational polynomial of `expr` or an object</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">rationalize(&quot;2x/y - y/(x+1)&quot;)<br>rationalize(&quot;2x/y - y/(x+1)<br>true)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="reduce" data-name="reduce">
+  <div class="func-name">reduce</div>
+  <div class="func-desc">Solve an equation with domain constraints. Calls solve() and filters solutions by the specified domain or by assumptions stored via assume(). Valid domains: Positive, Negative, Nonnegative, Nonzero, Integer, Real, Complex, Rational.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">reduce(expr | variable) | reduce(expr</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, Node, string, string, string, string, Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string|Node</td><td>The equation or expression</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable to solve for</td></tr>
+      <tr><td class="param-name">domain</td><td class="param-type">string</td><td>Domain constraint (optional)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Solutions filtered by domain</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">reduce(&quot;x^2 - 1<br>x<br>Positive&quot;)<br>reduce(&quot;x^2 - 4<br>x</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#solve">solve</a>
+    <a href="#assume">assume</a>
+    <a href="#element">element</a>
+  </div>
+</div>
+
+<div class="func-card" id="resolve" data-name="resolve">
+  <div class="func-name">resolve</div>
+  <div class="func-desc">Recursively substitute variables in an expression tree.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">resolve(node | scope)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">node</td><td class="param-type">Node | Node[]</td><td></td></tr>
+      <tr><td class="param-name">scope</td><td class="param-type">Object</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node | Node[] — Returns `node` with variables recursively substituted.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">resolve(parse(&quot;1 + x&quot;)<br>{ x: 7 })<br>resolve(parse(&quot;size(text)&quot;)<br>{ text: &quot;Hello World&quot; })<br>resolve(parse(&quot;x + y&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="resultant" data-name="resultant">
+  <div class="func-name">resultant</div>
+  <div class="func-desc">Compute the resultant of two univariate polynomials as the determinant of their Sylvester matrix. The resultant is zero if and only if the polynomials share a common root. Used for polynomial elimination.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">resultant(p | q | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, string, Node, Node, string, string, Node, string, Node, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">p</td><td class="param-type">Node|string</td><td>First polynomial</td></tr>
+      <tr><td class="param-name">q</td><td class="param-type">Node|string</td><td>Second polynomial</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The resultant value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">resultant(&quot;x^2 - 1<br>x^2 - 4<br>x&quot;)<br>resultant(&quot;x^2 - 1<br>x - 1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#discriminant">discriminant</a>
+    <a href="#polynomialGCD">polynomialGCD</a>
+    <a href="#eliminate">eliminate</a>
+  </div>
+</div>
+
+<div class="func-card" id="schur" data-name="schur">
+  <div class="func-name">schur</div>
+  <div class="func-desc">Performs a real Schur decomposition of the real matrix A = UTU\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">schur(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>Matrix A</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>{U: Array | Matrix, T: Array | Matrix — } Object containing both matrix U and T of the Schur Decomposition A=UTU'</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">schur([[1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lyap">lyap</a>
+    <a href="#sylvester">sylvester</a>
+  </div>
+</div>
+
+<div class="func-card" id="series" data-name="series">
+  <div class="func-name">series</div>
+  <div class="func-desc">Compute the Taylor series expansion of an expression around a point. Uses the formula f(a) + f\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">series(expr | variable) | series(expr</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, Node, string, string, string, number, Node, string, number, string, string, number, number, Node, string, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The expression to expand</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The expansion variable</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The Taylor series as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">series(&quot;exp(x)<br>x<br>0<br>4)<br>series(&quot;sin(x)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#evaluate">evaluate</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="seriesCoefficient" data-name="seriescoefficient">
+  <div class="func-name">seriesCoefficient</div>
+  <div class="func-desc">Extract the nth coefficient from the Taylor series expansion of an expression around a point. Uses the formula c_n = f^(n)(a) / n! where f^(n) is the nth derivative.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">seriesCoefficient(expr | variable | point</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, string, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The expression to expand</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The expansion variable</td></tr>
+      <tr><td class="param-name">point</td><td class="param-type">number</td><td>The expansion point</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The coefficient index (non-negative integer)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The nth Taylor coefficient</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">seriesCoefficient(&quot;exp(x)<br>x<br>0<br>3)<br>seriesCoefficient(&quot;sin(x)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#taylor">taylor</a>
+    <a href="#series">series</a>
+    <a href="#derivative">derivative</a>
+    <a href="#factorial">factorial</a>
+  </div>
+</div>
+
+<div class="func-card" id="simplify" data-name="simplify">
+  <div class="func-name">simplify</div>
+  <div class="func-desc">Simplify an expression tree.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">simplify(expr) | simplify(expr | rules)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node | string</td><td></td></tr>
+      <tr><td class="param-name">rules</td><td class="param-type">SimplifyRule[]</td><td></td></tr>
+      <tr><td class="param-name">scope</td><td class="param-type">Object</td><td>Optional scope with variables</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">SimplifyOptions</td><td>Optional configuration settings</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node — Returns the simplified form of `expr`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">simplify(&quot;3 + 2 / 4&quot;)<br>simplify(&quot;2x + x&quot;)<br>f = parse(&quot;x * (x + 2 + x)&quot;)<br>simplified = simplify(f)<br>simplified.evaluate({x: 2})</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplifyCore">simplifyCore</a>
+    <a href="#derivative">derivative</a>
+    <a href="#evaluate">evaluate</a>
+    <a href="#parse">parse</a>
+    <a href="#rationalize">rationalize</a>
+    <a href="#resolve">resolve</a>
+  </div>
+</div>
+
+<div class="func-card" id="simplifyConstant" data-name="simplifyconstant">
+  <div class="func-name">simplifyConstant</div>
+  <div class="func-desc">Replace constant subexpressions of node with their values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">simplifyConstant(expr) | simplifyConstant(expr | options)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, Object, Node, Object, string, Object, Fraction, Object, BigNumber, Object, number, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">node</td><td class="param-type">Node | string</td><td></td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node — Returns expression with constant subexpressions evaluated</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">simplifyConstant(&quot;(3-3)*x&quot;)<br>simplifyConstant(parse(&quot;z-cos(tau/8)&quot;))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#simplifyCore">simplifyCore</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="simplifyCore" data-name="simplifycore">
+  <div class="func-name">simplifyCore</div>
+  <div class="func-desc">Perform simple one-pass simplifications on an expression tree.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">simplifyCore(node)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">node</td><td class="param-type">Node | string</td><td></td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node — Returns expression with basic simplifications applied</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">simplifyCore(parse(&quot;0*x&quot;))<br>simplifyCore(parse(&quot;(x+0)*2&quot;))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#simplifyConstant">simplifyConstant</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="simplifyUtil" data-name="simplifyutil">
+  <div class="func-name">simplifyUtil</div>
+  <div class="func-desc">/ unaryPlus: { trivial: T, total: T, commutative: T, associative: T }, /*</div>
+</div>
+
+<div class="func-card" id="slu" data-name="slu">
+  <div class="func-name">slu</div>
+  <div class="func-desc">Calculate the Matrix LU decomposition with full pivoting. Matrix A is decomposed in two matrices (L, U) and two permutation vectors (pinv, q) where P * A * Q = L * U</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">slu(A | order | threshold)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">SparseMatrix, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">SparseMatrix</td><td>A two dimensional sparse matrix for which to get the LU decomposition.</td></tr>
+      <tr><td class="param-name">order</td><td class="param-type">Number</td><td>The Symbolic Ordering and Analysis order:</td></tr>
+      <tr><td class="param-name">threshold</td><td class="param-type">Number</td><td>Partial pivoting threshold (1 for partial pivoting)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — The lower triangular matrix, the upper triangular matrix and the permutation vectors.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">slu(sparse([4.5<br>0<br>3.2<br>0; 3.1<br>2.9</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lusolve">lusolve</a>
+    <a href="#lsolve">lsolve</a>
+    <a href="#usolve">usolve</a>
+    <a href="#matrix">matrix</a>
+    <a href="#sparse">sparse</a>
+    <a href="#lup">lup</a>
+    <a href="#qr">qr</a>
+  </div>
+</div>
+
+<div class="func-card" id="solve" data-name="solve">
+  <div class="func-name">solve</div>
+  <div class="func-desc">Solve an equation or expression equal to zero for a given variable. Handles linear equations, quadratic equations (via quadratic formula), and simple polynomials (rational roots theorem). The input can be an equation like &quot;x^2 - 4 = 0&quot; or just an expression like &quot;x^2 - 4&quot; (treated as equal to zero).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">solve(expr | variable)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string, string, Node, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string</td><td>The equation or expression (= 0)</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable to solve for</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Array of solutions</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">solve(&quot;x^2 - 4<br>x&quot;)<br>solve(&quot;2*x + 6<br>x&quot;)<br>solve(&quot;x^2 - 5*x + 6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#parse">parse</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="substitute" data-name="substitute">
+  <div class="func-name">substitute</div>
+  <div class="func-desc">Substitute a variable with a value or expression. Replaces all occurrences of the specified variable in an expression with the given value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">substitute(expr | variable | value)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Node, string, number, Node, string, string, Node, string, Node, string, string, number, string, string, string, string, string, Node</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to substitute into</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name to replace</td></tr>
+      <tr><td class="param-name">value</td><td class="param-type">number|string|Node</td><td>The replacement value or expression</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number|string — Numeric result if value is a number, string otherwise</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">substitute(&quot;x^2 + 2*x<br>x<br>3)<br>substitute(&quot;x^2 + 2*x + 1<br>x</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="summation" data-name="summation">
+  <div class="func-name">summation</div>
+  <div class="func-desc">Compute the summation of an expression over a variable from start to end. Attempts closed-form evaluation for common patterns (arithmetic, quadratic, geometric series), then falls back to numeric summation.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">summation(expr | variable | start</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The summand expression</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The summation index variable</td></tr>
+      <tr><td class="param-name">start</td><td class="param-type">number</td><td>The lower bound (integer)</td></tr>
+      <tr><td class="param-name">end</td><td class="param-type">number</td><td>The upper bound (integer)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | string — The sum (number for numeric, string for closed-form)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">summation(&quot;k<br>k<br>1<br>100)<br>summation(&quot;k^2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#symbolicProduct">symbolicProduct</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="sylvester" data-name="sylvester">
+  <div class="func-name">sylvester</div>
+  <div class="func-desc">Solves the real-valued Sylvester equation AX+XB=C for X</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sylvester(A | B | C)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Matrix, Matrix, Array, Array, Matrix, Array, Matrix, Array, Matrix, Array, Matrix, Matrix, Array, Array, Matrix, Matrix, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Matrix | Array</td><td>Matrix A</td></tr>
+      <tr><td class="param-name">B</td><td class="param-type">Matrix | Array</td><td>Matrix B</td></tr>
+      <tr><td class="param-name">C</td><td class="param-type">Matrix | Array</td><td>Matrix C</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix | Array — Matrix X, solving the Sylvester equation</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sylvester([[-1<br>-2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#schur">schur</a>
+    <a href="#lyap">lyap</a>
+  </div>
+</div>
+
+<div class="func-card" id="symbolicEqual" data-name="symbolicequal">
+  <div class="func-name">symbolicEqual</div>
+  <div class="func-desc">Returns true if the difference of the expressions simplifies to 0</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">symbolicEqual(expr1 | expr2) | symbolicEqual(expr1</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr1</td><td class="param-type">Node|string</td><td>The first expression to compare</td></tr>
+      <tr><td class="param-name">expr2</td><td class="param-type">Node|string</td><td>The second expression to compare</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Optional option object, passed to simplify</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">symbolicEqual(&quot;x*y<br>y*x&quot;)<br>symbolicEqual(&quot;abs(x^2)<br>x^2&quot;)<br>symbolicEqual(&quot;abs(x)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="symbolicProduct" data-name="symbolicproduct">
+  <div class="func-name">symbolicProduct</div>
+  <div class="func-desc">Compute the product of an expression over a variable from start to end. Attempts closed-form evaluation for common patterns (factorial, partial factorial, constant product), then falls back to numeric evaluation.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">symbolicProduct(expr | variable | start</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The multiplicand expression</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The product index variable</td></tr>
+      <tr><td class="param-name">start</td><td class="param-type">number</td><td>The lower bound (integer)</td></tr>
+      <tr><td class="param-name">end</td><td class="param-type">number</td><td>The upper bound (integer)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The product</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">symbolicProduct(&quot;k<br>k<br>1<br>5)<br>symbolicProduct(&quot;k</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#summation">summation</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="tangentLine" data-name="tangentline">
+  <div class="func-name">tangentLine</div>
+  <div class="func-desc">Compute the tangent line of an expression at a given point. Returns a string expression y = f(a) + f\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">tangentLine(expr | variable | point)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node, string, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The expression to differentiate</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The variable name</td></tr>
+      <tr><td class="param-name">point</td><td class="param-type">number</td><td>The point at which to compute the tangent</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The tangent line expression as a string</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#simplify">simplify</a>
+    <a href="#evaluate">evaluate</a>
+  </div>
+</div>
+
+<div class="func-card" id="taylor" data-name="taylor">
+  <div class="func-name">taylor</div>
+  <div class="func-desc">Compute the Taylor polynomial expansion of an expression around a point. Returns only the polynomial string. Uses the formula f(a) + f\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">taylor(expr | variable) | taylor(expr</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The expression to expand</td></tr>
+      <tr><td class="param-name">variable</td><td class="param-type">string</td><td>The expansion variable</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The Taylor polynomial as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">taylor(&quot;sin(x)<br>x<br>0<br>5)<br>taylor(&quot;exp(x)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#series">series</a>
+    <a href="#derivative">derivative</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="toRadicals" data-name="toradicals">
+  <div class="func-name">toRadicals</div>
+  <div class="func-desc">Convert expressions containing fractional powers to explicit radical form. x^(1/2) becomes sqrt(x), x^(1/3) becomes cbrt(x), x^(p/q) becomes nthRoot(x^p, q). Numeric values are simplified where possible.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">toRadicals(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">string | Node</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The expression to convert</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The radical form as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">toRadicals(&quot;x^(1/2)&quot;)<br>toRadicals(&quot;x^(1/3)&quot;)<br>toRadicals(&quot;x^(2/3)&quot;)<br>toRadicals(&quot;4^(1/2)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#simplify">simplify</a>
+    <a href="#parse">parse</a>
+    <a href="#minimalPolynomial">minimalPolynomial</a>
+  </div>
+</div>
+
+<div class="func-card" id="together" data-name="together">
+  <div class="func-name">together</div>
+  <div class="func-desc">Combine fractions over a common denominator. This is the inverse of apart: it takes a sum of fractions and combines them into a single rational expression.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">together(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to combine</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The combined expression as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">together(&quot;1/(x-1) + 1/(x+1)&quot;)<br>together(&quot;1/x + 1/y&quot;)<br>together(&quot;a/b + c/d&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#apart">apart</a>
+    <a href="#simplify">simplify</a>
+    <a href="#rationalize">rationalize</a>
+  </div>
+</div>
+
+<div class="func-card" id="trigExpand" data-name="trigexpand">
+  <div class="func-name">trigExpand</div>
+  <div class="func-desc">Expand trigonometric expressions using angle addition formulas: sin(a+b), cos(a+b), tan(a+b), and double-angle identities like sin(2*x).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">trigExpand(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to expand</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The expanded expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">trigExpand(&quot;sin(a + b)&quot;)<br>trigExpand(&quot;cos(a + b)&quot;)<br>trigExpand(&quot;sin(2 * x)&quot;)<br>trigExpand(&quot;tan(a + b)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#trigReduce">trigReduce</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="trigReduce" data-name="trigreduce">
+  <div class="func-name">trigReduce</div>
+  <div class="func-desc">Reduce products of trigonometric functions to sums using product-to-sum identities. Inverse of trigExpand. Applies sin^2, cos^2 half-angle and product formulas.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">trigReduce(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to reduce</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The reduced expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">trigReduce(&quot;sin(x)^2&quot;)<br>trigReduce(&quot;cos(x)^2&quot;)<br>trigReduce(&quot;sin(x) * cos(x)&quot;)<br>trigReduce(&quot;sin(a) * sin(b)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#trigExpand">trigExpand</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="trigToExp" data-name="trigtoexp">
+  <div class="func-name">trigToExp</div>
+  <div class="func-desc">Convert trigonometric and hyperbolic functions to exponential form. Applies sin(x)-&gt;(exp(i*x)-exp(-i*x))/(2*i), cos(x)-&gt;(exp(i*x)+exp(-i*x))/2, and hyperbolic equivalents.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">trigToExp(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to convert</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Node|string — The converted expression (same type as input)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">trigToExp(&quot;cos(x)&quot;)<br>trigToExp(&quot;sin(x)&quot;)<br>trigToExp(&quot;sinh(x)&quot;)<br>trigToExp(&quot;cosh(x)&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#expToTrig">expToTrig</a>
+    <a href="#simplify">simplify</a>
+  </div>
+</div>
+
+<div class="func-card" id="usolve" data-name="usolve">
+  <div class="func-name">usolve</div>
+  <div class="func-desc">Finds one solution of the linear system U * x = b where U is an [n x n] upper triangular matrix and b is a [n] column vector.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x=usolve(U | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">SparseMatrix, Array | Matrix, DenseMatrix, Array | Matrix, Array, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">U</td><td class="param-type">Matrix, Array</td><td>A N x N matrix or array (U)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Matrix, Array</td><td>A column vector with the b values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>DenseMatrix | Array — A column vector with the linear system solution (x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">x=usolve(sparse([1<br>1<br>1<br>1; 0<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#usolveAll">usolveAll</a>
+    <a href="#lup">lup</a>
+    <a href="#lusolve">lusolve</a>
+    <a href="#lsolve">lsolve</a>
+    <a href="#matrix">matrix</a>
+    <a href="#sparse">sparse</a>
+  </div>
+</div>
+
+<div class="func-card" id="usolveAll" data-name="usolveall">
+  <div class="func-name">usolveAll</div>
+  <div class="func-desc">Finds all solutions of the linear system U * x = b where U is an [n x n] upper triangular matrix and b is a [n] column vector.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x=usolve(U | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">SparseMatrix, Array | Matrix, DenseMatrix, Array | Matrix, Array, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">U</td><td class="param-type">Matrix, Array</td><td>A N x N matrix or array (U)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Matrix, Array</td><td>A column vector with the b values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>DenseMatrix[] | Array[] — An array of affine-independent column vectors (x) that solve the linear system</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">x=usolve(sparse([1<br>1<br>1<br>1; 0<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#usolve">usolve</a>
+    <a href="#lup">lup</a>
+    <a href="#lusolve">lusolve</a>
+    <a href="#lsolve">lsolve</a>
+    <a href="#matrix">matrix</a>
+    <a href="#sparse">sparse</a>
+  </div>
+</div>
+
+<div class="func-card" id="variables" data-name="variables">
+  <div class="func-name">variables</div>
+  <div class="func-desc">Extract all symbolic variable names from an expression. Walks the AST and collects SymbolNode names, excluding known mathematical constants (pi, e, i) and built-in function names. Returns a sorted array of unique variable names.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">variables(expr)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">Node|string</td><td>The expression to inspect</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string[] — Sorted array of unique variable names</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">variables(&quot;x^2 + y*z + pi&quot;)<br>variables(&quot;a*sin(b) + c&quot;)<br>variables(&quot;3*x + 2&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#parse">parse</a>
+    <a href="#simplify">simplify</a>
+    <a href="#derivative">derivative</a>
+  </div>
+</div>
+
+<div class="func-card" id="zTransform" data-name="ztransform">
+  <div class="func-name">zTransform</div>
+  <div class="func-desc">Compute the Z-transform of a discrete sequence using a lookup table of known transform pairs. Supported: 1 → z/(z-1), n → z/(z-1)^2, n^2 → z*(z+1)/(z-1)^3, a^n → z/(z-a), n*a^n → a*z/(z-a)^2, cos(w*n) and sin(w*n) patterns.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">zTransform(expr | nVar | zVar)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">expr</td><td class="param-type">string | Node</td><td>The discrete sequence expression (function of nVar)</td></tr>
+      <tr><td class="param-name">nVar</td><td class="param-type">string</td><td>The time-domain index variable (e.g. 'n')</td></tr>
+      <tr><td class="param-name">zVar</td><td class="param-type">string</td><td>The Z-domain variable (e.g. 'z')</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — Z-domain expression as a string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">zTransform(&quot;1<br>n<br>z&quot;)<br>zTransform(&quot;n<br>n</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#inverseLaplaceTransform">inverseLaplaceTransform</a>
+    <a href="#laplace">laplace</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

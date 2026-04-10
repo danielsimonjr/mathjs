@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Combinatorics — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Combinatorics</div>
+  <h1><span>Combinatorics</span> Functions (20)</h1>
+  <p class="cat-desc">Number theory, combinatorial functions, prime numbers, sequences</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter combinatorics functions..." oninput="filterFuncs()">
+<div class="func-card" id="bellNumbers" data-name="bellnumbers">
+  <div class="func-name">bellNumbers</div>
+  <div class="func-desc">The Bell Numbers count the number of partitions of a set. A partition is a pairwise disjoint subset of S whose union is S. `bellNumbers` only takes integer arguments. The following condition must be enforced: n &gt;= 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">bellNumbers(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">Number | BigNumber</td><td>Total number of objects in the set</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number | BigNumber — B(n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">bellNumbers(3)<br>bellNumbers(8)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#stirlingS2">stirlingS2</a>
+  </div>
+</div>
+
+<div class="func-card" id="carmichaelLambda" data-name="carmichaellambda">
+  <div class="func-name">carmichaelLambda</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">carmichaelLambda(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Positive integer</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — lambda(n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">carmichaelLambda(1)<br>carmichaelLambda(8)<br>carmichaelLambda(12)<br>carmichaelLambda(15)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#eulerPhi">eulerPhi</a>
+    <a href="#moebiusMu">moebiusMu</a>
+    <a href="#primeFactors">primeFactors</a>
+  </div>
+</div>
+
+<div class="func-card" id="catalan" data-name="catalan">
+  <div class="func-name">catalan</div>
+  <div class="func-desc">The Catalan Numbers enumerate combinatorial structures of many different types. catalan only takes integer arguments. The following condition must be enforced: n &gt;= 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">catalan(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">Number | BigNumber</td><td>nth Catalan number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number | BigNumber — Cn(n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">catalan(3)<br>catalan(8)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bellNumbers">bellNumbers</a>
+  </div>
+</div>
+
+<div class="func-card" id="chineseRemainder" data-name="chineseremainder">
+  <div class="func-name">chineseRemainder</div>
+  <div class="func-desc">Solve a system of congruences using the Chinese Remainder Theorem.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">chineseRemainder(remainders | moduli)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">remainders</td><td class="param-type">number[]</td><td>Array of remainders [r0, r1, ..., rk]</td></tr>
+      <tr><td class="param-name">moduli</td><td class="param-type">number[]</td><td>Array of pairwise coprime moduli [m0, m1, ..., mk]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Unique solution x in [0, M)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">chineseRemainder([2<br>3<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gcd">gcd</a>
+    <a href="#lcm">lcm</a>
+    <a href="#mod">mod</a>
+  </div>
+</div>
+
+<div class="func-card" id="composition" data-name="composition">
+  <div class="func-name">composition</div>
+  <div class="func-desc">The composition counts of n into k parts. composition only takes integer arguments. The following condition must be enforced: k &lt;= n.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">composition(n | k)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber, number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">Number | BigNumber</td><td>Total number of objects in the set</td></tr>
+      <tr><td class="param-name">k</td><td class="param-type">Number | BigNumber</td><td>Number of objects in the subset</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number | BigNumber — Returns the composition counts of n into k parts.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">composition(5<br>3)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinations">combinations</a>
+  </div>
+</div>
+
+<div class="func-card" id="divisorSigma" data-name="divisorsigma">
+  <div class="func-name">divisorSigma</div>
+  <div class="func-desc">Compute the divisor function sigma_k(n): the sum of the k-th powers of all positive divisors of n. k=0 gives the number of divisors; k=1 gives the sum of divisors.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">divisorSigma(k | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">k</td><td class="param-type">number</td><td>Non-negative integer exponent</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Positive integer</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — sigma_k(n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">divisorSigma(0<br>12)<br>divisorSigma(1<br>12)<br>divisorSigma(1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#divisors">divisors</a>
+    <a href="#eulerPhi">eulerPhi</a>
+    <a href="#moebiusMu">moebiusMu</a>
+  </div>
+</div>
+
+<div class="func-card" id="divisors" data-name="divisors">
+  <div class="func-name">divisors</div>
+  <div class="func-desc">Return a sorted array of all positive divisors of a positive integer n.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">divisors(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Positive integer</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Sorted array of all positive divisors of n</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">divisors(1)<br>divisors(12)<br>divisors(28)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gcd">gcd</a>
+    <a href="#lcm">lcm</a>
+    <a href="#primeFactors">primeFactors</a>
+  </div>
+</div>
+
+<div class="func-card" id="eulerPhi" data-name="eulerphi">
+  <div class="func-name">eulerPhi</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">eulerPhi(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Positive integer</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — phi(n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">eulerPhi(1)<br>eulerPhi(6)<br>eulerPhi(12)<br>eulerPhi(7)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gcd">gcd</a>
+    <a href="#primeFactors">primeFactors</a>
+  </div>
+</div>
+
+<div class="func-card" id="fibonacci" data-name="fibonacci">
+  <div class="func-name">fibonacci</div>
+  <div class="func-desc">Compute the nth Fibonacci number using the fast doubling algorithm. F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2). For n &gt; 70 use BigInt input to avoid overflow.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fibonacci(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number | bigint</td><td>Non-negative integer index</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | bigint — The nth Fibonacci number F(n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fibonacci(0)<br>fibonacci(1)<br>fibonacci(10)<br>fibonacci(20)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#factorial">factorial</a>
+    <a href="#combinations">combinations</a>
+  </div>
+</div>
+
+<div class="func-card" id="harmonicNumber" data-name="harmonicnumber">
+  <div class="func-name">harmonicNumber</div>
+  <div class="func-desc">Compute the n-th harmonic number H_n = 1 + 1/2 + 1/3 + ... + 1/n. Uses direct summation for small n and asymptotic expansion for large n. n must be a positive integer.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">harmonicNumber(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>A positive integer</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The n-th harmonic number H_n</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">harmonicNumber(1)<br>harmonicNumber(5)<br>harmonicNumber(10)<br>harmonicNumber(100)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinations">combinations</a>
+    <a href="#factorial">factorial</a>
+  </div>
+</div>
+
+<div class="func-card" id="integerDigits" data-name="integerdigits">
+  <div class="func-name">integerDigits</div>
+  <div class="func-desc">Return the digits of a non-negative integer in a given base (default 10), most significant digit first.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">integerDigits(n) | integerDigits(n | base)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Non-negative integer</td></tr>
+      <tr><td class="param-name">base</td><td class="param-type">number</td><td>Base for the digit representation (default: 10)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Array of digits, most significant first</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">integerDigits(123)<br>integerDigits(255<br>16)<br>integerDigits(10<br>2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#primePi">primePi</a>
+    <a href="#prime">prime</a>
+    <a href="#primeFactors">primeFactors</a>
+  </div>
+</div>
+
+<div class="func-card" id="jacobiSymbol" data-name="jacobisymbol">
+  <div class="func-name">jacobiSymbol</div>
+  <div class="func-desc">Compute the Jacobi symbol (a/n), a generalization of the Legendre symbol. Returns 0, 1, or -1. n must be an odd positive integer.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">jacobiSymbol(a | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>Integer</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Odd positive integer &gt;= 1</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Jacobi symbol (a/n): 0, 1, or -1</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">jacobiSymbol(1<br>1)<br>jacobiSymbol(2<br>7)<br>jacobiSymbol(3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#eulerPhi">eulerPhi</a>
+    <a href="#moebiusMu">moebiusMu</a>
+    <a href="#primeFactors">primeFactors</a>
+  </div>
+</div>
+
+<div class="func-card" id="lucasL" data-name="lucasl">
+  <div class="func-name">lucasL</div>
+  <div class="func-desc">Compute the nth Lucas number.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">lucasL(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Non-negative integer index</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The nth Lucas number L(n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">lucasL(0)<br>lucasL(1)<br>lucasL(5)<br>lucasL(10)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fibonacci">fibonacci</a>
+    <a href="#bellNumbers">bellNumbers</a>
+    <a href="#catalan">catalan</a>
+  </div>
+</div>
+
+<div class="func-card" id="moebiusMu" data-name="moebiusmu">
+  <div class="func-name">moebiusMu</div>
+  <div class="func-desc">Compute the Mobius function mu(n).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">moebiusMu(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Positive integer &gt;= 1</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — mu(n): 0, 1, or -1</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">moebiusMu(1)<br>moebiusMu(2)<br>moebiusMu(6)<br>moebiusMu(4)<br>moebiusMu(30)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#primeFactors">primeFactors</a>
+    <a href="#eulerPhi">eulerPhi</a>
+    <a href="#divisors">divisors</a>
+  </div>
+</div>
+
+<div class="func-card" id="nextPrime" data-name="nextprime">
+  <div class="func-name">nextPrime</div>
+  <div class="func-desc">Return the smallest prime number strictly greater than n.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">nextPrime(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Non-negative number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Smallest prime p such that p &gt; n</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">nextPrime(1)<br>nextPrime(10)<br>nextPrime(100)<br>nextPrime(1000)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#primeFactors">primeFactors</a>
+    <a href="#gcd">gcd</a>
+  </div>
+</div>
+
+<div class="func-card" id="partitions" data-name="partitions">
+  <div class="func-name">partitions</div>
+  <div class="func-desc">Count the number of integer partitions of n (P(n)).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">partitions(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Non-negative integer</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Number of integer partitions P(n)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">partitions(0)<br>partitions(1)<br>partitions(4)<br>partitions(10)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinations">combinations</a>
+    <a href="#bellNumbers">bellNumbers</a>
+    <a href="#stirlingS2">stirlingS2</a>
+  </div>
+</div>
+
+<div class="func-card" id="prime" data-name="prime">
+  <div class="func-name">prime</div>
+  <div class="func-desc">Return the nth prime number (1-indexed). prime(1) = 2, prime(2) = 3, prime(3) = 5, etc.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">prime(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Positive integer (1-indexed)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The nth prime number</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">prime(1)<br>prime(5)<br>prime(25)<br>prime(100)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#primePi">primePi</a>
+    <a href="#nextPrime">nextPrime</a>
+    <a href="#primeFactors">primeFactors</a>
+  </div>
+</div>
+
+<div class="func-card" id="primeFactors" data-name="primefactors">
+  <div class="func-name">primeFactors</div>
+  <div class="func-desc">Compute the prime factorization of a positive integer n, returning an array of prime factors in ascending order with multiplicity.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">primeFactors(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Positive integer &gt;= 1</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Array of prime factors with multiplicity, sorted ascending</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">primeFactors(1)<br>primeFactors(12)<br>primeFactors(100)<br>primeFactors(997)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gcd">gcd</a>
+    <a href="#lcm">lcm</a>
+    <a href="#eulerPhi">eulerPhi</a>
+  </div>
+</div>
+
+<div class="func-card" id="primePi" data-name="primepi">
+  <div class="func-name">primePi</div>
+  <div class="func-desc">Compute the prime counting function pi(n): the number of primes less than or equal to n.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">primePi(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Non-negative integer</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Number of primes &lt;= n</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">primePi(10)<br>primePi(100)<br>primePi(1000)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#prime">prime</a>
+    <a href="#nextPrime">nextPrime</a>
+    <a href="#primeFactors">primeFactors</a>
+  </div>
+</div>
+
+<div class="func-card" id="stirlingS2" data-name="stirlings2">
+  <div class="func-name">stirlingS2</div>
+  <div class="func-desc">The Stirling numbers of the second kind, counts the number of ways to partition a set of n labelled objects into k nonempty unlabelled subsets. `stirlingS2` only takes integer arguments. The following condition must be enforced: k &lt;= n. If n = k or k = 1, then s(n,k) = 1.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">stirlingS2(n | k)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber, number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">Number | BigNumber</td><td>Total number of objects in the set</td></tr>
+      <tr><td class="param-name">k</td><td class="param-type">Number | BigNumber</td><td>Number of objects in the subset</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number | BigNumber — S(n,k)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">stirlingS2(5<br>3)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bellNumbers">bellNumbers</a>
+    <a href="#bernoulli">bernoulli</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

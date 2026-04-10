@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigonometry — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Trigonometry</div>
+  <h1><span>Trigonometry</span> Functions (25)</h1>
+  <p class="cat-desc">Trigonometric and hyperbolic functions</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter trigonometry functions..." oninput="filterFuncs()">
+<div class="func-card" id="acos" data-name="acos">
+  <div class="func-name">acos</div>
+  <div class="func-desc">Compute the inverse cosine of a value in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">acos(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — The arc cosine of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">acos(0.5)<br>acos(cos(2.3))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cos">cos</a>
+    <a href="#atan">atan</a>
+    <a href="#asin">asin</a>
+  </div>
+</div>
+
+<div class="func-card" id="acosh" data-name="acosh">
+  <div class="func-name">acosh</div>
+  <div class="func-desc">Calculate the hyperbolic arccos of a value, defined as `acosh(x) = ln(sqrt(x^2 - 1) + x)`.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">acosh(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic arccosine of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">acosh(1.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cosh">cosh</a>
+    <a href="#asinh">asinh</a>
+    <a href="#atanh">atanh</a>
+  </div>
+</div>
+
+<div class="func-card" id="acot" data-name="acot">
+  <div class="func-name">acot</div>
+  <div class="func-desc">Calculate the inverse cotangent of a value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">acot(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber| Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber| Complex — The arc cotangent of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">acot(0.5)<br>acot(cot(0.5))<br>acot(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cot">cot</a>
+    <a href="#atan">atan</a>
+  </div>
+</div>
+
+<div class="func-card" id="acoth" data-name="acoth">
+  <div class="func-name">acoth</div>
+  <div class="func-desc">Calculate the inverse hyperbolic tangent of a value, defined as `acoth(x) = (ln((x+1)/x) + ln(x/(x-1))) / 2`.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">acoth(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic arccotangent of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">acoth(2)<br>acoth(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#acsch">acsch</a>
+    <a href="#asech">asech</a>
+  </div>
+</div>
+
+<div class="func-card" id="acsc" data-name="acsc">
+  <div class="func-name">acsc</div>
+  <div class="func-desc">Calculate the inverse cotangent of a value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">acsc(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — The arc cosecant of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">acsc(2)<br>acsc(csc(0.5))<br>acsc(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#csc">csc</a>
+    <a href="#asin">asin</a>
+    <a href="#asec">asec</a>
+  </div>
+</div>
+
+<div class="func-card" id="acsch" data-name="acsch">
+  <div class="func-name">acsch</div>
+  <div class="func-desc">Calculate the inverse hyperbolic cosecant of a value, defined as `acsch(x) = ln(1/x + sqrt(1/x^2 + 1))`.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">acsch(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic arccosecant of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">acsch(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#asech">asech</a>
+    <a href="#acoth">acoth</a>
+  </div>
+</div>
+
+<div class="func-card" id="asec" data-name="asec">
+  <div class="func-name">asec</div>
+  <div class="func-desc">Calculate the inverse secant of a value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">asec(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — The arc secant of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">asec(0.5)<br>asec(sec(0.5))<br>asec(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#acos">acos</a>
+    <a href="#acot">acot</a>
+    <a href="#acsc">acsc</a>
+  </div>
+</div>
+
+<div class="func-card" id="asech" data-name="asech">
+  <div class="func-name">asech</div>
+  <div class="func-desc">Calculate the inverse secant of a value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">asech(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic arcsecant of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">asech(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#acsch">acsch</a>
+    <a href="#acoth">acoth</a>
+  </div>
+</div>
+
+<div class="func-card" id="asin" data-name="asin">
+  <div class="func-name">asin</div>
+  <div class="func-desc">Compute the inverse sine of a value in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">asin(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — The arc sine of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">asin(0.5)<br>asin(sin(0.5))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sin">sin</a>
+    <a href="#acos">acos</a>
+    <a href="#atan">atan</a>
+  </div>
+</div>
+
+<div class="func-card" id="asinh" data-name="asinh">
+  <div class="func-name">asinh</div>
+  <div class="func-desc">Calculate the hyperbolic arcsine of a value, defined as `asinh(x) = ln(x + sqrt(x^2 + 1))`.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">asinh(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic arcsine of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">asinh(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#acosh">acosh</a>
+    <a href="#atanh">atanh</a>
+  </div>
+</div>
+
+<div class="func-card" id="atan" data-name="atan">
+  <div class="func-name">atan</div>
+  <div class="func-desc">Compute the inverse tangent of a value in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">atan(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — The arc tangent of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">atan(0.5)<br>atan(tan(0.5))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#tan">tan</a>
+    <a href="#acos">acos</a>
+    <a href="#asin">asin</a>
+  </div>
+</div>
+
+<div class="func-card" id="atan2" data-name="atan2">
+  <div class="func-name">atan2</div>
+  <div class="func-desc">Computes the principal value of the arc tangent of y/x in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">atan2(y | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | Array | Matrix</td><td>Second dimension</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | Array | Matrix</td><td>First dimension</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Array | Matrix — Four-quadrant inverse tangent</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">atan2(2<br>2) / pi<br>angle = 60 deg in rad<br>x = cos(angle)<br>y = sin(angle)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sin">sin</a>
+    <a href="#cos">cos</a>
+    <a href="#tan">tan</a>
+  </div>
+</div>
+
+<div class="func-card" id="atanh" data-name="atanh">
+  <div class="func-name">atanh</div>
+  <div class="func-desc">Calculate the hyperbolic arctangent of a value, defined as `atanh(x) = ln((1 + x)/(1 - x)) / 2`.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">atanh(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic arctangent of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">atanh(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#acosh">acosh</a>
+    <a href="#asinh">asinh</a>
+  </div>
+</div>
+
+<div class="func-card" id="cos" data-name="cos">
+  <div class="func-name">cos</div>
+  <div class="func-desc">Compute the cosine of x in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cos(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Unit</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Cosine of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cos(2)<br>cos(pi / 4) ^ 2<br>cos(180 deg)<br>cos(60 deg)<br>sin(0.2)^2 + cos(0.2)^2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#acos">acos</a>
+    <a href="#sin">sin</a>
+    <a href="#tan">tan</a>
+  </div>
+</div>
+
+<div class="func-card" id="cosh" data-name="cosh">
+  <div class="func-name">cosh</div>
+  <div class="func-desc">Compute the hyperbolic cosine of x in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cosh(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic cosine of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cosh(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sinh">sinh</a>
+    <a href="#tanh">tanh</a>
+    <a href="#coth">coth</a>
+  </div>
+</div>
+
+<div class="func-card" id="cot" data-name="cot">
+  <div class="func-name">cot</div>
+  <div class="func-desc">Compute the cotangent of x in radians. Defined as 1/tan(x)</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cot(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | Complex | Unit | Array | Matrix</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Complex | Array | Matrix — Cotangent of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cot(2)<br>1 / tan(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sec">sec</a>
+    <a href="#csc">csc</a>
+    <a href="#tan">tan</a>
+  </div>
+</div>
+
+<div class="func-card" id="coth" data-name="coth">
+  <div class="func-name">coth</div>
+  <div class="func-desc">Compute the hyperbolic cotangent of x in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">coth(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic cotangent of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">coth(2)<br>1 / tanh(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sech">sech</a>
+    <a href="#csch">csch</a>
+    <a href="#tanh">tanh</a>
+  </div>
+</div>
+
+<div class="func-card" id="csc" data-name="csc">
+  <div class="func-name">csc</div>
+  <div class="func-desc">Compute the cosecant of x in radians. Defined as 1/sin(x)</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">csc(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Unit</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Cosecant of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">csc(2)<br>1 / sin(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sec">sec</a>
+    <a href="#cot">cot</a>
+    <a href="#sin">sin</a>
+  </div>
+</div>
+
+<div class="func-card" id="csch" data-name="csch">
+  <div class="func-name">csch</div>
+  <div class="func-desc">Compute the hyperbolic cosecant of x in radians. Defined as 1/sinh(x)</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">csch(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic cosecant of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">csch(2)<br>1 / sinh(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sech">sech</a>
+    <a href="#coth">coth</a>
+    <a href="#sinh">sinh</a>
+  </div>
+</div>
+
+<div class="func-card" id="sec" data-name="sec">
+  <div class="func-name">sec</div>
+  <div class="func-desc">Compute the secant of x in radians. Defined as 1/cos(x)</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sec(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Unit</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Secant of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sec(2)<br>1 / cos(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cot">cot</a>
+    <a href="#csc">csc</a>
+    <a href="#cos">cos</a>
+  </div>
+</div>
+
+<div class="func-card" id="sech" data-name="sech">
+  <div class="func-name">sech</div>
+  <div class="func-desc">Compute the hyperbolic secant of x in radians. Defined as 1/cosh(x)</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sech(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic secant of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sech(2)<br>1 / cosh(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#coth">coth</a>
+    <a href="#csch">csch</a>
+    <a href="#cosh">cosh</a>
+  </div>
+</div>
+
+<div class="func-card" id="sin" data-name="sin">
+  <div class="func-name">sin</div>
+  <div class="func-desc">Compute the sine of x in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sin(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Unit</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Sine of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sin(2)<br>sin(pi / 4) ^ 2<br>sin(90 deg)<br>sin(30 deg)<br>sin(0.2)^2 + cos(0.2)^2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#asin">asin</a>
+    <a href="#cos">cos</a>
+    <a href="#tan">tan</a>
+  </div>
+</div>
+
+<div class="func-card" id="sinh" data-name="sinh">
+  <div class="func-name">sinh</div>
+  <div class="func-desc">Compute the hyperbolic sine of x in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sinh(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic sine of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sinh(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cosh">cosh</a>
+    <a href="#tanh">tanh</a>
+  </div>
+</div>
+
+<div class="func-card" id="tan" data-name="tan">
+  <div class="func-name">tan</div>
+  <div class="func-desc">Compute the tangent of x in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">tan(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Unit</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Tangent of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">tan(0.5)<br>sin(0.5) / cos(0.5)<br>tan(pi / 4)<br>tan(45 deg)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#atan">atan</a>
+    <a href="#sin">sin</a>
+    <a href="#cos">cos</a>
+  </div>
+</div>
+
+<div class="func-card" id="tanh" data-name="tanh">
+  <div class="func-name">tanh</div>
+  <div class="func-desc">Compute the hyperbolic tangent of x in radians.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">tanh(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>Function input</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Hyperbolic tangent of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">tanh(0.5)<br>sinh(0.5) / cosh(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sinh">sinh</a>
+    <a href="#cosh">cosh</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

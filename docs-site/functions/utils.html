@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utils — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Utils</div>
+  <h1><span>Utils</span> Functions (18)</h1>
+  <p class="cat-desc">Utility functions for type checking and formatting</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter utils functions..." oninput="filterFuncs()">
+<div class="func-card" id="bin" data-name="bin">
+  <div class="func-name">bin</div>
+  <div class="func-desc">Format a number as binary</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">bin(value)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber, number | BigNumber, number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">value</td><td class="param-type">number | BigNumber</td><td>Value to be stringified</td></tr>
+      <tr><td class="param-name">wordSize</td><td class="param-type">number | BigNumber</td><td>Optional word size (see `format`)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The formatted value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">bin(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#oct">oct</a>
+    <a href="#hex">hex</a>
+  </div>
+</div>
+
+<div class="func-card" id="clone" data-name="clone">
+  <div class="func-name">clone</div>
+  <div class="func-desc">Clone a variable. Creates a copy of primitive variables, and a deep copy of matrices</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">clone(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">*</td><td>Object to be cloned</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — A clone of object x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">clone(3.5)<br>clone(2 - 4i)<br>clone(45 deg)<br>clone([1<br>2; 3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+  </div>
+</div>
+
+<div class="func-card" id="format" data-name="format">
+  <div class="func-name">format</div>
+  <div class="func-desc">Format a value of any type as string.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">format(value) | format(value | precision)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">value</td><td class="param-type">*</td><td>Value to be stringified</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object | Function | number</td><td>Formatting options</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The formatted value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">format(2.3)<br>format(3 - 4i)<br>format([</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#print">print</a>
+  </div>
+</div>
+
+<div class="func-card" id="hasNumericValue" data-name="hasnumericvalue">
+  <div class="func-name">hasNumericValue</div>
+  <div class="func-desc">Test whether a value is an numeric value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">hasNumericValue(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">*</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` is a `number`, `BigNumber`,</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">hasNumericValue(2)<br>hasNumericValue(&quot;2&quot;)<br>isNumeric(&quot;2&quot;)<br>hasNumericValue(0)<br>hasNumericValue(bignumber(500))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isInteger">isInteger</a>
+    <a href="#isZero">isZero</a>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isPositive">isPositive</a>
+    <a href="#isNaN">isNaN</a>
+    <a href="#isNumeric">isNumeric</a>
+  </div>
+</div>
+
+<div class="func-card" id="hex" data-name="hex">
+  <div class="func-name">hex</div>
+  <div class="func-desc">Format a number as hexadecimal</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">hex(value)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber, number | BigNumber, number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">value</td><td class="param-type">number | BigNumber</td><td>Value to be stringified</td></tr>
+      <tr><td class="param-name">wordSize</td><td class="param-type">number | BigNumber</td><td>Optional word size (see `format`)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The formatted value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">hex(240)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bin">bin</a>
+    <a href="#oct">oct</a>
+  </div>
+</div>
+
+<div class="func-card" id="isBounded" data-name="isbounded">
+  <div class="func-name">isBounded</div>
+  <div class="func-desc">Test whether a value or its entries are bounded.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isBounded(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Complex | Fraction | Unit | Array | Matrix</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` is bounded.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isBounded(Infinity)<br>isBounded(bigint(3))<br>isBounded([3<br>-Infinity<br>-3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isFinite">isFinite</a>
+    <a href="#isNumeric">isNumeric</a>
+    <a href="#isNaN">isNaN</a>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isPositive">isPositive</a>
+  </div>
+</div>
+
+<div class="func-card" id="isFinite" data-name="isfinite">
+  <div class="func-name">isFinite</div>
+  <div class="func-desc">Test whether a value is finite, elementwise on collections.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isFinite(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Complex | Fraction | Unit | Array | Matrix</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean | Array | Matrix — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isFinite(Infinity)<br>isFinite(bigint(3))<br>isFinite([3<br>-Infinity<br>-3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isBounded">isBounded</a>
+    <a href="#isNumeric">isNumeric</a>
+    <a href="#isNaN">isNaN</a>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isPositive">isPositive</a>
+  </div>
+</div>
+
+<div class="func-card" id="isInteger" data-name="isinteger">
+  <div class="func-name">isInteger</div>
+  <div class="func-desc">Test whether a value is an integer number.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isInteger(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Array | Matrix</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` contains a numeric, integer value.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isInteger(2)<br>isInteger(3.5)<br>isInteger([3<br>0.5<br>-2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isNumeric">isNumeric</a>
+    <a href="#isPositive">isPositive</a>
+    <a href="#isZero">isZero</a>
+  </div>
+</div>
+
+<div class="func-card" id="isNaN" data-name="isnan">
+  <div class="func-name">isNaN</div>
+  <div class="func-desc">Test whether a value is NaN (not a number)</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isNaN(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Unit | Array | Matrix</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` is NaN.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isNaN(2)<br>isNaN(0 / 0)<br>isNaN(NaN)<br>isNaN(Infinity)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isNumeric">isNumeric</a>
+    <a href="#isPositive">isPositive</a>
+    <a href="#isZero">isZero</a>
+    <a href="#isFinite">isFinite</a>
+    <a href="#isBounded">isBounded</a>
+  </div>
+</div>
+
+<div class="func-card" id="isNegative" data-name="isnegative">
+  <div class="func-name">isNegative</div>
+  <div class="func-desc">Test whether a value is negative: smaller than zero.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isNegative(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Unit | Array | Matrix</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` is larger than zero.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isNegative(2)<br>isNegative(0)<br>isNegative(-4)<br>isNegative([3<br>0.5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isInteger">isInteger</a>
+    <a href="#isNumeric">isNumeric</a>
+    <a href="#isPositive">isPositive</a>
+    <a href="#isZero">isZero</a>
+  </div>
+</div>
+
+<div class="func-card" id="isNumeric" data-name="isnumeric">
+  <div class="func-name">isNumeric</div>
+  <div class="func-desc">Test whether a value is a numeric value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isNumeric(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">*</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` is a `number`, `BigNumber`,</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isNumeric(2)<br>isNumeric(&quot;2&quot;)<br>hasNumericValue(&quot;2&quot;)<br>isNumeric(0)<br>isNumeric(bignumber(500))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isInteger">isInteger</a>
+    <a href="#isZero">isZero</a>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isPositive">isPositive</a>
+    <a href="#isNaN">isNaN</a>
+    <a href="#hasNumericValue">hasNumericValue</a>
+    <a href="#isFinite">isFinite</a>
+    <a href="#isBounded">isBounded</a>
+  </div>
+</div>
+
+<div class="func-card" id="isPositive" data-name="ispositive">
+  <div class="func-name">isPositive</div>
+  <div class="func-desc">Test whether a value is positive: larger than zero.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isPositive(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Unit | Array | Matrix</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` is larger than zero.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isPositive(2)<br>isPositive(0)<br>isPositive(-4)<br>isPositive([3<br>0.5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isInteger">isInteger</a>
+    <a href="#isNumeric">isNumeric</a>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isZero">isZero</a>
+  </div>
+</div>
+
+<div class="func-card" id="isPrime" data-name="isprime">
+  <div class="func-name">isPrime</div>
+  <div class="func-desc">Test whether a value is prime: has no divisors other than itself and one.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isPrime(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` is larger than zero.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isPrime(3)<br>isPrime(-2)<br>isPrime([2<br>17<br>100</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isInteger">isInteger</a>
+    <a href="#isNumeric">isNumeric</a>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isZero">isZero</a>
+  </div>
+</div>
+
+<div class="func-card" id="isZero" data-name="iszero">
+  <div class="func-name">isZero</div>
+  <div class="func-desc">Test whether a value is zero.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isZero(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Complex | Fraction | Unit | Array | Matrix</td><td>Value to be tested</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when `x` is zero.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isZero(2)<br>isZero(0)<br>isZero(-4)<br>isZero([3<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#isInteger">isInteger</a>
+    <a href="#isNumeric">isNumeric</a>
+    <a href="#isNegative">isNegative</a>
+    <a href="#isPositive">isPositive</a>
+  </div>
+</div>
+
+<div class="func-card" id="numeric" data-name="numeric">
+  <div class="func-name">numeric</div>
+  <div class="func-desc">Convert a numeric input to a specific numeric type: number, BigNumber, bigint, or Fraction.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">numeric(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">value</td><td class="param-type">string | number | BigNumber | bigint | Fraction </td><td></td></tr>
+      <tr><td class="param-name">outputType</td><td class="param-type">string</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">numeric(&quot;4&quot;)<br>numeric(&quot;4<br>number&quot;)<br>numeric(&quot;4<br>bigint&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#number">number</a>
+    <a href="#bigint">bigint</a>
+    <a href="#fraction">fraction</a>
+    <a href="#bignumber">bignumber</a>
+    <a href="#string">string</a>
+    <a href="#format">format</a>
+  </div>
+</div>
+
+<div class="func-card" id="oct" data-name="oct">
+  <div class="func-name">oct</div>
+  <div class="func-desc">Format a number as octal</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">oct(value)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber, number | BigNumber, number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">value</td><td class="param-type">number | BigNumber</td><td>Value to be stringified</td></tr>
+      <tr><td class="param-name">wordSize</td><td class="param-type">number | BigNumber</td><td>Optional word size (see `format`)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — The formatted value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">oct(56)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bin">bin</a>
+    <a href="#hex">hex</a>
+  </div>
+</div>
+
+<div class="func-card" id="print" data-name="print">
+  <div class="func-name">print</div>
+  <div class="func-desc">Interpolate values into a string template.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">print(template | values) | print(template</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">template</td><td class="param-type">string</td><td>A string containing variable placeholders.</td></tr>
+      <tr><td class="param-name">values</td><td class="param-type">Object | Array | Matrix</td><td>An object or array containing variables</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">number | Object</td><td>Formatting options,</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — Interpolated string</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">print(&quot;Lucy is $age years old<br>{age: 5})<br>print(&quot;The value of pi is $pi<br>{pi: pi}<br>3)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#format">format</a>
+  </div>
+</div>
+
+<div class="func-card" id="typeOf" data-name="typeof">
+  <div class="func-name">typeOf</div>
+  <div class="func-desc">Get the type of a variable.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">typeOf(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">*</td><td>The variable for which to test the type.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — Returns the name of the type. Primitive types are lower case,</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">typeOf(3.5)<br>typeOf(2 - 4i)<br>typeOf(45 deg)<br>typeOf(&quot;hello world&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#getMatrixDataType">getMatrixDataType</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

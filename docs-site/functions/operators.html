@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operators — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Operators</div>
+  <h1><span>Operators</span> Functions (11)</h1>
+  <p class="cat-desc">Overloaded arithmetic operators for mixed types</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter operators functions..." oninput="filterFuncs()">
+<div class="func-card" id="add" data-name="add">
+  <div class="func-name">add</div>
+  <div class="func-desc">Add two values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x + y | add(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix</td><td>First value to add</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix</td><td>Second value to add</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix — Sum of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = 2.1 + 3.6<br>a - 3.6<br>3 + 2i<br>3 cm + 2 inch<br>2.3&quot; + &quot;4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#subtract">subtract</a>
+  </div>
+</div>
+
+<div class="func-card" id="divide" data-name="divide">
+  <div class="func-name">divide</div>
+  <div class="func-desc">Divide two values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x / y | divide(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, Array | Matrix, DenseMatrix, any, SparseMatrix, any, Array, any, any, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix</td><td>Numerator</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Array | Matrix</td><td>Denominator</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix — Quotient, `x / y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = 2 / 3<br>a * 3<br>4.5 / 2<br>3 + 4 / 2<br>(3 + 4) / 2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+  </div>
+</div>
+
+<div class="func-card" id="dotDivide" data-name="dotdivide">
+  <div class="func-name">dotDivide</div>
+  <div class="func-desc">Divide two values element wise.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x ./ y | dotDivide(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Numerator</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Denominator</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Complex | Unit | Array | Matrix — Quotient, `x ./ y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [1<br>2<br>3; 4<br>5<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#dotMultiply">dotMultiply</a>
+    <a href="#divide">divide</a>
+  </div>
+</div>
+
+<div class="func-card" id="dotMultiply" data-name="dotmultiply">
+  <div class="func-name">dotMultiply</div>
+  <div class="func-desc">Multiply two values element wise.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x .* y | dotMultiply(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Left hand value</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Right hand value</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Complex | Unit | Array | Matrix — Multiplication of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [1<br>2<br>3; 4<br>5<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#divide">divide</a>
+    <a href="#dotDivide">dotDivide</a>
+  </div>
+</div>
+
+<div class="func-card" id="dotPow" data-name="dotpow">
+  <div class="func-name">dotPow</div>
+  <div class="func-desc">Calculates the power of x to y element wise.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x .^ y | dotPow(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Unit | Array | Matrix</td><td>The base</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | Complex | Unit | Array | Matrix</td><td>The exponent</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex | Unit | Array | Matrix — The value of `x` to the power `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [1<br>2<br>3; 4<br>5<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#pow">pow</a>
+  </div>
+</div>
+
+<div class="func-card" id="mod" data-name="mod">
+  <div class="func-name">mod</div>
+  <div class="func-desc">Calculates the modulus, the remainder of an integer division.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x % y | x mod y | mod(x</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">BigNumber, BigNumber, bigint, bigint, Fraction, Fraction</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Array | Matrix</td><td>Dividend</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Array | Matrix</td><td>Divisor</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Array | Matrix — Returns the remainder of `x` divided by `y`.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">7 % 3<br>11 % 2<br>10 mod 4<br>isOdd(x) = x % 2<br>isOdd(2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#divide">divide</a>
+  </div>
+</div>
+
+<div class="func-card" id="multiply" data-name="multiply">
+  <div class="func-name">multiply</div>
+  <div class="func-desc">multiply two values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x * y | multiply(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, Matrix, SparseMatrix, any, DenseMatrix, any, any, SparseMatrix, any, DenseMatrix, Array, any</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Matrix</td><td>Dense Vector   (N)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Matrix</td><td>Dense Vector   (N)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Scalar value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = 2.1 * 3.4<br>a / 3.4<br>2 * 3 + 4<br>2 * (3 + 4)<br>3 * 2.1 km</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#divide">divide</a>
+  </div>
+</div>
+
+<div class="func-card" id="pow" data-name="pow">
+  <div class="func-name">pow</div>
+  <div class="func-desc">Calculates the power of x to y, x^y.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x ^ y | pow(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Complex, Complex, BigNumber, BigNumber, Fraction, Fraction, Array, BigNumber, Matrix, BigNumber, Unit, number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Complex | Unit | Array | Matrix</td><td>The base</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Complex</td><td>The exponent</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Complex | Array | Matrix — The value of `x` to the power `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">2^3<br>2*2*2<br>1 + e ^ (pi * i)<br>pow([[1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#nthRoot">nthRoot</a>
+    <a href="#nthRoots">nthRoots</a>
+    <a href="#sqrt">sqrt</a>
+  </div>
+</div>
+
+<div class="func-card" id="subtract" data-name="subtract">
+  <div class="func-name">subtract</div>
+  <div class="func-desc">subtract two values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x - y | subtract(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix</td><td>Initial value</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix</td><td>Value to subtract from `x`</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix — Subtraction of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = 5.3 - 2<br>a + 2<br>2/3 - 1/6<br>2 * 3 - 3<br>2.1 km - 500m</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#add">add</a>
+  </div>
+</div>
+
+<div class="func-card" id="unaryMinus" data-name="unaryminus">
+  <div class="func-name">unaryMinus</div>
+  <div class="func-desc">Inverse the sign of a value. Converts booleans and strings to numbers.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">-x | unaryMinus(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix</td><td>Number to be inverted.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix — Returns the value with inverted sign.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">-4.5<br>-(-5.6)<br>-&quot;22</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#add">add</a>
+    <a href="#subtract">subtract</a>
+    <a href="#unaryPlus">unaryPlus</a>
+  </div>
+</div>
+
+<div class="func-card" id="unaryPlus" data-name="unaryplus">
+  <div class="func-name">unaryPlus</div>
+  <div class="func-desc">Converts booleans and strings to numbers.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">+x | unaryPlus(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | string | Complex | Unit | Array | Matrix</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit | Array | Matrix — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">+true<br>+&quot;2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#add">add</a>
+    <a href="#subtract">subtract</a>
+    <a href="#unaryMinus">unaryMinus</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Probability — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Probability</div>
+  <h1><span>Probability</span> Functions (12)</h1>
+  <p class="cat-desc">Probability functions, random numbers, combinatorial counting</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter probability functions..." oninput="filterFuncs()">
+<div class="func-card" id="bernoulli" data-name="bernoulli">
+  <div class="func-name">bernoulli</div>
+  <div class="func-desc">The nth Bernoulli number</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">bernoulli(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number | BigNumber | bigint | Fraction</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">bernoulli(4)<br>bernoulli(fraction(12))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinations">combinations</a>
+    <a href="#gamma">gamma</a>
+    <a href="#stirlingS2">stirlingS2</a>
+  </div>
+</div>
+
+<div class="func-card" id="combinations" data-name="combinations">
+  <div class="func-name">combinations</div>
+  <div class="func-desc">Compute the number of combinations of n items taken k at a time</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">combinations(n | k)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">BigNumber, BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number | BigNumber</td><td>Total number of objects in the set</td></tr>
+      <tr><td class="param-name">k</td><td class="param-type">number | BigNumber</td><td>Number of objects in the subset</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber — Number of possible combinations.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">combinations(7<br>5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinationsWithRep">combinationsWithRep</a>
+    <a href="#permutations">permutations</a>
+    <a href="#factorial">factorial</a>
+  </div>
+</div>
+
+<div class="func-card" id="combinationsWithRep" data-name="combinationswithrep">
+  <div class="func-name">combinationsWithRep</div>
+  <div class="func-desc">Compute the number of combinations of n items taken k at a time with replacements.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">combinationsWithRep(n | k)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number, BigNumber, BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number | BigNumber</td><td>Total number of objects in the set</td></tr>
+      <tr><td class="param-name">k</td><td class="param-type">number | BigNumber</td><td>Number of objects in the subset</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber — Number of possible combinations with replacement.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">combinationsWithRep(7<br>5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinations">combinations</a>
+    <a href="#permutations">permutations</a>
+    <a href="#factorial">factorial</a>
+  </div>
+</div>
+
+<div class="func-card" id="factorial" data-name="factorial">
+  <div class="func-name">factorial</div>
+  <div class="func-desc">Compute the factorial of a value</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">n! | factorial(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number | BigNumber | Array | Matrix</td><td>An integer number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Array | Matrix — The factorial of `n`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">5!<br>5 * 4 * 3 * 2 * 1<br>3!</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinations">combinations</a>
+    <a href="#combinationsWithRep">combinationsWithRep</a>
+    <a href="#permutations">permutations</a>
+    <a href="#gamma">gamma</a>
+  </div>
+</div>
+
+<div class="func-card" id="gamma" data-name="gamma">
+  <div class="func-name">gamma</div>
+  <div class="func-desc">Compute the gamma function. For small values, the Lanczos approximation is used, and for large values the extended Stirling approximation.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">gamma(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number | BigNumber | Complex</td><td>A real or complex number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — The gamma of `n`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">gamma(4)<br>3!<br>gamma(1/2)<br>sqrt(pi)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#factorial">factorial</a>
+  </div>
+</div>
+
+<div class="func-card" id="kldivergence" data-name="kldivergence">
+  <div class="func-name">kldivergence</div>
+  <div class="func-desc">Calculate the Kullback-Leibler (KL) divergence  between two distributions.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">kldivergence(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Matrix, Array, Array, Matrix, Matrix, Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">q</td><td class="param-type">Array | Matrix</td><td>First vector</td></tr>
+      <tr><td class="param-name">p</td><td class="param-type">Array | Matrix</td><td>Second vector</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Returns distance between q and p</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">kldivergence([0.7<br>0.5<br>0.4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+  </div>
+</div>
+
+<div class="func-card" id="lgamma" data-name="lgamma">
+  <div class="func-name">lgamma</div>
+  <div class="func-desc">Logarithm of the gamma function for real, positive numbers and complex numbers,</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">lgamma(n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">lgamma(4)<br>lgamma(1/2)<br>lgamma(i)<br>lgamma(complex(1.1<br>2))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gamma">gamma</a>
+  </div>
+</div>
+
+<div class="func-card" id="multinomial" data-name="multinomial">
+  <div class="func-name">multinomial</div>
+  <div class="func-desc">Multinomial Coefficients compute the number of ways of picking a1, a2, ..., ai unordered outcomes from `n` possibilities. multinomial takes one array of integers as an argument. The following condition must be enforced: every ai &gt; 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">multinomial(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number[] | BigNumber[]</td><td>Integer numbers of objects in the subset</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number | BigNumber — Multinomial coefficient.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">multinomial([1<br>2<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinations">combinations</a>
+    <a href="#factorial">factorial</a>
+  </div>
+</div>
+
+<div class="func-card" id="permutations" data-name="permutations">
+  <div class="func-name">permutations</div>
+  <div class="func-desc">Compute the number of permutations of n items taken k at a time</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">permutations(n) | permutations(n | k)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number, BigNumber, BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number | BigNumber</td><td>The number of objects in total</td></tr>
+      <tr><td class="param-name">k</td><td class="param-type">number | BigNumber</td><td>The number of objects in the subset</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber — The number of permutations</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">permutations(5)<br>permutations(5<br>3)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#combinations">combinations</a>
+    <a href="#combinationsWithRep">combinationsWithRep</a>
+    <a href="#factorial">factorial</a>
+  </div>
+</div>
+
+<div class="func-card" id="pickRandom" data-name="pickrandom">
+  <div class="func-name">pickRandom</div>
+  <div class="func-desc">Pick a random entry from a given array.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">pickRandom(array) | pickRandom(array | number)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, Array | Matrix, Object, Array | Matrix, number, Array | Matrix, Array | Matrix, Array | Matrix, Array | Matrix, number, Array | Matrix, number, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array | Matrix</td><td>A one dimensional array</td></tr>
+      <tr><td class="param-name">number</td><td class="param-type">Int</td><td>An int or float</td></tr>
+      <tr><td class="param-name">weights</td><td class="param-type">Array | Matrix</td><td>An array of ints or floats</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Array — Returns a single random value from array when number is undefined.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">pickRandom(0:10)<br>pickRandom([1<br>3<br>1<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#random">random</a>
+    <a href="#randomInt">randomInt</a>
+  </div>
+</div>
+
+<div class="func-card" id="random" data-name="random">
+  <div class="func-name">random</div>
+  <div class="func-desc">Return a random number.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">random() | random(max) | random(min</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">size</td><td class="param-type">Array | Matrix</td><td>If provided, an array or matrix with given</td></tr>
+      <tr><td class="param-name">min</td><td class="param-type">number</td><td>Minimum boundary for the random value, included</td></tr>
+      <tr><td class="param-name">max</td><td class="param-type">number</td><td>Maximum boundary for the random value, excluded</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Array | Matrix — A random number</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">random()<br>random(10<br>20)<br>random([2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#pickRandom">pickRandom</a>
+    <a href="#randomInt">randomInt</a>
+  </div>
+</div>
+
+<div class="func-card" id="randomInt" data-name="randomint">
+  <div class="func-name">randomInt</div>
+  <div class="func-desc">Return a random integer number</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">randomInt(max) | randomInt(min | max)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">size</td><td class="param-type">Array | Matrix</td><td>If provided, an array or matrix with given</td></tr>
+      <tr><td class="param-name">min</td><td class="param-type">number</td><td>Minimum boundary for the random value, included</td></tr>
+      <tr><td class="param-name">max</td><td class="param-type">number</td><td>Maximum boundary for the random value, excluded</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Array | Matrix — A random integer value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">randomInt(10<br>20)<br>randomInt([2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#pickRandom">pickRandom</a>
+    <a href="#random">random</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

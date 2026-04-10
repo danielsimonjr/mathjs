@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistics — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Statistics</div>
+  <h1><span>Statistics</span> Functions (38)</h1>
+  <p class="cat-desc">Statistical analysis, distributions, hypothesis testing, regression</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter statistics functions..." oninput="filterFuncs()">
+<div class="func-card" id="anova" data-name="anova">
+  <div class="func-name">anova</div>
+  <div class="func-desc">Perform a one-way ANOVA (Analysis of Variance) F-test comparing means across multiple groups.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">anova(groups)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">groups</td><td class="param-type">Array</td><td>Array of arrays, each inner array is one group</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with F, pValue, dfBetween, dfWithin</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">anova([[1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#variance">variance</a>
+    <a href="#std">std</a>
+    <a href="#studentTTest">studentTTest</a>
+  </div>
+</div>
+
+<div class="func-card" id="betaDist" data-name="betadist">
+  <div class="func-name">betaDist</div>
+  <div class="func-desc">Create a Beta distribution with shape parameters alpha and beta. Returns an object with pdf(x), cdf(x), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">betaDist(alpha | beta)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">alpha</td><td class="param-type">number</td><td>First shape parameter (must be positive)</td></tr>
+      <tr><td class="param-name">beta</td><td class="param-type">number</td><td>Second shape parameter (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = betaDist(2<br>5)<br>d.pdf(0.3)<br>d.cdf(0.3)<br>d.mean</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gammaDist">gammaDist</a>
+    <a href="#fDist">fDist</a>
+    <a href="#normalDist">normalDist</a>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+  </div>
+</div>
+
+<div class="func-card" id="binomialDist" data-name="binomialdist">
+  <div class="func-name">binomialDist</div>
+  <div class="func-desc">Create a binomial distribution with n trials and success probability p. The binomial distribution models the number of successes in n independent trials. Returns an object with pmf(k), cdf(k), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">binomialDist(n | p)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Number of trials (positive integer)</td></tr>
+      <tr><td class="param-name">p</td><td class="param-type">number</td><td>Probability of success (in [0, 1])</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pmf, cdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = binomialDist(10<br>0.5)<br>d.pmf(5)<br>d.cdf(5)<br>d.mean</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#poissonDist">poissonDist</a>
+    <a href="#normalDist">normalDist</a>
+  </div>
+</div>
+
+<div class="func-card" id="chiSquareTest" data-name="chisquaretest">
+  <div class="func-name">chiSquareTest</div>
+  <div class="func-desc">Perform a chi-squared test. For 1D arrays (observed, expected), performs a goodness-of-fit test.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">chiSquareTest(observed | expected) | chiSquareTest(observed)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">observed</td><td class="param-type">Array</td><td>1D or 2D array of observed counts</td></tr>
+      <tr><td class="param-name">expected</td><td class="param-type">Array</td><td>1D array of expected counts (only for 1D case)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with chiSquared, pValue, df</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">chiSquareTest([10<br>20<br>30</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#anova">anova</a>
+    <a href="#studentTTest">studentTTest</a>
+  </div>
+</div>
+
+<div class="func-card" id="chiSquaredDist" data-name="chisquareddist">
+  <div class="func-name">chiSquaredDist</div>
+  <div class="func-desc">Create a chi-squared distribution with k degrees of freedom. Commonly used in hypothesis testing and confidence interval estimation for variance. Returns an object with pdf(x), cdf(x), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">chiSquaredDist(k)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">k</td><td class="param-type">number</td><td>Degrees of freedom (must be a positive integer)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = chiSquaredDist(3)<br>d.pdf(1)<br>d.cdf(7.815)<br>d.mean<br>d.variance</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#tDist">tDist</a>
+    <a href="#normalDist">normalDist</a>
+  </div>
+</div>
+
+<div class="func-card" id="corr" data-name="corr">
+  <div class="func-name">corr</div>
+  <div class="func-desc">Compute the correlation coefficient of a two list with values, For matrices, the matrix correlation coefficient is calculated.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">corr(A | B)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Matrix, Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>The first array or matrix to compute correlation coefficient</td></tr>
+      <tr><td class="param-name">B</td><td class="param-type">Array | Matrix</td><td>The second array or matrix to compute correlation coefficient</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The correlation coefficient</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">corr([2<br>4<br>6<br>8</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#min">min</a>
+    <a href="#median">median</a>
+    <a href="#min">min</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+  </div>
+</div>
+
+<div class="func-card" id="covariance" data-name="covariance">
+  <div class="func-name">covariance</div>
+  <div class="func-desc">Compute the sample covariance of two datasets. cov(x, y) = sum((x_i - mean_x) * (y_i - mean_y)) / (n - 1)</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">covariance(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>First dataset</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array | Matrix</td><td>Second dataset (must be same length as x)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The sample covariance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">covariance([1<br>2<br>3<br>4<br>5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+    <a href="#variance">variance</a>
+    <a href="#linreg">linreg</a>
+  </div>
+</div>
+
+<div class="func-card" id="cumsum" data-name="cumsum">
+  <div class="func-name">cumsum</div>
+  <div class="func-desc">Compute the cumulative sum of all values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cumsum(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, number | BigNumber, ...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... *</td><td>A single matrix or or multiple scalar values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The cumulative sum of all values</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cumsum(2<br>3<br>4<br>1)<br>cumsum([2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#median">median</a>
+    <a href="#min">min</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="exponentialDist" data-name="exponentialdist">
+  <div class="func-name">exponentialDist</div>
+  <div class="func-desc">Create an exponential distribution with rate parameter lambda. Models the time between events in a Poisson process. Returns an object with pdf(x), cdf(x), icdf(p), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">exponentialDist(lambda)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">lambda</td><td class="param-type">number</td><td>Rate parameter (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, icdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = exponentialDist(2)<br>d.pdf(1)<br>d.cdf(1)<br>d.icdf(0.5)<br>d.mean</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#weibullDist">weibullDist</a>
+    <a href="#poissonDist">poissonDist</a>
+    <a href="#normalDist">normalDist</a>
+  </div>
+</div>
+
+<div class="func-card" id="fDist" data-name="fdist">
+  <div class="func-name">fDist</div>
+  <div class="func-desc">Create an F-distribution with numerator df1 and denominator df2 degrees of freedom. Returns an object with pdf(x), cdf(x), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fDist(df1 | df2)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">df1</td><td class="param-type">number</td><td>Numerator degrees of freedom (must be positive)</td></tr>
+      <tr><td class="param-name">df2</td><td class="param-type">number</td><td>Denominator degrees of freedom (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = fDist(5<br>10)<br>d.pdf(1)<br>d.cdf(1)<br>d.mean</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#tDist">tDist</a>
+    <a href="#chiSquaredDist">chiSquaredDist</a>
+    <a href="#betaDist">betaDist</a>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+  </div>
+</div>
+
+<div class="func-card" id="gammaDist" data-name="gammadist">
+  <div class="func-name">gammaDist</div>
+  <div class="func-desc">Create a Gamma distribution with shape k and rate beta. Returns an object with pdf(x), cdf(x), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">gammaDist(k | beta)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">k</td><td class="param-type">number</td><td>Shape parameter (must be positive)</td></tr>
+      <tr><td class="param-name">beta</td><td class="param-type">number</td><td>Rate parameter (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = gammaDist(2<br>1)<br>d.pdf(1)<br>d.cdf(1)<br>d.mean</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exponentialDist">exponentialDist</a>
+    <a href="#betaDist">betaDist</a>
+    <a href="#chiSquaredDist">chiSquaredDist</a>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+  </div>
+</div>
+
+<div class="func-card" id="histogram" data-name="histogram">
+  <div class="func-name">histogram</div>
+  <div class="func-desc">Compute a frequency histogram. If bins is a number, creates that many equal-width bins from min to max. If bins is an array, uses those values as bin edges. Returns an object with counts, binEdges, and binCenters.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">histogram(data | bins) | histogram(data</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">data</td><td class="param-type">Array</td><td>Array of numeric values</td></tr>
+      <tr><td class="param-name">bins</td><td class="param-type">number|Array</td><td>Number of equal-width bins, or array of bin edges</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with counts, binEdges, binCenters</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">histogram([1<br>2<br>2<br>3<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="kolmogorovSmirnovTest" data-name="kolmogorovsmirnovtest">
+  <div class="func-name">kolmogorovSmirnovTest</div>
+  <div class="func-desc">Perform a Kolmogorov-Smirnov test. One-sample: compare a sample ECDF to a theoretical CDF function.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">kolmogorovSmirnovTest(sample | cdfFn) | kolmogorovSmirnovTest(sample1</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Array, function</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">sample</td><td class="param-type">Array</td><td>First sample (or only sample for one-sample test)</td></tr>
+      <tr><td class="param-name">distOrSample</td><td class="param-type">Array|Function</td><td>CDF function or second sample array</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with D (KS statistic) and pValue</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">kolmogorovSmirnovTest([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#anova">anova</a>
+    <a href="#chiSquareTest">chiSquareTest</a>
+    <a href="#shapiroWilkTest">shapiroWilkTest</a>
+  </div>
+</div>
+
+<div class="func-card" id="kurtosis" data-name="kurtosis">
+  <div class="func-name">kurtosis</div>
+  <div class="func-desc">Compute the sample excess kurtosis of a dataset. Kurtosis measures the &quot;tailedness&quot; of the probability distribution. A normal distribution has excess kurtosis of 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">kurtosis(array)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array | Matrix</td><td>A single matrix or array with values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The sample excess kurtosis</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">kurtosis([2<br>4<br>4<br>4<br>5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+    <a href="#variance">variance</a>
+    <a href="#skewness">skewness</a>
+  </div>
+</div>
+
+<div class="func-card" id="linreg" data-name="linreg">
+  <div class="func-name">linreg</div>
+  <div class="func-desc">Perform simple linear regression (ordinary least squares) on two datasets. Returns an object with slope, intercept, r (correlation coefficient), r2 (R-squared), and predict(x) function.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">linreg(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>Independent variable (predictor)</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array | Matrix</td><td>Dependent variable (response)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with slope, intercept, r, r2, predict</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">r = linreg([1<br>2<br>3<br>4<br>5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#covariance">covariance</a>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+  </div>
+</div>
+
+<div class="func-card" id="logNormalDist" data-name="lognormaldist">
+  <div class="func-name">logNormalDist</div>
+  <div class="func-desc">Create a log-normal distribution with log-scale parameters mu and sigma. Returns an object with pdf(x), cdf(x), icdf(p), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">logNormalDist(mu | sigma)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">mu</td><td class="param-type">number</td><td>Mean of the underlying normal distribution (log-scale)</td></tr>
+      <tr><td class="param-name">sigma</td><td class="param-type">number</td><td>Standard deviation of the underlying normal distribution (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, icdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = logNormalDist(0<br>1)<br>d.pdf(1)<br>d.cdf(1)<br>d.icdf(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#normalDist">normalDist</a>
+    <a href="#gammaDist">gammaDist</a>
+    <a href="#exponentialDist">exponentialDist</a>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+  </div>
+</div>
+
+<div class="func-card" id="mad" data-name="mad">
+  <div class="func-name">mad</div>
+  <div class="func-desc">Compute the median absolute deviation of a matrix or a list with values. The median absolute deviation is defined as the median of the absolute deviations from the median.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">mad(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array | Matrix</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The median absolute deviation.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">mad(10<br>20<br>30)<br>mad([1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#median">median</a>
+    <a href="#std">std</a>
+    <a href="#abs">abs</a>
+  </div>
+</div>
+
+<div class="func-card" id="mannWhitneyTest" data-name="mannwhitneytest">
+  <div class="func-name">mannWhitneyTest</div>
+  <div class="func-desc">Perform a Mann-Whitney U test (Wilcoxon rank-sum test), a non-parametric test for whether</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">mannWhitneyTest(sample1 | sample2)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">sample1</td><td class="param-type">Array</td><td>First sample (array of numbers)</td></tr>
+      <tr><td class="param-name">sample2</td><td class="param-type">Array</td><td>Second sample (array of numbers)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with U and pValue</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">mannWhitneyTest([1<br>2<br>3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#studentTTest">studentTTest</a>
+    <a href="#anova">anova</a>
+    <a href="#shapiroWilkTest">shapiroWilkTest</a>
+  </div>
+</div>
+
+<div class="func-card" id="max" data-name="max">
+  <div class="func-name">max</div>
+  <div class="func-desc">Compute the maximum value of a list of values. If any NaN values are found, the function yields the last NaN in the input.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">max(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, number | BigNumber, ...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... *</td><td>A single matrix or or multiple scalar values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The maximum value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">max(2<br>3<br>4<br>1)<br>max([2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#median">median</a>
+    <a href="#min">min</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="mean" data-name="mean">
+  <div class="func-name">mean</div>
+  <div class="func-desc">Compute the arithmetic mean of a list of values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">mean(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... *</td><td>A single matrix or or multiple scalar values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The mean of all values</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">mean(2<br>3<br>4<br>1)<br>mean([2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#median">median</a>
+    <a href="#min">min</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="median" data-name="median">
+  <div class="func-name">median</div>
+  <div class="func-desc">Compute the median of all values. The values are sorted and the middle value is returned. In case of an even number of values, the average of the two middle values is returned.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">median(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber | Complex | Unit, number | BigNumber | Complex | Unit, number | BigNumber | Complex | Unit, Array | Matrix, number | BigNumber, ...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number — median</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">median(5<br>2<br>7)<br>median([3<br>-1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#min">min</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+    <a href="#quantileSeq">quantileSeq</a>
+  </div>
+</div>
+
+<div class="func-card" id="min" data-name="min">
+  <div class="func-name">min</div>
+  <div class="func-desc">Compute the minimum value of a list of values. If any NaN values are found, the function yields the last NaN in the input.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">min(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, number | BigNumber, ...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... *</td><td>A single matrix or or multiple scalar values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The minimum value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">min(2<br>3<br>4<br>1)<br>min([2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#median">median</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="mode" data-name="mode">
+  <div class="func-name">mode</div>
+  <div class="func-desc">Computes the mode of all values as an array. In case mode being more than one, multiple values are returned in an array.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">mode(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... *</td><td>A single matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The mode of all values</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">mode(2<br>1<br>4<br>3<br>1)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#min">min</a>
+    <a href="#median">median</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="movingAverage" data-name="movingaverage">
+  <div class="func-name">movingAverage</div>
+  <div class="func-desc">Compute the simple moving average of a dataset with a given window size. Returns an array of length (n - window + 1).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">movingAverage(array | window)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array | Matrix</td><td>Input data array</td></tr>
+      <tr><td class="param-name">window</td><td class="param-type">number</td><td>Window size (must be a positive integer)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of moving averages</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">movingAverage([1<br>2<br>3<br>4<br>5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#sum">sum</a>
+  </div>
+</div>
+
+<div class="func-card" id="normalDist" data-name="normaldist">
+  <div class="func-name">normalDist</div>
+  <div class="func-desc">Create a normal (Gaussian) distribution with mean mu and standard deviation sigma. Returns an object with pdf(x), cdf(x), icdf(p), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">normalDist(mu | sigma)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">mu</td><td class="param-type">number</td><td>Mean of the distribution</td></tr>
+      <tr><td class="param-name">sigma</td><td class="param-type">number</td><td>Standard deviation (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, icdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = normalDist(0<br>1)<br>d.pdf(0)<br>d.cdf(1.96)<br>d.icdf(0.975)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#tDist">tDist</a>
+    <a href="#chiSquaredDist">chiSquaredDist</a>
+    <a href="#poissonDist">poissonDist</a>
+    <a href="#binomialDist">binomialDist</a>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+  </div>
+</div>
+
+<div class="func-card" id="poissonDist" data-name="poissondist">
+  <div class="func-name">poissonDist</div>
+  <div class="func-desc">Create a Poisson distribution with rate parameter lambda. The Poisson distribution models the number of events in a fixed interval. Returns an object with pmf(k), cdf(k), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">poissonDist(lambda)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">lambda</td><td class="param-type">number</td><td>Rate parameter (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pmf, cdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = poissonDist(3)<br>d.pmf(3)<br>d.cdf(4)<br>d.mean<br>d.variance</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#binomialDist">binomialDist</a>
+    <a href="#normalDist">normalDist</a>
+  </div>
+</div>
+
+<div class="func-card" id="principalComponentAnalysis" data-name="principalcomponentanalysis">
+  <div class="func-name">principalComponentAnalysis</div>
+  <div class="func-desc">Perform Principal Component Analysis (PCA). Centers the data, computes the covariance matrix,</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">principalComponentAnalysis(data)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">data</td><td class="param-type">Array</td><td>2D array: rows = observations, columns = variables</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with components, eigenvalues, scores, explainedVariance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">principalComponentAnalysis([[1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#variance">variance</a>
+    <a href="#corr">corr</a>
+  </div>
+</div>
+
+<div class="func-card" id="prod" data-name="prod">
+  <div class="func-name">prod</div>
+  <div class="func-desc">Compute the product of all values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">prod(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, number | BigNumber, ...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... *</td><td>A single matrix or or multiple scalar values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The product of all values</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">prod(2<br>3<br>4)<br>prod([2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#min">min</a>
+    <a href="#median">median</a>
+    <a href="#min">min</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="quantileSeq" data-name="quantileseq">
+  <div class="func-name">quantileSeq</div>
+  <div class="func-desc">Compute the prob order quantile of a matrix or a list with values. The sequence is sorted and the middle value is returned. Supported types of sequence values are: Number, BigNumber, Unit Supported types of probability are: Number, BigNumber. \n\nIn case of a (multi dimensional) array or matrix, the</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">quantileSeq(A | prob[ | sorted</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">data</td><td class="param-type">Array, Matrix</td><td>A single matrix or Array</td></tr>
+      <tr><td class="param-name">probOrN</td><td class="param-type">Number, BigNumber, Array</td><td>prob is the order of the quantile, while N is</td></tr>
+      <tr><td class="param-name">sorted</td><td class="param-type">Boolean</td><td>=false              is data sorted in ascending order</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number, BigNumber, Unit, Array — Quantile(s)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">quantileSeq([3<br>-1<br>5<br>7</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#median">median</a>
+    <a href="#min">min</a>
+    <a href="#max">max</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="shapiroWilkTest" data-name="shapirowilktest">
+  <div class="func-name">shapiroWilkTest</div>
+  <div class="func-desc">Perform the Shapiro-Wilk test for normality. Sorts the sample and computes W using</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">shapiroWilkTest(sample)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">sample</td><td class="param-type">Array</td><td>Array of numeric values (3 &lt;= n &lt;= 5000)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with W (statistic) and pValue</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">shapiroWilkTest([2.1<br>2.3<br>1.9<br>2.0<br>2.2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#kolmogorovSmirnovTest">kolmogorovSmirnovTest</a>
+    <a href="#mannWhitneyTest">mannWhitneyTest</a>
+  </div>
+</div>
+
+<div class="func-card" id="skewness" data-name="skewness">
+  <div class="func-name">skewness</div>
+  <div class="func-desc">Compute the sample skewness of a dataset. Skewness measures the asymmetry of the probability distribution. Uses the adjusted Fisher-Pearson standardized moment coefficient.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">skewness(array)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array | Matrix</td><td>A single matrix or array with values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The sample skewness</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">skewness([2<br>4<br>6<br>8<br>10</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+    <a href="#variance">variance</a>
+    <a href="#kurtosis">kurtosis</a>
+  </div>
+</div>
+
+<div class="func-card" id="std" data-name="std">
+  <div class="func-name">std</div>
+  <div class="func-desc">Compute the standard deviation of all values, defined as std(A) = sqrt(variance(A)). Optional parameter normalization can be &quot;unbiased&quot; (default), &quot;uncorrected&quot;, or &quot;biased&quot;.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">std(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array | Matrix</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The standard deviation</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">std(2<br>4<br>6)<br>std([2<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#min">min</a>
+    <a href="#median">median</a>
+    <a href="#prod">prod</a>
+    <a href="#sum">sum</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="studentTTest" data-name="studentttest">
+  <div class="func-name">studentTTest</div>
+  <div class="func-desc">Perform a two-sample Welch t-test (unequal variances). Tests whether the means of two independent samples differ significantly. Uses the Welch-Satterthwaite approximation for degrees of freedom. Returns an object with t (statistic), df (degrees of freedom), and pValue (two-tailed).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">studentTTest(sample1 | sample2)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">sample1</td><td class="param-type">Array</td><td>First sample (array of numbers)</td></tr>
+      <tr><td class="param-name">sample2</td><td class="param-type">Array</td><td>Second sample (array of numbers)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with t, df, pValue</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">studentTTest([1<br>2<br>3<br>4<br>5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#mean">mean</a>
+    <a href="#variance">variance</a>
+    <a href="#std">std</a>
+  </div>
+</div>
+
+<div class="func-card" id="sum" data-name="sum">
+  <div class="func-name">sum</div>
+  <div class="func-desc">Compute the sum of all values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sum(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... *</td><td>A single matrix or multiple scalar values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The sum of all values</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sum(2<br>3<br>4<br>1)<br>sum([2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#median">median</a>
+    <a href="#min">min</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#variance">variance</a>
+  </div>
+</div>
+
+<div class="func-card" id="tDist" data-name="tdist">
+  <div class="func-name">tDist</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">tDist(df)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">df</td><td class="param-type">number</td><td>Degrees of freedom (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = tDist(10)<br>d.pdf(0)<br>d.cdf(2.228)<br>d.mean<br>d.variance</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#normalDist">normalDist</a>
+    <a href="#chiSquaredDist">chiSquaredDist</a>
+  </div>
+</div>
+
+<div class="func-card" id="uniformDist" data-name="uniformdist">
+  <div class="func-name">uniformDist</div>
+  <div class="func-desc">Create a continuous uniform distribution on [a, b]. Returns an object with pdf(x), cdf(x), icdf(p), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">uniformDist(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>Lower bound of the distribution</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number</td><td>Upper bound of the distribution (must be &gt; a)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, icdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = uniformDist(0<br>1)<br>d.pdf(0.5)<br>d.cdf(0.5)<br>d.icdf(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#normalDist">normalDist</a>
+    <a href="#exponentialDist">exponentialDist</a>
+    <a href="#gammaDist">gammaDist</a>
+    <a href="#mean">mean</a>
+    <a href="#std">std</a>
+  </div>
+</div>
+
+<div class="func-card" id="variance" data-name="variance">
+  <div class="func-name">variance</div>
+  <div class="func-desc">Compute the variance of all values. Optional parameter normalization can be &quot;unbiased&quot; (default), &quot;uncorrected&quot;, or &quot;biased&quot;.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">variance(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, Array | Matrix, number | BigNumber, ...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array | Matrix</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — The variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">variance(2<br>4<br>6)<br>variance([2<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#max">max</a>
+    <a href="#mean">mean</a>
+    <a href="#min">min</a>
+    <a href="#median">median</a>
+    <a href="#min">min</a>
+    <a href="#prod">prod</a>
+    <a href="#std">std</a>
+    <a href="#sum">sum</a>
+  </div>
+</div>
+
+<div class="func-card" id="weibullDist" data-name="weibulldist">
+  <div class="func-name">weibullDist</div>
+  <div class="func-desc">Create a Weibull distribution with shape parameter k and scale parameter lambda. Generalizes the exponential distribution (k=1 reduces to exponential with rate 1/lambda). Returns an object with pdf(x), cdf(x), mean, and variance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">weibullDist(k | lambda)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">k</td><td class="param-type">number</td><td>Shape parameter (must be positive)</td></tr>
+      <tr><td class="param-name">lambda</td><td class="param-type">number</td><td>Scale parameter (must be positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Distribution object with pdf, cdf, mean, variance</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = weibullDist(2<br>1)<br>d.pdf(1)<br>d.cdf(1)<br>d.mean</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exponentialDist">exponentialDist</a>
+    <a href="#normalDist">normalDist</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

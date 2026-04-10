@@ -269,7 +269,16 @@ gulp.task('browser', bundle)
 
 gulp.task('clean', clean)
 
-gulp.task('docs', generateDocs)
+gulp.task('docs', gulp.series(generateDocs, generateDocsSite))
+
+async function generateDocsSite (done) {
+  const { execFileSync } = await import('child_process')
+  console.log('Generating docs-site for GitHub Pages...')
+  execFileSync('python', ['-X', 'utf8', 'tools/extract_function_metadata.py'], { stdio: 'inherit' })
+  execFileSync('python', ['-X', 'utf8', 'tools/generate_docs_site.py'], { stdio: 'inherit' })
+  console.log('docs-site generated at docs-site/')
+  done()
+}
 
 // Compile task - compiles JavaScript source files without bundling or docs
 gulp.task('compile', gulp.series(

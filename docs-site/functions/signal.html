@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Signal</div>
+  <h1><span>Signal</span> Functions (20)</h1>
+  <p class="cat-desc">Signal processing — FFT, filters, transforms, wavelets</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter signal functions..." oninput="filterFuncs()">
+<div class="func-card" id="bandpassFilter" data-name="bandpassfilter">
+  <div class="func-name">bandpassFilter</div>
+  <div class="func-desc">Apply a 2nd order Butterworth bandpass filter to a signal by cascading a highpass at lowCutoff and a lowpass at highCutoff.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">bandpassFilter(signal | lowCutoff | highCutoff</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, number, number, Matrix, number, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array | Matrix</td><td>Input signal array</td></tr>
+      <tr><td class="param-name">lowCutoff</td><td class="param-type">number</td><td>Lower cutoff frequency in Hz</td></tr>
+      <tr><td class="param-name">highCutoff</td><td class="param-type">number</td><td>Upper cutoff frequency in Hz</td></tr>
+      <tr><td class="param-name">sampleRate</td><td class="param-type">number</td><td>Sample rate in Hz</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Filtered signal</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">bandpassFilter([1<br>0<br>-1<br>0<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lowpassFilter">lowpassFilter</a>
+    <a href="#highpassFilter">highpassFilter</a>
+    <a href="#fft">fft</a>
+  </div>
+</div>
+
+<div class="func-card" id="convolve" data-name="convolve">
+  <div class="func-name">convolve</div>
+  <div class="func-desc">Compute the discrete linear convolution of two arrays. The output length is len(a) + len(b) - 1.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">convolve(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Matrix, Matrix, Array, Matrix, Matrix, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Array | Matrix</td><td>First input array or matrix</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array | Matrix</td><td>Second input array or matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — The convolution of a and b</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">convolve([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#correlate">correlate</a>
+    <a href="#fft">fft</a>
+    <a href="#ifft">ifft</a>
+  </div>
+</div>
+
+<div class="func-card" id="correlate" data-name="correlate">
+  <div class="func-name">correlate</div>
+  <div class="func-desc">Compute the cross-correlation of two arrays. When called with one argument, computes the autocorrelation. Equivalent to convolve(a, reverse(b)).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">correlate(a) | correlate(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Matrix, Matrix, Array, Matrix, Matrix, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Array | Matrix</td><td>First input array or matrix</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array | Matrix</td><td>Second input array or matrix (defaults to a for autocorrelation)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — The cross-correlation of a and b</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">correlate([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#convolve">convolve</a>
+    <a href="#fft">fft</a>
+    <a href="#ifft">ifft</a>
+  </div>
+</div>
+
+<div class="func-card" id="dct" data-name="dct">
+  <div class="func-name">dct</div>
+  <div class="func-desc">Compute the Discrete Cosine Transform (DCT-II) of a real-valued signal. DCT-II is defined as X[k] = sum_{n=0}^{N-1} x[n] * cos(pi*(2n+1)*k/(2N)). Computed directly in O(N^2). The DC component X[0] equals the sum of all input samples.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">dct(signal)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Real-valued input array</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — DCT-II coefficients</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">dct([1<br>1<br>1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fourier">fourier</a>
+    <a href="#fft">fft</a>
+    <a href="#spectrogram">spectrogram</a>
+  </div>
+</div>
+
+<div class="func-card" id="dst" data-name="dst">
+  <div class="func-name">dst</div>
+  <div class="func-desc">Compute the Discrete Sine Transform (DST-I) of a real-valued signal. X[k] = sum_{n=0}^{N-1} x[n] * sin(pi * (n+1) * (k+1) / (N+1)). Computed directly in O(N^2). Useful for PDEs with Dirichlet boundary conditions. The DST-I is its own inverse up to the scaling factor 2/(N+1), so idst(dst(x)) == x.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">dst(signal)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Real-valued input array</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — DST-I coefficients</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">dst([1<br>0<br>-1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#idst">idst</a>
+    <a href="#dct">dct</a>
+    <a href="#fourier">fourier</a>
+    <a href="#fft">fft</a>
+  </div>
+</div>
+
+<div class="func-card" id="dwt" data-name="dwt">
+  <div class="func-name">dwt</div>
+  <div class="func-desc">Compute one level of the Discrete Wavelet Transform (DWT). Decomposes the signal into approximation (lowpass) and detail (highpass) coefficients. Supported wavelets: &quot;haar&quot; (Haar wavelet) and &quot;db2&quot; (Daubechies-2). For &quot;haar&quot;: approx[i] = (x[2i] + x[2i+1]) / sqrt(2), detail[i] = (x[2i] - x[2i+1]) / s</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">dwt(signal | wavelet)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Real-valued input signal (length must be even for haar)</td></tr>
+      <tr><td class="param-name">wavelet</td><td class="param-type">string</td><td>Wavelet type: 'haar' or 'db2'</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — { approximation: number[], detail: number[] }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">dwt([1<br>1<br>1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fourier">fourier</a>
+    <a href="#dct">dct</a>
+    <a href="#fft">fft</a>
+  </div>
+</div>
+
+<div class="func-card" id="fft2d" data-name="fft2d">
+  <div class="func-name">fft2d</div>
+  <div class="func-desc">Compute the 2D Discrete Fourier Transform of a real-valued matrix. The 2D DFT is applied by computing a 1D DFT along each row, then along each column of the result. Returns a 2D array of complex numbers with properties re and im. The DC component (zero frequency) is at position [0][0].</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fft2d(matrix)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">matrix</td><td class="param-type">Array</td><td>2D array of real numbers (array of arrays)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — 2D array of complex numbers { re, im }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fft2d([[1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fft">fft</a>
+    <a href="#ifft">ifft</a>
+    <a href="#fourier">fourier</a>
+  </div>
+</div>
+
+<div class="func-card" id="fourier" data-name="fourier">
+  <div class="func-name">fourier</div>
+  <div class="func-desc">Compute the Fourier transform of a real-valued signal with user-friendly output. Returns an object with frequencies, amplitudes, and phases arrays. Amplitudes are scaled by 1/N. Optionally accepts options.sampleRate (default: 1) for physical frequency bins, and options.output = &quot;complex&quot; to return t</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fourier(signal) | fourier(signal | options)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Real-valued input signal array</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options:</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object|Array — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fourier([1<br>0<br>1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#invFourier">invFourier</a>
+    <a href="#fft">fft</a>
+    <a href="#ifft">ifft</a>
+    <a href="#convolve">convolve</a>
+  </div>
+</div>
+
+<div class="func-card" id="freqz" data-name="freqz">
+  <div class="func-name">freqz</div>
+  <div class="func-desc">Calculates the frequency response of a filter given its numerator and denominator coefficients.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">freqz(b | a) | freqz(b</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Array, Array, Array, Array, Array, number, Matrix, Matrix, Matrix, Matrix, Matrix, Matrix, Matrix, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array.&lt;number&gt;</td><td>The numerator coefficients of the filter.</td></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Array.&lt;number&gt;</td><td>The denominator coefficients of the filter.</td></tr>
+      <tr><td class="param-name">w</td><td class="param-type">Array.&lt;number&gt;</td><td>A vector of frequencies (in radians/sample) at which the frequency response is to be computed or the number of points to compute (if a number is not provided, the default is 512 points)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — An object with two properties: h, a vector containing the complex frequency response, and w, a vector containing the normalized frequencies (in radians/sample) at which the response was computed.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">freqz([1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+  </div>
+</div>
+
+<div class="func-card" id="highpassFilter" data-name="highpassfilter">
+  <div class="func-name">highpassFilter</div>
+  <div class="func-desc">Apply a 2nd order Butterworth highpass IIR filter to a signal. The cutoff and sampleRate must use the same time unit (e.g., both in Hz).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">highpassFilter(signal | cutoff | sampleRate)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, number, Matrix, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array | Matrix</td><td>Input signal array</td></tr>
+      <tr><td class="param-name">cutoff</td><td class="param-type">number</td><td>Cutoff frequency in Hz</td></tr>
+      <tr><td class="param-name">sampleRate</td><td class="param-type">number</td><td>Sample rate in Hz</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Filtered signal</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">highpassFilter([1<br>-1<br>1<br>-1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lowpassFilter">lowpassFilter</a>
+    <a href="#bandpassFilter">bandpassFilter</a>
+    <a href="#fft">fft</a>
+  </div>
+</div>
+
+<div class="func-card" id="hilbertTransform" data-name="hilberttransform">
+  <div class="func-name">hilbertTransform</div>
+  <div class="func-desc">Compute the Hilbert transform of a real-valued signal. The Hilbert transform produces a 90-degree phase shift of the input. It is computed via DFT: multiply positive-frequency components by -i, zero out the DC and Nyquist, zero out negative frequencies, then take the imaginary part of the IDFT resul</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">hilbertTransform(signal)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Real-valued input array (length should be a power of 2 for best accuracy)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Hilbert transform (imaginary part of the analytic signal)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">hilbertTransform([1<br>0<br>-1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fft">fft</a>
+    <a href="#ifft">ifft</a>
+    <a href="#dst">dst</a>
+    <a href="#fourier">fourier</a>
+  </div>
+</div>
+
+<div class="func-card" id="idst" data-name="idst">
+  <div class="func-name">idst</div>
+  <div class="func-desc">Compute the Inverse Discrete Sine Transform (IDST-I). x[n] = (2/(N+1)) * sum_{k=0}^{N-1} X[k] * sin(pi * (n+1) * (k+1) / (N+1)). The IDST-I is self-inverse: applying it to the output of dst with scaling 2/(N+1) recovers the original signal. idst(dst(x)) == x within floating-point tolerance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">idst(spectrum)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">spectrum</td><td class="param-type">Array</td><td>DST-I coefficients (output of dst)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Reconstructed time-domain signal</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">idst(dst([1<br>2<br>3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#dst">dst</a>
+    <a href="#dct">dct</a>
+    <a href="#fourier">fourier</a>
+    <a href="#fft">fft</a>
+  </div>
+</div>
+
+<div class="func-card" id="invFourier" data-name="invfourier">
+  <div class="func-name">invFourier</div>
+  <div class="func-desc">Reconstruct a real-valued signal from its Fourier spectrum. Accepts either a complex coefficient array (as returned by fourier with output:&quot;complex&quot;) or a spectrum object { frequencies, amplitudes, phases } (as returned by the default fourier() call). Applies the inverse FFT with proper N-scaling.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">invFourier(spectrum)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">spectrum</td><td class="param-type">Array|Object</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Reconstructed signal (real parts of ifft output, scaled by N)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">invFourier(fourier([1<br>0<br>1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fourier">fourier</a>
+    <a href="#fft">fft</a>
+    <a href="#ifft">ifft</a>
+    <a href="#convolve">convolve</a>
+  </div>
+</div>
+
+<div class="func-card" id="lowpassFilter" data-name="lowpassfilter">
+  <div class="func-name">lowpassFilter</div>
+  <div class="func-desc">Apply a 2nd order Butterworth lowpass IIR filter to a signal. The cutoff and sampleRate must use the same time unit (e.g., both in Hz).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">lowpassFilter(signal | cutoff | sampleRate)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, number, Matrix, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array | Matrix</td><td>Input signal array</td></tr>
+      <tr><td class="param-name">cutoff</td><td class="param-type">number</td><td>Cutoff frequency in Hz</td></tr>
+      <tr><td class="param-name">sampleRate</td><td class="param-type">number</td><td>Sample rate in Hz</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Filtered signal</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">lowpassFilter([1<br>1<br>1<br>1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#highpassFilter">highpassFilter</a>
+    <a href="#bandpassFilter">bandpassFilter</a>
+    <a href="#fft">fft</a>
+  </div>
+</div>
+
+<div class="func-card" id="medfilt" data-name="medfilt">
+  <div class="func-name">medfilt</div>
+  <div class="func-desc">Apply a median filter to a 1D signal. For each position, computes the median of the windowSize-element sliding window centered on that position. Edge samples use mirror (reflect) padding. windowSize must be a positive odd integer. The median filter is effective for removing impulse noise (spikes) wh</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">medfilt(signal | windowSize)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Input signal</td></tr>
+      <tr><td class="param-name">windowSize</td><td class="param-type">number</td><td>Must be a positive odd integer</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Filtered signal, same length as input</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">medfilt([1<br>2<br>100<br>2<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#convolve">convolve</a>
+    <a href="#resample">resample</a>
+    <a href="#lowpassFilter">lowpassFilter</a>
+  </div>
+</div>
+
+<div class="func-card" id="periodogram" data-name="periodogram">
+  <div class="func-name">periodogram</div>
+  <div class="func-desc">Estimate the power spectral density (PSD) of a signal using the periodogram method. Computes |FFT(x)|^2 scaled by window normalization. Returns the one-sided spectrum (DC to Nyquist) as an object with frequencies and power arrays. Options: sampleRate (default: 1), window type (default: &quot;rectangular&quot;</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">periodogram(signal) | periodogram(signal | options)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Real-valued input signal</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options:</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — { frequencies: number[], power: number[] }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">periodogram([1<br>0<br>-1<br>0<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fourier">fourier</a>
+    <a href="#spectrogram">spectrogram</a>
+    <a href="#fft">fft</a>
+    <a href="#windowFunction">windowFunction</a>
+  </div>
+</div>
+
+<div class="func-card" id="resample" data-name="resample">
+  <div class="func-name">resample</div>
+  <div class="func-desc">Resample a signal by a given factor using linear interpolation. A factor &gt; 1 upsamples (increases length), a factor &lt; 1 downsamples (decreases length). The output has round((N-1)*factor)+1 samples, mapping evenly between the first and last input samples. Non-integer factors are fully supported.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">resample(signal | factor)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Input signal</td></tr>
+      <tr><td class="param-name">factor</td><td class="param-type">number</td><td>Resampling factor (&gt; 0). Factor &gt; 1 upsamples, &lt; 1 downsamples.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Resampled signal</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">resample([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#convolve">convolve</a>
+    <a href="#medfilt">medfilt</a>
+    <a href="#lowpassFilter">lowpassFilter</a>
+  </div>
+</div>
+
+<div class="func-card" id="spectrogram" data-name="spectrogram">
+  <div class="func-name">spectrogram</div>
+  <div class="func-desc">Compute the spectrogram (Short-Time Fourier Transform magnitude) of a signal. Slides a window across the signal, applies a window function, and computes the FFT magnitude at each position. Returns an object with times, frequencies, and magnitude (2D array indexed by [timeIndex][freqBin]). Options: h</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">spectrogram(signal | windowSize) | spectrogram(signal</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, Array, number, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">signal</td><td class="param-type">Array</td><td>Input signal</td></tr>
+      <tr><td class="param-name">windowSize</td><td class="param-type">number</td><td>Length of each analysis window</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options:</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — { times: number[], frequencies: number[], magnitude: number[][] }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">spectrogram([1<br>0<br>-1<br>0<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fourier">fourier</a>
+    <a href="#fft">fft</a>
+    <a href="#periodogram">periodogram</a>
+    <a href="#windowFunction">windowFunction</a>
+  </div>
+</div>
+
+<div class="func-card" id="windowFunction" data-name="windowfunction">
+  <div class="func-name">windowFunction</div>
+  <div class="func-desc">Compute a window function of length n. Supported types: rectangular, hamming, hanning, blackman, kaiser. Default type is hamming.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">windowFunction(n) | windowFunction(n | type)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, string, number, string, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Length of the window</td></tr>
+      <tr><td class="param-name">type</td><td class="param-type">string</td><td>Window type: 'rectangular', 'hamming', 'hanning', 'blackman', 'kaiser' (default: 'hamming')</td></tr>
+      <tr><td class="param-name">alpha</td><td class="param-type">number</td><td>Shape parameter for kaiser window (default: 2)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of length n with window values</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">windowFunction(5)<br>windowFunction(5<br>hamming&quot;)<br>windowFunction(5<br>hanning&quot;)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fft">fft</a>
+    <a href="#ifft">ifft</a>
+    <a href="#convolve">convolve</a>
+  </div>
+</div>
+
+<div class="func-card" id="zpk2tf" data-name="zpk2tf">
+  <div class="func-name">zpk2tf</div>
+  <div class="func-desc">Compute the transfer function of a zero-pole-gain model.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">zpk2tf(z | p | k)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array,Array,number, Array,Array, Matrix,Matrix,number, Matrix,Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">z</td><td class="param-type">Array</td><td>Array of zeros values</td></tr>
+      <tr><td class="param-name">p</td><td class="param-type">Array</td><td>Array of poles values</td></tr>
+      <tr><td class="param-name">k</td><td class="param-type">number</td><td>Gain value</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Two dimensional array containing the numerator (first row) and denominator (second row) polynomials</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">zpk2tf([1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

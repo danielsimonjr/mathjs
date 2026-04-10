@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graph — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Graph</div>
+  <h1><span>Graph</span> Functions (8)</h1>
+  <p class="cat-desc">Graph theory algorithms — shortest path, spanning trees, connectivity</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter graph functions..." oninput="filterFuncs()">
+<div class="func-card" id="adjacencyMatrix" data-name="adjacencymatrix">
+  <div class="func-name">adjacencyMatrix</div>
+  <div class="func-desc">Convert an edge list to an adjacency matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">adjacencyMatrix(edges) | adjacencyMatrix(edges | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, Array, number, Object, Array, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">edges</td><td class="param-type">Array</td><td>Array of edges: [[from, to], ...] or [[from, to, weight], ...]</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Number of nodes. Auto-detected from max node index if omitted.</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options object. Supports `undirected` (boolean, default false).</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — 2D array (n x n adjacency matrix)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">adjacencyMatrix([[0<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#shortestPath">shortestPath</a>
+    <a href="#minimumSpanningTree">minimumSpanningTree</a>
+  </div>
+</div>
+
+<div class="func-card" id="connectedComponents" data-name="connectedcomponents">
+  <div class="func-name">connectedComponents</div>
+  <div class="func-desc">Find all connected components of an undirected graph using BFS.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">connectedComponents(graph)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">graph</td><td class="param-type">Object</td><td>Undirected adjacency list: { node: [neighbors], ... }</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of components, each component is an array of nodes</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#stronglyConnectedComponents">stronglyConnectedComponents</a>
+    <a href="#topologicalSort">topologicalSort</a>
+  </div>
+</div>
+
+<div class="func-card" id="graphDistance" data-name="graphdistance">
+  <div class="func-name">graphDistance</div>
+  <div class="func-desc">Find the shortest path distance between two nodes in a weighted directed graph.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">graphDistance(graph | start | end)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Object, number, number, Object, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">graph</td><td class="param-type">Object</td><td>Weighted adjacency list: { node: [[neighbor, weight], ...], ... }</td></tr>
+      <tr><td class="param-name">start</td><td class="param-type">string|number</td><td>Start node</td></tr>
+      <tr><td class="param-name">end</td><td class="param-type">string|number</td><td>End node</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Shortest distance, or Infinity if unreachable</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#shortestPath">shortestPath</a>
+    <a href="#minimumSpanningTree">minimumSpanningTree</a>
+    <a href="#isConnected">isConnected</a>
+  </div>
+</div>
+
+<div class="func-card" id="isConnected" data-name="isconnected">
+  <div class="func-name">isConnected</div>
+  <div class="func-desc">Check whether an undirected graph is connected.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">isConnected(graph)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">graph</td><td class="param-type">Object</td><td>Undirected adjacency list: { node: [neighbors], ... }</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — True if the graph is connected, false otherwise</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#connectedComponents">connectedComponents</a>
+    <a href="#stronglyConnectedComponents">stronglyConnectedComponents</a>
+  </div>
+</div>
+
+<div class="func-card" id="minimumSpanningTree" data-name="minimumspanningtree">
+  <div class="func-name">minimumSpanningTree</div>
+  <div class="func-desc">Find the minimum spanning tree of a weighted undirected graph using</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">minimumSpanningTree(edges | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">edges</td><td class="param-type">Array</td><td>Edge list: [[from, to, weight], ...]</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Number of nodes</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of edges [[from, to, weight], ...] forming the MST</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">minimumSpanningTree([[0<br>1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#shortestPath">shortestPath</a>
+    <a href="#adjacencyMatrix">adjacencyMatrix</a>
+  </div>
+</div>
+
+<div class="func-card" id="shortestPath" data-name="shortestpath">
+  <div class="func-name">shortestPath</div>
+  <div class="func-desc">Find the shortest path between two nodes in a weighted directed graph</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">shortestPath(graph | start | end)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Object, number, number, Object, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">graph</td><td class="param-type">Object</td><td>Weighted adjacency list: { node: [[neighbor, weight], ...], ... }</td></tr>
+      <tr><td class="param-name">start</td><td class="param-type">string|number</td><td>Start node</td></tr>
+      <tr><td class="param-name">end</td><td class="param-type">string|number</td><td>End node</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `distance` (number) and `path` (Array of nodes)</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#adjacencyMatrix">adjacencyMatrix</a>
+    <a href="#minimumSpanningTree">minimumSpanningTree</a>
+  </div>
+</div>
+
+<div class="func-card" id="stronglyConnectedComponents" data-name="stronglyconnectedcomponents">
+  <div class="func-name">stronglyConnectedComponents</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">stronglyConnectedComponents(graph)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">graph</td><td class="param-type">Object</td><td>Directed adjacency list: { node: [neighbors], ... }</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of SCCs, each SCC is an array of nodes</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#connectedComponents">connectedComponents</a>
+    <a href="#topologicalSort">topologicalSort</a>
+  </div>
+</div>
+
+<div class="func-card" id="topologicalSort" data-name="topologicalsort">
+  <div class="func-name">topologicalSort</div>
+  <div class="func-desc">Perform a topological sort on a directed acyclic graph (DAG) using</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">topologicalSort(graph)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">graph</td><td class="param-type">Object</td><td>Directed adjacency list: { node: [neighbors], ... }</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Nodes in topological order</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#stronglyConnectedComponents">stronglyConnectedComponents</a>
+    <a href="#connectedComponents">connectedComponents</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

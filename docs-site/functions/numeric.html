@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numeric — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Numeric</div>
+  <h1><span>Numeric</span> Functions (39)</h1>
+  <p class="cat-desc">Numerical methods — integration, optimization, interpolation, ODE solvers</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter numeric functions..." oninput="filterFuncs()">
+<div class="func-card" id="bezierCurve" data-name="beziercurve">
+  <div class="func-name">bezierCurve</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">bezierCurve(controlPoints | t)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">controlPoints</td><td class="param-type">Array</td><td>Array of [x,y] or [x,y,z] control points</td></tr>
+      <tr><td class="param-name">t</td><td class="param-type">number|Array</td><td>Parameter value(s) in [0, 1]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Point on the curve at parameter t,</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">bezierCurve([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#interpolate">interpolate</a>
+    <a href="#cspline">cspline</a>
+  </div>
+</div>
+
+<div class="func-card" id="bspline" data-name="bspline">
+  <div class="func-name">bspline</div>
+  <div class="func-desc">Evaluate a B-spline curve at parameter t using De Boor\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">bspline(knots | controlPoints | degree</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">knots</td><td class="param-type">Array</td><td>Knot vector (non-decreasing, length = n+degree+2)</td></tr>
+      <tr><td class="param-name">controlPoints</td><td class="param-type">Array</td><td>Control points (n+1 points, each a number or array)</td></tr>
+      <tr><td class="param-name">degree</td><td class="param-type">number</td><td>Polynomial degree (positive integer)</td></tr>
+      <tr><td class="param-name">t</td><td class="param-type">number</td><td>Parameter value</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number|Array — Point on the B-spline curve</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">bspline([0<br>0<br>0<br>1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#interpolate">interpolate</a>
+    <a href="#cspline">cspline</a>
+    <a href="#bezierCurve">bezierCurve</a>
+  </div>
+</div>
+
+<div class="func-card" id="chebyshevApprox" data-name="chebyshevapprox">
+  <div class="func-name">chebyshevApprox</div>
+  <div class="func-desc">Compute a Chebyshev polynomial approximation of function f on [a, b] using n terms. Samples f at Chebyshev nodes and computes coefficients via the discrete cosine transform. Evaluates using Clenshaw\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">chebyshevApprox(f | a | b</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, number, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>Function to approximate</td></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>Left endpoint of interval</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number</td><td>Right endpoint of interval</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Number of Chebyshev terms (degree = n-1)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `coefficients` array and `evaluate(x)` method</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">chebyshevApprox(sin<br>0<br>pi<br>10)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#padeApproximant">padeApproximant</a>
+    <a href="#polyfit">polyfit</a>
+    <a href="#cspline">cspline</a>
+  </div>
+</div>
+
+<div class="func-card" id="cond" data-name="cond">
+  <div class="func-name">cond</div>
+  <div class="func-desc">Compute the condition number of a matrix. p=2 (default) uses the ratio of largest to smallest singular value; p=1 and p=Infinity use the respective matrix norms.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cond(A) | cond(A | p)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array</td><td>The matrix (2D square array)</td></tr>
+      <tr><td class="param-name">p</td><td class="param-type">number</td><td>Norm type: 1, 2, or Infinity (default 2)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The condition number</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cond([[1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#rank">rank</a>
+    <a href="#nullspace">nullspace</a>
+    <a href="#det">det</a>
+    <a href="#inv">inv</a>
+  </div>
+</div>
+
+<div class="func-card" id="cspline" data-name="cspline">
+  <div class="func-name">cspline</div>
+  <div class="func-desc">Compute a natural cubic spline through a set of data points. Returns an object with an evaluate(t) method for smooth interpolation. Natural boundary conditions: second derivative is zero at both endpoints.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cspline(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>Array of x-coordinates (strictly increasing)</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array</td><td>Array of y-coordinates (same length as x)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `evaluate(t)` method and `coefficients` array</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cspline([0<br>1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#interpolate">interpolate</a>
+    <a href="#polyfit">polyfit</a>
+  </div>
+</div>
+
+<div class="func-card" id="curvefit" data-name="curvefit">
+  <div class="func-name">curvefit</div>
+  <div class="func-desc">Fit a parametric model to data using the Levenberg-Marquardt algorithm. Returns an object with fitted params, residuals, and iteration count.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">curvefit(f | params0 | xdata</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, Array, Array, Array, function, Array, Array, Array, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>Model function f(x, params) -&gt; number</td></tr>
+      <tr><td class="param-name">params0</td><td class="param-type">Array</td><td>Initial parameter guess (1D array)</td></tr>
+      <tr><td class="param-name">xdata</td><td class="param-type">Array</td><td>Input data (1D array)</td></tr>
+      <tr><td class="param-name">ydata</td><td class="param-type">Array</td><td>Output data (1D array)</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options: tol (1e-8), maxIter (200), lambda (0.01)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — { params, residuals, iterations }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">linear(x<br>p) = p[1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#nintegrate">nintegrate</a>
+    <a href="#linsolve">linsolve</a>
+    <a href="#interpolate">interpolate</a>
+  </div>
+</div>
+
+<div class="func-card" id="eventDetection" data-name="eventdetection">
+  <div class="func-name">eventDetection</div>
+  <div class="func-desc">Solve an ODE system and detect events (zero crossings of event functions) using bisection.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">eventDetection(f | tSpan | y0</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">function</td><td>ODE function f(t, y) -&gt; array</td></tr>
+      <tr><td class="param-name">tSpan</td><td class="param-type">Array</td><td>[t0, tf]</td></tr>
+      <tr><td class="param-name">y0</td><td class="param-type">Array</td><td>Initial state array</td></tr>
+      <tr><td class="param-name">events</td><td class="param-type">Array</td><td>Array of event functions g_i(t, y) -&gt; array of scalar values</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Optional: {tol, maxStep, minStep, maxIter, bisectTol}</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — {t, y, tEvents, yEvents, eventIndices}</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#solveODE">solveODE</a>
+    <a href="#solveODESystem">solveODESystem</a>
+    <a href="#odeAdaptiveStep">odeAdaptiveStep</a>
+  </div>
+</div>
+
+<div class="func-card" id="expfit" data-name="expfit">
+  <div class="func-name">expfit</div>
+  <div class="func-desc">Fit an exponential model y = a * exp(b * x) to data using linear regression on log-transformed data. All y values must be strictly positive. Returns an object with a, b, and predict(x).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">expfit(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>Array of x-coordinates</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array</td><td>Array of y-coordinates (all must be &gt; 0)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `a`, `b`, and `predict(x)` method</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">expfit([0<br>1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#powerfit">powerfit</a>
+    <a href="#logfit">logfit</a>
+    <a href="#polyfit">polyfit</a>
+    <a href="#curvefit">curvefit</a>
+  </div>
+</div>
+
+<div class="func-card" id="findRoot" data-name="findroot">
+  <div class="func-name">findRoot</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">findRoot(f | x0) | findRoot(f</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, number, function, number, number, function, number, Object, function, number, number, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>The function to find the root of</td></tr>
+      <tr><td class="param-name">x0</td><td class="param-type">number</td><td>Initial guess (Newton) or lower bound (Brent)</td></tr>
+      <tr><td class="param-name">x1</td><td class="param-type">number</td><td>Upper bound (Brent only)</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options: tol (1e-12), maxIter (100)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The root x where f(x) ≈ 0</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">h(x) = x^2 - 4<br>findRoot(h<br>1)<br>findRoot(cos<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#nintegrate">nintegrate</a>
+    <a href="#derivative">derivative</a>
+    <a href="#solveODE">solveODE</a>
+  </div>
+</div>
+
+<div class="func-card" id="globalMinimize" data-name="globalminimize">
+  <div class="func-name">globalMinimize</div>
+  <div class="func-desc">Find the global minimum of a function using the differential evolution algorithm, a population-based stochastic method that does not require derivatives. bounds is an array of [lo, hi] pairs for each dimension. Returns an object with x, fval, and iterations.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">globalMinimize(f | bounds) | globalMinimize(f</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, Array, function, Array, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>Objective function taking an array of numbers, returning a number</td></tr>
+      <tr><td class="param-name">bounds</td><td class="param-type">Array</td><td>Array of [lo, hi] pairs for each dimension</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options: populationSize (50), maxIter (1000), tol (1e-8), mutation (0.8), crossover (0.7)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Result with properties: x (array), fval (number), iterations (number)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">f(v) = (v[1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#minimize">minimize</a>
+    <a href="#maximize">maximize</a>
+  </div>
+</div>
+
+<div class="func-card" id="gradient" data-name="gradient">
+  <div class="func-name">gradient</div>
+  <div class="func-desc">Compute the numerical gradient of a scalar function at a given point using central differences. grad[i] = (f(x+h*e_i) - f(x-h*e_i)) / (2*h).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">gradient(f | x) | gradient(f</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, Array, function, Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>A function taking an array and returning a number</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>The point at which to evaluate the gradient</td></tr>
+      <tr><td class="param-name">h</td><td class="param-type">number</td><td>Step size (default: 1e-7)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — The gradient vector at x</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#hessian">hessian</a>
+    <a href="#derivative">derivative</a>
+    <a href="#nintegrate">nintegrate</a>
+  </div>
+</div>
+
+<div class="func-card" id="griddata" data-name="griddata">
+  <div class="func-name">griddata</div>
+  <div class="func-desc">Interpolate scattered data at query points using the specified method. Methods: &quot;nearest&quot; (nearest-neighbor), &quot;linear&quot; (inverse distance weighting, IDW), &quot;natural&quot; (IDW with squared distances). Works in any dimension. Returns an array of interpolated values at each query point.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">griddata(points | values | xi)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Array, Array, Array, Array, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array</td><td>Scattered data points (N x d array)</td></tr>
+      <tr><td class="param-name">values</td><td class="param-type">Array</td><td>Function values at data points (length N)</td></tr>
+      <tr><td class="param-name">xi</td><td class="param-type">Array</td><td>Query points (M x d array)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Interpolated values at xi (length M)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">griddata([[0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#interpolate">interpolate</a>
+    <a href="#rbfInterpolate">rbfInterpolate</a>
+    <a href="#cspline">cspline</a>
+  </div>
+</div>
+
+<div class="func-card" id="hessian" data-name="hessian">
+  <div class="func-name">hessian</div>
+  <div class="func-desc">Compute the numerical Hessian matrix of a scalar function at a given point using second-order central differences. H[i][j] = (f(x+h*e_i+h*e_j) - f(x+h*e_i-h*e_j) - f(x-h*e_i+h*e_j) + f(x-h*e_i-h*e_j)) / (4*h^2).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">hessian(f | x) | hessian(f</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, Array, function, Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>A function taking an array and returning a number</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>The point at which to evaluate the Hessian</td></tr>
+      <tr><td class="param-name">h</td><td class="param-type">number</td><td>Step size (default: 1e-4)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — The n×n Hessian matrix at x (2D array)</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gradient">gradient</a>
+    <a href="#derivative">derivative</a>
+    <a href="#nintegrate">nintegrate</a>
+  </div>
+</div>
+
+<div class="func-card" id="interpolate" data-name="interpolate">
+  <div class="func-name">interpolate</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">interpolate(points | x) | interpolate(points</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, Array, number, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array</td><td>Array of [x, y] pairs, sorted by x</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The x value to interpolate at</td></tr>
+      <tr><td class="param-name">method</td><td class="param-type">string</td><td>Interpolation method: 'linear', 'lagrange', 'cubic'</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The interpolated y value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">interpolate([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#curvefit">curvefit</a>
+    <a href="#nintegrate">nintegrate</a>
+  </div>
+</div>
+
+<div class="func-card" id="leastSquares" data-name="leastsquares">
+  <div class="func-name">leastSquares</div>
+  <div class="func-desc">Solve a nonlinear least squares problem using the Gauss-Newton method with backtracking line search and Levenberg-Marquardt regularization. Minimizes the sum of squared residuals returned by f(params, data). Returns an object with x, resnorm, iterations, and converged.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">leastSquares(f | x0 | data)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, Array, any, function, Array, any, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>Residual function: (params: Array, data: any) =&gt; Array of residuals</td></tr>
+      <tr><td class="param-name">x0</td><td class="param-type">Array</td><td>Initial parameter guess</td></tr>
+      <tr><td class="param-name">data</td><td class="param-type">any</td><td>Data passed to f as second argument</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options: tol (1e-8), maxIter (200), h (1e-7, finite diff step)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Result with properties: x (array), resnorm (number), iterations (number), converged (boolean)</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#minimize">minimize</a>
+    <a href="#curvefit">curvefit</a>
+    <a href="#polyfit">polyfit</a>
+  </div>
+</div>
+
+<div class="func-card" id="linprog" data-name="linprog">
+  <div class="func-name">linprog</div>
+  <div class="func-desc">Solve a linear programming problem: minimize c\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">linprog(c | A | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Array, Array, Array, Array, Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">c</td><td class="param-type">Array</td><td>Objective coefficient vector (length n)</td></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array</td><td>Inequality constraint matrix (m x n)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array</td><td>Inequality right-hand side vector (length m)</td></tr>
+      <tr><td class="param-name">Aeq</td><td class="param-type">Array</td><td>Equality constraint matrix (meq x n)</td></tr>
+      <tr><td class="param-name">beq</td><td class="param-type">Array</td><td>Equality right-hand side vector (length meq)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Result with properties: x (array), fval (number), status (string)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">linprog([-1<br>-2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#quadprog">quadprog</a>
+    <a href="#minimize">minimize</a>
+  </div>
+</div>
+
+<div class="func-card" id="linsolve" data-name="linsolve">
+  <div class="func-name">linsolve</div>
+  <div class="func-desc">Solve a linear system Ax = b using Gaussian elimination with partial pivoting. A is a 2D array, b is a 1D array.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">linsolve(A | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array</td><td>Coefficient matrix (2D array, m x n)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array</td><td>Right-hand side vector (1D array, length m)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Solution vector x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">linsolve([[2<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lsolve">lsolve</a>
+    <a href="#lusolve">lusolve</a>
+    <a href="#rank">rank</a>
+    <a href="#nullspace">nullspace</a>
+  </div>
+</div>
+
+<div class="func-card" id="loess" data-name="loess">
+  <div class="func-name">loess</div>
+  <div class="func-desc">Compute locally weighted scatterplot smoothing (LOESS/LOWESS). For each point x_i, fits a weighted linear regression using neighboring data points with a tricube weight function. The span parameter controls what fraction of the data is used for each local fit.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">loess(x | y) | loess(x</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Array, Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>Array of x-coordinates (must be sorted ascending)</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array</td><td>Array of y-coordinates (same length as x)</td></tr>
+      <tr><td class="param-name">span</td><td class="param-type">number</td><td>Fraction of data to use per local fit (default: 0.75)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of smoothed y values</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">loess([1<br>2<br>3<br>4<br>5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#polyfit">polyfit</a>
+    <a href="#curvefit">curvefit</a>
+    <a href="#interpolate">interpolate</a>
+  </div>
+</div>
+
+<div class="func-card" id="logfit" data-name="logfit">
+  <div class="func-name">logfit</div>
+  <div class="func-desc">Fit a logarithmic model y = a + b * ln(x) to data using linear regression with the substitution u = ln(x). All x values must be strictly positive. Returns an object with a, b, and predict(x).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">logfit(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>Array of x-coordinates (all must be &gt; 0)</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array</td><td>Array of y-coordinates</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `a`, `b`, and `predict(x)` method</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">logfit([1<br>2<br>4<br>8</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#expfit">expfit</a>
+    <a href="#powerfit">powerfit</a>
+    <a href="#polyfit">polyfit</a>
+    <a href="#curvefit">curvefit</a>
+  </div>
+</div>
+
+<div class="func-card" id="maximize" data-name="maximize">
+  <div class="func-name">maximize</div>
+  <div class="func-desc">Find a local maximum of a function by negating it and applying the Nelder-Mead simplex minimization. Works for any dimension without requiring derivatives. Returns an object with x, fval, iterations, and converged.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">maximize(f | x0) | maximize(f</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, Array, function, Array, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>Objective function taking an array of numbers, returning a number</td></tr>
+      <tr><td class="param-name">x0</td><td class="param-type">Array</td><td>Initial guess (array of numbers)</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options: tol (1e-8), maxIter (1000)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Result with properties: x (array), fval (number), iterations (number), converged (boolean)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">g(v) = -(v[1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#minimize">minimize</a>
+    <a href="#globalMinimize">globalMinimize</a>
+  </div>
+</div>
+
+<div class="func-card" id="minimize" data-name="minimize">
+  <div class="func-name">minimize</div>
+  <div class="func-desc">Find a local minimum of a function using the Nelder-Mead simplex method. Works for any dimension without requiring derivatives. Returns an object with x, fval, iterations, and converged.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">minimize(f | x0) | minimize(f</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, Array, function, Array, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>Objective function taking an array of numbers, returning a number</td></tr>
+      <tr><td class="param-name">x0</td><td class="param-type">Array</td><td>Initial guess (array of numbers)</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options: tol (1e-8), maxIter (1000)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Result with properties: x (array), fval (number), iterations (number), converged (boolean)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">f(v) = (v[1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#maximize">maximize</a>
+    <a href="#globalMinimize">globalMinimize</a>
+    <a href="#leastSquares">leastSquares</a>
+  </div>
+</div>
+
+<div class="func-card" id="nintegrate" data-name="nintegrate">
+  <div class="func-name">nintegrate</div>
+  <div class="func-desc">Numerically integrate a function over an interval using adaptive Gauss-Kronrod quadrature.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">nintegrate(f | a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, number, number, function, number, number, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>The function to integrate</td></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>Lower bound</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number</td><td>Upper bound</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Options: tol (default 1e-10), maxDepth (default 50)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The numerical integral</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">f(x) = x^2<br>nintegrate(f<br>0<br>1)<br>nintegrate(sin</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#solveODE">solveODE</a>
+    <a href="#simpsons">simpsons</a>
+    <a href="#trapz">trapz</a>
+  </div>
+</div>
+
+<div class="func-card" id="nullspace" data-name="nullspace">
+  <div class="func-name">nullspace</div>
+  <div class="func-desc">Compute the null space (kernel) of a matrix. Returns an array of basis vectors for the null space.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">nullspace(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array</td><td>The matrix (2D array, m x n)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of basis vectors for the null space</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">nullspace([[1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#rank">rank</a>
+    <a href="#cond">cond</a>
+    <a href="#linsolve">linsolve</a>
+  </div>
+</div>
+
+<div class="func-card" id="odeAdaptiveStep" data-name="odeadaptivestep">
+  <div class="func-name">odeAdaptiveStep</div>
+  <div class="func-desc">Solve an ODE system using Dormand-Prince RK45 with automatic adaptive step size control.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">odeAdaptiveStep(f | tSpan | y0)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">function</td><td>ODE function f(t, y) -&gt; array (or scalar)</td></tr>
+      <tr><td class="param-name">tSpan</td><td class="param-type">Array</td><td>[t0, tf]</td></tr>
+      <tr><td class="param-name">y0</td><td class="param-type">Array|number</td><td>Initial values (array for system, number for scalar)</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Optional: {tol, maxStep, minStep, maxIter}</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — {t: number[], y: number[][]}</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#solveODE">solveODE</a>
+    <a href="#solveODESystem">solveODESystem</a>
+    <a href="#solveBVP">solveBVP</a>
+  </div>
+</div>
+
+<div class="func-card" id="padeApproximant" data-name="padeapproximant">
+  <div class="func-name">padeApproximant</div>
+  <div class="func-desc">Compute the [m/n] Pade approximant from Taylor series coefficients. Given coefficients c[0], c[1], ... of a Taylor series, returns the rational function P(x)/Q(x) where P has degree m and Q has degree n. Often converges faster than Taylor series, especially near poles. Returns an object with numerat</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">padeApproximant(coeffs | m | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">coeffs</td><td class="param-type">Array</td><td>Taylor series coefficients [c0, c1, c2, ...]</td></tr>
+      <tr><td class="param-name">m</td><td class="param-type">number</td><td>Degree of numerator polynomial</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Degree of denominator polynomial</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `numerator`, `denominator`, and `evaluate(x)` fields</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">padeApproximant([1<br>1<br>0.5<br>1/6<br>1/24</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#chebyshevApprox">chebyshevApprox</a>
+    <a href="#polyfit">polyfit</a>
+  </div>
+</div>
+
+<div class="func-card" id="pchip" data-name="pchip">
+  <div class="func-name">pchip</div>
+  <div class="func-desc">Compute a Piecewise Cubic Hermite Interpolating Polynomial (PCHIP). Unlike cubic splines, PCHIP preserves monotonicity: the interpolant will not oscillate between data points. Uses the Fritsch-Carlson method to compute shape-preserving slopes. Returns an object with an evaluate(t) method.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">pchip(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>Strictly increasing x-coordinates</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array</td><td>y-coordinates (same length as x)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `evaluate(t)` method</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">pchip([0<br>1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cspline">cspline</a>
+    <a href="#interpolate">interpolate</a>
+  </div>
+</div>
+
+<div class="func-card" id="polyfit" data-name="polyfit">
+  <div class="func-name">polyfit</div>
+  <div class="func-desc">Fit a polynomial of given degree to data points using least-squares regression. Returns coefficients [c0, c1, ...] where p(x) = c0 + c1*x + c2*x^2 + ...</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polyfit(x | y | degree)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>Array of x-coordinates</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array</td><td>Array of y-coordinates (same length as x)</td></tr>
+      <tr><td class="param-name">degree</td><td class="param-type">number</td><td>Degree of the polynomial to fit</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Coefficients [c0, c1, ..., cdegree]</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polyfit([0<br>1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#interpolate">interpolate</a>
+    <a href="#curvefit">curvefit</a>
+    <a href="#expfit">expfit</a>
+    <a href="#powerfit">powerfit</a>
+    <a href="#logfit">logfit</a>
+  </div>
+</div>
+
+<div class="func-card" id="powerfit" data-name="powerfit">
+  <div class="func-name">powerfit</div>
+  <div class="func-desc">Fit a power-law model y = a * x^b to data using linear regression on doubly log-transformed data: ln(y) = ln(a) + b*ln(x). All x and y values must be strictly positive. Returns an object with a, b, and predict(x).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">powerfit(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array</td><td>Array of x-coordinates (all must be &gt; 0)</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array</td><td>Array of y-coordinates (all must be &gt; 0)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `a`, `b`, and `predict(x)` method</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">powerfit([1<br>2<br>3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#expfit">expfit</a>
+    <a href="#logfit">logfit</a>
+    <a href="#polyfit">polyfit</a>
+    <a href="#curvefit">curvefit</a>
+  </div>
+</div>
+
+<div class="func-card" id="quadprog" data-name="quadprog">
+  <div class="func-name">quadprog</div>
+  <div class="func-desc">Solve a quadratic programming problem: minimize (1/2)x\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">quadprog(H | f | A</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Array, Array, Array, Array, Array, Array, Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">H</td><td class="param-type">Array</td><td>Quadratic cost matrix (n x n), symmetric positive definite</td></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Array</td><td>Linear cost vector (length n)</td></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array</td><td>Inequality constraint matrix (m x n)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array</td><td>Inequality right-hand side (length m)</td></tr>
+      <tr><td class="param-name">Aeq</td><td class="param-type">Array</td><td>Equality constraint matrix (meq x n)</td></tr>
+      <tr><td class="param-name">beq</td><td class="param-type">Array</td><td>Equality right-hand side (length meq)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Result with properties: x (array), fval (number), status (string), iterations (number)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">quadprog([[2<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#linprog">linprog</a>
+    <a href="#minimize">minimize</a>
+  </div>
+</div>
+
+<div class="func-card" id="rank" data-name="rank">
+  <div class="func-name">rank</div>
+  <div class="func-desc">Compute the rank of a matrix (number of linearly independent rows or columns) using Gaussian elimination.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">rank(A) | rank(A | tol)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array</td><td>The matrix (2D array)</td></tr>
+      <tr><td class="param-name">tol</td><td class="param-type">number</td><td>Tolerance for zero detection (default: auto)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The rank of the matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">rank([[1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#nullspace">nullspace</a>
+    <a href="#cond">cond</a>
+    <a href="#det">det</a>
+    <a href="#linsolve">linsolve</a>
+  </div>
+</div>
+
+<div class="func-card" id="rbfInterpolate" data-name="rbfinterpolate">
+  <div class="func-name">rbfInterpolate</div>
+  <div class="func-desc">Radial Basis Function (RBF) interpolation for scattered data in any dimension. Fits weights by solving a linear system, then evaluates f(x) = sum_i w_i * phi(||x - x_i||). Available kernels: &quot;gaussian&quot;, &quot;multiquadric&quot;, &quot;inverseMultiquadric&quot;, &quot;thinPlateSpline&quot;. Returns an object with an evaluate(poin</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">rbfInterpolate(points | values | kernel)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array</td><td>Array of N coordinate arrays (each has same dimension d)</td></tr>
+      <tr><td class="param-name">values</td><td class="param-type">Array</td><td>Array of N function values at the corresponding points</td></tr>
+      <tr><td class="param-name">kernel</td><td class="param-type">string</td><td>Kernel type: 'gaussian', 'multiquadric',</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with `evaluate(point)` method</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">rbfInterpolate([[0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#interpolate">interpolate</a>
+    <a href="#cspline">cspline</a>
+    <a href="#griddata">griddata</a>
+  </div>
+</div>
+
+<div class="func-card" id="residue" data-name="residue">
+  <div class="func-name">residue</div>
+  <div class="func-desc">Compute the residues and poles of a rational function P(s)/Q(s) given polynomial coefficient arrays (highest power first). For each simple pole p_i: residue = P(p_i) / Q\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">residue(num | den)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">num</td><td class="param-type">Array</td><td>Numerator polynomial coefficients [highest power first]</td></tr>
+      <tr><td class="param-name">den</td><td class="param-type">Array</td><td>Denominator polynomial coefficients [highest power first]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — { residues: Array, poles: Array }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">residue([1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#zpk2tf">zpk2tf</a>
+    <a href="#freqz">freqz</a>
+    <a href="#polyfit">polyfit</a>
+  </div>
+</div>
+
+<div class="func-card" id="simpsons" data-name="simpsons">
+  <div class="func-name">simpsons</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">simpsons(f | a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">function, number, number, function, number, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">Function</td><td>The function to integrate</td></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>Lower bound</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number</td><td>Upper bound</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>Number of intervals (must be even, default 100)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The numerical integral</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">g(x) = x^2<br>simpsons(g<br>0<br>1)<br>simpsons(sin</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#nintegrate">nintegrate</a>
+    <a href="#trapz">trapz</a>
+  </div>
+</div>
+
+<div class="func-card" id="solveBVP" data-name="solvebvp">
+  <div class="func-name">solveBVP</div>
+  <div class="func-desc">Solve a boundary value problem for an ODE system using the shooting method.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">solveBVP(f | bc | tSpan</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">function</td><td>ODE right-hand side f(t, y) -&gt; array</td></tr>
+      <tr><td class="param-name">bc</td><td class="param-type">function</td><td>Boundary condition residual bc(ya, yb) -&gt; array (should be zero)</td></tr>
+      <tr><td class="param-name">tSpan</td><td class="param-type">Array</td><td>[t0, tf]</td></tr>
+      <tr><td class="param-name">yGuess</td><td class="param-type">Array</td><td>Initial guess for the solution at t0</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Optional: {tol, maxIter, shootingTol, nSteps}</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — {t: number[], y: number[][]}</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#solveODE">solveODE</a>
+    <a href="#solveODESystem">solveODESystem</a>
+    <a href="#odeAdaptiveStep">odeAdaptiveStep</a>
+  </div>
+</div>
+
+<div class="func-card" id="solveODE" data-name="solveode">
+  <div class="func-name">solveODE</div>
+  <div class="func-desc">Numerical Integration of Ordinary Differential Equations.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">solveODE(func | tspan | y0)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">func</td><td class="param-type">function</td><td>The forcing function f(t,y)</td></tr>
+      <tr><td class="param-name">tspan</td><td class="param-type">Array | Matrix</td><td>The time span</td></tr>
+      <tr><td class="param-name">y0</td><td class="param-type">number | BigNumber | Unit | Array | Matrix</td><td>The initial value</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Optional configuration options</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Return an object with t and y values as arrays</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">f(t<br>y) = y<br>tspan = [0<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#derivative">derivative</a>
+    <a href="#simplifyCore">simplifyCore</a>
+  </div>
+</div>
+
+<div class="func-card" id="solveODESystem" data-name="solveodesystem">
+  <div class="func-name">solveODESystem</div>
+  <div class="func-desc">Solve a system of coupled ordinary differential equations using RK4 or adaptive RK45.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">solveODESystem(f | tSpan | y0)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">function</td><td>The function f(t, y) returning array dy/dt</td></tr>
+      <tr><td class="param-name">tSpan</td><td class="param-type">Array</td><td>[t0, tf] or array of output times</td></tr>
+      <tr><td class="param-name">y0</td><td class="param-type">Array</td><td>Initial state array</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Optional: {method, tol, maxStep, minStep, maxIter}</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — {t: number[], y: number[][]}</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#solveODE">solveODE</a>
+    <a href="#odeAdaptiveStep">odeAdaptiveStep</a>
+    <a href="#solveBVP">solveBVP</a>
+  </div>
+</div>
+
+<div class="func-card" id="solvePDE" data-name="solvepde">
+  <div class="func-name">solvePDE</div>
+  <div class="func-desc">Solve a 1D PDE using the method of lines: discretize in space, then integrate in time with RK4.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">solvePDE(f | xSpan | tSpan</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">function</td><td>PDE function f(t, u, x, dx) -&gt; array of du/dt</td></tr>
+      <tr><td class="param-name">xSpan</td><td class="param-type">Array</td><td>[x0, xf]</td></tr>
+      <tr><td class="param-name">tSpan</td><td class="param-type">Array</td><td>[t0, tf]</td></tr>
+      <tr><td class="param-name">u0</td><td class="param-type">function|Array</td><td>Initial condition: function u0(x) or array of values</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Optional: {nx, nt, nSteps}</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — {x: number[], t: number[], u: number[][]}</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#solveODE">solveODE</a>
+    <a href="#solveODESystem">solveODESystem</a>
+    <a href="#odeAdaptiveStep">odeAdaptiveStep</a>
+  </div>
+</div>
+
+<div class="func-card" id="stiffODESolver" data-name="stiffodesolver">
+  <div class="func-name">stiffODESolver</div>
+  <div class="func-desc">Solve a stiff ODE system using Backward Differentiation Formula (BDF) order 1 or 2 with Newton iteration.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">stiffODESolver(f | tSpan | y0)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">f</td><td class="param-type">function</td><td>ODE function f(t, y) -&gt; array</td></tr>
+      <tr><td class="param-name">tSpan</td><td class="param-type">Array</td><td>[t0, tf]</td></tr>
+      <tr><td class="param-name">y0</td><td class="param-type">Array</td><td>Initial state array</td></tr>
+      <tr><td class="param-name">options</td><td class="param-type">Object</td><td>Optional: {order, tol, maxStep, minStep, maxIter, newtonMaxIter, h}</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — {t: number[], y: number[][]}</code></div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#solveODE">solveODE</a>
+    <a href="#solveODESystem">solveODESystem</a>
+    <a href="#odeAdaptiveStep">odeAdaptiveStep</a>
+  </div>
+</div>
+
+<div class="func-card" id="trapz" data-name="trapz">
+  <div class="func-name">trapz</div>
+  <div class="func-desc">Numerically integrate discrete data using the trapezoidal rule. y and x are arrays of the same length, or y is an array and dx is a scalar step size.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">trapz(y | x) | trapz(y</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array</td><td>Array of function values</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array|number</td><td>Array of x coordinates, or scalar step size dx</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The numerical integral</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">trapz([0<br>1<br>4<br>9</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#nintegrate">nintegrate</a>
+    <a href="#simpsons">simpsons</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

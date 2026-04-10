@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitwise — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Bitwise</div>
+  <h1><span>Bitwise</span> Functions (7)</h1>
+  <p class="cat-desc">Bitwise logical operations on integers</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter bitwise functions..." oninput="filterFuncs()">
+<div class="func-card" id="bitAnd" data-name="bitand">
+  <div class="func-name">bitAnd</div>
+  <div class="func-desc">Bitwise AND operation. Performs the logical AND operation on each pair of the corresponding bits of the two given values by multiplying them. If both bits in the compared position are 1, the bit in the resulting binary representation is 1, otherwise, the result is 0</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x &amp; y | bitAnd(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>First value to and</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>Second value to and</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Array | Matrix — AND of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">5 &amp; 3<br>bitAnd(53<br>131)<br>[1<br>12</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bitNot">bitNot</a>
+    <a href="#bitOr">bitOr</a>
+    <a href="#bitXor">bitXor</a>
+    <a href="#leftShift">leftShift</a>
+    <a href="#rightArithShift">rightArithShift</a>
+    <a href="#rightLogShift">rightLogShift</a>
+  </div>
+</div>
+
+<div class="func-card" id="bitNot" data-name="bitnot">
+  <div class="func-name">bitNot</div>
+  <div class="func-desc">Bitwise NOT operation. Performs a logical negation on each bit of the given value. Bits that are 0 become 1, and those that are 1 become 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">~x | bitNot(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>Value to not</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Array | Matrix — NOT of `x`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">~1<br>~2<br>bitNot([2<br>-3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bitAnd">bitAnd</a>
+    <a href="#bitOr">bitOr</a>
+    <a href="#bitXor">bitXor</a>
+    <a href="#leftShift">leftShift</a>
+    <a href="#rightArithShift">rightArithShift</a>
+    <a href="#rightLogShift">rightLogShift</a>
+  </div>
+</div>
+
+<div class="func-card" id="bitOr" data-name="bitor">
+  <div class="func-name">bitOr</div>
+  <div class="func-desc">Bitwise OR operation. Performs the logical inclusive OR operation on each pair of corresponding bits of the two given values. The result in each position is 1 if the first bit is 1 or the second bit is 1 or both bits are 1, otherwise, the result is 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x | y | bitOr(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>First value to or</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>Second value to or</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Array | Matrix — OR of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">5 | 3<br>bitOr([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bitAnd">bitAnd</a>
+    <a href="#bitNot">bitNot</a>
+    <a href="#bitXor">bitXor</a>
+    <a href="#leftShift">leftShift</a>
+    <a href="#rightArithShift">rightArithShift</a>
+    <a href="#rightLogShift">rightLogShift</a>
+  </div>
+</div>
+
+<div class="func-card" id="bitXor" data-name="bitxor">
+  <div class="func-name">bitXor</div>
+  <div class="func-desc">Bitwise XOR operation, exclusive OR. Performs the logical exclusive OR operation on each pair of corresponding bits of the two given values. The result in each position is 1 if only the first bit is 1 or only the second bit is 1, but will be 0 if both are 0 or both are 1.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">bitXor(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>First value to xor</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>Second value to xor</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Array | Matrix — XOR of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">bitOr(1<br>2)<br>bitXor([2<br>3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bitAnd">bitAnd</a>
+    <a href="#bitNot">bitNot</a>
+    <a href="#bitOr">bitOr</a>
+    <a href="#leftShift">leftShift</a>
+    <a href="#rightArithShift">rightArithShift</a>
+    <a href="#rightLogShift">rightLogShift</a>
+  </div>
+</div>
+
+<div class="func-card" id="leftShift" data-name="leftshift">
+  <div class="func-name">leftShift</div>
+  <div class="func-desc">Bitwise left logical shift of a value x by y number of bits.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x &lt;&lt; y | leftShift(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>Value to be shifted</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint</td><td>Amount of shifts</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Array | Matrix — `x` shifted left `y` times</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">4 &lt;&lt; 1<br>8 &gt;&gt; 1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bitAnd">bitAnd</a>
+    <a href="#bitNot">bitNot</a>
+    <a href="#bitOr">bitOr</a>
+    <a href="#bitXor">bitXor</a>
+    <a href="#rightArithShift">rightArithShift</a>
+    <a href="#rightLogShift">rightLogShift</a>
+  </div>
+</div>
+
+<div class="func-card" id="rightArithShift" data-name="rightarithshift">
+  <div class="func-name">rightArithShift</div>
+  <div class="func-desc">Bitwise right arithmetic shift of a value x by y number of bits.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x &gt;&gt; y | rightArithShift(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Array | Matrix</td><td>Value to be shifted</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint</td><td>Amount of shifts</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Array | Matrix — `x` zero-filled shifted right `y` times</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">8 &gt;&gt; 1<br>4 &lt;&lt; 1<br>-12 &gt;&gt; 2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bitAnd">bitAnd</a>
+    <a href="#bitNot">bitNot</a>
+    <a href="#bitOr">bitOr</a>
+    <a href="#bitXor">bitXor</a>
+    <a href="#leftShift">leftShift</a>
+    <a href="#rightLogShift">rightLogShift</a>
+  </div>
+</div>
+
+<div class="func-card" id="rightLogShift" data-name="rightlogshift">
+  <div class="func-name">rightLogShift</div>
+  <div class="func-desc">Bitwise right logical shift of a value x by y number of bits.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x &gt;&gt;&gt; y | rightLogShift(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | Array | Matrix</td><td>Value to be shifted</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number</td><td>Amount of shifts</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Array | Matrix — `x` zero-filled shifted right `y` times</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">8 &gt;&gt;&gt; 1<br>4 &lt;&lt; 1<br>-12 &gt;&gt;&gt; 2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#bitAnd">bitAnd</a>
+    <a href="#bitNot">bitNot</a>
+    <a href="#bitOr">bitOr</a>
+    <a href="#bitXor">bitXor</a>
+    <a href="#leftShift">leftShift</a>
+    <a href="#rightArithShift">rightArithShift</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

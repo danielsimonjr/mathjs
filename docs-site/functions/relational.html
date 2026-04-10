@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relational — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Relational</div>
+  <h1><span>Relational</span> Functions (12)</h1>
+  <p class="cat-desc">Comparison and equality operations</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter relational functions..." oninput="filterFuncs()">
+<div class="func-card" id="compare" data-name="compare">
+  <div class="func-name">compare</div>
+  <div class="func-desc">Compare two values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">compare(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">boolean, boolean, BigNumber, BigNumber, bigint, bigint, Fraction, Fraction, Complex, Complex, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Unit | string | Array | Matrix</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Unit | string | Array | Matrix</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Array | Matrix — Returns the result of the comparison:</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">compare(2<br>3)<br>compare(3<br>2)<br>compare(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#equal">equal</a>
+    <a href="#unequal">unequal</a>
+    <a href="#smaller">smaller</a>
+    <a href="#smallerEq">smallerEq</a>
+    <a href="#largerEq">largerEq</a>
+    <a href="#compareNatural">compareNatural</a>
+    <a href="#compareText">compareText</a>
+  </div>
+</div>
+
+<div class="func-card" id="compareNatural" data-name="comparenatural">
+  <div class="func-name">compareNatural</div>
+  <div class="func-desc">Compare two values of any type in a deterministic, natural way.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">compareNatural(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">*</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">*</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Returns the result of the comparison:</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">compareNatural(2<br>3)<br>compareNatural(3<br>2)<br>compareNatural(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#equal">equal</a>
+    <a href="#unequal">unequal</a>
+    <a href="#smaller">smaller</a>
+    <a href="#smallerEq">smallerEq</a>
+    <a href="#largerEq">largerEq</a>
+    <a href="#compare">compare</a>
+    <a href="#compareText">compareText</a>
+  </div>
+</div>
+
+<div class="func-card" id="compareText" data-name="comparetext">
+  <div class="func-name">compareText</div>
+  <div class="func-desc">Compare two strings lexically. Comparison is case sensitive.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">compareText(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">string | Array | DenseMatrix</td><td>First string to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">string | Array | DenseMatrix</td><td>Second string to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Array | DenseMatrix — Returns the result of the comparison:</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">compareText(&quot;B<br>A&quot;)<br>compareText(&quot;A<br>B&quot;)<br>compareText(&quot;A</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#compare">compare</a>
+    <a href="#compareNatural">compareNatural</a>
+  </div>
+</div>
+
+<div class="func-card" id="deepEqual" data-name="deepequal">
+  <div class="func-name">deepEqual</div>
+  <div class="func-desc">Check equality of two matrices element wise. Returns true if the size of both matrices is equal and when and each of the elements are equal.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">deepEqual(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">any, any</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>First matrix to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Second matrix to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Complex | Unit | Array | Matrix — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">deepEqual([1<br>3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#equal">equal</a>
+    <a href="#unequal">unequal</a>
+    <a href="#smaller">smaller</a>
+    <a href="#larger">larger</a>
+    <a href="#smallerEq">smallerEq</a>
+    <a href="#largerEq">largerEq</a>
+    <a href="#compare">compare</a>
+  </div>
+</div>
+
+<div class="func-card" id="equal" data-name="equal">
+  <div class="func-name">equal</div>
+  <div class="func-desc">Check equality of two values. Returns true if the values are equal, and false if not.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x == y | equal(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">any, any</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | boolean | Complex | Unit | string | Array | Matrix</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | boolean | Complex | Unit | string | Array | Matrix</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean | Array | Matrix — Returns true when the compared values are equal, else returns false</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">2+2 == 3<br>2+2 == 4<br>a = 3.2<br>b = 6-2.8<br>a == b</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#unequal">unequal</a>
+    <a href="#smaller">smaller</a>
+    <a href="#larger">larger</a>
+    <a href="#smallerEq">smallerEq</a>
+    <a href="#largerEq">largerEq</a>
+    <a href="#compare">compare</a>
+    <a href="#deepEqual">deepEqual</a>
+    <a href="#equalText">equalText</a>
+  </div>
+</div>
+
+<div class="func-card" id="equalScalar" data-name="equalscalar">
+  <div class="func-name">equalScalar</div>
+  <div class="func-desc">Test whether two scalar values are nearly equal.</div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">boolean, boolean, number, number, BigNumber, BigNumber, bigint, bigint, Fraction, Fraction, Complex, Complex</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Complex | Unit</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Complex</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — Returns true when the compared values are equal, else returns false</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="equalText" data-name="equaltext">
+  <div class="func-name">equalText</div>
+  <div class="func-desc">Check equality of two strings. Comparison is case sensitive. Returns true if the values are equal, and false if not.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">equalText(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">any, any</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">string | Array | DenseMatrix</td><td>First string to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">string | Array | DenseMatrix</td><td>Second string to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Array | DenseMatrix — Returns true if the values are equal, and false if not.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">equalText(&quot;Hello<br>Hello&quot;)<br>equalText(&quot;a<br>A&quot;)<br>equal(&quot;2e3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#compare">compare</a>
+    <a href="#compareNatural">compareNatural</a>
+    <a href="#compareText">compareText</a>
+    <a href="#equal">equal</a>
+  </div>
+</div>
+
+<div class="func-card" id="larger" data-name="larger">
+  <div class="func-name">larger</div>
+  <div class="func-desc">Check if value x is larger than y. Returns true if x is larger than y, and false if not. Comparing a value with NaN returns false.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x &gt; y | larger(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Fraction, BigNumber, BigNumber, Fraction, Complex, Complex, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Unit | string | Array | Matrix</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Unit | string | Array | Matrix</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean | Array | Matrix — Returns true when the x is larger than y, else returns false</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">2 &gt; 3<br>5 &gt; 2*2<br>a = 3.3<br>b = 6-2.8<br>(a &gt; b)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#equal">equal</a>
+    <a href="#unequal">unequal</a>
+    <a href="#smaller">smaller</a>
+    <a href="#smallerEq">smallerEq</a>
+    <a href="#largerEq">largerEq</a>
+    <a href="#compare">compare</a>
+  </div>
+</div>
+
+<div class="func-card" id="largerEq" data-name="largereq">
+  <div class="func-name">largerEq</div>
+  <div class="func-desc">Check if value x is larger or equal to y. Returns true if x is larger or equal to y, and false if not.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x &gt;= y | largerEq(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">BigNumber, BigNumber, bigint, bigint, Complex, Complex, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Unit | string | Array | Matrix</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Unit | string | Array | Matrix</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean | Array | Matrix — Returns true when the x is larger or equal to y, else returns false</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">2 &gt;= 1+1<br>2 &gt; 1+1<br>a = 3.2<br>b = 6-2.8<br>(a &gt;= b)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#equal">equal</a>
+    <a href="#unequal">unequal</a>
+    <a href="#smallerEq">smallerEq</a>
+    <a href="#smaller">smaller</a>
+    <a href="#compare">compare</a>
+  </div>
+</div>
+
+<div class="func-card" id="smaller" data-name="smaller">
+  <div class="func-name">smaller</div>
+  <div class="func-desc">Check if value x is smaller than value y. Returns true if x is smaller than y, and false if not. Comparing a value with NaN returns false.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x &lt; y | smaller(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Fraction, BigNumber, BigNumber, Fraction, Complex, Complex, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Unit | string | Array | Matrix</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Unit | string | Array | Matrix</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean | Array | Matrix — Returns true when the x is smaller than y, else returns false</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">2 &lt; 3<br>5 &lt; 2*2<br>a = 3.3<br>b = 6-2.8<br>(a &lt; b)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#equal">equal</a>
+    <a href="#unequal">unequal</a>
+    <a href="#larger">larger</a>
+    <a href="#smallerEq">smallerEq</a>
+    <a href="#largerEq">largerEq</a>
+    <a href="#compare">compare</a>
+  </div>
+</div>
+
+<div class="func-card" id="smallerEq" data-name="smallereq">
+  <div class="func-name">smallerEq</div>
+  <div class="func-desc">Check if value x is smaller or equal to value y. Returns true if x is smaller than y, and false if not.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x &lt;= y | smallerEq(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">BigNumber, BigNumber, Complex, Complex, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Unit | string | Array | Matrix</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | boolean | Unit | string | Array | Matrix</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean | Array | Matrix — Returns true when the x is smaller than y, else returns false</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">2 &lt;= 1+1<br>2 &lt; 1+1<br>a = 3.2<br>b = 6-2.8<br>(a &lt;= b)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#equal">equal</a>
+    <a href="#unequal">unequal</a>
+    <a href="#larger">larger</a>
+    <a href="#smaller">smaller</a>
+    <a href="#largerEq">largerEq</a>
+    <a href="#compare">compare</a>
+  </div>
+</div>
+
+<div class="func-card" id="unequal" data-name="unequal">
+  <div class="func-name">unequal</div>
+  <div class="func-desc">Check unequality of two values. Returns true if the values are unequal, and false if they are equal.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x != y | unequal(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">any, any</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | boolean | Complex | Unit | string | Array | Matrix | undefined</td><td>First value to compare</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | Fraction | boolean | Complex | Unit | string | Array | Matrix | undefined</td><td>Second value to compare</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean | Array | Matrix — Returns true when the compared values are unequal, else returns false</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">2+2 != 3<br>2+2 != 4<br>a = 3.2<br>b = 6-2.8<br>a != b</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#equal">equal</a>
+    <a href="#smaller">smaller</a>
+    <a href="#larger">larger</a>
+    <a href="#smallerEq">smallerEq</a>
+    <a href="#largerEq">largerEq</a>
+    <a href="#compare">compare</a>
+    <a href="#deepEqual">deepEqual</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

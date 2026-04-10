@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arithmetic — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Arithmetic</div>
+  <h1><span>Arithmetic</span> Functions (30)</h1>
+  <p class="cat-desc">Basic arithmetic operations and scalar math functions</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter arithmetic functions..." oninput="filterFuncs()">
+<div class="func-card" id="abs" data-name="abs">
+  <div class="func-name">abs</div>
+  <div class="func-desc">Compute the absolute value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">abs(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Array | Matrix | Unit</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Array | Matrix | Unit — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">abs(3.5)<br>abs(-4.2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sign">sign</a>
+  </div>
+</div>
+
+<div class="func-card" id="addScalar" data-name="addscalar">
+  <div class="func-name">addScalar</div>
+  <div class="func-desc">Add two scalar values, `x + y`. This function is meant for internal use: it is used by the public function `add` This function does not support collections (Array or Matrix).</div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Complex, Complex, BigNumber, BigNumber, bigint, bigint, Fraction, Fraction</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit</td><td>First value to add</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex</td><td>Second value to add</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit — Sum of `x` and `y`</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="cbrt" data-name="cbrt">
+  <div class="func-name">cbrt</div>
+  <div class="func-desc">Compute the cubic root value. If x = y * y * y, then y is the cubic root of x. When `x` is a number or complex number, an optional second argument `allRoots` can be provided to return all three cubic roots. If not provided, the principal root is returned</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cbrt(x) | cbrt(x | allRoots)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Unit</td><td></td></tr>
+      <tr><td class="param-name">allRoots</td><td class="param-type">boolean</td><td>Optional, false by default. Only applicable</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex | Unit — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cbrt(64)<br>cube(4)<br>cbrt(-8)<br>cbrt(2 + 3i)<br>cbrt(8i)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#square">square</a>
+    <a href="#sqrt">sqrt</a>
+    <a href="#cube">cube</a>
+    <a href="#multiply">multiply</a>
+  </div>
+</div>
+
+<div class="func-card" id="ceil" data-name="ceil">
+  <div class="func-name">ceil</div>
+  <div class="func-desc">Round a value towards plus infinity. If x is complex, both real and imaginary part are rounded towards plus infinity.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">ceil(x) | ceil(x | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number, Complex, number, Complex, BigNumber, BigNumber, BigNumber, Fraction, number, Fraction, BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Value to be rounded</td></tr>
+      <tr><td class="param-name">valuelessUnit</td><td class="param-type">Unit</td><td>A valueless unit</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Complex | Unit | Array | Matrix — Rounded value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">ceil(3.2)<br>ceil(3.8)<br>ceil(-4.2)<br>ceil(3.241cm<br>cm)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#floor">floor</a>
+    <a href="#fix">fix</a>
+    <a href="#round">round</a>
+  </div>
+</div>
+
+<div class="func-card" id="cube" data-name="cube">
+  <div class="func-name">cube</div>
+  <div class="func-desc">Compute the cube of a value. The cube of x is x * x * x.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cube(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit</td><td>Number for which to calculate the cube</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit — Cube of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cube(2)<br>2^3<br>2 * 2 * 2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#square">square</a>
+    <a href="#pow">pow</a>
+  </div>
+</div>
+
+<div class="func-card" id="divideScalar" data-name="dividescalar">
+  <div class="func-name">divideScalar</div>
+  <div class="func-desc">Divide two scalar values, `x / y`. This function is meant for internal use: it is used by the public functions `divide` and `inv`. This function does not support collections (Array or Matrix).</div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number, Complex, Complex, BigNumber, BigNumber, bigint, bigint, Fraction, Fraction</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit</td><td>Numerator</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex</td><td>Denominator</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit — Quotient, `x / y`</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="exp" data-name="exp">
+  <div class="func-name">exp</div>
+  <div class="func-desc">Calculate the exponent of a value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">exp(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>A number to exponentiate</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Exponential of `x`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">exp(1.3)<br>e ^ 1.3<br>log(exp(1.3))<br>x = 2.4<br>(exp(i*x) == cos(x) + i*sin(x))   # Euler\'s formula</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#expm">expm</a>
+    <a href="#expm1">expm1</a>
+    <a href="#pow">pow</a>
+    <a href="#log">log</a>
+  </div>
+</div>
+
+<div class="func-card" id="expm" data-name="expm">
+  <div class="func-name">expm</div>
+  <div class="func-desc">Compute the matrix exponential, expm(A) = e^A.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">exp(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Matrix</td><td>A square Matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix — The exponential of x</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">expm([[0<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exp">exp</a>
+  </div>
+</div>
+
+<div class="func-card" id="expm1" data-name="expm1">
+  <div class="func-name">expm1</div>
+  <div class="func-desc">Calculate the value of subtracting 1 from the exponential value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">expm1(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex</td><td>The number to exponentiate</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex — Exponential of `x`, minus one</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">expm1(2)<br>pow(e<br>2) - 1<br>log(expm1(2) + 1)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exp">exp</a>
+    <a href="#pow">pow</a>
+    <a href="#log">log</a>
+  </div>
+</div>
+
+<div class="func-card" id="fix" data-name="fix">
+  <div class="func-name">fix</div>
+  <div class="func-desc">Round a value towards zero. If x is complex, both real and imaginary part are rounded towards zero.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fix(x) | fix(x | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number, Complex, number, Complex, BigNumber, BigNumber, number | BigNumber, Fraction, number | BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Value to be rounded</td></tr>
+      <tr><td class="param-name">valuelessUnit</td><td class="param-type">Unit</td><td>A valueless unit</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Complex | Unit | Array | Matrix — Rounded value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fix(3.2)<br>fix(3.8)<br>fix(-4.2)<br>fix(-4.8)<br>fix(3.241cm</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#ceil">ceil</a>
+    <a href="#floor">floor</a>
+    <a href="#round">round</a>
+  </div>
+</div>
+
+<div class="func-card" id="floor" data-name="floor">
+  <div class="func-name">floor</div>
+  <div class="func-desc">Round a value towards minus infinity.If x is complex, both real and imaginary part are rounded towards minus infinity.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">floor(x) | floor(x | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number, Complex, number, Complex, BigNumber, BigNumber, BigNumber, Fraction, number, Fraction, BigNumber</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Value to be rounded</td></tr>
+      <tr><td class="param-name">valuelessUnit</td><td class="param-type">Unit</td><td>A valueless unit</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Complex | Unit | Array | Matrix — Rounded value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">floor(3.2)<br>floor(3.8)<br>floor(-4.2)<br>floor(3.241cm<br>cm)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#ceil">ceil</a>
+    <a href="#fix">fix</a>
+    <a href="#round">round</a>
+  </div>
+</div>
+
+<div class="func-card" id="gcd" data-name="gcd">
+  <div class="func-name">gcd</div>
+  <div class="func-desc">Compute the greatest common divisor.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">gcd(a | b) | gcd(a</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... number | BigNumber | Fraction | Array | Matrix</td><td>Two or more integer numbers</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Array | Matrix — The greatest common divisor</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">gcd(8<br>12)<br>gcd(-4<br>6)<br>gcd(25</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#lcm">lcm</a>
+    <a href="#xgcd">xgcd</a>
+  </div>
+</div>
+
+<div class="func-card" id="hypot" data-name="hypot">
+  <div class="func-name">hypot</div>
+  <div class="func-desc">Calculate the hypotenuse of a list with values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">hypot(a | b | c</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... number | BigNumber | Array | Matrix</td><td>A list with numeric values or an Array or Matrix.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber — Returns the hypothenusa of the input values.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">hypot(3<br>4)<br>sqrt(3^2 + 4^2)<br>hypot(-2)<br>hypot([3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#abs">abs</a>
+    <a href="#norm">norm</a>
+  </div>
+</div>
+
+<div class="func-card" id="invmod" data-name="invmod">
+  <div class="func-name">invmod</div>
+  <div class="func-desc">Calculate the (modular) multiplicative inverse of a modulo b. Solution to the equation ax ≣ 1 (mod b)</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">invmod(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number | BigNumber</td><td>An integer number</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number | BigNumber</td><td>An integer number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber  — Returns an integer number</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">invmod(8<br>12)<br>invmod(7<br>13)<br>invmod(15151</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gcd">gcd</a>
+    <a href="#xgcd">xgcd</a>
+  </div>
+</div>
+
+<div class="func-card" id="lcm" data-name="lcm">
+  <div class="func-name">lcm</div>
+  <div class="func-desc">Compute the least common multiple.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">lcm(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... number | BigNumber | Array | Matrix</td><td>Two or more integer numbers</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Array | Matrix — The least common multiple</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">lcm(4<br>6)<br>lcm(6<br>21)<br>lcm(6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gcd">gcd</a>
+  </div>
+</div>
+
+<div class="func-card" id="log" data-name="log">
+  <div class="func-name">log</div>
+  <div class="func-desc">Compute the logarithm of a value. If no base is provided, the natural logarithm of x is calculated. If base if provided, the logarithm is calculated for the specified base. log(x, base) is defined as log(x) / log(base).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">log(x) | log(x | base)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | Complex</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Complex — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">log(3.5)<br>a = log(2.4)<br>exp(a)<br>10 ^ 4<br>log(10000</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exp">exp</a>
+    <a href="#log1p">log1p</a>
+    <a href="#log2">log2</a>
+    <a href="#log10">log10</a>
+  </div>
+</div>
+
+<div class="func-card" id="log10" data-name="log10">
+  <div class="func-name">log10</div>
+  <div class="func-desc">Compute the 10-base logarithm of a value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">log10(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Array | Matrix</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex | Array | Matrix — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">log10(0.00001)<br>log10(10000)<br>10 ^ 4<br>log(10000) / log(10)<br>log(10000</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exp">exp</a>
+    <a href="#log">log</a>
+  </div>
+</div>
+
+<div class="func-card" id="log1p" data-name="log1p">
+  <div class="func-name">log1p</div>
+  <div class="func-desc">Calculate the logarithm of a `value+1`</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">log1p(x) | log1p(x | base)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Array | Matrix</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex | Array | Matrix — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">log1p(2.5)<br>exp(log1p(1.4))<br>pow(10<br>4)<br>log1p(9999</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exp">exp</a>
+    <a href="#log">log</a>
+    <a href="#log2">log2</a>
+    <a href="#log10">log10</a>
+  </div>
+</div>
+
+<div class="func-card" id="log2" data-name="log2">
+  <div class="func-name">log2</div>
+  <div class="func-desc">Calculate the 2-base of a value. This is the same as calculating `log(x, 2)`.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">log2(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Array | Matrix</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex | Array | Matrix — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">log2(0.03125)<br>log2(16)<br>log2(16) / log2(2)<br>pow(2<br>4)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exp">exp</a>
+    <a href="#log1p">log1p</a>
+    <a href="#log">log</a>
+    <a href="#log10">log10</a>
+  </div>
+</div>
+
+<div class="func-card" id="multiplyScalar" data-name="multiplyscalar">
+  <div class="func-name">multiplyScalar</div>
+  <div class="func-desc">Multiply two scalar values, `x * y`. This function is meant for internal use: it is used by the public function `multiply` This function does not support collections (Array or Matrix).</div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Complex, Complex, BigNumber, BigNumber, bigint, bigint, Fraction, Fraction</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit</td><td>First value to multiply</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex</td><td>Second value to multiply</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit — Multiplication of `x` and `y`</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="norm" data-name="norm">
+  <div class="func-name">norm</div>
+  <div class="func-desc">Calculate the norm of a number, vector or matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">norm(x) | norm(x | p)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number | BigNumber | string, Matrix, number | BigNumber | string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Array | Matrix</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber — the p-norm</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">abs(-3.5)<br>norm(-3.5)<br>norm(3 - 4i)<br>norm([1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#abs">abs</a>
+    <a href="#hypot">hypot</a>
+  </div>
+</div>
+
+<div class="func-card" id="nthRoot" data-name="nthroot">
+  <div class="func-name">nthRoot</div>
+  <div class="func-desc">Calculate the nth root of a value.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">nthRoot(a) | nthRoot(a | root)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number | BigNumber | Array | Matrix | Complex</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Complex | Array | Matrix — Returns the nth root of `a`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">4 ^ 3<br>nthRoot(64<br>3)<br>nthRoot(9<br>2)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#nthRoots">nthRoots</a>
+    <a href="#pow">pow</a>
+    <a href="#sqrt">sqrt</a>
+  </div>
+</div>
+
+<div class="func-card" id="nthRoots" data-name="nthroots">
+  <div class="func-name">nthRoots</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">nthRoots(A) | nthRoots(A | root)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">val</td><td class="param-type">number</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Complex — val, i*val, -val or -i*val for index 0, 1, 2, 3</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">nthRoots(1)<br>nthRoots(1<br>3)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sqrt">sqrt</a>
+    <a href="#pow">pow</a>
+    <a href="#nthRoot">nthRoot</a>
+  </div>
+</div>
+
+<div class="func-card" id="round" data-name="round">
+  <div class="func-name">round</div>
+  <div class="func-desc">round a value towards the nearest integer.If x is complex, both real and imaginary part are rounded towards the nearest integer. When n is specified, the value is rounded to n decimals.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">round(x) | round(x | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number, number, BigNumber, Complex, number, Complex, BigNumber, BigNumber, BigNumber, Fraction, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Fraction | Complex | Unit | Array | Matrix</td><td>Value to be rounded</td></tr>
+      <tr><td class="param-name">valuelessUnit</td><td class="param-type">Unit</td><td>A valueless unit</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Fraction | Complex | Unit | Array | Matrix — Rounded value</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">round(3.2)<br>round(3.8)<br>round(-4.2)<br>round(-4.8)<br>round(pi</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#ceil">ceil</a>
+    <a href="#floor">floor</a>
+    <a href="#fix">fix</a>
+  </div>
+</div>
+
+<div class="func-card" id="sign" data-name="sign">
+  <div class="func-name">sign</div>
+  <div class="func-desc">Compute the sign of a value. The sign of a value x is 1 when x&gt;0, -1 when x&lt;0, and 0 when x=0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sign(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Array | Matrix | Unit</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Array | Matrix | Unit — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sign(3.5)<br>sign(-4.2)<br>sign(0)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#abs">abs</a>
+  </div>
+</div>
+
+<div class="func-card" id="sqrt" data-name="sqrt">
+  <div class="func-name">sqrt</div>
+  <div class="func-desc">Compute the square root value. If x = y * y, then y is the square root of x.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sqrt(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | Complex | Unit</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | Complex | Unit — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sqrt(25)<br>5 * 5<br>sqrt(-1)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#square">square</a>
+    <a href="#sqrtm">sqrtm</a>
+    <a href="#multiply">multiply</a>
+    <a href="#nthRoot">nthRoot</a>
+    <a href="#nthRoots">nthRoots</a>
+    <a href="#pow">pow</a>
+  </div>
+</div>
+
+<div class="func-card" id="sqrtm" data-name="sqrtm">
+  <div class="func-name">sqrtm</div>
+  <div class="func-desc">Calculate the principal square root of a square matrix. The principal square root matrix `X` of another matrix `A` is such that `X * X = A`.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sqrtm(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>The square matrix `A`</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — The principal square root of matrix `A`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sqrtm([[33<br>24</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sqrt">sqrt</a>
+    <a href="#abs">abs</a>
+    <a href="#square">square</a>
+    <a href="#multiply">multiply</a>
+  </div>
+</div>
+
+<div class="func-card" id="square" data-name="square">
+  <div class="func-name">square</div>
+  <div class="func-desc">Compute the square of a value. The square of x is x * x.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">square(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">square(3)<br>sqrt(9)<br>3^2<br>3 * 3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#pow">pow</a>
+    <a href="#sqrt">sqrt</a>
+    <a href="#cube">cube</a>
+  </div>
+</div>
+
+<div class="func-card" id="subtractScalar" data-name="subtractscalar">
+  <div class="func-name">subtractScalar</div>
+  <div class="func-desc">Subtract two scalar values, `x - y`. This function is meant for internal use: it is used by the public function `subtract` This function does not support collections (Array or Matrix).</div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Complex, Complex, BigNumber, BigNumber, bigint, bigint, Fraction, Fraction</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex | Unit</td><td>First value</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">number | BigNumber | bigint | Fraction | Complex</td><td>Second value to be subtracted from `x`</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | BigNumber | bigint | Fraction | Complex | Unit — Difference of `x` and `y`</code></div>
+  </div>
+</div>
+
+<div class="func-card" id="xgcd" data-name="xgcd">
+  <div class="func-name">xgcd</div>
+  <div class="func-desc">Calculate the extended greatest common divisor for two values. The result is an array [d, x, y] with 3 entries, where d is the greatest common divisor, and d = x * a + y * b.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">xgcd(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number | BigNumber</td><td>An integer number</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number | BigNumber</td><td>An integer number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Returns an array containing 3 integers `[div, m, n]`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">xgcd(8<br>12)<br>gcd(8<br>12)<br>xgcd(36163</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gcd">gcd</a>
+    <a href="#lcm">lcm</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

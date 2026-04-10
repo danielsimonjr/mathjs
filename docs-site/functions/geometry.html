@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometry — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Geometry</div>
+  <h1><span>Geometry</span> Functions (14)</h1>
+  <p class="cat-desc">Computational geometry, distances, coordinate transforms, polygons</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter geometry functions..." oninput="filterFuncs()">
+<div class="func-card" id="area" data-name="area">
+  <div class="func-name">area</div>
+  <div class="func-desc">Calculates the area of a polygon given its vertices using the shoelace formula. The vertices should be provided in order (clockwise or counterclockwise) as an array of 2D points.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">area(vertices)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">vertices</td><td class="param-type">Array</td><td>Array of 2D points [[x0,y0],[x1,y1],...]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The area of the polygon</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">area([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#distance">distance</a>
+    <a href="#convexHull">convexHull</a>
+  </div>
+</div>
+
+<div class="func-card" id="centroid" data-name="centroid">
+  <div class="func-name">centroid</div>
+  <div class="func-desc">Computes the centroid of a polygon or point cloud. For polygons (3+ vertices), uses the signed-area weighted formula. For point clouds, returns the arithmetic mean of all coordinates.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">centroid(points)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array</td><td>Array of 2D points [[x0,y0],[x1,y1],...]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Centroid as [cx, cy]</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">centroid([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#area">area</a>
+    <a href="#polygonPerimeter">polygonPerimeter</a>
+    <a href="#convexHull">convexHull</a>
+  </div>
+</div>
+
+<div class="func-card" id="chebyshevDistance" data-name="chebyshevdistance">
+  <div class="func-name">chebyshevDistance</div>
+  <div class="func-desc">Calculates the Chebyshev distance (L-infinity distance) between two points in N-dimensional space. The result is the maximum of the absolute differences of their coordinates.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">chebyshevDistance(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Array</td><td>First point as an array of coordinates</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array</td><td>Second point as an array of coordinates</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Chebyshev distance between points a and b</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">chebyshevDistance([0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#distance">distance</a>
+    <a href="#manhattanDistance">manhattanDistance</a>
+    <a href="#minkowskiDistance">minkowskiDistance</a>
+  </div>
+</div>
+
+<div class="func-card" id="convexHull" data-name="convexhull">
+  <div class="func-name">convexHull</div>
+  <div class="func-desc">Computes the convex hull of a set of 2D points using Andrew\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">convexHull(points)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array</td><td>Array of 2D points [[x0,y0],[x1,y1],...]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of 2D points forming the convex hull in CCW order</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">convexHull([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#area">area</a>
+    <a href="#distance">distance</a>
+  </div>
+</div>
+
+<div class="func-card" id="coordinateTransform" data-name="coordinatetransform">
+  <div class="func-name">coordinateTransform</div>
+  <div class="func-desc">Transforms a point between coordinate systems. Supported systems: &quot;cartesian&quot;, &quot;polar&quot;, &quot;spherical&quot;, &quot;cylindrical&quot;. For polar: [r, theta]. For spherical (ISO): [r, theta, phi] where theta is the inclination and phi is the azimuth. For cylindrical: [rho, phi, z].</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">coordinateTransform(point | from | to)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, string, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">point</td><td class="param-type">Array</td><td>The point to transform</td></tr>
+      <tr><td class="param-name">from</td><td class="param-type">string</td><td>Source coordinate system</td></tr>
+      <tr><td class="param-name">to</td><td class="param-type">string</td><td>Target coordinate system</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — The transformed point</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">coordinateTransform([1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#distance">distance</a>
+  </div>
+</div>
+
+<div class="func-card" id="delaunayTriangulation" data-name="delaunaytriangulation">
+  <div class="func-name">delaunayTriangulation</div>
+  <div class="func-desc">Computes the Delaunay triangulation of a set of 2D points using the Bowyer-Watson algorithm. Returns an array of triangles, each represented as three indices into the original points array.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">delaunayTriangulation(points)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array</td><td>Array of 2D points [[x0,y0],[x1,y1],...]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Array of triangles [[i,j,k],...] with indices into points</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">delaunayTriangulation([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#convexHull">convexHull</a>
+    <a href="#voronoiDiagram">voronoiDiagram</a>
+    <a href="#area">area</a>
+  </div>
+</div>
+
+<div class="func-card" id="distance" data-name="distance">
+  <div class="func-name">distance</div>
+  <div class="func-desc">Calculates the Euclidean distance between two points.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">distance([x1 | y1</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, Array, Object, Object, Object, Array, Array, Object, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix | Object</td><td>Co-ordinates of first point</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array | Matrix | Object</td><td>Co-ordinates of second point</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Number | BigNumber — Returns the distance from two/three points</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">distance([0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+  </div>
+</div>
+
+<div class="func-card" id="intersect" data-name="intersect">
+  <div class="func-name">intersect</div>
+  <div class="func-desc">Computes the intersection point of lines and/or planes.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">intersect(expr1 | expr2 | expr3</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, Matrix, Matrix, Matrix, Matrix, Matrix, Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">w</td><td class="param-type">Array | Matrix</td><td>Co-ordinates of first end-point of first line</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>Co-ordinates of second end-point of first line</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array | Matrix</td><td>Co-ordinates of first end-point of second line</td></tr>
+      <tr><td class="param-name">z</td><td class="param-type">Array | Matrix</td><td>Co-ordinates of second end-point of second line</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — Returns the point of intersection of lines/lines-planes</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">intersect([0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+  </div>
+</div>
+
+<div class="func-card" id="kdTree" data-name="kdtree">
+  <div class="func-name">kdTree</div>
+  <div class="func-desc">Builds a balanced k-d tree from an array of points for efficient nearest-neighbor and range queries. Returns an object with nearest(point, k) and rangeSearch(point, radius) methods.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">kdTree(points)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array</td><td>Array of 2D points [[x0,y0],[x1,y1],...]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — Object with nearest(point, k) and rangeSearch(point, radius)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">kdTree([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#distance">distance</a>
+    <a href="#manhattanDistance">manhattanDistance</a>
+    <a href="#chebyshevDistance">chebyshevDistance</a>
+  </div>
+</div>
+
+<div class="func-card" id="manhattanDistance" data-name="manhattandistance">
+  <div class="func-name">manhattanDistance</div>
+  <div class="func-desc">Calculates the Manhattan distance (L1 distance) between two points in N-dimensional space. The result is the sum of the absolute differences of their coordinates.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">manhattanDistance(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Array</td><td>First point as an array of coordinates</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array</td><td>Second point as an array of coordinates</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Manhattan distance between points a and b</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">manhattanDistance([0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#distance">distance</a>
+    <a href="#chebyshevDistance">chebyshevDistance</a>
+    <a href="#minkowskiDistance">minkowskiDistance</a>
+  </div>
+</div>
+
+<div class="func-card" id="minkowskiDistance" data-name="minkowskidistance">
+  <div class="func-name">minkowskiDistance</div>
+  <div class="func-desc">Calculates the Minkowski distance (Lp distance) between two points in N-dimensional space. Generalizes Euclidean (p=2), Manhattan (p=1), and Chebyshev (p=Infinity) distances.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">minkowskiDistance(a | b | p)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">Array</td><td>First point as an array of coordinates</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">Array</td><td>Second point as an array of coordinates</td></tr>
+      <tr><td class="param-name">p</td><td class="param-type">number</td><td>The order of the Minkowski distance (p &gt;= 1)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Minkowski distance between points a and b</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">minkowskiDistance([0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#distance">distance</a>
+    <a href="#manhattanDistance">manhattanDistance</a>
+    <a href="#chebyshevDistance">chebyshevDistance</a>
+  </div>
+</div>
+
+<div class="func-card" id="pointInPolygon" data-name="pointinpolygon">
+  <div class="func-name">pointInPolygon</div>
+  <div class="func-desc">Tests whether a 2D point lies inside a polygon using the ray casting algorithm. Returns true if the point is inside the polygon, false otherwise.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">pointInPolygon(point | polygon)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">point</td><td class="param-type">Array</td><td>2D point [x, y]</td></tr>
+      <tr><td class="param-name">polygon</td><td class="param-type">Array</td><td>Array of 2D vertices [[x0,y0],[x1,y1],...]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>boolean — true if point is inside the polygon</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">pointInPolygon([0.5<br>0.5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#area">area</a>
+    <a href="#convexHull">convexHull</a>
+    <a href="#polygonPerimeter">polygonPerimeter</a>
+  </div>
+</div>
+
+<div class="func-card" id="polygonPerimeter" data-name="polygonperimeter">
+  <div class="func-name">polygonPerimeter</div>
+  <div class="func-desc">Calculates the perimeter of a polygon by summing the Euclidean distances between consecutive vertices, including the closing edge from the last vertex back to the first.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polygonPerimeter(vertices)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">vertices</td><td class="param-type">Array</td><td>Array of 2D points [[x0,y0],[x1,y1],...]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The perimeter of the polygon</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polygonPerimeter([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#area">area</a>
+    <a href="#centroid">centroid</a>
+    <a href="#convexHull">convexHull</a>
+  </div>
+</div>
+
+<div class="func-card" id="voronoiDiagram" data-name="voronoidiagram">
+  <div class="func-name">voronoiDiagram</div>
+  <div class="func-desc">Computes the Voronoi diagram of a set of 2D points as the dual of the Delaunay triangulation. Returns an object with vertices (circumcenters) and cells (ordered polygon vertex lists per input point).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">voronoiDiagram(points) | voronoiDiagram(points | bounds)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">points</td><td class="param-type">Array</td><td>Array of 2D points [[x0,y0],[x1,y1],...]</td></tr>
+      <tr><td class="param-name">bounds</td><td class="param-type">Array</td><td>Optional bounding box [minX, minY, maxX, maxY]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Object — {vertices: number[][], cells: number[][][]}</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">voronoiDiagram([[0<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#delaunayTriangulation">delaunayTriangulation</a>
+    <a href="#convexHull">convexHull</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

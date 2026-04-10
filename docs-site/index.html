@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math.js Function Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+h1 { font-size: 2rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.subtitle { color: var(--text2); margin-top: 0.5rem; }
+.stats { display: flex; gap: 2rem; margin-top: 1rem; flex-wrap: wrap; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; }
+.stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+.stat-label { font-size: 0.85rem; color: var(--text2); }
+.search-box { width: 100%; padding: 0.75rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 1rem; margin: 1.5rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; }
+.cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; transition: border-color 0.2s; }
+.cat-card:hover { border-color: var(--accent); }
+.cat-card a { color: var(--text); text-decoration: none; }
+.cat-title { font-size: 1.1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+.cat-count { background: var(--accent); color: var(--bg); font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 12px; font-weight: 700; }
+.cat-desc { color: var(--text2); font-size: 0.85rem; margin-top: 0.5rem; }
+.cat-funcs { color: var(--text2); font-size: 0.8rem; margin-top: 0.75rem; font-family: monospace; }
+footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1><span>math.js</span> Function Reference</h1>
+  <p class="subtitle">Complete API reference for all mathematical functions — types, parameters, algorithms, and examples.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-value">444</div><div class="stat-label">Functions</div></div>
+    <div class="stat"><div class="stat-value">21</div><div class="stat-label">Categories</div></div>
+    <div class="stat"><div class="stat-value">9,263</div><div class="stat-label">Tests Passing</div></div>
+    <div class="stat"><div class="stat-value">v15.6.0</div><div class="stat-label">Version</div></div>
+  </div>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Search functions... (e.g. besselJ, integrate, shortestPath)" oninput="filterCards()">
+
+<div class="categories" id="categories">
+  <div class="cat-card" data-names="apart assume asymptotic cancel coefficientList collect combine complexExpand csAmd csChol csCounts csLu csSpsolve csSqr csSymperm curl degree derivative differences directionalDerivative discriminant divergence element eliminate expToTrig expand factor fourierSeries fullSimplify functionExpand gradientSymbolic groebnerBasis implicitDiff integrate inverseLaplace inverseLaplaceTransform jacobian laplace laplacian leafCount limit lsolve lsolveAll lup lusolve lyap minimalPolynomial multivariateTaylor normalForm odeGeneral partialDerivative piecewise polyadd polyder polymul polynomialGCD polynomialLCM polynomialQuotient polynomialRemainder polynomialRoot polyval powerExpand qr rationalize reduce resolve resultant schur series seriesCoefficient simplify simplifyConstant simplifyCore simplifyUtil slu solve substitute summation sylvester symbolicEqual symbolicProduct tangentLine taylor toRadicals together trigExpand trigReduce trigToExp usolve usolveAll variables zTransform">
+    <a href="functions/algebra.html">
+      <div class="cat-title">Algebra <span class="cat-count">92</span></div>
+      <div class="cat-desc">Symbolic algebra, CAS operations, polynomial manipulation, equation solving, simplification</div>
+      <div class="cat-funcs">apart, assume, asymptotic, cancel, coefficientList, collect, combine, complexExpand, csAmd, csChol, csCounts, csLu, ... (+80 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="abs addScalar cbrt ceil cube divideScalar exp expm expm1 fix floor gcd hypot invmod lcm log log10 log1p log2 multiplyScalar norm nthRoot nthRoots round sign sqrt sqrtm square subtractScalar xgcd">
+    <a href="functions/arithmetic.html">
+      <div class="cat-title">Arithmetic <span class="cat-count">30</span></div>
+      <div class="cat-desc">Basic arithmetic operations and scalar math functions</div>
+      <div class="cat-funcs">abs, addScalar, cbrt, ceil, cube, divideScalar, exp, expm, expm1, fix, floor, gcd, ... (+18 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="bitAnd bitNot bitOr bitXor leftShift rightArithShift rightLogShift">
+    <a href="functions/bitwise.html">
+      <div class="cat-title">Bitwise <span class="cat-count">7</span></div>
+      <div class="cat-desc">Bitwise logical operations on integers</div>
+      <div class="cat-funcs">bitAnd, bitNot, bitOr, bitXor, leftShift, rightArithShift, rightLogShift</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="bellNumbers carmichaelLambda catalan chineseRemainder composition divisorSigma divisors eulerPhi fibonacci harmonicNumber integerDigits jacobiSymbol lucasL moebiusMu nextPrime partitions prime primeFactors primePi stirlingS2">
+    <a href="functions/combinatorics.html">
+      <div class="cat-title">Combinatorics <span class="cat-count">20</span></div>
+      <div class="cat-desc">Number theory, combinatorial functions, prime numbers, sequences</div>
+      <div class="cat-funcs">bellNumbers, carmichaelLambda, catalan, chineseRemainder, composition, divisorSigma, divisors, eulerPhi, fibonacci, harmonicNumber, integerDigits, jacobiSymbol, ... (+8 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="arg conj im re">
+    <a href="functions/complex.html">
+      <div class="cat-title">Complex <span class="cat-count">4</span></div>
+      <div class="cat-desc">Complex number operations</div>
+      <div class="cat-funcs">arg, conj, im, re</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="area centroid chebyshevDistance convexHull coordinateTransform delaunayTriangulation distance intersect kdTree manhattanDistance minkowskiDistance pointInPolygon polygonPerimeter voronoiDiagram">
+    <a href="functions/geometry.html">
+      <div class="cat-title">Geometry <span class="cat-count">14</span></div>
+      <div class="cat-desc">Computational geometry, distances, coordinate transforms, polygons</div>
+      <div class="cat-funcs">area, centroid, chebyshevDistance, convexHull, coordinateTransform, delaunayTriangulation, distance, intersect, kdTree, manhattanDistance, minkowskiDistance, pointInPolygon, ... (+2 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="adjacencyMatrix connectedComponents graphDistance isConnected minimumSpanningTree shortestPath stronglyConnectedComponents topologicalSort">
+    <a href="functions/graph.html">
+      <div class="cat-title">Graph <span class="cat-count">8</span></div>
+      <div class="cat-desc">Graph theory algorithms — shortest path, spanning trees, connectivity</div>
+      <div class="cat-funcs">adjacencyMatrix, connectedComponents, graphDistance, isConnected, minimumSpanningTree, shortestPath, stronglyConnectedComponents, topologicalSort</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="and not nullish or xor">
+    <a href="functions/logical.html">
+      <div class="cat-title">Logical <span class="cat-count">5</span></div>
+      <div class="cat-desc">Boolean logic operations</div>
+      <div class="cat-funcs">and, not, nullish, or, xor</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="characteristicPolynomial cholesky column concat count cross ctranspose det diag diff dot eigs fft filter flatten forEach getMatrixDataType hessenbergForm identity ifft inv jordanForm kron map mapSlices matrixFromColumns matrixFromFunction matrixFromRows matrixLog matrixPower matrixRank nullSpace ones partitionSelect pinv polarDecomposition reshape resize rotate rotationMatrix row rowReduce size sort squeeze subset svd trace transpose zeros">
+    <a href="functions/matrix.html">
+      <div class="cat-title">Matrix <span class="cat-count">50</span></div>
+      <div class="cat-desc">Matrix operations, decompositions, linear algebra</div>
+      <div class="cat-funcs">characteristicPolynomial, cholesky, column, concat, count, cross, ctranspose, det, diag, diff, dot, eigs, ... (+38 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="bezierCurve bspline chebyshevApprox cond cspline curvefit eventDetection expfit findRoot globalMinimize gradient griddata hessian interpolate leastSquares linprog linsolve loess logfit maximize minimize nintegrate nullspace odeAdaptiveStep padeApproximant pchip polyfit powerfit quadprog rank rbfInterpolate residue simpsons solveBVP solveODE solveODESystem solvePDE stiffODESolver trapz">
+    <a href="functions/numeric.html">
+      <div class="cat-title">Numeric <span class="cat-count">39</span></div>
+      <div class="cat-desc">Numerical methods — integration, optimization, interpolation, ODE solvers</div>
+      <div class="cat-funcs">bezierCurve, bspline, chebyshevApprox, cond, cspline, curvefit, eventDetection, expfit, findRoot, globalMinimize, gradient, griddata, ... (+27 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="add divide dotDivide dotMultiply dotPow mod multiply pow subtract unaryMinus unaryPlus">
+    <a href="functions/operators.html">
+      <div class="cat-title">Operators <span class="cat-count">11</span></div>
+      <div class="cat-desc">Overloaded arithmetic operators for mixed types</div>
+      <div class="cat-funcs">add, divide, dotDivide, dotMultiply, dotPow, mod, multiply, pow, subtract, unaryMinus, unaryPlus</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="bernoulli combinations combinationsWithRep factorial gamma kldivergence lgamma multinomial permutations pickRandom random randomInt">
+    <a href="functions/probability.html">
+      <div class="cat-title">Probability <span class="cat-count">12</span></div>
+      <div class="cat-desc">Probability functions, random numbers, combinatorial counting</div>
+      <div class="cat-funcs">bernoulli, combinations, combinationsWithRep, factorial, gamma, kldivergence, lgamma, multinomial, permutations, pickRandom, random, randomInt</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="compare compareNatural compareText deepEqual equal equalScalar equalText larger largerEq smaller smallerEq unequal">
+    <a href="functions/relational.html">
+      <div class="cat-title">Relational <span class="cat-count">12</span></div>
+      <div class="cat-desc">Comparison and equality operations</div>
+      <div class="cat-funcs">compare, compareNatural, compareText, deepEqual, equal, equalScalar, equalText, larger, largerEq, smaller, smallerEq, unequal</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="setCartesian setDifference setDistinct setIntersect setIsSubset setMultiplicity setPowerset setSize setSymDifference setUnion">
+    <a href="functions/set.html">
+      <div class="cat-title">Set <span class="cat-count">10</span></div>
+      <div class="cat-desc">Set theory operations</div>
+      <div class="cat-funcs">setCartesian, setDifference, setDistinct, setIntersect, setIsSubset, setMultiplicity, setPowerset, setSize, setSymDifference, setUnion</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="bandpassFilter convolve correlate dct dst dwt fft2d fourier freqz highpassFilter hilbertTransform idst invFourier lowpassFilter medfilt periodogram resample spectrogram windowFunction zpk2tf">
+    <a href="functions/signal.html">
+      <div class="cat-title">Signal <span class="cat-count">20</span></div>
+      <div class="cat-desc">Signal processing — FFT, filters, transforms, wavelets</div>
+      <div class="cat-funcs">bandpassFilter, convolve, correlate, dct, dst, dwt, fft2d, fourier, freqz, highpassFilter, hilbertTransform, idst, ... (+8 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="besselI besselJ besselK besselY beta betainc chebyshevT cosIntegral digamma ellipticE ellipticK erf erfc erfi expIntegralEi fresnelC fresnelS gammainc gammaincp hermiteH laguerreL lambertW legendreP logIntegral sinIntegral zeta">
+    <a href="functions/special.html">
+      <div class="cat-title">Special <span class="cat-count">26</span></div>
+      <div class="cat-desc">Special mathematical functions — Bessel, elliptic, integral functions</div>
+      <div class="cat-funcs">besselI, besselJ, besselK, besselY, beta, betainc, chebyshevT, cosIntegral, digamma, ellipticE, ellipticK, erf, ... (+14 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="anova betaDist binomialDist chiSquareTest chiSquaredDist corr covariance cumsum exponentialDist fDist gammaDist histogram kolmogorovSmirnovTest kurtosis linreg logNormalDist mad mannWhitneyTest max mean median min mode movingAverage normalDist poissonDist principalComponentAnalysis prod quantileSeq shapiroWilkTest skewness std studentTTest sum tDist uniformDist variance weibullDist">
+    <a href="functions/statistics.html">
+      <div class="cat-title">Statistics <span class="cat-count">38</span></div>
+      <div class="cat-desc">Statistical analysis, distributions, hypothesis testing, regression</div>
+      <div class="cat-funcs">anova, betaDist, binomialDist, chiSquareTest, chiSquaredDist, corr, covariance, cumsum, exponentialDist, fDist, gammaDist, histogram, ... (+26 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="acos acosh acot acoth acsc acsch asec asech asin asinh atan atan2 atanh cos cosh cot coth csc csch sec sech sin sinh tan tanh">
+    <a href="functions/trigonometry.html">
+      <div class="cat-title">Trigonometry <span class="cat-count">25</span></div>
+      <div class="cat-desc">Trigonometric and hyperbolic functions</div>
+      <div class="cat-funcs">acos, acosh, acot, acoth, acsc, acsch, asec, asech, asin, asinh, atan, atan2, ... (+13 more)</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="range">
+    <a href="functions/type.html">
+      <div class="cat-title">Type <span class="cat-count">1</span></div>
+      <div class="cat-desc">Type conversion and range functions</div>
+      <div class="cat-funcs">range</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="to toBest">
+    <a href="functions/units.html">
+      <div class="cat-title">Units <span class="cat-count">2</span></div>
+      <div class="cat-desc">Unit conversion operations</div>
+      <div class="cat-funcs">to, toBest</div>
+    </a>
+  </div>
+  <div class="cat-card" data-names="bin clone format hasNumericValue hex isBounded isFinite isInteger isNaN isNegative isNumeric isPositive isPrime isZero numeric oct print typeOf">
+    <a href="functions/utils.html">
+      <div class="cat-title">Utils <span class="cat-count">18</span></div>
+      <div class="cat-desc">Utility functions for type checking and formatting</div>
+      <div class="cat-funcs">bin, clone, format, hasNumericValue, hex, isBounded, isFinite, isInteger, isNaN, isNegative, isNumeric, isPositive, ... (+6 more)</div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>Generated 2026-04-10 · <a href="https://github.com/danielsimonjr/mathjs">GitHub</a> · <a href="https://mathjs.org">mathjs.org</a></p>
+</footer>
+</div>
+
+<script>
+function filterCards() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.cat-card').forEach(card => {
+    const names = card.dataset.names.toLowerCase();
+    card.style.display = (!q || names.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

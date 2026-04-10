@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Special — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Special</div>
+  <h1><span>Special</span> Functions (26)</h1>
+  <p class="cat-desc">Special mathematical functions — Bessel, elliptic, integral functions</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter special functions..." oninput="filterFuncs()">
+<div class="func-card" id="besselI" data-name="besseli">
+  <div class="func-name">besselI</div>
+  <div class="func-desc">Compute the modified Bessel function of the first kind I_n(x). The order n must be a non-negative integer.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">besselI(n | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The order (non-negative integer)</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The modified Bessel function value I_n(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">besselI(0<br>0)<br>besselI(0<br>1)<br>besselI(1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#besselJ">besselJ</a>
+    <a href="#besselY">besselY</a>
+    <a href="#besselK">besselK</a>
+    <a href="#gamma">gamma</a>
+  </div>
+</div>
+
+<div class="func-card" id="besselJ" data-name="besselj">
+  <div class="func-name">besselJ</div>
+  <div class="func-desc">Compute the Bessel function of the first kind J_n(x). The order n must be a non-negative integer.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">besselJ(n | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The order (non-negative integer)</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Bessel function value J_n(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">besselJ(0<br>0)<br>besselJ(0<br>1)<br>besselJ(1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#besselY">besselY</a>
+    <a href="#besselI">besselI</a>
+    <a href="#besselK">besselK</a>
+    <a href="#gamma">gamma</a>
+    <a href="#erf">erf</a>
+  </div>
+</div>
+
+<div class="func-card" id="besselK" data-name="besselk">
+  <div class="func-name">besselK</div>
+  <div class="func-desc">Compute the modified Bessel function of the second kind K_n(x). Only valid for x &gt; 0. Returns Infinity for x = 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">besselK(n | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The order (non-negative integer)</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument (must be &gt; 0)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The modified Bessel function value K_n(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">besselK(0<br>1)<br>besselK(1<br>1)<br>besselK(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#besselJ">besselJ</a>
+    <a href="#besselY">besselY</a>
+    <a href="#besselI">besselI</a>
+    <a href="#gamma">gamma</a>
+  </div>
+</div>
+
+<div class="func-card" id="besselY" data-name="bessely">
+  <div class="func-name">besselY</div>
+  <div class="func-desc">Compute the Bessel function of the second kind Y_n(x). Only valid for x &gt; 0. Returns -Infinity for x = 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">besselY(n | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The order (non-negative integer)</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument (must be &gt; 0)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Bessel function value Y_n(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">besselY(0<br>1)<br>besselY(1<br>2.5)<br>besselY(0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#besselJ">besselJ</a>
+    <a href="#besselI">besselI</a>
+    <a href="#besselK">besselK</a>
+    <a href="#gamma">gamma</a>
+  </div>
+</div>
+
+<div class="func-card" id="beta" data-name="beta">
+  <div class="func-name">beta</div>
+  <div class="func-desc">Compute the Beta function B(a, b) = Gamma(a) * Gamma(b) / Gamma(a + b). Both parameters must be positive.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">beta(a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>First parameter (positive)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number</td><td>Second parameter (positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Beta function value B(a, b)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">beta(1<br>1)<br>beta(2<br>3)<br>beta(0.5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gamma">gamma</a>
+    <a href="#betainc">betainc</a>
+    <a href="#gammainc">gammainc</a>
+  </div>
+</div>
+
+<div class="func-card" id="betainc" data-name="betainc">
+  <div class="func-name">betainc</div>
+  <div class="func-desc">Compute the regularized incomplete beta function I_x(a, b). x must be in [0, 1], a and b must be positive. Returns values in [0, 1].</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">betainc(x | a | b)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The upper limit (must be in [0, 1])</td></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>First shape parameter (positive)</td></tr>
+      <tr><td class="param-name">b</td><td class="param-type">number</td><td>Second shape parameter (positive)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The regularized incomplete beta function value I_x(a, b)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">betainc(0<br>2<br>3)<br>betainc(1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#beta">beta</a>
+    <a href="#gammainc">gammainc</a>
+    <a href="#gamma">gamma</a>
+  </div>
+</div>
+
+<div class="func-card" id="chebyshevT" data-name="chebyshevt">
+  <div class="func-name">chebyshevT</div>
+  <div class="func-desc">Evaluate the Chebyshev polynomial of the first kind T_n(x) using the three-term recurrence: T_0=1, T_1=x, T_{n+1}=2*x*T_n - T_{n-1}. n must be a non-negative integer.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">chebyshevT(n | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The degree, a non-negative integer</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The value of the Chebyshev polynomial T_n(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">chebyshevT(0<br>0.5)<br>chebyshevT(1<br>0.5)<br>chebyshevT(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#hermiteH">hermiteH</a>
+    <a href="#laguerreL">laguerreL</a>
+    <a href="#legendreP">legendreP</a>
+  </div>
+</div>
+
+<div class="func-card" id="cosIntegral" data-name="cosintegral">
+  <div class="func-name">cosIntegral</div>
+  <div class="func-desc">Compute the cosine integral Ci(x) = gamma + ln(x) + integral from 0 to x of (cos(t)-1)/t dt, where gamma is the Euler-Mascheroni constant. Defined for x &gt; 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cosIntegral(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A positive real number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The cosine integral Ci(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cosIntegral(1)<br>cosIntegral(2)<br>cosIntegral(pi)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sinIntegral">sinIntegral</a>
+    <a href="#expIntegralEi">expIntegralEi</a>
+  </div>
+</div>
+
+<div class="func-card" id="digamma" data-name="digamma">
+  <div class="func-name">digamma</div>
+  <div class="func-desc">Compute the digamma (psi) function, the logarithmic derivative of the gamma function: psi(x) = d/dx ln(Gamma(x)). Has poles at non-positive integers.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">digamma(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The digamma function value psi(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">digamma(1)<br>digamma(2)<br>digamma(0.5)<br>digamma(10)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gamma">gamma</a>
+    <a href="#beta">beta</a>
+    <a href="#gammainc">gammainc</a>
+  </div>
+</div>
+
+<div class="func-card" id="ellipticE" data-name="elliptice">
+  <div class="func-name">ellipticE</div>
+  <div class="func-desc">Compute the complete elliptic integral of the second kind E(m), where m is the parameter (m = k^2). Uses the Arithmetic-Geometric Mean algorithm.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">ellipticE(m)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">m</td><td class="param-type">number</td><td>The parameter, 0 &lt;= m &lt;= 1</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The complete elliptic integral E(m)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">ellipticE(0)<br>ellipticE(0.5)<br>ellipticE(1)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#ellipticK">ellipticK</a>
+  </div>
+</div>
+
+<div class="func-card" id="ellipticK" data-name="elliptick">
+  <div class="func-name">ellipticK</div>
+  <div class="func-desc">Compute the complete elliptic integral of the first kind K(m), where m is the parameter (m = k^2). Uses the Arithmetic-Geometric Mean algorithm.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">ellipticK(m)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">m</td><td class="param-type">number</td><td>The parameter, 0 &lt;= m &lt; 1</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The complete elliptic integral K(m)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">ellipticK(0)<br>ellipticK(0.5)<br>ellipticK(0.9)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#ellipticE">ellipticE</a>
+  </div>
+</div>
+
+<div class="func-card" id="erf" data-name="erf">
+  <div class="func-name">erf</div>
+  <div class="func-desc">Compute the erf function of a value using a rational Chebyshev approximations for different intervals of x</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">erf(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | Array | Matrix</td><td>A real number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Array | Matrix — The erf of `x`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">erf(0.2)<br>erf(-0.5)<br>erf(4)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+  </div>
+</div>
+
+<div class="func-card" id="erfc" data-name="erfc">
+  <div class="func-name">erfc</div>
+  <div class="func-desc">Compute the complementary error function erfc(x) = 1 - erf(x). Computed directly to avoid cancellation for large x.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">erfc(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A real number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The complementary error function value erfc(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">erfc(0)<br>erfc(1)<br>erfc(-1)<br>erfc(Infinity)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#erf">erf</a>
+    <a href="#erfi">erfi</a>
+    <a href="#gamma">gamma</a>
+  </div>
+</div>
+
+<div class="func-card" id="erfi" data-name="erfi">
+  <div class="func-name">erfi</div>
+  <div class="func-desc">Compute the imaginary error function erfi(x) = -i * erf(ix) = (2/sqrt(pi)) * integral from 0 to x of exp(t^2) dt. Unlike erf, erfi is unbounded.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">erfi(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A real number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The imaginary error function value erfi(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">erfi(0)<br>erfi(1)<br>erfi(-1)<br>erfi(0.5)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#erf">erf</a>
+    <a href="#erfc">erfc</a>
+    <a href="#fresnelS">fresnelS</a>
+  </div>
+</div>
+
+<div class="func-card" id="expIntegralEi" data-name="expintegralei">
+  <div class="func-name">expIntegralEi</div>
+  <div class="func-desc">Compute the exponential integral Ei(x) = -P.V. integral from -x to infinity of e^(-t)/t dt.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">expIntegralEi(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A nonzero real number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The exponential integral Ei(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">expIntegralEi(1)<br>expIntegralEi(2)<br>expIntegralEi(-1)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#erf">erf</a>
+  </div>
+</div>
+
+<div class="func-card" id="fresnelC" data-name="fresnelc">
+  <div class="func-name">fresnelC</div>
+  <div class="func-desc">Compute the Fresnel cosine integral C(x) = integral from 0 to x of cos(pi * t^2 / 2) dt. Approaches 0.5 as x -&gt; Infinity.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fresnelC(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A real number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Fresnel cosine integral C(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fresnelC(0)<br>fresnelC(1)<br>fresnelC(-1)<br>fresnelC(Infinity)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fresnelS">fresnelS</a>
+    <a href="#erf">erf</a>
+    <a href="#erfi">erfi</a>
+    <a href="#erfc">erfc</a>
+  </div>
+</div>
+
+<div class="func-card" id="fresnelS" data-name="fresnels">
+  <div class="func-name">fresnelS</div>
+  <div class="func-desc">Compute the Fresnel sine integral S(x) = integral from 0 to x of sin(pi * t^2 / 2) dt. Approaches 0.5 as x -&gt; Infinity.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fresnelS(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A real number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Fresnel sine integral S(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fresnelS(0)<br>fresnelS(1)<br>fresnelS(-1)<br>fresnelS(Infinity)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#erf">erf</a>
+    <a href="#erfi">erfi</a>
+    <a href="#erfc">erfc</a>
+  </div>
+</div>
+
+<div class="func-card" id="gammainc" data-name="gammainc">
+  <div class="func-name">gammainc</div>
+  <div class="func-desc">Compute the regularized lower incomplete gamma function P(a, x) = gamma(a, x) / Gamma(a). a must be positive, x must be non-negative.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">gammainc(a | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>The shape parameter (positive)</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The upper limit (non-negative)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The regularized lower incomplete gamma P(a, x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">gammainc(1<br>0)<br>gammainc(1<br>1)<br>gammainc(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gammaincp">gammaincp</a>
+    <a href="#gamma">gamma</a>
+    <a href="#betainc">betainc</a>
+    <a href="#beta">beta</a>
+  </div>
+</div>
+
+<div class="func-card" id="gammaincp" data-name="gammaincp">
+  <div class="func-name">gammaincp</div>
+  <div class="func-desc">Compute the regularized upper incomplete gamma function Q(a, x) = 1 - P(a, x) = Gamma(a, x) / Gamma(a). a must be positive, x must be non-negative.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">gammaincp(a | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">a</td><td class="param-type">number</td><td>The shape parameter (positive)</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The lower limit (non-negative)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The regularized upper incomplete gamma Q(a, x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">gammaincp(1<br>0)<br>gammaincp(1<br>1)<br>gammaincp(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#gammainc">gammainc</a>
+    <a href="#gamma">gamma</a>
+    <a href="#betainc">betainc</a>
+    <a href="#beta">beta</a>
+  </div>
+</div>
+
+<div class="func-card" id="hermiteH" data-name="hermiteh">
+  <div class="func-name">hermiteH</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">hermiteH(n | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The degree, a non-negative integer</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The value of the Hermite polynomial H_n(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">hermiteH(0<br>1)<br>hermiteH(1<br>1)<br>hermiteH(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#chebyshevT">chebyshevT</a>
+    <a href="#laguerreL">laguerreL</a>
+    <a href="#legendreP">legendreP</a>
+  </div>
+</div>
+
+<div class="func-card" id="laguerreL" data-name="laguerrel">
+  <div class="func-name">laguerreL</div>
+  <div class="func-desc">Evaluate the Laguerre polynomial L_n(x) using the recurrence: L_0=1, L_1=1-x, (n+1)*L_{n+1}=(2n+1-x)*L_n - n*L_{n-1}. n must be a non-negative integer.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">laguerreL(n | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The degree, a non-negative integer</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The value of the Laguerre polynomial L_n(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">laguerreL(0<br>1)<br>laguerreL(1<br>1)<br>laguerreL(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#chebyshevT">chebyshevT</a>
+    <a href="#hermiteH">hermiteH</a>
+    <a href="#legendreP">legendreP</a>
+  </div>
+</div>
+
+<div class="func-card" id="lambertW" data-name="lambertw">
+  <div class="func-name">lambertW</div>
+  <div class="func-desc">Compute the Lambert W function W(x), the principal branch W_0. W(x) satisfies W(x)*exp(W(x)) = x. Defined for x &gt;= -1/e.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">lambertW(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A real number &gt;= -1/e</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The Lambert W function value W(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">lambertW(0)<br>lambertW(1)<br>lambertW(exp(1))</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#exp">exp</a>
+    <a href="#log">log</a>
+  </div>
+</div>
+
+<div class="func-card" id="legendreP" data-name="legendrep">
+  <div class="func-name">legendreP</div>
+  <div class="func-desc">Evaluate the Legendre polynomial P_n(x) using Bonnet\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">legendreP(n | x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>The degree, a non-negative integer</td></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>The argument, typically in [-1, 1]</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The value of the Legendre polynomial P_n(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">legendreP(0<br>0.5)<br>legendreP(1<br>0.5)<br>legendreP(2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#erf">erf</a>
+  </div>
+</div>
+
+<div class="func-card" id="logIntegral" data-name="logintegral">
+  <div class="func-name">logIntegral</div>
+  <div class="func-desc">Compute the logarithmic integral li(x) = integral from 0 to x of 1/ln(t) dt. Computed via li(x) = Ei(ln(x)). Returns -Infinity at x=1. Defined for x &gt; 0.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">logIntegral(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A real number greater than 1 (or between 0 and 1)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The logarithmic integral li(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">logIntegral(2)<br>logIntegral(10)<br>logIntegral(100)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#expIntegralEi">expIntegralEi</a>
+  </div>
+</div>
+
+<div class="func-card" id="sinIntegral" data-name="sinintegral">
+  <div class="func-name">sinIntegral</div>
+  <div class="func-desc">Compute the sine integral Si(x) = integral from 0 to x of sin(t)/t dt. Approaches pi/2 as x -&gt; Infinity.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sinIntegral(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number</td><td>A real number</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The sine integral Si(x)</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sinIntegral(0)<br>sinIntegral(1)<br>sinIntegral(pi)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cosIntegral">cosIntegral</a>
+    <a href="#expIntegralEi">expIntegralEi</a>
+  </div>
+</div>
+
+<div class="func-card" id="zeta" data-name="zeta">
+  <div class="func-name">zeta</div>
+  <div class="func-desc">Compute the Riemann Zeta Function using an infinite series and Riemann\</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">zeta(s)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">s</td><td class="param-type">number | Complex | BigNumber</td><td>A Real, Complex or BigNumber parameter to the Riemann Zeta Function</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Complex | BigNumber — The Riemann Zeta of `s`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">zeta(0.2)<br>zeta(-0.5)<br>zeta(4)</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix — Math.js Reference</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --purple: #bc8cff; --orange: #d29922;
+  --pink: #f778ba; --red: #f85149; --code-bg: #1c2128;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+h1 { font-size: 1.75rem; font-weight: 600; }
+h1 span { color: var(--accent); }
+.breadcrumb { font-size: 0.85rem; color: var(--text2); margin-bottom: 0.5rem; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.cat-desc { color: var(--text2); margin-top: 0.5rem; }
+.search-box { width: 100%; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; margin: 1rem 0; }
+.search-box:focus { outline: none; border-color: var(--accent); }
+.func-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.func-card:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.func-name { font-size: 1.15rem; font-weight: 700; color: var(--accent); font-family: monospace; }
+.func-desc { margin: 0.5rem 0; color: var(--text); }
+.func-section { margin-top: 0.75rem; }
+.func-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text2); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.param-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.param-table th { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); font-weight: 600; }
+.param-table td { padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+.param-name { font-family: monospace; color: var(--orange); }
+.param-type { font-family: monospace; color: var(--purple); font-size: 0.85rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+.signatures { font-family: monospace; color: var(--green); font-size: 0.85rem; }
+.example { background: var(--code-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 0.25rem; color: var(--green); }
+.seealso { margin-top: 0.5rem; font-size: 0.85rem; }
+.seealso a { color: var(--accent); text-decoration: none; margin-right: 0.75rem; }
+.seealso a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text2); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="breadcrumb"><a href="../index.html">math.js Reference</a> &rsaquo; Matrix</div>
+  <h1><span>Matrix</span> Functions (50)</h1>
+  <p class="cat-desc">Matrix operations, decompositions, linear algebra</p>
+</header>
+
+<input type="text" class="search-box" id="search" placeholder="Filter matrix functions..." oninput="filterFuncs()">
+<div class="func-card" id="characteristicPolynomial" data-name="characteristicpolynomial">
+  <div class="func-name">characteristicPolynomial</div>
+  <div class="func-desc">Compute the characteristic polynomial det(lambda*I - A) of a square matrix using the Faddeev-LeVerrier algorithm. Returns an array of coefficients in ascending order [c_0, c_1, ..., c_n] where c_0 + c_1*lambda + ... + c_n*lambda^n.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">characteristicPolynomial(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A square matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number[] — Polynomial coefficients [c_0, c_1, ..., c_n]</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">characteristicPolynomial([[2<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#eigs">eigs</a>
+    <a href="#det">det</a>
+    <a href="#trace">trace</a>
+  </div>
+</div>
+
+<div class="func-card" id="cholesky" data-name="cholesky">
+  <div class="func-name">cholesky</div>
+  <div class="func-desc">Compute the Cholesky decomposition of a symmetric positive definite matrix A. Returns a lower triangular matrix L such that A = L * L^T.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cholesky(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A symmetric positive definite matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — Lower triangular matrix L</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cholesky([[4<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#qr">qr</a>
+    <a href="#lup">lup</a>
+    <a href="#svd">svd</a>
+    <a href="#eigs">eigs</a>
+  </div>
+</div>
+
+<div class="func-card" id="column" data-name="column">
+  <div class="func-name">column</div>
+  <div class="func-desc">Return a column from a matrix or array.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">column(x | index)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">value</td><td class="param-type">Array | Matrix </td><td>An array or matrix</td></tr>
+      <tr><td class="param-name">column</td><td class="param-type">number</td><td>The index of the column</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — The retrieved column</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">A = [[1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#row">row</a>
+    <a href="#matrixFromColumns">matrixFromColumns</a>
+  </div>
+</div>
+
+<div class="func-card" id="concat" data-name="concat">
+  <div class="func-name">concat</div>
+  <div class="func-desc">Concatenate matrices. By default, the matrices are concatenated by the last dimension. The dimension on which to concatenate can be provided as last argument.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">concat(A | B | C</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...Array | Matrix | number | BigNumber, ...string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">args</td><td class="param-type">... Array | Matrix</td><td>Two or more matrices</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — Concatenated matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">A = [1<br>2; 5<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="count" data-name="count">
+  <div class="func-name">count</div>
+  <div class="func-desc">Count the number of elements of a matrix, array or string.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">count(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix | Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">string | Array | Matrix</td><td>A matrix or string</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — An integer with the elements in `x`.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [1<br>2; 3<br>4; 5<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#size">size</a>
+  </div>
+</div>
+
+<div class="func-card" id="cross" data-name="cross">
+  <div class="func-name">cross</div>
+  <div class="func-desc">Calculate the cross product for two vectors in three dimensional space.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">cross(A | B)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, Matrix, Matrix, Array, Array, Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>First vector</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array | Matrix</td><td>Second vector</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — Returns the cross product of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">cross([1<br>1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#dot">dot</a>
+  </div>
+</div>
+
+<div class="func-card" id="ctranspose" data-name="ctranspose">
+  <div class="func-name">ctranspose</div>
+  <div class="func-desc">Complex Conjugate and Transpose a matrix</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x\ | ctranspose(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>Matrix to be ctransposed</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — The ctransposed matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [1<br>2<br>3; 4<br>5<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="det" data-name="det">
+  <div class="func-name">det</div>
+  <div class="func-desc">Calculate the determinant of a matrix</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">det(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>A matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The determinant of `x`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">det([1<br>2; 3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="diag" data-name="diag">
+  <div class="func-name">diag</div>
+  <div class="func-desc">Create a diagonal matrix or retrieve the diagonal of a matrix. When x is a vector, a matrix with the vector values on the diagonal will be returned. When x is a matrix, a vector with the diagonal values of the matrix is returned. When k is provided, the k-th diagonal will be filled in or retrieved, </div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">diag(x) | diag(x | k)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, Array, BigNumber, Array, string, Array, number, string, Array, BigNumber, string, Matrix, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Matrix | Array</td><td>A two dimensional matrix or a vector</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix | Array — Diagonal matrix from input vector, or diagonal from input matrix.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">diag(1:3)<br>diag(1:3<br>1)<br>a = [1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="diff" data-name="diff">
+  <div class="func-name">diff</div>
+  <div class="func-desc"></div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">diff(arr) | diff(arr | dim)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, Array | Matrix, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">arr</td><td class="param-type">Array | Matrix</td><td>An array or matrix</td></tr>
+      <tr><td class="param-name">dim</td><td class="param-type">number | BigNumber</td><td>Dimension</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — Difference between array elements in given dimension</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">A = [1<br>2<br>4<br>7<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#subtract">subtract</a>
+    <a href="#partitionSelect">partitionSelect</a>
+  </div>
+</div>
+
+<div class="func-card" id="dot" data-name="dot">
+  <div class="func-name">dot</div>
+  <div class="func-desc">Calculate the dot product of two vectors.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">dot(A | B) | A * B</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>First vector</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array | Matrix</td><td>Second vector</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — Returns the dot product of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">dot([2<br>4<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#cross">cross</a>
+  </div>
+</div>
+
+<div class="func-card" id="eigs" data-name="eigs">
+  <div class="func-name">eigs</div>
+  <div class="func-desc">Calculate the eigenvalues and optionally eigenvectors of a square matrix</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">eigs(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number|BigNumber, Matrix, number|BigNumber, Matrix, Object</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>Matrix to be diagonalized</td></tr>
+      <tr><td class="param-name">opts</td><td class="param-type">number | BigNumber | OptsObject</td><td>Object with keys `precision`, defaulting to config.relTol, and `eigenvectors`, defaulting to true and specifying whether to compute eigenvectors. If just a number, specifies precision.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>{values: Array|Matrix, eigenvectors?: Array&lt;EVobj&gt; — } Object containing an array of eigenvalues and an array of {value: number|BigNumber, vector: Array|Matrix} objects. The eigenvectors property is undefined if eigenvectors were not requested.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">eigs([[5<br>2.3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#inv">inv</a>
+  </div>
+</div>
+
+<div class="func-card" id="fft" data-name="fft">
+  <div class="func-name">fft</div>
+  <div class="func-desc">Calculate N-dimensional Fourier transform</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">fft(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">arr</td><td class="param-type">Array | Matrix</td><td>An array or matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — N-dimensional Fourier transformation of the array</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">fft([[1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#ifft">ifft</a>
+  </div>
+</div>
+
+<div class="func-card" id="filter" data-name="filter">
+  <div class="func-name">filter</div>
+  <div class="func-desc">Filter items in a matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">filter(x | test)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, function, Matrix, RegExp</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Matrix | Array</td><td>A one dimensional matrix or array to filter</td></tr>
+      <tr><td class="param-name">test</td><td class="param-type">Function | RegExp</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix | Array — Returns the filtered matrix.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">isPositive(x) = x &gt; 0<br>filter([6<br>-2<br>-1<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sort">sort</a>
+    <a href="#map">map</a>
+    <a href="#forEach">forEach</a>
+  </div>
+</div>
+
+<div class="func-card" id="flatten" data-name="flatten">
+  <div class="func-name">flatten</div>
+  <div class="func-desc">Flatten a multi dimensional matrix into a single dimensional matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">flatten(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">DenseMatrix | Array</td><td>Matrix to be flattened</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>DenseMatrix | Array — Returns the flattened matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [1<br>2<br>3; 4<br>5<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#resize">resize</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+  </div>
+</div>
+
+<div class="func-card" id="forEach" data-name="foreach">
+  <div class="func-name">forEach</div>
+  <div class="func-desc">Iterates over all elements of a matrix/array, and executes the given callback function.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">forEach(x | callback)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, function</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Matrix | Array</td><td>The matrix to iterate on.</td></tr>
+      <tr><td class="param-name">callback</td><td class="param-type">Function</td><td>The callback function is invoked with three</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">numberOfPets = {}<br>addPet(n) = numberOfPets[n</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#map">map</a>
+    <a href="#sort">sort</a>
+    <a href="#filter">filter</a>
+  </div>
+</div>
+
+<div class="func-card" id="getMatrixDataType" data-name="getmatrixdatatype">
+  <div class="func-name">getMatrixDataType</div>
+  <div class="func-desc">Find the data type of all elements in a matrix or array,</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">getMatrixDataType(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">...Matrix | Array</td><td>The Matrix with values.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>string — A string representation of the matrix type</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">getMatrixDataType([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#matrix">matrix</a>
+    <a href="#sparse">sparse</a>
+    <a href="#typeOf">typeOf</a>
+  </div>
+</div>
+
+<div class="func-card" id="hessenbergForm" data-name="hessenbergform">
+  <div class="func-name">hessenbergForm</div>
+  <div class="func-desc">Reduce a square matrix A to upper Hessenberg form using Householder reflections. Returns an object { H, Q } where H is upper Hessenberg (zeros below the first subdiagonal) and Q is orthogonal, satisfying A = Q * H * Q^T.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">hessenbergForm(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A square matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>{ H: Array|Matrix, Q: Array|Matrix  — }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">hessenbergForm([[4<br>1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#qr">qr</a>
+    <a href="#schur">schur</a>
+    <a href="#eigs">eigs</a>
+    <a href="#svd">svd</a>
+  </div>
+</div>
+
+<div class="func-card" id="identity" data-name="identity">
+  <div class="func-name">identity</div>
+  <div class="func-desc">Returns the identity matrix with size m-by-n. The matrix has ones on the diagonal and zeros elsewhere.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">identity(n) | identity(m | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber, number | BigNumber, string, number | BigNumber, number | BigNumber, number | BigNumber, number | BigNumber, string, Array, string, Matrix, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">size</td><td class="param-type">...number | Matrix | Array</td><td>The size for the matrix</td></tr>
+      <tr><td class="param-name">format</td><td class="param-type">string</td><td>The Matrix storage format</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix | Array | number — A matrix with ones on the diagonal.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">identity(3)<br>identity(3<br>5)<br>a = [1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="ifft" data-name="ifft">
+  <div class="func-name">ifft</div>
+  <div class="func-desc">Calculate N-dimensional inverse Fourier transform</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">ifft(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">arr</td><td class="param-type">Array | Matrix</td><td>An array or matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — N-dimensional Fourier transformation of the array</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">ifft([[2<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#fft">fft</a>
+  </div>
+</div>
+
+<div class="func-card" id="inv" data-name="inv">
+  <div class="func-name">inv</div>
+  <div class="func-desc">Calculate the inverse of a matrix</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">inv(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | Complex | Array | Matrix</td><td>Matrix to be inversed</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Complex | Array | Matrix — The inverse of `x`.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">inv([1<br>2; 3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="jordanForm" data-name="jordanform">
+  <div class="func-name">jordanForm</div>
+  <div class="func-desc">Compute the Jordan normal form J of a square matrix A and a transition matrix P such that A = P * J * inv(P). For simple eigenvalues the result is diagonal; for repeated eigenvalues Jordan blocks with 1s on the superdiagonal are constructed.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">jordanForm(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A square matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>{ J: Array|Matrix, P: Array|Matrix  — }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">jordanForm([[2<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#eigs">eigs</a>
+    <a href="#schur">schur</a>
+    <a href="#svd">svd</a>
+  </div>
+</div>
+
+<div class="func-card" id="kron" data-name="kron">
+  <div class="func-name">kron</div>
+  <div class="func-desc">Calculates the Kronecker product of 2 matrices or vectors.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">kron(x | y)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, Matrix, Matrix, Array, Array, Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>First vector</td></tr>
+      <tr><td class="param-name">y</td><td class="param-type">Array | Matrix</td><td>Second vector</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — Returns the Kronecker product of `x` and `y`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">kron([[1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#dot">dot</a>
+    <a href="#cross">cross</a>
+  </div>
+</div>
+
+<div class="func-card" id="map" data-name="map">
+  <div class="func-name">map</div>
+  <div class="func-desc">Create a new matrix or array with the results of the callback function executed on each entry of the matrix/array or the matrices/arrays.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">map(x | callback) | map(x</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, function</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Matrix | Array</td><td>The input to iterate on.</td></tr>
+      <tr><td class="param-name">callback</td><td class="param-type">Function</td><td></td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix | array — </code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">map([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#filter">filter</a>
+    <a href="#forEach">forEach</a>
+  </div>
+</div>
+
+<div class="func-card" id="mapSlices" data-name="mapslices">
+  <div class="func-name">mapSlices</div>
+  <div class="func-desc">Generate a matrix one dimension less than A by applying callback to</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">mapSlices(A | dim | callback)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, number | BigNumber, function</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">array</td><td class="param-type">Array | Matrix</td><td>The input Matrix</td></tr>
+      <tr><td class="param-name">dim</td><td class="param-type">number</td><td>The dimension along which the callback is applied</td></tr>
+      <tr><td class="param-name">callback</td><td class="param-type">Function</td><td>The callback function that is applied. This Function</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — res    The residual matrix with the function mapped on the slices over some dimension.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">A = [[1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#map">map</a>
+    <a href="#forEach">forEach</a>
+  </div>
+</div>
+
+<div class="func-card" id="matrixFromColumns" data-name="matrixfromcolumns">
+  <div class="func-name">matrixFromColumns</div>
+  <div class="func-desc">Create a dense matrix from vectors as individual columns.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">matrixFromColumns(...arr) | matrixFromColumns(row1 | row2)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">cols</td><td class="param-type">... Array | Matrix</td><td>Multiple columns</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code> number[][] | Matrix  — if at least one of the arguments is an array, an array will be returned</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">matrixFromColumns([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#matrix">matrix</a>
+    <a href="#matrixFromRows">matrixFromRows</a>
+    <a href="#matrixFromFunction">matrixFromFunction</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="matrixFromFunction" data-name="matrixfromfunction">
+  <div class="func-name">matrixFromFunction</div>
+  <div class="func-desc">Create a matrix by evaluating a generating function at each index.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">matrixFromFunction(size | fn) | matrixFromFunction(size</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, function, string, string, Array | Matrix, function, string, Matrix, function, Array, function, Array | Matrix, string, function, Array | Matrix, string, string, function</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">size</td><td class="param-type">Array | Matrix</td><td>The size of the matrix to be created</td></tr>
+      <tr><td class="param-name">fn</td><td class="param-type">function</td><td>Callback function invoked for every entry in the matrix</td></tr>
+      <tr><td class="param-name">format</td><td class="param-type">string</td><td>The Matrix storage format, either `'dense'` or `'sparse'`</td></tr>
+      <tr><td class="param-name">datatype</td><td class="param-type">string</td><td>Type of the values</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — Returns the created matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">f(I) = I[1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#matrix">matrix</a>
+    <a href="#matrixFromRows">matrixFromRows</a>
+    <a href="#matrixFromColumns">matrixFromColumns</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="matrixFromRows" data-name="matrixfromrows">
+  <div class="func-name">matrixFromRows</div>
+  <div class="func-desc">Create a dense matrix from vectors as individual rows.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">matrixFromRows(...arr) | matrixFromRows(row1 | row2)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">rows</td><td class="param-type">... Array | Matrix</td><td>Multiple rows</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code> number[][] | Matrix  — if at least one of the arguments is an array, an array will be returned</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">matrixFromRows([1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#matrix">matrix</a>
+    <a href="#matrixFromColumns">matrixFromColumns</a>
+    <a href="#matrixFromFunction">matrixFromFunction</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="matrixLog" data-name="matrixlog">
+  <div class="func-name">matrixLog</div>
+  <div class="func-desc">Compute the principal matrix logarithm of a square matrix A using eigendecomposition. Returns L such that expm(L) ≈ A. Requires that A has strictly positive real eigenvalues.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">matrixLog(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A square matrix with positive eigenvalues</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — The principal matrix logarithm of A</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">matrixLog([[1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#eigs">eigs</a>
+    <a href="#inv">inv</a>
+    <a href="#det">det</a>
+    <a href="#matrixRank">matrixRank</a>
+  </div>
+</div>
+
+<div class="func-card" id="matrixPower" data-name="matrixpower">
+  <div class="func-name">matrixPower</div>
+  <div class="func-desc">Raise a square matrix A to an integer power n. For n &gt; 0 uses binary exponentiation (repeated squaring). For n = 0 returns the identity matrix. For n &lt; 0 returns inv(A)^|n|.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">matrixPower(A | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number, Matrix, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A square matrix</td></tr>
+      <tr><td class="param-name">n</td><td class="param-type">number</td><td>An integer exponent</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — A^n</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">matrixPower([[1<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#multiply">multiply</a>
+    <a href="#inv">inv</a>
+    <a href="#det">det</a>
+    <a href="#eigs">eigs</a>
+  </div>
+</div>
+
+<div class="func-card" id="matrixRank" data-name="matrixrank">
+  <div class="func-name">matrixRank</div>
+  <div class="func-desc">Compute the numerical rank of a matrix using Singular Value Decomposition. The rank is the number of singular values exceeding a threshold tolerance.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">matrixRank(A) | matrixRank(A | tol)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, Array | Matrix, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A two-dimensional matrix</td></tr>
+      <tr><td class="param-name">tol</td><td class="param-type">number</td><td>Optional tolerance for singular value threshold.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The numerical rank of A</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">matrixRank([[1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#svd">svd</a>
+    <a href="#det">det</a>
+    <a href="#nullSpace">nullSpace</a>
+    <a href="#eigs">eigs</a>
+  </div>
+</div>
+
+<div class="func-card" id="nullSpace" data-name="nullspace">
+  <div class="func-name">nullSpace</div>
+  <div class="func-desc">Compute an orthonormal basis for the null space (kernel) of a matrix A using Singular Value Decomposition. Returns an array of basis vectors corresponding to near-zero singular values.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">nullSpace(A) | nullSpace(A | tol)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, Array | Matrix, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A two-dimensional matrix (m x n)</td></tr>
+      <tr><td class="param-name">tol</td><td class="param-type">number</td><td>Optional tolerance for near-zero singular values.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array[] | Matrix[] — Array of basis vectors (each a plain Array or Matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">nullSpace([[1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#svd">svd</a>
+    <a href="#matrixRank">matrixRank</a>
+    <a href="#inv">inv</a>
+    <a href="#eigs">eigs</a>
+  </div>
+</div>
+
+<div class="func-card" id="ones" data-name="ones">
+  <div class="func-name">ones</div>
+  <div class="func-desc">Create a matrix containing ones.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">ones(m) | ones(m | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...number | BigNumber | string, Array | Matrix, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">size</td><td class="param-type">...(number|BigNumber) | Array</td><td>The size of each dimension of the matrix</td></tr>
+      <tr><td class="param-name">format</td><td class="param-type">string</td><td>The Matrix storage format</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix | number — A matrix filled with ones</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">ones(3)<br>ones(3<br>5)<br>ones([2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="partitionSelect" data-name="partitionselect">
+  <div class="func-name">partitionSelect</div>
+  <div class="func-desc">Partition-based selection of an array or 1D matrix. Will find the kth smallest value, and mutates the input array. Uses Quickselect.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">partitionSelect(x | k) | partitionSelect(x</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix, number, Array | Matrix, number, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Matrix | Array</td><td>A one dimensional matrix or array to sort</td></tr>
+      <tr><td class="param-name">k</td><td class="param-type">Number</td><td>The kth smallest value to be retrieved zero-based index</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* — Returns the kth lowest value.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">partitionSelect([5<br>10<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#sort">sort</a>
+  </div>
+</div>
+
+<div class="func-card" id="pinv" data-name="pinv">
+  <div class="func-name">pinv</div>
+  <div class="func-desc">Calculate the Moore–Penrose inverse of a matrix</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">pinv(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">number | Complex | Array | Matrix</td><td>Matrix to be inversed</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number | Complex | Array | Matrix — The inverse of `x`.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">pinv([1<br>2; 3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#inv">inv</a>
+  </div>
+</div>
+
+<div class="func-card" id="polarDecomposition" data-name="polardecomposition">
+  <div class="func-name">polarDecomposition</div>
+  <div class="func-desc">Compute the polar decomposition A = U * P of a square matrix A, where U is an orthogonal (unitary) matrix and P is a symmetric positive semidefinite matrix. Computed via SVD: A = U_svd * diag(S) * V^T, then U = U_svd * V^T and P = V * diag(S) * V^T.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">polarDecomposition(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A square matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>{ U: Array|Matrix, P: Array|Matrix  — }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">polarDecomposition([[3<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#svd">svd</a>
+    <a href="#qr">qr</a>
+    <a href="#eigs">eigs</a>
+  </div>
+</div>
+
+<div class="func-card" id="reshape" data-name="reshape">
+  <div class="func-name">reshape</div>
+  <div class="func-desc">Reshape a multi dimensional array to fit the specified dimensions.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">reshape(x | sizes)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, Array, Array, Array</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix | *</td><td>Matrix to be reshaped</td></tr>
+      <tr><td class="param-name">sizes</td><td class="param-type">number[]</td><td>One dimensional array with integral sizes for</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* | Array | Matrix — A reshaped clone of matrix `x`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">reshape([1<br>2<br>3<br>4<br>5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#resize">resize</a>
+  </div>
+</div>
+
+<div class="func-card" id="resize" data-name="resize">
+  <div class="func-name">resize</div>
+  <div class="func-desc">Resize a matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">resize(x | size) | resize(x</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix | *</td><td>Matrix to be resized</td></tr>
+      <tr><td class="param-name">size</td><td class="param-type">Array | Matrix</td><td>One dimensional array with numbers</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>* | Array | Matrix — A resized clone of matrix `x`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">resize([1<br>2<br>3<br>4<br>5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#size">size</a>
+    <a href="#subset">subset</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#reshape">reshape</a>
+  </div>
+</div>
+
+<div class="func-card" id="rotate" data-name="rotate">
+  <div class="func-name">rotate</div>
+  <div class="func-desc">Returns a 2-D rotation matrix (2x2) for a given angle (in radians).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">rotate(w | theta) | rotate(w</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array , number | BigNumber | Complex | Unit, Matrix , number | BigNumber | Complex | Unit, Array, number | BigNumber | Complex | Unit, Array | Matrix, Matrix, number | BigNumber | Complex | Unit, Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">w</td><td class="param-type">Array | Matrix</td><td>Vector to rotate</td></tr>
+      <tr><td class="param-name">theta</td><td class="param-type">number | BigNumber | Complex | Unit</td><td>Rotation angle</td></tr>
+      <tr><td class="param-name">v</td><td class="param-type">Array | Matrix</td><td>Rotation axis</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — Multiplication of the rotation matrix and w</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">rotate([1<br>0</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#matrix">matrix</a>
+    <a href="#rotationMatrix">rotationMatrix</a>
+  </div>
+</div>
+
+<div class="func-card" id="rotationMatrix" data-name="rotationmatrix">
+  <div class="func-name">rotationMatrix</div>
+  <div class="func-desc">Returns a 2-D rotation matrix (2x2) for a given angle (in radians).</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">rotationMatrix(theta) | rotationMatrix(theta | v)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">number | BigNumber | Complex | Unit, number | BigNumber | Complex | Unit, string, number | BigNumber | Complex | Unit, Array, number | BigNumber | Complex | Unit, Matrix, number | BigNumber | Complex | Unit, Array, string, number | BigNumber | Complex | Unit, Matrix, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">theta</td><td class="param-type">number | BigNumber | Complex | Unit</td><td>Rotation angle</td></tr>
+      <tr><td class="param-name">v</td><td class="param-type">Array | Matrix</td><td>Rotation axis</td></tr>
+      <tr><td class="param-name">format</td><td class="param-type">string</td><td>Result Matrix storage format</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — Rotation matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">rotationMatrix(pi / 2)<br>rotationMatrix(unit(&quot;45deg&quot;)<br>[0<br>0<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#cos">cos</a>
+    <a href="#sin">sin</a>
+  </div>
+</div>
+
+<div class="func-card" id="row" data-name="row">
+  <div class="func-name">row</div>
+  <div class="func-desc">Return a row from a matrix or array.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">row(x | index)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, number</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">value</td><td class="param-type">Array | Matrix </td><td>An array or matrix</td></tr>
+      <tr><td class="param-name">row</td><td class="param-type">number</td><td>The index of the row</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — The retrieved row</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">A = [[1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#column">column</a>
+    <a href="#matrixFromRows">matrixFromRows</a>
+  </div>
+</div>
+
+<div class="func-card" id="rowReduce" data-name="rowreduce">
+  <div class="func-name">rowReduce</div>
+  <div class="func-desc">Compute the Reduced Row Echelon Form (RREF) of a matrix using Gauss-Jordan elimination with partial pivoting. Each pivot element is scaled to 1, and all other entries in the pivot column are eliminated.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">rowReduce(matrix)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array | Matrix</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">mat</td><td class="param-type">Array | Matrix</td><td>The input matrix (2D array or Matrix object)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — The RREF as a 2D array</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">rowReduce([[1<br>2<br>3</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#det">det</a>
+    <a href="#inv">inv</a>
+    <a href="#lup">lup</a>
+    <a href="#lusolve">lusolve</a>
+    <a href="#transpose">transpose</a>
+  </div>
+</div>
+
+<div class="func-card" id="size" data-name="size">
+  <div class="func-name">size</div>
+  <div class="func-desc">Calculate the size of a matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">size(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">boolean | number | Complex | Unit | string | Array | Matrix</td><td>A matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array — A vector with size of `x`.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">size(2.3)<br>size(&quot;hello world&quot;)<br>a = [1<br>2; 3<br>4; 5</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#count">count</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="sort" data-name="sort">
+  <div class="func-name">sort</div>
+  <div class="func-desc">Sort the items in a matrix. Compare can be a string &quot;asc&quot;, &quot;desc&quot;, &quot;natural&quot;, or a custom sort function.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">sort(x) | sort(x | compare)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Array, function, Matrix, function, Array, string, Matrix, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Matrix | Array</td><td>A one dimensional matrix or array to sort</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix | Array — Returns the sorted matrix.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">sort([5<br>10<br>1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#map">map</a>
+    <a href="#filter">filter</a>
+    <a href="#forEach">forEach</a>
+  </div>
+</div>
+
+<div class="func-card" id="squeeze" data-name="squeeze">
+  <div class="func-name">squeeze</div>
+  <div class="func-desc">Remove inner and outer singleton dimensions from a matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">squeeze(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Matrix | Array</td><td>Matrix to be squeezed</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Matrix | Array — Squeezed matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = zeros(3<br>2<br>1)<br>size(squeeze(a))<br>b = zeros(1</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="subset" data-name="subset">
+  <div class="func-name">subset</div>
+  <div class="func-desc">Get or set a subset of the entries of a matrix or</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">value(index) | value(index) = replacement | subset(value</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">Matrix, Index, Matrix, Index, any, any</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">matrix</td><td class="param-type">Array | Matrix | string</td><td>An array, matrix, or string</td></tr>
+      <tr><td class="param-name">index</td><td class="param-type">Index</td><td></td></tr>
+      <tr><td class="param-name">replacement</td><td class="param-type">*</td><td>An array, matrix, or scalar.</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix | string — Either the retrieved subset or the updated matrix.</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">d = [1<br>2; 3<br>4</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="svd" data-name="svd">
+  <div class="func-name">svd</div>
+  <div class="func-desc">Compute the Singular Value Decomposition A = U * diag(S) * V^T, returning an object { U, S, V } where U and V are orthogonal matrices and S is a vector of non-negative singular values in descending order.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">svd(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">A</td><td class="param-type">Array | Matrix</td><td>A two-dimensional matrix (m x n, m &gt;= n)</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>{ U: Array|Matrix, S: number[], V: Array|Matrix  — }</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">svd([[1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#eigs">eigs</a>
+    <a href="#det">det</a>
+    <a href="#inv">inv</a>
+    <a href="#qr">qr</a>
+    <a href="#lup">lup</a>
+    <a href="#matrixRank">matrixRank</a>
+    <a href="#nullSpace">nullSpace</a>
+  </div>
+</div>
+
+<div class="func-card" id="trace" data-name="trace">
+  <div class="func-name">trace</div>
+  <div class="func-desc">Calculate the trace of a matrix: the sum of the elements on the main diagonal of a square matrix.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">trace(A)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>A matrix</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>number — The trace of `x`</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">A = [1<br>2<br>3; -1<br>2<br>3; 2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#transpose">transpose</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="transpose" data-name="transpose">
+  <div class="func-name">transpose</div>
+  <div class="func-desc">Transpose a matrix</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">x\ | transpose(x)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">x</td><td class="param-type">Array | Matrix</td><td>Matrix to be transposed</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — The transposed matrix</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">a = [1<br>2<br>3; 4<br>5<br>6</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#zeros">zeros</a>
+  </div>
+</div>
+
+<div class="func-card" id="zeros" data-name="zeros">
+  <div class="func-name">zeros</div>
+  <div class="func-desc">Create a matrix containing zeros.</div>
+  <div class="func-section">
+    <div class="func-section-title">Syntax</div>
+    <div class="example">zeros(m) | zeros(m | n)</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Type Signatures</div>
+    <div class="signatures">...number | BigNumber | string, Array | Matrix, string</div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Parameters</div>
+    <table class="param-table">
+      <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="param-name">size</td><td class="param-type">...(number|BigNumber) | Array</td><td>The size of each dimension of the matrix</td></tr>
+      <tr><td class="param-name">format</td><td class="param-type">string</td><td>The Matrix storage format</td></tr>
+    </table>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Returns</div>
+    <div><code>Array | Matrix — A matrix filled with zeros</code></div>
+  </div>
+  <div class="func-section">
+    <div class="func-section-title">Examples</div>
+    <div class="example">zeros(3)<br>zeros(3<br>5)<br>a = [1<br>2</div>
+  </div>
+  <div class="func-section seealso">
+    <div class="func-section-title">See Also</div>
+    <a href="#concat">concat</a>
+    <a href="#det">det</a>
+    <a href="#diag">diag</a>
+    <a href="#identity">identity</a>
+    <a href="#inv">inv</a>
+    <a href="#ones">ones</a>
+    <a href="#range">range</a>
+    <a href="#size">size</a>
+    <a href="#squeeze">squeeze</a>
+    <a href="#subset">subset</a>
+    <a href="#trace">trace</a>
+    <a href="#transpose">transpose</a>
+  </div>
+</div>
+
+
+<footer>
+  <p><a href="../index.html">&larr; Back to Index</a> · Generated 2026-04-10</p>
+</footer>
+</div>
+
+<script>
+function filterFuncs() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.func-card').forEach(card => {
+    card.style.display = (!q || card.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
