@@ -1,6 +1,6 @@
 # Documentation
 
-[Math.js](https://mathjs.org) is an extensive math library for JavaScript and Node.js. It features a flexible expression parser with support for symbolic computation, comes with a large set of built-in functions and constants, and offers an integrated solution to work with different data types like numbers, big numbers, complex numbers, fractions, units, and matrices.
+[Math.js](https://mathjs.org) is an extensive math library for JavaScript and Node.js featuring **444+ built-in functions** across 21 categories. It features a flexible expression parser with support for symbolic computation (76 CAS functions), signal processing, graph theory, optimization, ODE solvers, statistical hypothesis testing, and more.
 
 Math.js can be used in the browser, in node.js and in any JavaScript engine. Installation and download instructions are available on the [Download page](https://mathjs.org/download.html) of the website.
 
@@ -35,6 +35,7 @@ Math.js can be used in the browser, in node.js and in any JavaScript engine. Ins
   - [Classes](reference/classes.md)
   - [Functions](reference/functions.md)
   - [Constants](reference/constants.md)
+  - **[Full Function Reference (444+ functions)](https://danielsimonjr.github.io/mathjs/)** - Online API reference with types, parameters, and examples
 - [Custom bundling](custom_bundling.md)
 - [Command Line Interface](command_line_interface.md)
 - [History](../HISTORY.md)

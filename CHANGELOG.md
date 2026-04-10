@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [15.6.0] - 2026-04-09
+## [15.6.0] - 2026-04-10
+
+### Added — Function Reference Documentation Site
+
+- **[https://danielsimonjr.github.io/mathjs/](https://danielsimonjr.github.io/mathjs/)** — Complete API reference for all 444 functions
+- 21 per-category pages with syntax, type signatures, parameter tables, return types, examples, and see-also links
+- Dark theme with real-time search filtering on both index and category pages
+- Auto-deployed via GitHub Actions on push to master
+- `gulp docs` now also regenerates the docs-site via Python metadata extractor
+- Updated README with function category table, counts, and reference links
 
 ### Added — 30 symbolic CAS functions (Phase 4: Mathematica/Maple gap closure)
 

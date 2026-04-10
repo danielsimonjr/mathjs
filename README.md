@@ -2,7 +2,9 @@
 
 [https://mathjs.org](https://mathjs.org)
 
-Math.js is an extensive math library for JavaScript and Node.js. It features a flexible expression parser with support for symbolic computation, comes with a large set of built-in functions and constants, and offers an integrated solution to work with different data types like numbers, big numbers, complex numbers, fractions, units, and matrices. Powerful and easy to use.
+Math.js is an extensive math library for JavaScript and Node.js. It features a flexible expression parser with support for symbolic computation, comes with **444+ built-in functions** across 21 categories, and offers an integrated solution to work with different data types like numbers, big numbers, complex numbers, fractions, units, and matrices. Powerful and easy to use.
+
+**[Function Reference](https://danielsimonjr.github.io/mathjs/)** · [Getting Started](https://mathjs.org/docs/getting_started.html) · [Examples](https://mathjs.org/examples/index.html)
 
 [![Version](https://img.shields.io/npm/v/mathjs.svg)](https://www.npmjs.com/package/mathjs)
 [![Downloads](https://img.shields.io/npm/dm/mathjs.svg)](https://www.npmjs.com/package/mathjs)
@@ -16,11 +18,16 @@ Math.js is an extensive math library for JavaScript and Node.js. It features a f
 
 ## Features
 
+- **444+ functions** across 21 categories with [full API reference](https://danielsimonjr.github.io/mathjs/).
 - Supports numbers, bignumbers, bigints, complex numbers, fractions, units, strings, arrays, and matrices.
 - Is compatible with JavaScript's built-in Math library.
 - Contains a flexible expression parser.
-- Does symbolic computation.
-- Comes with a large set of built-in functions and constants.
+- **Symbolic CAS engine** — integrate, differentiate, solve, factor, simplify, Taylor series, Laplace transforms, Grobner bases, and more (76 algebra functions).
+- **Signal processing** — FFT, DCT, DST, wavelets, filters, spectrogram, Hilbert transform (20 signal functions).
+- **Graph theory** — Dijkstra, Kruskal, Tarjan, topological sort, Delaunay/Voronoi (8 graph + 14 geometry functions).
+- **Statistics & ML** — 12 distributions, hypothesis testing (ANOVA, chi-square, KS, Shapiro-Wilk), PCA, linear regression (38 statistics functions).
+- **Numerical methods** — optimization (Nelder-Mead, simplex LP, DE), ODE solvers (RK45, BDF, shooting), interpolation (B-spline, PCHIP, RBF) (39 numeric functions).
+- **Number theory** — primes, factorization, Euler's totient, Jacobi symbol, partitions, CRT (20 combinatorics functions).
 - Can be used as a command line application as well.
 - Runs on any JavaScript engine.
 - Is easily extensible.
@@ -140,51 +147,40 @@ Math.js works on any [ES2020](https://262.ecma-international.org/11.0/) compatib
 
 ## Documentation
 
+- **[Function Reference (444+ functions)](https://danielsimonjr.github.io/mathjs/)** - Complete API reference with types, parameters, examples
 - [Getting Started](https://mathjs.org/docs/getting_started.html)
 - [Examples](https://mathjs.org/examples/index.html)
 - [Overview](https://mathjs.org/docs/index.html)
 - [History](https://mathjs.org/history.html)
 
+### Function Categories
+
+| Category | Count | Highlights |
+|----------|-------|------------|
+| [Algebra](https://danielsimonjr.github.io/mathjs/functions/algebra.html) | 92 | integrate, solve, factor, simplify, Grobner basis, Laplace transforms |
+| [Matrix](https://danielsimonjr.github.io/mathjs/functions/matrix.html) | 50 | SVD, Cholesky, Jordan form, eigenvalues, row reduce |
+| [Numeric](https://danielsimonjr.github.io/mathjs/functions/numeric.html) | 39 | minimize, ODE solvers, B-spline, curve fitting, interpolation |
+| [Statistics](https://danielsimonjr.github.io/mathjs/functions/statistics.html) | 38 | 12 distributions, ANOVA, PCA, hypothesis testing |
+| [Arithmetic](https://danielsimonjr.github.io/mathjs/functions/arithmetic.html) | 30 | abs, add, multiply, pow, sqrt, gcd, lcm |
+| [Special](https://danielsimonjr.github.io/mathjs/functions/special.html) | 26 | Bessel, elliptic, Lambert W, Fresnel, digamma |
+| [Trigonometry](https://danielsimonjr.github.io/mathjs/functions/trigonometry.html) | 25 | sin, cos, tan, hyperbolic, inverse trig |
+| [Signal](https://danielsimonjr.github.io/mathjs/functions/signal.html) | 20 | FFT, DCT, wavelets, filters, spectrogram |
+| [Combinatorics](https://danielsimonjr.github.io/mathjs/functions/combinatorics.html) | 20 | fibonacci, primes, partitions, Jacobi symbol |
+| [Geometry](https://danielsimonjr.github.io/mathjs/functions/geometry.html) | 14 | Delaunay, Voronoi, convex hull, k-d tree |
+| [Graph](https://danielsimonjr.github.io/mathjs/functions/graph.html) | 8 | Dijkstra, Kruskal, Tarjan, topological sort |
+| [+ 10 more](https://danielsimonjr.github.io/mathjs/) | 82 | Probability, relational, set, logical, bitwise, utils, ... |
+
 ### Documentation Organization
-
-This repository contains documentation in the root and `docs/` directory:
-
-**Root Directory:**
-- **README.md** - Main project documentation (this file)
-- **CHANGELOG.md** - Version history and changes
-- **CLAUDE.md** - Guidance for Claude Code when working in this repository
-- **CONTRIBUTING.md** - Contribution guidelines
-- **CODE_OF_CONDUCT.md** - Community standards
-- **SECURITY.md** - Security policy
-- **PARALLEL_COMPUTING_IMPROVEMENT_PLAN.md** - Parallel computing roadmap
-- **SCIENTIFIC_COMPUTING_IMPROVEMENT_PLAN.md** - Scientific computing roadmap
-
-**docs/architecture/** - Architecture and design documentation:
-- **README_TYPESCRIPT_WASM.md** - Complete TypeScript + WASM refactoring overview
-- **TYPESCRIPT_WASM_ARCHITECTURE.md** - Technical architecture guide
-
-**docs/refactoring/** - TypeScript refactoring progress and plans:
-- **REFACTORING_PLAN.md** - Detailed conversion strategy
-- **REFACTORING_SUMMARY.md** - Infrastructure overview
-- **REFACTORING_TASKS.md** - File-by-file task list
-- **TYPESCRIPT_CONVERSION_SUMMARY.md** - 50-file conversion details
-
-**docs/migration/** - Migration guides and history:
-- **MIGRATION_GUIDE.md** - User migration guide for TS/WASM features
-- **HISTORY.md** - Historical project changes
-
-**Quick Navigation:**
 
 | Need to... | Look in... |
 |------------|------------|
+| Browse all functions | **[danielsimonjr.github.io/mathjs](https://danielsimonjr.github.io/mathjs/)** |
 | Get started with mathjs | `README.md` |
 | Contribute to the project | `CONTRIBUTING.md` |
-| Report security issues | `SECURITY.md` |
+| Understand the architecture | `docs/architecture/OVERVIEW.md` |
 | Understand TypeScript/WASM refactoring | `docs/architecture/README_TYPESCRIPT_WASM.md` |
 | Find files to convert | `docs/refactoring/REFACTORING_TASKS.md` |
-| Learn the architecture | `docs/architecture/TYPESCRIPT_WASM_ARCHITECTURE.md` |
 | Migrate existing code | `docs/migration/MIGRATION_GUIDE.md` |
-| View historical changes | `docs/migration/HISTORY.md` |
 | Configure Claude Code | `CLAUDE.md` |
 
 
@@ -192,7 +188,7 @@ This repository contains documentation in the root and `docs/` directory:
 
 First clone the project from github:
 
-    git clone git@github.com:josdejong/mathjs.git
+    git clone git@github.com:danielsimonjr/mathjs.git
     cd mathjs
 
 Install the project dependencies:
