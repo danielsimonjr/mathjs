@@ -67,11 +67,11 @@
     "expect-type": "1.2.2",
     "expr-eval": "2.0.2",
     "fancy-log": "2.0.0",
-    "glob": "11.0.3",
+    "glob": "^13.0.6",
     "gulp": "5.0.1",
     "gulp-babel": "8.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
-    "handlebars": "4.7.8",
+    "handlebars": "4.7.9",
     "jsep": "1.4.0",
     "karma": "6.4.4",
     "karma-firefox-launcher": "2.1.3",
@@ -189,5 +189,10 @@
   "bugs": {
     "url": "https://github.com/josdejong/mathjs/issues"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "overrides": {
+    "form-data": "^4.0.4",
+    "serialize-javascript": "^7.0.5",
+    "request": "npm:@cypress/request@^3.0.10"
+  }
 }
