@@ -1850,6 +1850,87 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       offset: 0
     },
 
+    // Astronomical length units.
+    // Long-form names use PREFIXES.LONG (kiloparsec, megaparsec, etc.);
+    // short-form symbols use PREFIXES.SHORT (kpc, Mpc, Mly, etc.) and
+    // are declared as their own UNITS entries (mirrors meter/m, second/s).
+    astronomicalUnit: {
+      name: 'astronomicalUnit',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.NONE,
+      value: 1.495978707e11, // IAU 2012 exact definition
+      offset: 0
+    },
+    lightyear: {
+      name: 'lightyear',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.NONE, // 'kilolightyear' is not a standard term
+      value: 9.4607304725808e15, // Julian year × c (exact)
+      offset: 0
+    },
+    ly: {
+      name: 'ly',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.SHORT, // Mly, Gly are common in cosmology
+      value: 9.4607304725808e15,
+      offset: 0
+    },
+    parsec: {
+      name: 'parsec',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.LONG, // kiloparsec, megaparsec, gigaparsec
+      value: 3.08567758149137e16, // IAU 2015 exact definition
+      offset: 0
+    },
+    pc: {
+      name: 'pc',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.SHORT, // kpc, Mpc, Gpc
+      value: 3.08567758149137e16,
+      offset: 0
+    },
+
+    // Nautical / marine length
+    nauticalMile: {
+      name: 'nauticalMile',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.NONE,
+      value: 1852, // IAU exact
+      offset: 0
+    },
+    fathom: {
+      name: 'fathom',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.NONE,
+      value: 1.8288, // 6 ft exactly
+      offset: 0
+    },
+
+    // Other common length
+    furlong: {
+      name: 'furlong',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.NONE,
+      value: 201.168, // 1/8 mile exactly
+      offset: 0
+    },
+
+    // Typography (printer's points/picas, post-1984 PostScript convention)
+    point: {
+      name: 'point',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.NONE,
+      value: 0.000352777777777778, // 1/72 inch
+      offset: 0
+    },
+    pica: {
+      name: 'pica',
+      base: BASE_UNITS.LENGTH,
+      prefixes: PREFIXES.NONE,
+      value: 0.0042333333333333335, // 1/6 inch (12 points)
+      offset: 0
+    },
+
     m: {
       name: 'm',
       base: BASE_UNITS.LENGTH,
@@ -2950,6 +3031,25 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
     rods: 'rod',
     chains: 'chain',
     angstroms: 'angstrom',
+
+    // Astronomical / nautical / typography (added 2026-04-30).
+    // Note: 'ly' and 'pc' are declared as first-class UNITS (with
+    // PREFIXES.SHORT) rather than aliases here, so that kpc, Mly, etc.
+    // resolve through the prefix system.
+    AU: 'astronomicalUnit',
+    au: 'astronomicalUnit',
+    astronomicalUnits: 'astronomicalUnit',
+    lightyears: 'lightyear',
+    parsecs: 'parsec',
+    // Note: 'light-year' (hyphenated) can't be a unit alias because the
+    // mathjs unit parser tokenizes on alphanumerics. Users must write
+    // `lightyear` or `ly`.
+    nmi: 'nauticalMile',
+    nauticalMiles: 'nauticalMile',
+    fathoms: 'fathom',
+    furlongs: 'furlong',
+    points: 'point',
+    picas: 'pica',
 
     lt: 'l',
     litres: 'litre',
