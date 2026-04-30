@@ -1,14 +1,14 @@
 # Math.js Dependency Graph
 
-Generated: 2026-04-10T14:24:52.136Z
+Generated: 2026-04-30T15:34:32.436Z
 
 ## Statistics
 
-- **Total Source Files**: 1106 (1106 JS, 0 TS)
+- **Total Source Files**: 1898 (1106 JS, 792 TS)
 - **Rust WASM Files**: 0 (.rs files, 0 exports)
 - **Total Factory Functions**: 545
 - **Total Dependencies**: 1810
-- **Average Dependencies per File**: 1.64
+- **Average Dependencies per File**: 0.95
 
 ## Most Depended-On Files
 
