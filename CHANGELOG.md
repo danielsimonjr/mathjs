@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased] - 2026-04-30
+
+### Security — npm audit cleanup (7 → 0 vulnerabilities)
+
+- **Removed `codecov` devDep** — deprecated npm package (last release 3.8.3, all versions vulnerable to GHSA-xp63-6vf5-xf3v command injection). CI already uses `codecov/codecov-action@v4` GitHub Action which doesn't require the npm package. Removal also eliminates `teeny-request`/`validator` transitive vulns.
+- **Removed `expr-eval` devDep** — orphan dependency, only mentioned as a benchmark competitor in `test/benchmark/README.md` (no actual import in any source/test/benchmark file). No fix was available upstream (GHSA-8gw3-rxh4-v6jx prototype pollution).
+- **Added `uuid: ^14.0.0` override** — forces transitive `uuid` (via `wd` → `@cypress/request`) past GHSA-w5hq-g745-h8pq buffer-bounds-check fix.
+- **Note:** `vite` is already at v7.3.2 (deduped via `vitest@4`); no upgrade needed. `typedoc` is not in the dep tree.
+
+### Verification
+
+- 159/159 Unit type tests passing (`test/unit-tests/type/unit/**/*.test.js`)
+- 9,277/9,277 full `npm run test:src` passing (2 pending, 0 failing)
+- `tsup` build clean — `dist/index.cjs`, `dist/index.js`, `dist/factoriesAny.{js,cjs}`, `dist/number.{js,cjs}` all regenerated
+- Smoke: `m.parse` is `function`, `m.unit('1 parsec').toNumber('m')` ≈ 3.086e16 ✓
+- `math-mcp` (downstream consumer via `file:../Mathjs`) loads cleanly post-upgrade
+- `npm audit` final count: **0 vulnerabilities** (was 7)
+
+---
+
 ## [15.6.0] - 2026-04-10
 
 ### Added — Function Reference Documentation Site
