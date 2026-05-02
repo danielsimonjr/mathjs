@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased] - 2026-05-01
+
+### Fixed — Version drift between `package.json` and `src/version.js`
+
+- **`src/version.js` resynced** from `'15.1.0'` → `'15.2.0'` to match `package.json`. The runtime-exported `math.version` had drifted because the gulp/tsup build pipeline that normally rewrites `src/version.js` had not been run since the last `npm version` bump.
+- **Added `tools/sync-version.mjs`** — a lightweight standalone script that rewrites `src/version.js` from `package.json#version`. Useful in environments where the full `npm run build` (which depends on a Rust/WASM toolchain) is too heavy.
+- **Added `npm run sync-version`** script and chained it into `prepublishOnly` so a future drift can never reach a published artifact.
+- **Added regression test** `test/unit-tests/version.test.js` asserting `math.version === require('package.json').version`.
+
 ## [Unreleased] - 2026-04-30
 
 ### Security — npm audit cleanup (7 → 0 vulnerabilities)

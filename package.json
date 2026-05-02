@@ -175,7 +175,8 @@
     "bench:wasm": "npx tsx test/benchmark/wasm_rust_vs_as_benchmark.ts",
     "bench:wasm:compare": "npm run build:wasm:all && npm run bench:wasm",
     "coverage": "c8 --reporter=lcov --reporter=text-summary mocha test/unit-tests && echo \"\nDetailed coverage report is available at ./coverage/lcov-report/index.html\"",
-    "prepublishOnly": "npm run test:all && npm run lint",
+    "prepublishOnly": "npm run sync-version && npm run test:all && npm run lint",
+    "sync-version": "node ./tools/sync-version.mjs",
     "update-authors": "node ./tools/update-authors.js"
   },
   "bin": {
