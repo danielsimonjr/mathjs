@@ -1675,6 +1675,30 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
   PREFIXES.BINARY_SHORT = Object.assign({}, PREFIXES.BINARY_SHORT_SI, PREFIXES.BINARY_SHORT_IEC)
   PREFIXES.BINARY_LONG = Object.assign({}, PREFIXES.BINARY_LONG_SI, PREFIXES.BINARY_LONG_IEC)
 
+  // Upward-only short prefix set for cosmological-scale units like
+  // light-year (`ly`) and parsec (`pc`). Cosmologists only multiply
+  // these units up (kpc, Mpc, Gpc; Mly, Gly), never down — `mly`
+  // (milli-lightyear), `nly` (nano-lightyear), `aly`, `cly`, `daly`,
+  // `fly` are not used in physics literature and lead to silent
+  // misinterpretations (e.g. `mly` parsing as 1e-3 ly = ~9.46e12 m
+  // instead of mega-lightyear). This prefix set drops the sub-multiple
+  // entries (m, u, n, p, f, a, z, y, r, q) and the awkward
+  // base-10 multiples (da, h, d, c) so that only k, M, G, T, P, E, Z,
+  // Y, R, Q remain.
+  PREFIXES.SHORT_UP_ONLY = {
+    '': { name: '', value: 1, scientific: true },
+    k: { name: 'k', value: 1e3, scientific: true },
+    M: { name: 'M', value: 1e6, scientific: true },
+    G: { name: 'G', value: 1e9, scientific: true },
+    T: { name: 'T', value: 1e12, scientific: true },
+    P: { name: 'P', value: 1e15, scientific: true },
+    E: { name: 'E', value: 1e18, scientific: true },
+    Z: { name: 'Z', value: 1e21, scientific: true },
+    Y: { name: 'Y', value: 1e24, scientific: true },
+    R: { name: 'R', value: 1e27, scientific: true },
+    Q: { name: 'Q', value: 1e30, scientific: true }
+  }
+
   /* Internally, each unit is represented by a value and a dimension array. The elements of the dimensions array have the following meaning:
    * Index  Dimension
    * -----  ---------
@@ -1871,7 +1895,10 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
     ly: {
       name: 'ly',
       base: BASE_UNITS.LENGTH,
-      prefixes: PREFIXES.SHORT, // Mly, Gly are common in cosmology
+      // Upward-only: kly, Mly, Gly, ... — never `mly` (milli-lightyear)
+      // or `nly`/`aly`/`fly`/`cly` which are not used in cosmology and
+      // collide visually with much larger physical scales.
+      prefixes: PREFIXES.SHORT_UP_ONLY,
       value: 9.4607304725808e15,
       offset: 0
     },
@@ -1885,7 +1912,10 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
     pc: {
       name: 'pc',
       base: BASE_UNITS.LENGTH,
-      prefixes: PREFIXES.SHORT, // kpc, Mpc, Gpc
+      // Upward-only: kpc, Mpc, Gpc, ... — see `ly` rationale.
+      // Drops sub-multiples like `mpc` (milli-parsec) and `npc`
+      // which collide with usage but have no physics meaning.
+      prefixes: PREFIXES.SHORT_UP_ONLY,
       value: 3.08567758149137e16,
       offset: 0
     },
@@ -3037,7 +3067,13 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
     // PREFIXES.SHORT) rather than aliases here, so that kpc, Mly, etc.
     // resolve through the prefix system.
     AU: 'astronomicalUnit',
-    au: 'astronomicalUnit',
+    // Note: lowercase `au` is intentionally NOT aliased here. In
+    // physics literature lowercase `au` denotes the atomic unit of
+    // length (Bohr radius, ~5.29e-11 m), 21 orders of magnitude
+    // smaller than the astronomical unit (~1.496e11 m). To avoid
+    // silently returning the wrong magnitude for physics queries,
+    // users must spell out `AU`, `astronomicalUnit`, or
+    // `astronomicalUnits` for the IAU astronomical unit.
     astronomicalUnits: 'astronomicalUnit',
     lightyears: 'lightyear',
     parsecs: 'parsec',

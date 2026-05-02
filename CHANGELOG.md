@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2026-05-01
 
+### Fixed — Astronomical / cosmological unit correctness
+
+- **`ly` and `pc` no longer admit physically-meaningless sub-multiple prefixes.** Previously `prefixes: PREFIXES.SHORT` on these units made `mly`, `nly`, `aly`, `cly`, `daly`, `fly`, `mpc`, `npc`, `fpc` etc. all parse silently — e.g. `unit('1 mly').toNumber('m')` returned `9.46e12 m` (milli-lightyear) instead of the cosmologist-expected mega-lightyear. Cosmologists only ever multiply these units up.
+- **Added `PREFIXES.SHORT_UP_ONLY`** in `src/type/unit/Unit.js` — a new prefix table with only `''`, `k`, `M`, `G`, `T`, `P`, `E`, `Z`, `Y`, `R`, `Q`. `ly` and `pc` now reference this set; `parsec` (long form) keeps `PREFIXES.LONG` (kiloparsec, megaparsec, gigaparsec) which already excluded sub-multiples by visual disambiguation.
+- **Dropped the lowercase `au` alias for `astronomicalUnit`.** In physics literature lowercase `au` denotes the *atomic unit of length* (Bohr radius, ~5.29e-11 m), 21 orders of magnitude smaller than the IAU astronomical unit (~1.496e11 m). Silently returning the astronomical-unit value for `evaluate('1 au')` was a real footgun for physics queries via `math-mcp`. `AU`, `astronomicalUnit`, and `astronomicalUnits` continue to resolve to the IAU unit.
+- **Added regression tests** under `test/unit-tests/type/unit/Unit.test.js` describe block `astronomical / cosmological prefixes`: rejects `mly|nly|fly|cly|aly|daly|mpc|npc|fpc`, accepts `kly|Mly|Gly|Tly|kpc|Mpc|Gpc`, rejects lowercase `au`, accepts `AU` / `astronomicalUnit(s)`.
+
 ### Fixed — Version drift between `package.json` and `src/version.js`
 
 - **`src/version.js` resynced** from `'15.1.0'` → `'15.2.0'` to match `package.json`. The runtime-exported `math.version` had drifted because the gulp/tsup build pipeline that normally rewrites `src/version.js` had not been run since the last `npm version` bump.

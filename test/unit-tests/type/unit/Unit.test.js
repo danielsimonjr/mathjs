@@ -1509,4 +1509,62 @@ describe('Unit', function () {
       assert.strictEqual(Unit.parse('21 vteřiny').toSI().toString(), '21 s')
     })
   })
+
+  describe('astronomical / cosmological prefixes', function () {
+    // Regression: `ly` and `pc` previously used PREFIXES.SHORT, which
+    // admitted physically-meaningless sub-multiples like `mly`
+    // (milli-lightyear), `nly`, `aly`, `cly`, `daly`, `fly`. Cosmologists
+    // only ever multiply these units up. The fix replaces SHORT with a
+    // new SHORT_UP_ONLY prefix set on `ly` and `pc`.
+
+    it('should reject sub-multiple prefixes on lightyear (mly, nly, fly, cly, aly)', function () {
+      assert.throws(() => math.unit('1 mly'), /Unit "mly" not found/)
+      assert.throws(() => math.unit('1 nly'), /Unit "nly" not found/)
+      assert.throws(() => math.unit('1 fly'), /Unit "fly" not found/)
+      assert.throws(() => math.unit('1 cly'), /Unit "cly" not found/)
+      assert.throws(() => math.unit('1 aly'), /Unit "aly" not found/)
+      assert.throws(() => math.unit('1 daly'), /Unit "daly" not found/)
+    })
+
+    it('should reject sub-multiple prefixes on parsec (mpc, npc, fpc)', function () {
+      assert.throws(() => math.unit('1 mpc'), /Unit "mpc" not found/)
+      assert.throws(() => math.unit('1 npc'), /Unit "npc" not found/)
+      assert.throws(() => math.unit('1 fpc'), /Unit "fpc" not found/)
+    })
+
+    it('should still accept upward cosmological prefixes for ly (kly, Mly, Gly, Tly)', function () {
+      const ly = 9.4607304725808e15
+      approxEqual(math.unit('1 kly').toNumber('m'), ly * 1e3)
+      approxEqual(math.unit('1 Mly').toNumber('m'), ly * 1e6)
+      approxEqual(math.unit('1 Gly').toNumber('m'), ly * 1e9)
+      approxEqual(math.unit('1 Tly').toNumber('m'), ly * 1e12)
+    })
+
+    it('should still accept upward cosmological prefixes for pc (kpc, Mpc, Gpc)', function () {
+      const pc = 3.08567758149137e16
+      approxEqual(math.unit('1 kpc').toNumber('m'), pc * 1e3)
+      approxEqual(math.unit('1 Mpc').toNumber('m'), pc * 1e6)
+      approxEqual(math.unit('1 Gpc').toNumber('m'), pc * 1e9)
+    })
+
+    it('should preserve plain `ly` and `pc` (empty prefix)', function () {
+      approxEqual(math.unit('1 ly').toNumber('m'), 9.4607304725808e15)
+      approxEqual(math.unit('1 pc').toNumber('m'), 3.08567758149137e16)
+    })
+
+    // Regression: lowercase `au` previously aliased `astronomicalUnit`,
+    // colliding with the physics-literature meaning of `au` as the
+    // atomic unit of length (Bohr radius, ~5.29e-11 m). Drop the
+    // lowercase alias; keep `AU`, `astronomicalUnit(s)`.
+
+    it('should reject lowercase `au` to avoid Bohr-radius / astronomical-unit collision', function () {
+      assert.throws(() => math.evaluate('1 au'), /Undefined symbol au/)
+    })
+
+    it('should still accept uppercase AU and the full astronomicalUnit name', function () {
+      approxEqual(math.evaluate('1 AU').toNumber('m'), 1.495978707e11)
+      approxEqual(math.evaluate('1 astronomicalUnit').toNumber('m'), 1.495978707e11)
+      approxEqual(math.evaluate('1 astronomicalUnits').toNumber('m'), 1.495978707e11)
+    })
+  })
 })
