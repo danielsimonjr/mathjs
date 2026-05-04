@@ -26,3 +26,8 @@ test-results
 .claude/settings.local.json
 /.claude
 nul
+
+# Generated TypeScript entry files
+*.generated.ts
+src/entry/dependenciesAny/
+src/entry/dependenciesNumber/
