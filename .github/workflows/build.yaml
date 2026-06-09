@@ -54,6 +54,10 @@ jobs:
         run: npx tsc --noEmit
         env:
           CI: true
+      - name: Build dist (test:types imports the built dist/index.js)
+        run: npm run compile
+        env:
+          CI: true
       - name: Run TypeScript type tests
         run: npm run test:types
         env:
@@ -79,7 +83,9 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
+          # Don't fail CI when the Codecov upload fails (e.g. no CODECOV_TOKEN
+          # secret on the fork) — coverage upload is informational, not a gate.
+          fail_ci_if_error: false
 
   build-and-test:
     runs-on: ubuntu-latest
