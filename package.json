@@ -142,7 +142,7 @@
     "lib": "./lib"
   },
   "scripts": {
-    "build": "tsup && npm run build:lib && npm run build:browser && npm run update-authors",
+    "build": "npm run build:lib && tsup && npm run build:browser && npm run update-authors",
     "build:lib": "gulp compile",
     "build:browser": "gulp browser",
     "build-and-test": "npm run build && npm run test:all && npm run lint",
