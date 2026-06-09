@@ -58,28 +58,9 @@ jobs:
         env:
           CI: true
 
-  wasm:
-    runs-on: ubuntu-latest
-    name: WASM Build & Test
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - run: npm ci
-      - name: Validate WASM (syntax check)
-        run: npm run validate:wasm
-        env:
-          CI: true
-      - name: Build WASM modules
-        run: npm run build:wasm
-        env:
-          CI: true
-      - name: Run WASM unit tests
-        run: npx mocha "test/unit-tests/wasm/**/*.test.ts" --timeout 60000
-        env:
-          CI: true
+  # WASM/Rust/AssemblyScript was split out to the MathTS repo (commit e62bcd749);
+  # the validate:wasm/build:wasm scripts and src/wasm* were removed, so this job
+  # was deleted along with its `needs:` reference in build-and-test below.
 
   coverage:
     runs-on: ubuntu-latest
@@ -101,7 +82,7 @@ jobs:
 
   build-and-test:
     runs-on: ubuntu-latest
-    needs: [test, lint, typecheck, wasm]
+    needs: [test, lint, typecheck]
 
     steps:
       - uses: actions/checkout@v4
