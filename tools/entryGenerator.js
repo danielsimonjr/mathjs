@@ -55,7 +55,7 @@ import { {{name}} } from '{{fileName}}.js'
 {{/dependencies}}
 import { {{factoryName}} } from '../../factories{{suffix}}.js'{{eslintComment}}
 
-export const {{name}}: Record<string, unknown> = {{braceOpen}}{{eslintComment}}
+export const {{name}} = {{braceOpen}}{{eslintComment}}
   {{#dependencies}}
   {{name}},
   {{/dependencies}}
@@ -67,7 +67,6 @@ const pureFunctionsTemplate = Handlebars.compile(`/**
  * THIS FILE IS AUTO-GENERATED
  * DON'T MAKE CHANGES HERE
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { config } from './configReadonly.js'
 import {
   {{#pureFactories}}
@@ -76,14 +75,14 @@ import {
 } from '../factories{{suffix}}.js'
 
 {{#pureFactories}}
-export const {{name}}: any = /* #__PURE__ */ {{factoryName ~}}
+export const {{name}} = /* #__PURE__ */ {{factoryName ~}}
 ({{braceOpen}}{{#if dependencies}} {{/if ~}}
 {{#dependencies ~}}
 {{name}}{{#unless @last}}, {{/unless ~}}
 {{/dependencies ~}}
 {{#if dependencies}} {{/if ~}}})
 {{#if formerly}}
-export const {{formerly}}: any = {{name}}
+export const {{formerly}} = {{name}}
 {{/if}}
 {{/pureFactories}}
 `)
@@ -92,7 +91,6 @@ const impureFunctionsTemplate = Handlebars.compile(`/**
  * THIS FILE IS AUTO-GENERATED
  * DON'T MAKE CHANGES HERE
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { config } from './configReadonly.js'
 import {
   {{#impureFactories}}
@@ -108,12 +106,12 @@ import {
   {{/pureFactories}}
 } from './pureFunctions{{suffix}}.generated.js'
 
-const math: Record<string, any> = {} // NOT pure!
-const mathWithTransform: Record<string, any> = {} // NOT pure!
-const classes: Record<string, any> = {} // NOT pure!
+const math = {} // NOT pure!
+const mathWithTransform = {} // NOT pure!
+const classes = {} // NOT pure!
 
 {{#impureFactories}}
-export const {{name}}: any = {{factoryName ~}}
+export const {{name}} = {{factoryName ~}}
 ({{braceOpen}}{{#if dependencies}} {{/if ~}}
 {{#dependencies ~}}
 {{name}}{{#unless @last}}, {{/unless ~}}
@@ -206,6 +204,14 @@ function generateDependenciesFiles ({ suffix, factories, entryFolder }) {
     exists[factory.fn] = true
   })
 
+  // Pre-assign all dependency file names in a stable (sorted) order so that
+  // case-only collisions are resolved deterministically regardless of the order
+  // in which getDependenciesFileName is later called from the various loops.
+  dependenciesFileNameByLower.clear()
+  Object.keys(factories).sort().forEach(factoryName => {
+    getDependenciesFileName(factoryName)
+  })
+
   mkdirSyncIfNotExists(path.join(entryFolder, 'dependencies' + suffix))
 
   const data = {
@@ -256,13 +262,13 @@ function generateDependenciesFiles ({ suffix, factories, entryFolder }) {
   data.factories.forEach(factoryData => {
     const generatedFactory = dependenciesFileTemplate(factoryData)
 
-    const p = path.join(entryFolder, factoryData.fileName + '.ts')
+    const p = path.join(entryFolder, factoryData.fileName + '.js')
     fs.writeFileSync(p, generatedFactory)
   })
 
   // generate a file with links to all dependencies
   const generated = dependenciesIndexTemplate(data)
-  fs.writeFileSync(path.join(entryFolder, 'dependencies' + suffix + '.generated.ts'), generated)
+  fs.writeFileSync(path.join(entryFolder, 'dependencies' + suffix + '.generated.js'), generated)
 }
 
 /**
@@ -439,11 +445,11 @@ function generateFunctionsFiles ({ suffix, factories, entryFolder }) {
     classes
   }
 
-  // create file with all functions: functionsAny.generated.ts, functionsNumber.generated.ts
-  fs.writeFileSync(path.join(entryFolder, 'pureFunctions' + suffix + '.generated.ts'), pureFunctionsTemplate(data))
+  // create file with all functions: functionsAny.generated.js, functionsNumber.generated.js
+  fs.writeFileSync(path.join(entryFolder, 'pureFunctions' + suffix + '.generated.js'), pureFunctionsTemplate(data))
 
-  // create file with all functions: impureFunctions.generated.ts, impureFunctions.generated.ts
-  fs.writeFileSync(path.join(entryFolder, 'impureFunctions' + suffix + '.generated.ts'), impureFunctionsTemplate(data))
+  // create file with all functions: impureFunctions.generated.js, impureFunctions.generated.js
+  fs.writeFileSync(path.join(entryFolder, 'impureFunctions' + suffix + '.generated.js'), impureFunctionsTemplate(data))
 }
 
 function getDependenciesName (factoryName, factories) {
@@ -457,12 +463,39 @@ function getDependenciesName (factoryName, factories) {
   return factory.fn + transform + 'Dependencies'
 }
 
+// Map from lowercased dependencies file name -> the canonical (first-seen) name.
+// Used to detect case-only collisions (e.g. nullSpace vs nullspace) which would
+// clobber each other on case-insensitive filesystems (Windows/macOS). The second
+// (and later) colliding name(s) get a deterministic, case-insensitively-unique
+// suffix so every factory still maps to its own physical file.
+const dependenciesFileNameByLower = new Map()
+
 function getDependenciesFileName (factoryName) {
   if (factoryName.indexOf('create') !== 0) {
     throw new Error(`Cannot create dependencies name from factoryName "${factoryName}". Should start with "create..."`)
   }
 
-  return 'dependencies' + factoryName.slice(6)
+  const base = 'dependencies' + factoryName.slice(6)
+  const lower = base.toLowerCase()
+  const existing = dependenciesFileNameByLower.get(lower)
+
+  if (existing === undefined) {
+    dependenciesFileNameByLower.set(lower, base)
+    return base
+  }
+
+  if (existing === base) {
+    // Same name requested again (the function is called multiple times per run).
+    return base
+  }
+
+  // Case-only collision with a previously assigned name: disambiguate the new
+  // name in a way that is unique even on case-insensitive filesystems, by
+  // appending a marker encoding the uppercase letters of the original name.
+  const upperMarker = factoryName.slice(6).replace(/[^A-Z]/g, '') || 'X'
+  const disambiguated = base + '_' + upperMarker
+  dependenciesFileNameByLower.set(disambiguated.toLowerCase(), disambiguated)
+  return disambiguated
 }
 
 function findFactoryName (factories, name) {
