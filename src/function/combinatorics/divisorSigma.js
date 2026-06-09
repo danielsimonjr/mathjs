@@ -18,10 +18,10 @@ export const createDivisorSigma = /* #__PURE__ */ factory(name, dependencies, ({
    *
    * Examples:
    *
-   *    math.divisorSigma(0, 12)   // returns 6  (divisors: 1,2,3,4,6,12)
-   *    math.divisorSigma(1, 12)   // returns 28 (1+2+3+4+6+12)
-   *    math.divisorSigma(1, 6)    // returns 12 (1+2+3+6, perfect number)
-   *    math.divisorSigma(2, 6)    // returns 50 (1+4+9+36)
+   *    math.divisorSigma(0, 12)   // returns 6
+   *    math.divisorSigma(1, 12)   // returns 28
+   *    math.divisorSigma(1, 6)    // returns 12
+   *    math.divisorSigma(2, 6)    // returns 50
    *
    * See also:
    *

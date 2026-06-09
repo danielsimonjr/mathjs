@@ -9,7 +9,6 @@
 import fs from 'node:fs'
 import { glob } from 'glob'
 import { mkdirp } from 'mkdirp'
-import { deleteSync } from 'del'
 import log from 'fancy-log'
 
 // special cases for function syntax
@@ -529,10 +528,13 @@ export function generateMarkdown (doc, functions) {
  */
 export function cleanup (outputPath, outputRoot) {
   // cleanup previous docs
-  deleteSync([
-    outputPath + '/*.md',
+  const filesToDelete = [
+    ...glob.sync(outputPath + '/*.md'),
     outputRoot + '/functions.md'
-  ])
+  ]
+  for (const file of filesToDelete) {
+    fs.rmSync(file, { force: true })
+  }
 }
 
 /**

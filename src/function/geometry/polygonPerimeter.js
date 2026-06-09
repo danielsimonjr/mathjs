@@ -16,7 +16,7 @@ export const createPolygonPerimeter = /* #__PURE__ */ factory(name, dependencies
    * Examples:
    *
    *    math.polygonPerimeter([[0,0],[3,0],[3,4],[0,4]])
-   *    // Returns 14 (3 + 4 + 3 + 4)
+   *    // Returns 14
    *
    *    math.polygonPerimeter([[0,0],[1,0],[0.5, 0.866]])
    *    // Returns approximately 3 (equilateral triangle with side 1)

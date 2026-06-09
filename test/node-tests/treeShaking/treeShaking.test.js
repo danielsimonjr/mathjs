@@ -8,19 +8,22 @@
 // - move code into a separate file to isolate it
 // - add /* #__PURE__ */ when creating a variable
 
+import fs from 'node:fs'
 import path from 'node:path'
 import cp from 'node:child_process'
 import assert from 'node:assert'
 import { fileURLToPath } from 'node:url'
-import { deleteSync } from 'del'
 import webpack from 'webpack'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 describe('tree shaking', function () {
   const appName = 'treeShakingApp.js'
-  const bundleName = 'treeShakingApp.bundle.js'
-  const bundleLicenseName = 'treeShakingApp.bundle.js.LICENSE.txt'
+  // Use a .cjs extension: with target:'node' webpack emits CommonJS `require`
+  // calls, but this package is "type": "module", so a .js bundle would be
+  // loaded as ESM and fail with "require is not defined". .cjs forces CommonJS.
+  const bundleName = 'treeShakingApp.bundle.cjs'
+  const bundleLicenseName = 'treeShakingApp.bundle.cjs.LICENSE.txt'
 
   before(function () {
     cleanup()
@@ -31,8 +34,8 @@ describe('tree shaking', function () {
   })
 
   function cleanup () {
-    deleteSync(path.join(__dirname, bundleName))
-    deleteSync(path.join(__dirname, bundleLicenseName))
+    fs.rmSync(path.join(__dirname, bundleName), { force: true })
+    fs.rmSync(path.join(__dirname, bundleLicenseName), { force: true })
   }
 
   it('should apply tree-shaking when bundling', function (done) {
@@ -42,9 +45,25 @@ describe('tree shaking', function () {
     const webpackConfig = {
       entry: path.join(__dirname, appName),
       mode: 'production',
+      // The bundle is executed with `node` below, so target Node's globals.
+      // Without this, webpack's default 'web' target emits references to the
+      // browser-only `self` global (used by typed-function's optional wasm
+      // loader), which throws "self is not defined" under Node.
+      target: 'node',
       output: {
         filename: bundleName,
         path: __dirname
+      },
+      resolve: {
+        alias: {
+          // @danielsimonjr/typed-function optionally loads a WebAssembly module
+          // via a (broken) relative path. We don't want the optional wasm
+          // acceleration bundled into a tree-shaken build: map it to false so
+          // typed-function falls back to its pure-JS dispatch. This also keeps
+          // the bundle small (the whole point of this test).
+          '../../../build/dispatch.wasm': false
+        },
+        fallback: { url: false, path: false }
       }
     }
 
@@ -63,12 +82,15 @@ describe('tree shaking', function () {
       }
 
       // Test whether the size is small enough
-      // At this moment, the full library size is 559137 bytes (unzipped),
-      // and the size of this tree-shaken bundle is 98494 bytes (unzipped)
-      // this may grow or shrink in the future
+      // The tree-shaken bundle baseline grew after switching to
+      // @danielsimonjr/typed-function (a heavier dispatch engine than upstream
+      // typed-function); the current size is ~142 KB (unzipped) vs the full
+      // library which is far larger. The threshold below guards against
+      // tree-shaking breaking (which would pull in the whole library); it may
+      // grow or shrink in the future.
       assert.strictEqual(info.assets[0].name, bundleName)
       const size = info.assets[0].size
-      const maxSize = 135000
+      const maxSize = 160000
       assert(size < maxSize,
         'bundled size must be small enough ' +
         '(actual size: ' + size + ' bytes, max size: ' + maxSize + ' bytes)')

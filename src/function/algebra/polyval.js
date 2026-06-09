@@ -16,10 +16,10 @@ export const createPolyval = /* #__PURE__ */ factory(name, dependencies, ({ type
    *
    * Examples:
    *
-   *    math.polyval([1, 2, 3], 2)   // returns 17  (1 + 2*2 + 3*4)
-   *    math.polyval([1, 0, -1], 3)  // returns 8   (1 + 0*3 + (-1)*9 = -8... wait: 1 - 9 = -8)
-   *    math.polyval([5], 100)        // returns 5   (constant polynomial)
-   *    math.polyval([], 10)          // returns 0   (zero polynomial)
+   *    math.polyval([1, 2, 3], 2)   // returns 17
+   *    math.polyval([1, 0, -1], 3)  // returns -8
+   *    math.polyval([5], 100)       // returns 5
+   *    math.polyval([], 10)         // returns 0
    *
    * See also:
    *
