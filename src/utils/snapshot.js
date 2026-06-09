@@ -156,6 +156,7 @@ export function createSnapshotFromFactories (factories) {
     'print',
     'divideScalar',
     'parse',
+    'parseNumberWithConfig',
     'compile',
     'parser',
     'chain',
