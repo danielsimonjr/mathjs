@@ -2,7 +2,7 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: {
-    'index': 'src/defaultInstance.js',
+    'index': 'src/index.js',
     'number': 'src/number.js',
     'factoriesAny': 'src/factoriesAny.js',
     'factoriesNumber': 'src/factoriesNumber.js'

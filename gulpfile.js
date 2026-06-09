@@ -85,6 +85,18 @@ const webpackConfig = {
     libraryExport: 'default',
     path: COMPILE_BROWSER,
     globalObject: 'this',
+    // Set an explicit publicPath so webpack does not emit runtime auto-detection
+    // logic (which throws "Automatic publicPath is not supported in this browser"
+    // when the UMD bundle is loaded outside a browser, e.g. via require() in the
+    // node-tests).
+    publicPath: '',
+    // Keep everything in a single UMD file. Without this, the optional
+    // WebAssembly acceleration path in @danielsimonjr/typed-function makes
+    // webpack emit an async (JSONP) chunk loader that references the browser-only
+    // `self` global, which breaks `require()` of the bundle in Node. typed-function
+    // falls back to its pure-JS dispatch when the wasm is unavailable.
+    chunkLoading: false,
+    chunkFormat: false,
     filename: FILE
   },
   node: false, // to make sure Webpack doesn't generate 'new Function("return this")' in the bundle output, see https://github.com/josdejong/mathjs/issues/3001
