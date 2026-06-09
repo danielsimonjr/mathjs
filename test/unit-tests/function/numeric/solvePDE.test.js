@@ -55,22 +55,22 @@ describe('solvePDE', function () {
     it('should satisfy initial condition', function () {
       const nx = 20
       const result = math.solvePDE(heatRHS, [0, 1], [0, 0.01], u0Fn, { nx, nSteps: 10 })
-      const u_init = result.u[0]
+      const uInit = result.u[0]
       for (let i = 0; i < nx; i++) {
         const expected = u0Fn(result.x[i])
         assert.ok(
-          Math.abs(u_init[i] - expected) < 1e-10,
-          `u(x[${i}],0) = ${u_init[i]}, expected ${expected}`
+          Math.abs(uInit[i] - expected) < 1e-10,
+          `u(x[${i}],0) = ${uInit[i]}, expected ${expected}`
         )
       }
     })
 
     it('should respect Dirichlet boundary conditions (u=0 at boundaries)', function () {
       const result = math.solvePDE(heatRHS, [0, 1], [0, 0.05], u0Fn, { nx: 20, nSteps: 50 })
-      for (const u_t of result.u) {
-        assert.ok(Math.abs(u_t[0]) < 1e-10, `u(0,t) should be 0, got ${u_t[0]}`)
-        assert.ok(Math.abs(u_t[u_t.length - 1]) < 1e-10,
-          `u(1,t) should be 0, got ${u_t[u_t.length - 1]}`)
+      for (const uT of result.u) {
+        assert.ok(Math.abs(uT[0]) < 1e-10, `u(0,t) should be 0, got ${uT[0]}`)
+        assert.ok(Math.abs(uT[uT.length - 1]) < 1e-10,
+          `u(1,t) should be 0, got ${uT[uT.length - 1]}`)
       }
     })
 

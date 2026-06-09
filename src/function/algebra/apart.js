@@ -51,7 +51,6 @@ export const createApart = /* #__PURE__ */ factory(name, dependencies, ({
   function apartExpr (node, variable) {
     // First, try simplifying — if the expression simplifies nicely, return it
     const simplified = simplify(node, [], {}, { exactFractions: false })
-    const simplifiedStr = simplified.toString().replace(/ /g, '')
 
     // Check if the result is a fraction (has division)
     if (!isRationalForm(simplified)) {
@@ -64,9 +63,6 @@ export const createApart = /* #__PURE__ */ factory(name, dependencies, ({
     if (!numerator || !denominator) {
       return simplified.toString()
     }
-
-    const denomStr = denominator.toString().replace(/ /g, '')
-    const numerStr = numerator.toString().replace(/ /g, '')
 
     // Find linear factors of the denominator by evaluating at roots
     // We try to factor the denominator as a product of linear terms
@@ -94,7 +90,6 @@ export const createApart = /* #__PURE__ */ factory(name, dependencies, ({
 
       // Round residue to nice fraction
       const frac = toNiceFraction(residue)
-      const rootFrac = toNiceFraction(root)
       const sign = root < 0 ? '+' : '-'
       const absRoot = toNiceFraction(Math.abs(root))
       const term = `${frac} / (${variable} ${sign} ${absRoot})`

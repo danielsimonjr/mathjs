@@ -120,8 +120,6 @@ export const createInverseLaplaceTransform = /* #__PURE__ */ factory(name, depen
    * @return {string|null}
    */
   function _tableLookup (node, s, t) {
-    const expr = node.toString().replace(/ /g, '')
-
     // 1/s → 1 (unit step)
     if (_matchPattern(node, s, '1/s')) return '1'
 
@@ -260,7 +258,6 @@ export const createInverseLaplaceTransform = /* #__PURE__ */ factory(name, depen
       }
 
       // Try c/(s^2 - a^2) → (c/a)*sinh(a*t)
-      const a2 = (9 * v3 - 4 * v2) / (v2 - v3) * (-1)
       // Recompute: c/(s^2-a^2): v2 = c/(4-a^2), v3 = c/(9-a^2)
       // c = v2*(4-a^2) = v3*(9-a^2), a^2*(v3-v2) = 9*v3 - 4*v2... same equation negated
       // Let me solve again:
@@ -301,7 +298,7 @@ export const createInverseLaplaceTransform = /* #__PURE__ */ factory(name, depen
     if (v2 === null || Math.abs(v2) < 1e-15) return null
 
     for (let n = 1; n <= 10; n++) {
-      const testVal = Math.pow(2, n) * v2  // s^n * F(s) at s=2
+      const testVal = Math.pow(2, n) * v2 // s^n * F(s) at s=2
       const v3 = _evalAt(node, s, 3)
       const v5 = _evalAt(node, s, 5)
       if (v3 === null || v5 === null) return null
@@ -310,7 +307,7 @@ export const createInverseLaplaceTransform = /* #__PURE__ */ factory(name, depen
       const c5 = Math.pow(5, n) * v5
 
       if (Math.abs(testVal - c3) < 1e-8 && Math.abs(testVal - c5) < 1e-8) {
-        const c = testVal  // coefficient
+        const c = testVal // coefficient
         // F(s) = c/s^n → f(t) = c * t^(n-1) / (n-1)!
         const factorial = _factorial(n - 1)
         const coeff = c / factorial

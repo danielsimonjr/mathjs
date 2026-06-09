@@ -70,16 +70,16 @@ export const createFourierSeries = /* #__PURE__ */ factory(name, dependencies, (
       return (h / 3) * sum
     }
 
-    const PI2_over_T = 2 * Math.PI / T
+    const pi2OverT = 2 * Math.PI / T
 
     const a0 = (1 / T) * simpsonsIntegral(x => f(x))
 
     const an = []
     const bn = []
     for (let k = 1; k <= N; k++) {
-      const kPI2_T = k * PI2_over_T
-      const ak = (2 / T) * simpsonsIntegral(x => f(x) * Math.cos(kPI2_T * x))
-      const bk = (2 / T) * simpsonsIntegral(x => f(x) * Math.sin(kPI2_T * x))
+      const kPi2T = k * pi2OverT
+      const ak = (2 / T) * simpsonsIntegral(x => f(x) * Math.cos(kPi2T * x))
+      const bk = (2 / T) * simpsonsIntegral(x => f(x) * Math.sin(kPi2T * x))
       an.push(_roundSmall(ak))
       bn.push(_roundSmall(bk))
     }

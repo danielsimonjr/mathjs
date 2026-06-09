@@ -17,10 +17,10 @@ describe('coefficientList', function () {
   it('should extract coefficients of a cubic with missing terms', function () {
     const coeffs = math.coefficientList('x^3 - x', 'x')
     assert.strictEqual(coeffs.length, 4)
-    assert.strictEqual(coeffs[0], 0)  // constant
+    assert.strictEqual(coeffs[0], 0) // constant
     assert.strictEqual(coeffs[1], -1) // x
-    assert.strictEqual(coeffs[2], 0)  // x^2
-    assert.strictEqual(coeffs[3], 1)  // x^3
+    assert.strictEqual(coeffs[2], 0) // x^2
+    assert.strictEqual(coeffs[3], 1) // x^3
   })
 
   it('should return [c] for a constant expression', function () {

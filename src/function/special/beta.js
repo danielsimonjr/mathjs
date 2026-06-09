@@ -67,7 +67,7 @@ export const createBeta = /* #__PURE__ */ factory(
         9.9843695780195716e-6,
         1.5056327351493116e-7
       ]
-      let xr = x - 1
+      const xr = x - 1
       let sum = c[0]
       for (let i = 1; i < g + 2; i++) {
         sum += c[i] / (xr + i)

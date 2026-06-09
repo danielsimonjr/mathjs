@@ -63,7 +63,6 @@ export const createCspline = /* #__PURE__ */ factory(
       }
 
       // Thomas algorithm (natural BCs: m[0] = m[n-1] = 0)
-      const diag = new Array(n).fill(2) // main diagonal multiplied by h
       const upper = new Array(n - 1)
       const lower = new Array(n - 1)
       for (let i = 0; i < n - 1; i++) {

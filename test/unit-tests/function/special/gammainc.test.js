@@ -36,7 +36,7 @@ describe('gammainc', function () {
   })
 
   it('should complement gammaincp', function () {
-    const a = 3, x = 2
+    const a = 3; const x = 2
     const p = math.gammainc(a, x)
     const q = math.gammaincp(a, x)
     assert(Math.abs(p + q - 1) < 1e-13)

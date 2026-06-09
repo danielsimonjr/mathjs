@@ -81,10 +81,10 @@ export const createBetaDist = /* #__PURE__ */ factory(
 
           // Continued fraction (Lentz's method)
           const lbeta = Math.log(x) * a + Math.log(1 - x) * b - logBeta - Math.log(a)
-          let fpmin = 1e-300
-          let qab = a + b
-          let qap = a + 1
-          let qam = a - 1
+          const fpmin = 1e-300
+          const qab = a + b
+          const qap = a + 1
+          const qam = a - 1
           let c = 1
           let d = 1 - qab * x / qap
           if (Math.abs(d) < fpmin) d = fpmin

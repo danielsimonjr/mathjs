@@ -7,7 +7,7 @@ describe('besselY', function () {
   })
 
   it('should compute Y_0(1) accurately', function () {
-    assert(Math.abs(math.besselY(0, 1) - 0.08825696421567695) < 1e-7)
+    assert(Math.abs(math.besselY(0, 1) - 0.08825696421567696) < 1e-7)
   })
 
   it('should compute Y_1(1) accurately', function () {

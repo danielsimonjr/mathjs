@@ -29,7 +29,7 @@ describe('anova', function () {
     const groups = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     const result = math.anova(groups)
     assert.strictEqual(result.dfBetween, 2) // k - 1 = 3 - 1
-    assert.strictEqual(result.dfWithin, 6)  // N - k = 9 - 3
+    assert.strictEqual(result.dfWithin, 6) // N - k = 9 - 3
   })
 
   it('should have pValue in [0, 1]', function () {

@@ -54,7 +54,6 @@ describe('matrixPower', function () {
   it('should compute A^-1', function () {
     const A = [[4, 7], [2, 6]]
     const result = matrixPower(A, -1)
-    const Rinv = Array.isArray(result) ? result : result.toArray()
     // Verify A * A^-1 = I
     const prod = math.multiply(A, result)
     const P = Array.isArray(prod) ? prod : prod.toArray()

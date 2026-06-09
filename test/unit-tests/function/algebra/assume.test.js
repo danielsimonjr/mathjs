@@ -1,8 +1,7 @@
 import assert from 'assert'
 import { create } from '../../../../src/core/create.js'
 import * as all from '../../../../src/factoriesAny.js'
-import { createAssume } from '../../../../src/function/algebra/assume.js'
-import { getAssumption, clearAssumptions, assumptionRegistry } from '../../../../src/function/algebra/assume.js'
+import { createAssume, getAssumption, clearAssumptions } from '../../../../src/function/algebra/assume.js'
 
 const math = create({ ...all, createAssume })
 

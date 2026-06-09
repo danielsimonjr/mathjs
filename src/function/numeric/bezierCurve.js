@@ -49,7 +49,7 @@ export const createBezierCurve = /* #__PURE__ */ factory(
       }
 
       // Work on a mutable copy
-      let pts = points.map(p => p.slice())
+      const pts = points.map(p => p.slice())
 
       const n = pts.length
       for (let r = 1; r < n; r++) {

@@ -63,7 +63,6 @@ export const createInvFourier = /* #__PURE__ */ factory(name, dependencies, ({ t
    */
   function _invFourierFromObject (spectrum) {
     const { amplitudes, phases } = spectrum
-    const n = amplitudes.length
     // Rebuild complex scaled coefficients: c_k = A_k * e^(i*phi_k)
     const complexSpectrum = amplitudes.map((A, k) => {
       return complex(A * Math.cos(phases[k]), A * Math.sin(phases[k]))

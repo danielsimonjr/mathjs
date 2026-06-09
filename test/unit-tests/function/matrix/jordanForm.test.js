@@ -20,8 +20,8 @@ describe('jordanForm', function () {
     const JArr = Array.isArray(J) ? J : J.toArray()
     assert.ok(approxEqual(JArr[0][0], 2), `J[0][0] should be 2, got ${JArr[0][0]}`)
     assert.ok(approxEqual(JArr[1][1], 3), `J[1][1] should be 3, got ${JArr[1][1]}`)
-    assert.ok(approxEqual(JArr[0][1], 0), `J[0][1] should be 0`)
-    assert.ok(approxEqual(JArr[1][0], 0), `J[1][0] should be 0`)
+    assert.ok(approxEqual(JArr[0][1], 0), 'J[0][1] should be 0')
+    assert.ok(approxEqual(JArr[1][0], 0), 'J[1][0] should be 0')
   })
 
   it('should produce a Jordan block with 1 on superdiagonal for repeated eigenvalue', function () {

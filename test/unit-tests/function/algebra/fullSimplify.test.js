@@ -23,7 +23,6 @@ describe('fullSimplify', function () {
 
   it('should combine like terms', function () {
     const result = math.fullSimplify('2*x + 3*x')
-    const str = result.toString().replace(/ /g, '')
     // Should evaluate to 5*x at x=2
     const val = math.evaluate(result, { x: 2 })
     assert(Math.abs(val - 10) < 1e-8, `Expected 5*x, got '${result}' = ${val}`)
@@ -58,10 +57,10 @@ describe('fullSimplify', function () {
       const simplified = math.fullSimplify(expr)
       const scope = { x: 1.5 }
       const original = math.evaluate(expr, scope)
-      const simplified_val = math.evaluate(simplified, scope)
+      const simplifiedVal = math.evaluate(simplified, scope)
       assert(
-        Math.abs(original - simplified_val) < 1e-6,
-        `Mismatch for "${expr}": original=${original}, simplified="${simplified}" => ${simplified_val}`
+        Math.abs(original - simplifiedVal) < 1e-6,
+        `Mismatch for "${expr}": original=${original}, simplified="${simplified}" => ${simplifiedVal}`
       )
     }
   })
@@ -72,12 +71,12 @@ describe('fullSimplify', function () {
     // Verify numerical equivalence at a test point (not x=-1 which is the pole)
     const scope = { x: 3 }
     const original = math.evaluate('(x^2 - 1) / (x + 1)', scope)
-    const simplified_val = math.evaluate(result, scope)
+    const simplifiedVal = math.evaluate(result, scope)
     assert(
-      Math.abs(original - simplified_val) < 1e-6,
-      `Expected numerical equivalence, got original=${original}, simplified="${result}" => ${simplified_val}`
+      Math.abs(original - simplifiedVal) < 1e-6,
+      `Expected numerical equivalence, got original=${original}, simplified="${result}" => ${simplifiedVal}`
     )
     // original = (9-1)/(3+1) = 8/4 = 2
-    assert(Math.abs(simplified_val - 2) < 1e-6, `Expected 2, got ${simplified_val}`)
+    assert(Math.abs(simplifiedVal - 2) < 1e-6, `Expected 2, got ${simplifiedVal}`)
   })
 })

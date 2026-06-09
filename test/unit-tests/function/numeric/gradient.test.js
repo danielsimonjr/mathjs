@@ -45,13 +45,13 @@ describe('gradient', function () {
   it('should compute gradient of x*y at [2, 3]', function () {
     const f = ([x, y]) => x * y
     const g = gradient(f, [2, 3])
-    assert(Math.abs(g[0] - 3) < 1e-5)  // df/dx = y = 3
-    assert(Math.abs(g[1] - 2) < 1e-5)  // df/dy = x = 2
+    assert(Math.abs(g[0] - 3) < 1e-5) // df/dx = y = 3
+    assert(Math.abs(g[1] - 2) < 1e-5) // df/dy = x = 2
   })
 
   it('should handle 1D functions', function () {
     const f = ([x]) => x * x * x
     const g = gradient(f, [2])
-    assert(Math.abs(g[0] - 12) < 1e-4)  // d/dx x^3 = 3x^2 = 12 at x=2
+    assert(Math.abs(g[0] - 12) < 1e-4) // d/dx x^3 = 3x^2 = 12 at x=2
   })
 })

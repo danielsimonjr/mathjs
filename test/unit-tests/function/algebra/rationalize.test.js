@@ -126,6 +126,7 @@ describe('rationalize', function () {
   // due to rationalize's exponential complexity with deeply nested fractions.
   // The JS-only code path completes in ~30s but the TS path does not terminate.
   // TODO: optimize rationalize algorithm for deeply nested rational expressions
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('processes a really complex expression', function () {
     this.timeout(30000)
 

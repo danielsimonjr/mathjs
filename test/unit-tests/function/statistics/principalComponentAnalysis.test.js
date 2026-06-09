@@ -17,10 +17,10 @@ describe('principalComponentAnalysis', function () {
   it('should return correct dimensions', function () {
     const data = [[1, 2], [3, 4], [5, 6]]
     const result = math.principalComponentAnalysis(data)
-    assert.strictEqual(result.components.length, 2)        // p components
-    assert.strictEqual(result.components[0].length, 2)    // p-dimensional
+    assert.strictEqual(result.components.length, 2) // p components
+    assert.strictEqual(result.components[0].length, 2) // p-dimensional
     assert.strictEqual(result.eigenvalues.length, 2)
-    assert.strictEqual(result.scores.length, 3)            // n rows
+    assert.strictEqual(result.scores.length, 3) // n rows
     assert.strictEqual(result.scores[0].length, 2)
     assert.strictEqual(result.explainedVariance.length, 2)
   })

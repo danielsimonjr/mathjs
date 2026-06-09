@@ -92,7 +92,7 @@ export const createSummation = /* #__PURE__ */ factory(name, dependencies, ({
         // Check if base doesn't contain the variable
         if (!base.includes(v)) {
           try {
-            let r = Number(evaluate(base, {}))
+            const r = Number(evaluate(base, {}))
             if (isFinite(r) && Math.abs(r - 1) > 1e-10) {
               // geometric: (1 - r^(n+1)) / (1 - r)
               return (1 - Math.pow(r, b + 1)) / (1 - r)

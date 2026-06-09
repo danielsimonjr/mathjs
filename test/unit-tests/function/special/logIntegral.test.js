@@ -23,7 +23,7 @@ describe('logIntegral', function () {
   it('should compute logIntegral(2) accurately (~1.0452)', function () {
     // li(2) ~ 1.0451637801174928
     const result = math.logIntegral(2)
-    assert(Math.abs(result - 1.0451637801174928) < 1e-8,
+    assert(Math.abs(result - 1.045163780117493) < 1e-8,
       `logIntegral(2) = ${result}`)
   })
 

@@ -19,12 +19,12 @@ describe('beta', function () {
   })
 
   it('should satisfy beta(a, b) = beta(b, a)', function () {
-    const a = 2.3, b = 4.7
+    const a = 2.3; const b = 4.7
     assert(Math.abs(math.beta(a, b) - math.beta(b, a)) < 1e-14)
   })
 
   it('should satisfy beta(a, b) = gamma(a)*gamma(b)/gamma(a+b)', function () {
-    const a = 3, b = 4
+    const a = 3; const b = 4
     const expected = math.gamma(a) * math.gamma(b) / math.gamma(a + b)
     assert(Math.abs(math.beta(a, b) - expected) < 1e-14)
   })

@@ -119,12 +119,6 @@ export const createVoronoiDiagram = /* #__PURE__ */ factory(name, dependencies, 
       [midX + 20 * deltaMax, midY - deltaMax]
     )
 
-    const getCirc = function (tv) {
-      return inCircumcircle
-        ? { v: tv }
-        : null
-    }
-
     // triangle list: each entry {v: [i,j,k]}
     let tris = [{ v: [si, sj, sk] }]
 

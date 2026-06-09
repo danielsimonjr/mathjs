@@ -36,9 +36,9 @@ describe('fourier', function () {
     const result = fourier(signal, { sampleRate: fs })
     assert.strictEqual(result.frequencies.length, 4)
     assert(approxEqual(result.frequencies[0], 0))
-    assert(approxEqual(result.frequencies[1], 2))   // 1 * 8/4
-    assert(approxEqual(result.frequencies[2], 4))   // 2 * 8/4
-    assert(approxEqual(result.frequencies[3], 6))   // 3 * 8/4
+    assert(approxEqual(result.frequencies[1], 2)) // 1 * 8/4
+    assert(approxEqual(result.frequencies[2], 4)) // 2 * 8/4
+    assert(approxEqual(result.frequencies[3], 6)) // 3 * 8/4
   })
 
   it('should return complex array when output option is "complex"', function () {

@@ -4,7 +4,7 @@ export const carmichaelLambdaDocs = {
   syntax: [
     'carmichaelLambda(n)'
   ],
-  description: "Compute the Carmichael function lambda(n): the smallest positive m such that a^m is congruent to 1 mod n for all a coprime to n.",
+  description: 'Compute the Carmichael function lambda(n): the smallest positive m such that a^m is congruent to 1 mod n for all a coprime to n.',
   examples: [
     'carmichaelLambda(1)',
     'carmichaelLambda(8)',

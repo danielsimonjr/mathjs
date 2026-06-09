@@ -45,37 +45,6 @@ export const createHessenbergForm = /* #__PURE__ */ factory(
       }
     })
 
-    function _matMul (A, B) {
-      const m = A.length
-      const n = B[0].length
-      const p = B.length
-      const C = []
-      for (let i = 0; i < m; i++) {
-        C.push(new Array(n).fill(0))
-        for (let j = 0; j < n; j++) {
-          let s = 0
-          for (let k = 0; k < p; k++) {
-            s += A[i][k] * B[k][j]
-          }
-          C[i][j] = s
-        }
-      }
-      return C
-    }
-
-    function _transpose (A) {
-      const m = A.length
-      const n = A[0].length
-      const T = []
-      for (let j = 0; j < n; j++) {
-        T.push(new Array(m).fill(0))
-        for (let i = 0; i < m; i++) {
-          T[j][i] = A[i][j]
-        }
-      }
-      return T
-    }
-
     function _hessenbergForm (A) {
       const n = A.length
       for (let i = 0; i < n; i++) {

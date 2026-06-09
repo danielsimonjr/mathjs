@@ -98,13 +98,12 @@ export const createHilbertTransform = /* #__PURE__ */ factory(name, dependencies
     const result = new Array(N)
     for (let n = 0; n < N; n++) {
       let sumRe = 0
-      let sumIm = 0
       for (let k = 0; k < N; k++) {
         const angle = (2 * Math.PI * k * n) / N
         const cosA = Math.cos(angle)
         const sinA = Math.sin(angle)
+        // Only the real part is needed for the Hilbert transform result
         sumRe += hRe[k] * cosA - hIm[k] * sinA
-        sumIm += hRe[k] * sinA + hIm[k] * cosA
       }
       // Return real part of IFFT(H) — this is the Hilbert transform
       result[n] = sumRe / N

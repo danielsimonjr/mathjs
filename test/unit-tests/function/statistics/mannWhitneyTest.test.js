@@ -54,8 +54,8 @@ describe('mannWhitneyTest', function () {
     const s2 = [6, 7, 8, 9, 10]
     const r1 = math.mannWhitneyTest(s1, s2)
     const r2 = math.mannWhitneyTest(s2, s1)
-    assert(Math.abs(r1.pValue - r2.pValue) < 1e-10, `pValues should be equal when swapped`)
-    assert(Math.abs(r1.U - r2.U) < 1e-10, `U should be equal (min) when swapped`)
+    assert(Math.abs(r1.pValue - r2.pValue) < 1e-10, 'pValues should be equal when swapped')
+    assert(Math.abs(r1.U - r2.U) < 1e-10, 'U should be equal (min) when swapped')
   })
 
   it('should handle ties correctly', function () {

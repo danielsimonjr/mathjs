@@ -43,7 +43,7 @@ export const createLaguerreL = /* #__PURE__ */ factory(
         if (n === 0) return 1
         if (n === 1) return 1 - x
 
-        let lPrev = 1     // L_0
+        let lPrev = 1 // L_0
         let lCurr = 1 - x // L_1
 
         for (let k = 1; k < n; k++) {

@@ -26,7 +26,6 @@ describe('combine', function () {
 
   it('should combine x^2 * x^3 to x^5', function () {
     const result = math.combine('x^2 * x^3')
-    const str = result.toString().replace(/ /g, '')
     // Should evaluate to x^5 at x=2
     const val = math.evaluate(result, { x: 2 })
     assert(Math.abs(val - 32) < 1e-8, `Expected x^5 (=32 at x=2), got '${result}' = ${val}`)

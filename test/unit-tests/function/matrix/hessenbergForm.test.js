@@ -87,7 +87,7 @@ describe('hessenbergForm', function () {
 
   it('should keep a 2x2 matrix already in Hessenberg form unchanged (no reflections needed)', function () {
     const A = [[3, 2], [1, 4]]
-    const { H, Q } = hessenbergForm(A)
+    const { H } = hessenbergForm(A)
     // 2x2 is always Hessenberg — no reduction needed
     checkUpperHessenberg(H)
   })

@@ -32,7 +32,7 @@ describe('besselI', function () {
   })
 
   it('should compute I_2(3) accurately', function () {
-    assert(Math.abs(math.besselI(2, 3) - 2.2452125369212265) < 1e-6)
+    assert(Math.abs(math.besselI(2, 3) - 2.2452125369212266) < 1e-6)
   })
 
   it('should satisfy I_{-n}(x) = I_n(x)', function () {

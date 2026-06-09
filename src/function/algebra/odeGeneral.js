@@ -158,12 +158,12 @@ export const createOdeGeneral = /* #__PURE__ */ factory(name, dependencies, ({
     // For now handle: c*y + f(x) forms
     // Detect by checking derivative with respect to y is a constant (no x or y in it)
     try {
-      const dExpr_dy_node = derivative(normalized, y)
-      const dExpr_dy = dExpr_dy_node.toString().replace(/\s+/g, '')
+      const dExprDyNode = derivative(normalized, y)
+      const dExprDy = dExprDyNode.toString().replace(/\s+/g, '')
 
       // If derivative w.r.t. y is constant (no y, no x) → linear with P = -dExpr/dy
-      if (!dExpr_dy.includes(y) && !dExpr_dy.includes(x)) {
-        const negP = dExpr_dy  // derivative of expr w.r.t. y = -P (so P = -negP)
+      if (!dExprDy.includes(y) && !dExprDy.includes(x)) {
+        const negP = dExprDy // derivative of expr w.r.t. y = -P (so P = -negP)
         let P
         try {
           P = -Number(negP)

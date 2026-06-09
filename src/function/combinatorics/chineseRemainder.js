@@ -69,19 +69,19 @@ export const createChineseRemainder = /* #__PURE__ */ factory(name, dependencies
    * Requires gcd(a, m) === 1.
    */
   function _modInverse (a, m) {
-    let [old_r, r] = [a, m]
-    let [old_s, s] = [1, 0]
+    let [oldR, r] = [a, m]
+    let [oldS, s] = [1, 0]
 
     while (r !== 0) {
-      const q = Math.floor(old_r / r)
-      ;[old_r, r] = [r, old_r - q * r]
-      ;[old_s, s] = [s, old_s - q * s]
+      const q = Math.floor(oldR / r)
+      ;[oldR, r] = [r, oldR - q * r]
+      ;[oldS, s] = [s, oldS - q * s]
     }
 
-    if (old_r !== 1) {
+    if (oldR !== 1) {
       throw new Error('Moduli are not pairwise coprime in function chineseRemainder')
     }
 
-    return ((old_s % m) + m) % m
+    return ((oldS % m) + m) % m
   }
 })

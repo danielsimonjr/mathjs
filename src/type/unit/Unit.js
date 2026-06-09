@@ -1957,7 +1957,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
       name: 'pica',
       base: BASE_UNITS.LENGTH,
       prefixes: PREFIXES.NONE,
-      value: 0.0042333333333333335, // 1/6 inch (12 points)
+      value: 0.004233333333333334, // 1/6 inch (12 points)
       offset: 0
     },
 

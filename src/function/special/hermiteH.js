@@ -43,7 +43,7 @@ export const createHermiteH = /* #__PURE__ */ factory(
         if (n === 0) return 1
         if (n === 1) return 2 * x
 
-        let hPrev = 1   // H_0
+        let hPrev = 1 // H_0
         let hCurr = 2 * x // H_1
 
         for (let k = 1; k < n; k++) {

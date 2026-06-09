@@ -42,7 +42,7 @@ describe('sinIntegral', function () {
   it('should compute sinIntegral(2) accurately', function () {
     // Si(2) ~ 1.6054129768921367
     const result = math.sinIntegral(2)
-    assert(Math.abs(result - 1.6054129768921367) < 1e-8,
+    assert(Math.abs(result - 1.6054129768921368) < 1e-8,
       `sinIntegral(2) = ${result}`)
   })
 
@@ -54,7 +54,7 @@ describe('sinIntegral', function () {
   it('should compute sinIntegral(5) accurately', function () {
     // Si(5) ~ 1.5499312449585524
     const result = math.sinIntegral(5)
-    assert(Math.abs(result - 1.5499312449585524) < 1e-7,
+    assert(Math.abs(result - 1.5499312449585525) < 1e-7,
       `sinIntegral(5) = ${result}`)
   })
 

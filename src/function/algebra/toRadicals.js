@@ -105,7 +105,6 @@ export const createToRadicals = /* #__PURE__ */ factory(name, dependencies, ({
     if (q === 1) {
       // Integer power, no radical needed
       if (p === 1) return base
-      const FunctionNode = base.constructor // get a node class reference via prototype trick
       // We'll just reconstruct as string and re-parse
       const baseStr = base.toString()
       const result = p === 1 ? baseStr : '(' + baseStr + ') ^ ' + p

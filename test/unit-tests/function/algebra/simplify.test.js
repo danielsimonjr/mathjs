@@ -606,6 +606,7 @@ describe('simplify', function () {
 
     // Node operand support is only in the TS codebase (addScalar.ts supports Node args)
     // This test is in simplify.test.ts instead
+    // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('should compute and simplify derivatives (3)', function () {
       const res = math.evaluate('simplify(5+derivative("5/(3x)", "x"))')
       assert.ok(res && res.isNode)

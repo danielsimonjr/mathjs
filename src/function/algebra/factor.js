@@ -218,7 +218,6 @@ export const createFactor = /* #__PURE__ */ factory(name, dependencies, ({
     if (factors.length === 0) return '1'
 
     const parts = []
-    const multiplicity = new Map()
 
     // Count multiplicities of linear factors
     const linears = []
@@ -324,8 +323,8 @@ export const createFactor = /* #__PURE__ */ factory(name, dependencies, ({
   }
 
   return typed(name, {
-    'string': function (expr) { return factorExpr(expr, null) },
-    'Node': function (expr) { return factorExpr(expr.toString(), null) },
+    string: function (expr) { return factorExpr(expr, null) },
+    Node: function (expr) { return factorExpr(expr.toString(), null) },
     'string, string': function (expr, variable) { return factorExpr(expr, variable) },
     'Node, string': function (expr, variable) { return factorExpr(expr.toString(), variable) }
   })

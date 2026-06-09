@@ -23,7 +23,7 @@ describe('loess', function () {
 
   it('should fit a linear function well', function () {
     const x = [1, 2, 3, 4, 5]
-    const y = [2, 4, 6, 8, 10]  // y = 2x
+    const y = [2, 4, 6, 8, 10] // y = 2x
     const result = loess(x, y, 1.0)
     for (let i = 0; i < x.length; i++) {
       assert(Math.abs(result[i] - y[i]) < 0.5)

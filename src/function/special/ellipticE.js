@@ -50,8 +50,8 @@ export const createEllipticE = /* #__PURE__ */ factory(
         // K(m) = pi / (2 * a_final).
         const k = Math.sqrt(m)
         let a = 1
-        let b = Math.sqrt(1 - m)   // = sqrt(1 - k^2) = k'
-        let power = 1              // 2^n, starts at 2^0 = 1
+        let b = Math.sqrt(1 - m) // = sqrt(1 - k^2) = k'
+        let power = 1 // 2^n, starts at 2^0 = 1
         let corrSum = power * k * k // first term: 2^0 * c_0^2 = k^2 = m
 
         const MAX_ITER = 100
@@ -61,7 +61,7 @@ export const createEllipticE = /* #__PURE__ */ factory(
           const aNew = (a + b) / 2
           const bNew = Math.sqrt(a * b)
           const c = (a - b) / 2
-          power *= 2                // 2^(n+1)
+          power *= 2 // 2^(n+1)
           corrSum += power * c * c
           a = aNew
           b = bNew

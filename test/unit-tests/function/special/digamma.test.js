@@ -16,7 +16,7 @@ describe('digamma', function () {
   it('should satisfy digamma(n+1) = digamma(n) + 1/n', function () {
     for (let n = 1; n <= 5; n++) {
       const diff = math.digamma(n + 1) - math.digamma(n)
-      assert(Math.abs(diff - 1 / n) < 1e-12, `digamma(${n+1}) - digamma(${n}) should be 1/${n}`)
+      assert(Math.abs(diff - 1 / n) < 1e-12, `digamma(${n + 1}) - digamma(${n}) should be 1/${n}`)
     }
   })
 

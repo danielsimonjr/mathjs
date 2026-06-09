@@ -85,7 +85,7 @@ export const createGammaDist = /* #__PURE__ */ factory(
             return Math.exp(-x + a * Math.log(x) - logGamma(a)) * sum
           } else {
             // Continued fraction (Lentz's method)
-            let fpmin = 1e-300
+            const fpmin = 1e-300
             let b = x + 1 - a
             let c = 1 / fpmin
             let d = 1 / b

@@ -100,7 +100,6 @@ export const createVariables = /* #__PURE__ */ factory(name, dependencies, ({
       walkNode(node.condition, found)
       walkNode(node.trueExpr, found)
       walkNode(node.falseExpr, found)
-      return
     }
     // ConstantNode and others: no variables
   }

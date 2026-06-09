@@ -2,8 +2,7 @@ import assert from 'assert'
 import { create } from '../../../../src/core/create.js'
 import * as all from '../../../../src/factoriesAny.js'
 import { createReduce } from '../../../../src/function/algebra/reduce.js'
-import { createAssume } from '../../../../src/function/algebra/assume.js'
-import { clearAssumptions } from '../../../../src/function/algebra/assume.js'
+import { createAssume, clearAssumptions } from '../../../../src/function/algebra/assume.js'
 
 const math = create({ ...all, createReduce, createAssume })
 

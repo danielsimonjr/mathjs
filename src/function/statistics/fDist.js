@@ -85,10 +85,10 @@ export const createFDist = /* #__PURE__ */ factory(
 
           const lb = logGamma(a) + logGamma(b) - logGamma(a + b)
           const lbx = Math.log(x) * a + Math.log(1 - x) * b - lb - Math.log(a)
-          let fpmin = 1e-300
-          let qap = a + 1
-          let qam = a - 1
-          let qab = a + b
+          const fpmin = 1e-300
+          const qap = a + 1
+          const qam = a - 1
+          const qab = a + b
           let c = 1
           let d = 1 - qab * x / qap
           if (Math.abs(d) < fpmin) d = fpmin

@@ -22,7 +22,7 @@ describe('erfi', function () {
   it('should compute erfi(1) accurately', function () {
     // erfi(1) ~ 1.6504257587975429
     const result = math.erfi(1)
-    assert(Math.abs(result - 1.6504257587975429) < 1e-8)
+    assert(Math.abs(result - 1.6504257587975428) < 1e-8)
   })
 
   it('should compute erfi(0.5) accurately', function () {

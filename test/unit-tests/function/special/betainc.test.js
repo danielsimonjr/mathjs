@@ -19,13 +19,13 @@ describe('betainc', function () {
   })
 
   it('should satisfy betainc(x, a, b) + betainc(1-x, b, a) = 1', function () {
-    const x = 0.3, a = 2.5, b = 3.5
+    const x = 0.3; const a = 2.5; const b = 3.5
     const sum = math.betainc(x, a, b) + math.betainc(1 - x, b, a)
     assert(Math.abs(sum - 1) < 1e-14)
   })
 
   it('should be monotonically increasing in x', function () {
-    const a = 2, b = 3
+    const a = 2; const b = 3
     assert(math.betainc(0.3, a, b) < math.betainc(0.5, a, b))
     assert(math.betainc(0.5, a, b) < math.betainc(0.8, a, b))
   })

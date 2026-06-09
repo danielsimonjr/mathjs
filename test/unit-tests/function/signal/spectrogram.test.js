@@ -1,4 +1,3 @@
-import { approxDeepEqual } from '../../../../tools/approx.js'
 import assert from 'assert'
 import * as all from '../../../../src/factoriesAny.js'
 import { create } from '../../../../src/core/create.js'

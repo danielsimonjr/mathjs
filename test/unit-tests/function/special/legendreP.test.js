@@ -57,7 +57,7 @@ describe('legendreP', function () {
   it('should handle high degree polynomials', function () {
     // P_n(1) = 1, P_n(-1) = (-1)^n for any n
     assert(Math.abs(math.legendreP(20, 1) - 1) < 1e-12)
-    assert(Math.abs(math.legendreP(20, -1) - 1) < 1e-12)  // even degree
+    assert(Math.abs(math.legendreP(20, -1) - 1) < 1e-12) // even degree
   })
 
   it('should throw TypeError for non-integer n', function () {

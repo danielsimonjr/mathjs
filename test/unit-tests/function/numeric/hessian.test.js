@@ -18,10 +18,10 @@ describe('hessian', function () {
   it('should compute Hessian of x*y (mixed partials)', function () {
     const f = ([x, y]) => x * y
     const H = hessian(f, [1, 1])
-    assert(Math.abs(H[0][0]) < 1e-3)       // d²/dx² = 0
-    assert(Math.abs(H[0][1] - 1) < 1e-3)   // d²/dxdy = 1
-    assert(Math.abs(H[1][0] - 1) < 1e-3)   // d²/dydx = 1
-    assert(Math.abs(H[1][1]) < 1e-3)       // d²/dy² = 0
+    assert(Math.abs(H[0][0]) < 1e-3) // d²/dx² = 0
+    assert(Math.abs(H[0][1] - 1) < 1e-3) // d²/dxdy = 1
+    assert(Math.abs(H[1][0] - 1) < 1e-3) // d²/dydx = 1
+    assert(Math.abs(H[1][1]) < 1e-3) // d²/dy² = 0
   })
 
   it('should produce a symmetric matrix', function () {
@@ -51,9 +51,9 @@ describe('hessian', function () {
   })
 
   it('should handle 1D functions', function () {
-    const f = ([x]) => x * x * x * x  // d²/dx² = 12x^2
+    const f = ([x]) => x * x * x * x // d²/dx² = 12x^2
     const H = hessian(f, [2])
     assert.strictEqual(H.length, 1)
-    assert(Math.abs(H[0][0] - 48) < 1e-1)  // 12 * 4 = 48
+    assert(Math.abs(H[0][0] - 48) < 1e-1) // 12 * 4 = 48
   })
 })

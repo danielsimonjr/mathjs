@@ -1189,7 +1189,10 @@ export interface MathJsInstance extends MathJsFactory {
   usolve(U: MathArray, b: MathCollection): MathArray
 
   /** Return the list of polynomial coefficients of expr in variable. */
-  coefficientList(expr: MathNode | string, variable: MathNode | string): MathType[]
+  coefficientList(
+    expr: MathNode | string,
+    variable: MathNode | string
+  ): MathType[]
   /** Expand a polynomial expression fully. */
   expand(expr: MathNode | string): MathNode
   /** Perform partial fraction decomposition of expr. */
@@ -2875,7 +2878,11 @@ export interface MathJsInstance extends MathJsFactory {
   unequal(x: MathType | string, y: MathType | string): boolean | MathCollection
 
   /** Compute the singular value decomposition of a matrix. */
-  svd(A: MathCollection): { U: MathCollection; S: MathCollection; V: MathCollection }
+  svd(A: MathCollection): {
+    U: MathCollection
+    S: MathCollection
+    V: MathCollection
+  }
   /** Compute the rank of a matrix. */
   matrixRank(A: MathCollection): number
   /** Compute the null space of a matrix. */
@@ -2907,11 +2914,18 @@ export interface MathJsInstance extends MathJsFactory {
   /** Build an adjacency matrix from an edge list. */
   adjacencyMatrix(edges: [number, number][], n: number): MathCollection
   /** Find shortest path between two nodes (Dijkstra). */
-  shortestPath(graph: MathCollection | number[][], source: number, target: number): { path: number[]; distance: number }
+  shortestPath(
+    graph: MathCollection | number[][],
+    source: number,
+    target: number
+  ): { path: number[]; distance: number }
   /** Find all connected components of an undirected graph. */
   connectedComponents(graph: MathCollection | number[][]): number[][]
   /** Compute the minimum spanning tree (Kruskal/Prim). */
-  minimumSpanningTree(graph: MathCollection | number[][]): { edges: [number, number][]; weight: number }
+  minimumSpanningTree(graph: MathCollection | number[][]): {
+    edges: [number, number][]
+    weight: number
+  }
   /** Topologically sort a directed acyclic graph. */
   topologicalSort(graph: MathCollection | number[][]): number[]
   /** Find strongly connected components (Tarjan/Kosaraju). */
@@ -3049,11 +3063,24 @@ export interface MathJsInstance extends MathJsFactory {
   /** Apply a named window function (hann, hamming, etc.) to a signal. */
   windowFunction(signal: MathCollection, name: string): MathCollection
   /** Apply a lowpass FIR filter to a signal. */
-  lowpassFilter(signal: MathCollection, cutoff: number, order?: number): MathCollection
+  lowpassFilter(
+    signal: MathCollection,
+    cutoff: number,
+    order?: number
+  ): MathCollection
   /** Apply a highpass FIR filter to a signal. */
-  highpassFilter(signal: MathCollection, cutoff: number, order?: number): MathCollection
+  highpassFilter(
+    signal: MathCollection,
+    cutoff: number,
+    order?: number
+  ): MathCollection
   /** Apply a bandpass FIR filter to a signal. */
-  bandpassFilter(signal: MathCollection, low: number, high: number, order?: number): MathCollection
+  bandpassFilter(
+    signal: MathCollection,
+    low: number,
+    high: number,
+    order?: number
+  ): MathCollection
   /** Compute the discrete Fourier transform of a signal. */
   fourier(signal: MathCollection): MathCollection
   /** Compute the inverse discrete Fourier transform. */
@@ -3123,19 +3150,34 @@ export interface MathJsInstance extends MathJsFactory {
    ************************************************************************/
 
   /** Numerically integrate f(x) over [a, b]. */
-  nintegrate(f: (x: number) => number, a: number, b: number, tol?: number): number
+  nintegrate(
+    f: (x: number) => number,
+    a: number,
+    b: number,
+    tol?: number
+  ): number
   /** Numerically differentiate f(x) at x. */
   ndiff(f: (x: number) => number, x: number, h?: number): number
   /** Find a root of f(x) near x0 using Newton-Raphson. */
   findRoot(f: (x: number) => number, x0: number, tol?: number): number
   /** Solve ODE y'=f(t,y) with initial condition y0. */
-  odesolve(f: (t: number, y: number[]) => number[], y0: number[], tspan: number[], opts?: object): { t: number[]; y: number[][] }
+  odesolve(
+    f: (t: number, y: number[]) => number[],
+    y0: number[],
+    tspan: number[],
+    opts?: object
+  ): { t: number[]; y: number[][] }
   /** Fit a cubic spline through data points. */
   cspline(x: number[], y: number[]): (t: number) => number
   /** Fit an exponential model y = a*exp(b*x) to data. */
   expfit(x: number[], y: number[]): { a: number; b: number }
   /** Fit a general model to data using nonlinear least squares. */
-  curvefit(f: (x: number, params: number[]) => number, x: number[], y: number[], p0: number[]): number[]
+  curvefit(
+    f: (x: number, params: number[]) => number,
+    x: number[],
+    y: number[],
+    p0: number[]
+  ): number[]
   /** Evaluate a Bezier curve at parameter t. */
   bezierCurve(points: number[][], t: number): number[]
   /** Compute a condition number of a matrix. */
@@ -3145,7 +3187,11 @@ export interface MathJsInstance extends MathJsFactory {
   /** Compute the Hessian of f at x. */
   hessian(f: (x: number[]) => number, x: number[]): number[][]
   /** Minimize f(x) starting from x0. */
-  minimize(f: (x: number[]) => number, x0: number[], opts?: object): { x: number[]; fx: number }
+  minimize(
+    f: (x: number[]) => number,
+    x0: number[],
+    opts?: object
+  ): { x: number[]; fx: number }
   /** Interpolate a value using Lagrange interpolation. */
   lagrangeInterp(xpts: number[], ypts: number[], x: number): number
   /** Interpolate using Newton's divided differences. */
@@ -3153,9 +3199,19 @@ export interface MathJsInstance extends MathJsFactory {
   /** Compute the padé approximant of a function. */
   padeApprox(coeffs: number[], m: number, n: number): (x: number) => number
   /** Find a zero of f(x) in [a, b] using bisection. */
-  bisection(f: (x: number) => number, a: number, b: number, tol?: number): number
+  bisection(
+    f: (x: number) => number,
+    a: number,
+    b: number,
+    tol?: number
+  ): number
   /** Find a zero of f(x) using the secant method. */
-  secantMethod(f: (x: number) => number, x0: number, x1: number, tol?: number): number
+  secantMethod(
+    f: (x: number) => number,
+    x0: number,
+    x1: number,
+    tol?: number
+  ): number
   /** Compute the residue of a complex function at a pole. */
   residue(f: (z: Complex) => Complex, z0: Complex): Complex
 
@@ -3553,9 +3609,16 @@ export interface MathJsInstance extends MathJsFactory {
   /** Compute a moving (rolling) average with given window size. */
   movingAverage(x: number[], window: number): number[]
   /** Compute a frequency histogram of data with given bins. */
-  histogram(x: number[], bins: number | number[]): { counts: number[]; edges: number[] }
+  histogram(
+    x: number[],
+    bins: number | number[]
+  ): { counts: number[]; edges: number[] }
   /** Perform a one-sample or two-sample Student's t-test. */
-  studentTTest(x: number[], muOrY: number | number[], alpha?: number): { tstat: number; pvalue: number; reject: boolean }
+  studentTTest(
+    x: number[],
+    muOrY: number | number[],
+    alpha?: number
+  ): { tstat: number; pvalue: number; reject: boolean }
   /** Construct a Normal (Gaussian) distribution object. */
   normalDist(mu: number, sigma: number): ContinuousDistribution
   /** Construct a Uniform distribution object. */

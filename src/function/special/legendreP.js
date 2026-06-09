@@ -44,8 +44,8 @@ export const createLegendreP = /* #__PURE__ */ factory(
         if (n === 0) return 1
         if (n === 1) return x
 
-        let pPrev = 1  // P_0
-        let pCurr = x  // P_1
+        let pPrev = 1 // P_0
+        let pCurr = x // P_1
 
         for (let k = 1; k < n; k++) {
           const pNext = ((2 * k + 1) * x * pCurr - k * pPrev) / (k + 1)

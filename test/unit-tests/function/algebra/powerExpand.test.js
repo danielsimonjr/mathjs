@@ -18,7 +18,6 @@ describe('powerExpand', function () {
 
   it('should expand (a^2)^3 to a^6', function () {
     const result = math.powerExpand('(a^2)^3')
-    const str = result.toString().replace(/ /g, '')
     // Should simplify (a^2)^3 = a^(2*3) = a^6
     const val = math.evaluate(result, { a: 2 })
     assert(Math.abs(val - 64) < 1e-8, `Expected a^6 (=64 at a=2), got '${result}' = ${val}`)

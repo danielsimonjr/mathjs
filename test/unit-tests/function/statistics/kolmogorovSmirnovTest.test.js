@@ -42,8 +42,8 @@ describe('kolmogorovSmirnovTest', function () {
       const s2 = [2, 4, 6, 8, 10]
       const r1 = math.kolmogorovSmirnovTest(s1, s2)
       const r2 = math.kolmogorovSmirnovTest(s2, s1)
-      assert(Math.abs(r1.D - r2.D) < 1e-10, `D should be symmetric`)
-      assert(Math.abs(r1.pValue - r2.pValue) < 1e-10, `pValue should be symmetric`)
+      assert(Math.abs(r1.D - r2.D) < 1e-10, 'D should be symmetric')
+      assert(Math.abs(r1.pValue - r2.pValue) < 1e-10, 'pValue should be symmetric')
     })
   })
 
