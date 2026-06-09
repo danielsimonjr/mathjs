@@ -17,6 +17,6 @@
     "codemirror": "6.0.2",
     "github-markdown-css": "5.8.1",
     "katex": "0.16.22",
-    "mathjs": "14.6.0"
+    "mathjs": "15.2.0"
   }
 }
