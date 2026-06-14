@@ -23,6 +23,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Added `npm run sync-version`** script and chained it into `prepublishOnly` so a future drift can never reach a published artifact.
 - **Added regression test** `test/unit-tests/version.test.js` asserting `math.version === require('package.json').version`.
 
+### Security — publish-prep npm audit cleanup (7 → 0 vulnerabilities)
+
+- **Added `esbuild: ^0.28.1` override** — transitive `esbuild` (via `tsup`/`vitest`) was 0.27.7, vulnerable to GHSA-g7r4-m6w7-qqqr (dev-server arbitrary file read on Windows) and GHSA-gv7w-rqvm-qjhr (Deno integrity / RCE). Both HIGH; both patched in 0.28.1. Verified compatible with the pinned `tsx` 4.21.0 (build + doc-comment tests stay green).
+- **Added `qs: ^6.15.2` override** — nested `qs` (via `wd` → `@cypress/request`) was 6.14.2, vulnerable to GHSA-q8mj-m7cp-5q26 (DoS in `qs.stringify`). Patched in 6.15.2.
+- **Added `diff: ^8.0.4` override** — `diff` (via `mocha`) was 7.0.0, vulnerable to GHSA-73rr-hh4g-fpgx (DoS in `parsePatch`/`applyPatch`). Patched in 8.0.x.
+- **Pinned `complex.js` dependency to `2.4.2`** (was `^2.2.5`). complex.js 2.4.3's ESM build regressed the signed-zero (`-0`) real part of `acosh`/`asech` at the branch cut, breaking the `acosh`/`asech` complex-number unit tests. 2.4.2 is the validated version (also shipped in 15.1.1).
+- **Lockfile security bumps** (via `npm audit fix`, no `--force`): `@babel/plugin-transform-modules-systemjs` → 7.29.7 (HIGH, GHSA range `7.12.0 – 7.29.0`), `ws` → 8.20.1 (GHSA-58qx-3vcg-4xpx, also clears dependent `engine.io` / `socket.io-adapter`), and the nested vulnerable `brace-expansion` 5.0.x (GHSA-jxxr-4gwj-5jf2).
+- **`AUTHORS` regenerated** by `tools/update-authors.js` (adds `dependabot[bot]`).
+- **`npm audit` final count: 0 vulnerabilities** (build + `test:all` + `lint` all green).
+
 ## [Unreleased] - 2026-04-30
 
 ### Security — npm audit cleanup (7 → 0 vulnerabilities)
