@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased] - 2026-07-13
+
+### Security — `demo/mathjs-calc` Dependabot remediation (96 open alerts)
+
+- **Root cause of the alert volume:** `demo/mathjs-calc/package-lock.json` had accumulated 2,403
+  package entries, of which 1,483 resolved to `../../node_modules/...` — i.e. the **root mathjs
+  repo's own devDependency tree** (karma, eslint, mocha, gulp-typescript, webpack, archiver,
+  rimraf, workerpool-bundled vitest, etc.), leaked into the demo's lockfile as a side effect of how
+  npm resolves the `mathjs: file:../../` local dependency. GitHub attributes every advisory in that
+  file to `demo/mathjs-calc/package-lock.json`, so the demo appeared to carry 96 open alerts (4
+  critical, 43 high, 38 medium, 11 low) when the large majority were never part of the demo app's
+  actual runtime or build dependency graph.
+- **Fix:** deleted `demo/mathjs-calc/node_modules` + `package-lock.json` and ran a clean
+  `npm install` scoped to the demo directory only, which regenerated a lean 762-entry lockfile with
+  no leaked `../../node_modules` entries (only the expected `mathjs` file: link itself). This alone
+  cleared the overwhelming majority of the 96 alerts (`shell-quote`, `vitest`, `form-data`, `axios`,
+  `handlebars`, `lodash`, `qs`, `js-yaml`, `serialize-javascript`, `@xmldom/xmldom`, `postcss`,
+  `@babel/core`, `rollup`, `follow-redirects`, `protocol-buffers-schema`, `tar`, and more).
+- **Remaining vulnerabilities** (all rooted in the `electron` / `electron-builder` chain — 10 high,
+  `npm audit` post-refresh) required bumping the **direct** devDependencies that actually pin the
+  vulnerable code, per this workspace's "fix the parent, not the leaf" rule:
+  - `electron`: `^33.0.0` → `^43.1.0` (directly vulnerable; ASAR integrity bypass, IPC spoofing, and
+    13 other Electron advisories — no fix exists below 38.8.x/39.8.x).
+  - `electron-builder`: `^25.0.0` → `^26.15.3` (pulls a patched `tar`/`@electron/rebuild` chain;
+    node-tar hardlink/symlink path-traversal advisories had no fix under electron-builder 25.x).
+  - Both are major-version bumps of protected direct deps, made only because no non-major fix
+    existed. `npm audit` (local) went from 10 high to **0 vulnerabilities**.
+- **Unrelated pre-existing bug fixed opportunistically:** `demo/mathjs-calc/src/hooks/useMathParser.ts`
+  and `useSignal.ts` did `import math from 'mathjs'` (default import), but current mathjs ships only
+  named ESM exports (no `export default` in `dist/index.js`) — this broke `npm run build` even before
+  any dependency change here. Root-caused and fixed by switching both to
+  `import * as math from 'mathjs'`, per Rules-For-Life (fix pre-existing issues encountered along
+  the way, never defer). Verified with a clean `npm run build` (`tsc && vite build`) — exits 0.
+- **Not a source change to root mathjs** — nothing outside `demo/mathjs-calc/` was modified; the
+  root `dist/` rebuild performed during verification is a gitignored artifact and was not committed.
+
 ## [Unreleased] - 2026-05-01
 
 ### Fixed — Astronomical / cosmological unit correctness
