@@ -281,6 +281,39 @@ describe('eigs', function () {
     approxDeepEqual(Ei, E)
   })
 
+  // Regression test for the Decimal.js lexicographic-comparison bug.
+  //
+  // Decimal.js's valueOf() returns a STRING, so JavaScript's >=/</<= operators compare
+  // BigNumbers lexicographically rather than numerically whenever BOTH operands are
+  // Decimals ("10" < "2" is true, because '1' < '2'). That silently corrupted getAijBig()
+  // (wrong Jacobi pivot chosen) and sorting() (eigenvalues returned out of order).
+  //
+  // The pre-existing 'diagonalizes matrix with bigNumber' test CANNOT catch this: it only
+  // checks SELF-CONSISTENCY (it recomputes diag(V^T H V) and compares it to the eigenvalues
+  // it just produced). Mis-sort the eigenvalues and their eigenvectors together and that
+  // identity still holds. This test compares against GROUND TRUTH instead — the number
+  // path, which is unaffected by the bug — so it fails on the broken code.
+  //
+  // Verified: with the pre-fix realSymmetric.js this asserts
+  //   [1.712356, -13.056501, -4.565716, 6.908379, -8.0676, 8.229082]   (mis-ordered)
+  // against the correct
+  //   [1.712353,  -4.565734, 6.908406, -8.067601, 8.22909, -13.056513]
+  it('returns BigNumber eigenvalues in the same order/value as the number path (no lexicographic compare)', function () {
+    const A = [[-4.78, -1.0, -2.59, -3.26, 4.24, 4.14],
+      [-1.0, -2.45, -0.92, -2.33, -4.68, 4.27],
+      [-2.59, -0.92, -2.45, 4.17, -3.33, 3.05],
+      [-3.26, -2.33, 4.17, 2.51, 1.67, 2.24],
+      [4.24, -4.68, -3.33, 1.67, 2.80, 2.73],
+      [4.14, 4.27, 3.05, 2.24, 2.73, -4.47]]
+
+    const numberValues = eigs(A).values.map(Number)
+    const bigValues = eigs(bignum(A)).values.map(v => v.toNumber())
+
+    assert.strictEqual(bigValues.length, numberValues.length)
+    // Element-wise: same ORDER and same VALUE. Order matters — that is what the bug broke.
+    bigValues.forEach((v, i) => approxEqual(v, numberValues[i]))
+  })
+
   it('actually calculates BigNumbers input with BigNumber precision', function () {
     const B = bignum([
       [0, 1],
