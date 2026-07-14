@@ -68,7 +68,12 @@ export function createRealSymmetric ({ config, addScalar, subtract, abs, atan, c
   // diagonalization implementation for bigNumber
   function diagBig (x, precision, computeVectors) {
     const N = x.length
-    const e0 = abs(bignumber(precision) / N)
+    // `bignumber(precision) / N` would send the Decimal through valueOf() -> string ->
+    // float64, which is the exact coercion these helpers exist to eliminate: the tolerance
+    // silently drops out of BigNumber precision. Use Decimal's native .div() (as the file
+    // already does for `bignumber(-1).acos().div(4)`) so e0 stays a BigNumber and the
+    // comparison below is a true numeric Decimal-vs-Decimal compare.
+    const e0 = abs(bignumber(precision).div(N))
     let psi
     let Sij
     if (computeVectors) {

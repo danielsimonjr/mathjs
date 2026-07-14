@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2026-07-14
 
+### Fixed — `eigs()` BigNumber: residual `valueOf()` coercion + a regression test that actually gates the bug
+
+- **`diagBig()` still leaked out of BigNumber precision.** `const e0 = abs(bignumber(precision) / N)`
+  applied JavaScript's `/` to a Decimal, which round-trips through `valueOf()` → **string** → float64.
+  That is the *exact* coercion the `bigGte`/`bigLt`/`bigLte` helpers exist to eliminate: the Jacobi
+  convergence tolerance silently dropped out of BigNumber precision. Now `bignumber(precision).div(N)`
+  (Decimal's native `.div()`, as the file already does for `bignumber(-1).acos().div(4)`), so `e0` stays
+  a BigNumber and the loop's comparison is a true Decimal-vs-Decimal numeric compare.
+- **Added a regression test that fails on the pre-fix code.** The BigNumber eigenvalue bug
+  (Decimal `valueOf()` returns a string, so `>=`/`<`/`<=` compare *lexicographically* — `"10" < "2"` —
+  corrupting the Jacobi pivot in `getAijBig()` and the ordering in `sorting()`) was **not covered by any
+  test**. The pre-existing `diagonalizes matrix with bigNumber` test cannot catch it: it only checks
+  **self-consistency** (recomputes `diag(VᵀHV)` and compares it to the eigenvalues it just produced) —
+  mis-sort the eigenvalues *and* their eigenvectors together and that identity still holds. The new test
+  compares against **ground truth** (the number path, which the bug does not affect). Verified in both
+  directions: it fails on the pre-fix `realSymmetric.js`
+  (`[1.712356, -13.056501, -4.565716, …]`, mis-ordered) and passes on the fixed one
+  (`[1.712353, -4.565734, …]`, matching the number path exactly).
+
+
 ### Added — Dependabot configuration + auto-merge (PR #161)
 
 - The repo had **no `.github/dependabot.yml` at all**, so dependency *version* updates were never
