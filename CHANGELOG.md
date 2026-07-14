@@ -7,7 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased] - 2026-07-13
+## [Unreleased] - 2026-07-14
+
+### Added — Dependabot configuration + auto-merge (PR #161)
+
+- The repo had **no `.github/dependabot.yml` at all**, so dependency *version* updates were never
+  proposed — only GitHub's automatic security alerts, which is how `demo/mathjs-calc`'s lockfile
+  drifted far enough to accumulate the 96 alerts remediated below. Config now covers three trees:
+  `/` (the library, grouped dev/prod, minor+patch), `/demo/mathjs-calc` (its own lockfile and
+  Electron/Vite tree — the source of all 96 alerts), and `/` github-actions.
+- **TypeScript majors are ignored.** `@typescript-eslint/*` 8.x declares
+  `peer typescript: >=4.8.4 <6.1.0`, so a TS 6/7 major kills `npm ci` with ERESOLVE *before anything
+  compiles*. When that lifts, TypeScript and typescript-eslint must be bumped together in one PR.
+- Added `.github/workflows/dependabot-auto-merge.yml` (patch/minor auto-merge; majors get a comment,
+  never an auto-merge).
+
+### Fixed — `master` branch protection was backwards (PR #161)
+
+- `master` enforced `required_signatures: true` but required **zero status checks**, so a completely
+  **red** PR could merge as long as it was signed — while a correct-but-unsigned one could not (PR
+  #159 sat un-mergeable for days with all seven checks green). Now requires all 7 `Node.js CI`
+  checks (`test (20.x|22.x|24.x)`, `lint`, `TypeScript Type Check`, `coverage`, `build-and-test`),
+  with signatures still enforced and reviews deliberately left unset — a review requirement blocks
+  every Dependabot PR, since `GITHUB_TOKEN` cannot approve its own.
+- Enabled the repo's `allow_auto_merge` flag, which defaults to **false** and is invisible in the
+  workflow file. Without it `gh pr merge --auto` fails with
+  `GraphQL: Auto merge is not allowed for this repository`. Auto-merge is a three-part dependency —
+  workflow + repo flag + branch protection — and two of the three were wrong here.
 
 ### Security — `demo/mathjs-calc` Dependabot remediation (96 open alerts)
 
