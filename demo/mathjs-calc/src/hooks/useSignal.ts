@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useRef } from 'react'
-import math from 'mathjs'
+import * as math from 'mathjs'
 
 export type WaveformType = 'sine' | 'square' | 'triangle' | 'sawtooth'
 

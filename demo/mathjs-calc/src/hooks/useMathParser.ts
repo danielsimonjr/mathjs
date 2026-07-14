@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import math from 'mathjs'
+import * as math from 'mathjs'
 
 interface EvalResult {
   expression: string
