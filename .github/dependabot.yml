@@ -1,0 +1,66 @@
+version: 2
+
+updates:
+  # ---------------------------------------------------------------------------
+  # Root library (mathjs itself)
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    groups:
+      # One PR per ecosystem slice instead of one per package. An ungrouped npm tree
+      # this size generates dozens of PRs a week, which is how a backlog forms and
+      # then gets bulk-merged unread.
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+      prod-dependencies:
+        dependency-type: production
+        update-types: [minor, patch]
+    ignore:
+      # TypeScript majors are UN-ADOPTABLE while typescript-eslint is in the tree.
+      # @typescript-eslint/* 8.x declares `peer typescript: >=4.8.4 <6.1.0`, so a TS 6/7
+      # major kills `npm ci` with ERESOLVE *before anything compiles*. This is a
+      # fleet-wide constraint, not a mathjs quirk. Re-check with `npm view
+      # @typescript-eslint/eslint-plugin peerDependencies` before lifting it — and when
+      # it lifts, bump TypeScript and typescript-eslint together in ONE PR.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+
+  # ---------------------------------------------------------------------------
+  # Demo app — has its OWN lockfile and its own dependency tree (Electron/Vite).
+  # This is the directory that accumulated all 96 alerts; it must be watched
+  # separately or its lockfile drifts silently.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: npm
+    directory: "/demo/mathjs-calc"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - demo
+    groups:
+      demo-dependencies:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  # ---------------------------------------------------------------------------
+  # GitHub Actions
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - ci
+    groups:
+      actions:
+        patterns: ["*"]

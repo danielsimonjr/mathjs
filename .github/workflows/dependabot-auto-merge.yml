@@ -1,0 +1,58 @@
+name: Dependabot Auto-Merge
+
+# Auto-merge is a THREE-part dependency; all three must hold or bot PRs pile up silently:
+#   1. This workflow.
+#   2. The repo flag `allow_auto_merge` — INVISIBLE in the workflow file, defaults to FALSE.
+#      Without it `gh pr merge --auto` fails with:
+#        GraphQL: Auto merge is not allowed for this repository (enablePullRequestAutoMerge)
+#   3. Branch protection that requires CI checks (and does NOT require reviews — a review
+#      requirement blocks every bot PR, and GITHUB_TOKEN cannot approve its own).
+# (2) and (3) were both wrong on this repo until 2026-07-14: master required signed commits
+# but ZERO status checks, so a red PR could merge if signed, while auto-merge was off entirely.
+#
+# Note on signatures: master has `required_signatures: true`. Dependabot's own commits are
+# signed by GitHub, and the squash commit GitHub creates on merge is signed too, so this
+# workflow composes with that requirement.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Auto-merge Dependabot PRs
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # --auto queues the merge; branch protection still gates it on the required checks.
+      # Majors are never auto-merged (see below) — this repo's TypeScript major is a known
+      # ERESOLVE landmine, and majors deserve a human read regardless.
+      - name: Auto-merge patch and minor updates
+        if: |
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on major updates
+        if: steps.metadata.outputs.update-type == 'version-update:semver-major'
+        run: gh pr comment "$PR_URL" --body "⚠️ Major version update — review before merging (not auto-merged)."
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
