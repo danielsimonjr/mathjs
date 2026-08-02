@@ -1,0 +1,21 @@
+# Normalize line endings.
+#
+# This repo lints with eslint + prettier, which require LF. Without this file a
+# Windows checkout with core.autocrlf=true materializes the tree as CRLF, and
+# `npm run lint` (--max-warnings 0) then fails with a "Delete `␍`" error on every
+# line of every touched file. Because `lint` runs inside `prepublishOnly`, that
+# failure aborts `npm publish` on Windows even though the committed blobs are
+# already LF.
+#
+# Text files are stored LF in the index and checked out LF on every platform.
+* text=auto eol=lf
+
+# Binary assets: never convert.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.wasm binary
