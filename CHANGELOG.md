@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.2.1] - 2026-08-02
+
+### Fixed — package identity: the manifest now matches what is actually published
+
+- **`name` was `mathjs`, but this package publishes as `@danielsimonjr/mathjs`.** The scoped
+  name had **never been committed** (`git log -S` on the field returns nothing), so
+  `15.2.0` was published from an uncommitted local edit and the release was not
+  reproducible from a clean checkout — `npm publish` on `master` would have attempted to
+  publish upstream's `mathjs`, which this account does not own (`E403`). The manifest now
+  declares the scoped name.
+- **`repository` and `bugs` pointed at `josdejong/mathjs`.** The npm page for this fork
+  linked to upstream's repository, and its "report an issue" link sent bug reports for
+  *fork-specific* code to the upstream maintainers' tracker. Both now point at
+  `danielsimonjr/mathjs`.
+- **Completed the rename at both self-reference anchors**, which the name change would
+  otherwise have broken: `tsconfig.json` `paths` (compile-time) and the
+  `import` + `declare module` in `test/typescript-tests/testTypes.ts` (the latter resolves
+  at *runtime* through Node's package self-reference via the `exports` field, so a
+  partial rename would have failed `test:types` only at execution).
+
+Source unchanged — metadata only. Full gate re-verified: lint clean (`--max-warnings 0`),
+unit **9286 passing / 2 pending**, generated-code **36 passing**, node integration
+**500 passing**, `test:types` clean.
+
 ## [Unreleased] - 2026-07-14
 
 ### Fixed — `eigs()` BigNumber: residual `valueOf()` coercion + a regression test that actually gates the bug

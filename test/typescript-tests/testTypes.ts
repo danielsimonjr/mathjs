@@ -54,7 +54,7 @@ import {
   SymbolNode,
   Unit,
   UnitPrefix
-} from 'mathjs'
+} from '@danielsimonjr/mathjs'
 
 // This file serves a dual purpose:
 // 1) examples of how to use math.js in TypeScript
@@ -2523,7 +2523,7 @@ JSON serialization/deserialization
 Extend functionality with import
  */
 
-declare module 'mathjs' {
+declare module '@danielsimonjr/mathjs' {
   interface MathJsInstance {
     testFun(): number
     value: number

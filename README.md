@@ -39,9 +39,12 @@ For TypeScript and WASM-accelerated math, see [MathTS](https://github.com/daniel
 
 Math.js can be used in both node.js and in the browser.
 
-Install math.js using [npm](https://www.npmjs.com/package/mathjs):
+Install this fork using [npm](https://www.npmjs.com/package/@danielsimonjr/mathjs):
 
-    npm install mathjs
+    npm install @danielsimonjr/mathjs
+
+This is a fork. `npm install mathjs` installs [upstream's package](https://www.npmjs.com/package/mathjs)
+instead, which does not carry this fork's changes.
 
 Or download mathjs via one of the CDN's listed on the downloads page:
 

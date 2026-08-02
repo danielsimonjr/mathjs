@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "target": "ES2020",
     "paths": {
-      "mathjs": ["./types/index.d.ts"]
+      "@danielsimonjr/mathjs": ["./types/index.d.ts"]
     },
     "moduleResolution": "nodenext",
     "typeRoots": ["./node_modules/@types"],
