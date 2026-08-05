@@ -95,12 +95,12 @@ export function useStatistics(distribution: Distribution, size: number, binCount
     const start = performance.now()
     const sorted = [...data].sort((a, b) => a - b)
     const count = data.length
-    const mean = math.mean(data) as number
-    const median = math.median(data) as number
+    const mean = math.mean(data) as unknown as number
+    const median = math.median(data) as unknown as number
     const std = math.std(data) as unknown as number
     const variance = math.variance(data) as unknown as number
-    const min = math.min(data) as number
-    const max = math.max(data) as number
+    const min = math.min(data) as unknown as number
+    const max = math.max(data) as unknown as number
     const q1 = sorted[Math.floor(count * 0.25)]
     const q3 = sorted[Math.floor(count * 0.75)]
     const executionTime = performance.now() - start

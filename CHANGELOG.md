@@ -423,6 +423,35 @@ unit **9286 passing / 2 pending**, generated-code **36 passing**, node integrati
 
 ## [Unreleased]
 
+### Security — undici in `demo/mathjs-calc` (2026-08-04)
+
+Clears both open alerts (1 high + 1 medium). Lock-only via `npm update`; no
+manifest changed, and the diff is exactly two packages:
+
+- `undici` 7.28.0 -> 7.29.0
+- `node-gyp`'s nested `undici` 6.27.0 -> 6.28.0
+
+Both are build tooling for the demo app; neither ships in the published library.
+
+### Fixed — `demo/mathjs-calc` no longer type-checks clean (pre-existing)
+
+Confirmed unrelated to the dependency bump by reproducing it on the untouched
+lockfile. `tsc` failed with four `TS2352` errors in
+`src/hooks/useStatistics.ts`: `math.mean/median/min/max(data) as number`. Those
+functions are overloaded to return `number[]`, so a direct cast to `number` is
+rejected. `std` and `variance` two lines away already used
+`as unknown as number`; the four outliers now match that existing pattern.
+`tsc --noEmit` is clean.
+
+**`npm run build` still fails in the demo, for a separate pre-existing reason**
+left alone here: the demo depends on the library via `file:../../`, whose
+`package.json` declares `main: ./dist/index.cjs`, and `dist/` is not present —
+so Vite reports *"Failed to resolve entry for package mathjs"*. The demo cannot
+build until the parent library is built. That is a build-order issue in the
+repo, not a dependency problem, and building the whole library as a side effect
+of a security patch would be the wrong scope.
+
+
 ### Added - 2026-01-19
 
 **Phase 5 Sprint 2: Comprehensive WASM Unit Testing - Complete ✅**
