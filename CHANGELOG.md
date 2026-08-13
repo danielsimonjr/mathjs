@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [15.2.2] - 2026-08-12
+
+### Security
+
+- Dependency patches: `js-yaml`, `fast-uri`, `nanoid`, `dompurify` transitive chain,
+  applied at the root, `demo/mathjs-calc`, and `demo/code_editor` (three separate
+  lockfiles all carry the same transitive tree). `postcss` 8.5.19 -> 8.5.23 and
+  `socket.io-parser` 4.2.6 -> 4.2.7 in the demo.
+
+### Fixed
+
+- **`undici` patched in `demo/mathjs-calc`**, which also surfaced real type errors in the
+  demo's own code once the bump landed — fixed alongside the dependency patch.
+
 ## [15.2.1] - 2026-08-02
 
 ### Fixed — package identity: the manifest now matches what is actually published
@@ -31,7 +45,12 @@ Source unchanged — metadata only. Full gate re-verified: lint clean (`--max-wa
 unit **9286 passing / 2 pending**, generated-code **36 passing**, node integration
 **500 passing**, `test:types` clean.
 
-## [Unreleased] - 2026-07-14
+> **The section below (dated 2026-07-14) was already shipped in 15.2.1 above** — its
+> commit is an ancestor of 15.2.1's release commit. Heading corrected from a stray
+> "Unreleased" (never renamed when 15.2.1 was cut) to avoid re-describing already-published
+> work as pending.
+
+## Also shipped in [15.2.1] - 2026-07-14
 
 ### Fixed — `eigs()` BigNumber: residual `valueOf()` coercion + a regression test that actually gates the bug
 
