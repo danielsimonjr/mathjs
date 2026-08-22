@@ -19,12 +19,8 @@ jobs:
           - uses: actions/setup-node@v4
             with:
               node-version: 22.x
-          - name: Setup Bun
-            uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-            with:
-              bun-version: '1.4.0'
-          - run: bun install --frozen-lockfile
-          - run: bun run test:lambdatest
+          - run: npm ci
+          - run: npm run test:lambdatest
             env:
               LT_USERNAME: ${{ secrets.LT_USERNAME }}
               LT_ACCESS_KEY: ${{ secrets.LT_ACCESS_KEY }}
