@@ -22,8 +22,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run test:src
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: '1.4.0'
+      - run: bun install --frozen-lockfile
+      - run: bun run test:src
         env:
           CI: true
 
@@ -35,8 +39,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-      - run: npm ci
-      - run: npm run lint
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
         env:
           CI: true
 
@@ -49,7 +53,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-      - run: npm ci
+      - run: bun install --frozen-lockfile
       - name: Run TypeScript type checking
         run: npx tsc --noEmit
         env:
@@ -58,11 +62,11 @@ jobs:
         # build:lib (gulp compile) generates src/entry/*.generated.js, which
         # tsup needs to bundle dist/. Generated entries are gitignored, so a
         # clean checkout must generate them before bundling.
-        run: npm run build:lib && npm run compile
+        run: bun run build:lib && bun run compile
         env:
           CI: true
       - name: Run TypeScript type tests
-        run: npm run test:types
+        run: bun run test:types
         env:
           CI: true
 
@@ -78,8 +82,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-      - run: npm ci
-      - run: npm run coverage
+      - run: bun install --frozen-lockfile
+      - run: bun run coverage
         env:
           CI: true
       - name: Upload coverage reports to Codecov
@@ -99,7 +103,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-      - run: npm ci
-      - run: npm run build-and-test
+      - run: bun install --frozen-lockfile
+      - run: bun run build-and-test
         env:
           CI: true
