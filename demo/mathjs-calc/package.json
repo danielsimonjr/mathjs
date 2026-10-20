@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "allotment": "^1.20.5",
-    "katex": "^0.16.33",
+    "katex": "^0.18.2",
     "mathjs": "file:../../",
     "plotly.js-dist-min": "^3.4.0",
     "react": "^19.0.0",
