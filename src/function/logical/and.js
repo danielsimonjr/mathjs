@@ -40,7 +40,7 @@ export const createAnd = /* #__PURE__ */ factory(name, dependencies, ({ typed, m
    *    c = 0
    *
    *    math.and(a, b)   // returns [true, false, false]
-   *    math.and(a, c)   // returns [false, false, false]
+   *    math.and(a, c)   // returns [0, 0, 0]
    *
    * See also:
    *
