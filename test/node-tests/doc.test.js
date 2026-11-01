@@ -9,6 +9,27 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const math = create(all)
 const debug = process.argv.includes('--debug-docs')
 
+// Mocha 12 actually applies `.mocharc.json`'s `node-option: import=tsx`
+// (Mocha 11's yargs respawn often did not). Under tsx, `eval()` inside `it()`
+// is sloppy, so JSDoc examples like `a = [2, 0, 0]` write real globals that
+// leak into later tests (e.g. `dotPow` reading another function's `a`).
+// Snapshot/restore the global object around each function's examples.
+function snapshotGlobals () {
+  return new Set(Object.getOwnPropertyNames(globalThis))
+}
+
+function restoreGlobals (namesBefore) {
+  for (const name of Object.getOwnPropertyNames(globalThis)) {
+    if (!namesBefore.has(name)) {
+      try {
+        delete globalThis[name]
+      } catch {
+        // ignore non-configurable leftovers
+      }
+    }
+  }
+}
+
 function extractExpectation (comment, optional = false) {
   if (comment === '') return undefined
   const returnsParts = comment.split('eturns').map(s => s.trim())
@@ -414,51 +435,56 @@ describe('Testing examples from (jsdoc) comments', function () {
           if (debug) {
             console.log(`      Testing ${doc.name} ...`) // can remove once no known failures; for now it clarifies "PLEASE RESOLVE"
           }
+          const globalsSnapshot = snapshotGlobals()
           const lines = doc.examples
           lines.push('//') // modifies doc but OK for test
           let accumulation = ''
           let expectation
           let expectationFrom = ''
-          for (const line of lines) {
-            if (line.includes('//')) {
-              let parts = line.split('//')
-              if (parts[0] && !parts[0].trim()) {
-                // Indented comment, unusual in examples
-                // assume this is a comment within some code to evaluate
-                // i.e., ignore it
-                continue
-              }
-              // Comment specifying a future value or the return of prior code
-              parts = parts.map(s => s.trim())
-              if (parts[0] !== '') {
-                if (accumulation) { accumulation += '\n' }
-                accumulation += parts[0]
-              }
-              if (accumulation !== '' && expectation === undefined) {
-                expectationFrom = parts[1]
-                expectation = extractExpectation(expectationFrom)
-                parts[1] = ''
-              }
-              if (accumulation && !accumulation.includes('console.log(')) {
-                // note: we ignore examples that contain a console.log to keep the output of the tests clean
-                let value
-                try {
-                  value = eval(accumulation) // eslint-disable-line no-eval
-                } catch (err) {
-                  value = err.toString()
+          try {
+            for (const line of lines) {
+              if (line.includes('//')) {
+                let parts = line.split('//')
+                if (parts[0] && !parts[0].trim()) {
+                  // Indented comment, unusual in examples
+                  // assume this is a comment within some code to evaluate
+                  // i.e., ignore it
+                  continue
                 }
-                maybeCheckExpectation(
-                  doc.name, expectation, expectationFrom, value, accumulation)
-                accumulation = ''
-              }
-              expectationFrom = parts[1]
-              expectation = extractExpectation(expectationFrom, 'requireSignal')
-            } else {
-              if (line !== '') {
-                if (accumulation) { accumulation += '\n' }
-                accumulation += line
+                // Comment specifying a future value or the return of prior code
+                parts = parts.map(s => s.trim())
+                if (parts[0] !== '') {
+                  if (accumulation) { accumulation += '\n' }
+                  accumulation += parts[0]
+                }
+                if (accumulation !== '' && expectation === undefined) {
+                  expectationFrom = parts[1]
+                  expectation = extractExpectation(expectationFrom)
+                  parts[1] = ''
+                }
+                if (accumulation && !accumulation.includes('console.log(')) {
+                  // note: we ignore examples that contain a console.log to keep the output of the tests clean
+                  let value
+                  try {
+                    value = eval(accumulation) // eslint-disable-line no-eval
+                  } catch (err) {
+                    value = err.toString()
+                  }
+                  maybeCheckExpectation(
+                    doc.name, expectation, expectationFrom, value, accumulation)
+                  accumulation = ''
+                }
+                expectationFrom = parts[1]
+                expectation = extractExpectation(expectationFrom, 'requireSignal')
+              } else {
+                if (line !== '') {
+                  if (accumulation) { accumulation += '\n' }
+                  accumulation += line
+                }
               }
             }
+          } finally {
+            restoreGlobals(globalsSnapshot)
           }
         })
       }
